@@ -47,7 +47,7 @@ We're going to be honest here: Exodra does **not** ship a maintained "legacy vs 
 - **Memory after unmount** is reclaimed by the garbage collector: when a subtree's nodes become unreachable, their WeakMap entries go with them. There is no retained-metadata table to grow or forget to clear.
 - **Cache lookups** (clone-caching static subtrees) are a direct WeakMap `get` keyed by the schema node — no scanning, no auxiliary index.
 
-If you want real, reproducible numbers, run the cross-framework suite with `npm run bench`: on a large-tree initial render Exodra lands around ~1 ms median (ahead of Solid/Svelte/React in our harness). Those are Exodra's own benchmarks and are hardware/version dependent — reproduce them yourself rather than trusting a marketing figure.
+If you want real, reproducible numbers, run the cross-framework suite with `npm run bench`: on a large-tree initial render Exodra lands around ~1 ms median — top-tier in our harness (neck-and-neck with Solid, ahead of Svelte and React). Those are Exodra's own benchmarks and are hardware/version dependent — reproduce them yourself rather than trusting a marketing figure.
 
 ## Real-World Benefits
 

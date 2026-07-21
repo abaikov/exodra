@@ -24,7 +24,7 @@
     "@exodra/reactivity": "^0.1.0",
     "@exodra/ssr": "^0.1.0",
     "@exodra/string": "^0.1.0",
-    "@oimdb/core": "^3.6.0",
+    "@oimdb/core": "^3.8.0",
     "@oimdb/devtools": "^1.0.4",
     "@oimdb/mcp": "^1.2.0"
   },

@@ -2,6 +2,44 @@ import type { BenchmarkFramework, BenchmarkResult } from './types';
 
 export const DEFAULT_DISCARD_FIRST = 'tenPercent' as const;
 
+// --- memory ---------------------------------------------------------------
+// The "at what cost" side of the story. `performance.memory` is Chromium‑only;
+// `globalThis.gc` needs Chromium launched with `--js-flags=--expose-gc` (the
+// headless runner does). Without them these degrade to noisier/undefined values.
+
+type PerfMemory = { memory?: { usedJSHeapSize: number } };
+
+export function readHeapBytes(): number | undefined {
+    const mem = (performance as unknown as PerfMemory).memory;
+    return mem ? mem.usedJSHeapSize : undefined;
+}
+
+export function gcIfPossible(): void {
+    const gc = (globalThis as { gc?: () => void }).gc;
+    if (gc) {
+        gc();
+        gc();
+    }
+}
+
+/**
+ * Retained JS heap for one mounted instance of a structure: GC, baseline,
+ * mount, GC, measure, then clean up. `mount` returns a teardown callback.
+ * Returns bytes retained, or undefined if the engine doesn't expose heap size.
+ */
+export async function measureRetainedHeap(
+    mount: () => (() => void) | Promise<() => void>
+): Promise<number | undefined> {
+    gcIfPossible();
+    const before = readHeapBytes();
+    const cleanup = await mount();
+    gcIfPossible();
+    const after = readHeapBytes();
+    cleanup();
+    if (before === undefined || after === undefined) return undefined;
+    return Math.max(0, after - before);
+}
+
 export function discardWarmupSamples(
     times: number[],
     discardFirst: number | 'tenPercent' = DEFAULT_DISCARD_FIRST
@@ -66,6 +104,7 @@ export function finalizeBenchmarkResult(
     options?: {
         discardFirst?: number | 'tenPercent';
         warnIfSuspiciouslyFast?: boolean;
+        heapUsedBytes?: number;
     }
 ): BenchmarkResult {
     const stats = summarizeTimes(times, options?.discardFirst ?? DEFAULT_DISCARD_FIRST);
@@ -92,6 +131,7 @@ export function finalizeBenchmarkResult(
         framework,
         operations,
         ...stats,
+        heapUsedBytes: options?.heapUsedBytes,
     };
 }
 

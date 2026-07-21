@@ -200,8 +200,8 @@ is fine-grained updates with no reconciler on the hot path.
 
 **Decision.** Every list (board columns, task list, people, taxonomy, activity)
 renders through `lib/keyed-list.ts`: it maps ordered items to **identity-stable**
-child schemas (cached by key) driven through a `bindable<TExoSchema[]>`, with a
-structural guard so a field edit is a no-op.
+child schemas (cached by key) driven through a `bindable<TExoSchema[]>`, with an
+element-wise key-compare guard (no per-refresh allocation) so a field edit is a no-op.
 
 **Rationale.** The renderer reconciles children **by reference identity** — same
 schema object ⇒ same DOM node reused. So the whole game is handing back stable
@@ -253,33 +253,42 @@ subscriptions correct.)
 
 ---
 
-## 7. SSR + hydration — two trees, board-only entry SSR
+## 7. SSR + hydration — two trees, every route SSRs
 
 **Decision.** The server renders the **shell** (with an empty `#outlet`) and the
-**board** as two independent trees, splices the board HTML into the outlet, and
+**matched page** as two independent trees, splices the page HTML into the outlet, and
 embeds the full store snapshot in a `<script>`. The client **hydrates** both trees
-(reusing the SSR DOM nodes, not re-mounting) and takes over. Non-board routes render
-client-side after their chunk loads.
+(reusing the SSR DOM nodes, not re-mounting) and takes over. Every route — not just
+the board — is server-rendered: the entry holds a static `path → pageFn` map and
+renders whichever page the router matched (`router.getMatch()`).
 
 **Rationale.** Two independent trees mean a page can be disposed and swapped on
 navigation without touching the shell — SPA navigation with a server-rendered first
 paint. Real hydration (reuse the nodes) avoids a flash and keeps first paint cheap.
 The embedded snapshot lets the client hydrate the *same* data with no round-trip.
+The server bundles all pages (no server-side code-splitting), so a static import map
+is the natural seam — and it keeps `render()` fully **synchronous**: it sets the
+per-request runtime singleton and builds the page with no `await` between, so
+concurrent requests cannot interleave and contaminate each other's runtime (an
+`await` there would). The client still lazy-loads the same page module and hydrates
+this HTML.
 
 **Alternatives.**
 - **No SSR (pure SPA)** — simplest, but a blank first paint until JS runs.
-- **Full SSR of every route** — best first paint everywhere, but the entry must
-  resolve and render the matched (lazy) route on the server for all routes.
+- **Board-only SSR** (the earlier scope) — simpler entry, but deep-linking `/tasks`
+  gives a server-rendered shell with an empty outlet that only paints client-side.
+- **`await import()` the matched lazy chunk server-side** — mirrors the client route
+  table exactly, but makes `render()` async, re-introducing the runtime-singleton
+  interleave the static map avoids.
 - **Re-mount instead of hydrate** (`replaceChildren`) — simpler, but throws away the
   SSR DOM and flashes.
 
-**Trade-offs (the honest limitation).** **Only the board SSRs.** Deep-linking
-directly to `/tasks` yields a server-rendered *shell* with an empty outlet; the
-tasks page paints once its chunk loads client-side. This is a deliberate scoping
-choice — the entry statically imports only `boardPage`. The clean next step is to
-render the **matched** route on the server (import the pages server-side, render the
-one the URL matches) so every route SSRs; it is a feature addition, not a bug fix,
-and is called out here rather than hidden.
+**Trade-offs.** The entry statically imports all seven pages, so the SSR build
+bundles them together — vite emits `INEFFECTIVE_DYNAMIC_IMPORT` for each (the same
+page is `lazy()`-imported by the shared route table). That warning is expected and
+**server-only**: the client build still splits every page into its own chunk (§8).
+The static map must list each route's page fn; a page added to the router must be
+added here too, or it falls back to a client-rendered (empty) outlet.
 
 ---
 
@@ -378,33 +387,33 @@ this session — dead tests are worse than none.)
 Written down so they read as *conscious* boundaries, not oversights. Ordered by
 value.
 
-- **Entry SSR is board-only (§7).** The clear next step: render the *matched* route
-  on the server (import pages server-side, render the one the URL matches) so every
-  route paints server-side, not just `/`. This is a feature, not a bugfix.
-- **The virtual list is not screen-reader-complete.** A windowed list mounts ~25 of
-  10 000 rows, so assistive tech cannot perceive the full set. Doing it *right*
-  needs `role="list"` + per-row `aria-setsize={total}` / `aria-posinset`, kept in
-  sync as the filter changes total. It was left out rather than half-added
-  (misleading ARIA is worse than none) — a real, self-contained improvement.
+**Addressed since the first cut** (kept here as a record of what "done" means):
+*entry SSR now renders the matched route, not just the board (§7); the virtual list
+is screen-reader-complete — `role="list"` + per-row `aria-setsize`/`aria-posinset`,
+re-baked when the filter changes total (§9); `keyedList`'s structural guard is now an
+element-wise key compare, not a `keys.join('|')` allocation (§5).*
+
+Still open, by value:
+
 - **The runtime is a global singleton (§10), not framework context.** Exodra has a
   context system (`createContextKey` / provide-inject); providing the runtime
-  through it would be more idiomatic and multi-instance-safe. The catch is that
-  pages call `getRuntime()` at *build* time (before mount), where context is not yet
-  resolved — so the singleton is the pragmatic seam today. Worth revisiting if
-  Exodra grows a build-time context read.
+  through it would be more idiomatic and multi-instance-safe. The catch is real:
+  context resolves at *mount* time (walking `parentNode`), but pages read the runtime
+  *eagerly*, at schema-construction time before any node exists — so `inject` would
+  see `undefined` there. Deferring each page's read to mount means wrapping all seven
+  in `defineComponent`, and the only payoff is multi-instance safety, which a single
+  SPA with a synchronous SSR `render()` (§7) does not need. The singleton is the
+  right seam today; worth revisiting only if the app must host two runtimes at once.
 - **Reference-data CRUD lists re-check all keys per edit.** The single-list pages
   (`tasks`, etc.) subscribe to a whole collection and let `keyedList`'s guard no-op
-  unchanged edits — correct, but the guard still recomputes O(list) keys per edit.
-  The board avoids this with per-status-key subscriptions (§2); the single-list
-  pages could too if partitioned, but a flat list has no natural partition key, so
-  the O(list) guard is the honest cost.
+  unchanged edits — correct, but the guard still walks O(list) keys per edit (now an
+  element-wise compare, no allocation). The board avoids this with per-status-key
+  subscriptions (§2); the single-list pages could too if partitioned, but a flat list
+  has no natural partition key, so the O(list) guard is the honest cost.
 - **The virtual window renders through the async viewport (§9).** Routing the list
   render through the shared oimdb object adds a microtask hop per scroll frame
   (imperceptible, and it buys the decoupled readout). A latency-critical list could
   render synchronously on scroll and update the viewport only for the readout.
-- **`keyedList`'s structural guard is a `keys.join('|')` string** — O(n) allocation
-  per recompute. Fine at list sizes here; a huge list could compare the previous key
-  array element-wise instead.
 
 ## Summary
 

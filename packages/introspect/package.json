@@ -1,6 +1,6 @@
 {
   "name": "@exodra/introspect",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AI-powered introspection ecosystem with universal AI tool integration and extensible plugin system for Exodra applications",
   "type": "module",
   "main": "./dist/index.js",

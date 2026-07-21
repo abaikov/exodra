@@ -231,18 +231,18 @@ Exodra is fast by design:
 
 ### Benchmarks
 
-From the project's own suite (`npm run bench`) — **initial render of a large tree**, median over the run:
+From the project's own suite (`npm run bench`) — **initial render of a large tree**, render time and retained heap (approximate, hardware/version dependent):
 
-| Framework | Median | vs Exodra |
-|-----------|--------|-----------|
-| **Exodra** | **~1.05 ms** | — |
-| Solid     | ~1.9 ms  | 1.8× slower |
-| Svelte    | ~4.4 ms  | 4.2× slower |
-| React     | ~5.05 ms | 4.8× slower |
+| Framework | Median (render) | Retained heap |
+|-----------|-----------------|---------------|
+| **Exodra** | **~1 ms** | ~0.18 MB |
+| Solid     | ~2–3 ms  | ~0.14 MB |
+| Svelte    | ~4 ms    | ~0.42 MB |
+| React     | ~5 ms    | ~0.54 MB |
 
-For fine-grained updates (a single signal write, one list op) both Exodra and Solid finish in **well under a millisecond** — below the timer's resolution, so those cases are effectively a tie rather than a meaningful multiplier.
+Exodra is **top-tier** here — as fast as the fastest (neck-and-neck with Solid, ahead of Svelte/React) and **without** a memory premium. Credit where due: **Solid's footprint is slightly smaller** (~0.14 vs ~0.18 MB). We won't claim a permanent "fastest" crown from our own harness — run it yourself. For fine-grained updates (a single signal write, one list op) Exodra and Solid both finish **well under a millisecond** — below timer resolution, so those are ties, not wins.
 
-> Methodology: headless Chromium (Playwright) over a Vite build, N iterations per case, median reported. These come from Exodra's **own** harness — not an independent third party — and are hardware/version dependent. Reproduce them with `npm run bench`.
+> Methodology: headless Chromium (Playwright) over a Vite build, N iterations per case, median reported; heap via forced GC + precise `performance.memory`. Exodra's **own** harness — not an independent third party. Reproduce with `npm run bench`. Full results: [exodra.org/docs/benchmarks](https://exodra.org/docs/benchmarks).
 
 ## 🛠️ Development
 

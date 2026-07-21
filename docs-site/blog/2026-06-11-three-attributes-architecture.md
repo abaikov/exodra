@@ -77,18 +77,23 @@ No type checking. No guessing. No overhead.
 
 We don't ship a "runtime-type-checking" variant of Exodra to A/B against, so we won't quote a made-up "with checks vs without" delta. What we *can* show is how the architecture holds up against other reactive frameworks.
 
-In the project's benchmark suite (`npm run bench`), rendering a large tree — the case that actually does work at a measurable scale — lands like this (median per run):
+In the project's benchmark suite (`npm run bench`), rendering a large tree — the
+case that actually does work at a measurable scale — Exodra lands in the **top
+tier**: as fast as the fastest (neck‑and‑neck with Solid, well ahead of React and
+Svelte) **without** a memory premium. Full numbers, including retained heap and
+honest caveats, live on the dedicated [Benchmarks](/docs/benchmarks) page — with
+the fair print that Solid's memory footprint is actually a touch smaller than
+ours. We're not claiming a permanent "fastest" crown from our own harness.
 
-| Framework | Initial render (median) |
-|-----------|-------------------------|
-| **Exodra** | **~1.05 ms** |
-| Solid     | ~1.9 ms  |
-| Svelte    | ~4.4 ms  |
-| React     | ~5.05 ms |
+Fine-grained updates (a single signal or list op) complete in **sub-millisecond**
+time for both Exodra and Solid — below the timer's resolution — so we treat those
+as a tie, not a headline multiplier.
 
-Fine-grained updates (a single signal or list op) complete in **sub-millisecond** time for both Exodra and Solid — below the timer's resolution — so we treat those as a tie, not a headline multiplier.
-
-Caveats worth stating plainly: this is Exodra's **own** harness (headless Chromium via Playwright), not an independent benchmark, and numbers move with hardware and framework versions. Run `npm run bench` and see for yourself. The point isn't "we win every micro-benchmark" — it's that pre-separating props at compile time removes a class of per-update work, and that shows up on real render workloads.
+Caveats worth stating plainly: this is Exodra's **own** harness (headless Chromium
+via Playwright), not an independent benchmark, and numbers move with hardware and
+framework versions. Run `npm run bench` and see for yourself. The point isn't "we
+win every micro-benchmark" — it's that pre-separating props at compile time
+removes a class of per-update work, and that shows up on real render workloads.
 
 ## Why Not Just Use a Compiler?
 
@@ -115,7 +120,7 @@ Every `bindable` prop is a conscious choice. Every `static` prop is a performanc
 
 ## Real-World Impact
 
-We won't quote before/after figures from a "production app" you can't re-run — that's how you end up trusting invented numbers. What you *can* run is the benchmark suite: `npm run bench` renders a large tree, and Exodra comes out ahead of Solid, Svelte, and React in our harness (see the numbers earlier — hardware/version dependent). The architectural claim doesn't hinge on the exact figure: pre-separating props at compile time removes a category of per-update work, and that shows up on real render workloads.
+We won't quote before/after figures from a "production app" you can't re-run — that's how you end up trusting invented numbers. What you *can* run is the benchmark suite: `npm run bench` renders a large tree, and Exodra lands in the top tier in our harness — on par with Solid, ahead of Svelte and React (hardware/version dependent). The architectural claim doesn't hinge on the exact figure: pre-separating props at compile time removes a category of per-update work, and that shows up on real render workloads.
 
 ## Conclusion
 

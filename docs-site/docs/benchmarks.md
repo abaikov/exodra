@@ -18,17 +18,29 @@ npm run bench
 ## Headline: initial render of a large tree
 
 This is the case that does real, measurable work (millisecond scale), so it's the
-one worth taking seriously. Median time to build and mount a large component tree:
+one worth taking seriously. Time to build and mount a large component tree, plus
+the **retained JS heap** for one mounted instance — so you can see the speed *and*
+its memory cost side by side (numbers are approximate and move between runs):
 
-| Framework  | Median   | Relative     |
-|------------|----------|--------------|
-| **Exodra** | **~1.05 ms** | —        |
-| Solid      | ~1.9 ms  | 1.8× slower  |
-| Svelte     | ~4.4 ms  | 4.2× slower  |
-| React      | ~5.05 ms | 4.8× slower  |
+| Framework  | Median (render) | Retained heap |
+|------------|-----------------|---------------|
+| **Exodra** | **~1 ms**       | ~0.18 MB      |
+| Solid      | ~2–3 ms         | ~0.14 MB      |
+| Svelte     | ~4 ms           | ~0.42 MB      |
+| React      | ~5 ms           | ~0.54 MB      |
 
-Exodra leads here because there's no virtual‑DOM diffing and no per‑prop runtime
-type dispatch — the static/reactive/event split is resolved at compile time.
+Exodra sits firmly in the **top tier** here — it posts the lowest render time in
+our runs, with Solid essentially neck‑and‑neck, and both clearly ahead of Svelte
+and React. We won't claim a permanent "fastest framework" crown from our own
+harness; the honest read is "as fast as the fastest." What earns it that spot is
+architectural: no virtual‑DOM diffing and no per‑prop runtime type dispatch (the
+static/reactive/event split is resolved at compile time).
+
+**At what cost?** Not memory: Exodra is also among the leanest. Credit where it's
+due — **Solid has the smallest footprint** (~0.14 MB, marginally under Exodra's
+~0.18 MB), though it renders a bit slower here. React is the heaviest and the
+slowest. The takeaway isn't "Exodra wins everything" — it's that Exodra is
+top‑tier on speed *and* memory, without trading one for the other.
 
 ## Fine‑grained updates
 
@@ -57,6 +69,10 @@ measured in this case.")
   build of the benchmark app (`packages/benchmarks`).
 - **Sampling:** each case runs many iterations after a warm‑up; we report the
   **median** (and, for sub‑millisecond cases, the average) per run.
+- **Memory:** retained heap is measured per framework by forcing GC
+  (`--js-flags=--expose-gc`) and reading `performance.memory.usedJSHeapSize`
+  (`--enable-precise-memory-info`) before/after mounting one instance. It's a
+  directional figure, not an exact allocation count.
 - **What's measured:** the timed region is the framework's update/render work for
   that operation — verification of the resulting DOM happens *outside* the timed
   region.

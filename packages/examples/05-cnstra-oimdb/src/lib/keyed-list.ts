@@ -38,16 +38,23 @@ export function keyedList<TItem>(opts: {
 }): TExoKeyedList {
     const cache = new Map<string, { schema: TExoSchema; dispose?: () => void }>();
     const children = bindable<readonly TExoSchema[]>([]);
-    let sig = '';
+    let prevKeys: readonly string[] = [];
     let subs: ReadonlyArray<() => void> = [];
 
     const refresh = (): void => {
         const items = opts.items();
         const keys = new Array<string>(items.length);
         for (let i = 0; i < items.length; i++) keys[i] = opts.key(items[i]);
-        const next = keys.join('|');
-        if (next === sig) return; // structural no-op — no churn, focus preserved
-        sig = next;
+        // Structural no-op check by element-wise compare — no per-refresh string
+        // allocation, and correct even if a key contains the old delimiter.
+        if (keys.length === prevKeys.length) {
+            let same = true;
+            for (let i = 0; i < keys.length; i++) {
+                if (keys[i] !== prevKeys[i]) { same = false; break; }
+            }
+            if (same) return; // same ordered key set → focus preserved, no churn
+        }
+        prevKeys = keys;
         const live = new Set(keys);
         for (const [k, entry] of cache) {
             if (!live.has(k)) {
@@ -82,7 +89,7 @@ export function keyedList<TItem>(opts: {
             subs = [];
             for (const [, entry] of cache) entry.dispose?.();
             cache.clear();
-            sig = '';
+            prevKeys = [];
         },
     };
 }

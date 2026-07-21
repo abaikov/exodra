@@ -108,6 +108,15 @@ export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
 
 // Module singleton — set by the entry once, read by lazy page chunks. (The
 // router is passed explicitly to the shell, so it needs no singleton here.)
+//
+// Why NOT Exodra's context (`createContextKey` / provide-inject)? Context
+// resolves at MOUNT time by walking `parentNode`. But pages read the runtime
+// EAGERLY in their function body — at schema-construction time, before any node
+// (or parent) exists — so `inject` would return undefined there. Deferring every
+// page's read to mount means wrapping each in `defineComponent`; the only payoff
+// is multi-instance safety, which a single SPA with a synchronous SSR `render()`
+// (see entry-server.ts) doesn't need. So the singleton is the right seam. See
+// DESIGN.md §10.
 let current: WorkspaceRuntime | undefined;
 
 export function setRuntime(rt: WorkspaceRuntime): void {

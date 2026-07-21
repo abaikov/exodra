@@ -69,6 +69,10 @@ async function runBenchmarks() {
   console.log('🌐 Launching headless browser...');
   const browser = await chromium.launch({
     headless: true,
+    // Expose window.gc() (force GC before sampling) and enable precise memory
+    // info (unquantized performance.memory) so the retained-heap "at what cost"
+    // numbers are real rather than bucketed to 0.
+    args: ['--js-flags=--expose-gc', '--enable-precise-memory-info'],
   });
 
   const page = await browser.newPage();
@@ -214,11 +218,26 @@ async function runBenchmarks() {
     console.log('─'.repeat(60));
     for (const result of group.sort((a, b) => scoreTime(a) - scoreTime(b))) {
       const marker = result.framework === fastest.framework ? ' ★' : '';
+      const mem =
+        typeof result.heapUsedBytes === 'number'
+          ? ` | heap ${(result.heapUsedBytes / 1048576).toFixed(2)}MB`
+          : '';
       console.log(
-        `  ${result.framework.padEnd(22)} median ${result.medianTime.toFixed(4)}ms | avg ${result.avgTime.toFixed(4)}ms | min ${result.minTime.toFixed(4)}ms | max ${result.maxTime.toFixed(4)}ms${marker}`
+        `  ${result.framework.padEnd(22)} median ${result.medianTime.toFixed(4)}ms | avg ${result.avgTime.toFixed(4)}ms | min ${result.minTime.toFixed(4)}ms | max ${result.maxTime.toFixed(4)}ms${mem}${marker}`
       );
     }
     console.log(`  ${fastest.framework} is ${speedup.toFixed(2)}x faster than ${slowest.framework}`);
+
+    // "At what cost": show the retained-heap comparison where measured.
+    const withMem = group.filter((r) => typeof r.heapUsedBytes === 'number');
+    if (withMem.length > 1) {
+      const leanest = withMem.reduce((a, b) => (a.heapUsedBytes < b.heapUsedBytes ? a : b));
+      const heaviest = withMem.reduce((a, b) => (a.heapUsedBytes > b.heapUsedBytes ? a : b));
+      const ratio = heaviest.heapUsedBytes / Math.max(leanest.heapUsedBytes, 1);
+      console.log(
+        `  memory: ${leanest.framework} leanest at ${(leanest.heapUsedBytes / 1048576).toFixed(2)}MB (${ratio.toFixed(2)}x less than ${heaviest.framework})`
+      );
+    }
   }
 
   console.log('\n✅ Benchmarks completed!\n');

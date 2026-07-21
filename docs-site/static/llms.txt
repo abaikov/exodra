@@ -8,6 +8,9 @@ calls — it is NOT React and NOT TypeScript's built-in JSX.
 
 Read this before guessing. Most mistakes come from assuming React semantics.
 
+This file is a compact cheat‑sheet. For the **complete documentation** (every
+guide and API page in one file), see **[llms-full.txt](https://exodra.org/llms-full.txt)**.
+
 ## The five prop buckets (STRICT — this is the #1 gotcha)
 
 A node's props are ONLY these buckets. There are **no flat attributes**. A flat

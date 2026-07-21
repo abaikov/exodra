@@ -1,0 +1,74 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`@exodra/babel-plugin-jsx — directives & special forms > bind:value → mergeAttrs + forms helper (snapshot) 1`] = `
+"import { h } from "@exodra/core";
+import { mergeAttrs } from "@exodra/jsx";
+import { bindText } from "@exodra/forms";
+export const v = h("input", mergeAttrs({}, bindText(model)));"
+`;
+
+exports[`@exodra/babel-plugin-jsx — directives & special forms > bindableHandlers bucket (snapshot) 1`] = `
+"import { h } from "@exodra/core";
+export const v = h("button", {
+  bindableHandlers: {
+    onClick: sig
+  }
+});"
+`;
+
+exports[`@exodra/babel-plugin-jsx — directives & special forms > cache:key → 3rd arg of h() (snapshot) 1`] = `
+"import { h } from "@exodra/core";
+export const v = h("li", {
+  static: {
+    id: 'r'
+  }
+}, key);"
+`;
+
+exports[`@exodra/babel-plugin-jsx — output snapshots > bindableList children 1`] = `
+"import { h } from "@exodra/core";
+export const v = h("ul", {
+  bindableLists: {
+    children: rows
+  }
+});"
+`;
+
+exports[`@exodra/babel-plugin-jsx — output snapshots > element with static attrs + text child 1`] = `
+"import { h, text } from "@exodra/core";
+export const v = h("div", {
+  static: {
+    id: 'x',
+    children: text("hi")
+  }
+});"
+`;
+
+exports[`@exodra/babel-plugin-jsx — output snapshots > expression child becomes a reactive child 1`] = `
+"import { h } from "@exodra/core";
+export const v = h("div", {
+  static: {
+    children: count
+  }
+});"
+`;
+
+exports[`@exodra/babel-plugin-jsx — output snapshots > fragment 1`] = `
+"import { h } from "@exodra/core";
+export const v = [a, b];"
+`;
+
+exports[`@exodra/babel-plugin-jsx — output snapshots > mixed buckets (static + bindable + handlers) 1`] = `
+"import { h } from "@exodra/core";
+export const v = h("button", {
+  static: {
+    class: 'b'
+  },
+  bindables: {
+    textContent: label
+  },
+  handlers: {
+    onClick: f
+  }
+});"
+`;

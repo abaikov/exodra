@@ -265,6 +265,15 @@ export class ExoNodeString extends ExoNode<TExoNodeStringSchema> {
             return childrenHtml;
         }
 
+        // Raw inner HTML (React-style escape hatch): emit verbatim, skip children
+        // and textContent. Used e.g. to inject a server-rendered island's markup.
+        const rawHtml = this.schema.attrs.static?.dangerouslySetInnerHTML as
+            | { __html?: unknown }
+            | undefined;
+        if (rawHtml && typeof rawHtml === 'object' && rawHtml.__html != null) {
+            return `<${this.schema.type}${this.renderAttributes()}>${String(rawHtml.__html)}</${this.schema.type}>`;
+        }
+
         const textContent =
             this.schema.attrs.bindables?.textContent?.getValue() ??
             this.schema.attrs.static?.textContent;
@@ -304,6 +313,7 @@ export class ExoNodeString extends ExoNode<TExoNodeStringSchema> {
         if (
             name === 'children' ||
             name === 'textContent' ||
+            name === 'dangerouslySetInnerHTML' ||
             name === 'onExoMount' ||
             name === 'onExoUnmount' ||
             this.isEventName(name) ||

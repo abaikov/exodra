@@ -1,0 +1,3545 @@
+# Exodra — full documentation (for LLMs)
+
+The complete Exodra documentation, concatenated into one file for LLM context.
+For a compact cheat‑sheet, see llms.txt. Canonical source: https://exodra.org/docs
+
+
+==============================================================================
+# Getting Started with Exodra
+
+## Installation
+
+### Create a New Project
+
+The fastest way to get started is with create-exodra:
+
+```bash
+npm create exodra@latest my-app
+cd my-app
+npm run dev
+```
+
+You'll be prompted for a few choices:
+- **TypeScript** (or JavaScript)
+- **ESLint**
+- **Tailwind CSS**
+- **`src/` directory**
+- **Server-side rendering (SSR)**
+- **App Router**
+- **Custom import alias**
+
+Each prompt has a matching flag (for example `--typescript`, `--tailwind`,
+`--eslint`, `--src-dir`, `--ssr`, `--app`, `--import-alias <alias>`) so you can
+skip the questions in CI or scripts.
+
+### Manual Setup
+
+You can also add Exodra to an existing project:
+
+```bash
+npm install @exodra/core @exodra/dom @exodra/reactivity
+npm install -D @exodra/babel-plugin-jsx
+```
+
+Then configure Babel to use the JSX plugin (see JSX Guide for details).
+
+## Project Structure
+
+A typical Exodra project looks like this:
+
+```
+my-app/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── app.tsx
+│   └── main.tsx
+├── public/
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
+
+## Your First Component
+
+Create a simple counter component with Exodra JSX. A `bindable` is a reactive
+cell: read it with `getValue()`, write it with `setValue()`. There is no
+`.value` property. To show a derived string in the DOM, build a `derive()` and
+pass it straight into the `bindable` bucket.
+
+```tsx
+import { bindable, derive } from '@exodra/reactivity';
+
+export function Counter() {
+  const count = bindable(0);
+  const label = derive(count, c => String(c));
+
+  return (
+    <div static={{ class: 'counter' }}>
+      <button
+        static={{ class: 'btn' }}
+        handlers={{ onClick: () => count.setValue(count.getValue() - 1) }}
+      >
+        -
+      </button>
+
+      <span bindable={{ textContent: label }} />
+
+      <button
+        static={{ class: 'btn' }}
+        handlers={{ onClick: () => count.setValue(count.getValue() + 1) }}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+```
+
+Every prop goes in a typed bucket: `static` for values that never change,
+`bindable` for reactive bindables, and `handlers` for events. Flat React-style
+props such as `<button onClick={...}>` are a compile error in Exodra.
+
+## Building a Todo App
+
+Here's a small todo app showing reactive lists. `list()` builds a reactive list
+that you mutate with `push`, `insert`, `remove`, `move`, `set`, or `reset` — it
+is not an array, so there is no `.map()` on the list. Build the children up front
+and pass the list directly into the `bindableList` bucket.
+
+```tsx
+import { bindable, derive, list } from '@exodra/reactivity';
+import type { TExoSchema } from '@exodra/core';
+
+export function TodoApp() {
+  const input = bindable('');
+  const todos = list<TExoSchema>([]);
+
+  const makeTodo = (text: string): TExoSchema => {
+    const done = bindable(false);
+    const style = derive(done, d =>
+      d ? 'text-decoration: line-through' : 'text-decoration: none'
+    );
+    return (
+      <li>
+        <input
+          static={{ type: 'checkbox' }}
+          bindable={{ checked: done }}
+          handlers={{ onChange: () => done.setValue(!done.getValue()) }}
+        />
+        <span static={{ class: 'todo__text' }} bindable={{ style }}>
+          {text}
+        </span>
+      </li>
+    );
+  };
+
+  const addTodo = () => {
+    const text = input.getValue().trim();
+    if (!text) return;
+    todos.push(makeTodo(text));
+    input.setValue('');
+  };
+
+  return (
+    <div static={{ class: 'todo-app' }}>
+      <div static={{ class: 'input-group' }}>
+        <input
+          static={{ type: 'text', placeholder: 'Add todo...' }}
+          bindable={{ value: input }}
+          handlers={{
+            onInput: (e: Event) =>
+              input.setValue((e.target as HTMLInputElement).value),
+            onKeyDown: (e: KeyboardEvent) => {
+              if (e.key === 'Enter') addTodo();
+            },
+          }}
+        />
+        <button static={{ class: 'btn' }} handlers={{ onClick: addTodo }}>
+          Add
+        </button>
+      </div>
+
+      <ul bindableList={{ children: todos }} />
+    </div>
+  );
+}
+```
+
+## Development Server
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Your app will be available at `http://localhost:5173`
+
+### Hot Module Replacement
+
+Exodra supports HMR out of the box - changes are reflected instantly without losing application state.
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+The optimized bundle will be in the `dist/` folder.
+
+
+==============================================================================
+# Benchmarks
+
+These are Exodra's **own** benchmarks — not an independent third‑party comparison.
+They run in headless Chromium (Playwright) over a Vite build and compare Exodra
+against Solid, Svelte, and React on the same workloads. Numbers move with
+hardware and framework versions, so treat them as a directional signal and
+**reproduce them yourself**:
+
+```bash
+npm run bench
+```
+
+## Headline: initial render of a large tree
+
+This is the case that does real, measurable work (millisecond scale), so it's the
+one worth taking seriously. Time to build and mount a large component tree, plus
+the **retained JS heap** for one mounted instance — so you can see the speed *and*
+its memory cost side by side (numbers are approximate and move between runs):
+
+| Framework  | Median (render) | Retained heap |
+|------------|-----------------|---------------|
+| **Exodra** | **~1 ms**       | ~0.18 MB      |
+| Solid      | ~2–3 ms         | ~0.14 MB      |
+| Svelte     | ~4 ms           | ~0.42 MB      |
+| React      | ~5 ms           | ~0.54 MB      |
+
+Exodra sits firmly in the **top tier** here — it posts the lowest render time in
+our runs, with Solid essentially neck‑and‑neck, and both clearly ahead of Svelte
+and React. We won't claim a permanent "fastest framework" crown from our own
+harness; the honest read is "as fast as the fastest." What earns it that spot is
+architectural: no virtual‑DOM diffing and no per‑prop runtime type dispatch (the
+static/reactive/event split is resolved at compile time).
+
+**At what cost?** Not memory: Exodra is also among the leanest. Credit where it's
+due — **Solid has the smallest footprint** (~0.14 MB, marginally under Exodra's
+~0.18 MB), though it renders a bit slower here. React is the heaviest and the
+slowest. The takeaway isn't "Exodra wins everything" — it's that Exodra is
+top‑tier on speed *and* memory, without trading one for the other.
+
+## Fine‑grained updates
+
+Single‑operation updates (one signal write, one list op) complete in **well under
+a millisecond** for both Exodra and Solid — below the timer's resolution, so the
+**median is effectively 0 ms for everyone**. We report the *average* below only to
+show Exodra is in the same class, not to claim a meaningful multiplier. Treat
+these as "both are effectively instant."
+
+| Benchmark              | Exodra (avg) | Solid (avg) | Svelte (avg) |
+|------------------------|--------------|-------------|--------------|
+| Conditional render     | ~0.009 ms    | ~0.025 ms   | ~0.075 ms    |
+| List operations        | ~0.001 ms    | ~0.020 ms   | ~0.021 ms    |
+| Advanced list ops      | ~0.004 ms    | ~0.033 ms   | —            |
+| Nested components       | ~0.001 ms   | ~0.001 ms   | —            |
+| Multiple signals       | ~0.014 ms    | ~0.024 ms   | —            |
+| Effect performance     | ~0.001 ms    | ~0.002 ms   | —            |
+| Signal operations      | ~0 ms        | ~0 ms       | —            |
+
+(Not every micro‑benchmark implements every framework — dashes mean "not
+measured in this case.")
+
+## Methodology
+
+- **Harness:** headless Chromium driven by Playwright, running against a Vite
+  build of the benchmark app (`packages/benchmarks`).
+- **Sampling:** each case runs many iterations after a warm‑up; we report the
+  **median** (and, for sub‑millisecond cases, the average) per run.
+- **Memory:** retained heap is measured per framework by forcing GC
+  (`--js-flags=--expose-gc`) and reading `performance.memory.usedJSHeapSize`
+  (`--enable-precise-memory-info`) before/after mounting one instance. It's a
+  directional figure, not an exact allocation count.
+- **What's measured:** the timed region is the framework's update/render work for
+  that operation — verification of the resulting DOM happens *outside* the timed
+  region.
+- **Verification:** every Exodra case asserts the DOM actually changed (e.g.
+  `Item 0` is present/absent) before its numbers count — a benchmark that renders
+  nothing is a failed benchmark, not a fast one.
+
+## Honest caveats
+
+- These are **our** benchmarks. A framework author's own harness always deserves
+  a skeptical eye — run it yourself.
+- Micro‑benchmarks that land under the timer's resolution are **ties**, not wins.
+  The initial‑render macro‑benchmark is the meaningful comparison.
+- Results depend on hardware, browser, and the exact versions of each framework.
+- The goal isn't "we win every line" — it's that removing virtual‑DOM diffing and
+  per‑update type dispatch shows up on real render workloads.
+
+## Reproduce
+
+```bash
+git clone https://github.com/abaikov/exodra.git
+cd exodra
+npm install
+npm run bench
+```
+
+
+==============================================================================
+# Core Concepts
+
+## Three Props Architecture
+
+The foundation of Exodra's performance is the Three Props Architecture:
+
+### 1. Static Props
+
+Properties that never change after initialization:
+
+```jsx
+<div static={{ 
+  id: 'container',
+  class: 'my-class',
+  'data-test': 'value' 
+}} />
+```
+
+### 2. Bindable Props
+
+Reactive properties that update when their bindables change. You pass the
+bindable object directly — never a thunk:
+
+```jsx
+const visible = bindable(true);
+const count = bindable(0);
+
+const hidden = derive(visible, v => !v);
+const label = derive(count, c => `Count: ${c}`);
+
+<div bindable={{ hidden, textContent: label }} />
+```
+
+### 3. BindableList Props
+
+Reactive lists for efficient array rendering. `list()` returns a reactive list
+you mutate over time; pass it straight into the bucket:
+
+```jsx
+const items = list([
+  h('li', { static: { textContent: 'item1' } }),
+  h('li', { static: { textContent: 'item2' } }),
+]);
+
+<ul bindableList={{ children: items }} />
+```
+
+## Reactivity System
+
+Exodra's reactivity is built from three primitives: `bindable`, `derive`, and
+`list`.
+
+### Bindables
+
+A bindable is a writable reactive cell. Read with `getValue()`, write with
+`setValue()`. There is no `.value` property.
+
+```javascript
+import { bindable } from '@exodra/reactivity';
+
+const count = bindable(0);
+count.setValue(count.getValue() + 1); // Triggers updates
+
+const unsubscribe = count.subscribe(next => {
+  console.log('Count changed:', next);
+});
+// call unsubscribe() to stop listening
+```
+
+### Derived Bindables
+
+`derive(source, mapFn)` creates a read-only bindable computed from a source
+bindable. It takes a source plus a map function — not a zero-argument thunk.
+
+```javascript
+import { derive } from '@exodra/reactivity';
+
+const double = derive(count, c => c * 2);
+```
+
+### Reacting to Changes
+
+There is no `effect()`. To run a side effect when a value changes, subscribe to
+the bindable directly:
+
+```javascript
+const stop = count.subscribe(value => {
+  console.log('Count changed:', value);
+});
+```
+
+## Component Model
+
+### Functional Components
+
+```jsx
+function MyComponent({ name }) {
+  return h('div', {
+    static: { children: `Hello, ${name}!` }
+  });
+}
+```
+
+### Component Composition
+
+```jsx
+function App() {
+  return h('div', {
+    static: { 
+      class: 'app',
+      children: [
+        h(Header),
+        h(MainContent),
+        h(Footer)
+      ]
+    }
+  });
+}
+```
+
+## JSX Transform
+
+The Babel plugin (`@exodra/babel-plugin-jsx`) transforms bucketed JSX into `h()`
+calls. Notice the input uses typed buckets — flat React-style props like
+`<div id="app" onClick={handler}>` are a compile error:
+
+```jsx
+// Written as:
+<div static={{ id: 'app' }} handlers={{ onClick: handler }}>
+  {content}
+</div>
+
+// Transformed to:
+h('div', {
+  static: { id: 'app', children: content },
+  handlers: { onClick: handler }
+});
+```
+
+## Component Lifecycle
+
+### Lifecycle Hooks
+
+Components can use lifecycle hooks for setup and cleanup:
+
+```javascript
+function Timer() {
+  let interval;
+  
+  return (
+    <div 
+      static={{ 
+        onExoMount: (node) => {
+          interval = setInterval(() => {
+            console.log('tick');
+          }, 1000);
+        },
+        onExoUnmount: (node) => {
+          clearInterval(interval);
+        }
+      }}
+    >
+      Timer Component
+    </div>
+  );
+}
+```
+
+Lifecycle hooks fire per node across the whole subtree — and, importantly, for
+nodes added by a **later reactive update**, not just the initial mount. A row
+entering a reactive list runs its `onExoMount` when it is inserted; a row leaving
+runs its `onExoUnmount`. That is what lets each row own its own subscription
+(subscribe in `onExoMount`, dispose in `onExoUnmount`), so only currently-mounted
+rows are subscribed — see [Lists & Reconciliation](../guides/lists.md).
+
+### Manual Cleanup with onDispose
+
+For component-level cleanup, use `ctx.onDispose()`:
+
+```javascript
+function DataFetcher(ctx) {
+  const data = bindable(null);
+  
+  const controller = new AbortController();
+  ctx.onDispose(() => controller.abort());
+  
+  fetch('/api/data', { signal: controller.signal })
+    .then(res => res.json())
+    .then(result => data.setValue(result));
+
+  const text = derive(data, d => (d ? JSON.stringify(d) : 'Loading...'));
+  return <div bindable={{ textContent: text }} />;
+}
+```
+
+## Performance Optimizations
+
+### Static Hoisting
+
+Static content is created once and reused:
+
+```javascript
+// Static nodes cached at compile time
+const _static1 = h('div', { 
+  static: { class: 'header' } 
+});
+```
+
+### Minimal Diffing
+
+Only reactive properties are checked for updates, static props are skipped entirely.
+
+
+==============================================================================
+# JSX in Exodra
+
+Exodra JSX is **not** React JSX. Props are split into typed buckets, and reactive
+values are passed as bindable objects — not thunks and not `.value` reads. This
+explicitness is what lets the renderer wire up reactivity once, with no diffing.
+
+## Setup
+
+### Babel configuration
+
+JSX requires the Exodra Babel plugin. TypeScript's native JSX transform and
+`@babel/plugin-transform-react-jsx` are **incompatible** — do not use them.
+
+```bash
+npm install --save-dev @exodra/babel-plugin-jsx
+```
+
+Configure `.babelrc`:
+
+```json
+{
+  "plugins": [
+    ["@exodra/babel-plugin-jsx", { "hoistStatic": true }]
+  ]
+}
+```
+
+Plugin options: `importSource` (default `@exodra/core`), `pragma` (default `h`),
+`pragmaFrag` (default `Fragment`), and `hoistStatic`. There is **no** `optimize`
+or `staticHoisting` option.
+
+### TypeScript configuration
+
+```json
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "@exodra/jsx"
+  }
+}
+```
+
+## The typed buckets
+
+Every JSX prop goes into one of these buckets. Flat React-style attributes
+(`<div id="x" class="y" onClick={fn}>`) are a **compile error**.
+
+| Bucket | Holds | Example |
+| --- | --- | --- |
+| `static={{ }}` | Values that never change | `static={{ id: 'app', class: 'box' }}` |
+| `bindable={{ }}` | Reactive values (bindable objects) | `bindable={{ textContent: title }}` |
+| `bindableList={{ }}` | Reactive lists (`list()` objects) | `bindableList={{ children: rows }}` |
+| `handlers={{ }}` | Event handlers | `handlers={{ onClick: fn }}` |
+| `bindableHandlers={{ }}` | Reactive handlers | `bindableHandlers={{ onClick: handlerBindable }}` |
+
+Directives are also available: `bind:value`, `bind:checked`, `cache:key` (alias
+`cacheKey`), and `exo:schema`.
+
+## Basic elements
+
+```jsx
+import { bindable } from '@exodra/reactivity';
+
+const message = bindable('Hello World');
+
+// Static content
+<div static={{ id: 'container', class: 'wrapper' }}>
+  Hello World
+</div>
+
+// Reactive text — pass the bindable directly, never a thunk or .value
+<div bindable={{ textContent: message }} />
+```
+
+## Reactive values are objects, not thunks
+
+The `bindable` bucket takes bindable/derived **objects**, passed by reference.
+Never write `() => x.value` — there is no `.value` and no thunk form.
+
+```jsx
+import { bindable, derive } from '@exodra/reactivity';
+
+const isVisible = bindable(true);
+const hidden = derive(isVisible, v => !v);
+const cls = derive(isVisible, v => (v ? 'panel panel--open' : 'panel'));
+
+<div
+  static={{ id: 'panel' }}
+  bindable={{ class: cls, hidden }}
+/>
+```
+
+To update state, call `setValue`:
+
+```jsx
+<button handlers={{ onClick: () => isVisible.setValue(!isVisible.getValue()) }}>
+  Toggle
+</button>
+```
+
+## Components
+
+A component is a function whose props arrive through the buckets. Read them via
+the context (`getConstant` etc.) or, in JSX-authored components, off the
+destructured attributes — here we show the schema-returning style used across the
+examples.
+
+```jsx
+import { defineComponent, h, text } from '@exodra/core';
+
+const Button = defineComponent(context => {
+  const label = context.getConstant('label') ?? 'Click';
+  const onClick = context.getConstant('onClick');
+  return h('button', {
+    static: { class: 'btn', children: text(label) },
+    handlers: { onClick },
+  });
+});
+
+// Usage — props go in static, handlers in handlers
+<Button static={{ label: 'Click me' }} handlers={{ onClick: handleClick }} />
+```
+
+Children are just `static.children` (or a bindable/bindableList for reactive
+children):
+
+```jsx
+const Card = defineComponent(context =>
+  h('div', { static: { class: 'card', children: context.getConstant('children') } })
+);
+
+<Card static={{ children: 'Card content' }} />
+```
+
+## Event handling
+
+Handlers always live in the `handlers` bucket. The handler receives the DOM
+event.
+
+```jsx
+const inputValue = bindable('');
+
+<input
+  static={{ type: 'text', placeholder: 'Enter text' }}
+  bindable={{ value: inputValue }}
+  handlers={{
+    onInput: e => inputValue.setValue((e.target as HTMLInputElement).value),
+  }}
+/>
+
+<form
+  handlers={{
+    onSubmit: e => {
+      e.preventDefault();
+      submit();
+    },
+  }}
+/>
+```
+
+## List rendering
+
+For dynamic lists, use a `list()` from `@exodra/reactivity` in the
+`bindableList` bucket. The list reconciles by operations, so no React-style keys
+are needed.
+
+```jsx
+import { h, text } from '@exodra/core';
+import { list } from '@exodra/reactivity';
+
+const rows = list([
+  h('li', { static: { children: text('First') } }),
+  h('li', { static: { children: text('Second') } }),
+]);
+
+<ul bindableList={{ children: rows }} />
+```
+
+Mutate the list to update the DOM:
+
+```jsx
+rows.push(h('li', { static: { children: text('Third') } }));
+rows.remove(0);
+```
+
+> A `list()` has **no** `map`/`filter`/`forEach`. To render from a plain array,
+> build the children array eagerly and put it in `static.children`:
+
+```jsx
+const items = [{ id: 1, name: 'A' }, { id: 2, name: 'B' }];
+
+<ul
+  static={{
+    children: items.map(item =>
+      h('li', { static: { children: text(item.name) } })
+    ),
+  }}
+/>
+```
+
+## Conditional rendering
+
+Render different reactive children by deriving a child schema from a bindable and
+binding it as the single reactive child:
+
+```jsx
+import { derive } from '@exodra/reactivity';
+
+const view = derive(isLoggedIn, ok => (ok ? <Dashboard /> : <Login />));
+
+<div bindable={{ children: view }} />
+```
+
+## Fragments
+
+`<>…</>` compiles to `Fragment` (a `Symbol` from `@exodra/jsx`). Use a fragment
+to group static and dynamic children together:
+
+```jsx
+<>
+  <h1 static={{ class: 'title' }}>Title</h1>
+  <ul bindableList={{ children: rows }} />
+</>
+```
+
+## Static template caching
+
+The Babel plugin can hoist and clone static DOM templates in loops when
+`hoistStatic` is enabled. For repeated static templates you can also add a cache
+key explicitly with the `cache:key` directive (alias `cacheKey`):
+
+```jsx
+items.map(item => (
+  <div static={{ class: 'item-wrapper' }} cache:key="item-template">
+    <span static={{ class: 'badge' }}>Static template content</span>
+  </div>
+))
+```
+
+Components are never auto-cached (they may hold state); each `<MyComponent />`
+gets its own instance.
+
+## Prefer static for non-reactive values
+
+```jsx
+// Good — static attributes for values that never change
+<div static={{ id: 'container', class: 'wrapper', 'data-testid': 'main' }} />
+
+// Avoid — wrapping constant values in reactivity adds needless overhead
+<div bindable={{ class: derive(noop, () => 'wrapper') }} />
+```
+
+
+==============================================================================
+# Components in Exodra
+
+A component is a function that receives a **context** and returns a schema (or an
+array of schemas). Props arrive through the typed buckets and are read off the
+context. There is no `.value`, no `effect`/`computed`/`batch`, and event handlers
+always live in the `handlers` bucket.
+
+## Component basics
+
+```jsx
+import { defineComponent, h, text } from '@exodra/core';
+
+const MyComponent = defineComponent(context =>
+  h('div', {
+    static: { class: 'my-component', children: context.getConstant('children') },
+  })
+);
+```
+
+`defineComponent` is an identity helper that types the function — you can also
+write a plain function. Either way the argument is the **context**, with
+`getConstant` / `getBindable` / `getBindableList` / `provide` / `inject` /
+`onDispose` (see the [Core API](../api/core.md)).
+
+## Reading props
+
+Props are read from the context by the bucket they were passed in:
+
+```jsx
+const Button = defineComponent(context => {
+  const cls = context.getConstant('class') ?? 'btn';
+  const onClick = context.getConstant('onClick');
+  const disabled = context.getBindable('disabled'); // a bindable, or undefined
+
+  return h('button', {
+    static: { class: cls, type: 'button', children: context.getConstant('children') },
+    bindables: disabled ? { disabled } : {},
+    handlers: onClick ? { onClick } : {},
+  });
+});
+
+// Usage — note handlers go in the handlers bucket, never as a flat prop
+<Button
+  static={{ class: 'primary', children: 'Click me' }}
+  handlers={{ onClick: handleClick }}
+/>
+```
+
+## Composition
+
+Components nest like any other schema. Children flow through `static.children`.
+
+```jsx
+const CardHeader = defineComponent(context =>
+  h('div', { static: { class: 'card-header', children: context.getConstant('children') } })
+);
+
+const Card = defineComponent(context =>
+  h('div', {
+    static: {
+      class: 'card',
+      children: [
+        h(CardHeader, { static: { children: context.getConstant('header') } }),
+        h('div', { static: { class: 'card-body', children: context.getConstant('children') } }),
+      ],
+    },
+  })
+);
+```
+
+## Reactive components
+
+Create local state with `bindable` and bind it. Update state with `setValue`.
+
+```jsx
+import { defineComponent, h, text } from '@exodra/core';
+import { bindable, derive } from '@exodra/reactivity';
+
+const Toggle = defineComponent(() => {
+  const isOn = bindable(false);
+  const label = derive(isOn, on => (on ? 'ON' : 'OFF'));
+  const cls = derive(isOn, on => (on ? 'active' : 'inactive'));
+
+  return h('div', {
+    static: {
+      class: 'toggle',
+      children: [
+        h('button', {
+          bindables: { textContent: label },
+          handlers: { onClick: () => isOn.setValue(!isOn.getValue()) },
+        }),
+        h('span', { bindables: { class: cls }, static: { children: text('Status') } }),
+      ],
+    },
+  });
+});
+```
+
+> Note: `derive(source, mapFn)` projects one bindable into another. There is **no
+> `computed`** — `derive` is the read-only/derived primitive.
+
+## Derived state from a list
+
+A `list()` emits operations, not a filtered array. To render a filtered subset,
+keep the source as a plain array (or rebuild the `list` contents) and reconcile
+yourself — `list` has no `filter`/`map`.
+
+```jsx
+import { defineComponent, h, text } from '@exodra/core';
+import { bindable, list } from '@exodra/reactivity';
+
+const SearchableList = defineComponent(context => {
+  const allItems: string[] = context.getConstant('items') ?? [];
+  const search = bindable('');
+  const visible = list(allItems.map(name => h('li', { static: { children: text(name) } })));
+
+  const apply = (term: string) => {
+    visible.reset(
+      allItems
+        .filter(name => name.toLowerCase().includes(term.toLowerCase()))
+        .map(name => h('li', { static: { children: text(name) } }))
+    );
+  };
+
+  return h('div', {
+    static: {
+      class: 'searchable-list',
+      children: [
+        h('input', {
+          static: { type: 'text', placeholder: 'Search...' },
+          bindables: { value: search },
+          handlers: {
+            onInput: (e: Event) => {
+              const term = (e.target as HTMLInputElement).value;
+              search.setValue(term);
+              apply(term);
+            },
+          },
+        }),
+        h('ul', { bindableLists: { children: visible } }),
+      ],
+    },
+  });
+});
+```
+
+## Side effects and cleanup
+
+There is no `effect`. To run a side effect in response to a bindable, use
+`bindable.subscribe` and register the teardown with `context.onDispose`. The same
+pattern covers timers, listeners, and subscriptions.
+
+```jsx
+import { defineComponent, h } from '@exodra/core';
+import { bindable, derive } from '@exodra/reactivity';
+
+const Timer = defineComponent(context => {
+  const seconds = bindable(0);
+  const label = derive(seconds, s => `Time: ${s}s`);
+
+  const interval = setInterval(() => {
+    seconds.setValue(seconds.getValue() + 1);
+  }, 1000);
+
+  // Cleanup runs when the node is disposed.
+  context.onDispose(() => clearInterval(interval));
+
+  return h('div', { bindables: { textContent: label } });
+});
+```
+
+Reacting to a bindable change:
+
+```jsx
+const Logger = defineComponent(context => {
+  const count = context.getBindable('count'); // a bindable prop
+  if (count) {
+    const unsubscribe = count.subscribe(value => console.log('count:', value));
+    context.onDispose(unsubscribe);
+  }
+  return [];
+});
+```
+
+## Context provide / inject
+
+Share values down the tree with a context key.
+
+```jsx
+import { createContextKey, defineComponent, h } from '@exodra/core';
+
+const themeKey = createContextKey('theme');
+
+const ThemeProvider = defineComponent(context => {
+  context.provide(themeKey, 'dark');
+  return h('div', { static: { children: context.getConstant('children') } });
+});
+
+const ThemedText = defineComponent(context => {
+  const theme = context.inject(themeKey, 'light');
+  return h('span', { static: { class: `theme-${theme}`, textContent: 'Hello' } });
+});
+```
+
+## Slots
+
+"Slots" are just named props carrying child schemas.
+
+```jsx
+const Layout = defineComponent(context =>
+  h('div', {
+    static: {
+      class: 'layout',
+      children: [
+        h('header', { static: { class: 'header', children: context.getConstant('header') } }),
+        h('main', { static: { class: 'main', children: context.getConstant('children') } }),
+        h('footer', { static: { class: 'footer', children: context.getConstant('footer') } }),
+      ],
+    },
+  })
+);
+
+<Layout
+  static={{
+    header: <Navigation />,
+    footer: <Copyright />,
+    children: <Content />,
+  }}
+/>
+```
+
+## Performance tips
+
+- **Prefer `static` for values that never change** — only put values in
+  `bindable` when they actually change over time.
+- **Use `list()` for dynamic collections** — it reconciles by operation, so the
+  renderer only touches the nodes that changed; no keys required.
+- **Derive, don't recompute** — project reactive values with `derive(source, fn)`
+  instead of recomputing them on every read.
+- **Clean up in `onDispose`** — anything you start (timers, listeners,
+  subscriptions) should be torn down through `context.onDispose`.
+
+
+==============================================================================
+# Lists & Reconciliation
+
+Exodra has no virtual DOM. When a list of children changes, the renderer
+reconciles the **actual** DOM against the new set of child schemas **by
+reference identity**. Understanding that one rule is the key to fast, focus-safe
+lists.
+
+There are two channels for a reactive list of children, plus one pattern you'll
+reach for constantly.
+
+## The golden rule: identity = the same node
+
+The renderer keeps a map from **child schema object → DOM node**. On every update
+it diffs the new children against the previous ones:
+
+- **Same schema reference** as before → the **same DOM node is reused** (moved if
+  its position changed, never rebuilt).
+- **New schema reference** → a node is built.
+- **A schema that disappeared** → its node is removed and its bindings disposed
+  (and its `onExoUnmount` fires).
+
+So **whether a row keeps its DOM node depends entirely on whether you hand back
+the same schema object.** This is what preserves input focus, scroll position,
+and per-node state across updates.
+
+## 1. `bindable<schema[]>` — the default
+
+Put a reactive **array of child schemas** in the `bindable` bucket. Every time you
+`setValue` a new array, the renderer identity-reconciles it (reuse / move /
+insert / remove):
+
+```tsx
+const rows = bindable<readonly TExoSchema[]>([]);
+
+// on any structural change:
+rows.setValue(items.map(renderRow));
+
+<ul bindable={{ children: rows }} />;
+```
+
+This is the right default for lists derived from a store. Its cost is one O(n)
+reference-diff per update — cheap for normal lists, and it does the minimal DOM
+work (only entering/leaving/moved nodes change).
+
+## 2. `bindableList` + ops — when a producer emits exact mutations
+
+`list()` (see the [Reactivity API](../api/reactivity.md#list)) exposes
+`snapshot()` + `subscribeOps()`, emitting fine-grained
+`insert` / `move` / `remove` / `set` / `reset` operations. The renderer applies
+each op directly — no diffing.
+
+```tsx
+const rows = list<TExoSchema>(initial);
+rows.move(0, 3);            // one DOM move, O(1)
+<ul bindableList={{ children: rows }} />;
+```
+
+Reach for this only when a **producer already knows the exact mutation** (a
+command stream, a drag-reorder) and you want **O(delta)** updates instead of an
+O(n) diff. If you just have "the current set of items", prefer option 1 — the
+renderer will compute the delta for you.
+
+## 3. Identity-stable schemas → keep focus (the pattern you actually want)
+
+Both channels reuse a node only when the schema reference is stable. The trap:
+if you rebuild every row's schema on every change, a **field edit anywhere** hands
+back all-new schemas → every node is rebuilt → **the input you're typing in loses
+focus.**
+
+Fix: **cache each row's schema by a stable key**, and only recompute the array
+when the *set/order of keys* actually changes (not on a field edit — those flow
+through the row's own bindings):
+
+```tsx
+const cache = new Map<string, TExoSchema>();
+const children = bindable<readonly TExoSchema[]>([]);
+let lastKey = '';
+
+function refresh() {
+  const items = source();                 // ordered items
+  const keys = items.map(i => i.id);
+  const sig = keys.join('|');
+  if (sig === lastKey) return;            // structural no-op → no churn, focus kept
+  lastKey = sig;
+
+  // evict rows whose key left the set (dispose their subscriptions)
+  const live = new Set(keys);
+  for (const [k, entry] of cache) if (!live.has(k)) { dispose(entry); cache.delete(k); }
+
+  children.setValue(items.map(i => cache.get(i.id) ?? build(i)));
+}
+```
+
+Because a field edit doesn't change the key set, `refresh()` is a no-op and the
+row's *own* `bindable` updates the value in place — focus never moves. A real
+add/move/remove changes the key set and only the diff churns.
+
+> Encode structural content into the key when a row must rebuild on it — e.g.
+> `` `${task.id}:${task.pending ? 1 : 0}:${commentCount}` ``. A change to that
+> content changes the key, so that one row rebuilds; unrelated rows keep their
+> nodes.
+
+This "keyed list" pattern is small enough to keep as a local helper, and it's how
+the [`05-cnstra-oimdb` flagship](https://github.com/abaikov/exodra/tree/master/packages/examples/05-cnstra-oimdb)
+renders every list (see `src/app/keyed-list.ts`).
+
+## Rows that own a subscription
+
+If a row subscribes to something (a per-entity store key), subscribe in
+`onExoMount` and tear down in `onExoUnmount`. Because those hooks fire when a node
+enters/leaves the DOM — **including nodes added by a later update** — only the
+currently-mounted rows hold subscriptions. In a virtualized list that means the
+subscription cost is O(visible), not O(total).
+
+```tsx
+<li static={{
+  'data-id': id,
+  onExoMount:   () => { unsub = store.subscribeOnKey(id, update); },
+  onExoUnmount: () => unsub?.(),
+}}>…</li>
+```
+
+## Choosing
+
+| You have… | Use |
+|---|---|
+| "the current set of items" from a store | **`bindable<schema[]>`** + keyed cache |
+| a producer emitting exact insert/move/remove ops | **`bindableList`** (`list()`) |
+| a huge/windowed list | `bindable<schema[]>` over the visible slice; subscribe per-row in `onExoMount` |
+
+Both compile to the same reconciler underneath — the only question is whether
+**you** hand it the delta (ops) or let it compute the delta from the new array.
+
+
+==============================================================================
+# Server-Side Rendering & Hydration
+
+Exodra renders to an HTML string on the server and **hydrates** the existing DOM
+on the client (no teardown, no flash). Three packages cooperate:
+
+- `@exodra/string` — turn a schema into an HTML string.
+- `@exodra/ssr` — render a string **plus** SSR side-channels (head tags, status,
+  headers, embedded state) via the `ExoNodeSsr` node and the `Head` / `Header` /
+  `State` / `Status` components.
+- `@exodra/dom` — `hydrate()` the server-rendered DOM on the client.
+- `@exodra/reactivity` — `autoHydrate()` / `hydrateFromWindow()` to restore
+  persisted reactive state.
+
+## Plain string rendering
+
+For a one-off HTML string with no head/state side-channels, use
+`renderToString` from `@exodra/string`:
+
+```typescript
+import { renderToString } from '@exodra/string';
+import { h, text } from '@exodra/core';
+
+const html = renderToString(
+  h('div', { static: { class: 'app', children: text('Hello SSR') } })
+);
+// → '<div class="app">Hello SSR</div>'
+```
+
+> `@exodra/string` exports `renderToString`, `createStringNode`, and
+> `ExoNodeString`. There is **no** `renderToStream`.
+
+## SSR with `ExoNodeSsr`
+
+`ExoNodeSsr` (from `@exodra/ssr`) extends the string node with an SSR context.
+Construct it with a schema, then read back the rendered body and any state the
+tree collected through context-aware components.
+
+```typescript
+import { ExoNodeSsr } from '@exodra/ssr';
+
+const ssr = new ExoNodeSsr(appSchema);
+
+const body = ssr.renderBody();           // the app's HTML
+ssr.setState('user', { name: 'Ada' });   // embed reactive/app state
+const stateScript = ssr.renderStateScript(); // <script id="__EXODRA_STATE__">…</script>
+```
+
+Key methods:
+
+| Method | Description |
+| --- | --- |
+| `renderBody()` | The app HTML string. |
+| `renderDocument(options?)` | A full `<!doctype html>` document wrapping the body, head, and state script. |
+| `renderHead()` | Collected `<head>` markup from `Head` components. |
+| `setState(key, value)` / `getState(key)` | Read/write the embedded state map. |
+| `renderStateScript(options?)` | A `<script id="__EXODRA_STATE__" type="application/json">` tag with the serialized state. |
+| `setStatus(code)` / `getStatus()` | HTTP status (also settable via the `Status` component). |
+| `setHeader(name, value)` / `appendHeader(...)` / `getHeaders()` | Response headers. |
+
+### SSR components
+
+These components write into the SSR context instead of rendering body content
+(they render nothing in place). Pass their props through the `static` bucket.
+
+```jsx
+import { Head, Header, State, Status } from '@exodra/ssr';
+
+function Page() {
+  return (
+    <>
+      <Head static={{ children: <title static={{ children: 'Dashboard' }} /> }} />
+      <Status static={{ code: 200 }} />
+      <Header static={{ name: 'Cache-Control', value: 'no-store' }} />
+      <State static={{ name: 'user', value: { name: 'Ada' } }} />
+      <main static={{ class: 'page' }}>Dashboard</main>
+    </>
+  );
+}
+```
+
+| Component | Effect |
+| --- | --- |
+| `Head` | Appends its children to the document `<head>`. |
+| `Status` | Sets the HTTP status code. |
+| `Header` | Sets (or, with `append: true`, appends) a response header. |
+| `State` | Stores a value under `name` in the embedded state map. |
+
+### useSsr()
+
+Inside a component, `useSsr(context)` returns the SSR context (or `undefined`
+when rendering on the client), letting you set head/state/status imperatively.
+
+```typescript
+import { defineComponent } from '@exodra/core';
+import { useSsr } from '@exodra/ssr';
+
+const Meta = defineComponent(context => {
+  useSsr(context)?.setStatus(404);
+  return [];
+});
+```
+
+## A real server entry
+
+This mirrors the flagship example
+(`packages/examples/05-cnstra-oimdb/src/entry-server.ts`). The persistent shell
+is rendered with an empty outlet, the matched page is rendered as a second tree,
+and the two are spliced — exactly how the client hydrates them. The app snapshot
+rides along in the embedded state script.
+
+```typescript
+import { ExoNodeSsr } from '@exodra/ssr';
+import { createRouter, createMemoryHistory } from '@exodra/router';
+import { routes } from './app/routes';
+import { shellView } from './app/shell';
+import boardPage from './pages/board';
+
+const EMPTY_OUTLET = '<main id="outlet" class="outlet"></main>';
+
+export function render(url = '/') {
+  const router = createRouter(routes, { history: createMemoryHistory(url) });
+
+  // Render the shell (with an empty outlet) and collect SSR state.
+  const shellSsr = new ExoNodeSsr(shellView(router));
+  shellSsr.setState('workspace', takeSnapshot());
+
+  let appHtml = shellSsr.renderBody();
+
+  // Render the matched page as a second tree and splice it into the outlet.
+  if (url === '/' || url.startsWith('/?')) {
+    const pageHtml = new ExoNodeSsr(boardPage()).renderBody();
+    appHtml = appHtml.replace(
+      EMPTY_OUTLET,
+      `<main id="outlet" class="outlet">${pageHtml}</main>`
+    );
+  }
+
+  return { appHtml, stateScript: shellSsr.renderStateScript() };
+}
+```
+
+Note `createRouter(routes, { history: createMemoryHistory(url) })` — `routes` is
+positional and `createMemoryHistory(url)` seeds the server-side location. See the
+[Router API](../api/router.md) for details.
+
+## Client hydration
+
+On the client, read the embedded state, then `hydrate()` the server-rendered DOM
+instead of mounting fresh. `hydrate` (from `@exodra/dom`) attaches reactivity to
+the existing nodes and returns `{ node, element, dispose }`.
+
+```typescript
+import { hydrate, mount } from '@exodra/dom';
+import { createRouter, createBrowserHistory } from '@exodra/router';
+import { routes } from './app/routes';
+import { shellView } from './app/shell';
+
+const root = document.getElementById('app')!;
+const router = createRouter(routes, { history: createBrowserHistory() });
+
+// Hydrate the SSR'd shell against the existing DOM, or mount fresh when there
+// was no SSR (pure client render).
+const ssrShell = root.firstElementChild;
+if (ssrShell) {
+  hydrate(shellView(router), ssrShell);
+} else {
+  mount(shellView(router), root);
+}
+```
+
+### Restoring persisted reactive state
+
+If you registered observables with `persist()` (see the
+[Reactivity API](../api/reactivity.md)), restore them before hydrating. The
+easiest path is `autoHydrate()`, which tries `window.__EXODRA_STATE__` then the
+`__EXODRA_PERSISTOR__` script tag:
+
+```typescript
+import { autoHydrate } from '@exodra/reactivity';
+
+autoHydrate(); // no-op on the server; restores persisted state on the client
+```
+
+Use the lower-level helpers when you control the location explicitly:
+
+```typescript
+import { hydrateFromWindow, hydrateFromScript } from '@exodra/reactivity';
+
+hydrateFromWindow('__EXODRA_STATE__');   // from window state
+hydrateFromScript('__EXODRA_PERSISTOR__'); // from a script tag
+```
+
+### Emitting the hydration scripts on the server
+
+To pair the persistor with the client helpers, emit both the serialized state
+and an inline restore script with `renderPersistorHydration` (from
+`@exodra/ssr`):
+
+```typescript
+import { getPersistor } from '@exodra/reactivity';
+import { renderPersistorHydration } from '@exodra/ssr';
+
+// After rendering, before sending the HTML:
+const hydrationHtml = renderPersistorHydration(getPersistor());
+// → <script id="__EXODRA_PERSISTOR__" …>{…}</script><script>…window.__EXODRA_STATE__…</script>
+```
+
+You can also use the pieces separately: `renderPersistorScript(persistor)` emits
+just the JSON `<script>`, and `renderHydrationScript()` emits just the inline
+script that copies it into `window.__EXODRA_STATE__`.
+
+## Summary
+
+1. **Server:** build a schema, render it with `ExoNodeSsr` (or `renderToString`
+   for plain HTML), and embed state via `renderStateScript()` /
+   `renderPersistorHydration()`.
+2. **Client:** restore reactive state with `autoHydrate()`, then `hydrate()` the
+   server-rendered DOM rather than re-mounting.
+
+
+==============================================================================
+# React Interop
+
+[`@exodra/react`](https://www.npmjs.com/package/@exodra/react) renders **React
+components inside Exodra** as islands. Exodra owns the host element; React owns
+everything inside it. The React root is created when the host mounts and torn
+down when it unmounts — so islands participate correctly in Exodra's list/keyed
+lifecycle, including nodes added or removed later.
+
+## Installation
+
+```bash
+npm install @exodra/react
+# peers you already have in a React-interop app:
+npm install react react-dom
+```
+
+`react` and `react-dom` are **peer dependencies** — Exodra core never pulls in
+React; you only pay for it where you use an island.
+
+## Usage
+
+`reactIsland(Component, props)` returns an Exodra schema you can drop anywhere a
+child goes. Props are typed off the component:
+
+```tsx
+import { reactIsland } from '@exodra/react';
+import { bindable } from '@exodra/reactivity';
+import { FancyChart } from 'some-react-lib';
+
+// static island — props checked against FancyChart's props
+const staticChart = reactIsland(FancyChart, { series: [], theme: 'dark' });
+
+// reactive island — pass a bindable of the props; each change re-renders it
+const data = bindable({ series: [], theme: 'dark' as const });
+const liveChart = reactIsland(FancyChart, data);
+
+// drop it into an Exodra tree:
+const view = (
+  <section static={{ class: 'panel' }}>
+    <h2>Live chart (React island)</h2>
+    {/* as a child */}
+    <div static={{ children: [liveChart] }} />
+  </section>
+);
+
+// later: data.setValue({ series: nextSeries, theme: 'light' }) re-renders React.
+```
+
+`reactIsland` accepts either a plain props object (static island) or anything
+with `getValue()` + `subscribe()` — which a `TExoBindable` from
+`@exodra/reactivity` satisfies — for a reactive island. On each emit the island
+re-renders with fresh props.
+
+### Options
+
+```ts
+reactIsland(Component, props, { tag: 'section' }); // host element tag, default 'div'
+```
+
+## How Exodra props become React props
+
+The whole props object is handed to React as-is: a static island renders once; a
+reactive island (`TExoBindable<P>`) re-renders on every emit with the latest
+`getValue()`. Because React needs a single props object, reactivity collapses to
+"re-render this island" at the boundary — which is exactly React's normal model,
+just not fine-grained.
+
+## Cleanup
+
+The React root is unmounted and the props subscription is removed automatically
+in the host's `onExoUnmount`. Disposing (or list-removing) the surrounding Exodra
+tree tears the island down; updates after teardown are ignored.
+
+## Exports
+
+- `reactIsland` — create a React island schema.
+- Types: `ReactIslandOptions`, `ReadableBindable`.
+
+## Notes & limits
+
+- **SSR:** islands are client-only today (the host renders on the server, React
+  mounts on the client). Server-rendering the island's markup + hydration is a
+  planned follow-up.
+- **Context does not cross the boundary:** Exodra `provide`/`inject` and React
+  Context are separate — pass anything an island needs through its props.
+- **One React root per island:** prefer a few larger islands over many tiny ones.
+
+## Links
+
+- npm: [`@exodra/react`](https://www.npmjs.com/package/@exodra/react)
+- GitHub: [`packages/react`](https://github.com/abaikov/exodra/tree/master/packages/react)
+
+
+==============================================================================
+# AI-Assisted Development
+
+Exodra is unusually friendly to AI tools, and that's not an accident — it falls
+out of the core design. This guide covers *why*, and the tooling built to lean
+into it.
+
+## Why Exodra is analyzable
+
+A React component's behavior lives inside a function body that runs at runtime —
+what's reactive, what re-renders, and why is opaque until it executes. Exodra is
+the opposite:
+
+- **The UI is plain data.** Every node is `{ type, attrs, cacheKey? }`. A tree is
+  a value you can read, walk, and reason about without running it.
+- **Reactivity is explicit and bucketed.** `static` vs `bindable` vs
+  `bindableList` vs `handlers` is declared, not inferred. A tool can see exactly
+  what can change and what can't — no dataflow guessing.
+- **No virtual DOM, no hidden magic.** There's no diffing black box to model; the
+  renderer touches only the reactive buckets.
+
+The practical upshot: static analysis (and an LLM) can answer "what does this
+component render, what's reactive, where are the perf risks?" from the source
+alone. That's what the tooling below is built on.
+
+## `@exodra/introspect` — analyze the tree
+
+```bash
+npm install --save-dev @exodra/introspect
+```
+
+The CLI is `exo-introspect`. Point it at a project and it produces **structured**
+analysis (schemas, components, routes, performance) — the kind of report you can
+hand straight to an LLM.
+
+```bash
+npx exo-introspect quick-check              # fast health check
+npx exo-introspect analyze                  # full project analysis
+npx exo-introspect components               # component patterns & complexity
+npx exo-introspect schemas                  # schema definitions & relationships
+npx exo-introspect routes                   # route / navigation structure
+npx exo-introspect performance              # hotspots & bottlenecks
+npx exo-introspect explain <file>           # AI explanation of one file
+npx exo-introspect check-thresholds <file>  # gate analysis against quality thresholds
+npx exo-introspect explore                  # launch the app + AI analysis
+```
+
+### Programmatic API
+
+Everything the CLI does is available as a function returning structured data —
+ideal for feeding an agent or a CI gate:
+
+```ts
+import { introspect, quickIntrospect, formatResults } from '@exodra/introspect';
+
+const result = await introspect({ projectRoot: '.', analysis: {
+  schema: true, components: true, performance: true, ai: false,
+} });
+
+// result carries: schemas, metrics, diagnostics, suggestions, summary
+console.log(formatResults(result, 'markdown'));
+```
+
+There are also composable analyzers — `SchemaAnalyzer`, `ComponentAnalyzer`,
+`PerformanceAnalyzer`, `ExoRouterAnalyzer`, `CodeAnalyzer` — if you want one
+dimension.
+
+## Editor / agent integration
+
+```bash
+npx exo-introspect setup           # zero-config: detects AI providers, writes integration files
+npx exo-introspect setup-cursor    # Cursor (Claude Code) integration
+npx exo-introspect ai providers    # list detected AI providers
+npx exo-introspect ai test         # test a provider connection
+```
+
+`setup` auto-detects providers from your environment (OpenAI, Anthropic, GitHub
+Copilot) and drops integration files so an assistant can call the analysis tools
+against your project. `ai:false` in the programmatic API keeps everything local
+and deterministic; flip it on to enrich reports with provider insights.
+
+## The canonical LLM reference
+
+The single most useful thing to give any coding assistant is Exodra's LLM
+reference — a compact, correct description of the buckets, reactivity, list
+reconciliation, and the gotchas that trip up React-trained models:
+
+**[exodra.org/llms.txt](https://exodra.org/llms.txt)**
+
+Paste it into your assistant's context (or your `.cursorrules` / project rules)
+before asking it to write Exodra code. Most AI mistakes come from assuming React
+semantics — flat props, `.value` signals, vDOM keys — and this file corrects all
+of them up front.
+
+## A typical loop
+
+1. Scaffold with `npm create exodra`.
+2. Give the assistant **exodra.org/llms.txt** so it writes idiomatic Exodra (typed
+   buckets, `getValue`/`setValue`, identity-stable lists).
+3. Run `exo-introspect analyze` (or the programmatic API) to get a structured
+   report of components, schemas, routes, and perf hotspots.
+4. Feed that report back to the assistant to review, refactor, or gate in CI.
+
+Because the tree is data and the reactivity is explicit, every step is something a
+tool can read precisely — not something it has to guess by running your app.
+
+
+==============================================================================
+# Core API Reference
+
+The `@exodra/core` package provides the schema factory and component primitives.
+It does **not** contain reactivity (`bindable`/`derive`/`list` live in
+[`@exodra/reactivity`](./reactivity.md)) or DOM mounting (`mount`/`hydrate` live
+in `@exodra/dom`).
+
+Exports: `h`, `text`, `defineComponent`, `createContextKey`, `ExoNode`,
+`walkSchema`, and types.
+
+## h()
+
+Creates an Exodra schema node for elements or components. **The third argument is
+a cache key, not children — children live inside the attribute buckets.**
+
+```typescript
+function h(
+  type: string | Component,
+  attrs?: {
+    static?: Record<string, unknown>;
+    bindables?: Record<string, unknown>;
+    bindableLists?: Record<string, unknown>;
+    handlers?: Record<string, (event: Event) => void>;
+    bindableHandlers?: Record<string, unknown>;
+  },
+  cacheKey?: string | symbol
+): TExoSchema;
+```
+
+- `type` — an HTML tag name (`'div'`), `'#text'` for text nodes, `'#fragment'`,
+  or a component function / `Fragment`.
+- `attrs` — the **plural** attribute buckets (note: in raw `h()` the buckets are
+  `static`, `bindables`, `bindableLists`, `handlers`, `bindableHandlers`; the JSX
+  buckets are singular and the Babel plugin maps them to these).
+- `cacheKey` — optional clone-cache key for repeated static templates in loops
+  (the Babel plugin adds this automatically).
+
+### Children
+
+Children go inside a bucket, under the `children` key (last one specified wins):
+
+- `static.children` — static children (strings, schemas, arrays).
+- `bindables.children` — a single reactive child (a bindable).
+- `bindableLists.children` — a reactive list of children (a `list()`).
+
+### Example
+
+```javascript
+import { h, text } from '@exodra/core';
+import { bindable } from '@exodra/reactivity';
+
+const title = bindable('Hello World');
+
+const node = h('div', {
+  static: { id: 'container', class: 'box', children: text('static label') },
+  bindables: { textContent: title },
+  handlers: { onClick: () => console.log('clicked') },
+});
+```
+
+A component with props (props go in `static`):
+
+```javascript
+h(MyComponent, { static: { title: 'Hello', count: 42 } });
+```
+
+A fragment hosting a reactive list of children:
+
+```javascript
+import { list } from '@exodra/reactivity';
+
+const items = list([text('a'), text('b')]);
+h('#fragment', { bindableLists: { children: items } });
+```
+
+## text()
+
+Creates a text node schema.
+
+```typescript
+function text(value: unknown): TExoSchema;
+```
+
+```javascript
+import { text } from '@exodra/core';
+
+const hello = text('Hello');
+```
+
+## defineComponent()
+
+Identity helper that types a component function. A component is a function that
+receives a context and returns a schema (or array of schemas).
+
+```typescript
+function defineComponent<TSchema, TResult>(
+  component: (context: TExoContext) => TResult
+): typeof component;
+```
+
+```javascript
+import { defineComponent, h, text } from '@exodra/core';
+
+const Greeting = defineComponent(context => {
+  const name = context.getConstant('name') ?? 'World';
+  return h('p', { static: { children: text(`Hello, ${name}`) } });
+});
+```
+
+### The component context
+
+The context object passed to components exposes:
+
+| Method | Description |
+| --- | --- |
+| `getConstant(name)` | Read a static prop. |
+| `getBindable(name)` | Read a bindable prop. |
+| `getBindableList(name)` | Read a bindable-list prop. |
+| `provide(key, value)` | Provide a context value to descendants. |
+| `inject(key, fallback?)` | Inject a provided context value. |
+| `onDispose(cleanup)` | Register a cleanup callback run when the node is disposed. |
+| `createNode(schema)` | Create a child node from a schema. |
+
+> There is **no** `onMount`, `get`, `getChildren`, `createContext`, or
+> `createProvider`. Use `onDispose` for cleanup and `bindable.subscribe` for
+> side effects.
+
+## createContextKey()
+
+Creates a typed key for context provide/inject.
+
+```typescript
+function createContextKey<TValue>(name?: string): TExoContextKey<TValue>;
+```
+
+```javascript
+import { createContextKey, defineComponent, h } from '@exodra/core';
+
+const themeKey = createContextKey('theme');
+
+const Provider = defineComponent(context => {
+  context.provide(themeKey, 'dark');
+  return h('div', { static: { children: context.getConstant('children') } });
+});
+
+const Consumer = defineComponent(context => {
+  const theme = context.inject(themeKey, 'light');
+  return h('span', { static: { textContent: theme } });
+});
+```
+
+## Fragment
+
+`Fragment` is a `Symbol` (`Symbol.for('exodra.fragment')`) exported from
+`@exodra/jsx`, used as the host for grouped children. In JSX the `<>…</>`
+shorthand compiles to it.
+
+```javascript
+import { h, text } from '@exodra/core';
+import { Fragment } from '@exodra/jsx';
+
+h(Fragment, {
+  static: {
+    children: [
+      h('li', { static: { children: text('Item 1') } }),
+      h('li', { static: { children: text('Item 2') } }),
+    ],
+  },
+});
+```
+
+> `Fragment` is a value imported from `@exodra/jsx`, not a function you call.
+
+## mount() / hydrate()
+
+DOM mounting lives in `@exodra/dom`, not `@exodra/core`.
+
+```typescript
+import { mount, hydrate } from '@exodra/dom';
+
+function mount(schema: TExoSchema, container: Element | DocumentFragment): TExoDomMountResult;
+function hydrate(schema: TExoSchema, element: Element | Text): TExoDomMountResult;
+
+type TExoDomMountResult = {
+  node: ExoNodeDom;
+  element: Element | Text;
+  dispose(): void;
+};
+```
+
+`mount` appends a fresh tree to `container`; `hydrate` attaches to existing
+server-rendered DOM (see the [SSR guide](../guides/ssr.md)). Both return a
+result whose `dispose()` unmounts the tree — there is **no** standalone
+`unmount()`.
+
+```javascript
+import { mount } from '@exodra/dom';
+import { h, text } from '@exodra/core';
+
+const { dispose } = mount(
+  h('div', { static: { children: text('Hello') } }),
+  document.getElementById('root')
+);
+
+// later…
+dispose();
+```
+
+
+==============================================================================
+# Reactivity API Reference
+
+The `@exodra/reactivity` package provides Exodra's reactive primitives. There is
+**no `.value` property and no `signal`/`computed`/`effect`/`batch`** — every
+reactive value is accessed with explicit methods (`getValue()` / `setValue()` /
+`subscribe()`), which is what makes the renderer's wiring cheap and predictable.
+
+```bash
+npm install @exodra/reactivity
+```
+
+Exports: `bindable`, `derive`, `list`, `createExoBindable`, `createExoBindableList`,
+`createExoDerived`, `persist`, `getPersistor`, `createPersistor`,
+`hydrateFromWindow`, `hydrateFromScript`, `autoHydrate`, and the
+`TExoPersistor` type.
+
+## bindable()
+
+Creates a writable reactive value.
+
+```typescript
+function bindable<TValue, TEvent = TValue>(
+  initialValue: TValue,
+  createEvent?: (value: TValue, previousValue: TValue) => TEvent
+): TExoWritableBindable<TValue, TEvent>;
+
+type TExoWritableBindable<TValue, TEvent = TValue> = {
+  getValue(): TValue;
+  setValue(value: TValue, event?: TEvent): void;
+  subscribe(update: (event: TEvent) => void): () => void;
+};
+```
+
+- `getValue()` returns the current value.
+- `setValue(next)` updates the value and notifies subscribers. A write that does
+  not change the value (and has no explicit `event`) is skipped — no subscriber
+  runs.
+- `subscribe(fn)` registers a listener and returns an unsubscribe function.
+
+```javascript
+import { bindable } from '@exodra/reactivity';
+
+const count = bindable(0);
+
+const unsubscribe = count.subscribe(value => {
+  console.log('count is now', value);
+});
+
+count.setValue(count.getValue() + 1); // logs "count is now 1"
+unsubscribe();
+```
+
+`bindable` (alias of `createExoBindable`) is used directly inside the JSX
+`bindable={{ ... }}` bucket — pass the bindable object itself, never a thunk:
+
+```jsx
+const title = bindable('Hello');
+
+<span bindable={{ textContent: title }} />;
+```
+
+### Event channels
+
+The optional `createEvent` mapper lets a bindable emit a derived event object
+instead of the raw value. Subscribers receive that event:
+
+```javascript
+const temperature = bindable(20, (value, previous) => ({
+  value,
+  previous,
+  delta: value - previous,
+}));
+
+temperature.subscribe(event => {
+  console.log(`changed by ${event.delta}`);
+});
+
+temperature.setValue(25); // logs "changed by 5"
+```
+
+## derive()
+
+Creates a **read-only** bindable projected from a source bindable. It takes a
+source bindable and a map function (not a zero-argument thunk).
+
+```typescript
+function derive<TSource, TValue>(
+  source: TExoBindable<TSource, unknown>,
+  map: (value: TSource) => TValue
+): TExoBindable<TValue, TValue>;
+```
+
+`getValue()` returns the mapped current value, and subscribers are notified
+(with the freshly mapped value) whenever the source emits.
+
+```javascript
+import { bindable, derive } from '@exodra/reactivity';
+
+const count = bindable(0);
+const label = derive(count, c => `Count: ${c}`);
+
+label.getValue();              // "Count: 0"
+count.setValue(5);
+label.getValue();              // "Count: 5"
+```
+
+A derived value is read-only — there is no `setValue`. Use it for reactive text,
+classes, or any projection of another bindable:
+
+```jsx
+const cls = derive(active, isActive =>
+  isActive ? 'tab tab--active' : 'tab'
+);
+
+<a bindable={{ class: cls }} />;
+```
+
+## list()
+
+Creates a reactive list optimized for keyed, op-based DOM reconciliation. It
+emits **operations** (insert / remove / move / set / reset), not whole-array
+snapshots, so the renderer only touches the nodes that changed.
+
+```typescript
+function list<TItem>(initialItems?: readonly TItem[]): TExoWritableBindableList<TItem>;
+
+type TExoWritableBindableList<TItem> = {
+  snapshot(): TItem[];
+  subscribeOps(update: (op: TExoListOp<TItem>) => void): () => void;
+  insert(index: number, item: TItem): void;
+  push(item: TItem): void;
+  remove(index: number, count?: number): void;
+  move(from: number, to: number, count?: number): void;
+  set(index: number, item: TItem): void;
+  reset(items: readonly TItem[]): void;
+};
+```
+
+| Method | Description |
+| --- | --- |
+| `snapshot()` | Returns a copy of the current items. |
+| `subscribeOps(fn)` | Subscribe to list operations; returns an unsubscribe function. |
+| `insert(index, item)` | Insert one item at `index` (clamped to bounds). |
+| `push(item)` | Append one item. |
+| `remove(index, count?)` | Remove `count` items (default `1`) at `index`. |
+| `move(from, to, count?)` | Move `count` items (default `1`) from one index to another. |
+| `set(index, item)` | Replace the item at `index`. |
+| `reset(items)` | Replace the entire contents. |
+
+> There is **no** `map` / `filter` / `forEach` / `get` / `length` / `pop` /
+> `shift` / `splice`. Derive your own arrays with `snapshot()` and standard
+> array methods when you need them.
+
+```javascript
+import { list } from '@exodra/reactivity';
+
+const items = list(['a', 'b']);
+
+items.push('c');          // insert at end
+items.insert(0, 'z');     // ['z', 'a', 'b', 'c']
+items.move(0, 2);         // move 'z' to index 2
+items.remove(1);          // remove one item at index 1
+items.snapshot();         // current items as a plain array
+```
+
+Bind a list directly into the `bindableList={{ children }}` bucket. Each item in
+the list is a schema (e.g. the result of a JSX expression):
+
+```jsx
+import { h } from '@exodra/core';
+import { list } from '@exodra/reactivity';
+
+const rows = list([
+  h('li', { static: { textContent: 'First' } }),
+  h('li', { static: { textContent: 'Second' } }),
+]);
+
+<ul bindableList={{ children: rows }} />;
+```
+
+## Persistence
+
+`@exodra/reactivity` ships a small persistor used to serialize reactive state on
+the server and rehydrate it on the client.
+
+### persist()
+
+Registers a bindable or list with the global persistor and returns it unchanged,
+so you can wrap a declaration inline.
+
+```typescript
+function persist<T>(
+  observable: TExoBindable<T> | TExoBindableList<T>,
+  key?: string
+): typeof observable;
+```
+
+```javascript
+import { bindable, persist } from '@exodra/reactivity';
+
+// Registered under an explicit key so server and client agree.
+const user = persist(bindable({ name: 'Ada' }), 'user');
+```
+
+If you omit `key`, the persistor auto-generates one from registration order —
+prefer an explicit key when server and client register in different orders.
+
+### getPersistor() / createPersistor()
+
+```typescript
+function getPersistor(): TExoPersistor;   // shared global instance
+function createPersistor(): TExoPersistor; // a fresh, isolated instance
+
+interface TExoPersistor {
+  register<T>(observable: TExoBindable<T> | TExoBindableList<T>, key?: string): void;
+  serialize(): string;          // JSON of all registered values
+  hydrate(json: string): void;  // write values back into registered observables
+  clear(): void;
+}
+```
+
+`persist()` registers against `getPersistor()`. On the server you call
+`serialize()` to produce JSON to embed in the page; on the client the hydration
+helpers call `hydrate()` for you.
+
+### Hydration helpers
+
+```typescript
+function hydrateFromWindow(windowKey?: string, persistor?: TExoPersistor): void;
+function hydrateFromScript(scriptId?: string, persistor?: TExoPersistor): void;
+function autoHydrate(persistor?: TExoPersistor): void;
+```
+
+- `hydrateFromWindow` reads serialized state from `window[windowKey]`
+  (default `__EXODRA_STATE__`).
+- `hydrateFromScript` reads it from the text content of a script element
+  (default id `__EXODRA_PERSISTOR__`).
+- `autoHydrate` is the no-config entry point: it tries `window.__EXODRA_STATE__`
+  first, then the `__EXODRA_PERSISTOR__` script tag, and is a no-op outside the
+  browser.
+
+```javascript
+import { autoHydrate } from '@exodra/reactivity';
+
+// Run once on client startup, before mounting, to restore persisted state.
+autoHydrate();
+```
+
+See the [SSR guide](../guides/ssr.md) for the full server-render +
+hydration flow.
+
+
+==============================================================================
+# DOM Renderer
+
+The `@exodra/dom` package is Exodra's browser renderer. It turns raw Exodra
+schemas — produced by `h()` (from `@exodra/core`) or compiled from JSX by
+`@exodra/babel-plugin-jsx` — into live DOM, and reconciles reactive updates in
+place using identity-based reconciliation. It also hydrates server-rendered HTML
+so a page produced with the [SSR](../guides/ssr.md) tooling becomes interactive
+without re-creating the DOM.
+
+Exodra has a strict **bucketed** props model — attributes (`static`), reactive
+values (`bindables`), reactive lists (`bindableLists`), and event handlers
+(`handlers`, `bindableHandlers`) each live in their own bucket. There are no
+flat React-style props.
+
+> The raw `h()` buckets are **plural** (`static`, `bindables`, `bindableLists`,
+> `handlers`, `bindableHandlers`). In JSX they are written singular (`static`,
+> `bindable`, `bindableList`, `handlers`, `bindableHandlers`) and the babel
+> plugin maps them to the plural core buckets.
+
+```bash
+npm install @exodra/dom @exodra/core @exodra/reactivity
+```
+
+Exports: `mount`, `hydrate`, `ExoNodeDom`, and the `TExoDomMountResult` type.
+
+## mount()
+
+Renders a schema and appends its element into a container. Returns a
+`TExoDomMountResult`.
+
+```typescript
+function mount(schema, container): TExoDomMountResult;
+
+type TExoDomMountResult = {
+  node: ExoNodeDom;        // the live node tree
+  element: Element | Text; // the mounted root (the container for a Fragment root)
+  dispose(): void;         // unmount + detach from the DOM
+};
+```
+
+```javascript
+import { h, text } from '@exodra/core';
+import { mount } from '@exodra/dom';
+
+const app = h('div', {
+  static: {
+    class: 'app',
+    children: [
+      h('h1', { static: { children: text('Hello Exodra') } }),
+      h('button', {
+        static: { children: text('Click me') },
+        handlers: { onClick: () => alert('Clicked!') },
+      }),
+    ],
+  },
+});
+
+const { dispose } = mount(app, document.getElementById('root'));
+
+// Later, unmount and detach from the DOM:
+dispose();
+```
+
+There is **no** standalone `unmount(container)`, and `mount` does **not** return
+a function. To unmount, keep the result and call `result.dispose()`.
+
+> The 3rd argument to `h(type, attrs, cacheKey)` is a **clone-cache key**, not
+> children. Children always live inside a bucket — `static.children` (static),
+> `bindables.children` (a single reactive child), or `bindableLists.children`
+> (a reactive list). If specified in more than one bucket, the last wins.
+
+### Event handling
+
+Event handlers go in the `handlers` bucket. A flat `onClick` would silently land
+in `static` as a dead attribute, so Exodra keeps them separate. For a reactive
+handler (a bindable whose value is the current listener), use the
+`bindableHandlers` bucket.
+
+```javascript
+h('button', {
+  static: { children: text('Interactive') },
+  handlers: {
+    onClick: e => console.log('Clicked!', e),
+    onMouseOver: () => console.log('Hover!'),
+  },
+});
+```
+
+### Reactive attributes
+
+Reactive values are bindables/derived from `@exodra/reactivity`, passed directly
+into the `bindables` bucket — they are bindable **objects**, not thunks. Read
+with `.getValue()`, write with `.setValue(...)`. There is no `.value` and no
+`.get()`/`.set()`.
+
+```javascript
+import { bindable, derive } from '@exodra/reactivity';
+
+const isActive = bindable(false);
+const cls = derive(isActive, active => (active ? 'active' : 'inactive'));
+
+h('div', {
+  bindables: { class: cls },
+  handlers: { onClick: () => isActive.setValue(!isActive.getValue()) },
+});
+```
+
+### Conditional rendering
+
+Use a derived bindable as a single reactive child via `bindables.children`:
+
+```javascript
+import { bindable, derive } from '@exodra/reactivity';
+import { h, text } from '@exodra/core';
+
+const showDetails = bindable(false);
+const details = derive(showDetails, show =>
+  show ? h('div', { static: { children: text('Details…') } }) : text('')
+);
+
+h('div', {
+  bindables: { children: details },
+});
+```
+
+### List rendering
+
+Reactive lists come from `list()` and go into the `bindableLists` bucket. The
+renderer reconciles them by identity, touching only the nodes that changed.
+
+```javascript
+import { list } from '@exodra/reactivity';
+import { h, text } from '@exodra/core';
+
+const rows = list([
+  h('li', { static: { children: text('Item 1') } }),
+  h('li', { static: { children: text('Item 2') } }),
+]);
+
+const ul = h('ul', {
+  bindableLists: { children: rows },
+});
+
+// Mutate with list ops — push / insert / remove / move / set / reset:
+rows.push(h('li', { static: { children: text('Item 3') } }));
+```
+
+See the [Lists & Reconciliation](../guides/lists.md) guide for how keyed,
+op-based reconciliation works.
+
+## hydrate()
+
+For SSR apps, `hydrate()` adopts the existing server-rendered element instead of
+recreating it. It has the same signature and return type as `mount()`.
+
+```typescript
+function hydrate(schema, element): TExoDomMountResult;
+```
+
+```javascript
+import { hydrate } from '@exodra/dom';
+
+const { dispose } = hydrate(app, document.getElementById('root'));
+```
+
+Use `mount()` for a fresh client-only render, and `hydrate()` when the markup
+already exists from the server. See the [SSR guide](../guides/ssr.md) for the
+full server-render + hydration flow.
+
+## ExoNodeDom
+
+`ExoNodeDom` is the DOM node implementation — the live node tree that backs a
+mounted schema. It is exposed on the mount result as `result.node`. Most apps
+never construct it directly; it is available for advanced integrations and for
+typing.
+
+## Lifecycle hooks
+
+Static lifecycle hooks `onExoMount` / `onExoUnmount` live in the `static` bucket
+and receive the node (`{ element }`):
+
+```javascript
+h('div', {
+  static: {
+    onExoMount: node => console.log('mounted', node.element),
+    onExoUnmount: node => console.log('unmounted', node.element),
+  },
+});
+```
+
+## API Reference
+
+| Export | Description |
+| --- | --- |
+| `mount(schema, container)` | Mount a schema; returns `{ node, element, dispose }`. |
+| `hydrate(schema, element)` | Hydrate existing DOM; returns `{ node, element, dispose }`. |
+| `ExoNodeDom` | The DOM node implementation. |
+| `TExoDomMountResult` (type) | Return type of `mount` / `hydrate`. |
+
+## Links
+
+- npm: [`@exodra/dom`](https://www.npmjs.com/package/@exodra/dom)
+- GitHub: [exodra/packages/dom](https://github.com/abaikov/exodra/tree/master/packages/dom)
+
+
+==============================================================================
+# Router API Reference
+
+The `@exodra/router` package provides routing built on Exodra's reactivity. The
+router's `location` and `match` are bindables, so you derive reactive UI from
+them with `derive()`.
+
+Exports include: `createRouter`, `createBrowserHistory`, `createMemoryHistory`,
+`Link`, `Outlet`, `Route`, `Routes`, `RouterProvider`, `createRoutesFromChildren`,
+`useRouter`, `routerContextKey`, `lazy`, `preloadRoute`, `matchRoutes`,
+`parsePath`, and the query helpers (`query`, `parseSearch`, `stringifySearch`,
+`createSearch`, `mergeQuery`, `readSearch`).
+
+## createRouter()
+
+Creates a router instance. **`routes` is the first positional argument**, and
+options are a second optional argument.
+
+```typescript
+function createRouter(
+  routes: readonly TExoRoute[],
+  options?: {
+    history?: TExoHistory;
+    beforeEach?: TExoRouteGuard;
+    afterEach?: (to: TExoRouteMatch, from?: TExoRouteMatch) => void;
+  }
+): TExoRouter;
+
+type TExoRoute = {
+  id?: string;
+  path: string;
+  component: TExoRouteComponent;
+  children?: readonly TExoRoute[];
+  beforeEnter?: TExoRouteGuard;
+  beforeLeave?: TExoRouteGuard;
+};
+```
+
+There is **no** `mode`, `base`, or `options.routes` — the base path is configured
+on the history (`basePath`), and there is no hash mode toggle.
+
+### Example
+
+```javascript
+import { createRouter, createBrowserHistory } from '@exodra/router';
+import Home from './pages/home';
+import About from './pages/about';
+
+const routes = [
+  { path: '/', component: Home },
+  { path: '/about', component: About },
+  { path: '/users/:id', component: UserDetail },
+];
+
+const router = createRouter(routes, {
+  history: createBrowserHistory(),
+  beforeEach: (to, from) => {
+    // return true to allow, false to block, or a string path to redirect.
+    return true;
+  },
+});
+```
+
+If you omit `history`, the router uses an in-memory history.
+
+## History
+
+```typescript
+function createBrowserHistory(options?: { window?: Window; basePath?: string }): TExoHistory;
+function createMemoryHistory(initialPathOrOptions?: string | { initialPath?: string; basePath?: string }): TExoHistory;
+```
+
+- `createBrowserHistory()` drives the browser URL via the History API and
+  `popstate`.
+- `createMemoryHistory('/start')` is for SSR and tests — seed it with the
+  initial path.
+
+```javascript
+import { createRouter, createMemoryHistory } from '@exodra/router';
+
+// On the server, seed the location from the request URL.
+const router = createRouter(routes, { history: createMemoryHistory(url) });
+```
+
+## Router instance
+
+A `TExoRouter` exposes reactive state and navigation methods:
+
+| Member | Description |
+| --- | --- |
+| `routes` | The route table. |
+| `location` | A bindable of the current `{ pathname, search, hash, href }`. |
+| `match` | A bindable of the current `TExoRouteMatch \| undefined`. |
+| `navigationState` | A bindable of `'idle' \| 'loading' \| 'submitting'`. |
+| `getLocation()` | Current location value. |
+| `getMatch()` | Current match value. |
+| `navigate(to, options?)` | Navigate; returns `Promise<TExoLocation>`. |
+| `setPathname(pathname, options?)` | Navigate keeping the current search/hash. |
+| `setSearch(search, options?)` | Replace the search string/object. |
+| `setQuery(query, options?)` | Replace the query from an object. |
+| `patchQuery(query, options?)` | Merge a query patch into the URL. |
+| `bindQuery(key, options?)` | Two-way `bindable` for a single query parameter. |
+| `getQuery(options?)` | Parse the current search string. |
+| `createHref(to)` | Resolve a path to an href (applies base path). |
+| `dispose()` | Tear down the router. |
+
+### navigate()
+
+```typescript
+router.navigate(to: string, options?: { replace?: boolean }): Promise<TExoLocation>;
+```
+
+```javascript
+await router.navigate('/users/123');
+await router.navigate('/login', { replace: true });
+```
+
+### Reacting to location
+
+`location` and `match` are bindables — derive UI from them:
+
+```jsx
+import { derive } from '@exodra/reactivity';
+
+const cls = derive(router.location, loc =>
+  loc.pathname === '/' ? 'nav__link nav__link--active' : 'nav__link'
+);
+
+<a static={{ href: '/' }} bindable={{ class: cls }} />;
+```
+
+### bindQuery()
+
+Two-way binding for a single query parameter. `getValue()` reads the current
+value (or default), `subscribe()` fires on any URL change (including
+back/forward), and `setValue()` patches just that key into the URL.
+
+```javascript
+const project = router.bindQuery('project', { default: '' });
+
+project.getValue();            // current ?project= value, or ''
+project.setValue('alpha');     // → ?project=alpha
+project.subscribe(value => console.log('filter:', value));
+```
+
+## Components
+
+### RouterProvider
+
+Provides a router to descendants through context. Pass an existing `router`, or
+`routes` (+ optional `history`) for it to create one.
+
+```jsx
+import { RouterProvider } from '@exodra/router';
+
+<RouterProvider static={{ router }}>
+  <App />
+</RouterProvider>;
+```
+
+### Routes
+
+Convenience component that creates/provides a router and renders an `Outlet`.
+
+```jsx
+import { Routes, Route } from '@exodra/router';
+
+<Routes>
+  <Route static={{ path: '/', component: Home }} />
+  <Route static={{ path: '/about', component: About }} />
+</Routes>;
+```
+
+### Route
+
+A declarative route definition consumed by `Routes` /
+`createRoutesFromChildren`. It renders nothing itself — its props (`path`,
+`component`, `id`, `children`) describe a route.
+
+```jsx
+<Route static={{ path: '/users/:id', component: UserDetail }} />;
+```
+
+### Outlet
+
+Renders the currently matched child route. Optional `as` (host tag, default
+`div`), `fallback` (no-match content), and `suspense` (shown while a lazy route
+loads).
+
+```jsx
+import { Outlet } from '@exodra/router';
+
+<Outlet static={{ as: 'main', fallback: <NotFound /> }} />;
+```
+
+### Link
+
+Router-aware navigation anchor. The target is the `to` prop (in `static`).
+
+```jsx
+import { Link } from '@exodra/router';
+
+<Link static={{ to: '/', children: 'Home' }} />
+<Link static={{ to: '/about', replace: true, children: 'About' }} />
+```
+
+There is **no** `activeClass` prop — derive an active class from
+`router.location` (see [Reacting to location](#reacting-to-location)).
+
+## useRouter()
+
+Hook that returns the router from context (throws if no router was provided).
+Components receive a context object as their argument.
+
+```javascript
+import { useRouter } from '@exodra/router';
+import { defineComponent, h, text } from '@exodra/core';
+
+const LoginButton = defineComponent(context => {
+  const router = useRouter(context);
+  return h('button', {
+    static: { children: text('Log in') },
+    handlers: { onClick: () => router.navigate('/dashboard') },
+  });
+});
+```
+
+> There is **no** `useRoute`, `useParams`, `useLocation`, or `useQuery`. Read the
+> current match with `router.getMatch()` (its `.params` holds path params), and
+> the query with `router.getQuery()` or `router.bindQuery()`.
+
+## Lazy routes
+
+`lazy()` wraps a dynamic import into a loader the router resolves on match;
+`preloadRoute()` warms it ahead of time.
+
+```javascript
+import { lazy, preloadRoute } from '@exodra/router';
+
+const routes = [
+  { path: '/settings', component: lazy(() => import('./pages/settings')) },
+];
+
+// Optionally preload before navigation.
+preloadRoute(routes[0].component);
+```
+
+## Query helpers
+
+| Helper | Description |
+| --- | --- |
+| `parseSearch(search, options?)` | Parse a search string into an object (optionally typed by a schema). |
+| `stringifySearch(query)` | Serialize a query object to a `?…` string. |
+| `createSearch(query)` | Alias of `stringifySearch`. |
+| `mergeQuery(current, patch)` | Merge a patch over a parsed query. |
+| `readSearch(search, options?)` | Alias of `parseSearch`. |
+| `query` | Typed field builders (`query.string()`, `query.number()`, `query.boolean()`, `query.array()`, `query.optional()`) for schema parsing. |
+
+```javascript
+import { parseSearch, stringifySearch, query } from '@exodra/router';
+
+parseSearch('?page=2', { parseNumbers: true }); // { page: 2 }
+stringifySearch({ page: 2, tags: ['a', 'b'] });  // '?page=2&tags=a&tags=b'
+
+// Typed schema parsing:
+const result = parseSearch('?page=3', {
+  schema: { page: query.number({ default: 1 }) },
+}); // { page: 3 }
+```
+
+> Removed/nonexistent APIs: `createBrowserRouter`, `createMemoryRouter`,
+> `RouterView`, `useRoute`, `useParams`, `useLocation`, `useQuery`,
+> `router.beforeEach()` (it's the `beforeEach` **option**), `setQuery` as a
+> distinct concept from the instance method above, and the `activeClass` prop.
+
+
+==============================================================================
+# String Renderer
+
+The `@exodra/string` package renders Exodra schemas to HTML strings. It is the
+server-side rendering engine — direct string concatenation, no virtual DOM — used
+for SSR, static site generation, email templates, and testing. The higher-level
+[`@exodra/ssr`](../guides/ssr.md) tooling builds on this package.
+
+```bash
+npm install @exodra/string @exodra/core
+```
+
+Exports: `renderToString`, `createStringNode`, and `ExoNodeString`.
+
+## renderToString()
+
+Renders a schema to an HTML string synchronously.
+
+```typescript
+function renderToString(schema: TExoSchema): string;
+```
+
+```javascript
+import { renderToString } from '@exodra/string';
+import { h, text } from '@exodra/core';
+
+const schema = h('div', {
+  static: {
+    id: 'app',
+    class: 'container',
+    children: [
+      h('h1', { static: { children: text('Hello World') } }),
+      h('p', { static: { children: text('Welcome to Exodra') } }),
+    ],
+  },
+});
+
+const html = renderToString(schema);
+// <div id="app" class="container"><h1>Hello World</h1><p>Welcome to Exodra</p></div>
+```
+
+### With components
+
+```javascript
+import { renderToString } from '@exodra/string';
+import { h, text } from '@exodra/core';
+
+function Card({ title, content }) {
+  return h('div', {
+    static: {
+      class: 'card',
+      children: [
+        h('h2', { static: { children: text(title) } }),
+        h('p', { static: { children: text(content) } }),
+      ],
+    },
+  });
+}
+
+const html = renderToString(
+  h(Card, {
+    static: { title: 'My Card', content: 'Card content here' },
+  })
+);
+```
+
+### Reactive values
+
+During SSR, reactive values are rendered with their initial state. Pass the
+bindable object directly into the `bindables` bucket (read the raw value with
+`.getValue()` — there is no `.value`).
+
+```javascript
+import { bindable } from '@exodra/reactivity';
+
+const count = bindable(42);
+
+const schema = h('span', {
+  bindables: { textContent: count },
+});
+
+renderToString(schema);
+// <span>42</span>
+```
+
+### HTML escaping
+
+All text content is automatically escaped for security:
+
+```javascript
+const schema = h('div', {
+  static: { children: text('<script>alert("XSS")</script>') },
+});
+
+renderToString(schema);
+// <div>&lt;script&gt;alert("XSS")&lt;/script&gt;</div>
+```
+
+## createStringNode()
+
+Low-level helper that creates an `ExoNodeString` for a schema. Most apps use
+`renderToString()` instead.
+
+## ExoNodeString
+
+The string renderer implementation class. Usually not used directly —
+`@exodra/ssr` extends it as `ExoNodeSsr` to add head / state / header
+collection.
+
+```javascript
+import { ExoNodeSsr } from '@exodra/ssr';
+
+const ssr = new ExoNodeSsr(h(App));
+const bodyHtml = ssr.renderBody(); // uses @exodra/string under the hood
+```
+
+## Integration with SSR
+
+`@exodra/string` is the rendering engine that `@exodra/ssr` builds on. For full
+server-side rendering with head management, state transfer, and hydration, see
+the [SSR guide](../guides/ssr.md).
+
+## API Reference
+
+| Export | Description |
+| --- | --- |
+| `renderToString(schema)` | Render a schema to an HTML string synchronously. |
+| `createStringNode(schema)` | Create an `ExoNodeString` for a schema (low-level). |
+| `ExoNodeString` | The string renderer implementation class. |
+
+## Links
+
+- npm: [`@exodra/string`](https://www.npmjs.com/package/@exodra/string)
+- GitHub: [exodra/packages/string](https://github.com/abaikov/exodra/tree/master/packages/string)
+
+
+==============================================================================
+# Forms
+
+The `@exodra/forms` package provides runtime helpers for two-way data binding in
+forms. Each helper takes a writable bindable and returns a `{ bindables, handlers }`
+pair that you spread onto an element — the `bindables` side pushes the model into
+the DOM, and the `handlers` side writes user input back with `.setValue(...)`.
+
+These helpers are also the runtime of the `bind:` directive: when using
+`@exodra/babel-plugin-jsx`, the compiler picks the right helper per element from
+`bind:value` / `bind:checked` and folds its result into the element.
+
+```bash
+npm install @exodra/forms @exodra/reactivity
+```
+
+Exports: `bindText`, `bindNumber`, `bindChecked`, `bindSelect`, and the
+`TExoBindAttrs` type.
+
+## The helpers
+
+Each helper returns a `TExoBindAttrs` — an object with exactly two buckets:
+
+```typescript
+interface TExoBindAttrs {
+  bindables: Record<string, unknown>;
+  handlers: Record<string, (event: Event) => void>;
+}
+
+function bindText(model: TExoWritableBindable<string>): TExoBindAttrs;
+function bindSelect(model: TExoWritableBindable<string>): TExoBindAttrs;
+function bindChecked(model: TExoWritableBindable<boolean>): TExoBindAttrs;
+function bindNumber(model: TExoWritableBindable<number>): TExoBindAttrs;
+```
+
+| Helper | bindables key | handler | reads from event | For |
+| --- | --- | --- | --- | --- |
+| `bindText` | `value` | `onInput` | `target.value` | text inputs / textareas |
+| `bindSelect` | `value` | `onChange` | `target.value` | `<select>` elements |
+| `bindChecked` | `checked` | `onChange` | `target.checked` | checkboxes / radios |
+| `bindNumber` | `value` | `onInput` | `target.valueAsNumber` | number / range inputs |
+
+For example, `bindText(model)` returns:
+
+```javascript
+{
+  bindables: { value: model },
+  handlers: { onInput: (e) => model.setValue(e.target.value) },
+}
+```
+
+The bindable object is passed straight into `bindables` (never a thunk, never
+`.value`). The handler writes back with `model.setValue(...)`. To read the model
+elsewhere, use `model.getValue()`.
+
+## Manual usage
+
+Spread a helper's result onto an `h()` call. Keep your own attributes in the
+`static` bucket:
+
+```javascript
+import { bindText, bindNumber, bindChecked } from '@exodra/forms';
+import { h } from '@exodra/core';
+import { bindable } from '@exodra/reactivity';
+
+const name = bindable('');
+const age = bindable(0);
+const agreed = bindable(false);
+
+// Text input
+h('input', {
+  ...bindText(name),
+  static: { placeholder: 'Name' },
+});
+
+// Number input
+h('input', {
+  ...bindNumber(age),
+  static: { type: 'number' },
+});
+
+// Checkbox
+h('input', {
+  ...bindChecked(agreed),
+  static: { type: 'checkbox' },
+});
+```
+
+## With the `bind:` directive (JSX)
+
+With `@exodra/babel-plugin-jsx`, use the `bind:` directive and let the compiler
+choose the helper. All non-directive attributes still go in the typed `static`
+bucket — flat React-style props are a compile error in Exodra JSX.
+
+```jsx
+import { bindable } from '@exodra/reactivity';
+
+function Form() {
+  const name = bindable('');
+  const email = bindable('');
+  const age = bindable(0);
+  const agreed = bindable(false);
+
+  return (
+    <form>
+      <input bind:value={name} static={{ placeholder: 'Name' }} />
+      <input bind:value={email} static={{ type: 'email' }} />
+      <input bind:value={age} static={{ type: 'number' }} />
+      <input bind:checked={agreed} static={{ type: 'checkbox' }} />
+
+      <button static={{ type: 'submit', children: 'Submit' }} />
+    </form>
+  );
+}
+```
+
+## TypeScript
+
+The helpers infer from the bindable's value type:
+
+```typescript
+import { bindText } from '@exodra/forms';
+import { bindable } from '@exodra/reactivity';
+
+const name = bindable<string>('');
+const boundProps = bindText(name); // Fully typed TExoBindAttrs
+```
+
+## Links
+
+- npm: [`@exodra/forms`](https://www.npmjs.com/package/@exodra/forms)
+- GitHub: [exodra/packages/forms](https://github.com/abaikov/exodra/tree/master/packages/forms)
+
+
+==============================================================================
+# create-exodra
+
+`create-exodra` scaffolds a new Exodra application. The CLI is prompt-driven
+(Next.js style): run it and answer a few questions, or pass flags to skip the
+prompts. It also installs an `exodra` binary for generating components, pages,
+and API routes inside an existing project.
+
+## Quick start
+
+```bash
+# Using npm
+npm create exodra@latest my-app
+
+# Or directly
+npx create-exodra my-app
+```
+
+If you omit a project name you'll be prompted for one. Without flags, the CLI
+prompts for TypeScript, ESLint, Tailwind CSS, a `src/` directory, SSR, App
+Router, and the import alias.
+
+After scaffolding:
+
+```bash
+cd my-app
+npm install
+npm run dev
+```
+
+## CLI usage
+
+```bash
+npx create-exodra [project-name] [options]
+```
+
+Any option you don't pass is asked interactively. Passing a flag skips that
+prompt.
+
+### Options
+
+- `--ts`, `--typescript` — use TypeScript
+- `--js`, `--javascript` — use JavaScript
+- `--tailwind` — set up Tailwind CSS
+- `--eslint` — set up ESLint
+- `--src-dir` — use a `src/` directory
+- `--ssr` — scaffold a server-side-rendered app (`@exodra/ssr`)
+- `--no-jsx` — author views with `h()` calls instead of JSX (SSR scaffold)
+- `--app` — use the App Router (`@exodra/router`)
+- `--import-alias <alias>` — import alias to use (default `@/*`)
+- `--use-npm` / `--use-yarn` / `--use-pnpm` / `--use-bun` — choose the package
+  manager
+
+### Examples
+
+```bash
+# TypeScript app with the App Router and Tailwind, no prompts
+npx create-exodra my-app --typescript --app --tailwind
+
+# JavaScript app, no App Router
+npx create-exodra simple-app --javascript
+
+# Server-side-rendered app
+npx create-exodra my-ssr-app --ssr
+
+# SSR app authored with h() calls instead of JSX
+npx create-exodra my-ssr-app --ssr --no-jsx
+```
+
+## What gets generated
+
+A standard (non-SSR) app uses Vite with the Exodra Babel JSX plugin and depends
+on `@exodra/core`, `@exodra/jsx`, `@exodra/dom`, and `@exodra/reactivity` (plus
+`@exodra/router` when the App Router is enabled). JSX is compiled by
+[`@exodra/babel-plugin-jsx`](./babel-plugin.md) — TypeScript's native JSX
+transform and the React JSX transform are not used.
+
+An SSR app (`--ssr`) instead depends on `@exodra/ssr` and `@exodra/string`,
+with an Express dev/prod server that renders on the server and hydrates on the
+client via `@exodra/dom`'s `hydrate`. See the [SSR guide](../guides/ssr.md).
+
+## The `exodra` CLI
+
+The package also installs an `exodra` binary for scaffolding inside an existing
+project:
+
+```bash
+npx exodra component Button      # create a component (alias: c)
+npx exodra page Home             # create a page (alias: p)
+npx exodra api hello             # create an API route (alias: a)
+npx exodra config                # create exodra.config.js
+```
+
+Common options for `component` / `page`: `-d, --dir <path>`,
+`-t, --typescript`, and `--naming <PascalCase|kebab-case|snake_case>`.
+
+## Writing Exodra components
+
+Exodra JSX uses **typed prop buckets**, not flat React-style props. Regular
+attributes go in `static`, reactive values in `bindable`, and event handlers in
+`handlers`. Reactive state comes from `bindable()` in `@exodra/reactivity` and
+is read/written with `getValue()` / `setValue()` (there is no `.value`).
+
+```tsx
+import { mount } from '@exodra/dom';
+import { bindable, derive } from '@exodra/reactivity';
+
+function Counter() {
+  const count = bindable(0);
+  const label = derive(count, (c) => `Count: ${c}`);
+
+  return (
+    <div static={{ class: 'counter' }}>
+      <span bindable={{ textContent: label }} />
+      <button
+        static={{ class: 'btn' }}
+        handlers={{ onClick: () => count.setValue(count.getValue() + 1) }}
+      >
+        +1
+      </button>
+    </div>
+  );
+}
+
+mount(<Counter />, document.getElementById('app')!);
+```
+
+Components are plain functions; you can also define them with `defineComponent`
+from `@exodra/core`, and drop down to raw `h()` / `text()` calls (the form used
+by the `--no-jsx` SSR scaffold) when you don't want the JSX transform. See the
+[JSX guide](../guides/jsx.md) for the full bucket rules.
+
+## Links
+
+- npm: [create-exodra](https://www.npmjs.com/package/create-exodra)
+- GitHub:
+  [packages/create-exodra](https://github.com/abaikov/exodra/tree/master/packages/create-exodra)
+
+
+==============================================================================
+# Vite Plugin
+
+`@exodra/vite-plugin` wires Exodra into Vite: it compiles Exodra JSX with the
+[Babel plugin](./babel-plugin.md), adds Hot Module Replacement for components,
+and generates file-based routes and API endpoints from your directory
+structure.
+
+## Installation
+
+```bash
+npm install --save-dev @exodra/vite-plugin
+```
+
+## Configuration
+
+Add the plugin to your Vite config. It runs with `enforce: 'pre'` so it owns the
+JSX pipeline before Vite's esbuild, and it sets esbuild's `jsx: 'preserve'` so
+no foreign JSX runtime is injected.
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import exodra from '@exodra/vite-plugin';
+
+export default defineConfig({
+  plugins: [
+    exodra({
+      pagesDir: 'src/pages',  // Default: src/pages
+      apiDir: 'src/api',      // Default: src/api
+      ssr: false,             // Default: false
+      alias: '@',             // Default: @
+    }),
+  ],
+});
+```
+
+### Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `pagesDir` | string | `'src/pages'` | Directory for page components. |
+| `apiDir` | string | `'src/api'` | Directory for API routes. |
+| `ssr` | boolean | `false` | Enable SSR support. |
+| `alias` | string | `'@'` | Import alias. |
+
+## JSX transform
+
+The plugin transforms every `.tsx` / `.jsx` file (outside `node_modules`)
+through `@exodra/babel-plugin-jsx`, compiling Exodra JSX to `h()` calls. Because
+it runs before esbuild, the output is plain JS by the time Vite sees it. See the
+[Babel Plugin](./babel-plugin.md) page for the bucket rules.
+
+## File-based routing
+
+Routes are generated automatically from your `pagesDir`:
+
+```
+src/pages/
+├── index.tsx             → /
+├── about.tsx             → /about
+├── _layout.tsx           → Layout wrapper
+├── _error.tsx            → Error boundary
+├── blog/
+│   ├── index.tsx         → /blog
+│   ├── [id].tsx          → /blog/:id
+│   ├── [...slug].tsx     → /blog/* (catch-all)
+│   └── _layout.tsx       → Blog layout
+├── shop/
+│   ├── [[...path]].tsx   → /shop (optional catch-all)
+│   └── checkout.tsx      → /shop/checkout
+└── admin/
+    ├── _layout.tsx       → Admin layout
+    └── dashboard.tsx     → /admin/dashboard
+```
+
+### Special files
+
+- `_layout.tsx` — wraps all pages in the directory (inherited by nested dirs).
+- `_error.tsx` — error boundary for the directory.
+- `index.tsx` — default route for a directory.
+
+### Dynamic routes
+
+- `[param].tsx` — single dynamic segment (`:param`).
+- `[...params].tsx` — catch-all route.
+- `[[...params]].tsx` — optional catch-all route.
+
+### Using generated routes
+
+Import the routes from the `virtual:exodra-routes` module (route components are
+lazily imported):
+
+```tsx
+// main.tsx
+import { mount } from '@exodra/dom';
+import {
+  createRouter,
+  createBrowserHistory,
+  RouterProvider,
+  Outlet,
+} from '@exodra/router';
+import { routes } from 'virtual:exodra-routes';
+
+const router = createRouter(routes, { history: createBrowserHistory() });
+
+mount(
+  <RouterProvider static={{ router }}>
+    <Outlet />
+  </RouterProvider>,
+  document.getElementById('app')!,
+);
+```
+
+For TypeScript, declare the virtual module:
+
+```typescript
+// env.d.ts
+/// <reference types="vite/client" />
+
+declare module 'virtual:exodra-routes' {
+  import type { TExoRoute } from '@exodra/router';
+  export const routes: TExoRoute[];
+}
+```
+
+## API routes
+
+Files in `apiDir` become API endpoints. Export functions named after the HTTP
+method; they are served during development at `/api/<file>`:
+
+```typescript
+// src/api/users.ts
+export async function GET(request: Request) {
+  const users = await fetchUsers();
+  return new Response(JSON.stringify(users), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+export async function POST(request: Request) {
+  const data = await request.json();
+  const user = await createUser(data);
+  return new Response(JSON.stringify(user), {
+    status: 201,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+```
+
+If no matching method (or `default`) export is found, the request returns
+`405 Method not allowed`.
+
+## Hot Module Replacement
+
+The plugin adds HMR glue to components and emits custom events when files
+change:
+
+- `exodra:component-update` — a component was updated (with `preserveState`).
+- `exodra:route-update` — the route manifest changed.
+
+For HMR to work, ensure components are default exports and Vite HMR is enabled.
+
+## SSR
+
+Enable `ssr: true` and mark Exodra packages as non-external for the SSR build:
+
+```typescript
+// vite.config.ts
+export default defineConfig({
+  plugins: [exodra({ ssr: true })],
+  ssr: {
+    noExternal: ['@exodra/core', '@exodra/ssr'],
+  },
+});
+```
+
+See the [SSR guide](../guides/ssr.md) for server rendering and hydration.
+
+## Links
+
+- npm:
+  [@exodra/vite-plugin](https://www.npmjs.com/package/@exodra/vite-plugin)
+- GitHub:
+  [packages/vite-plugin-exodra](https://github.com/abaikov/exodra/tree/master/packages/vite-plugin-exodra)
+
+
+==============================================================================
+# Babel Plugin (JSX)
+
+`@exodra/babel-plugin-jsx` compiles Exodra JSX into `h()` calls with the
+typed-bucket architecture and compile-time static hoisting. It is the **only**
+supported way to compile Exodra JSX — TypeScript's native JSX transform and
+`@babel/plugin-transform-react-jsx` emit `jsx()` / `jsxs()` runtime calls that
+Exodra does not have.
+
+## Installation
+
+```bash
+npm install --save-dev @exodra/babel-plugin-jsx
+```
+
+## Configuration
+
+### .babelrc
+
+```json
+{
+  "plugins": [
+    ["@exodra/babel-plugin-jsx", { "hoistStatic": true }]
+  ]
+}
+```
+
+### With Vite
+
+If you use [`@exodra/vite-plugin`](./vite-plugin.md), this is wired up for you.
+To configure Babel manually:
+
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite';
+import * as babel from '@babel/core';
+
+export default defineConfig({
+  esbuild: false,
+  plugins: [
+    {
+      name: 'exodra-jsx',
+      transform(code, id) {
+        if (id.endsWith('.jsx') || id.endsWith('.tsx')) {
+          return babel.transform(code, {
+            filename: id,
+            plugins: [['@exodra/babel-plugin-jsx', { hoistStatic: true }]],
+          });
+        }
+      },
+    },
+  ],
+});
+```
+
+## Typed-bucket architecture
+
+The plugin maps the singular JSX buckets to the plural buckets of the core
+schema (`static` → `static`, `bindable` → `bindables`,
+`bindableList` → `bindableLists`, `handlers` → `handlers`,
+`bindableHandlers` → `bindableHandlers`):
+
+```jsx
+// JSX input
+<div
+  static={{ id: 'container', class: 'box' }}
+  bindable={{ hidden: isHidden }}
+  handlers={{ onClick: handleClick }}
+>
+  Content
+</div>
+
+// Transformed output
+h('div', {
+  static: { id: 'container', class: 'box', children: text('Content') },
+  bindables: { hidden: isHidden },
+  handlers: { onClick: handleClick },
+});
+```
+
+`isHidden` is a `bindable` / `derive` object passed directly — not a thunk.
+
+## Strict mode
+
+The plugin enforces strict separation of concerns: **flat React-style
+attributes throw a compile error** pointing at the right bucket. A flat
+`onClick` would silently land in `static` (a dead handler), and a flat `class`
+would blur the static/reactive split — so both fail loud.
+
+```jsx
+// ❌ WRONG — flat attributes not allowed
+<button onClick={handleClick}>Click</button>
+// Error: Exodra JSX: flat event prop "onClick" is not allowed.
+//        Use handlers={{ onClick: ... }}
+
+<div class="box" />
+// Error: Exodra JSX: flat attribute "class" is not allowed.
+//        Put it in a bucket — static={{ "class": ... }} …
+
+// ✅ CORRECT — explicit buckets
+<button
+  static={{ class: 'box', children: 'Click' }}
+  handlers={{ onClick: handleClick }}
+/>
+```
+
+Event props (`on*`) belong in `handlers` (or `bindableHandlers` for a reactive
+handler); lifecycle hooks such as `onExoMount` go in `static`. See the
+[JSX guide](../guides/jsx.md) for the full set of rules.
+
+## Static hoisting
+
+With `hoistStatic` enabled (the default), static subtrees in loops get an
+auto-generated clone-cache key so they can be cloned instead of rebuilt:
+
+```jsx
+// Input
+items.map(item => (
+  <div static={{ class: 'item' }}>
+    <span static={{ children: item.name }} />
+  </div>
+))
+
+// Output with an auto-generated cacheKey (3rd arg of h())
+const _ck1 = Symbol();
+items.map(item =>
+  h('div', {
+    static: {
+      class: 'item',
+      children: h('span', { static: { children: text(item.name) } }),
+    },
+  }, _ck1)
+)
+```
+
+## Two-way binding directives
+
+`bind:value` / `bind:checked` compile to a `mergeAttrs(...)` call plus the
+appropriate `@exodra/forms` helper (picked from the element / type at compile
+time, so only the used variants are imported):
+
+```jsx
+// Input
+<input bind:value={inputValue} />
+
+// Output
+h('input', mergeAttrs({}, bindText(inputValue)))
+```
+
+## Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `importSource` | string | `'@exodra/core'` | Module to import the pragma / `text` / `Fragment` from. |
+| `pragma` | string | `'h'` | Element-creation function name. |
+| `pragmaFrag` | string | `'Fragment'` | Fragment identifier. |
+| `hoistStatic` | boolean | `true` | Hoist static schemas (clone-cache keys). |
+
+There is no `optimize` option.
+
+## Links
+
+- npm:
+  [@exodra/babel-plugin-jsx](https://www.npmjs.com/package/@exodra/babel-plugin-jsx)
+- GitHub:
+  [packages/babel-plugin-jsx](https://github.com/abaikov/exodra/tree/master/packages/babel-plugin-jsx)
+
+
+==============================================================================
+# Introspect
+
+[`@exodra/introspect`](https://www.npmjs.com/package/@exodra/introspect) is
+dev/analysis tooling for Exodra applications. It analyzes a project and surfaces
+insights about components, schemas, routes, and performance — with optional
+AI enhancement — and ships a CLI exposed as `exo-introspect`.
+
+## Installation
+
+```bash
+npm install --save-dev @exodra/introspect
+```
+
+## What it analyzes
+
+- **Code & component analysis** — structure, patterns, complexity.
+- **Performance analysis** — hotspots and optimization opportunities.
+- **Schema & route analysis** — schema relationships and route structure.
+- **Optional AI enhancement** — insights via configured AI providers.
+- **Editor integration** — Cursor / Claude setup.
+
+## CLI Usage
+
+Run via `npx exo-introspect <command>` (the bin is `exo-introspect`):
+
+```bash
+# Quick health check of the project
+npx exo-introspect quick-check --path src/
+
+# Full project analysis
+npx exo-introspect analyze
+
+# Full analysis with AI enhancement, written to a file
+npx exo-introspect analyze --ai --provider anthropic --format markdown -o report.md
+```
+
+### Commands
+
+- `quick-check` — fast project health check (`-p, --path`).
+- `analyze` — comprehensive analysis (`-p, --path`, `--ai`, `--provider`, `--model`, `--api-key`, `-f, --format`, `-o, --output`, `-v, --verbose`).
+- `components` — analyze components for patterns and optimization (`-p, --path`, `-f, --format`).
+- `performance` — analyze performance hotspots and bottlenecks (`-p, --path`).
+- `schemas` — analyze schema definitions and relationships (`-p, --path`).
+- `routes` — analyze routes and navigation structure (`-p, --path`).
+- `explain <file>` — AI explanation of a code file (`--provider`, `--api-key`).
+- `check-thresholds <file>` — check a saved analysis JSON against quality gates (`--max-errors`, `--max-warnings`, `--min-score`).
+- `explore` — launch and explore the app in a browser with optional AI analysis (`--headless`, `--scenarios`, `--url`, `--ai`).
+- `setup` — automatic AI ecosystem setup (`--interactive`, `--silent`, `--project-root`).
+- `setup-cursor` — generate Cursor (Claude Code) integration (`-p, --path`).
+- `ai providers` — list configured AI providers.
+- `ai test` — test the AI provider connection (`--provider`).
+- `plugins list` — list installed introspect plugins.
+
+> There is no `report` command. To produce a report file, use `analyze -o <file>`
+> (with `-f json|markdown|html`).
+
+## Programmatic API
+
+The main entry points are `introspect` and `quickIntrospect`, plus `formatResults`:
+
+```typescript
+import { introspect, quickIntrospect, formatResults } from '@exodra/introspect';
+
+// Quick health check — takes a project root path
+const health = await quickIntrospect('./');
+console.log(health.health, health.summary, health.topIssues);
+
+// Full analysis — takes an options object
+const result = await introspect({
+  projectRoot: './src',
+  scope: 'project', // 'file' | 'project' | 'workspace'
+  enableAI: false,
+  verbose: false,
+});
+
+// Format a result as json | markdown | html (default: json)
+const markdown = formatResults(result, 'markdown');
+console.log(markdown);
+```
+
+> There is no `analyze()` export. Use `introspect(...)` / `quickIntrospect(...)`.
+
+## Other exports
+
+Beyond the main API, the package exports:
+
+- **Analyzer classes** — `SchemaAnalyzer`, `ComponentAnalyzer`,
+  `PerformanceAnalyzer`, `CodeAnalyzer`, `ExoRouterAnalyzer`.
+- **Engine** — `IntrospectionEngine`, plus the extensible
+  `ExoExtensibleIntrospectionEngine`.
+- **Plugin system** — `ExoPluginManager`, `ExoPluginDiscovery`, `exoRouterPlugin`.
+- **Universal AI system** — `universalAI`, `ExoUniversalAI`,
+  `ExoAIProviderRegistry`, `githubCopilotProvider`, `customAIProvider`.
+- **ESLint plugin** — `eslintPlugin`.
+
+## Links
+
+- npm: [`@exodra/introspect`](https://www.npmjs.com/package/@exodra/introspect)
+- GitHub: [`packages/introspect`](https://github.com/abaikov/exodra/tree/master/packages/introspect)
+
+
+==============================================================================
+# Profiler
+
+[`@exodra/profiler`](https://www.npmjs.com/package/@exodra/profiler) is
+performance profiling for Exodra applications, similar to the React Profiler. It
+works by externally patching classes (the `ExoNode` class, or any class you pass
+it) to time their methods — there is no built-in profiling in the core, it is
+added at runtime when you import this package.
+
+## Installation
+
+```bash
+npm install --save-dev @exodra/profiler
+```
+
+## What it provides
+
+- **`Profiler` component** — wrap part of your tree to measure it.
+- **`profileExoNode` / `ExodraProfiler`** — patch the `ExoNode` class to collect metrics.
+- **`profileClass` / `ClassProfiler`** — profile any class's methods.
+- **Chrome DevTools integration** — a global devtools hook is installed in development.
+
+## Basic usage
+
+`startProfiling()` / `stopProfiling()` drive the shared `profiler` instance. Wrap
+specific subtrees with `withProfiler` or the `Profiler` component.
+
+```tsx
+import { Profiler, withProfiler, startProfiling, stopProfiling } from '@exodra/profiler';
+
+// Begin recording on the shared profiler instance
+startProfiling();
+
+function App() {
+  return withProfiler('App', (
+    <div static={{ class: 'app' }}>
+      <Profiler
+        static={{
+          id: 'MainContent',
+          onRender: (id, phase, duration) => {
+            console.log(`${id} (${phase}) took ${duration}ms`);
+          },
+          children: <ExpensiveComponent />,
+        }}
+      />
+    </div>
+  ));
+}
+
+// Stop and read the report (may be null if nothing was recorded)
+const report = stopProfiling();
+if (report) {
+  console.table(report.components);
+}
+```
+
+### `withProfiler(id, component, onRender?)`
+
+Wraps a schema (or list of schemas) in the `Profiler` component. If `onRender` is
+omitted, timings are logged to the console.
+
+```tsx
+import { withProfiler } from '@exodra/profiler';
+
+const profiled = withProfiler('Header', <Header />, (id, phase, duration) => {
+  console.log(`${id}: ${phase} ${duration.toFixed(2)}ms`);
+});
+```
+
+### `Profiler` component
+
+`Profiler` reads `id`, `onRender`, and `children` from its `static` bucket. The
+`onRender` callback receives `(id, phase, duration)`, where `phase` is `'render'`
+or `'unmount'`. With no `onRender`, the children pass through unprofiled.
+
+```tsx
+<Profiler
+  static={{
+    id: 'TodoList',
+    onRender: (id, phase, duration) => console.log(id, phase, duration),
+    children: <TodoList />,
+  }}
+/>
+```
+
+## Profiling the ExoNode class
+
+To time `ExoNode` lifecycle methods (`init`, `dispose`, `setChildren`) across the
+whole app, patch the `ExoNode` class. Once patched, profiling cannot be removed
+without restarting the app.
+
+```typescript
+import { profileExoNode, ExodraProfiler } from '@exodra/profiler';
+import { ExoNode } from '@exodra/core';
+
+// Low-level: receive raw metrics for each lifecycle call
+profileExoNode(ExoNode, (metrics) => {
+  console.log(metrics.componentId, metrics.phase, metrics.duration);
+});
+
+// Or use ExodraProfiler to aggregate into a report
+const appProfiler = new ExodraProfiler(ExoNode);
+appProfiler.start();
+// ...interact with the app...
+const report = appProfiler.stop(); // also console.table()s the report
+```
+
+`startProfiling(callback)` can also patch `ExoNode` directly when given a callback:
+
+```typescript
+import { startProfiling } from '@exodra/profiler';
+
+startProfiling((metrics) => {
+  console.log(metrics.phase, metrics.duration);
+});
+```
+
+## Profiling any class
+
+`profileClass` patches the prototype methods of any class. `ClassProfiler` does
+the same for multiple classes and aggregates the results.
+
+```typescript
+import { profileClass, ClassProfiler } from '@exodra/profiler';
+
+profileClass(MyService, (metrics) => {
+  console.log(`${metrics.className}.${metrics.method}: ${metrics.duration}ms`);
+}, {
+  methods: ['load', 'save'],    // optional allow-list
+  excludeMethods: ['toString'], // optional deny-list
+  includePrivate: false,        // skip `_`-prefixed methods (default)
+});
+
+const batch = new ClassProfiler();
+batch.profileClasses([ServiceA, ServiceB]);
+batch.start();
+// ...
+const summary = batch.stop();   // ProfileMetrics[]
+console.log(batch.getReport()); // { 'ClassA.method': { count, totalTime, avgTime } }
+```
+
+## Chrome DevTools integration
+
+In development (`NODE_ENV !== 'production'`), importing this package installs a
+`window.__EXODRA_DEVTOOLS_HOOK__` hook exposing `start` / `stop` / `getReport`.
+Use the Performance tab to record while interacting with your app.
+
+## Report format
+
+```typescript
+interface ProfileReport {
+  totalDuration: number;   // Total profiling time (ms)
+  componentCount: number;  // Unique components
+  totalRenders: number;    // Total recorded lifecycle calls
+  components: Array<{
+    id: string;            // Component identifier
+    renders: number;       // Recorded calls
+    totalTime: number;     // Total time spent
+    averageTime: number;   // Average time
+    percentOfTotal: number;// % of total time
+    averageDepth: number;  // Average tree depth
+    averageChildren: number;// Average child count
+  }>;
+}
+```
+
+> There is **no** `ProfilerNode` class. Profiling is applied by patching an
+> existing class with `profileExoNode` / `profileClass`, not by subclassing.
+> `getProfilingReport()` currently returns `null` (snapshot-without-stop is not
+> implemented). The `enableProfiling` / `disableProfiling` / `isProfiling` /
+> `createProfilingMiddleware` middleware helpers are deprecated.
+
+## Links
+
+- npm: [`@exodra/profiler`](https://www.npmjs.com/package/@exodra/profiler)
+- GitHub: [`packages/profiler`](https://github.com/abaikov/exodra/tree/master/packages/profiler)

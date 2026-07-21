@@ -2,13 +2,17 @@
 // Tests: Performance of rendering a large structure from scratch
 
 import type { BenchmarkResult, BenchmarkFramework } from '../types';
-import { finalizeBenchmarkResult } from '../benchmark-utils';
+import {
+    finalizeBenchmarkResult,
+    measureRetainedHeap,
+} from '../benchmark-utils';
 
 export async function benchmarkInitialRender(
     framework: BenchmarkFramework,
     iterations: number = 50
 ): Promise<BenchmarkResult> {
     const times: number[] = [];
+    let heapUsedBytes: number | undefined;
 
     if (framework === 'exodra') {
         const { h } = await import('../exodra/schema');
@@ -68,6 +72,16 @@ export async function benchmarkInitialRender(
         unmountExodra(verifyContainer, verifyNode);
 
         console.log('✅ Exodra initial render verification passed');
+
+        heapUsedBytes = await measureRetainedHeap(() => {
+            const c = document.createElement('div');
+            document.body.appendChild(c);
+            const n = mountExodra(c, LargeComponent());
+            return () => {
+                unmountExodra(c, n);
+                c.remove();
+            };
+        });
 
         for (let i = 0; i < iterations; i++) {
             const container = document.createElement('div');
@@ -158,6 +172,16 @@ export async function benchmarkInitialRender(
         document.body.removeChild(verifyContainer);
 
         console.log('✅ SolidJS initial render verification passed');
+
+        heapUsedBytes = await measureRetainedHeap(() => {
+            const c = document.createElement('div');
+            document.body.appendChild(c);
+            const d = render(() => <LargeComponent />, c);
+            return () => {
+                d();
+                c.remove();
+            };
+        });
 
         // Actual benchmark
         for (let i = 0; i < iterations; i++) {
@@ -260,6 +284,17 @@ export async function benchmarkInitialRender(
         }
 
         console.log('✅ Svelte initial render verification passed');
+
+        heapUsedBytes = await measureRetainedHeap(async () => {
+            const c = document.createElement('div');
+            document.body.appendChild(c);
+            const inst = new InitialRender({ target: c });
+            await tick();
+            return () => {
+                inst.$destroy();
+                c.remove();
+            };
+        });
 
         // Actual benchmark
         for (let i = 0; i < iterations; i++) {
@@ -393,6 +428,18 @@ export async function benchmarkInitialRender(
 
         console.log('✅ React initial render verification passed');
 
+        heapUsedBytes = await measureRetainedHeap(async () => {
+            const c = document.createElement('div');
+            document.body.appendChild(c);
+            const root = ReactDOM.createRoot(c);
+            root.render(React.createElement(LargeComponent));
+            await new Promise(resolve => setTimeout(resolve, 10));
+            return () => {
+                root.unmount();
+                c.remove();
+            };
+        });
+
         // Actual benchmark
         for (let i = 0; i < iterations; i++) {
             const container = document.createElement('div');
@@ -453,6 +500,6 @@ export async function benchmarkInitialRender(
         framework,
         iterations,
         times,
-        { warnIfSuspiciouslyFast: iterations > 10 }
+        { warnIfSuspiciouslyFast: iterations > 10, heapUsedBytes }
     );
 }

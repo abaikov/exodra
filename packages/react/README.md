@@ -68,11 +68,26 @@ The React root is unmounted and the props subscription is removed automatically
 in the host's `onExoUnmount`. Disposing (or list-removing) the surrounding Exodra
 tree tears the island down; updates after teardown are ignored.
 
+## SSR
+
+Islands are **server-rendered by default**. On the server (`typeof document ===
+'undefined'`) the React component is rendered to HTML and placed inside the host,
+so the island's content is in the initial payload (SEO, no layout shift). On the
+client the island **hydrates** that markup in place (`hydrateRoot`) — Exodra's own
+hydration leaves the React-owned host children untouched.
+
+```tsx
+reactIsland(Chart, data)                 // SSR + hydrate (default)
+reactIsland(Chart, data, { ssr: false }) // client-only: empty host on the server, createRoot on the client
+```
+
+> Bundle note: server rendering pulls in `react-dom/server`. If you never SSR
+> islands and want the leanest client bundle, a future `@exodra/react/server`
+> entry will keep the server renderer out of client builds; for now use
+> `{ ssr: false }` where you don't need it.
+
 ## Notes & limits
 
-- **SSR:** islands are client-only today (the host renders on the server, React
-  mounts on the client). Server-rendering the island's markup + hydration is a
-  planned follow-up.
 - **Context does not cross the boundary:** Exodra `provide`/`inject` and React
   Context are separate — pass anything an island needs through its props.
 - **One React root per island:** prefer a few larger islands over many tiny ones.

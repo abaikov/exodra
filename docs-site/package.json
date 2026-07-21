@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
+    "llms:full": "node scripts/generate-llms-full.mjs",
+    "prestart": "node scripts/generate-llms-full.mjs",
     "start": "docusaurus start",
+    "prebuild": "node scripts/generate-llms-full.mjs",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",

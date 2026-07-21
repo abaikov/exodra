@@ -38,6 +38,13 @@ ok('first mounted row is #0', idOf(rows(c)[0]) === 'r0');
 ok('decoupled readout shows the top range', readout(c).startsWith('on screen #0'));
 ok('readout shows 10,000 total', readout(c).includes('10,000 total'));
 
+console.log('\n── a11y: screen readers see the TRUE size, not the window ──');
+ok('container is role="list"', spacer.getAttribute('role') === 'list');
+ok('rows are role="listitem"', rows(c).every(r => r.getAttribute('role') === 'listitem'));
+ok('each row advertises the real total via aria-setsize=10000',
+    rows(c).every(r => r.getAttribute('aria-setsize') === '10000'));
+ok('first row aria-posinset=1 (absolute position, 1-based)', rows(c)[0].getAttribute('aria-posinset') === '1');
+
 console.log('\n── scroll → viewport (global state) drives list AND readout ──');
 vlist.scrollTop = 5000 * 36;
 vlist.dispatchEvent(new dom.window.Event('scroll'));
@@ -45,6 +52,8 @@ await tick();
 ok('still a bounded window (<40 rows)', rows(c).length > 0 && rows(c).length < 40);
 ok('row #0 gone, window now around #5000', !c.querySelector('[data-id="r0"]') && !!c.querySelector('[data-id="r5000"]'));
 ok('separate readout reflects the scroll via global state', readout(c).includes('#5000') || readout(c).includes('#4994'));
+ok('scrolled-in row aria-posinset is ABSOLUTE (~5001, not window-relative)',
+    c.querySelector('[data-id="r5000"]')?.getAttribute('aria-posinset') === '5001');
 
 console.log('\n── a scroll is O(1)/O(window): filter never runs per scroll ──');
 const beforeFilter = virtualMetrics.filterRuns;

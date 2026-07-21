@@ -70,7 +70,7 @@ export default function virtualPage(): TExoSchema {
             if (!slot) continue;
             live.add(slot.pk);
             let s = cache.get(slot.pk);
-            if (!s) cache.set(slot.pk, (s = rowFor(kit, slot, i * ROW_H)));
+            if (!s) cache.set(slot.pk, (s = rowFor(kit, slot, i, vp.total)));
             next.push(s);
         }
         for (const pk of cache.keys()) if (!live.has(pk)) cache.delete(pk);
@@ -144,7 +144,11 @@ export default function virtualPage(): TExoSchema {
                 handlers={{ onScroll }}
             >
                 <div
-                    static={{ class: 'vlist__spacer' }}
+                    static={{
+                        class: 'vlist__spacer',
+                        role: 'list',
+                        'aria-label': 'Virtualized rows',
+                    }}
                     bindable={{ style: spacerH, children: windowRows }}
                 />
             </div>

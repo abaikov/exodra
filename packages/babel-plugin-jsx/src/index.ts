@@ -48,20 +48,22 @@ function babelPluginExodraJsx(api: ConfigAPI, options: PluginOptions): PluginObj
                     }
                     
                     const body = path.node.body;
-                    const imports: t.ImportSpecifier[] = [];
 
-                    // Add imports if needed
+                    // `h` and `text` come from the pragma import source (default
+                    // @exodra/core). `Fragment` and `mergeAttrs` come from
+                    // @exodra/jsx — the JSX runtime — NOT the pragma source, since
+                    // @exodra/core does not export them.
+                    const coreImports: t.ImportSpecifier[] = [];
                     if (pragmaImported) {
-                        imports.push(
+                        coreImports.push(
                             t.importSpecifier(
                                 t.identifier(pragma),
                                 t.identifier(pragma)
                             )
                         );
                     }
-
                     if (textImported) {
-                        imports.push(
+                        coreImports.push(
                             t.importSpecifier(
                                 t.identifier('text'),
                                 t.identifier('text')
@@ -69,33 +71,37 @@ function babelPluginExodraJsx(api: ConfigAPI, options: PluginOptions): PluginObj
                         );
                     }
 
+                    const jsxImports: t.ImportSpecifier[] = [];
                     if (fragmentImported) {
-                        imports.push(
+                        jsxImports.push(
                             t.importSpecifier(
                                 t.identifier(pragmaFrag),
                                 t.identifier(pragmaFrag)
                             )
                         );
                     }
+                    if (mergeAttrsImported) {
+                        jsxImports.push(
+                            t.importSpecifier(
+                                t.identifier('mergeAttrs'),
+                                t.identifier('mergeAttrs')
+                            )
+                        );
+                    }
 
                     const prelude: t.ImportDeclaration[] = [];
-                    if (imports.length > 0) {
+                    if (coreImports.length > 0) {
                         prelude.push(
                             t.importDeclaration(
-                                imports,
+                                coreImports,
                                 t.stringLiteral(importSource)
                             )
                         );
                     }
-                    if (mergeAttrsImported) {
+                    if (jsxImports.length > 0) {
                         prelude.push(
                             t.importDeclaration(
-                                [
-                                    t.importSpecifier(
-                                        t.identifier('mergeAttrs'),
-                                        t.identifier('mergeAttrs')
-                                    ),
-                                ],
+                                jsxImports,
                                 t.stringLiteral('@exodra/jsx')
                             )
                         );

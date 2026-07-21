@@ -7,6 +7,12 @@ export interface BenchmarkResult {
     medianTime: number;
     minTime: number;
     maxTime: number;
+    /**
+     * Retained JS heap (bytes) for one instance of the benchmarked structure —
+     * the "at what cost" number next to speed. Only populated where measured and
+     * when the engine exposes `performance.memory` (Chromium). Undefined otherwise.
+     */
+    heapUsedBytes?: number;
 }
 
 export type BenchmarkFramework =

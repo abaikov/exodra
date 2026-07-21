@@ -9,7 +9,7 @@ const FeatureList = [
       <>
         Direct DOM writes, no virtual-DOM diffing, and op-based lists that stay
         cheap where reactive frameworks usually struggle. In our own benchmark
-        suite Exodra leads on large-tree render — reproduce it with{' '}
+        suite Exodra is top-tier on large-tree render — reproduce it with{' '}
         <code>npm run bench</code>.
       </>
     ),

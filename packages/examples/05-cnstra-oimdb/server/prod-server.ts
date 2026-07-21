@@ -29,7 +29,6 @@ async function main() {
     });
 
     app.listen(PORT, () => {
-        // eslint-disable-next-line no-console
         console.log(`prod server: http://localhost:${PORT}`);
     });
 }

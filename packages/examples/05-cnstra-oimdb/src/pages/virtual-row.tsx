@@ -1,16 +1,23 @@
 import type { TExoSchema } from '@exodra/core';
 import { bindable } from '@exodra/reactivity';
 import type { OIMReactiveObject } from '@oimdb/core';
-import type { Slot, Viewport, VirtualData } from './virtual-data';
+import { ROW_H, type Slot, type Viewport, type VirtualData } from './virtual-data';
 
 // A single virtualized row — built once per pk while it is inside the window.
 // It subscribes to its own entity ONLY while mounted (onExoMount/onExoUnmount),
 // so at any moment only the ~visible rows hold a subscription — O(window), not
 // O(N). Dynamically scrolled-in rows get their onExoMount fired too.
+//
+// Accessibility: a windowed list only mounts ~25 nodes, so screen readers would
+// otherwise think the list has ~25 rows. `role="listitem"` + `aria-setsize`
+// (the true total) + `aria-posinset` (this row's absolute position) tell assistive
+// tech the real shape. They are re-baked when the filter changes the total (the
+// window cache is cleared), so they stay accurate.
 export function rowFor(
     kit: VirtualData['kit'],
     slot: Slot,
-    top: number
+    index: number,
+    total: number
 ): TExoSchema {
     const pk = slot.pk;
     const starCls = bindable(
@@ -22,7 +29,10 @@ export function rowFor(
             static={{
                 class: 'vrow',
                 'data-id': pk,
-                style: `top:${top}px`,
+                role: 'listitem',
+                'aria-setsize': total,
+                'aria-posinset': index + 1,
+                style: `top:${index * ROW_H}px`,
                 onExoMount: () => {
                     stop = kit.collection.subscribeOnKey(pk, () => {
                         const r = kit.collection.getOneByPk(pk);

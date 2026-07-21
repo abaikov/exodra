@@ -40,14 +40,12 @@ async function main() {
             res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
         } catch (err) {
             vite.ssrFixStacktrace(err as Error);
-            // eslint-disable-next-line no-console
             console.error(err);
             res.status(500).end((err as Error).message);
         }
     });
 
     app.listen(PORT, () => {
-        // eslint-disable-next-line no-console
         console.log(`dev server: http://localhost:${PORT}`);
     });
 }
