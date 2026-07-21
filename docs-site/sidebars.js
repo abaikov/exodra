@@ -17,6 +17,7 @@
 const sidebars = {
   tutorialSidebar: [
     'getting-started',
+    'benchmarks',
     {
       type: 'category',
       label: 'Core Concepts',
@@ -34,6 +35,7 @@ const sidebars = {
         'guides/lists',
         'guides/ssr',
         'guides/react',
+        'guides/ai-development',
       ],
     },
     {

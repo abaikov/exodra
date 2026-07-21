@@ -1,157 +1,27 @@
 import type { TExoSchema } from '@exodra/core';
 import { bindable } from '@exodra/reactivity';
 import {
-    OIMEventQueue,
-    OIMEventQueueSchedulerFactory,
-    OIMReactiveObject,
-    createOIMCollectionKit,
-} from '@oimdb/core';
+    createData,
+    ROW_H,
+    VIEWPORT_H,
+    OVERSCAN,
+    type Slot,
+} from './virtual-data';
+import { rowFor, onScreenReadout } from './virtual-row';
 
 // Windowed (virtual) list over an oimdb ordered GLOBAL index. N rows in the data,
 // only the visible slice mounted. The scroll VIEWPORT lives in a shared oimdb
-// reactive object (global state): scrolling writes ONE value; two decoupled parts
-// of the UI subscribe to it — the list window and a separate "on screen" readout
-// in the page bar. Nothing is prop-drilled between them; the global state fans out
-// for free. Costs are honest:
+// reactive object: scrolling writes ONE value; two decoupled UI parts subscribe —
+// the list window and the "on screen" readout — with nothing prop-drilled. Costs:
 //   • getSlots() is an O(1) cached reference (no copy)
 //   • the filter recomputes ONCE per query change, never per scroll
 //   • a scroll is O(1): compute [start,end) → write the viewport
 //   • rendering a viewport change is O(window): slice + reconcile the ~visible rows
 //   • per-row subscriptions live only while a row is mounted → O(window), not O(N)
 
-const N = 10000;
-const ROW_H = 36; // px, fixed row height
-const VIEWPORT_H = 520; // px
-const OVERSCAN = 6; // rows above/below the viewport
-
-interface Row {
-    id: string;
-    rank: number;
-    title: string;
-    category: string;
-    value: number;
-    starred: boolean;
-}
-
-type Slot = { pk: string; item?: Row };
-type Viewport = { start: number; end: number; total: number };
-
 // Instrumentation the smoke reads to PROVE scrolling is O(1)/O(window): `filter`
 // must not run per scroll, only per query change.
 export const virtualMetrics = { filterRuns: 0, windowRenders: 0 };
-
-const CATEGORIES = ['bug', 'feature', 'chore', 'docs', 'test'] as const;
-const WORDS = [
-    'refactor', 'pipeline', 'cache', 'render', 'index', 'stream', 'schema',
-    'reactive', 'commit', 'hydrate', 'signal', 'buffer', 'query', 'diff',
-];
-
-function makeRows(): Row[] {
-    const rows: Row[] = new Array(N);
-    for (let i = 0; i < N; i++) {
-        rows[i] = {
-            id: `r${i}`,
-            rank: i,
-            title: `#${i} — ${WORDS[(i * 7) % WORDS.length]} ${WORDS[(i * 3) % WORDS.length]}`,
-            category: CATEGORIES[i % CATEGORIES.length],
-            value: (i * 37) % 1000,
-            starred: false,
-        };
-    }
-    return rows;
-}
-
-function createData() {
-    const queue = new OIMEventQueue({
-        scheduler: OIMEventQueueSchedulerFactory.createMicrotask(),
-    });
-    const kit = createOIMCollectionKit<Row, string>(queue, { selectPk: r => r.id });
-    kit.collection.upsertMany(makeRows());
-    // Ordered, keyless (global) array index — auto-sorted by rank. getSlots() is a
-    // stable O(1) reference to the ordered slots.
-    const ordered = kit.indexFactory.derivedArrayGlobalIndex({ orderBy: r => r.rank });
-    // The shared viewport — global reactive state read by multiple UI parts.
-    const viewport = new OIMReactiveObject<'v', Viewport>(queue);
-    return { queue, kit, ordered, viewport };
-}
-
-// --- a single virtualized row (built once per pk while inside the window) ------
-
-function rowFor(
-    kit: ReturnType<typeof createData>['kit'],
-    slot: Slot,
-    top: number
-): TExoSchema {
-    const pk = slot.pk;
-    const starCls = bindable(
-        kit.collection.getOneByPk(pk)?.starred ? 'vrow__star is-on' : 'vrow__star'
-    );
-    let stop: (() => void) | null = null;
-    return (
-        <div
-            static={{
-                class: 'vrow',
-                'data-id': pk,
-                style: `top:${top}px`,
-                // Subscribe only while mounted → only the visible rows hold a
-                // subscription. Dynamically-mounted rows (scrolled in) get this too.
-                onExoMount: () => {
-                    stop = kit.collection.subscribeOnKey(pk, () => {
-                        const r = kit.collection.getOneByPk(pk);
-                        starCls.setValue(r?.starred ? 'vrow__star is-on' : 'vrow__star');
-                    });
-                },
-                onExoUnmount: () => {
-                    stop?.();
-                    stop = null;
-                },
-            }}
-        >
-            <span static={{ class: 'vrow__idx' }}>{`#${slot.item?.rank ?? ''}`}</span>
-            <span static={{ class: 'vrow__title' }}>{slot.item?.title ?? ''}</span>
-            <span static={{ class: `vrow__cat cat--${slot.item?.category}` }}>
-                {slot.item?.category ?? ''}
-            </span>
-            <span static={{ class: 'vrow__val' }}>{String(slot.item?.value ?? '')}</span>
-            <button
-                bindable={{ class: starCls }}
-                static={{ 'aria-label': 'Star' }}
-                handlers={{
-                    onClick: () => {
-                        const r = kit.collection.getOneByPk(pk);
-                        if (r) kit.collection.upsertOneByPk(pk, { starred: !r.starred });
-                    },
-                }}
-            >
-                ★
-            </button>
-        </div>
-    );
-}
-
-// --- a decoupled readout: reads ONLY the shared viewport, no other coupling -----
-
-function onScreenReadout(viewport: OIMReactiveObject<'v', Viewport>): TExoSchema {
-    const text = bindable('');
-    const render = () => {
-        const vp = viewport.get('v');
-        if (!vp) return;
-        const last = Math.max(vp.start, vp.end - 1);
-        text.setValue(`on screen #${vp.start}–#${last} · ${vp.total.toLocaleString()} total`);
-    };
-    render();
-    let stop: (() => void) | null = null;
-    return (
-        <span
-            static={{
-                class: 'vp-readout',
-                onExoMount: () => { stop = viewport.subscribeOnKey('v', render); },
-                onExoUnmount: () => { stop?.(); stop = null; },
-            }}
-            bindable={{ textContent: text }}
-        />
-    );
-}
 
 export default function virtualPage(): TExoSchema {
     virtualMetrics.filterRuns = 0;
@@ -234,8 +104,8 @@ export default function virtualPage(): TExoSchema {
         <div
             static={{
                 class: 'page page--virtual',
-                // The page owns a page-scoped oimdb store — tear it down on leave so
-                // navigating away releases the 10k-row collection + its index/object.
+                // The page owns a page-scoped oimdb instance — tear it down on leave
+                // so navigating away releases the 10k-row collection + index/object.
                 onExoMount: () => {
                     stopData = ordered.subscribe(() => {
                         refilter();
@@ -268,7 +138,6 @@ export default function virtualPage(): TExoSchema {
                 static={{
                     class: 'vlist',
                     style: `height:${VIEWPORT_H}px`,
-                    // The list window is itself a viewport subscriber.
                     onExoMount: () => { stopList = viewport.subscribeOnKey('v', renderWindow); },
                     onExoUnmount: () => { stopList?.(); stopList = null; },
                 }}

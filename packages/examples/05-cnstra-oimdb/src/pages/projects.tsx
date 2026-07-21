@@ -1,7 +1,7 @@
 import type { TExoSchema } from '@exodra/core';
 import type { Milestone, Project } from '../domain/types';
 import { getRuntime } from '../app/runtime';
-import { keyedList } from '../app/keyed-list';
+import { keyedList } from '../lib/keyed-list';
 
 export default function projectsPage(): TExoSchema {
     const rt = getRuntime();

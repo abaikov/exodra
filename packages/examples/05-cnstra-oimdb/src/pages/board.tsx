@@ -3,7 +3,7 @@ import { bindable } from '@exodra/reactivity';
 import type { Status, Task, TaskPriority } from '../domain/types';
 import { getRuntime } from '../app/runtime';
 import { orderedStatuses } from '../store/workspace-store';
-import { keyedList } from '../app/keyed-list';
+import { keyedList } from '../lib/keyed-list';
 
 const PRIORITY_GLYPH: Record<TaskPriority, string> = {
     urgent: '⛌',
@@ -140,6 +140,20 @@ function createColumn(status: Status, statuses: Status[]) {
     };
     refresh();
 
+    // Subscribe to THIS column's status key only. A field edit that doesn't change
+    // a task's status never fires here (the card's own subscribeOnKey handles the
+    // field); a move fires exactly the two affected columns; an add/delete fires
+    // one. Fine-grained — not "refresh every column on any task change".
+    let stop: (() => void) | null = null;
+    const mount = () => {
+        stop = rt.oimdbInstance.tasksByStatus.subscribeOnKey(status.id, refresh);
+    };
+    const dispose = () => {
+        stop?.();
+        stop = null;
+        col.unmount();
+    };
+
     const schema = (
         <section static={{ class: 'col', 'data-status': status.id }}>
             <header static={{ class: 'col__head', style: `--c:${status.color}` }}>
@@ -150,7 +164,7 @@ function createColumn(status: Status, statuses: Status[]) {
         </section>
     );
 
-    return { schema, refresh, dispose: col.unmount };
+    return { schema, mount, dispose };
 }
 
 // --- the page ---------------------------------------------------------------
@@ -161,7 +175,6 @@ export default function boardPage(): TExoSchema {
     const projects = rt.oimdbInstance.projects.collection.getAll().filter(p => !p.archived);
 
     const columns = statuses.map(s => createColumn(s, statuses));
-    let stop: (() => void) | null = null;
 
     const newTitle = bindable('');
     const addProject = bindable(projects[0]?.id ?? '');
@@ -187,16 +200,8 @@ export default function boardPage(): TExoSchema {
         <div
             static={{
                 class: 'page page--board',
-                onExoMount: () => {
-                    stop = rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(() =>
-                        columns.forEach(c => c.refresh())
-                    );
-                },
-                onExoUnmount: () => {
-                    stop?.();
-                    stop = null;
-                    columns.forEach(c => c.dispose());
-                },
+                onExoMount: () => columns.forEach(c => c.mount()),
+                onExoUnmount: () => columns.forEach(c => c.dispose()),
             }}
         >
             <div static={{ class: 'page__bar' }}>

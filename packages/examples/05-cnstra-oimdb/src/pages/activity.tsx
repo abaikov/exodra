@@ -2,7 +2,7 @@ import type { TExoSchema } from '@exodra/core';
 import { bindable } from '@exodra/reactivity';
 import type { Activity } from '../domain/types';
 import { getRuntime } from '../app/runtime';
-import { keyedList } from '../app/keyed-list';
+import { keyedList } from '../lib/keyed-list';
 
 const KIND_ICON: Record<Activity['kind'], string> = {
     'task.created': '✚',

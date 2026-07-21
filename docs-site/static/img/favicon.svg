@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+  <!-- Exodra mark: the tree from the wordmark logo, squared for a favicon -->
+  <g transform="translate(20, 20)">
+    <!-- Root at bottom -->
+    <circle cx="0" cy="10" r="2.5" fill="#ec4899"/>
+    <!-- Middle level -->
+    <circle cx="-8" cy="0" r="2.5" fill="#ec4899"/>
+    <circle cx="8" cy="0" r="2.5" fill="#ec4899"/>
+    <!-- Top level -->
+    <circle cx="-12" cy="-10" r="2" fill="#f472b6"/>
+    <circle cx="-4" cy="-10" r="2" fill="#f472b6"/>
+    <circle cx="4" cy="-10" r="2" fill="#f472b6"/>
+    <circle cx="12" cy="-10" r="2" fill="#f472b6"/>
+    <!-- Branches -->
+    <line x1="0" y1="8" x2="-8" y2="2" stroke="#ec4899" stroke-width="1.5"/>
+    <line x1="0" y1="8" x2="8" y2="2" stroke="#ec4899" stroke-width="1.5"/>
+    <line x1="-8" y1="-2" x2="-12" y2="-8" stroke="#f472b6" stroke-width="1.2"/>
+    <line x1="-8" y1="-2" x2="-4" y2="-8" stroke="#f472b6" stroke-width="1.2"/>
+    <line x1="8" y1="-2" x2="4" y2="-8" stroke="#f472b6" stroke-width="1.2"/>
+    <line x1="8" y1="-2" x2="12" y2="-8" stroke="#f472b6" stroke-width="1.2"/>
+  </g>
+</svg>

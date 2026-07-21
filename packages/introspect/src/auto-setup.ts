@@ -5,7 +5,11 @@
 
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
+
+// ESM has no `__dirname`; derive it from the module URL.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 interface SetupOptions {
   projectRoot?: string;
@@ -329,7 +333,13 @@ export default {
       // Copy from package
     }
 
-    const sourceContextPath = path.join(__dirname, '../../EXODRA_LLM_CONTEXT.md');
+    // dist/auto-setup.js → package root is one level up; the file is shipped
+    // there (see the package's `files` field).
+    const sourceContextPath = path.join(
+      __dirname,
+      '..',
+      'EXODRA_LLM_CONTEXT.md'
+    );
     
     try {
       const contextContent = await fs.readFile(sourceContextPath, 'utf-8');

@@ -2,7 +2,7 @@ import type { TExoSchema } from '@exodra/core';
 import type { Comment, Task } from '../domain/types';
 import { getRuntime } from '../app/runtime';
 import { orderedStatuses } from '../store/workspace-store';
-import { keyedList } from '../app/keyed-list';
+import { keyedList } from '../lib/keyed-list';
 
 const PRIORITIES: Task['priority'][] = ['urgent', 'high', 'medium', 'low'];
 

@@ -1,7 +1,7 @@
 import type { TExoSchema } from '@exodra/core';
 import { bindable } from '@exodra/reactivity';
 import { getRuntime } from '../app/runtime';
-import { keyedList } from '../app/keyed-list';
+import { keyedList } from '../lib/keyed-list';
 
 // The shared shape of a "swatch" reference entity (tags carry `label`, labels
 // carry `name`; both carry `id` + `color`). Tag and Label are both assignable to
