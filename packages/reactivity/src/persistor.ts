@@ -1,4 +1,4 @@
-import type { TExoBindable, TExoBindableList, TExoWritableBindable, TExoWritableBindableList } from './types';
+import type { TExoBindable, TExoBindableList, TExoWritableBindable, TExoWritableBindableList } from '@exodra/reactivity-types';
 
 export interface TExoPersistor {
     register<T>(observable: TExoBindable<T, unknown> | TExoBindableList<T, unknown>, key?: string): void;

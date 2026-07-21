@@ -1,5 +1,5 @@
-import type { TExoListOp } from './types/TExoListOp';
-import type { TExoWritableBindableList } from './types/TExoWritableBindableList';
+import type { TExoListOp } from '@exodra/reactivity-types';
+import type { TExoWritableBindableList } from '@exodra/reactivity-types';
 
 export function createExoBindableList<TItem>(
     initialItems: readonly TItem[]

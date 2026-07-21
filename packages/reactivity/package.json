@@ -55,5 +55,8 @@
   },
   "devDependencies": {
     "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "@exodra/reactivity-types": "^0.1.0"
   }
 }

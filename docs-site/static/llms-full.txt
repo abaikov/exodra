@@ -1774,6 +1774,17 @@ The `@exodra/reactivity` package provides Exodra's reactive primitives. There is
 reactive value is accessed with explicit methods (`getValue()` / `setValue()` /
 `subscribe()`), which is what makes the renderer's wiring cheap and predictable.
 
+:::note Types vs implementation
+The reactive-value **contract** (`TExoBindable`, `TExoBindableList`, `TExoListOp`, and
+the writable variants) lives in a separate types-only package,
+[`@exodra/reactivity-types`](#the-contract-exodrareactivity-types) — zero runtime, zero
+dependencies. `@exodra/reactivity` is one *implementation* of that contract and
+re-exports the types, so importing them from here keeps working. Renderers
+(`@exodra/dom`, `@exodra/string`) and bridges (e.g. an oimdb adapter) depend only on
+the contract package, never on this implementation — which is why any conforming
+`{ getValue, subscribe }` value can be handed to a bucket.
+:::
+
 ```bash
 npm install @exodra/reactivity
 ```
@@ -2017,6 +2028,36 @@ autoHydrate();
 
 See the [SSR guide](../guides/ssr.md) for the full server-render +
 hydration flow.
+
+## The contract: `@exodra/reactivity-types`
+
+The reactive-value **contract** lives in its own types-only package —
+`@exodra/reactivity-types` — with **zero runtime and zero dependencies**:
+
+- `TExoBindable<TValue, TEvent>` — `{ getValue(): TValue; subscribe(cb): () => void }`
+- `TExoBindableList<TItem, TEvent>` — `{ snapshot(): readonly TItem[]; subscribeOps(cb): () => void }`
+- `TExoListOp<TItem>` — the `insert | remove | move | set | reset` op union
+- `TExoWritableBindable` / `TExoWritableBindableList` — the above plus mutators
+
+**Why a separate package.** `@exodra/core` is intentionally reactivity-agnostic — a
+schema's bucket values are typed `unknown`, so core can be paired with *any* reactivity
+system. That means the shared contract can't live in core without giving up that
+freedom. It also shouldn't live in `@exodra/reactivity`, because then renderers would
+have to depend on an *implementation* package just to name a type. So it gets its own
+home, and everyone points at it:
+
+```
+@exodra/reactivity-types   (contract, types only)
+   ├─ @exodra/reactivity    (one implementation; re-exports the types)
+   ├─ @exodra/dom, string   (type-only import; runtime = duck-typing)
+   └─ your bridge           (e.g. an oimdb adapter — its values satisfy the contract)
+```
+
+You rarely import from it directly — `@exodra/reactivity` re-exports every type, so
+`import type { TExoBindable } from '@exodra/reactivity'` still works. Reach for
+`@exodra/reactivity-types` when you write a package that must *produce or consume*
+reactive values without pulling in an implementation (a renderer, or a bridge to
+another reactive store).
 
 
 ==============================================================================

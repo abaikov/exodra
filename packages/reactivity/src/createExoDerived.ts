@@ -1,4 +1,4 @@
-import type { TExoBindable } from './types/TExoBindable';
+import type { TExoBindable } from '@exodra/reactivity-types';
 
 // A read-only bindable computed from a source bindable. getValue() returns the
 // mapped current value; subscribers are notified (with the freshly mapped value)

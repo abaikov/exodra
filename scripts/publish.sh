@@ -30,6 +30,7 @@ npm run build:all
 # Packages to publish in dependency order (dependencies first)
 PACKAGES=(
     "packages/core"
+    "packages/reactivity-types"
     "packages/reactivity"
     "packages/string"
     "packages/dom"

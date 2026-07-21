@@ -21,6 +21,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // package dir → published name
 const PKGS = [
     ['core', '@exodra/core'],
+    ['reactivity-types', '@exodra/reactivity-types'],
     ['reactivity', '@exodra/reactivity'],
     ['jsx', '@exodra/jsx'],
     ['dom', '@exodra/dom'],

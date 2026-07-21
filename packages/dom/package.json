@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@exodra/core": "^0.1.0",
-    "@exodra/reactivity": "^0.1.0"
+    "@exodra/reactivity-types": "^0.1.0"
   },
   "scripts": {
     "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
@@ -58,7 +58,8 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "devDependencies": {
-    "vitest": "^1.2.1",
-    "jsdom": "^23.0.1"
+    "@exodra/reactivity": "^0.1.0",
+    "jsdom": "^23.0.1",
+    "vitest": "^1.2.1"
   }
 }

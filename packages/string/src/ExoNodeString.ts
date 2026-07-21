@@ -3,7 +3,7 @@ import type {
     TExoBindable,
     TExoBindableList,
     TExoListOp,
-} from '@exodra/reactivity';
+} from '@exodra/reactivity-types';
 
 
 type TExoNodeStringSchema = TExoNodeSchema<TExoSchema['type'], TStringAttributes>;

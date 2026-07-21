@@ -14,7 +14,7 @@ import type {
     TExoBindable,
     TExoBindableList,
     TExoListOp,
-} from '@exodra/reactivity';
+} from '@exodra/reactivity-types';
 
 // Component provide()/inject() scope, chained parent->child during the build walk
 // (the single-node model has no per-node tree to carry context, so we thread it).

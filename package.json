@@ -10,7 +10,7 @@
   "scripts": {
     "clean:src": "find packages -path '*/src/*' \\( -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' \\) -delete",
     "prebuild": "npm run clean:src",
-    "build": "npm run build --workspace=@exodra/core && npm run build --workspace=@exodra/reactivity && npm run build --workspace=@exodra/string && npm run build --workspace=@exodra/dom && npm run build --workspace=@exodra/ssr && npm run build --workspace=@exodra/router && npm run build --workspace=@exodra/jsx && npm run build --workspace=@exodra/forms",
+    "build": "npm run build --workspace=@exodra/core && npm run build --workspace=@exodra/reactivity-types && npm run build --workspace=@exodra/reactivity && npm run build --workspace=@exodra/string && npm run build --workspace=@exodra/dom && npm run build --workspace=@exodra/ssr && npm run build --workspace=@exodra/router && npm run build --workspace=@exodra/jsx && npm run build --workspace=@exodra/forms",
     "build:tools": "npm run build --workspace=@exodra/babel-plugin-jsx && npm run build --workspace=@exodra/vite-plugin && npm run build --workspace=@exodra/profiler && npm run build --workspace=@exodra/react && npm run build --workspace=@exodra/introspect && npm run build --workspace=create-exodra",
     "build:all": "npm run build && npm run build:tools",
     "prebuild:examples": "npm run build:all",

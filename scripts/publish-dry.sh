@@ -17,6 +17,7 @@ fi
 # Packages to check (dependency order)
 PACKAGES=(
     "packages/core"
+    "packages/reactivity-types"
     "packages/reactivity"
     "packages/string"
     "packages/dom"

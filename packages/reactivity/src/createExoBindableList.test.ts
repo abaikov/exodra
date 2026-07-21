@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createExoBindableList } from './createExoBindableList';
-import type { TExoListOp } from './types/TExoListOp';
+import type { TExoListOp } from '@exodra/reactivity-types';
 
 describe('createExoBindableList', () => {
     it('mutates items and emits list operations', () => {

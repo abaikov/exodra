@@ -1,4 +1,4 @@
-import type { TExoWritableBindable } from './types/TExoWritableBindable';
+import type { TExoWritableBindable } from '@exodra/reactivity-types';
 
 export function createExoBindable<TValue, TEvent = TValue>(
     initialValue: TValue,

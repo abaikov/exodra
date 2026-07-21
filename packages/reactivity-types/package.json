@@ -1,6 +1,6 @@
 {
-  "name": "@exodra/string",
-  "version": "0.1.1",
+  "name": "@exodra/reactivity-types",
+  "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -19,29 +19,19 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@exodra/core": "^0.1.0",
-    "@exodra/reactivity-types": "^0.1.0"
-  },
   "scripts": {
     "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
     "build": "tsup",
     "prepublishOnly": "npm run build",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
   },
-  "description": "Fast HTML string rendering for Exodra - converts components to HTML for SSR and static generation",
+  "description": "The reactive-value contract for Exodra (types only) — TExoBindable / TExoBindableList / TExoListOp. Renderers and reactivity implementations depend on this, not on each other.",
   "keywords": [
     "exodra",
-    "string-renderer",
-    "html",
-    "ssr",
-    "static-site-generation",
-    "server-rendering",
-    "html-generation",
-    "performance",
-    "streaming",
+    "reactivity",
+    "types",
+    "contract",
+    "bindable",
     "typescript"
   ],
   "author": "Andrei Baikov",
@@ -50,13 +40,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abaikov/exodra.git",
-    "directory": "packages/string"
+    "directory": "packages/reactivity-types"
   },
   "bugs": {
     "url": "https://github.com/abaikov/exodra/issues"
-  },
-  "devDependencies": {
-    "@exodra/reactivity": "^0.1.0",
-    "vitest": "^1.2.1"
   }
 }

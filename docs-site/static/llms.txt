@@ -105,8 +105,18 @@ infer their return types from it. Omit the generic and the component stays loose
 ## Packages
 
 - `@exodra/core` — schema (`h`, `text`, `defineComponent`, `TExoSchema`), base node.
-- `@exodra/reactivity` — `bindable`, `derive`, `list`, persistence, hydrate helpers.
-- `@exodra/dom` — the DOM renderer (`mount`, `hydrate`, identity reconcile).
+  Deliberately reactivity-AGNOSTIC: bucket values are typed `unknown`, so core can be
+  driven by any reactivity system. It depends on nothing.
+- `@exodra/reactivity-types` — the reactive-value CONTRACT, types only, zero runtime,
+  zero deps: `TExoBindable` (`getValue`/`subscribe`), `TExoBindableList`
+  (`snapshot`/`subscribeOps`), `TExoListOp`, and the writable variants. Renderers and
+  reactive-value implementations depend on THIS, not on each other — so a bindable is
+  a nominal contract, not a duck-typed lookalike.
+- `@exodra/reactivity` — one IMPLEMENTATION of that contract: `bindable`, `derive`,
+  `list`, persistence, hydrate helpers. Re-exports the types from `@exodra/reactivity-types`.
+- `@exodra/dom` — the DOM renderer (`mount`, `hydrate`, identity reconcile). Depends on
+  `@exodra/reactivity-types` for the contract only (type-only import); at runtime it
+  duck-types (`'subscribe' in binding`), so any conforming reactive value works.
 - `@exodra/jsx` + `@exodra/babel-plugin-jsx` — JSX types + the compiler.
 - `@exodra/router` — lazy routes (`lazy(() => import())`), history, guards.
 - `@exodra/ssr` / `@exodra/string` — server rendering.

@@ -6,4 +6,4 @@ export { derive } from './derive';
 export { list } from './list';
 export { getPersistor, createPersistor, persist, type TExoPersistor } from './persistor';
 export { hydrateFromWindow, hydrateFromScript, autoHydrate } from './hydrate';
-export type * from './types';
+export type * from '@exodra/reactivity-types';
