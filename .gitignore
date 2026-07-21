@@ -47,6 +47,12 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# Build files in src (should never happen)
+**/src/**/*.js
+**/src/**/*.d.ts
+**/src/**/*.js.map
+**/src/**/*.d.ts.map
+
 # Optional npm cache directory
 .npm
 
@@ -137,3 +143,20 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+.vscode
+.cursor
+
+# Internal files
+internal/
+
+CLAUDE.md
+
+# macOS
+.DS_Store
+
+# Docusaurus production build output
+docs-site/build/
+
+# Claude Code tooling (local to the workflow, not part of the public repo)
+.claude/
+.claude-hooks/

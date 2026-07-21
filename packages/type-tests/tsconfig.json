@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/core": ["../core/src/index.ts"],
+      "@exodra/reactivity": ["../reactivity/src/index.ts"],
+      "@exodra/jsx": ["../jsx/src/index.ts"],
+      "@exodra/jsx/jsx-runtime": ["../jsx/src/jsx-runtime.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}

@@ -1,0 +1,153 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #1e293b;
+  --ifm-color-primary-dark: #0f172a;
+  --ifm-color-primary-darker: #020617;
+  --ifm-color-primary-darkest: #000000;
+  --ifm-color-primary-light: #334155;
+  --ifm-color-primary-lighter: #475569;
+  --ifm-color-primary-lightest: #64748b;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-background-color: #ffffff;
+  --ifm-font-family-base: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Ubuntu', 'Cantarell', 'Noto Sans', sans-serif;
+  --ifm-heading-font-family: var(--ifm-font-family-base);
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', 'Consolas', 'Courier New', monospace;
+  --ifm-hero-background-color: #0f172a;
+  --ifm-hero-text-color: #ffffff;
+  --ifm-color-success: #ec4899;
+  --ifm-color-success-light: #f472b6;
+  --ifm-color-success-lighter: #f9a8d4;
+  --ifm-link-color: #ec4899;
+  --ifm-link-hover-color: #f472b6;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #ec4899;
+  --ifm-color-primary-dark: #db2777;
+  --ifm-color-primary-darker: #be185d;
+  --ifm-color-primary-darkest: #9f1239;
+  --ifm-color-primary-light: #f472b6;
+  --ifm-color-primary-lighter: #f9a8d4;
+  --ifm-color-primary-lightest: #fbcfe8;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-background-color: #0f0f23;
+  --ifm-background-surface-color: #1a1a2e;
+}
+
+/* Custom hero styles */
+.hero--primary {
+  background: 
+    linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)),
+    url('../../static/img/exodra.png') center center / cover no-repeat;
+  position: relative;
+  overflow: hidden;
+  min-height: 60vh;
+}
+
+.hero--primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(236, 72, 153, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Hide the inline image since we're using it as background */
+.hero--primary img[alt="Exodra"] {
+  display: none;
+}
+
+.hero--primary .hero__title {
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  font-size: 3.5rem;
+  font-weight: 800;
+}
+
+.hero--primary .hero__subtitle {
+  font-family: 'Press Start 2P', monospace !important;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+.hero--primary .button--secondary {
+  background: #ec4899;
+  border-color: #ec4899;
+  color: white;
+  font-weight: 600;
+}
+
+.hero--primary .button--secondary:hover {
+  background: #f472b6;
+  border-color: #f472b6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+/* Import pixel font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Apply pixel font ONLY to homepage hero title */
+.hero--primary .hero__title {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 2.5rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-shadow: 
+    -2px -2px 0 #0f172a,
+    2px -2px 0 #0f172a,
+    -2px 2px 0 #0f172a,
+    2px 2px 0 #0f172a,
+    0 0 10px rgba(15, 23, 42, 0.5);
+}
+
+.hero--primary .hero__subtitle {
+  font-family: 'Press Start 2P', monospace !important;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  text-shadow: 
+    -1px -1px 0 #0f172a,
+    1px -1px 0 #0f172a,
+    -1px 1px 0 #0f172a,
+    1px 1px 0 #0f172a,
+    0 0 8px rgba(15, 23, 42, 0.5);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+/* Ensure docs pages use normal font */
+.markdown h1:first-child {
+  font-family: var(--ifm-heading-font-family) !important;
+}
+
+/* Only use pixel font for blog post titles, not regular docs */
+article header h1 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.8rem;
+  line-height: 1.4;
+}
+
+/* Make pixel font pink for extra style */
+.navbar__title {
+  font-family: 'Press Start 2P', monospace;
+  color: #ec4899;
+  font-size: 1.2rem;
+}

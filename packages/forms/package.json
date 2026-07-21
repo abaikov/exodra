@@ -1,0 +1,53 @@
+{
+  "name": "@exodra/forms",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@exodra/reactivity": "^0.1.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "description": "Two-way form binding helpers for Exodra (runtime of the bind: directive)",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/forms"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
+  },
+  "keywords": [
+    "exodra",
+    "forms",
+    "bind",
+    "two-way"
+  ],
+  "devDependencies": {
+    "vitest": "^1.2.1"
+  }
+}

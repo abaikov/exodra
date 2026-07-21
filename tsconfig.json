@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020"],
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "paths": {
+      "@exodra/core": ["./packages/core/src/index.ts"],
+      "@exodra/reactivity": ["./packages/reactivity/src/index.ts"],
+      "@exodra/router": ["./packages/router/src/index.ts"],
+      "@exodra/dom": ["./packages/dom/src/index.ts"],
+      "@exodra/string": ["./packages/string/src/index.ts"],
+      "@exodra/ssr": ["./packages/ssr/src/index.ts"],
+      "@exodra/jsx": ["./packages/jsx/src/index.ts"],
+      "@exodra/jsx/jsx-runtime": ["./packages/jsx/src/jsx-runtime.ts"],
+      "@exodra/jsx/jsx-dev-runtime": ["./packages/jsx/src/jsx-dev-runtime.ts"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/reactivity" },
+    { "path": "./packages/router" },
+    { "path": "./packages/dom" },
+    { "path": "./packages/string" },
+    { "path": "./packages/ssr" },
+    { "path": "./packages/jsx" }
+  ]
+}
+

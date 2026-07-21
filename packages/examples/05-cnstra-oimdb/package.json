@@ -1,0 +1,44 @@
+{
+  "name": "@exodra/examples-cnstra-oimdb",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Complex SSR todo app: Exodra UI + oimdb reactive store + cnstra orchestration",
+  "scripts": {
+    "dev": "tsx server/dev-server.ts",
+    "build": "tsc --noEmit && vite build --outDir dist/client && vite build --ssr src/entry-server.ts --outDir dist/server",
+    "serve": "NODE_ENV=production tsx server/prod-server.ts",
+    "typecheck": "tsc --noEmit",
+    "mcp": "tsx mcp/cns-mcp.ts",
+    "mcp:oimdb": "tsx mcp/oimdb-mcp.ts",
+    "mcp:oimdb:browser": "oimdb-mcp",
+    "devtools:oimdb": "oimdb-devtools"
+  },
+  "dependencies": {
+    "@cnstra/core": "^2.3.0",
+    "@cnstra/devtools": "^1.1.2",
+    "@cnstra/mcp": "^1.1.1",
+    "@exodra/core": "^0.1.0",
+    "@exodra/dom": "^0.1.0",
+    "@exodra/jsx": "^0.1.0",
+    "@exodra/reactivity": "^0.1.0",
+    "@exodra/ssr": "^0.1.0",
+    "@exodra/string": "^0.1.0",
+    "@oimdb/core": "^3.6.0",
+    "@oimdb/devtools": "^1.0.4",
+    "@oimdb/mcp": "^1.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/plugin-syntax-jsx": "^7.24.0",
+    "@babel/preset-typescript": "^7.24.0",
+    "@exodra/babel-plugin-jsx": "^0.1.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "express": "^5.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.3.3",
+    "vite": "^8.0.0",
+    "vite-node": "^6.0.0"
+  }
+}

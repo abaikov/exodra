@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "composite": false,
+    "paths": {
+      "@exodra/core": ["../core/dist/index.d.ts"],
+      "@exodra/reactivity": ["../reactivity/dist/index.d.ts"]
+    }
+  },
+  "exclude": ["**/*.test.ts", "**/*.spec.ts"]
+}

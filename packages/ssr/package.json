@@ -1,0 +1,62 @@
+{
+  "name": "@exodra/ssr",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@exodra/core": "^0.1.0",
+    "@exodra/string": "^0.1.0"
+  },
+  "scripts": {
+    "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
+    "build": "tsup",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "description": "Server-side rendering for Exodra - stream HTML, manage head tags, and optimize for SEO",
+  "keywords": [
+    "exodra",
+    "ssr",
+    "server-side-rendering",
+    "streaming",
+    "seo",
+    "meta-tags",
+    "head-management",
+    "hydration",
+    "node",
+    "typescript",
+    "performance"
+  ],
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/ssr"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
+  },
+  "devDependencies": {
+    "vitest": "^1.2.1"
+  }
+}

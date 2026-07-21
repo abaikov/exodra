@@ -1,0 +1,62 @@
+{
+  "name": "@exodra/router",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@exodra/core": "^0.1.0",
+    "@exodra/reactivity": "^0.1.0"
+  },
+  "scripts": {
+    "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
+    "build": "tsup",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "description": "File-based and programmatic routing for Exodra - Next.js-like routing with dynamic routes and layouts",
+  "keywords": [
+    "exodra",
+    "router",
+    "routing",
+    "file-based-routing",
+    "nextjs",
+    "spa",
+    "navigation",
+    "dynamic-routes",
+    "nested-routes",
+    "typescript",
+    "reactive-router"
+  ],
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/router"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
+  },
+  "devDependencies": {
+    "vitest": "^1.2.1"
+  }
+}

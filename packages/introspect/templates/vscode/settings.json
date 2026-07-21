@@ -1,0 +1,35 @@
+{
+  "exodra.introspect.enableIntelliSense": true,
+  "exodra.introspect.showPerformanceHints": true,
+  "exodra.introspect.aiProvider": "openai",
+  "exodra.introspect.analysisOnSave": true,
+  "exodra.introspect.severity": {
+    "schemaValidation": "error",
+    "performanceIssues": "warning",
+    "codeQuality": "info"
+  },
+  
+  "files.associations": {
+    "*.exo": "typescript",
+    "*.exo.ts": "typescript"
+  },
+  
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  
+  "eslint.options": {
+    "extensions": [".js", ".jsx", ".ts", ".tsx"],
+    "plugins": ["exodra"]
+  },
+  
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

@@ -1,0 +1,117 @@
+{
+  "Exodra Component": {
+    "prefix": "exocomp",
+    "body": [
+      "import { h, type TExoContext, type TExoSchema } from '@exodra/core';",
+      "",
+      "export function ${1:ComponentName}(context: TExoContext): TExoSchema {",
+      "  const ${2:prop} = context.getConstant<${3:string}>('${2:prop}');",
+      "  ",
+      "  return h('div', {",
+      "    class: '${1/(.*)/${1:/downcase}/}'",
+      "  }, [",
+      "    $0",
+      "  ]);",
+      "}"
+    ],
+    "description": "Create an Exodra component"
+  },
+  
+  "Exodra Bindable": {
+    "prefix": "exobind",
+    "body": [
+      "const ${1:name} = bindable(${2:initialValue});"
+    ],
+    "description": "Create a bindable value"
+  },
+  
+  "Exodra List": {
+    "prefix": "exolist",
+    "body": [
+      "const ${1:items} = list<${2:Type}>([",
+      "  $0",
+      "]);"
+    ],
+    "description": "Create a bindable list"
+  },
+  
+  "Exodra Schema": {
+    "prefix": "exoschema",
+    "body": [
+      "const ${1:schema}: TExoSchema = {",
+      "  type: '${2:div}',",
+      "  attrs: {",
+      "    constants: {",
+      "      ${3:id}: '${4:value}'",
+      "    },",
+      "    bindables: {",
+      "      ${5:textContent}: ${6:bindableValue}",
+      "    }",
+      "  }",
+      "};"
+    ],
+    "description": "Create an Exodra schema"
+  },
+  
+  "Exodra Effect": {
+    "prefix": "exoeffect",
+    "body": [
+      "const unsubscribe = ${1:bindable}.subscribe((value) => {",
+      "  ${2:// Effect logic}",
+      "});",
+      "",
+      "context.onDispose(unsubscribe);"
+    ],
+    "description": "Create an effect with cleanup"
+  },
+  
+  "Exodra Context Provider": {
+    "prefix": "exoprovider",
+    "body": [
+      "const ${1:key} = createContextKey<${2:Type}>('${1:key}');",
+      "",
+      "function ${3:Provider}(context: TExoContext): TExoSchema {",
+      "  context.provide(${1:key}, ${4:value});",
+      "  ",
+      "  return h('div', {}, context.getConstant('children'));",
+      "}"
+    ],
+    "description": "Create a context provider"
+  },
+  
+  "Exodra Mount": {
+    "prefix": "exomount",
+    "body": [
+      "import { mount } from '@exodra/dom';",
+      "",
+      "const app = h(${1:App}, {});",
+      "const mounted = mount(app, document.getElementById('${2:app}')!);"
+    ],
+    "description": "Mount an Exodra app"
+  },
+  
+  "Exodra Router": {
+    "prefix": "exorouter",
+    "body": [
+      "import { createRouter } from '@exodra/router';",
+      "",
+      "const router = createRouter({",
+      "  routes: [",
+      "    {",
+      "      path: '/',",
+      "      component: () => import('./pages/Home')",
+      "    },",
+      "    {",
+      "      path: '/about',",
+      "      component: () => import('./pages/About')",
+      "    },",
+      "    {",
+      "      path: '/:catchAll(.*)*',",
+      "      component: () => import('./pages/NotFound')",
+      "    }",
+      "  ]",
+      "});"
+    ],
+    "description": "Create an Exodra router"
+  }
+}

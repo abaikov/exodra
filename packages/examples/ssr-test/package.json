@@ -1,0 +1,27 @@
+{
+  "name": "@exodra/examples-ssr-test",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server/dev-server.ts",
+    "build": "tsc --noEmit && vite build --outDir dist/client && vite build --ssr src/entry-server.ts --outDir dist/server",
+    "serve": "NODE_ENV=production tsx server/prod-server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@exodra/core": "^0.1.0",
+    "@exodra/dom": "^0.1.0",
+    "@exodra/reactivity": "^0.1.0",
+    "@exodra/ssr": "^0.1.0",
+    "@exodra/string": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "express": "^5.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.4.0"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "@exodra/babel-plugin-jsx",
+  "version": "0.1.0",
+  "description": "Babel plugin for transforming JSX to Exodra h() calls with three-props architecture",
+  "keywords": [
+    "exodra",
+    "babel",
+    "babel-plugin",
+    "jsx",
+    "transform",
+    "compiler",
+    "static-hoisting",
+    "performance",
+    "three-props"
+  ],
+  "main": "dist/index.cjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc && mv dist/index.js dist/index.cjs",
+    "prepublishOnly": "npm run build",
+    "test": "node test.mjs"
+  },
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/babel-plugin-jsx"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
+  },
+  "dependencies": {
+    "@babel/helper-plugin-utils": "^7.24.0",
+    "@babel/plugin-syntax-jsx": "^7.24.0",
+    "@babel/types": "^7.24.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@types/babel__core": "^7.20.5"
+  }
+}

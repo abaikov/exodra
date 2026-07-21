@@ -1,0 +1,19 @@
+architecture:
+  label: Architecture
+  permalink: /architecture
+  description: Posts about Exodra's architecture and design.
+
+performance:
+  label: Performance
+  permalink: /performance
+  description: Posts about performance characteristics and optimizations.
+
+design-decisions:
+  label: Design Decisions
+  permalink: /design-decisions
+  description: The reasoning behind Exodra's design decisions.
+
+benchmarks:
+  label: Benchmarks
+  permalink: /benchmarks
+  description: Benchmark results and methodology.

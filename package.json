@@ -1,0 +1,71 @@
+{
+  "name": "exodra",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "packages/examples/*"
+  ],
+  "scripts": {
+    "clean:src": "find packages -path '*/src/*' \\( -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' \\) -delete",
+    "prebuild": "npm run clean:src",
+    "build": "npm run build --workspace=@exodra/core && npm run build --workspace=@exodra/reactivity && npm run build --workspace=@exodra/string && npm run build --workspace=@exodra/dom && npm run build --workspace=@exodra/ssr && npm run build --workspace=@exodra/router && npm run build --workspace=@exodra/jsx && npm run build --workspace=@exodra/forms",
+    "build:tools": "npm run build --workspace=@exodra/babel-plugin-jsx && npm run build --workspace=@exodra/vite-plugin && npm run build --workspace=@exodra/profiler && npm run build --workspace=@exodra/react && npm run build --workspace=@exodra/introspect && npm run build --workspace=create-exodra",
+    "build:all": "npm run build && npm run build:tools",
+    "build:examples": "npm run build --workspace=@exodra/examples-client-no-compiler && npm run build --workspace=@exodra/examples-ssr && npm run build --workspace=@exodra/examples-client-with-compiler && npm run build --workspace=@exodra/examples-oimdb-context",
+    "build:clean": "npm run clean && npm run build:all",
+    "clean": "npm run clean --workspaces --if-present",
+    "lint": "eslint packages/*/src/**/*.{ts,tsx}",
+    "format": "prettier --write \"packages/**/src/**/*.{ts,tsx,js,jsx}\"",
+    "format:check": "prettier --check \"packages/**/src/**/*.{ts,tsx,js,jsx}\"",
+    "lint:fix": "eslint packages/*/src/**/*.{ts,tsx} --fix",
+    "publish:all": "chmod +x scripts/publish.sh && ./scripts/publish.sh",
+    "publish:dry": "chmod +x scripts/publish-dry.sh && ./scripts/publish-dry.sh",
+    "version:patch": "node scripts/version-bump.js patch",
+    "version:minor": "node scripts/version-bump.js minor",
+    "version:major": "node scripts/version-bump.js major",
+    "release:check": "npm run lint && npm run typecheck && npm run test:types && npm run build:all && npm run test:run",
+    "release": "npm run release:check && npm run publish:all",
+    "release:dry": "npm run release:check && npm run publish:dry",
+    "typecheck": "tsc -b tsconfig.build.json --pretty false",
+    "test:types": "npm run test:types --workspace=@exodra/type-tests",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "docs:dev": "cd docs-site && npm run start",
+    "docs:build": "cd docs-site && npm run build",
+    "docs:serve": "cd docs-site && npm run serve"
+  },
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "description": "A tiny schema-first UI runtime for reactive DOM, SSR, hydration, and JSX",
+  "keywords": [
+    "reactive",
+    "schema",
+    "runtime",
+    "framework",
+    "bindable",
+    "dom",
+    "ssr",
+    "hydration",
+    "jsx"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-syntax-jsx": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/eslint-plugin": "^8.60.1",
+    "@typescript-eslint/parser": "^8.60.1",
+    "eslint": "^10.4.1",
+    "jsdom": "^27.4.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.3.0",
+    "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "@oimdb/core": "^3.1.0"
+  }
+}

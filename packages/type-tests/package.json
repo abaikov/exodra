@@ -1,0 +1,16 @@
+{
+  "name": "@exodra/type-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Compile-only type-level tests for Exodra. Never published, never built into dist.",
+  "scripts": {
+    "test:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@exodra/core": "*",
+    "@exodra/jsx": "*",
+    "@exodra/reactivity": "*",
+    "typescript": "^5.3.3"
+  }
+}

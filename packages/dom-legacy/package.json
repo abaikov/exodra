@@ -1,0 +1,29 @@
+{
+  "name": "@exodra/dom-legacy",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "@exodra/core": "^0.1.0",
+    "@exodra/reactivity": "^0.1.0"
+  },
+  "scripts": {
+    "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
+    "build": "tsup",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+  },
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "description": "PRIVATE — frozen legacy per-node DOM renderer, kept only for benchmark comparison against @exodra/dom. Not published."
+}
