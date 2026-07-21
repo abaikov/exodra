@@ -58,9 +58,9 @@ console.log('\n── people: edit keeps focus (no full-list reset on a field ed
     await tick();
     const after = c.querySelector('[data-id="m-ada"] .member__name');
     ok('SAME input node survives the edit (focus preserved)', before === after);
-    ok('store updated', rt.store.members.collection.getOneByPk('m-ada')?.name === 'Adasha');
+    ok('store updated', rt.oimdbInstance.members.collection.getOneByPk('m-ada')?.name === 'Adasha');
     const liCount = c.querySelectorAll('.member').length;
-    ok('all members still rendered', liCount === rt.store.members.collection.getAll().length);
+    ok('all members still rendered', liCount === rt.oimdbInstance.members.collection.getAll().length);
 }
 
 console.log('\n── board: renders kanban, move dispatches CNS + logs activity ──');
@@ -75,30 +75,30 @@ console.log('\n── board: renders kanban, move dispatches CNS + logs activity
     ok('finds task card tk-5', !!card);
     const col = card.closest('.col') as HTMLElement;
     ok('tk-5 starts in To do column', col?.getAttribute('data-status') === 's-todo');
-    const activityBefore = rt.store.activity.collection.getAll().length;
+    const activityBefore = rt.oimdbInstance.activity.collection.getAll().length;
     (card.querySelector('[aria-label="Move right"]') as HTMLElement).dispatchEvent(
         new dom.window.Event('click')
     );
     await tick();
-    ok('store: tk-5 moved to In progress', rt.store.tasks.collection.getOneByPk('tk-5')?.statusId === 's-doing');
+    ok('store: tk-5 moved to In progress', rt.oimdbInstance.tasks.collection.getOneByPk('tk-5')?.statusId === 's-doing');
     const card2 = c.querySelector('[data-id="tk-5"]') as HTMLElement;
     ok('card re-homed into In progress column', card2?.closest('.col')?.getAttribute('data-status') === 's-doing');
-    ok('cnstra logged an activity record', rt.store.activity.collection.getAll().length === activityBefore + 1);
+    ok('cnstra logged an activity record', rt.oimdbInstance.activity.collection.getAll().length === activityBefore + 1);
 }
 
 console.log('\n── delete cascade: deleting a task removes its comments ──');
 {
-    const before = rt.store.commentsByTask.getPksByKey('tk-3').size;
+    const before = rt.oimdbInstance.commentsByTask.getPksByKey('tk-3').size;
     ok('tk-3 has comments to start', before > 0);
     rt.deleteTask('tk-3');
     await tick();
-    ok('task gone', !rt.store.tasks.collection.getOneByPk('tk-3'));
-    ok('its comments cascaded away', rt.store.commentsByTask.getPksByKey('tk-3').size === 0);
+    ok('task gone', !rt.oimdbInstance.tasks.collection.getOneByPk('tk-3'));
+    ok('its comments cascaded away', rt.oimdbInstance.commentsByTask.getPksByKey('tk-3').size === 0);
 }
 
 console.log('\n── add-task saga: optimistic pending insert ──');
 {
-    const n = rt.store.tasks.collection.getAll().length;
+    const n = rt.oimdbInstance.tasks.collection.getAll().length;
     rt.addTask({
         projectId: 'p-engine',
         title: 'smoke task',
@@ -110,10 +110,10 @@ console.log('\n── add-task saga: optimistic pending insert ──');
         milestoneId: null,
     });
     await tick();
-    const added = rt.store.tasks.collection.getAll().find(t => t.title === 'smoke task');
+    const added = rt.oimdbInstance.tasks.collection.getAll().find(t => t.title === 'smoke task');
     ok('optimistic task inserted', !!added);
     ok('inserted as pending (saga in flight)', added?.pending === true);
-    ok('count grew by 1', rt.store.tasks.collection.getAll().length === n + 1);
+    ok('count grew by 1', rt.oimdbInstance.tasks.collection.getAll().length === n + 1);
 }
 
 console.log(`\n${'='.repeat(48)}`);

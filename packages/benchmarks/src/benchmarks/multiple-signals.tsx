@@ -26,7 +26,7 @@ export async function benchmarkMultipleSignals(
         const node = mountExodra(container, {
             type: 'div',
             attrs: {
-                constants: {
+                static: {
                     children: bindables.map(bindable =>
                         h('span', { bindables: { textContent: bindable } })
                     ),

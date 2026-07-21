@@ -31,21 +31,21 @@ export default function activityPage(): TExoSchema {
     const empty = bindable('');
     const setEmpty = () =>
         empty.setValue(
-            rt.store.activity.collection.getAll().length
+            rt.oimdbInstance.activity.collection.getAll().length
                 ? ''
                 : 'No activity yet — do something on the Board.'
         );
 
     const feed = keyedList({
         items: () =>
-            rt.store.activity.collection
+            rt.oimdbInstance.activity.collection
                 .getAll()
                 .slice()
                 .sort((a, b) => b.at - a.at),
         key: a => a.id,
         render: row,
         subscribe: refresh => [
-            rt.store.activity.collection.subscribeOnAnyUpdate(() => {
+            rt.oimdbInstance.activity.collection.subscribeOnAnyUpdate(() => {
                 refresh();
                 setEmpty();
             }),

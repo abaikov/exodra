@@ -45,7 +45,7 @@ export async function benchmarkAdvancedListOperations(
         itemsList.set(2, li('y'));
         itemsList.move(0, 3, 1);
 
-        const snapshot = itemsList.snapshot().map(item => item.attrs.constants?.textContent);
+        const snapshot = itemsList.snapshot().map(item => item.attrs.static?.textContent);
         if (snapshot.length !== 4 || !snapshot.includes('x') || !snapshot.includes('y')) {
             throw new Error(`Exodra advanced list operations failed! Snapshot: ${snapshot.join(',')}`);
         }

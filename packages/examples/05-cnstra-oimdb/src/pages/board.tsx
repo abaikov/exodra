@@ -22,7 +22,7 @@ interface Card {
 
 function createCard(taskId: string, statuses: Status[]): Card {
     const rt = getRuntime();
-    const read = () => rt.store.tasks.collection.getOneByPk(taskId);
+    const read = () => rt.oimdbInstance.tasks.collection.getOneByPk(taskId);
     const initial = read();
     if (!initial) throw new Error(`card: missing task ${taskId}`);
 
@@ -74,7 +74,7 @@ function createCard(taskId: string, statuses: Status[]): Card {
         </article>
     );
 
-    const dispose = rt.store.tasks.collection.subscribeOnKey(taskId, () => {
+    const dispose = rt.oimdbInstance.tasks.collection.subscribeOnKey(taskId, () => {
         const t = read();
         if (!t) return;
         title.setValue(t.title);
@@ -94,15 +94,15 @@ function cardClass(t: Task): string {
 }
 function assigneeName(rt: ReturnType<typeof getRuntime>, t: Task): string {
     if (!t.assigneeId) return 'Unassigned';
-    return rt.store.members.collection.getOneByPk(t.assigneeId)?.name ?? '—';
+    return rt.oimdbInstance.members.collection.getOneByPk(t.assigneeId)?.name ?? '—';
 }
 function metaLine(rt: ReturnType<typeof getRuntime>, t: Task): string {
-    const project = rt.store.projects.collection.getOneByPk(t.projectId)?.name ?? '';
+    const project = rt.oimdbInstance.projects.collection.getOneByPk(t.projectId)?.name ?? '';
     const label = t.labelId
-        ? rt.store.labels.collection.getOneByPk(t.labelId)?.name
+        ? rt.oimdbInstance.labels.collection.getOneByPk(t.labelId)?.name
         : '';
     const tags = t.tagIds
-        .map(id => rt.store.tags.collection.getOneByPk(id)?.label)
+        .map(id => rt.oimdbInstance.tags.collection.getOneByPk(id)?.label)
         .filter(Boolean)
         .map(l => `#${l}`)
         .join(' ');
@@ -116,8 +116,8 @@ function createColumn(status: Status, statuses: Status[]) {
     const count = bindable('0');
 
     const orderedTasks = (): Task[] =>
-        [...rt.store.tasksByStatus.getPksByKey(status.id)]
-            .map(pk => rt.store.tasks.collection.getOneByPk(pk))
+        [...rt.oimdbInstance.tasksByStatus.getPksByKey(status.id)]
+            .map(pk => rt.oimdbInstance.tasks.collection.getOneByPk(pk))
             .filter((t): t is Task => Boolean(t))
             .sort((a, b) => a.createdAt - b.createdAt);
 
@@ -157,8 +157,8 @@ function createColumn(status: Status, statuses: Status[]) {
 
 export default function boardPage(): TExoSchema {
     const rt = getRuntime();
-    const statuses = orderedStatuses(rt.store);
-    const projects = rt.store.projects.collection.getAll().filter(p => !p.archived);
+    const statuses = orderedStatuses(rt.oimdbInstance);
+    const projects = rt.oimdbInstance.projects.collection.getAll().filter(p => !p.archived);
 
     const columns = statuses.map(s => createColumn(s, statuses));
     let stop: (() => void) | null = null;
@@ -188,7 +188,7 @@ export default function boardPage(): TExoSchema {
             static={{
                 class: 'page page--board',
                 onExoMount: () => {
-                    stop = rt.store.tasks.collection.subscribeOnAnyUpdate(() =>
+                    stop = rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(() =>
                         columns.forEach(c => c.refresh())
                     );
                 },

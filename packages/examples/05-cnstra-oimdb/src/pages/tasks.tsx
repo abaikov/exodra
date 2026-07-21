@@ -8,25 +8,25 @@ const PRIORITIES: Task['priority'][] = ['urgent', 'high', 'medium', 'low'];
 
 export default function tasksPage(): TExoSchema {
     const rt = getRuntime();
-    const statuses = orderedStatuses(rt.store);
-    const members = rt.store.members.collection.getAll();
-    const labels = rt.store.labels.collection.getAll();
+    const statuses = orderedStatuses(rt.oimdbInstance);
+    const members = rt.oimdbInstance.members.collection.getAll();
+    const labels = rt.oimdbInstance.labels.collection.getAll();
 
     const allTasks = () =>
-        rt.store.tasks.collection
+        rt.oimdbInstance.tasks.collection
             .getAll()
             .slice()
             .sort((a, b) => a.createdAt - b.createdAt);
 
     const commentsOf = (taskId: string): Comment[] =>
-        rt.store.comments.collection
-            .getManyByPks([...rt.store.commentsByTask.getPksByKey(taskId)])
+        rt.oimdbInstance.comments.collection
+            .getManyByPks([...rt.oimdbInstance.commentsByTask.getPksByKey(taskId)])
             .sort((a, b) => a.createdAt - b.createdAt);
 
     const commentRow = (c: Comment): TExoSchema => (
         <li static={{ class: 'cmt' }}>
             <b static={{ class: 'cmt__author' }}>
-                {rt.store.members.collection.getOneByPk(c.authorId)?.name ?? '?'}
+                {rt.oimdbInstance.members.collection.getOneByPk(c.authorId)?.name ?? '?'}
             </b>
             <span static={{ class: 'cmt__body' }}>{c.body}</span>
         </li>
@@ -188,8 +188,8 @@ export default function tasksPage(): TExoSchema {
         key: t => `${t.id}:${t.pending ? 1 : 0}:${commentsOf(t.id).length}`,
         render: taskRow,
         subscribe: refresh => [
-            rt.store.tasks.collection.subscribeOnAnyUpdate(refresh),
-            rt.store.comments.collection.subscribeOnAnyUpdate(refresh),
+            rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(refresh),
+            rt.oimdbInstance.comments.collection.subscribeOnAnyUpdate(refresh),
         ],
     });
 

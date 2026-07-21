@@ -223,17 +223,26 @@ the Exodra plugin.
 
 ## 📊 Performance
 
-Exodra achieves excellent performance through:
-- **Three Attributes Architecture** - Zero runtime type checking
-- **WeakMap-based core** - Automatic memory management
-- **Compile-time optimization** - Static hoisting and clone caching
-- **No Virtual DOM** - Direct DOM manipulation
+Exodra is fast by design:
+- **Three-props architecture** — the static/reactive/event split is decided at compile time, so there is no per-prop runtime type dispatch
+- **No Virtual DOM** — reactive bindings write to the DOM directly, no diffing
+- **Compile-time optimization** — static subtrees are hoisted and clone-cached
+- **WeakMap-based core** — teardown is driven by GC, so most code needs no manual disposal
 
-Key optimizations:
-- Event handlers and reactive bindings are separated at compile time
-- Static DOM elements in loops are automatically cloned
-- Components maintain their own state instances
-- No manual disposal needed for most use cases
+### Benchmarks
+
+From the project's own suite (`npm run bench`) — **initial render of a large tree**, median over the run:
+
+| Framework | Median | vs Exodra |
+|-----------|--------|-----------|
+| **Exodra** | **~1.05 ms** | — |
+| Solid     | ~1.9 ms  | 1.8× slower |
+| Svelte    | ~4.4 ms  | 4.2× slower |
+| React     | ~5.05 ms | 4.8× slower |
+
+For fine-grained updates (a single signal write, one list op) both Exodra and Solid finish in **well under a millisecond** — below the timer's resolution, so those cases are effectively a tie rather than a meaningful multiplier.
+
+> Methodology: headless Chromium (Playwright) over a Vite build, N iterations per case, median reported. These come from Exodra's **own** harness — not an independent third party — and are hardware/version dependent. Reproduce them with `npm run bench`.
 
 ## 🛠️ Development
 

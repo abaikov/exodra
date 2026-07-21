@@ -118,13 +118,13 @@ function getConstantChildren(schema: ExodraSchema): readonly ExodraSchema[] {
 
 function createSchema(shape: 'wide' | 'balanced' | 'deep'): ExodraSchema {
     if (shape === 'wide') {
-        return h(
-            'div',
-            {},
-            ...Array.from({ length: 2000 }, (_, i) =>
-                h('span', { textContent: `item-${i}` })
-            )
-        );
+        return h('div', {
+            static: {
+                children: Array.from({ length: 2000 }, (_, i) =>
+                    h('span', { static: { textContent: `item-${i}` } })
+                ),
+            },
+        });
     }
 
     if (shape === 'balanced') {
@@ -136,23 +136,23 @@ function createSchema(shape: 'wide' | 'balanced' | 'deep'): ExodraSchema {
 
 function createBalancedTree(depth: number, width: number, prefix: string): ExodraSchema {
     if (depth === 0) {
-        return h('span', { textContent: prefix });
+        return h('span', { static: { textContent: prefix } });
     }
 
-    return h(
-        'div',
-        {},
-        ...Array.from({ length: width }, (_, i) =>
-            createBalancedTree(depth - 1, width, `${prefix}-${i}`)
-        )
-    );
+    return h('div', {
+        static: {
+            children: Array.from({ length: width }, (_, i) =>
+                createBalancedTree(depth - 1, width, `${prefix}-${i}`)
+            ),
+        },
+    });
 }
 
 function createDeepTree(depth: number): ExodraSchema {
-    let schema = h('span', { textContent: 'leaf' });
+    let schema = h('span', { static: { textContent: 'leaf' } });
 
     for (let i = 0; i < depth; i++) {
-        schema = h('div', {}, schema);
+        schema = h('div', { static: { children: schema } });
     }
 
     return schema;

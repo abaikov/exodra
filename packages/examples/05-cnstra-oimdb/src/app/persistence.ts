@@ -36,11 +36,11 @@ export function loadPersisted(): WorkspaceSnapshot | null {
     }
 }
 
-export function savePersisted(store: WorkspaceStore): void {
+export function savePersisted(oimdbInstance: WorkspaceStore): void {
     try {
         globalThis.localStorage?.setItem(
             STORAGE_KEY,
-            JSON.stringify(takeSnapshot(store))
+            JSON.stringify(takeSnapshot(oimdbInstance))
         );
     } catch {
         // ignore quota / unavailable storage
@@ -55,20 +55,20 @@ export function clearPersisted(): void {
     }
 }
 
-export function restorePersisted(store: WorkspaceStore): boolean {
+export function restorePersisted(oimdbInstance: WorkspaceStore): boolean {
     const saved = loadPersisted();
     if (!saved) return false;
-    loadSnapshot(store, saved);
+    loadSnapshot(oimdbInstance, saved);
     return true;
 }
 
 // Persist on any collection change, coalescing bursts into one write per
 // microtask so a multi-entity command saves only once.
-export function attachPersistence(store: WorkspaceStore): () => void {
+export function attachPersistence(oimdbInstance: WorkspaceStore): () => void {
     let scheduled = false;
     const flush = () => {
         scheduled = false;
-        savePersisted(store);
+        savePersisted(oimdbInstance);
     };
     const schedule = () => {
         if (scheduled) return;
@@ -76,7 +76,7 @@ export function attachPersistence(store: WorkspaceStore): () => void {
         queueMicrotask(flush);
     };
     const unsubs = COLLECTIONS.map(name =>
-        store[name].collection.subscribeOnAnyUpdate(schedule)
+        oimdbInstance[name].collection.subscribeOnAnyUpdate(schedule)
     );
     return () => unsubs.forEach(u => u());
 }

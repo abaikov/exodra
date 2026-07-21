@@ -21,9 +21,9 @@ import type { WorkspaceSnapshot } from '../domain/types';
 type Mounted = ReturnType<typeof mount>;
 
 function statText(rt: WorkspaceRuntime): string {
-    const total = rt.store.tasks.collection.getAll().length;
-    const done = rt.store.tasksByStatus.getPksByKey('s-done').size;
-    const projects = rt.store.projects.collection
+    const total = rt.oimdbInstance.tasks.collection.getAll().length;
+    const done = rt.oimdbInstance.tasksByStatus.getPksByKey('s-done').size;
+    const projects = rt.oimdbInstance.projects.collection
         .getAll()
         .filter(p => !p.archived).length;
     return `${total} tasks · ${done} done · ${projects} projects`;
@@ -44,8 +44,8 @@ export function mountApp(
 
     const stats = bindable(statText(rt));
     const refreshStats = () => stats.setValue(statText(rt));
-    rt.store.tasks.collection.subscribeOnAnyUpdate(refreshStats);
-    rt.store.projects.collection.subscribeOnAnyUpdate(refreshStats);
+    rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(refreshStats);
+    rt.oimdbInstance.projects.collection.subscribeOnAnyUpdate(refreshStats);
     rt.bindErrors();
 
     // Hydrate the SSR'd shell (empty-outlet schema) against the existing DOM, or
@@ -97,9 +97,9 @@ export function mountApp(
     const finishBoot = (): void => {
         // localStorage edits applied AFTER hydration → a reactive reconcile, never
         // a hydration mismatch (the store matched the SSR DOM during hydrate).
-        restorePersisted(rt.store);
-        attachPersistence(rt.store);
-        const dev = registerOimdbDevtools(rt.store);
+        restorePersisted(rt.oimdbInstance);
+        attachPersistence(rt.oimdbInstance);
+        const dev = registerOimdbDevtools(rt.oimdbInstance);
         (window as Window & { __OIMDB_DEV__?: unknown }).__OIMDB_DEV__ = dev;
         if (window.location.search.includes('devtools')) {
             try {

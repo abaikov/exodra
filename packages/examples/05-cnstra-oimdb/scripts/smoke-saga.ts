@@ -1,131 +1,77 @@
-// Proves the cnstra add-saga + cascade:
-//  - optimistic add inserts a PENDING row immediately (todo--pending),
-//  - async persist confirms -> pending clears on the same DOM node,
-//  - a failing title rolls back -> the row is removed + an error surfaces,
-//  - clear-done cascades removal of every done todo in a list.
-// Run via vite-node: npx vite-node scripts/smoke-saga.ts
-import { JSDOM } from 'jsdom';
+// CNS saga smoke (no DOM): the add-task orchestration, stimulated straight into
+// the neuron graph.
+//  - optimistic add inserts a PENDING task immediately,
+//  - the async persist saga settles it → pending clears,
+//  - a "fail" title rolls the task back (removed) + emits taskPersistRejected,
+//  - an empty title is rejected up front and never inserts.
+// Run: npx vite-node scripts/smoke-saga.ts
+import {
+    createWorkspaceStore,
+    loadSnapshot,
+    orderedStatuses,
+} from '../src/store/workspace-store';
+import { createSeed } from '../src/domain/seed';
+import {
+    createWorkspaceCns,
+    addTaskRequested,
+    taskPersistRejected,
+    type AddTaskCommand,
+} from '../src/cns/workspace-cns';
 
-const dom = new JSDOM(
-    '<!DOCTYPE html><html><body><div id="root"></div></body></html>'
-);
-const g = globalThis as Record<string, unknown>;
-for (const k of [
-    'window',
-    'document',
-    'Node',
-    'Text',
-    'Element',
-    'HTMLElement',
-    'DocumentFragment',
-    'Comment',
-]) {
-    g[k] = (dom.window as unknown as Record<string, unknown>)[k];
-}
+let pass = 0;
+const fail: string[] = [];
+const ok = (n: string, c: boolean) => {
+    if (c) { pass++; console.log('  ✓', n); }
+    else { fail.push(n); console.log('  ✗', n); }
+};
+const tick = () => new Promise(r => setTimeout(r, 0));
+const byTitle = (title: string) =>
+    oimdbInstance.tasks.collection.getAll().find(t => t.title === title);
 
-const settle = (ms: number) => new Promise(r => setTimeout(r, ms));
+const oimdbInstance = createWorkspaceStore();
+loadSnapshot(oimdbInstance, createSeed());
+// persistDelayMs:0 → the saga's setTimeout fires on the next tick.
+const { cns } = createWorkspaceCns(oimdbInstance, { persistDelayMs: 0 });
 
-async function main(): Promise<void> {
-    const { renderToString } = await import('@exodra/string');
-    const { hydrate } = await import('@exodra/dom');
-    const { createTodoStore } = await import('../src/store/todo-store');
-    const { createTodoCns, addTodoRequested, toggleTodoRequested, clearDoneRequested } =
-        await import('../src/cns/todo-cns');
-    const { createViewModel } = await import('../src/app/view-model');
-    const { appView } = await import('../src/ui/views');
-    const { seedLists, seedTodos } = await import('../src/domain/seed');
+const base: Omit<AddTaskCommand, 'title'> = {
+    projectId: oimdbInstance.projects.collection.getAll().find(p => !p.archived)!.id,
+    priority: 'medium',
+    statusId: orderedStatuses(oimdbInstance)[0].id,
+    assigneeId: null,
+    labelId: null,
+    tagIds: [],
+    milestoneId: null,
+};
 
-    const store = createTodoStore();
-    store.lists.collection.upsertMany([...seedLists]);
-    store.todos.collection.upsertMany([...seedTodos]);
-    const cns = createTodoCns(store, { persistDelayMs: 30 });
-    const vm = createViewModel(store, cns);
-
-    const html = renderToString(appView(vm));
-    const root = document.getElementById('root')!;
-    root.innerHTML = html;
-    const app = root.firstElementChild as unknown as Element;
-    hydrate(appView(vm), app);
-    vm.bindLive();
-
-    const listId = store.lists.collection.getAll()[0].id;
-    const rowsIn = (id: string) =>
-        app.querySelectorAll(`.column[data-list="${id}"] .todo`).length;
-    const pendingRows = () => app.querySelectorAll('.todo--pending').length;
-
-    // --- 1. optimistic add: pending row visible before persist settles ---
-    const before = rowsIn(listId);
-    cns.cns.stimulate(
-        addTodoRequested.createSignal({
-            listId,
-            title: 'Ship the release',
-            priority: 'high',
-            tags: ['demo'],
-        })
-    );
-    await settle(0); // flush oimdb microtask, persist (30ms) not yet fired
-    const addedRow = rowsIn(listId) === before + 1;
-    const isPending = pendingRows() === 1;
-
-    await settle(60); // persist confirms
-    const stillThere = rowsIn(listId) === before + 1;
-    const pendingCleared = pendingRows() === 0;
-
-    // --- 2. failing add rolls back ---
-    cns.cns.stimulate(
-        addTodoRequested.createSignal({
-            listId,
-            title: 'This will fail to save',
-            priority: 'low',
-            tags: [],
-        })
-    );
-    await settle(0);
-    const failPending = rowsIn(listId) === before + 2;
-    await settle(60); // persist fails -> rollback
-    const rolledBack = rowsIn(listId) === before + 1;
-    const errorShown = /fail/i.test(String(vm.errorText.getValue()));
-
-    // --- 3. cascade clear-done ---
-    // Mark two todos in the list done, then clear them in one command.
-    const listPks = [...store.todosByList.getPksByKey(listId)];
-    const toFinish = listPks
-        .filter(pk => store.todos.collection.getOneByPk(pk)?.status === 'active')
-        .slice(0, 2);
-    for (const id of toFinish)
-        cns.cns.stimulate(toggleTodoRequested.createSignal({ id }));
-    await settle(0);
-    const doneBefore = app.querySelectorAll(
-        `.column[data-list="${listId}"] .todo--done`
-    ).length;
-    cns.cns.stimulate(clearDoneRequested.createSignal({ listId }));
-    await settle(0);
-    const doneAfter = app.querySelectorAll(
-        `.column[data-list="${listId}"] .todo--done`
-    ).length;
-
-    const checks: [string, boolean][] = [
-        ['optimistic add inserts a row immediately', addedRow],
-        ['the new row is marked pending', isPending],
-        ['row survives a successful persist', stillThere],
-        ['pending flag clears after persist', pendingCleared],
-        ['failing add is momentarily pending', failPending],
-        ['failing add rolls the row back out', rolledBack],
-        ['rollback surfaces an error message', errorShown],
-        ['clear-done had >=2 done rows to clear', doneBefore >= 2],
-        ['clear-done cascades them all out', doneAfter === 0],
-    ];
-
-    let ok = true;
-    for (const [label, pass] of checks) {
-        console.log(`${pass ? '✓' : '✗'} ${label}`);
-        ok = ok && pass;
-    }
-    console.log(ok ? 'SMOKE SAGA: PASS' : 'SMOKE SAGA: FAIL');
-    process.exit(ok ? 0 : 1);
-}
-
-main().catch(err => {
-    console.error(err);
-    process.exit(1);
+const rejections: string[] = [];
+cns.addResponseListener(res => {
+    const out = (res as { outputSignal?: { collateral?: unknown; payload?: { reason?: string } } }).outputSignal;
+    if (out?.collateral === taskPersistRejected) rejections.push(out.payload?.reason ?? '');
 });
+
+console.log('\n── happy path: optimistic add → settle ──');
+cns.stimulate(addTaskRequested.createSignal({ ...base, title: 'Saga happy' }));
+const happy = byTitle('Saga happy');
+ok('optimistic add inserts the task as PENDING', happy?.pending === true);
+await tick();
+await tick();
+ok('persist settles → pending cleared', oimdbInstance.tasks.collection.getOneByPk(happy!.id)?.pending === false);
+
+console.log('\n── fail path: rollback + rejection ──');
+cns.stimulate(addTaskRequested.createSignal({ ...base, title: 'please fail me' }));
+const failing = byTitle('please fail me');
+ok('failing task is added optimistically (pending)', failing?.pending === true);
+const before = rejections.length;
+await tick();
+await tick();
+ok('persist fails → task rolled back (removed)', !oimdbInstance.tasks.collection.getOneByPk(failing!.id));
+ok('a taskPersistRejected surfaced with a reason', rejections.length === before + 1 && rejections.at(-1)!.length > 0);
+
+console.log('\n── validation: empty title never inserts ──');
+const countBefore = oimdbInstance.tasks.collection.getAll().length;
+cns.stimulate(addTaskRequested.createSignal({ ...base, title: '   ' }));
+ok('empty title rejected up front — no task inserted', oimdbInstance.tasks.collection.getAll().length === countBefore);
+
+console.log(`\n${'='.repeat(44)}`);
+console.log(`SAGA SMOKE: ${pass} passed, ${fail.length} failed`);
+if (fail.length) { console.log('FAILED:', fail.join('; ')); process.exit(1); }

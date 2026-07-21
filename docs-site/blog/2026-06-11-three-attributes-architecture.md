@@ -33,10 +33,7 @@ for (const prop of props) {
 
 ## The Cost Adds Up
 
-Consider a typical app with 10,000 elements:
-- 5 props per element average = 50,000 prop checks
-- 2ms per 1000 checks = 100ms overhead
-- This happens on EVERY render cycle
+Consider a typical app with 10,000 elements and ~5 props each — roughly 50,000 prop reads. In a runtime-dispatch model, each read asks the same question ("is this reactive? an event handler? a plain attribute?") and does it *on every render cycle*. Any single check is trivially cheap; the point is that it's work you keep paying. Exodra pays it once, at compile time, and never again at runtime.
 
 **Death by a thousand cuts.**
 
@@ -78,28 +75,20 @@ No type checking. No guessing. No overhead.
 
 ## Performance Impact
 
-Real benchmarks from our test suite:
+We don't ship a "runtime-type-checking" variant of Exodra to A/B against, so we won't quote a made-up "with checks vs without" delta. What we *can* show is how the architecture holds up against other reactive frameworks.
 
-### Mounting 1,000 Components
-```
-Traditional (with checks): 89ms
-Three Props (no checks): 31ms
-Improvement: 65% faster
-```
+In the project's benchmark suite (`npm run bench`), rendering a large tree — the case that actually does work at a measurable scale — lands like this (median per run):
 
-### Updating 10,000 Attributes
-```
-Traditional: 156ms
-Three Attributes: 42ms
-Improvement: 73% faster
-```
+| Framework | Initial render (median) |
+|-----------|-------------------------|
+| **Exodra** | **~1.05 ms** |
+| Solid     | ~1.9 ms  |
+| Svelte    | ~4.4 ms  |
+| React     | ~5.05 ms |
 
-### Memory Usage
-```
-Traditional: 24.5MB (tracking metadata)
-Three Props: 18.2MB (no metadata needed)
-Savings: 26% less memory
-```
+Fine-grained updates (a single signal or list op) complete in **sub-millisecond** time for both Exodra and Solid — below the timer's resolution — so we treat those as a tie, not a headline multiplier.
+
+Caveats worth stating plainly: this is Exodra's **own** harness (headless Chromium via Playwright), not an independent benchmark, and numbers move with hardware and framework versions. Run `npm run bench` and see for yourself. The point isn't "we win every micro-benchmark" — it's that pre-separating props at compile time removes a class of per-update work, and that shows up on real render workloads.
 
 ## Why Not Just Use a Compiler?
 
@@ -126,12 +115,7 @@ Every `bindable` prop is a conscious choice. Every `static` prop is a performanc
 
 ## Real-World Impact
 
-In our production app with 50,000 DOM nodes:
-- Initial render: 850ms → 290ms
-- Update cycle: 45ms → 12ms
-- Memory usage: 145MB → 98MB
-
-**That's not an optimization. That's a different league.**
+We won't quote before/after figures from a "production app" you can't re-run — that's how you end up trusting invented numbers. What you *can* run is the benchmark suite: `npm run bench` renders a large tree, and Exodra comes out ahead of Solid, Svelte, and React in our harness (see the numbers earlier — hardware/version dependent). The architectural claim doesn't hinge on the exact figure: pre-separating props at compile time removes a category of per-update work, and that shows up on real render workloads.
 
 ## Conclusion
 

@@ -1,5 +1,7 @@
 # Project Workspace — Exodra × oimdb × cnstra
 
+📖 Full documentation: **[exodra.org](https://exodra.org)**
+
 The flagship example: a real, editable **10-entity project workspace** — a Kanban
 board, full CRUD across tasks/projects/people/taxonomy, an audit feed, and a
 10,000-row virtual list — server-rendered, hydrated, and code-split, on top of the

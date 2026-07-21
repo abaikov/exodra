@@ -1,13 +1,13 @@
 ---
-slug: weakmap-core-superiority
-title: Why WeakMap Core Outperforms Legacy Implementation
+slug: weakmap-core-design
+title: Why the WeakMap Core Is a Better Design Than the Legacy One
 authors: [andrei]
 tags: [performance, architecture, benchmarks]
 ---
 
-# WeakMap Core vs Legacy: A Performance Deep Dive
+# WeakMap Core vs Legacy: A Design Deep Dive
 
-After extensive benchmarking and real-world testing, our WeakMap-based core has proven to be conceptually superior to the legacy implementation. Here's why we made the switch and what it means for Exodra's performance.
+Exodra moved from a legacy per-node bookkeeping model to a WeakMap-based core. This post is about *why that's a better design* — less work per node, GC-driven cleanup, and cache-friendly lookups. It is deliberately light on "X% faster" numbers, because the honest, reproducible timings come from `npm run bench`, not prose.
 
 {/* truncate */}
 
@@ -39,26 +39,15 @@ const nodeCache = new WeakMap();
 // When node is GC'd, WeakMap entry is automatically removed
 ```
 
-## Benchmark Results
+## Why This Is a Design Win (Not a Benchmark Claim)
 
-Our comprehensive benchmarks show significant improvements:
+We're going to be honest here: Exodra does **not** ship a maintained "legacy vs WeakMap" microbenchmark, so this post won't quote a measured "X% faster" delta — doing so would be inventing numbers. The case for the WeakMap core is **architectural**, and it stands on its own:
 
-### Node Creation (10,000 elements)
-- **Legacy Core**: 145ms
-- **WeakMap Core**: 89ms
-- **Improvement**: 39% faster
+- **Node creation** avoids allocating a per-node bookkeeping object and wiring up manual parent/child tracking — there's simply less work per node.
+- **Memory after unmount** is reclaimed by the garbage collector: when a subtree's nodes become unreachable, their WeakMap entries go with them. There is no retained-metadata table to grow or forget to clear.
+- **Cache lookups** (clone-caching static subtrees) are a direct WeakMap `get` keyed by the schema node — no scanning, no auxiliary index.
 
-### Memory Usage (after unmounting)
-- **Legacy Core**: 12.4MB retained
-- **WeakMap Core**: 0.2MB retained
-- **Improvement**: 98% less memory leak
-
-### Cache Hit Performance
-```
-WeakMap cache hit: 0.003ms
-Legacy lookup: 0.018ms
-Improvement: 6x faster
-```
+If you want real, reproducible numbers, run the cross-framework suite with `npm run bench`: on a large-tree initial render Exodra lands around ~1 ms median (ahead of Solid/Svelte/React in our harness). Those are Exodra's own benchmarks and are hardware/version dependent — reproduce them yourself rather than trusting a marketing figure.
 
 ## Real-World Benefits
 
@@ -81,23 +70,20 @@ No dispose, no cleanup, no leaks:
 - WeakMap automatically cleans up entries
 - No manual intervention required
 
-### 3. Better Performance at Scale
-In a real application with 50,000 updates:
-- **Legacy**: Progressive slowdown from 10ms to 45ms per update
-- **WeakMap**: Consistent 8-10ms per update
-- **Why**: No accumulating garbage, better cache locality
+### 3. Steady Performance at Scale
+Because there's no manually-managed metadata table accumulating over an app's lifetime, per-update cost doesn't drift upward as the app runs — freed nodes are collected, and there's no growing structure to walk. This is a property of the design, not a number we're quoting from a synthetic 50k-update loop.
 
-## Conceptual Superiority
+## Why It's a Better Model
 
-WeakMap isn't just faster—it's conceptually better:
+The WeakMap core wins on properties, not just speed:
 
-1. **Separation of Concerns**: Memory management is handled by the runtime
-2. **Impossible to Leak**: Can't forget to clean up what you never manually manage
-3. **Cache-Friendly**: Natural fit for memoization and caching patterns
-4. **Scalable**: Performance doesn't degrade with application size
+1. **Separation of concerns**: memory management is handled by the runtime/GC
+2. **Hard to leak**: you can't forget to clean up what you never manually manage
+3. **Cache-friendly**: a natural fit for memoization and clone-caching
+4. **Steady at scale**: no manually-grown metadata table to drift with app size
 
 ## Conclusion
 
-The WeakMap core represents a fundamental improvement in how Exodra manages memory and performance. It's not just an optimization—it's a better architectural pattern that eliminates entire classes of bugs while providing superior performance.
+The WeakMap core is an architectural improvement in how Exodra manages memory: it removes per-node bookkeeping and the whole "did I remember to dispose?" class of bugs. We're framing it as a design win rather than a benchmark headline on purpose — for numbers, `npm run bench` is the honest source.
 
-**Bottom line**: WeakMap core is 39% faster in creation, 6x faster in lookups, and uses 98% less memory after unmounting. But more importantly, it's impossible to use incorrectly.
+**Bottom line**: the WeakMap core does less work per node, leans on the GC for cleanup instead of manual disposal, and makes clone-cache lookups a direct keyed `get`. The win is that it's hard to misuse and easy to reason about — and for actual, reproducible timings, `npm run bench` is the source of truth, not this post.

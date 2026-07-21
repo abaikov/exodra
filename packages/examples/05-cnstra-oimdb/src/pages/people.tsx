@@ -6,10 +6,10 @@ import { keyedList } from '../app/keyed-list';
 export default function peoplePage(): TExoSchema {
     const rt = getRuntime();
 
-    const teams = () => rt.store.teams.collection.getAll();
+    const teams = () => rt.oimdbInstance.teams.collection.getAll();
     const membersOf = (teamId: string): Member[] =>
-        rt.store.members.collection.getManyByPks([
-            ...rt.store.membersByTeam.getPksByKey(teamId),
+        rt.oimdbInstance.members.collection.getManyByPks([
+            ...rt.oimdbInstance.membersByTeam.getPksByKey(teamId),
         ]);
 
     const memberRow = (m: Member): TExoSchema => (
@@ -89,8 +89,8 @@ export default function peoplePage(): TExoSchema {
         key: t => `${t.id}:${membersOf(t.id).map(m => m.id).join('+')}`,
         render: teamSection,
         subscribe: refresh => [
-            rt.store.members.collection.subscribeOnAnyUpdate(refresh),
-            rt.store.teams.collection.subscribeOnAnyUpdate(refresh),
+            rt.oimdbInstance.members.collection.subscribeOnAnyUpdate(refresh),
+            rt.oimdbInstance.teams.collection.subscribeOnAnyUpdate(refresh),
         ],
     });
 
@@ -105,7 +105,7 @@ export default function peoplePage(): TExoSchema {
             <div static={{ class: 'page__bar' }}>
                 <h1 static={{ class: 'page__title' }}>People</h1>
                 <span static={{ class: 'page__hint' }}>
-                    {`${rt.store.members.collection.getAll().length} members`}
+                    {`${rt.oimdbInstance.members.collection.getAll().length} members`}
                 </span>
             </div>
             <div static={{ class: 'panels' }} bindable={{ children: panels.children }} />

@@ -24,7 +24,7 @@ function swatchEditor(
     const draft = bindable('');
 
     const items = (): Swatchable[] =>
-        (rt.store[name].collection.getAll() as readonly Swatchable[]).slice();
+        (rt.oimdbInstance[name].collection.getAll() as readonly Swatchable[]).slice();
 
     const row = (item: Swatchable): TExoSchema => (
         <li static={{ class: 'swatch', 'data-id': item.id }}>
@@ -63,7 +63,7 @@ function swatchEditor(
         key: r => r.id,
         render: row,
         subscribe: refresh => [
-            rt.store[name].collection.subscribeOnAnyUpdate(refresh),
+            rt.oimdbInstance[name].collection.subscribeOnAnyUpdate(refresh),
         ],
     });
 

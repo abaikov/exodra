@@ -18,7 +18,9 @@ import {
     deleteTaskRequested,
     addCommentRequested,
     archiveProjectRequested,
-    validationFailed,
+    taskRejected,
+    commentRejected,
+    taskPersistRejected,
     type WorkspaceCns,
     type AddTaskCommand,
 } from '../cns/workspace-cns';
@@ -26,7 +28,7 @@ import { loadSnapshot } from '../store/workspace-store';
 import type { EntityName, WorkspaceSnapshot } from '../domain/types';
 
 export interface WorkspaceRuntime {
-    store: WorkspaceStore;
+    oimdbInstance: WorkspaceStore;
     cns: WorkspaceCns['cns'];
     error: TExoWritableBindable<string>;
     // command dispatchers (stimulate the CNS; clear the error first)
@@ -48,9 +50,9 @@ export interface WorkspaceRuntime {
 }
 
 export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
-    const store = createWorkspaceStore();
-    if (snapshot) loadSnapshot(store, snapshot);
-    const { cns } = createWorkspaceCns(store);
+    const oimdbInstance = createWorkspaceStore();
+    if (snapshot) loadSnapshot(oimdbInstance, snapshot);
+    const { cns } = createWorkspaceCns(oimdbInstance);
     const error = bindable('');
 
     const send = (signal: Parameters<typeof cns.stimulate>[0]) => {
@@ -59,7 +61,7 @@ export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
     };
 
     return {
-        store,
+        oimdbInstance,
         cns,
         error,
         addTask: cmd => send(addTaskRequested.createSignal(cmd)),
@@ -75,11 +77,18 @@ export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
         archiveProject: id =>
             send(archiveProjectRequested.createSignal({ id })),
         createEntity: (name, entity) =>
-            store[name].collection.upsertOne(entity as never),
+            oimdbInstance[name].collection.upsertOne(entity as never),
         patchEntity: (name, id, patch) =>
-            store[name].collection.upsertOneByPk(id, patch as never),
-        removeEntity: (name, id) => store[name].collection.removeOneByPk(id),
+            oimdbInstance[name].collection.upsertOneByPk(id, patch as never),
+        removeEntity: (name, id) => oimdbInstance[name].collection.removeOneByPk(id),
         bindErrors() {
+            // Every domain emits its OWN rejection collateral; the UI cares about
+            // all of them, so watch the set.
+            const rejections = new Set<unknown>([
+                taskRejected,
+                commentRejected,
+                taskPersistRejected,
+            ]);
             return cns.addResponseListener(res => {
                 const out = (
                     res as {
@@ -89,7 +98,7 @@ export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
                         };
                     }
                 ).outputSignal;
-                if (out?.collateral === validationFailed) {
+                if (out && rejections.has(out.collateral)) {
                     error.setValue(out.payload?.reason ?? 'Invalid command');
                 }
             });

@@ -33,6 +33,7 @@ const sidebars = {
         'guides/components',
         'guides/lists',
         'guides/ssr',
+        'guides/react',
       ],
     },
     {
@@ -41,7 +42,21 @@ const sidebars = {
       items: [
         'api/core',
         'api/reactivity',
+        'api/dom',
         'api/router',
+        'api/string',
+        'api/forms',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Tooling',
+      items: [
+        'tooling/create-exodra',
+        'tooling/vite-plugin',
+        'tooling/babel-plugin',
+        'tooling/introspect',
+        'tooling/profiler',
       ],
     },
   ],

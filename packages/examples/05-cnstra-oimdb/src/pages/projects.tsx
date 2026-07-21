@@ -6,15 +6,15 @@ import { keyedList } from '../app/keyed-list';
 export default function projectsPage(): TExoSchema {
     const rt = getRuntime();
 
-    const projects = () => rt.store.projects.collection.getAll();
+    const projects = () => rt.oimdbInstance.projects.collection.getAll();
     const milestonesOf = (projectId: string): Milestone[] =>
-        rt.store.milestones.collection.getManyByPks([
-            ...rt.store.milestonesByProject.getPksByKey(projectId),
+        rt.oimdbInstance.milestones.collection.getManyByPks([
+            ...rt.oimdbInstance.milestonesByProject.getPksByKey(projectId),
         ]);
     const taskCount = (projectId: string) =>
-        rt.store.tasksByProject.getPksByKey(projectId).size;
+        rt.oimdbInstance.tasksByProject.getPksByKey(projectId).size;
     const leadName = (id: string) =>
-        rt.store.members.collection.getOneByPk(id)?.name ?? '—';
+        rt.oimdbInstance.members.collection.getOneByPk(id)?.name ?? '—';
 
     const milestoneRow = (m: Milestone): TExoSchema => (
         <li static={{ class: 'ms', 'data-id': m.id }}>
@@ -100,9 +100,9 @@ export default function projectsPage(): TExoSchema {
                 .join('+')}`,
         render: card,
         subscribe: refresh => [
-            rt.store.projects.collection.subscribeOnAnyUpdate(refresh),
-            rt.store.milestones.collection.subscribeOnAnyUpdate(refresh),
-            rt.store.tasks.collection.subscribeOnAnyUpdate(refresh),
+            rt.oimdbInstance.projects.collection.subscribeOnAnyUpdate(refresh),
+            rt.oimdbInstance.milestones.collection.subscribeOnAnyUpdate(refresh),
+            rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(refresh),
         ],
     });
 
@@ -112,7 +112,7 @@ export default function projectsPage(): TExoSchema {
             name: 'New project',
             description: '',
             color: '#6366f1',
-            leadId: rt.store.members.collection.getAll()[0]?.id ?? '',
+            leadId: rt.oimdbInstance.members.collection.getAll()[0]?.id ?? '',
             archived: false,
         });
 

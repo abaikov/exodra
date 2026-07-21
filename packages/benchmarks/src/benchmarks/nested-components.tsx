@@ -22,9 +22,9 @@ export async function benchmarkNestedComponents(
                 return h('div', { bindables: { textContent: count } });
             }
             return h('div', {
-                constants: {
+                static: {
                     children: [
-                        h('span', { constants: { textContent: `Level ${depth}` } }),
+                        h('span', { static: { textContent: `Level ${depth}` } }),
                         createNestedSchema(depth + 1, maxDepth),
                     ],
                 }
@@ -37,7 +37,7 @@ export async function benchmarkNestedComponents(
         const node = mountExodra(container, {
             type: 'div',
             attrs: {
-                constants: {
+                static: {
                     children: createNestedSchema(0, 10),
                 },
             },

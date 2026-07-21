@@ -24,7 +24,7 @@ type ExodraBindableLists = Record<string, TExoBindableList<unknown, unknown>> & 
 };
 
 export type ExodraAttrs = {
-    constants?: ExodraConstants;
+    static?: ExodraConstants;
     bindables?: ExodraBindables;
     bindableLists?: ExodraBindableLists;
 };

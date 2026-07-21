@@ -23,11 +23,11 @@ export function render(url = '/') {
     setRuntime(rt);
     const router = createRouter(routes, { history: createMemoryHistory(url) });
     const stats = bindable(
-        `${rt.store.tasks.collection.getAll().length} tasks`
+        `${rt.oimdbInstance.tasks.collection.getAll().length} tasks`
     );
 
     const shellSsr = new ExoNodeSsr(shellView(router, rt, stats));
-    shellSsr.setState('workspace', takeSnapshot(rt.store));
+    shellSsr.setState('workspace', takeSnapshot(rt.oimdbInstance));
     let appHtml = shellSsr.renderBody();
 
     if (url === '/' || url.startsWith('/?')) {

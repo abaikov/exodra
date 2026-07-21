@@ -23,12 +23,12 @@ const ok = (n: string, c: boolean) => {
 };
 const tick = () => new Promise(r => setTimeout(r, 0));
 
-const store = createWorkspaceStore();
-loadSnapshot(store, createSeed());
-const detach = attachPersistence(store);
+const oimdbInstance = createWorkspaceStore();
+loadSnapshot(oimdbInstance, createSeed());
+const detach = attachPersistence(oimdbInstance);
 
 // Mutate → the store's change fans out to persistence, which coalesces a write.
-store.tasks.collection.upsertOne({
+oimdbInstance.tasks.collection.upsertOne({
     id: 'persist-1',
     projectId: 'p-web',
     milestoneId: null,
@@ -40,7 +40,7 @@ store.tasks.collection.upsertOne({
     priority: 'medium',
     createdAt: 1,
 });
-store.queue.flush();
+oimdbInstance.queue.flush();
 await tick();
 
 const saved = loadPersisted();

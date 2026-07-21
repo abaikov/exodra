@@ -18,13 +18,13 @@ export async function benchmarkConditionalRender(
         const { h } = await import('../exodra/schema');
         const { mountExodra, unmountExodra } = await import('../exodra/mount');
 
-        const expensiveChildren = h(
-            'div',
-            {},
-            ...Array.from({ length: 50 }, (_, i) =>
-                h('div', { constants: { textContent: `Item ${i}` } })
-            )
-        );
+        const expensiveChildren = h('div', {
+            static: {
+                children: Array.from({ length: 50 }, (_, i) =>
+                    h('div', { static: { textContent: `Item ${i}` } })
+                ),
+            },
+        });
 
         const show = createExoBindable(false);
         const children = createExoBindable<ExodraSchema | readonly ExodraSchema[]>([]);

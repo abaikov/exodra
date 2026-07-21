@@ -52,6 +52,9 @@ web_modules/
 **/src/**/*.d.ts
 **/src/**/*.js.map
 **/src/**/*.d.ts.map
+# ...but the Docusaurus site's src is genuine source (React homepage/components
+# written in .js), not compiled output — keep it tracked.
+!docs-site/src/**/*.js
 
 # Optional npm cache directory
 .npm

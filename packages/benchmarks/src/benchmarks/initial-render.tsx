@@ -16,15 +16,15 @@ export async function benchmarkInitialRender(
 
         const InnerComponent = (props: { i: number }) =>
             h('div', {
-                constants: {
+                static: {
                     'data-id': String(props.i),
                     children: [
-                        h('span', { constants: { textContent: `Item ${props.i}` } }),
+                        h('span', { static: { textContent: `Item ${props.i}` } }),
                         h('div', {
-                            constants: {
+                            static: {
                                 children: Array.from({ length: 3 }, (_, j) =>
                                     h('div', {
-                                        constants: {
+                                        static: {
                                             'data-nested': `${props.i}-${j}`,
                                             textContent: `Nested ${props.i}-${j}`,
                                         }
@@ -38,7 +38,7 @@ export async function benchmarkInitialRender(
 
         const LargeComponent = () =>
             h('div', {
-                constants: {
+                static: {
                     'data-test': 'large-component',
                     children: Array.from({ length: 200 }, (_, i) =>
                         InnerComponent({ i })

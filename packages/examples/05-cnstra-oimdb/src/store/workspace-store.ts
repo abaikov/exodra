@@ -108,33 +108,33 @@ const COLLECTIONS: readonly (keyof WorkspaceSnapshot)[] = [
 ];
 
 export function loadSnapshot(
-    store: WorkspaceStore,
+    oimdbInstance: WorkspaceStore,
     snapshot: WorkspaceSnapshot
 ): void {
     for (const name of COLLECTIONS) {
-        const col = store[name].collection;
+        const col = oimdbInstance[name].collection;
         col.clear();
         col.upsertMany([...snapshot[name]] as never[]);
     }
 }
 
-export function takeSnapshot(store: WorkspaceStore): WorkspaceSnapshot {
+export function takeSnapshot(oimdbInstance: WorkspaceStore): WorkspaceSnapshot {
     return {
-        teams: store.teams.collection.getAll(),
-        members: store.members.collection.getAll(),
-        projects: store.projects.collection.getAll(),
-        milestones: store.milestones.collection.getAll(),
-        statuses: store.statuses.collection.getAll(),
-        tags: store.tags.collection.getAll(),
-        labels: store.labels.collection.getAll(),
-        tasks: store.tasks.collection.getAll(),
-        comments: store.comments.collection.getAll(),
-        activity: store.activity.collection.getAll(),
+        teams: oimdbInstance.teams.collection.getAll(),
+        members: oimdbInstance.members.collection.getAll(),
+        projects: oimdbInstance.projects.collection.getAll(),
+        milestones: oimdbInstance.milestones.collection.getAll(),
+        statuses: oimdbInstance.statuses.collection.getAll(),
+        tags: oimdbInstance.tags.collection.getAll(),
+        labels: oimdbInstance.labels.collection.getAll(),
+        tasks: oimdbInstance.tasks.collection.getAll(),
+        comments: oimdbInstance.comments.collection.getAll(),
+        activity: oimdbInstance.activity.collection.getAll(),
     };
 }
 
 // --- read helpers used across pages -----------------------------------------
 
-export function orderedStatuses(store: WorkspaceStore): Status[] {
-    return store.statuses.collection.getAll().slice().sort((a, b) => a.order - b.order);
+export function orderedStatuses(oimdbInstance: WorkspaceStore): Status[] {
+    return oimdbInstance.statuses.collection.getAll().slice().sort((a, b) => a.order - b.order);
 }
