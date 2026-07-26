@@ -23,7 +23,8 @@
     "build": "tsup",
     "prepublishOnly": "npm run build",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "devDependencies": {
     "tsup": "^8.0.0",
@@ -31,7 +32,7 @@
   },
   "author": "Andrei Baikov",
   "license": "MIT",
-  "description": "Performance profiling for Exodra applications",
+  "description": "DEPRECATED — use @exodra/dom-profiler. Generic class profiler only.",
   "homepage": "https://exodra.org",
   "repository": {
     "type": "git",
@@ -45,10 +46,7 @@
     "exodra",
     "profiler",
     "performance",
-    "devtools"
-  ],
-  "peerDependencies": {
-    "@exodra/core": "^0.2.0",
-    "@exodra/dom": "^0.2.0"
-  }
+    "devtools",
+    "deprecated"
+  ]
 }

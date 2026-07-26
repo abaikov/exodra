@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" role="img" aria-label="Exodra — a schema exoskeleton: a spine of nodes wired by reactive signals, growing panels of living UI">
+  <defs>
+    <radialGradient id="hbg" cx="50%" cy="42%" r="75%">
+      <stop offset="0" stop-color="#12233f"/>
+      <stop offset="0.55" stop-color="#0d1830"/>
+      <stop offset="1" stop-color="#080f1e"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="hglow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="440" rx="20" fill="url(#hbg)"/>
+  <ellipse cx="600" cy="220" rx="360" ry="240" fill="url(#halo)"/>
+
+  <!-- particles -->
+  <g fill="#7ff3e4" opacity="0.5">
+    <circle cx="180" cy="70" r="1.8"/><circle cx="1020" cy="90" r="1.6"/><circle cx="300" cy="360" r="1.7"/>
+    <circle cx="900" cy="380" r="1.5"/><circle cx="120" cy="240" r="1.4"/><circle cx="1080" cy="250" r="1.7"/>
+    <circle cx="520" cy="60" r="1.4"/><circle cx="700" cy="400" r="1.5"/>
+  </g>
+
+  <!-- spine -->
+  <line x1="600" y1="392" x2="600" y2="70" stroke="#33507a" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- branch wires -->
+  <g fill="none" stroke="#2dd4bf" stroke-width="2.4" filter="url(#hglow)" opacity="0.95">
+    <path d="M600 320 C 470 320, 380 300, 250 288"/>
+    <path d="M600 250 C 730 250, 820 226, 950 214"/>
+    <path d="M600 190 C 470 190, 400 168, 280 150"/>
+    <path d="M600 130 C 720 130, 800 116, 920 108"/>
+  </g>
+  <!-- pulses -->
+  <g fill="#aef7ec">
+    <circle cx="410" cy="306" r="3.4"/><circle cx="800" cy="234" r="3.4"/>
+    <circle cx="430" cy="172" r="3.2"/><circle cx="770" cy="122" r="3.2"/>
+  </g>
+
+  <!-- spine nodes (bones) -->
+  <g fill="#16263f" stroke="#c7d6ea" stroke-width="1.6">
+    <rect x="560" y="356" width="80" height="34" rx="9"/>
+    <rect x="560" y="300" width="80" height="34" rx="9"/>
+    <rect x="560" y="232" width="80" height="34" rx="9"/>
+    <rect x="560" y="172" width="80" height="34" rx="9"/>
+    <rect x="560" y="112" width="80" height="34" rx="9"/>
+    <rect x="566" y="66"  width="68" height="30" rx="8"/>
+  </g>
+
+  <!-- flesh panels (leaves) -->
+  <g>
+    <rect x="110" y="262" width="150" height="70" rx="11" fill="#2dd4bf" fill-opacity="0.10" stroke="#2dd4bf" stroke-opacity="0.5" stroke-width="1.3"/>
+    <rect x="126" y="278" width="86" height="10" rx="4" fill="#5fd4c4" fill-opacity="0.7"/>
+    <rect x="126" y="296" width="118" height="7" rx="3" fill="#9fb3cc" fill-opacity="0.4"/>
+    <rect x="126" y="309" width="96" height="7" rx="3" fill="#9fb3cc" fill-opacity="0.4"/>
+
+    <rect x="940" y="188" width="160" height="86" rx="11" fill="#2dd4bf" fill-opacity="0.10" stroke="#2dd4bf" stroke-opacity="0.5" stroke-width="1.3"/>
+    <rect x="956" y="204" width="128" height="16" rx="5" fill="#9fb3cc" fill-opacity="0.28"/>
+    <rect x="956" y="226" width="128" height="16" rx="5" fill="#9fb3cc" fill-opacity="0.28"/>
+    <rect x="956" y="248" width="128" height="16" rx="5" fill="#9fb3cc" fill-opacity="0.28"/>
+
+    <rect x="150" y="118" width="132" height="60" rx="11" fill="#2dd4bf" fill-opacity="0.10" stroke="#2dd4bf" stroke-opacity="0.5" stroke-width="1.3"/>
+    <rect x="166" y="134" width="70" height="10" rx="4" fill="#5fd4c4" fill-opacity="0.7"/>
+    <rect x="166" y="152" width="100" height="7" rx="3" fill="#9fb3cc" fill-opacity="0.4"/>
+
+    <rect x="908" y="78" width="150" height="60" rx="11" fill="#2dd4bf" fill-opacity="0.10" stroke="#2dd4bf" stroke-opacity="0.5" stroke-width="1.3"/>
+    <rect x="924" y="94" width="90" height="10" rx="4" fill="#5fd4c4" fill-opacity="0.7"/>
+    <rect x="924" y="112" width="118" height="7" rx="3" fill="#9fb3cc" fill-opacity="0.4"/>
+  </g>
+
+  <!-- caption -->
+  <text x="600" y="424" text-anchor="middle" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="13" letter-spacing="2">SCHEMA · SIGNALS · DOM</text>
+</svg>

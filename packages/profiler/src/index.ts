@@ -1,36 +1,24 @@
 /**
  * @deprecated `@exodra/profiler` profiled the per-node `ExoNode` base class, which
- * has been removed (the DOM and string renderers no longer share a base). Use
- * `@exodra/dom-profiler` to profile the live DOM renderer (`ExoNodeDom`) — it also
- * works under jsdom. The generic `profileClass`/`ClassProfiler` below still work on
- * any class, but this package as a whole is no longer maintained.
+ * has been removed from `@exodra/core` (the DOM and string renderers no longer share
+ * a base). Use **`@exodra/dom-profiler`** to profile the live DOM renderer
+ * (`ExoNodeDom`) — its `profileDom()` works under jsdom and the browser.
+ *
+ * This package now ships only the generic, renderer-agnostic `profileClass` /
+ * `ClassProfiler` (they patch any class's prototype methods) and is otherwise
+ * unmaintained. Everything that referenced the removed `ExoNode` base has been
+ * dropped.
  */
 // eslint-disable-next-line no-console
 console.warn(
-    '[@exodra/profiler] deprecated — it targeted the removed ExoNode base. Use @exodra/dom-profiler.'
+    '[@exodra/profiler] deprecated — the ExoNode base it targeted was removed. ' +
+        'Use @exodra/dom-profiler (profileDom) to profile the DOM renderer.'
 );
 
-// Export new profiling approach
-export { profileClass, ClassProfiler, type ProfileMetrics, type ProfileCallback } from './class-profiler';
-export { profileExoNode, type TExoProfileMetrics, type TExoProfileCallback } from './exodra-profiler';
-
-// Export Profiler component and utilities
-export { 
-  Profiler, 
-  profiler, 
-  withProfiler,
-  ExodraProfiler,
-  type ProfilerProps,
-  type ProfileReport 
-} from './Profiler';
-
-// Export middleware (mostly deprecated now)
-export { 
-  enableProfiling,
-  disableProfiling,
-  isProfiling,
-  createProfilingMiddleware
-} from './middleware';
-
-// Re-export convenience functions
-export { startProfiling, stopProfiling, getProfilingReport } from './utils';
+export {
+    profileClass,
+    ClassProfiler,
+    type ProfilableClass,
+    type ProfileMetrics,
+    type ProfileCallback,
+} from './class-profiler';
