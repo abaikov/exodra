@@ -23,7 +23,6 @@ const sidebars = {
       label: 'Core Concepts',
       collapsed: false,
       items: [
-        'concept',
         'core/concepts',
       ],
     },

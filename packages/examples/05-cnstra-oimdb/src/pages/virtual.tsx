@@ -76,11 +76,14 @@ export default function virtualPage(): TExoSchema {
     renderWindow();
 
     let raf = 0;
+    let pendingTop = 0;
     const onScroll = (e: ExoEvent<HTMLElement>): void => {
-        const top = e.currentTarget.scrollTop;
+        // Capture the LATEST position on every event; the frame publishes the most
+        // recent scrollTop (trailing edge), never the stale leading-edge capture.
+        pendingTop = e.currentTarget.scrollTop;
         if (raf) return;
         raf = 1;
-        const run = (): void => { raf = 0; publish(top); };
+        const run = (): void => { raf = 0; publish(pendingTop); };
         if (typeof requestAnimationFrame === 'function') requestAnimationFrame(run);
         else run();
     };

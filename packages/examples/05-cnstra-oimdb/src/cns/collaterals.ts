@@ -1,5 +1,5 @@
 import { collateral } from '@cnstra/core';
-import type { TaskPriority, EntityName } from '../domain/types';
+import type { TaskPriority, ReferenceEntityName, Task } from '../domain/types';
 
 // ---------------------------------------------------------------------------
 // Collaterals = the typed channels that wire the workspace CNS together.
@@ -25,18 +25,26 @@ export const addTaskRequested = collateral<AddTaskCommand>();
 export const moveTaskRequested = collateral<{ id: string; statusId: string }>();
 export const assignTaskRequested = collateral<{ id: string; assigneeId: string | null }>();
 export const setTaskTagsRequested = collateral<{ id: string; tagIds: readonly string[] }>();
+// Task FIELD edits (title/priority/label) — routed through the task neuron like
+// every other task mutation, NOT the generic reference bus, so tasks have exactly
+// one owner and the ref bus can never write to an orchestrated collection.
+export const editTaskRequested = collateral<{
+    id: string;
+    patch: Partial<Pick<Task, 'title' | 'priority' | 'labelId'>>;
+}>();
 export const deleteTaskRequested = collateral<{ id: string }>();
 export const addCommentRequested = collateral<{ taskId: string; authorId: string; body: string }>();
 export const archiveProjectRequested = collateral<{ id: string }>();
 
-// Reference-data commands — plain CRUD for the non-orchestrated entities (tags,
-// labels, members, projects, milestones, statuses) and simple task fields. No
-// saga, no validation, but on the SAME command bus so EVERY store mutation is a
-// stimulation — there are no direct oimdb writes from the UI, and the CNS drain
-// is the single point where the store commits.
-export const refUpsertRequested = collateral<{ name: EntityName; entity: Record<string, unknown> }>();
-export const refPatchRequested = collateral<{ name: EntityName; id: string; patch: Record<string, unknown> }>();
-export const refRemoveRequested = collateral<{ name: EntityName; id: string }>();
+// Reference-data commands — plain CRUD for the non-orchestrated entities ONLY
+// (tags, labels, members, teams, projects, milestones, statuses). No saga, no
+// validation, but on the SAME command bus so EVERY store mutation is a stimulation
+// — there are no direct oimdb writes from the UI, and the CNS drain is the single
+// point where the store commits. `ReferenceEntityName` excludes tasks/comments/
+// activity, so an orchestrated collection can never be written through this bus.
+export const refUpsertRequested = collateral<{ name: ReferenceEntityName; entity: Record<string, unknown> }>();
+export const refPatchRequested = collateral<{ name: ReferenceEntityName; id: string; patch: Record<string, unknown> }>();
+export const refRemoveRequested = collateral<{ name: ReferenceEntityName; id: string }>();
 
 // Events (emitted during traversal; the activity neuron listens to all of them)
 export const taskAdded = collateral<{ id: string; title: string; actorId: string | null }>();

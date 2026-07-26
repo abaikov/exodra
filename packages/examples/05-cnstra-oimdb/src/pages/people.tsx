@@ -1,5 +1,5 @@
 import type { TExoSchema } from '@exodra/core';
-import { fromOimdb, keyedChildren } from '@oimdb/exodra';
+import { structuralList } from '../lib/structural-list';
 import type { Member, Team } from '../domain/types';
 import { getRuntime } from '../app/runtime';
 
@@ -12,7 +12,7 @@ export default function peoplePage(): TExoSchema {
             ...rt.oimdbInstance.membersByTeam.getPksByKey(teamId),
         ]);
 
-    const memberRow = (m: Member): TExoSchema => (
+    const memberRow = (m: Member, allTeams: readonly Team[]): TExoSchema => (
         <li static={{ class: 'member', 'data-id': m.id }}>
             <input
                 static={{ class: 'member__name', value: m.name }}
@@ -41,7 +41,7 @@ export default function peoplePage(): TExoSchema {
                         }),
                 }}
             >
-                {teams().map(t => (
+                {allTeams.map(t => (
                     <option static={{ value: t.id, selected: t.id === m.teamId }}>
                         {t.name}
                     </option>
@@ -57,6 +57,9 @@ export default function peoplePage(): TExoSchema {
     );
 
     const teamSection = (t: Team): TExoSchema => {
+        // Read the team list ONCE per panel (for every member's team <select>),
+        // not once per member row — same freshness (this render pass), fewer reads.
+        const allTeams = teams();
         const addMember = () =>
             rt.createEntity('members', {
                 id: `m-${Date.now()}`,
@@ -73,7 +76,7 @@ export default function peoplePage(): TExoSchema {
                     {t.name}
                 </h2>
                 <ul static={{ class: 'members' }}>
-                    {membersOf(t.id).map(memberRow)}
+                    {membersOf(t.id).map(m => memberRow(m, allTeams))}
                 </ul>
                 <button static={{ class: 'btn' }} handlers={{ onClick: () => addMember() }}>
                     + member
@@ -85,25 +88,14 @@ export default function peoplePage(): TExoSchema {
     // A team panel rebuilds only when its member SET changes; a name/role edit
     // leaves the key unchanged, so the reconcile is a no-op and focus is kept.
     // The panel key depends on RELATED data (the member set), not just the `teams`
-    // array, so the wrapping bindable must forward every store update
-    // (`alwaysNotify`) and let `keyedChildren` dedup on the rendered key set —
-    // gating on the `teams` array alone would swallow member add/remove.
-    const panels = keyedChildren(
-        fromOimdb(
-            teams,
-            cb => {
-                const us = [
-                    rt.oimdbInstance.members.collection.subscribeOnAnyUpdate(cb),
-                    rt.oimdbInstance.teams.collection.subscribeOnAnyUpdate(cb),
-                ];
-                return () => us.forEach(u => u());
-            },
-            { alwaysNotify: true }
-        ),
-        {
-            key: t => `${t.id}:${membersOf(t.id).map(m => m.id).join('+')}`,
-            render: teamSection,
-        }
+    // array, so the wrapping bindable must forward every store update and let
+    // `exoChildren` dedup on the rendered key set — gating on the `teams` array
+    // alone would swallow member add/remove.
+    const panels = structuralList(
+        teams,
+        [rt.oimdbInstance.members.collection, rt.oimdbInstance.teams.collection],
+        t => `${t.id}:${membersOf(t.id).map(m => m.id).join('+')}`,
+        teamSection
     );
 
     return (

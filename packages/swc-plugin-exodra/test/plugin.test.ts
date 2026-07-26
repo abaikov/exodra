@@ -175,4 +175,26 @@ d('swc-plugin-exodra', () => {
         expect(out).toContain('style: style({');
         expect(out).toContain('from "@exodra/style"');
     });
+
+    // Regression: significant (same-line) whitespace in mixed text/expression
+    // children must survive. `Total {a}: {b}` compiled to `Totala:b` before the
+    // clean_jsx_text fix. NOTE: assert on the RAW output (not norm()) so the
+    // spaces inside the string literals are visible.
+    it('preserves spaces between text and expressions', () => {
+        const out = compile(`const v = <span>Total {a}: {b}</span>;`);
+        expect(out).toContain('text("Total ")');
+        expect(out).toContain('text(": ")');
+        expect(out).not.toContain('text("Total")'); // no trimmed-away space
+    });
+
+    it('keeps a lone space between two expressions', () => {
+        const out = compile(`const v = <span>{a} {b}</span>;`);
+        expect(out).toContain('text(" ")');
+    });
+
+    it('trims newline indentation but keeps a trailing inline space', () => {
+        const out = compile(`const v = <span>\n      Total {a}\n    </span>;`);
+        expect(out).toContain('text("Total ")');
+        expect(out).not.toMatch(/text\("[ \t]+Total/); // no leading indentation
+    });
 });

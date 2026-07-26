@@ -56,8 +56,6 @@ operation, other frameworks diff their way to it.)
 
 ### `cache:key` for a repeated static template
 
-![Clone-cache: a static subtree marked with a cache key is built once, then cloned for every occurrence and patched only at its reactive holes](/img/clone-cache.svg)
-
 If you build the **same fully‑static subtree** many times, mark it with
 `cache:key` — the renderer builds it once and clones the rest instead of
 re‑creating every node:

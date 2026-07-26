@@ -1,7 +1,11 @@
 // oimdb store for the workspace: one collection per entity plus the derived
 // indexes the views read. derivedSetIndex auto-maintains groupings as tasks
 // change. API ref: https://abaikov.github.io/oimdb/llms.txt
-import { OIMEventQueue, createOIMCollectionKit } from '@oimdb/core';
+import {
+    OIMEventQueue,
+    createOIMCollectionKit,
+    createOIMOrderedListCommandStreamDiffDriven,
+} from '@oimdb/core';
 import type {
     Activity,
     Comment,
@@ -43,9 +47,24 @@ export function createWorkspaceStore() {
     const tasksByProject = tasks.indexFactory.derivedSetIndex<string>(
         t => t.projectId
     );
-    const tasksByStatus = tasks.indexFactory.derivedSetIndex<string>(
-        t => t.statusId
+    // Board column: ORDER lives in the index (incremental), never re-sorted on
+    // read. `orderBy` keeps each status key sorted by createdAt as tasks change,
+    // and the array-based index unlocks the O(delta) command stream below.
+    const tasksByStatus = tasks.indexFactory.derivedArrayIndex<string>(
+        t => t.statusId,
+        { orderBy: t => t.createdAt }
     );
+    // Diff-driven ordered-list stream over the ordered index: per-key membership
+    // and reorder become position-addressed insert/move/remove commands, which
+    // `exoList` forwards 1:1 to the DOM (moved rows relocate, they don't rebuild).
+    const tasksByStatusStream =
+        createOIMOrderedListCommandStreamDiffDriven(queue, tasksByStatus);
+
+    // Whole-collection createdAt order for the Tasks page, maintained incrementally
+    // — the list read is a map over cached ordered pks, not a getAll()+sort per flush.
+    const tasksByCreated = tasks.indexFactory.derivedArrayGlobalIndex({
+        orderBy: t => t.createdAt,
+    });
     const tasksByMilestone = tasks.indexFactory.derivedSetIndex<string>(t =>
         t.milestoneId ? [t.milestoneId] : []
     );
@@ -64,9 +83,17 @@ export function createWorkspaceStore() {
     const milestonesByProject = milestones.indexFactory.derivedSetIndex<string>(
         m => m.projectId
     );
-    const commentsByTask = comments.indexFactory.derivedSetIndex<string>(
-        c => c.taskId
+    // Ordered by createdAt so the Tasks page reads a pre-sorted comment list
+    // (no per-render JS sort); membership count stays O(1) via `.length`.
+    const commentsByTask = comments.indexFactory.derivedArrayIndex<string>(
+        c => c.taskId,
+        { orderBy: c => c.createdAt }
     );
+    // Newest-first activity feed: order by -at (ascending of -at = descending at),
+    // maintained incrementally so an append is one insert, not a re-sort.
+    const activityByTime = activity.indexFactory.derivedArrayGlobalIndex({
+        orderBy: a => -a.at,
+    });
 
     return {
         queue,
@@ -82,6 +109,8 @@ export function createWorkspaceStore() {
         activity,
         tasksByProject,
         tasksByStatus,
+        tasksByStatusStream,
+        tasksByCreated,
         tasksByMilestone,
         tasksByAssignee,
         tasksByTag,
@@ -89,6 +118,7 @@ export function createWorkspaceStore() {
         membersByTeam,
         milestonesByProject,
         commentsByTask,
+        activityByTime,
     };
 }
 

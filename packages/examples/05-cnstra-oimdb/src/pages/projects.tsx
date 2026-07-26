@@ -1,5 +1,5 @@
 import type { TExoSchema } from '@exodra/core';
-import { fromOimdb, keyedChildren } from '@oimdb/exodra';
+import { structuralList } from '../lib/structural-list';
 import type { Milestone, Project } from '../domain/types';
 import { getRuntime } from '../app/runtime';
 
@@ -93,29 +93,21 @@ export default function projectsPage(): TExoSchema {
     // milestone add/remove/done) — a name/description edit leaves the key unchanged,
     // so the reconcile is a no-op and the focused input keeps focus.
     // The card key depends on RELATED data (task count, milestones), not just the
-    // `projects` array, so the wrapping bindable forwards every store update
-    // (`alwaysNotify`) and lets `keyedChildren` dedup on the rendered key set —
-    // gating on the `projects` array alone would swallow task/milestone changes.
-    const grid = keyedChildren(
-        fromOimdb(
-            projects,
-            cb => {
-                const us = [
-                    rt.oimdbInstance.projects.collection.subscribeOnAnyUpdate(cb),
-                    rt.oimdbInstance.milestones.collection.subscribeOnAnyUpdate(cb),
-                    rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(cb),
-                ];
-                return () => us.forEach(u => u());
-            },
-            { alwaysNotify: true }
-        ),
-        {
-            key: p =>
-                `${p.id}:${p.archived ? 1 : 0}:${taskCount(p.id)}:${milestonesOf(p.id)
-                    .map(m => m.id + (m.done ? 'd' : ''))
-                    .join('+')}`,
-            render: card,
-        }
+    // `projects` array, so the wrapping bindable forwards every store update and
+    // lets `exoChildren` dedup on the rendered key set — gating on the `projects`
+    // array alone would swallow task/milestone changes.
+    const grid = structuralList(
+        projects,
+        [
+            rt.oimdbInstance.projects.collection,
+            rt.oimdbInstance.milestones.collection,
+            rt.oimdbInstance.tasks.collection,
+        ],
+        p =>
+            `${p.id}:${p.archived ? 1 : 0}:${taskCount(p.id)}:${milestonesOf(p.id)
+                .map(m => m.id + (m.done ? 'd' : ''))
+                .join('+')}`,
+        card
     );
 
     const addProject = () =>

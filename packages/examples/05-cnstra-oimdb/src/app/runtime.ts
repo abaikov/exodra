@@ -15,6 +15,7 @@ import {
     moveTaskRequested,
     assignTaskRequested,
     setTaskTagsRequested,
+    editTaskRequested,
     deleteTaskRequested,
     addCommentRequested,
     archiveProjectRequested,
@@ -28,7 +29,11 @@ import {
     type AddTaskCommand,
 } from '../cns/workspace-cns';
 import { loadSnapshot } from '../store/workspace-store';
-import type { EntityName, WorkspaceSnapshot } from '../domain/types';
+import type {
+    ReferenceEntityName,
+    Task,
+    WorkspaceSnapshot,
+} from '../domain/types';
 
 export interface WorkspaceRuntime {
     oimdbInstance: WorkspaceStore;
@@ -40,15 +45,18 @@ export interface WorkspaceRuntime {
     assignTask(id: string, assigneeId: string | null): void;
     setTaskTags(id: string, tagIds: readonly string[]): void;
     deleteTask(id: string): void;
+    // Task field edit (title/priority/label) → task neuron (see editTaskRequested).
+    editTask(id: string, patch: Partial<Pick<Task, 'title' | 'priority' | 'labelId'>>): void;
     addComment(taskId: string, authorId: string, body: string): void;
     archiveProject(id: string): void;
-    // Reference-data CRUD (tags, labels, members, teams, projects, milestones)
-    // and simple task-field edits. These carry no saga/validation, but they still
-    // go through the CNS (ref* commands → reference neuron) — NOT direct store
-    // writes — so every mutation in the app commits at the one CNS drain point.
-    createEntity(name: EntityName, entity: Record<string, unknown>): void;
-    patchEntity(name: EntityName, id: string, patch: Record<string, unknown>): void;
-    removeEntity(name: EntityName, id: string): void;
+    // Reference-data CRUD — ONLY the non-orchestrated entities (tags, labels,
+    // members, teams, projects, milestones, statuses). No saga/validation, but
+    // still through the CNS (ref* → reference neuron), NOT direct store writes, so
+    // every mutation commits at the one CNS drain point. `ReferenceEntityName`
+    // makes writing an orchestrated collection here a compile error.
+    createEntity(name: ReferenceEntityName, entity: Record<string, unknown>): void;
+    patchEntity(name: ReferenceEntityName, id: string, patch: Record<string, unknown>): void;
+    removeEntity(name: ReferenceEntityName, id: string): void;
     // subscribe to validation errors (client only)
     bindErrors(): () => void;
 }
@@ -85,6 +93,7 @@ export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
         setTaskTags: (id, tagIds) =>
             send(setTaskTagsRequested.createSignal({ id, tagIds })),
         deleteTask: id => send(deleteTaskRequested.createSignal({ id })),
+        editTask: (id, patch) => send(editTaskRequested.createSignal({ id, patch })),
         addComment: (taskId, authorId, body) =>
             send(addCommentRequested.createSignal({ taskId, authorId, body })),
         archiveProject: id =>

@@ -22,7 +22,7 @@ type Mounted = ReturnType<typeof mount>;
 
 function statText(rt: WorkspaceRuntime): string {
     const total = rt.oimdbInstance.tasks.collection.getAll().length;
-    const done = rt.oimdbInstance.tasksByStatus.getPksByKey('s-done').size;
+    const done = rt.oimdbInstance.tasksByStatus.getPksByKey('s-done').length;
     const projects = rt.oimdbInstance.projects.collection
         .getAll()
         .filter(p => !p.archived).length;

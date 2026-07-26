@@ -504,11 +504,14 @@ impl Exodra {
                     }
                 }
                 JSXElementChild::JSXText(t) => {
-                    let trimmed = t.value.trim();
-                    if !trimmed.is_empty() {
+                    // Preserve significant (same-line) whitespace between text and
+                    // expressions; only trim what sits next to a newline (JSX
+                    // rules). Matches @exodra/babel-plugin-jsx's cleanJSXText.
+                    let cleaned = clean_jsx_text(&t.value);
+                    if !cleaned.is_empty() {
                         self.used_text = true;
                         let name = self.local("text");
-                        out.push(call(Expr::Ident(ident(&name)), vec![str_lit(trimmed)]));
+                        out.push(call(Expr::Ident(ident(&name)), vec![str_lit(&cleaned)]));
                     }
                 }
                 JSXElementChild::JSXExprContainer(c) => {
@@ -526,6 +529,42 @@ impl Exodra {
             _ => Some(array(out)),
         }
     }
+}
+
+// Clean a JSXText value per the JSX whitespace rules (identical to React / Babel
+// and to @exodra/babel-plugin-jsx's cleanJSXText): whitespace adjacent to a
+// newline is trimmed and whitespace-only lines are dropped, but a same-line space
+// between text and an expression is SIGNIFICANT and preserved — so `Total {t}: {n}`
+// keeps its spaces instead of collapsing to `Totalt:n`.
+fn clean_jsx_text(raw: &str) -> String {
+    let normalized = raw.replace("\r\n", "\n").replace('\r', "\n");
+    let lines: Vec<&str> = normalized.split('\n').collect();
+    let n = lines.len();
+    // Default 0 (like Babel): a whitespace-only single line stays one space.
+    let mut last_non_empty = 0usize;
+    for (i, line) in lines.iter().enumerate() {
+        if line.chars().any(|c| c != ' ' && c != '\t') {
+            last_non_empty = i;
+        }
+    }
+    let mut out = String::new();
+    for (i, line) in lines.iter().enumerate() {
+        let mut s = line.replace('\t', " ");
+        if i != 0 {
+            s = s.trim_start_matches(' ').to_string();
+        }
+        if i != n - 1 {
+            s = s.trim_end_matches(' ').to_string();
+        }
+        if s.is_empty() {
+            continue;
+        }
+        if i != last_non_empty {
+            s.push(' ');
+        }
+        out.push_str(&s);
+    }
+    out
 }
 
 // Emit a user-facing compile error through SWC's diagnostic handler, so the

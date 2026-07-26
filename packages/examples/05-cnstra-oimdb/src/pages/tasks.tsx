@@ -1,5 +1,7 @@
 import type { TExoSchema } from '@exodra/core';
-import { fromOimdb, keyedChildren } from '@oimdb/exodra';
+import { exoSelector } from '@oimdb/exodra';
+import { derive } from '@exodra/reactivity';
+import { structuralList } from '../lib/structural-list';
 import type { Comment, Task } from '../domain/types';
 import { getRuntime } from '../app/runtime';
 import { orderedStatuses } from '../store/workspace-store';
@@ -12,25 +14,35 @@ export default function tasksPage(): TExoSchema {
     const members = rt.oimdbInstance.members.collection.getAll();
     const labels = rt.oimdbInstance.labels.collection.getAll();
 
-    const allTasks = () =>
-        rt.oimdbInstance.tasks.collection
-            .getAll()
-            .slice()
-            .sort((a, b) => a.createdAt - b.createdAt);
+    // Order lives in the index (createdAt-ordered global array index, maintained
+    // incrementally) — the read is a map over the cached ordered pks, never an
+    // O(T log T) getAll()+sort on every keystroke-driven flush.
+    const allTasks = (): Task[] =>
+        rt.oimdbInstance.tasksByCreated
+            .getPks()
+            .map(pk => rt.oimdbInstance.tasks.collection.getOneByPk(pk))
+            .filter((t): t is Task => Boolean(t));
 
+    // Pre-ordered by the index (createdAt) — no per-render sort. Drop holes.
     const commentsOf = (taskId: string): Comment[] =>
         rt.oimdbInstance.comments.collection
             .getManyByPks([...rt.oimdbInstance.commentsByTask.getPksByKey(taskId)])
-            .sort((a, b) => a.createdAt - b.createdAt);
+            .filter((c): c is Comment => Boolean(c));
 
-    const commentRow = (c: Comment): TExoSchema => (
-        <li static={{ class: 'cmt' }}>
-            <b static={{ class: 'cmt__author' }}>
-                {rt.oimdbInstance.members.collection.getOneByPk(c.authorId)?.name ?? '?'}
-            </b>
-            <span static={{ class: 'cmt__body' }}>{c.body}</span>
-        </li>
-    );
+    // Author name follows the member's own byPk bindable, so a member rename
+    // updates it in place — no stale text, no rebuilding the comment row.
+    const commentRow = (c: Comment): TExoSchema => {
+        const author = derive(
+            exoSelector(rt.oimdbInstance.members.select.byPk(c.authorId)),
+            m => m?.name ?? '?'
+        );
+        return (
+            <li static={{ class: 'cmt' }}>
+                <b static={{ class: 'cmt__author' }} bindable={{ textContent: author }} />
+                <span static={{ class: 'cmt__body' }}>{c.body}</span>
+            </li>
+        );
+    };
 
     const taskRow = (t: Task): TExoSchema => {
         let composer = '';
@@ -46,7 +58,7 @@ export default function tasksPage(): TExoSchema {
                         static={{ class: 'trow__title', value: t.title }}
                         handlers={{
                             onInput: e =>
-                                rt.patchEntity('tasks', t.id, {
+                                rt.editTask(t.id, {
                                     title: e.currentTarget.value,
                                 }),
                         }}
@@ -95,8 +107,8 @@ export default function tasksPage(): TExoSchema {
                         static={{ class: 'trow__prio' }}
                         handlers={{
                             onChange: e =>
-                                rt.patchEntity('tasks', t.id, {
-                                    priority: e.currentTarget.value,
+                                rt.editTask(t.id, {
+                                    priority: e.currentTarget.value as Task['priority'],
                                 }),
                         }}
                     >
@@ -111,7 +123,7 @@ export default function tasksPage(): TExoSchema {
                         handlers={{
                             onChange: e => {
                                 const v = e.currentTarget.value;
-                                rt.patchEntity('tasks', t.id, {
+                                rt.editTask(t.id, {
                                     labelId: v || null,
                                 });
                             },
@@ -151,7 +163,7 @@ export default function tasksPage(): TExoSchema {
                     </button>
                 </div>
                 <details static={{ class: 'trow__comments' }}>
-                    <summary>{`${commentsOf(t.id).length} comments`}</summary>
+                    <summary>{`${rt.oimdbInstance.commentsByTask.getPksByKey(t.id).length} comments`}</summary>
                     <ul static={{ class: 'cmts' }}>
                         {commentsOf(t.id).map(commentRow)}
                     </ul>
@@ -184,25 +196,15 @@ export default function tasksPage(): TExoSchema {
     // count) — editing a title/tags field or a select leaves the key unchanged, so
     // the reconcile is a no-op and input focus is kept.
     // The row key depends on RELATED data (comment count), not just the `tasks`
-    // array, so the wrapping bindable forwards every store update (`alwaysNotify`)
-    // and lets `keyedChildren` dedup on the rendered key set — gating on the
-    // `tasks` array alone would swallow comment add/remove.
-    const rows = keyedChildren(
-        fromOimdb(
-            allTasks,
-            cb => {
-                const us = [
-                    rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(cb),
-                    rt.oimdbInstance.comments.collection.subscribeOnAnyUpdate(cb),
-                ];
-                return () => us.forEach(u => u());
-            },
-            { alwaysNotify: true }
-        ),
-        {
-            key: t => `${t.id}:${t.pending ? 1 : 0}:${commentsOf(t.id).length}`,
-            render: taskRow,
-        }
+    // array, so the wrapping bindable forwards every store update and lets
+    // `exoChildren` dedup on the rendered key set — gating on the `tasks` array
+    // alone would swallow comment add/remove.
+    const rows = structuralList(
+        allTasks,
+        [rt.oimdbInstance.tasks.collection, rt.oimdbInstance.comments.collection],
+        t =>
+            `${t.id}:${t.pending ? 1 : 0}:${rt.oimdbInstance.commentsByTask.getPksByKey(t.id).length}`,
+        taskRow
     );
 
     return (

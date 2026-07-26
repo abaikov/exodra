@@ -114,6 +114,16 @@ export type EntityName =
     | 'comments'
     | 'activity';
 
+// Entities that are plain reference data — CRUD'd directly through the generic
+// reference neuron. The ORCHESTRATED entities (tasks, comments, activity) are
+// deliberately EXCLUDED: they own neurons with validation/sagas, so routing them
+// through the generic bus would silently bypass that. Excluding them at the type
+// level makes such a bypass a compile error.
+export type ReferenceEntityName = Exclude<
+    EntityName,
+    'tasks' | 'comments' | 'activity'
+>;
+
 export interface WorkspaceSnapshot {
     teams: readonly Team[];
     members: readonly Member[];

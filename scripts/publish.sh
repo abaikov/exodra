@@ -41,12 +41,31 @@ PACKAGES=(
     "packages/forms"
     "packages/style"
     "packages/babel-plugin-jsx"
+    "packages/babel-preset-exodra"
+    "packages/esbuild-plugin-exodra"
+    "packages/rollup-plugin-exodra"
+    "packages/bun-plugin-exodra"
+    "packages/swc-plugin-exodra"
     "packages/vite-plugin-exodra"
     "packages/profiler"
+    "packages/dom-profiler"
     "packages/react"
     "packages/introspect"
     "packages/create-exodra"
 )
+
+# Guard: fail loud if a non-private, publishable package is missing from PACKAGES,
+# so the list can't silently drift when a new package is added.
+for pj in packages/*/package.json; do
+    dir="packages/$(basename "$(dirname "$pj")")"
+    [ "$(node -p "require('./$pj').private === true" 2>/dev/null)" = "true" ] && continue
+    listed=""
+    for p in "${PACKAGES[@]}"; do [ "$p" = "$dir" ] && listed=1 && break; done
+    if [ -z "$listed" ]; then
+        echo "❌ publish guard: $dir is publishable but NOT in PACKAGES — add it (or mark it private)."
+        exit 1
+    fi
+done
 
 for package in "${PACKAGES[@]}"; do
     echo "📤 Publishing $package..."

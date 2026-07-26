@@ -9,8 +9,6 @@ reconciles the **actual** DOM against the new set of child schemas **by
 reference identity**. Understanding that one rule is the key to fast, focus-safe
 lists.
 
-![Reconcile by identity: the same schema object keeps (and moves) its DOM node, a new object builds one and fires onExoMount, a removed object is torn down and fires onExoUnmount](/img/reconcile-identity.svg)
-
 There are two channels for a reactive list of children, plus one pattern you'll
 reach for constantly.
 

@@ -1,8 +1,7 @@
 import type { TExoSchema } from '@exodra/core';
 import { bindable } from '@exodra/reactivity';
-import { fromOimdb, keyedChildren } from '@oimdb/exodra';
+import { exoSource, exoChildren } from '@oimdb/exodra';
 import { getRuntime } from '../app/runtime';
-import { sameRows } from '../lib/same-rows';
 
 // The shared shape of a "swatch" reference entity (tags carry `label`, labels
 // carry `name`; both carry `id` + `color`). Tag and Label are both assignable to
@@ -60,13 +59,12 @@ function swatchEditor(
     // Identity-stable rows straight off the collection. `@oimdb/exodra` owns the
     // (lazy, ref-counted) subscription — it subscribes only while this list is
     // mounted and tears down on unmount — so there is no mount/unmount plumbing
-    // here. `keyedChildren` keys by id, so a field edit (same id) is a reconcile
+    // here. `exoChildren` keys by id, so a field edit (same id) is a reconcile
     // no-op and the focused input keeps focus.
-    const rows = keyedChildren(
-        fromOimdb(
+    const rows = exoChildren(
+        exoSource(
             items,
-            cb => rt.oimdbInstance[name].collection.subscribeOnAnyUpdate(cb),
-            { equals: sameRows }
+            cb => rt.oimdbInstance[name].collection.subscribeOnAnyUpdate(cb)
         ),
         { key: r => r.id, render: row }
     );

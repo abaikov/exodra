@@ -1,9 +1,8 @@
 import type { TExoSchema } from '@exodra/core';
 import { bindable } from '@exodra/reactivity';
-import { fromOimdb, keyedChildren } from '@oimdb/exodra';
+import { exoSource, exoChildren } from '@oimdb/exodra';
 import type { Activity } from '../domain/types';
 import { getRuntime } from '../app/runtime';
-import { sameRows } from '../lib/same-rows';
 
 const KIND_ICON: Record<Activity['kind'], string> = {
     'task.created': '✚',
@@ -37,19 +36,20 @@ export default function activityPage(): TExoSchema {
                 : 'No activity yet — do something on the Board.'
         );
 
-    const feed = keyedChildren(
-        fromOimdb(
+    // Newest-first order lives in the index (maintained incrementally); each
+    // appended activity is one insert, not a full getAll()+sort of the whole log.
+    const feed = exoChildren(
+        exoSource(
             () =>
-                rt.oimdbInstance.activity.collection
-                    .getAll()
-                    .slice()
-                    .sort((a, b) => b.at - a.at),
+                rt.oimdbInstance.activityByTime
+                    .getPks()
+                    .map(pk => rt.oimdbInstance.activity.collection.getOneByPk(pk))
+                    .filter((a): a is Activity => Boolean(a)),
             cb =>
                 rt.oimdbInstance.activity.collection.subscribeOnAnyUpdate(() => {
                     cb();
                     setEmpty();
-                }),
-            { equals: sameRows }
+                })
         ),
         { key: a => a.id, render: row }
     );

@@ -28,11 +28,6 @@ function HomepageHeader() {
             Get Started →
           </Link>
         </div>
-        <img
-          src="/img/hero-exodra.svg"
-          alt="Exodra: a schema exoskeleton — a spine of nodes wired by reactive signals, growing panels of living UI"
-          style={{ width: '100%', maxWidth: '940px', marginTop: '2.5rem', borderRadius: '16px' }}
-        />
       </div>
     </header>
   );

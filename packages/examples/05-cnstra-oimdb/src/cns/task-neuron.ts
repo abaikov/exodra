@@ -5,6 +5,7 @@ import {
     moveTaskRequested,
     assignTaskRequested,
     setTaskTagsRequested,
+    editTaskRequested,
     deleteTaskRequested,
     taskAdded,
     taskMoved,
@@ -115,6 +116,20 @@ export function createTaskNeuron(
                     id: payload.id,
                     title: task.title,
                 });
+            },
+        })
+        .dendrite({
+            // Plain field edit (title/priority/label): validate the task exists,
+            // then patch. No lifecycle event — a field tweak is not activity-worthy
+            // — but it still rides the task neuron, not the generic reference bus.
+            collateral: editTaskRequested,
+            response: payload => {
+                const task = oimdbInstance.tasks.collection.getOneByPk(payload.id);
+                if (!task) return;
+                oimdbInstance.tasks.collection.upsertOneByPk(
+                    payload.id,
+                    payload.patch
+                );
             },
         })
         .dendrite({
