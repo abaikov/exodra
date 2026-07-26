@@ -23,6 +23,16 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      // @exodra/jsx is published on npm at the SAME version as this workspace, so
+      // npm nests the stale published copy in this example's node_modules. Pin the
+      // JSX type resolution to the local workspace so event-handler inference (LMA)
+      // and ExoEvent/ExoInputEvent reflect the current source, not published 0.1.0.
+      "@exodra/jsx": [
+        "../../jsx/dist/index.d.ts"
+      ],
+      "@exodra/jsx/jsx-runtime": [
+        "../../jsx/dist/jsx-runtime.d.ts"
       ]
     }
   },

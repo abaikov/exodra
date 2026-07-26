@@ -1,0 +1,21 @@
+[package]
+name = "swc-plugin-exodra"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+swc_core = { version = "74", features = [
+    "ecma_plugin_transform",
+    "ecma_ast",
+    "ecma_visit",
+    "ecma_utils",
+] }
+
+[profile.release]
+lto = true
+opt-level = "z"
+strip = true

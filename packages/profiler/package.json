@@ -1,6 +1,6 @@
 {
   "name": "@exodra/profiler",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -25,10 +25,6 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@exodra/core": "^0.1.0",
-    "@exodra/dom": "^0.1.0"
-  },
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.3.3"
@@ -50,5 +46,9 @@
     "profiler",
     "performance",
     "devtools"
-  ]
+  ],
+  "peerDependencies": {
+    "@exodra/core": "^0.2.0",
+    "@exodra/dom": "^0.2.0"
+  }
 }

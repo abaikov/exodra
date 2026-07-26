@@ -1,10 +1,12 @@
 {
   "name": "@exodra/forms",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "unpkg": "./dist/exodra.global.js",
+  "jsdelivr": "./dist/exodra.global.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -20,7 +22,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@exodra/reactivity": "^0.1.0"
+    "@exodra/reactivity": "^0.2.0"
   },
   "scripts": {
     "build": "tsup",
@@ -48,6 +50,6 @@
     "two-way"
   ],
   "devDependencies": {
-    "vitest": "^1.2.1"
+    "vitest": "^4.0.16"
   }
 }

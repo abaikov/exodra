@@ -5,6 +5,8 @@ title: SSR & Hydration
 
 # Server-Side Rendering & Hydration
 
+![SSR and hydration: the server grows the schema into HTML, the client reuses that same HTML and reconnects the reactivity wires instead of rebuilding](/img/ssr-hydration.svg)
+
 Exodra renders to an HTML string on the server and **hydrates** the existing DOM
 on the client (no teardown, no flash). Three packages cooperate:
 

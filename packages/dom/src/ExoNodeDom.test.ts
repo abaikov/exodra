@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { h, createContextKey } from '@exodra/core';
 import { bindable, list } from '@exodra/reactivity';
 import { createExoBindable } from '../../reactivity/src/createExoBindable';
 import { createExoBindableList } from '../../reactivity/src/createExoBindableList';
 import { ExoNodeDom } from './ExoNodeDom';
+import { __resetDomDevWarnings } from './dev';
 import { hydrate } from './hydrate';
 import { mount } from './mount';
 
@@ -124,7 +125,7 @@ describe('ExoNodeDom', () => {
                     type: Component,
                     attrs: {},
                 })
-        ).toThrow('DOM component nodes must return a single root schema');
+        ).toThrow(/component Component returned 2 root schemas.*single root/s);
     });
 
     it('runs mount and unmount lifecycle callbacks', () => {
@@ -226,6 +227,102 @@ describe('ExoNodeDom', () => {
         );
         expect((node.element as Element).childNodes[0]).toBe(elementC);
         expect((node.element as Element).childNodes[1]).toBe(elementA);
+    });
+
+    // A #fragment as a direct reactive-list item spreads N DOM nodes, which the
+    // index-based reconcile can't track (it would silently corrupt sibling
+    // positions). Rather than that, it now fails loudly — at build time for an
+    // initial fragment item, and at op time for one inserted later.
+    const fragItem = () => ({
+        type: '#fragment',
+        attrs: {
+            static: {
+                children: [
+                    { type: 'li', attrs: { static: { textContent: 'a1' } } },
+                    { type: 'li', attrs: { static: { textContent: 'a2' } } },
+                ],
+            },
+        },
+    });
+
+    it('throws for a #fragment as an INITIAL reactive-list item', () => {
+        const items = createExoBindableList<unknown>([fragItem()]);
+        expect(
+            () =>
+                new ExoNodeDom({
+                    type: 'ul',
+                    attrs: { bindableLists: { children: items } },
+                } as unknown as ConstructorParameters<typeof ExoNodeDom>[0])
+        ).toThrow(/#fragment cannot be a direct item/);
+    });
+
+    it('throws for a #fragment INSERTED into a reactive list later', () => {
+        const items = createExoBindableList<unknown>([
+            { type: 'li', attrs: { static: { textContent: 'b' } } },
+        ]);
+        new ExoNodeDom({
+            type: 'ul',
+            attrs: { bindableLists: { children: items } },
+        } as unknown as ConstructorParameters<typeof ExoNodeDom>[0]);
+
+        expect(() => items.insert(0, fragItem() as unknown as never)).toThrow(
+            /#fragment cannot be a direct item/
+        );
+    });
+
+    it('component-wrapped bindable children REPLACES old content on swap', () => {
+        // Regression: for a component-wrapped host the reconcile keyed off the
+        // resolved element record (no children) instead of the canonical one, so a
+        // swap appended ('AB') instead of replacing ('B').
+        const child = createExoBindable(
+            h('span', { static: { textContent: 'A' } })
+        );
+        const Comp = () => h('div', { bindables: { children: child } });
+        const node = new ExoNodeDom({
+            type: Comp,
+            attrs: {},
+        } as unknown as ConstructorParameters<typeof ExoNodeDom>[0]);
+
+        expect((node.element as Element).textContent).toBe('A');
+        child.setValue(h('span', { static: { textContent: 'B' } }) as never);
+        expect((node.element as Element).textContent).toBe('B');
+    });
+
+    it('component-wrapped bindableLists reconciles ops against the initial items', () => {
+        const a = { type: 'li', attrs: { static: { textContent: 'a' } } };
+        const b = { type: 'li', attrs: { static: { textContent: 'b' } } };
+        const items = createExoBindableList<unknown>([a, b]);
+        const Comp = () => h('ul', { bindableLists: { children: items } });
+        const node = new ExoNodeDom({
+            type: Comp,
+            attrs: {},
+        } as unknown as ConstructorParameters<typeof ExoNodeDom>[0]);
+
+        expect((node.element as Element).textContent).toBe('ab');
+        items.remove(0); // must dispose the INITIAL item, not no-op
+        expect((node.element as Element).textContent).toBe('b');
+        items.insert(1, {
+            type: 'li',
+            attrs: { static: { textContent: 'c' } },
+        } as unknown as never);
+        expect((node.element as Element).textContent).toBe('bc');
+    });
+
+    it('a fragment WRAPPED in an element is a valid list item', () => {
+        // The documented workaround: wrap the multi-node content in one element.
+        const wrapped = (t: string) => ({
+            type: 'li',
+            attrs: { static: { textContent: t } },
+        });
+        const items = createExoBindableList<unknown>([wrapped('a'), wrapped('b')]);
+        const node = new ExoNodeDom({
+            type: 'ul',
+            attrs: { bindableLists: { children: items } },
+        } as unknown as ConstructorParameters<typeof ExoNodeDom>[0]);
+
+        expect((node.element as Element).textContent).toBe('ab');
+        items.insert(1, wrapped('c') as unknown as never);
+        expect((node.element as Element).textContent).toBe('acb');
     });
 
     it('reuses detached children when the same schema returns', () => {
@@ -669,6 +766,90 @@ describe('ExoNodeDom', () => {
         expect(got).toBe('fb');
     });
 
+    it('a list item built by a LATER list op still injects an ancestor value', () => {
+        // Regression: buildTree started a fresh scope chain for dynamically-built
+        // children, so inject() in a list item added after the initial render
+        // returned the fallback instead of the provided value.
+        const key = createContextKey<string>('scope.list');
+        const seen: string[] = [];
+        const Item = (ctx: { inject: (k: unknown, f?: unknown) => unknown }) => {
+            seen.push(ctx.inject(key, 'fallback') as string);
+            return { type: 'li', attrs: { static: { textContent: 'x' } } };
+        };
+        const children = createExoBindableList<unknown>([]);
+        const Provider = (ctx: { provide: (k: unknown, v: unknown) => void }) => {
+            ctx.provide(key, 'provided');
+            return { type: 'ul', attrs: { bindableLists: { children } } };
+        };
+        new ExoNodeDom({
+            type: Provider,
+            attrs: {},
+        } as unknown as ConstructorParameters<typeof ExoNodeDom>[0]);
+
+        expect(seen).toEqual([]);
+        children.insert(0, {
+            type: Item,
+            attrs: {},
+        } as unknown as never);
+        expect(seen).toEqual(['provided']);
+    });
+
+    it('a reactive-fragment child built by a later op still injects an ancestor value', () => {
+        const key = createContextKey<string>('scope.frag');
+        const seen: string[] = [];
+        const Item = (ctx: { inject: (k: unknown, f?: unknown) => unknown }) => {
+            seen.push(ctx.inject(key, 'fallback') as string);
+            return { type: 'span', attrs: { static: { textContent: 'x' } } };
+        };
+        const children = createExoBindableList<unknown>([]);
+        const Provider = (ctx: { provide: (k: unknown, v: unknown) => void }) => {
+            ctx.provide(key, 'provided');
+            // Fragment nested in a host (a component can't return a bare #fragment).
+            return {
+                type: 'div',
+                attrs: {
+                    static: {
+                        children: [{ type: '#fragment', attrs: { bindableLists: { children } } }],
+                    },
+                },
+            };
+        };
+        new ExoNodeDom({
+            type: Provider,
+            attrs: {},
+        } as unknown as ConstructorParameters<typeof ExoNodeDom>[0]);
+
+        children.insert(0, {
+            type: Item,
+            attrs: {},
+        } as unknown as never);
+        expect(seen).toEqual(['provided']);
+    });
+
+    it('a reactive single-child bindable built by a later op injects an ancestor value', () => {
+        const key = createContextKey<string>('scope.bindchild');
+        const seen: string[] = [];
+        const Item = (ctx: { inject: (k: unknown, f?: unknown) => unknown }) => {
+            seen.push(ctx.inject(key, 'fallback') as string);
+            return { type: 'em', attrs: { static: { textContent: 'x' } } };
+        };
+        const child = createExoBindable<unknown>({
+            type: 'em',
+            attrs: { static: { textContent: 'initial' } },
+        });
+        const Provider = (ctx: { provide: (k: unknown, v: unknown) => void }) => {
+            ctx.provide(key, 'provided');
+            return { type: 'div', attrs: { bindables: { children: child } } };
+        };
+        new ExoNodeDom({
+            type: Provider,
+            attrs: {},
+        } as unknown as ConstructorParameters<typeof ExoNodeDom>[0]);
+
+        child.setValue({ type: Item, attrs: {} } as unknown);
+        expect(seen).toEqual(['provided']);
+    });
+
     it('exposes component constants and bindables through context', () => {
         const label = createExoBindable('hi');
         let constant: unknown;
@@ -957,6 +1138,134 @@ describe('ExoNodeDom', () => {
         }
     });
 
+    it('inlines a static list of already-cached cache-key clones (2nd mount, no per-row build)', () => {
+        const KEY = Symbol('row');
+        const makeTree = () =>
+            h('ul', {
+                static: {
+                    children: [
+                        h('li', { static: { children: 'x' } }, KEY),
+                        h('li', { static: { children: 'x' } }, KEY),
+                        h('li', { static: { children: 'x' } }, KEY),
+                    ],
+                },
+            }) as unknown as ConstructorParameters<typeof ExoNodeDom>[0];
+
+        // First mount caches the template (per-row cache-key branch builds row 1,
+        // clones rows 2-3).
+        const first = new ExoNodeDom(makeTree());
+        const ul1 = first.element as Element;
+        expect(ul1.querySelectorAll('li').length).toBe(3);
+        expect(ul1.textContent).toBe('xxx');
+
+        // Second mount: template cached AND children are a STATIC list → the inline
+        // fast path clones all three without a per-row walkSchema frame. Zero `li`
+        // createElement proves every row came from a clone; output is identical.
+        let liCreates = 0;
+        const realCreate = document.createElement.bind(document);
+        (document as unknown as { createElement: (t: string) => Element }).createElement =
+            (tag: string) => {
+                if (tag === 'li') liCreates += 1;
+                return realCreate(tag);
+            };
+        try {
+            const second = new ExoNodeDom(makeTree());
+            const ul2 = second.element as Element;
+            expect(ul2.querySelectorAll('li').length).toBe(3);
+            expect(ul2.textContent).toBe('xxx');
+            expect(liCreates).toBe(0);
+            expect(() => second.dispose()).not.toThrow();
+        } finally {
+            (document as unknown as { createElement: unknown }).createElement =
+                realCreate;
+        }
+    });
+
+    it('falls back to the normal walk when a static list is not all cached clones', () => {
+        // A mixed static list (a cached clone + a plain element) must NOT take the
+        // inline fast path: it bails having mutated nothing and walks normally, so the
+        // plain element still renders — in order.
+        const KEY = Symbol('row');
+        // Prime the cache with the keyed template.
+        new ExoNodeDom(
+            h('ul', {
+                static: { children: [h('li', { static: { children: 'x' } }, KEY)] },
+            }) as unknown as ConstructorParameters<typeof ExoNodeDom>[0]
+        );
+        const node = new ExoNodeDom(
+            h('ul', {
+                static: {
+                    children: [
+                        h('li', { static: { children: 'x' } }, KEY), // cached clone
+                        h('li', { static: { children: 'y' } }), // plain, uncached
+                    ],
+                },
+            }) as unknown as ConstructorParameters<typeof ExoNodeDom>[0]
+        );
+        const ul = node.element as Element;
+        expect(ul.querySelectorAll('li').length).toBe(2);
+        expect(ul.textContent).toBe('xy');
+    });
+
+    it('clones + patches a cache-key template with holes (text/attr/handler), per instance', () => {
+        const KEY = Symbol('card');
+        let clicks = 0;
+        const makeCard = (name: string, cls: string) => {
+            const title = createExoBindable(name);
+            const badge = createExoBindable(cls);
+            const schema = h(
+                'div',
+                {
+                    static: {
+                        class: 'card',
+                        children: [
+                            h('h3', { bindables: { textContent: title } }),
+                            h('span', { bindables: { class: badge } }),
+                            h('button', {
+                                static: { textContent: 'x' },
+                                handlers: { onClick: () => { clicks += 1; } },
+                            }),
+                        ],
+                    },
+                },
+                KEY
+            ) as unknown as ConstructorParameters<typeof ExoNodeDom>[0];
+            return { schema, title, badge };
+        };
+
+        // First occurrence: builds the skeleton + records hole paths, then clones +
+        // patches instance 1 from it.
+        const a = makeCard('Alice', 'on');
+        const n1 = new ExoNodeDom(a.schema);
+        const card1 = n1.element as Element;
+        expect(card1.querySelector('h3')!.textContent).toBe('Alice');
+        expect(card1.querySelector('span')!.getAttribute('class')).toBe('on');
+
+        // Second occurrence (same key): clone the cached skeleton + patch with
+        // instance 2's OWN values — instances are independent.
+        const b = makeCard('Bob', 'off');
+        const n2 = new ExoNodeDom(b.schema);
+        const card2 = n2.element as Element;
+        expect(card2.querySelector('h3')!.textContent).toBe('Bob');
+        expect(card2.querySelector('span')!.getAttribute('class')).toBe('off');
+        expect(card1.querySelector('h3')!.textContent).toBe('Alice'); // unchanged
+
+        // Reactivity survives cloning: updating instance 2's bindable updates ONLY
+        // card2's cloned node.
+        b.title.setValue('Bobby');
+        expect(card2.querySelector('h3')!.textContent).toBe('Bobby');
+        expect(card1.querySelector('h3')!.textContent).toBe('Alice');
+
+        // The handler is live on the clone.
+        card2.querySelector('button')!.dispatchEvent(new Event('click'));
+        expect(clicks).toBe(1);
+
+        // Dispose cleans the hole subscriptions (no throw, and the detached clone
+        // stops reacting).
+        n2.dispose();
+        expect(() => b.title.setValue('Gone')).not.toThrow();
+    });
+
     // NOTE: `cacheKey` is the compiler's promise that a subtree is static — the
     // compiler only ever assigns it to provably-static `h()` calls. The renderer
     // therefore trusts it and does NOT re-verify staticness at runtime (the old
@@ -1041,5 +1350,245 @@ describe('ExoNodeDom', () => {
                     attrs: { static: { children: [same, same] } },
                 } as unknown as ConstructorParameters<typeof ExoNodeDom>[0])
         ).toThrow(/two live positions/);
+    });
+});
+
+// --- dev diagnostics --------------------------------------------------------
+
+describe('ExoNodeDom — dev diagnostics', () => {
+    type Ctor = ConstructorParameters<typeof ExoNodeDom>[0];
+    let errorSpy: ReturnType<typeof vi.spyOn>;
+
+    beforeEach(() => {
+        __resetDomDevWarnings();
+        errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+    afterEach(() => errorSpy.mockRestore());
+
+    it('errors point at the node: bad schema type names the node', () => {
+        expect(
+            () =>
+                new ExoNodeDom({
+                    type: 42 as unknown as string,
+                    attrs: { static: { id: 'oops' } },
+                } as unknown as Ctor)
+        ).toThrow(/cannot create a DOM node.*is 42 \(number\)/s);
+    });
+
+    it('mount root that produces no element names the schema', () => {
+        const Empty = () => null;
+        expect(() =>
+            mount(
+                { type: Empty, attrs: {} } as unknown as Parameters<typeof mount>[0],
+                document.createElement('div')
+            )
+        ).toThrow(/component Empty.*no element to mount/s);
+    });
+
+    it('warns (once) when a bindables entry is not a bindable', () => {
+        const node = new ExoNodeDom({
+            type: 'div',
+            // a plain function landed in bindables (belongs in handlers)
+            attrs: { bindables: { title: (() => {}) as unknown } },
+        } as unknown as Ctor);
+        expect(node.element).toBeInstanceOf(HTMLDivElement);
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        const msg = String(errorSpy.mock.calls[0][0]);
+        expect(msg).toContain('bindables.title');
+        expect(msg).toContain('<div>');
+        expect(msg).toContain('function');
+    });
+
+    it('warns when a handlers entry is not a function', () => {
+        new ExoNodeDom({
+            type: 'button',
+            attrs: {
+                static: { id: 'go' },
+                handlers: { onClick: 'nope' as unknown },
+            },
+        } as unknown as Ctor);
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        const msg = String(errorSpy.mock.calls[0][0]);
+        expect(msg).toContain('handlers.onClick');
+        expect(msg).toContain('<button#go>');
+        expect(msg).toContain('not a function');
+    });
+
+    it('warns when a bindableHandlers entry is not a bindable', () => {
+        new ExoNodeDom({
+            type: 'button',
+            attrs: { bindableHandlers: { onClick: (() => {}) as unknown } },
+        } as unknown as Ctor);
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        expect(String(errorSpy.mock.calls[0][0])).toContain(
+            'bindableHandlers.onClick'
+        );
+    });
+
+    it('does NOT warn for a nullish handler (intentional absence)', () => {
+        new ExoNodeDom({
+            type: 'button',
+            attrs: { handlers: { onClick: undefined as unknown } },
+        } as unknown as Ctor);
+        expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    it('a valid handler still works and does not warn', () => {
+        let clicks = 0;
+        const node = new ExoNodeDom({
+            type: 'button',
+            attrs: { handlers: { onClick: () => clicks++ } },
+        } as unknown as Ctor);
+        (node.element as HTMLButtonElement).dispatchEvent(
+            new MouseEvent('click', { bubbles: true })
+        );
+        expect(clicks).toBe(1);
+        expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    // Regression: a fragment is transparent (no host element), so reactive children
+    // on it used to render their INITIAL value but never subscribe — updates after
+    // mount were silently ignored ("the render doesn't run a second time"). They now
+    // reconcile within the fragment's own anchor range, leaving siblings untouched.
+    it('reactive children on a fragment update after mount (not just initial)', () => {
+        const container = document.createElement('div');
+        const A = () => h('span', { static: { class: 'x', textContent: 'A' } });
+        const B = () => h('span', { static: { class: 'x', textContent: 'B' } });
+        const kids = bindable<unknown>([A()]);
+        const app = h('div', {
+            static: {
+                children: [
+                    h('em', { static: { class: 'sib', textContent: 'sib' } }),
+                    h('#fragment', { bindables: { children: kids } }),
+                ],
+            },
+        });
+        const node = mount(app as never, container);
+        expect(container.querySelector('.x')!.textContent).toBe('A');
+        expect(container.querySelector('.sib')!.textContent).toBe('sib');
+
+        kids.setValue([B()]); // was ignored on a fragment before the fix
+        expect(container.querySelector('.x')!.textContent).toBe('B');
+
+        kids.setValue(null); // hide
+        expect(container.querySelector('.x')).toBeNull();
+        expect(container.querySelector('.sib')!.textContent).toBe('sib'); // sibling intact
+
+        kids.setValue([A()]); // show again
+        expect(container.querySelector('.x')!.textContent).toBe('A');
+        node.dispose();
+    });
+
+    it('reactive LIST children on a fragment reconcile after mount', () => {
+        const container = document.createElement('div');
+        const li = (t: string) => h('i', { static: { class: 'item', textContent: t } });
+        const items = list([li('a'), li('b')]);
+        const app = h('div', {
+            static: {
+                children: [
+                    h('em', { static: { class: 'sib' } }),
+                    h('#fragment', { bindableLists: { children: items } }),
+                ],
+            },
+        });
+        const node = mount(app as never, container);
+        const texts = () =>
+            [...container.querySelectorAll('.item')].map(e => e.textContent);
+        expect(texts()).toEqual(['a', 'b']);
+        items.push(li('c'));
+        expect(texts()).toEqual(['a', 'b', 'c']);
+        items.remove(0);
+        expect(texts()).toEqual(['b', 'c']);
+        expect(container.querySelector('.sib')).not.toBeNull();
+        node.dispose();
+    });
+
+    // Declarative keyed reconcile (bindable<schema[]> → updateChildren). Reuse is by
+    // schema-object identity, so stable schemas must keep their DOM node across a
+    // reorder (moved via the minimal-move LIS pass, never rebuilt); inserts/removes
+    // touch only the delta.
+    describe('declarative children reconcile', () => {
+        const rows = (labels: string[]) =>
+            labels.map(t => h('li', { static: { class: 'row', textContent: t } }));
+        const order = (el: Element): (string | null)[] =>
+            [...el.querySelectorAll('.row')].map(n => n.textContent);
+        const nodeMap = (el: Element): Map<string | null, Element> => {
+            const m = new Map<string | null, Element>();
+            for (const li of el.querySelectorAll('.row')) m.set(li.textContent, li);
+            return m;
+        };
+
+        it('reorders to the new array, reusing the SAME nodes (no rebuild)', () => {
+            const container = document.createElement('div');
+            const [a, b, c, d, e] = rows(['a', 'b', 'c', 'd', 'e']);
+            const children = bindable<readonly unknown[]>([a, b, c, d, e]);
+            const node = mount(h('ul', { bindables: { children } }) as never, container);
+            const ul = container.firstElementChild as Element;
+            const before = nodeMap(ul);
+            expect(order(ul)).toEqual(['a', 'b', 'c', 'd', 'e']);
+
+            children.setValue([c, e, a, d, b]); // shuffle
+            expect(order(ul)).toEqual(['c', 'e', 'a', 'd', 'b']);
+            const after = nodeMap(ul);
+            for (const t of ['a', 'b', 'c', 'd', 'e']) {
+                expect(after.get(t)).toBe(before.get(t)); // moved, not rebuilt
+            }
+            node.dispose();
+        });
+
+        it('reverses correctly, reusing all nodes', () => {
+            const container = document.createElement('div');
+            const [a, b, c] = rows(['a', 'b', 'c']);
+            const children = bindable<readonly unknown[]>([a, b, c]);
+            mount(h('ul', { bindables: { children } }) as never, container);
+            const ul = container.firstElementChild as Element;
+            const before = nodeMap(ul);
+            children.setValue([c, b, a]);
+            expect(order(ul)).toEqual(['c', 'b', 'a']);
+            const after = nodeMap(ul);
+            for (const t of ['a', 'b', 'c']) expect(after.get(t)).toBe(before.get(t));
+        });
+
+        it('inserts new nodes in place, reusing the kept ones', () => {
+            const container = document.createElement('div');
+            const [a, b, c] = rows(['a', 'b', 'c']);
+            const [x, y] = rows(['x', 'y']);
+            const children = bindable<readonly unknown[]>([a, b, c]);
+            mount(h('ul', { bindables: { children } }) as never, container);
+            const ul = container.firstElementChild as Element;
+            const before = nodeMap(ul);
+            children.setValue([a, x, b, y, c]); // insert x, y between kept nodes
+            expect(order(ul)).toEqual(['a', 'x', 'b', 'y', 'c']);
+            const after = nodeMap(ul);
+            for (const t of ['a', 'b', 'c']) expect(after.get(t)).toBe(before.get(t));
+        });
+
+        it('removes dropped nodes (detached) and reuses survivors', () => {
+            const container = document.createElement('div');
+            const [a, b, c, d] = rows(['a', 'b', 'c', 'd']);
+            const children = bindable<readonly unknown[]>([a, b, c, d]);
+            mount(h('ul', { bindables: { children } }) as never, container);
+            const ul = container.firstElementChild as Element;
+            const before = nodeMap(ul);
+            children.setValue([a, c]); // drop b, d
+            expect(order(ul)).toEqual(['a', 'c']);
+            expect(before.get('b')!.isConnected).toBe(false);
+            expect(before.get('d')!.isConnected).toBe(false);
+            expect(nodeMap(ul).get('a')).toBe(before.get('a'));
+            expect(nodeMap(ul).get('c')).toBe(before.get('c'));
+        });
+
+        it('prepend touches only the new node (kept nodes untouched)', () => {
+            const container = document.createElement('div');
+            const [a, b] = rows(['a', 'b']);
+            const [z] = rows(['z']);
+            const children = bindable<readonly unknown[]>([a, b]);
+            mount(h('ul', { bindables: { children } }) as never, container);
+            const ul = container.firstElementChild as Element;
+            const nA = nodeMap(ul).get('a');
+            children.setValue([z, a, b]);
+            expect(order(ul)).toEqual(['z', 'a', 'b']);
+            expect(nodeMap(ul).get('a')).toBe(nA);
+        });
     });
 });

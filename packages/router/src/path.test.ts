@@ -35,4 +35,35 @@ describe('router path matching', () => {
     it('returns undefined when no route matches', () => {
         expect(matchRoutes(routes, '/missing')).toBeUndefined();
     });
+
+    describe('named catch-all: required vs optional', () => {
+        const requiredRoutes: readonly TExoRoute[] = [
+            { path: '/files/*', catchAll: 'slug', component: h('section') },
+        ];
+        const optionalRoutes: readonly TExoRoute[] = [
+            { path: '/docs/*', optionalCatchAll: 'slug', component: h('section') },
+        ];
+
+        it('required catch-all matches one or more segments', () => {
+            expect(matchRoutes(requiredRoutes, '/files/a')?.params).toEqual({
+                slug: 'a',
+            });
+            expect(matchRoutes(requiredRoutes, '/files/a/b')?.params).toEqual({
+                slug: 'a/b',
+            });
+        });
+
+        it('required catch-all does NOT match zero segments', () => {
+            expect(matchRoutes(requiredRoutes, '/files')).toBeUndefined();
+        });
+
+        it('optional catch-all matches zero segments (empty param)', () => {
+            expect(matchRoutes(optionalRoutes, '/docs')?.params).toEqual({
+                slug: '',
+            });
+            expect(matchRoutes(optionalRoutes, '/docs/a')?.params).toEqual({
+                slug: 'a',
+            });
+        });
+    });
 });

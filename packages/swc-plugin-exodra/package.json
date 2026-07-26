@@ -1,0 +1,16 @@
+{
+  "name": "swc-plugin-exodra",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SWC plugin that compiles Exodra JSX (Rust/Wasm port of the Babel transform)",
+  "scripts": {
+    "build": "cargo build --release --target wasm32-wasip1 && cp target/wasm32-wasip1/release/swc_plugin_exodra.wasm swc_plugin_exodra.wasm",
+    "test": "vitest run"
+  },
+  "files": [
+    "swc_plugin_exodra.wasm"
+  ],
+  "devDependencies": {
+    "@swc/core": "^1.15.0"
+  }
+}

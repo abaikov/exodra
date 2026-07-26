@@ -1,6 +1,6 @@
 {
   "name": "@exodra/introspect",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "AI-powered introspection ecosystem with universal AI tool integration and extensible plugin system for Exodra applications",
   "type": "module",
   "main": "./dist/index.js",
@@ -60,8 +60,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@exodra/core": "^0.1.0",
-    "@exodra/jsx": "^0.1.0",
     "@babel/parser": "^7.23.9",
     "@babel/traverse": "^7.23.9",
     "@babel/types": "^7.23.9",
@@ -75,10 +73,12 @@
   "devDependencies": {
     "@types/babel__traverse": "^7.20.5",
     "@types/node": "^20.11.5",
-    "vitest": "^1.2.1"
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "typescript": ">=5.0.0"
+    "typescript": ">=5.0.0",
+    "@exodra/core": "^0.2.0",
+    "@exodra/jsx": "^0.2.0"
   },
   "keywords": [
     "exodra",
@@ -86,7 +86,7 @@
     "developer-tools",
     "static-analysis",
     "ai",
-    "ai-integration", 
+    "ai-integration",
     "plugins",
     "code-analysis",
     "performance",

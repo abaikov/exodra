@@ -106,140 +106,29 @@ async function runBenchmarks() {
 
   console.log('\n📊 Running benchmarks...\n');
 
-  // Inject benchmark runner and execute
-  const results = await page.evaluate(async () => {
-    // Import benchmark functions
-    const { benchmarkConditionalRender } = await import(
-      './src/benchmarks/conditional-render.tsx'
-    );
-    const { benchmarkListOperations } = await import(
-      './src/benchmarks/list-operations.tsx'
-    );
-    const { benchmarkSignalOperations } = await import(
-      './src/benchmarks/signal-operations.tsx'
-    );
-    const { benchmarkEffectPerformance } = await import(
-      './src/benchmarks/effect-performance.tsx'
-    );
-    const { benchmarkAdvancedListOperations } = await import(
-      './src/benchmarks/advanced-list-operations.tsx'
-    );
-    const { benchmarkNestedComponents } = await import(
-      './src/benchmarks/nested-components.tsx'
-    );
-    const { benchmarkMultipleSignals } = await import(
-      './src/benchmarks/multiple-signals.tsx'
-    );
-    const { benchmarkInitialRender } = await import(
-      './src/benchmarks/initial-render.tsx'
-    );
-
-    const allResults = [];
-
-    const runReactive = async (name, fn, iterations, frameworks = ['exodra', 'solid', 'svelte']) => {
-      for (const framework of frameworks) {
-        console.log(`Running ${name} (${framework})...`);
-        try {
-          const result = await fn(framework, iterations);
-          allResults.push(result);
-          console.log(`${framework}: median ${result.medianTime.toFixed(3)}ms, avg ${result.avgTime.toFixed(3)}ms`);
-        } catch (error) {
-          console.error(`❌ ${framework} ${name} failed:`, error.message);
-        }
-      }
-    };
-
-    // Run conditional render benchmark
-    await runReactive('Conditional Component Render', benchmarkConditionalRender, 1000);
-
-    // Run list operations benchmark
-    console.log('\nRunning List Operations...');
-    await runReactive('List Operations', benchmarkListOperations, 1000);
-
-    // Run signal operations benchmark
-    console.log('\nRunning Signal Operations...');
-    await runReactive('Signal Operations', benchmarkSignalOperations, 10000, ['exodra', 'solid']);
-
-    // Run effect performance benchmark
-    console.log('\nRunning Effect Performance...');
-    await runReactive('Effect Performance', benchmarkEffectPerformance, 1000, ['exodra', 'solid']);
-
-    // Run advanced list operations benchmark
-    console.log('\nRunning Advanced List Operations...');
-    await runReactive('Advanced List Operations', benchmarkAdvancedListOperations, 500, ['exodra', 'solid']);
-
-    // Run nested components benchmark
-    console.log('\nRunning Nested Components...');
-    await runReactive('Nested Components', benchmarkNestedComponents, 500, ['exodra', 'solid']);
-
-    // Run multiple signals benchmark
-    console.log('\nRunning Multiple Signals...');
-    await runReactive('Multiple Signals', benchmarkMultipleSignals, 500, ['exodra', 'solid']);
-
-    // Run initial render benchmark
-    console.log('\nRunning Initial Render...');
-    for (const framework of ['exodra', 'solid', 'svelte', 'react']) {
-      console.log(`Running Initial Render (${framework})...`);
+  // The curated suite — 4 axes, each measured through the shared A/B harness
+  // (interleaved Exodra vs Solid, GC/sample, median + full spread). Each bench
+  // prints its own ✅ lines, forwarded by the console filter above.
+  await page.evaluate(async () => {
+    const axes = [
+      ['./src/benchmarks/initial-render.tsx', 'benchmarkInitialRender'],
+      ['./src/benchmarks/app-update.tsx', 'benchmarkAppUpdate'],
+      ['./src/benchmarks/list-reconcile.tsx', 'benchmarkListReconcile'],
+      ['./src/benchmarks/reconcile.tsx', 'benchmarkReconcile'],
+      ['./src/benchmarks/reactive-update.tsx', 'benchmarkReactiveUpdate'],
+      ['./src/benchmarks/toggle.tsx', 'benchmarkToggle'],
+    ];
+    for (const [path, fn] of axes) {
       try {
-        const result = await benchmarkInitialRender(framework, 20);
-        allResults.push(result);
-        console.log(`${framework}: ${result.avgTime.toFixed(3)}ms`);
-      } catch (error) {
-        console.error(`❌ ${framework} initial render failed:`, error.message);
+        const mod = await import(path);
+        await mod[fn]();
+      } catch (e) {
+        console.error(`❌ ${fn} failed:`, e && e.message ? e.message : e);
       }
     }
-
-    return allResults;
   });
 
   await browser.close();
-
-  const scoreTime = (result) =>
-    result.medianTime > 0 ? result.medianTime : result.avgTime;
-
-  // Print results
-  console.log('\n\n📈 Benchmark Results');
-  console.log('═'.repeat(60));
-
-  // Group results by benchmark name
-  const benchmarkNames = [...new Set(results.map((r) => r.name))];
-
-  for (const name of benchmarkNames) {
-    const group = results.filter((r) => r.name === name);
-    if (group.length === 0) continue;
-
-    const fastest = group.reduce((a, b) => (scoreTime(a) < scoreTime(b) ? a : b));
-    const slowest = group.reduce((a, b) => (scoreTime(a) > scoreTime(b) ? a : b));
-    const fastestScore = scoreTime(fastest);
-    const slowestScore = scoreTime(slowest);
-    const speedup = slowestScore / Math.max(fastestScore, Number.EPSILON);
-
-    console.log(`\n🔹 ${name}`);
-    console.log('─'.repeat(60));
-    for (const result of group.sort((a, b) => scoreTime(a) - scoreTime(b))) {
-      const marker = result.framework === fastest.framework ? ' ★' : '';
-      const mem =
-        typeof result.heapUsedBytes === 'number'
-          ? ` | heap ${(result.heapUsedBytes / 1048576).toFixed(2)}MB`
-          : '';
-      console.log(
-        `  ${result.framework.padEnd(22)} median ${result.medianTime.toFixed(4)}ms | avg ${result.avgTime.toFixed(4)}ms | min ${result.minTime.toFixed(4)}ms | max ${result.maxTime.toFixed(4)}ms${mem}${marker}`
-      );
-    }
-    console.log(`  ${fastest.framework} is ${speedup.toFixed(2)}x faster than ${slowest.framework}`);
-
-    // "At what cost": show the retained-heap comparison where measured.
-    const withMem = group.filter((r) => typeof r.heapUsedBytes === 'number');
-    if (withMem.length > 1) {
-      const leanest = withMem.reduce((a, b) => (a.heapUsedBytes < b.heapUsedBytes ? a : b));
-      const heaviest = withMem.reduce((a, b) => (a.heapUsedBytes > b.heapUsedBytes ? a : b));
-      const ratio = heaviest.heapUsedBytes / Math.max(leanest.heapUsedBytes, 1);
-      console.log(
-        `  memory: ${leanest.framework} leanest at ${(leanest.heapUsedBytes / 1048576).toFixed(2)}MB (${ratio.toFixed(2)}x less than ${heaviest.framework})`
-      );
-    }
-  }
-
   console.log('\n✅ Benchmarks completed!\n');
 }
 

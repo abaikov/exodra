@@ -1,7 +1,7 @@
 import type { TExoSchema } from '@exodra/core';
+import { fromOimdb, keyedChildren } from '@oimdb/exodra';
 import type { Milestone, Project } from '../domain/types';
 import { getRuntime } from '../app/runtime';
-import { keyedList } from '../lib/keyed-list';
 
 export default function projectsPage(): TExoSchema {
     const rt = getRuntime();
@@ -21,9 +21,9 @@ export default function projectsPage(): TExoSchema {
             <input
                 static={{ class: 'ms__title', value: m.title }}
                 handlers={{
-                    onInput: (e: Event) =>
+                    onInput: e =>
                         rt.patchEntity('milestones', m.id, {
-                            title: (e.target as HTMLInputElement).value,
+                            title: e.currentTarget.value,
                         }),
                 }}
             />
@@ -50,9 +50,9 @@ export default function projectsPage(): TExoSchema {
                 <input
                     static={{ class: 'projcard__name', value: p.name }}
                     handlers={{
-                        onInput: (e: Event) =>
+                        onInput: e =>
                             rt.patchEntity('projects', p.id, {
-                                name: (e.target as HTMLInputElement).value,
+                                name: e.currentTarget.value,
                             }),
                     }}
                 />
@@ -63,9 +63,9 @@ export default function projectsPage(): TExoSchema {
             <textarea
                 static={{ class: 'projcard__desc' }}
                 handlers={{
-                    onInput: (e: Event) =>
+                    onInput: e =>
                         rt.patchEntity('projects', p.id, {
-                            description: (e.target as HTMLTextAreaElement).value,
+                            description: e.currentTarget.value,
                         }),
                 }}
             >
@@ -92,19 +92,31 @@ export default function projectsPage(): TExoSchema {
     // A project card rebuilds only when its STRUCTURE changes (archive, task-count,
     // milestone add/remove/done) — a name/description edit leaves the key unchanged,
     // so the reconcile is a no-op and the focused input keeps focus.
-    const grid = keyedList({
-        items: projects,
-        key: p =>
-            `${p.id}:${p.archived ? 1 : 0}:${taskCount(p.id)}:${milestonesOf(p.id)
-                .map(m => m.id + (m.done ? 'd' : ''))
-                .join('+')}`,
-        render: card,
-        subscribe: refresh => [
-            rt.oimdbInstance.projects.collection.subscribeOnAnyUpdate(refresh),
-            rt.oimdbInstance.milestones.collection.subscribeOnAnyUpdate(refresh),
-            rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(refresh),
-        ],
-    });
+    // The card key depends on RELATED data (task count, milestones), not just the
+    // `projects` array, so the wrapping bindable forwards every store update
+    // (`alwaysNotify`) and lets `keyedChildren` dedup on the rendered key set —
+    // gating on the `projects` array alone would swallow task/milestone changes.
+    const grid = keyedChildren(
+        fromOimdb(
+            projects,
+            cb => {
+                const us = [
+                    rt.oimdbInstance.projects.collection.subscribeOnAnyUpdate(cb),
+                    rt.oimdbInstance.milestones.collection.subscribeOnAnyUpdate(cb),
+                    rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(cb),
+                ];
+                return () => us.forEach(u => u());
+            },
+            { alwaysNotify: true }
+        ),
+        {
+            key: p =>
+                `${p.id}:${p.archived ? 1 : 0}:${taskCount(p.id)}:${milestonesOf(p.id)
+                    .map(m => m.id + (m.done ? 'd' : ''))
+                    .join('+')}`,
+            render: card,
+        }
+    );
 
     const addProject = () =>
         rt.createEntity('projects', {
@@ -117,13 +129,7 @@ export default function projectsPage(): TExoSchema {
         });
 
     return (
-        <div
-            static={{
-                class: 'page page--projects',
-                onExoMount: grid.mount,
-                onExoUnmount: grid.unmount,
-            }}
-        >
+        <div static={{ class: 'page page--projects' }}>
             <div static={{ class: 'page__bar' }}>
                 <h1 static={{ class: 'page__title' }}>Projects</h1>
                 <span static={{ class: 'page__spacer' }} />
@@ -134,7 +140,7 @@ export default function projectsPage(): TExoSchema {
                     + project
                 </button>
             </div>
-            <div static={{ class: 'projgrid' }} bindable={{ children: grid.children }} />
+            <div static={{ class: 'projgrid' }} bindable={{ children: grid }} />
         </div>
     );
 }

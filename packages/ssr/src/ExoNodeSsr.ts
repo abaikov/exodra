@@ -1,5 +1,5 @@
-import { ExoNode, type TExoContext, type TExoSchema } from '@exodra/core';
-import { ExoNodeString } from '@exodra/string';
+import type { TExoContext, TExoSchema } from '@exodra/core';
+import { ExoNodeString, type TExoRenderScope } from '@exodra/string';
 import { ssrContextKey } from './context';
 import type {
     TExoSsrContext,
@@ -15,38 +15,12 @@ type TExoNodeStringSchema = ConstructorParameters<typeof ExoNodeString>[0];
 export class ExoNodeSsr extends ExoNodeString implements TExoSsrContext {
     private readonly ssrState: TExoSsrState;
 
-    constructor(
-        schema: TExoSchema,
-        options?: TExoSsrNodeOptions,
-        autoInit?: boolean
-    );
-    constructor(
-        schema: TExoSchema,
-        parentNode?: ExoNode<TExoNodeStringSchema>,
-        autoInit?: boolean
-    );
-    constructor(
-        schema: TExoSchema,
-        parentOrOptions?: ExoNode<TExoNodeStringSchema> | TExoSsrNodeOptions,
-        autoInit = true
-    ) {
-        const parentNode =
-            parentOrOptions instanceof ExoNode
-                ? parentOrOptions
-                : undefined;
-        const options = parentNode
-            ? undefined
-            : (parentOrOptions as TExoSsrNodeOptions | undefined);
-
-        super(schema as TExoNodeStringSchema, parentNode, false);
-        this.ssrState =
-            parentNode instanceof ExoNodeSsr
-                ? parentNode.ssrState
-                : createSsrState(options);
-
-        if (autoInit) {
-            this.initSubtreeIterative();
-        }
+    constructor(schema: TExoSchema, options?: TExoSsrNodeOptions) {
+        // Defer rendering until ssrState exists — components inject() the SSR context
+        // during the render pass, so it must be in place first.
+        super(schema as TExoNodeStringSchema, false);
+        this.ssrState = createSsrState(options);
+        this.html = this.render(this.schema);
     }
 
     setStatus(status: number): void {
@@ -141,8 +115,11 @@ export class ExoNodeSsr extends ExoNodeString implements TExoSsrContext {
         return `${doctype}<html${htmlAttributes}><head>${headHtml}</head><body${bodyAttributes}><div id="${escapeAttribute(rootId)}">${this.renderBody()}</div>${stateScript}</body></html>`;
     }
 
-    protected override createContext(): TExoContext<TExoNodeStringSchema> {
-        const context = super.createContext();
+    protected override createContext(
+        schema: TExoNodeStringSchema,
+        scope: TExoRenderScope
+    ): TExoContext<TExoNodeStringSchema> {
+        const context = super.createContext(schema, scope);
         const inject = context.inject;
 
         return {
@@ -151,7 +128,6 @@ export class ExoNodeSsr extends ExoNodeString implements TExoSsrContext {
                 if (key.id === ssrContextKey.id) {
                     return this as TExoSsrContext as never;
                 }
-
                 return inject(key, fallback);
             },
         };

@@ -14,6 +14,7 @@ import * as core from '@exodra/core';
 import * as jsx from '@exodra/jsx';
 import * as forms from '@exodra/forms';
 import * as reactivity from '@exodra/reactivity';
+import * as attrs from '../../attrs/src/index';
 import * as srcPluginModule from '../src/index';
 
 const plugin =
@@ -24,6 +25,7 @@ const runtimes: Record<string, Record<string, unknown>> = {
     '@exodra/core': core as Record<string, unknown>,
     '@exodra/jsx': jsx as Record<string, unknown>,
     '@exodra/forms': forms as Record<string, unknown>,
+    '@exodra/attrs': attrs as Record<string, unknown>,
     '@exodra/reactivity': reactivity as Record<string, unknown>,
 };
 

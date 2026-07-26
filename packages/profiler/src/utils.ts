@@ -1,6 +1,4 @@
-import { ExoNode } from '@exodra/core';
 import type { TExoProfileCallback } from './exodra-profiler';
-import { profileExoNode } from './exodra-profiler';
 import { profiler } from './Profiler';
 import type { ProfileReport } from './Profiler';
 
@@ -26,9 +24,10 @@ function getBrowserWindow(): TExoBrowserWindow | undefined {
  */
 export function startProfiling(callback?: TExoProfileCallback): void {
   if (callback) {
-    // Need to patch ExoNode externally now
-    profileExoNode(ExoNode, callback);
-    console.warn('Profiling enabled via patching. Cannot be disabled without restart.');
+    // ExoNode was removed — nothing to auto-profile here. Use @exodra/dom-profiler.
+    console.warn(
+      '[@exodra/profiler] startProfiling: the ExoNode base was removed. Use @exodra/dom-profiler to profile ExoNodeDom.'
+    );
   } else {
     profiler.start();
   }

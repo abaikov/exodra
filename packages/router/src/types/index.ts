@@ -1,5 +1,5 @@
 import type { TExoSchema } from '@exodra/core';
-import type { TExoWritableBindable } from '@exodra/reactivity';
+import type { TExoBindable, TExoWritableBindable } from '@exodra/reactivity';
 
 export type TExoRouteParams = Record<string, string>;
 
@@ -8,12 +8,21 @@ export type TExoLocation = {
     search: string;
     hash: string;
     href: string;
+    // Per-history-entry state, set via `navigate(to, { state })` / `<Link state>`.
+    // Lives in the History API (survives back/forward), NOT in the URL — so it is
+    // not shareable and is lost on a hard reload. For shareable/reloadable state
+    // use query params (`setQuery` / `bindQuery`). `undefined` when none was set.
+    state?: unknown;
 };
 
 export type TExoRouteMatch = {
     route: TExoRoute;
     params: TExoRouteParams;
     pathname: string;
+    // Convenience mirror of `route.handle` — arbitrary per-route metadata
+    // (breadcrumbs, titles, layout flags). Read the whole matched branch
+    // (root → leaf) via `router.getMatches()`.
+    handle?: unknown;
 };
 
 export type TExoRouteRenderer = (
@@ -47,10 +56,16 @@ export type TExoRoute = {
     error?: TExoRouteComponent;
     catchAll?: string; // Parameter name for [...params]
     optionalCatchAll?: string; // Parameter name for [[...params]]
+    // Arbitrary static metadata attached to the route (React Router's `handle`).
+    // Surfaced on every match — read the matched branch via `router.getMatches()`
+    // for breadcrumbs / titles / per-route layout flags.
+    handle?: unknown;
 };
 
 export type TExoNavigateOptions = {
     replace?: boolean;
+    // Attach state to this history entry (read back on `location.state`).
+    state?: unknown;
 };
 
 export type TExoQueryPrimitive = string | number | boolean | null | undefined;
@@ -110,8 +125,8 @@ export type TExoQueryParseOptions<
 export type TExoHistory = {
     getLocation(): TExoLocation;
     createHref(to: string): string;
-    push(to: string): void;
-    replace(to: string): void;
+    push(to: string, state?: unknown): void;
+    replace(to: string, state?: unknown): void;
     subscribe(update: () => void): () => void;
     dispose?(): void;
 };
@@ -128,9 +143,18 @@ export type TExoRouter = {
     readonly routes: readonly TExoRoute[];
     readonly location: TExoWritableBindable<TExoLocation>;
     readonly match: TExoWritableBindable<TExoRouteMatch | undefined>;
+    // The full matched branch, root → leaf. Each entry carries its own
+    // `route`/`handle`/resolved `pathname`; use it for breadcrumbs and layout
+    // chains. LAZY (a derive off `location`) — reading/subscribing it is what
+    // builds the chain; otherwise it costs nothing. Empty when nothing matched.
+    readonly matches: TExoBindable<
+        readonly TExoRouteMatch[],
+        readonly TExoRouteMatch[]
+    >;
     readonly navigationState: TExoWritableBindable<TExoNavigationState>;
     getLocation(): TExoLocation;
     getMatch(): TExoRouteMatch | undefined;
+    getMatches(): readonly TExoRouteMatch[];
     getNavigationState(): TExoNavigationState;
     getQuery<TSchema extends TExoQuerySchema>(
         options: TExoQueryParseOptions<TSchema> & { schema: TSchema }

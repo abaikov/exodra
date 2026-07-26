@@ -2,7 +2,7 @@
 
 exports[`@exodra/babel-plugin-jsx — directives & special forms > bind:value → mergeAttrs + forms helper (snapshot) 1`] = `
 "import { h } from "@exodra/core";
-import { mergeAttrs } from "@exodra/jsx";
+import { mergeAttrs } from "@exodra/attrs";
 import { bindText } from "@exodra/forms";
 export const v = h("input", mergeAttrs({}, bindText(model)));"
 `;
@@ -53,10 +53,7 @@ export const v = h("div", {
 });"
 `;
 
-exports[`@exodra/babel-plugin-jsx — output snapshots > fragment 1`] = `
-"import { h } from "@exodra/core";
-export const v = [a, b];"
-`;
+exports[`@exodra/babel-plugin-jsx — output snapshots > fragment 1`] = `"export const v = [a, b];"`;
 
 exports[`@exodra/babel-plugin-jsx — output snapshots > mixed buckets (static + bindable + handlers) 1`] = `
 "import { h } from "@exodra/core";

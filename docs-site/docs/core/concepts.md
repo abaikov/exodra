@@ -9,6 +9,12 @@ title: Core Concepts
 
 The foundation of Exodra's performance is the Three Props Architecture:
 
+![Every prop lands in exactly one typed bucket: static, bindable, bindableList, handlers, bindableHandlers](/img/buckets.svg)
+
+At author time every prop is sorted into one of five typed buckets — the three
+below, plus `handlers` and `bindableHandlers` for events. The compiler knows the
+static/reactive/event split up front, so the renderer never dispatches on it.
+
 ### 1. Static Props
 
 Properties that never change after initialization:
@@ -200,17 +206,16 @@ function DataFetcher(ctx) {
 
 ## Performance Optimizations
 
-### Static Hoisting
+Correctness never depends on any optimization. The always‑on model is already fast
+— compile‑time three‑props dispatch (no per‑prop runtime type check) and
+fine‑grained updates with no virtual DOM — and on top of that:
 
-Static content is created once and reused:
+- **Clone + patch templates.** The compiler marks a mostly‑static repeated subtree
+  with a `cacheKey`; the renderer builds its skeleton once and **clones + patches**
+  it per occurrence instead of building every node.
+- **Imperative list updates.** A `bindableList`'s `move` / `insert` / `remove` /
+  `push` do **targeted DOM operations**, not a diff.
+- **`cache:key`** lets you clone‑cache a repeated static subtree by hand.
 
-```javascript
-// Static nodes cached at compile time
-const _static1 = h('div', { 
-  static: { class: 'header' } 
-});
-```
-
-### Minimal Diffing
-
-Only reactive properties are checked for updates, static props are skipped entirely.
+See **[Optimizations](../guides/optimizations.md)** for what works out of the box,
+what you tune by hand, and what the compiler adds automatically.

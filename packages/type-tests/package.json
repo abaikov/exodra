@@ -8,9 +8,9 @@
     "test:types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@exodra/core": "*",
-    "@exodra/jsx": "*",
-    "@exodra/reactivity": "*",
+    "@exodra/core": "^0.2.0",
+    "@exodra/jsx": "^0.2.0",
+    "@exodra/reactivity": "^0.2.0",
     "typescript": "^5.3.3"
   }
 }

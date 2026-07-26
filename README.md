@@ -154,19 +154,21 @@ function TodoList() {
 
 ## 📦 Packages
 
-All `@exodra/*` packages are published at version `0.1.0`.
+All `@exodra/*` packages are published under the `0.x` line.
 
 | Package | Description |
 |---------|-------------|
 | **[@exodra/core](./packages/core)** | Component system, `h()`/`text()`, schema walking, context |
 | **[@exodra/reactivity](./packages/reactivity)** | `bindable`, `derive`, `list`, and persistence/hydration |
 | **[@exodra/dom](./packages/dom)** | DOM `mount`/`hydrate` with WeakMap-based tracking |
-| **[@exodra/jsx](./packages/jsx)** | JSX `Fragment`, `mergeAttrs`, and the typed JSX namespace |
+| **[@exodra/jsx](./packages/jsx)** | JSX `Fragment`, typed event types, and the typed JSX namespace |
+| **[@exodra/attrs](./packages/attrs)** | `mergeAttrs` — compose typed attrs buckets (runtime of `bind:`, opt-in merge for `props=`) |
 | **[@exodra/babel-plugin-jsx](./packages/babel-plugin-jsx)** | Babel plugin that compiles Exodra JSX to `h()` calls |
 | **[@exodra/string](./packages/string)** | `renderToString` for server-side string rendering |
 | **[@exodra/ssr](./packages/ssr)** | SSR primitives: `Head`, `State`, `useSsr`, hydration scripts |
 | **[@exodra/router](./packages/router)** | Client-side router, `Link`/`Outlet`/`Routes`, history adapters |
 | **[@exodra/forms](./packages/forms)** | Form binding helpers: `bindText`, `bindSelect`, `bindChecked`, `bindNumber` |
+| **[@exodra/style](./packages/style)** | Build CSS `style` strings from objects (`style({ … })`) |
 | **[@exodra/profiler](./packages/profiler)** | Runtime profiling utilities and metrics |
 | **[@exodra/react](./packages/react)** | Render React components inside Exodra as islands |
 | **[@exodra/introspect](./packages/introspect)** | `exo-introspect` CLI for analyzing apps, schemas, and routes |

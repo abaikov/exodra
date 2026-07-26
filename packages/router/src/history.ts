@@ -18,17 +18,21 @@ export function createMemoryHistory(
 
     return {
         getLocation() {
+            // Stable ref — `state` is attached to the location object at push/
+            // replace time, so this allocates nothing per call.
             return location;
         },
         createHref(to) {
             return addBasePath(parsePath(to).href, basePath);
         },
-        push(to) {
+        push(to, nextState) {
             location = parsePath(stripBasePath(to, basePath));
+            location.state = nextState;
             notify(subscribers);
         },
-        replace(to) {
+        replace(to, nextState) {
             location = parsePath(stripBasePath(to, basePath));
+            location.state = nextState;
             notify(subscribers);
         },
         subscribe(update) {
@@ -64,17 +68,23 @@ export function createBrowserHistory(
 
     return {
         getLocation() {
-            return parsePath(getCurrentPath());
+            // The History API preserves entry state across back/forward, so we
+            // read it straight off `window.history.state` (kept in sync by
+            // push/replace and restored by the browser on popstate). Mutate the
+            // fresh parsePath object rather than spreading a second one.
+            const loc = parsePath(getCurrentPath());
+            loc.state = browserWindow.history.state;
+            return loc;
         },
         createHref(to) {
             return addBasePath(parsePath(to).href, basePath);
         },
-        push(to) {
-            browserWindow.history.pushState(null, '', addBasePath(to, basePath));
+        push(to, state) {
+            browserWindow.history.pushState(state ?? null, '', addBasePath(to, basePath));
             notifySubscribers();
         },
-        replace(to) {
-            browserWindow.history.replaceState(null, '', addBasePath(to, basePath));
+        replace(to, state) {
+            browserWindow.history.replaceState(state ?? null, '', addBasePath(to, basePath));
             notifySubscribers();
         },
         subscribe(update) {

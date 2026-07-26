@@ -14,11 +14,12 @@ import { ROW_H, type Slot, type Viewport, type VirtualData } from './virtual-dat
 // tech the real shape. They are re-baked when the filter changes the total (the
 // window cache is cleared), so they stay accurate.
 export function rowFor(
-    kit: VirtualData['kit'],
+    data: VirtualData,
     slot: Slot,
     index: number,
     total: number
 ): TExoSchema {
+    const { kit } = data;
     const pk = slot.pk;
     const starCls = bindable(
         kit.collection.getOneByPk(pk)?.starred ? 'vrow__star is-on' : 'vrow__star'
@@ -54,12 +55,7 @@ export function rowFor(
             <button
                 bindable={{ class: starCls }}
                 static={{ 'aria-label': 'Star' }}
-                handlers={{
-                    onClick: () => {
-                        const r = kit.collection.getOneByPk(pk);
-                        if (r) kit.collection.upsertOneByPk(pk, { starred: !r.starred });
-                    },
-                }}
+                handlers={{ onClick: () => data.toggleStar(pk) }}
             >
                 ★
             </button>

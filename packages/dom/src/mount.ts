@@ -1,5 +1,6 @@
 import type { TExoSchema } from '@exodra/core';
 import { ExoNodeDom } from './ExoNodeDom';
+import { describeSchema } from './dev';
 import type { TExoDomMountResult } from './types/TExoDomMountResult';
 
 export function mount(
@@ -29,7 +30,14 @@ export function mount(
     }
 
     if (!root || root instanceof Comment) {
-        throw new Error('ExoNodeDom did not create a root element');
+        throw new Error(
+            `ExoNodeDom: mount root ${describeSchema(
+                schema as Parameters<typeof describeSchema>[0]
+            )} produced no element to mount (got ${
+                root instanceof Comment ? 'an empty-component comment' : String(root)
+            }). A root component that returns null/empty, or a bare fragment root, ` +
+                `cannot be mounted directly — wrap it in a real element.`
+        );
     }
 
     container.appendChild(root);

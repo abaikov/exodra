@@ -1,4 +1,5 @@
 import type { TExoWritableBindable } from '@exodra/reactivity';
+import { derive } from '@exodra/reactivity';
 
 // Two-way form binding helpers. Each returns a partial attrs object that the
 // babel plugin folds into the element via mergeAttrs(). The compiler picks the
@@ -34,7 +35,10 @@ export function bindSelect(model: TExoWritableBindable<string>): TExoBindAttrs {
     };
 }
 
-// <input type="checkbox|radio" bind:checked>: checked <-> boolean bindable.
+// <input type="checkbox" bind:checked>: checked <-> boolean bindable. For a RADIO
+// GROUP use bindRadio instead — a per-radio boolean can't represent deselection
+// (the browser only fires `change` on the newly-selected radio, so the previously
+// selected radio's boolean would stay stuck at true).
 export function bindChecked(
     model: TExoWritableBindable<boolean>
 ): TExoBindAttrs {
@@ -43,6 +47,23 @@ export function bindChecked(
         handlers: {
             onChange: event =>
                 model.setValue((event.target as HTMLInputElement).checked),
+        },
+    };
+}
+
+// <input type="radio" value="X">: a group of radios shares ONE model holding the
+// SELECTED value. `checked` is DERIVED (model === value), so selecting another
+// radio in the group re-notifies every radio and flips this one off — the thing a
+// per-radio boolean (bindChecked) cannot do. `change` fires only when a radio
+// becomes selected, so onChange just writes this radio's value into the model.
+export function bindRadio<T>(
+    model: TExoWritableBindable<T>,
+    value: T
+): TExoBindAttrs {
+    return {
+        bindables: { checked: derive(model, current => current === value) },
+        handlers: {
+            onChange: () => model.setValue(value),
         },
     };
 }

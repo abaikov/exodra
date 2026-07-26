@@ -65,6 +65,8 @@ type TExoOutletProps = {
 type TExoLinkProps = Record<string, unknown> & {
     to: string;
     replace?: boolean;
+    // Attach history-entry state to this navigation (read back on `location.state`).
+    state?: unknown;
     target?: string;
     download?: unknown;
     onClick?: (event: MouseEvent) => void;
@@ -75,6 +77,8 @@ type TExoRouteProps = {
     id?: string;
     path: string;
     component: TExoRouteComponent;
+    // Arbitrary per-route metadata, surfaced on the match (see `router.getMatches`).
+    handle?: unknown;
     children?: TExoRouterChild;
 };
 
@@ -107,12 +111,21 @@ export function Outlet(context: TExoContext): TExoSchema {
     const props = getProps<TExoOutletProps>(context);
     const router = useRouter(context);
     const schemaCache = new Map<string, TExoSchema | readonly TExoSchema[]>();
-    const children = bindable<TExoSchema | readonly TExoSchema[]>(
-        renderMatchSync(router.getMatch(), props.fallback, props.suspense, schemaCache)
-    );
+    const pending = new Set<string>();
     const update = () => {
-        children.setValue(renderMatchSync(router.getMatch(), props.fallback, props.suspense, schemaCache));
+        children.setValue(
+            renderMatchSync(router.getMatch(), props.fallback, props.suspense, schemaCache, {
+                onReady: update,
+                pending,
+            })
+        );
     };
+    const children = bindable<TExoSchema | readonly TExoSchema[]>(
+        renderMatchSync(router.getMatch(), props.fallback, props.suspense, schemaCache, {
+            onReady: update,
+            pending,
+        })
+    );
 
     context.onDispose(router.match.subscribe(update));
     context.onDispose(router.navigationState.subscribe(update));
@@ -130,6 +143,7 @@ export function Link(context: TExoContext): TExoSchema {
     const {
         to,
         replace,
+        state,
         children,
         onClick,
         target,
@@ -162,7 +176,7 @@ export function Link(context: TExoContext): TExoSchema {
                 }
 
                 event.preventDefault();
-                router.navigate(to, { replace });
+                router.navigate(to, { replace, state });
             },
         },
     });
@@ -230,15 +244,26 @@ function createRouteFromSchema(schema: TExoSchema): TExoRoute {
         id: props.id,
         path: props.path,
         component: props.component,
+        handle: props.handle,
         children,
     };
+}
+
+// Re-render hook + in-flight dedupe for the async lazy path. The Outlet passes
+// its own `update` as `onReady` so a resolved lazy component actually gets shown
+// (populating the cache alone never triggers a re-render), and `pending` so the
+// same lazy key is only loaded once even if `update` fires repeatedly meanwhile.
+interface RenderMatchOptions {
+    onReady?: () => void;
+    pending?: Set<string>;
 }
 
 function renderMatchSync(
     match: TExoRouteMatch | undefined,
     fallback: TExoRouterChild,
     suspense: TExoRouterChild,
-    schemaCache: Map<string, TExoSchema | readonly TExoSchema[]>
+    schemaCache: Map<string, TExoSchema | readonly TExoSchema[]>,
+    options: RenderMatchOptions = {}
 ): TExoSchema | readonly TExoSchema[] {
     if (!match) {
         return normalizeChildren(fallback);
@@ -251,10 +276,18 @@ function renderMatchSync(
     }
 
     if (isLazyLoader(match.route.component)) {
-        if (suspense) {
-            renderMatchAsync(match, fallback, suspense, schemaCache);
-            return normalizeChildren(suspense);
+        // Lazy component not resolved yet. Kick off the load ONCE (deduped by
+        // key), then show the suspense placeholder (or the fallback if none) and
+        // re-render via onReady once it resolves. Works with or without suspense.
+        const { pending, onReady } = options;
+        if (!pending || !pending.has(key)) {
+            pending?.add(key);
+            renderMatchAsync(match, fallback, schemaCache).finally(() => {
+                pending?.delete(key);
+                onReady?.();
+            });
         }
+        return normalizeChildren(suspense ?? fallback);
     }
 
     try {
@@ -270,7 +303,6 @@ function renderMatchSync(
 async function renderMatchAsync(
     match: TExoRouteMatch,
     fallback: TExoRouterChild,
-    suspense: TExoRouterChild,
     schemaCache: Map<string, TExoSchema | readonly TExoSchema[]>
 ): Promise<void> {
     const key = getMatchCacheKey(match);

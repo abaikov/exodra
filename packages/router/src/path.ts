@@ -9,6 +9,10 @@ type TCompiledRoute = {
     route: TExoRoute;
     fullPath: string;
     segments: readonly string[];
+    // Parent pointer (one field, not an array) so the matched branch can be walked
+    // ONLY when a chain is requested — matchRoutes (the common leaf lookup) never
+    // touches it and pays nothing.
+    parent?: TCompiledRoute;
 };
 
 export function parsePath(path: string): TExoLocation {
@@ -51,6 +55,9 @@ export function normalizePathname(pathname: string): string {
     return normalized;
 }
 
+// Cheap leaf lookup: returns ONLY the matched leaf, no branch, no per-ancestor
+// pathname resolution. This is the hot path (called on every navigation), so it
+// allocates just the single match object.
 export function matchRoutes(
     routes: readonly TExoRoute[],
     pathname: string
@@ -63,37 +70,99 @@ export function matchRoutes(
         if (!params) {
             continue;
         }
-
         return {
             route: compiledRoute.route,
             params,
             pathname: normalizedPathname,
+            handle: compiledRoute.route.handle,
         };
     }
 
     return undefined;
 }
 
+// The full matched branch, root → leaf. Empty when nothing matches. Each entry
+// carries its own resolved `pathname` (params substituted into that ancestor's
+// pattern), the shared leaf `params`, and `handle` mirrored from its route — so
+// a view can render breadcrumbs / a layout chain straight off this array. Only
+// build this when you actually need the chain (it's lazy in the router).
+export function matchRouteChain(
+    routes: readonly TExoRoute[],
+    pathname: string
+): readonly TExoRouteMatch[] {
+    const normalizedPathname = normalizePathname(pathname);
+    const pathSegments = splitPath(normalizedPathname);
+
+    for (const compiledRoute of compileRoutes(routes)) {
+        const params = matchSegments(compiledRoute.segments, pathSegments, compiledRoute.route);
+        if (!params) {
+            continue;
+        }
+
+        // Walk parent pointers → ancestors root → leaf (array built once, only
+        // for the matched route, only when a chain is requested).
+        const branch: TCompiledRoute[] = [];
+        for (
+            let node: TCompiledRoute | undefined = compiledRoute;
+            node;
+            node = node.parent
+        ) {
+            branch.push(node);
+        }
+        branch.reverse();
+
+        return branch.map((node, index) => ({
+            route: node.route,
+            params,
+            // Leaf keeps the exact matched pathname; ancestors resolve their own
+            // pattern with the shared params (handy for breadcrumb links).
+            pathname:
+                index === branch.length - 1
+                    ? normalizedPathname
+                    : resolvePath(node.fullPath, params),
+            handle: node.route.handle,
+        }));
+    }
+
+    return [];
+}
+
 function compileRoutes(
     routes: readonly TExoRoute[],
-    parentPath = '/'
+    parentPath = '/',
+    parent?: TCompiledRoute
 ): TCompiledRoute[] {
     const compiledRoutes: TCompiledRoute[] = [];
 
     for (const route of routes) {
         const fullPath = joinPaths(parentPath, route.path);
-        compiledRoutes.push({
+        const compiled: TCompiledRoute = {
             route,
             fullPath,
             segments: splitPath(fullPath),
-        });
+            parent,
+        };
+        compiledRoutes.push(compiled);
 
         if (route.children) {
-            compiledRoutes.push(...compileRoutes(route.children, fullPath));
+            compiledRoutes.push(...compileRoutes(route.children, fullPath, compiled));
         }
     }
 
     return compiledRoutes;
+}
+
+// Substitute matched params into a route pattern for a per-ancestor pathname.
+// Handles `:name` dynamic segments; a `*` catch-all segment is left as-is (rare
+// on an ancestor crumb, and its param name is route-local).
+function resolvePath(fullPath: string, params: TExoRouteParams): string {
+    const resolved = fullPath
+        .split('/')
+        .map(segment =>
+            segment.startsWith(':') ? params[segment.slice(1)] ?? segment : segment
+        )
+        .join('/');
+    return normalizePathname(resolved);
 }
 
 function splitPath(pathname: string): readonly string[] {
@@ -121,7 +190,12 @@ function matchSegments(
             const remainingPath = pathSegments.slice(index).join('/');
             
             if (route?.catchAll) {
-                // [...params] - store as array in the named param
+                // [...params] - REQUIRED catch-all: must consume at least one
+                // segment, otherwise it is indistinguishable from the optional
+                // form (`/files/*` with catchAll must NOT match `/files`).
+                if (index >= pathSegments.length) {
+                    return undefined;
+                }
                 params[route.catchAll] = remainingPath;
             } else if (route?.optionalCatchAll) {
                 // [[...params]] - store as array in the named param

@@ -9,6 +9,8 @@ reconciles the **actual** DOM against the new set of child schemas **by
 reference identity**. Understanding that one rule is the key to fast, focus-safe
 lists.
 
+![Reconcile by identity: the same schema object keeps (and moves) its DOM node, a new object builds one and fires onExoMount, a removed object is torn down and fires onExoUnmount](/img/reconcile-identity.svg)
+
 There are two channels for a reactive list of children, plus one pattern you'll
 reach for constantly.
 
@@ -104,9 +106,11 @@ add/move/remove changes the key set and only the diff churns.
 > content changes the key, so that one row rebuilds; unrelated rows keep their
 > nodes.
 
-This "keyed list" pattern is small enough to keep as a local helper, and it's how
-the [`05-cnstra-oimdb` flagship](https://github.com/abaikov/exodra/tree/master/packages/examples/05-cnstra-oimdb)
-renders every list (see `src/app/keyed-list.ts`).
+This "keyed list" pattern is small enough to keep as a local helper. It's also
+packaged for store-backed lists: the
+[`05-cnstra-oimdb` flagship](https://github.com/abaikov/exodra/tree/master/packages/examples/05-cnstra-oimdb)
+renders every list with `@oimdb/exodra`'s `keyedChildren(source, { key, render })`,
+which wraps exactly this cache-by-key reconcile over an oimdb read + subscribe.
 
 ## Rows that own a subscription
 

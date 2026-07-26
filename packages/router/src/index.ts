@@ -17,7 +17,7 @@ export {
     preloadRoute,
     resolveRouteComponent,
 } from './lazy';
-export { matchRoutes, parsePath } from './path';
+export { matchRouteChain, matchRoutes, parsePath } from './path';
 export {
     ExoQueryValidationError,
     createSearch,

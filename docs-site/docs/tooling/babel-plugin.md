@@ -138,17 +138,57 @@ items.map(item =>
 
 ## Two-way binding directives
 
-`bind:value` / `bind:checked` compile to a `mergeAttrs(...)` call plus the
-appropriate `@exodra/forms` helper (picked from the element / type at compile
-time, so only the used variants are imported):
+`bind:value` / `bind:checked` compile to a `mergeAttrs(...)` call (imported from
+[`@exodra/attrs`](../api/attrs.md)) plus the appropriate `@exodra/forms` helper
+(picked from the element / type at compile time, so only the used variants are
+imported):
 
 ```jsx
 // Input
 <input bind:value={inputValue} />
 
 // Output
+import { mergeAttrs } from '@exodra/attrs';
+import { bindText } from '@exodra/forms';
 h('input', mergeAttrs({}, bindText(inputValue)))
 ```
+
+## `props={}` — spread a bucket object
+
+`props={obj}` spreads a full bucket object (the schema shape:
+`static` / `bindables` / `bindableLists` / `handlers` / `bindableHandlers`) into
+the element. The compiler does the **dumbest, most predictable** thing — a plain
+JS object spread, no implicit merge:
+
+```jsx
+// Input
+<button props={base} static={{ class: 'btn' }} handlers={{ onClick: f }} />
+
+// Output — spread first (the base), inline buckets after (they win)
+h('button', { ...base, static: { class: 'btn' }, handlers: { onClick: f } })
+```
+
+- **Plain spread, one level.** An inline bucket **replaces** that whole
+  top-level field of the spread object — `static` overrides `base.static`
+  wholesale, it does not descend into it. That's exactly JS spread semantics, so
+  there is nothing hidden to learn.
+- **The object is the schema shape** (plural buckets), so helpers that return it
+  drop straight in: `props={bindText(name)}` (`@exodra/forms`),
+  `props={bindField(patch, 'title')}` (`@oimdb/exodra`). This is the Exodra
+  "prop-getter" pattern.
+- **Pick your own merge strategy** — because you build the object yourself. Want
+  two-level composition? Ask for it explicitly:
+  `props={mergeAttrs(base, getInputProps())}`.
+- **`exo:schema` still wins** (it replaces everything); combined with `bind:`,
+  the spread object becomes the `mergeAttrs` base.
+- **Watch children + a helper's `static`.** JSX children fold into `static.children`,
+  creating an inline `static` bucket — which then replaces a helper's `static`
+  wholesale. Keep `static` out of a helper used with children, or merge it
+  yourself. (Real helpers usually return `handlers`/`bindables`, which don't
+  collide.)
+
+An element that carries a `props={}` spread is never static-hoisted (the spread
+is a runtime value).
 
 ## Options
 

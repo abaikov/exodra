@@ -11,7 +11,10 @@ import { renderToString } from 'react-dom/server';
  */
 export interface ReadableBindable<T> {
     getValue(): T;
-    subscribe(listener: (value: T) => void): () => void;
+    // No-arg listener: the island re-reads getValue() on notify, so it never uses
+    // the event payload. This matches TExoBindable<T, TEvent = void> (void events),
+    // which a `(value: T)` listener would reject.
+    subscribe(listener: () => void): () => void;
 }
 
 export interface ReactIslandOptions {

@@ -10,9 +10,9 @@
     "bench": "node scripts/run-benchmarks-headless.js"
   },
   "dependencies": {
-    "@exodra/core": "*",
-    "@exodra/dom": "*",
-    "@exodra/reactivity": "*",
+    "@exodra/core": "^0.2.0",
+    "@exodra/dom": "^0.2.0",
+    "@exodra/reactivity": "^0.2.0",
     "jsdom": "^29.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -24,7 +24,7 @@
     "@types/node": "^20.10.6",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "playwright": "^1.40.1",
+    "playwright": "^1.62.0",
     "typescript": "^5.3.3",
     "vite": "^7.3.0",
     "vite-plugin-solid": "^2.11.10"

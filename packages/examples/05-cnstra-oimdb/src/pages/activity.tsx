@@ -1,8 +1,9 @@
 import type { TExoSchema } from '@exodra/core';
 import { bindable } from '@exodra/reactivity';
+import { fromOimdb, keyedChildren } from '@oimdb/exodra';
 import type { Activity } from '../domain/types';
 import { getRuntime } from '../app/runtime';
-import { keyedList } from '../lib/keyed-list';
+import { sameRows } from '../lib/same-rows';
 
 const KIND_ICON: Record<Activity['kind'], string> = {
     'task.created': '✚',
@@ -36,31 +37,26 @@ export default function activityPage(): TExoSchema {
                 : 'No activity yet — do something on the Board.'
         );
 
-    const feed = keyedList({
-        items: () =>
-            rt.oimdbInstance.activity.collection
-                .getAll()
-                .slice()
-                .sort((a, b) => b.at - a.at),
-        key: a => a.id,
-        render: row,
-        subscribe: refresh => [
-            rt.oimdbInstance.activity.collection.subscribeOnAnyUpdate(() => {
-                refresh();
-                setEmpty();
-            }),
-        ],
-    });
+    const feed = keyedChildren(
+        fromOimdb(
+            () =>
+                rt.oimdbInstance.activity.collection
+                    .getAll()
+                    .slice()
+                    .sort((a, b) => b.at - a.at),
+            cb =>
+                rt.oimdbInstance.activity.collection.subscribeOnAnyUpdate(() => {
+                    cb();
+                    setEmpty();
+                }),
+            { equals: sameRows }
+        ),
+        { key: a => a.id, render: row }
+    );
     setEmpty();
 
     return (
-        <div
-            static={{
-                class: 'page page--activity',
-                onExoMount: feed.mount,
-                onExoUnmount: feed.unmount,
-            }}
-        >
+        <div static={{ class: 'page page--activity' }}>
             <div static={{ class: 'page__bar' }}>
                 <h1 static={{ class: 'page__title' }}>Activity</h1>
                 <span static={{ class: 'page__hint' }}>
@@ -68,7 +64,7 @@ export default function activityPage(): TExoSchema {
                 </span>
             </div>
             <p static={{ class: 'muted' }} bindable={{ textContent: empty }} />
-            <ul static={{ class: 'feed' }} bindable={{ children: feed.children }} />
+            <ul static={{ class: 'feed' }} bindable={{ children: feed }} />
         </div>
     );
 }

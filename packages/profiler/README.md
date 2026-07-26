@@ -1,5 +1,12 @@
 # @exodra/profiler
 
+> ⚠️ **DEPRECATED.** This package profiled the per-node `ExoNode` base class, which
+> has been removed — the DOM and string renderers no longer share a base. Use
+> **[`@exodra/dom-profiler`](../dom-profiler)** to profile the live DOM renderer
+> (`ExoNodeDom`); it also works under jsdom. The generic `profileClass` /
+> `ClassProfiler` here still work on any class, but this package is no longer
+> maintained.
+
 Performance profiling for Exodra applications, similar to the React Profiler.
 
 ## Installation

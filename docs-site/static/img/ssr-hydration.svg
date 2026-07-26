@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" role="img" aria-label="SSR and hydration: the server grows the schema into HTML, the client reuses that same HTML and reconnects the reactivity wires instead of rebuilding">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/><stop offset="1" stop-color="#101c33"/>
+    </linearGradient>
+    <filter id="glow4" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="880" height="340" rx="18" fill="url(#bg4)"/>
+  <text x="40" y="34" fill="#eaf1fb" font-family="ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="700">SSR → hydration: grow once, reuse the flesh</text>
+
+  <!-- SERVER panel -->
+  <rect x="40" y="58" width="360" height="238" rx="12" fill="#0e1a2f" stroke="#33507a" stroke-width="1.3"/>
+  <text x="60" y="84" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="12" font-weight="600" letter-spacing="1.5">SERVER · @exodra/string</text>
+  <!-- schema mini -->
+  <g font-family="ui-monospace,monospace" font-size="11" fill="#dbe6f5" text-anchor="middle">
+    <rect x="72" y="108" width="96" height="34" rx="8" fill="#1a2a44" stroke="#c7d6ea" stroke-width="1.2"/><text x="120" y="130">schema</text>
+  </g>
+  <path d="M168 125 L232 125" fill="none" stroke="#5fd4c4" stroke-width="2" filter="url(#glow4)"/>
+  <text x="200" y="116" text-anchor="middle" fill="#7ff3e4" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10">render</text>
+  <!-- html doc -->
+  <rect x="234" y="104" width="146" height="170" rx="9" fill="#141f34" stroke="#9fb3cc" stroke-opacity="0.55" stroke-width="1.2"/>
+  <g fill="#9fb3cc" fill-opacity="0.5"><rect x="248" y="120" width="110" height="9" rx="3"/><rect x="248" y="136" width="86" height="9" rx="3"/><rect x="248" y="152" width="118" height="9" rx="3"/><rect x="248" y="168" width="70" height="9" rx="3"/><rect x="248" y="184" width="104" height="9" rx="3"/><rect x="248" y="200" width="90" height="9" rx="3"/></g>
+  <text x="307" y="264" text-anchor="middle" fill="#8aa0bd" font-family="ui-monospace,monospace" font-size="11">HTML string</text>
+
+  <!-- transfer arrow -->
+  <path d="M410 177 L470 177" fill="none" stroke="#c7d6ea" stroke-width="2.4" marker-end="url(#a)" />
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#c7d6ea"/></marker></defs>
+  <text x="440" y="168" text-anchor="middle" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10">ship</text>
+
+  <!-- CLIENT panel -->
+  <rect x="480" y="58" width="360" height="238" rx="12" fill="#0e1a2f" stroke="#33507a" stroke-width="1.3"/>
+  <text x="500" y="84" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="12" font-weight="600" letter-spacing="1.5">CLIENT · hydrate</text>
+  <!-- same html doc reused -->
+  <rect x="500" y="104" width="146" height="170" rx="9" fill="#102a2a" stroke="#2dd4bf" stroke-opacity="0.55" stroke-width="1.3"/>
+  <g fill="#9fb3cc" fill-opacity="0.5"><rect x="514" y="120" width="110" height="9" rx="3"/><rect x="514" y="136" width="86" height="9" rx="3"/><rect x="514" y="152" width="118" height="9" rx="3"/><rect x="514" y="168" width="70" height="9" rx="3"/><rect x="514" y="184" width="104" height="9" rx="3"/><rect x="514" y="200" width="90" height="9" rx="3"/></g>
+  <text x="573" y="264" text-anchor="middle" fill="#7ff3e4" font-family="ui-monospace,monospace" font-size="11">same DOM · reused</text>
+  <!-- wires reconnect -->
+  <g fill="none" stroke="#2dd4bf" stroke-width="2" filter="url(#glow4)">
+    <path d="M690 140 C 720 140, 720 124, 646 124"/>
+    <path d="M700 176 C 730 176, 726 158, 646 156"/>
+    <path d="M690 214 C 720 214, 720 190, 646 189"/>
+  </g>
+  <circle cx="708" cy="130" r="4" fill="#7ff3e4"/><circle cx="716" cy="176" r="4" fill="#7ff3e4"/><circle cx="708" cy="206" r="4" fill="#7ff3e4"/>
+  <text x="712" y="242" fill="#7ff3e4" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5">wires reconnected</text>
+  <text x="712" y="256" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5">no tear-down, no re-mount</text>
+
+  <text x="440" y="320" text-anchor="middle" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="11">The client does not regrow the body — it hydrates the server's HTML and threads the reactivity wires back in.</text>
+</svg>

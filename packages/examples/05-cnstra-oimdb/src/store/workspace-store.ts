@@ -1,11 +1,7 @@
 // oimdb store for the workspace: one collection per entity plus the derived
 // indexes the views read. derivedSetIndex auto-maintains groupings as tasks
 // change. API ref: https://abaikov.github.io/oimdb/llms.txt
-import {
-    OIMEventQueue,
-    OIMEventQueueSchedulerFactory,
-    createOIMCollectionKit,
-} from '@oimdb/core';
+import { OIMEventQueue, createOIMCollectionKit } from '@oimdb/core';
 import type {
     Activity,
     Comment,
@@ -21,9 +17,13 @@ import type {
 } from '../domain/types';
 
 export function createWorkspaceStore() {
-    const queue = new OIMEventQueue({
-        scheduler: OIMEventQueueSchedulerFactory.createMicrotask(),
-    });
+    // NO scheduler → the queue never flushes itself. Every mutation goes through
+    // the CNS, and `cns.addDrainListener(() => queue.flush())` (see runtime.ts) is
+    // the single point where the store commits — one synchronous flush per settled
+    // stimulation. Collection/index data is maintained on write, so the initial
+    // (and SSR) render reads correct data without a flush; the flush only drives
+    // subscriber notifications, which only matter after a mutation.
+    const queue = new OIMEventQueue();
 
     const kit = <T extends { id: string }>() =>
         createOIMCollectionKit<T, string>(queue, { selectPk: e => e.id });

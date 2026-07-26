@@ -19,6 +19,7 @@ const ORDER = [
   'guides/components',
   'guides/lists',
   'guides/ssr',
+  'guides/testing',
   'guides/react',
   'guides/ai-development',
   'api/core',
@@ -30,6 +31,9 @@ const ORDER = [
   'tooling/create-exodra',
   'tooling/vite-plugin',
   'tooling/babel-plugin',
+  'tooling/babel-preset',
+  'tooling/bundlers',
+  'tooling/swc-plugin',
   'tooling/introspect',
   'tooling/profiler',
 ];

@@ -1,6 +1,6 @@
 {
   "name": "@exodra/ssr",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -18,10 +18,6 @@
   "sideEffects": false,
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@exodra/core": "^0.1.0",
-    "@exodra/string": "^0.1.0"
   },
   "scripts": {
     "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
@@ -57,6 +53,10 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "devDependencies": {
-    "vitest": "^1.2.1"
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "@exodra/core": "^0.2.0",
+    "@exodra/string": "^0.2.0"
   }
 }

@@ -1,5 +1,5 @@
 import { collateral } from '@cnstra/core';
-import type { TaskPriority } from '../domain/types';
+import type { TaskPriority, EntityName } from '../domain/types';
 
 // ---------------------------------------------------------------------------
 // Collaterals = the typed channels that wire the workspace CNS together.
@@ -28,6 +28,15 @@ export const setTaskTagsRequested = collateral<{ id: string; tagIds: readonly st
 export const deleteTaskRequested = collateral<{ id: string }>();
 export const addCommentRequested = collateral<{ taskId: string; authorId: string; body: string }>();
 export const archiveProjectRequested = collateral<{ id: string }>();
+
+// Reference-data commands — plain CRUD for the non-orchestrated entities (tags,
+// labels, members, projects, milestones, statuses) and simple task fields. No
+// saga, no validation, but on the SAME command bus so EVERY store mutation is a
+// stimulation — there are no direct oimdb writes from the UI, and the CNS drain
+// is the single point where the store commits.
+export const refUpsertRequested = collateral<{ name: EntityName; entity: Record<string, unknown> }>();
+export const refPatchRequested = collateral<{ name: EntityName; id: string; patch: Record<string, unknown> }>();
+export const refRemoveRequested = collateral<{ name: EntityName; id: string }>();
 
 // Events (emitted during traversal; the activity neuron listens to all of them)
 export const taskAdded = collateral<{ id: string; title: string; actorId: string | null }>();

@@ -1,16 +1,16 @@
 import { bindable, derive } from '@exodra/reactivity';
 import type { TExoWritableBindable } from '@exodra/reactivity';
 import { createMemoryHistory } from './history';
-import { matchRoutes, parsePath } from './path';
+import { matchRouteChain, matchRoutes, parsePath } from './path';
 import { mergeQuery, parseSearch, stringifySearch } from './query';
 import { collectRouteGuards, executeGuards } from './guards';
 import type {
     TExoBindQueryOptions,
-    TExoLocation,
     TExoNavigateOptions,
     TExoQueryInput,
     TExoQueryParseOptions,
     TExoRoute,
+    TExoRouteGuard,
     TExoRouteMatch,
     TExoRouter,
     TExoRouterOptions,
@@ -24,66 +24,101 @@ export function createRouter(
     const history = options.history ?? createMemoryHistory();
     const initialLocation = history.getLocation();
     const location = bindable(initialLocation);
+    // `match` is the cheap leaf (recomputed on every navigation). `matches` is the
+    // full branch — LAZY: a derive off `location`, so the chain (with per-ancestor
+    // pathname resolution) is only ever built when a view actually reads/subscribes
+    // it (breadcrumbs). Apps that never use it pay nothing.
     const match = bindable<TExoRouteMatch | undefined>(
         matchRoutes(routes, initialLocation.pathname)
     );
+    const matches = derive(location, loc => matchRouteChain(routes, loc.pathname));
     const navigationState = bindable<TExoNavigationState>('idle');
-    
-    const syncFromHistory = async () => {
+
+    // The current in-flight (or settled) history sync. `navigate()` awaits this so
+    // its promise reflects the ACTUAL outcome (commit / reject / redirect) instead
+    // of hanging forever when a guard blocks the navigation.
+    let pendingSync: Promise<void> = Promise.resolve();
+
+    const runSync = async () => {
         const nextLocation = history.getLocation();
         const nextMatch = matchRoutes(routes, nextLocation.pathname);
         const currentMatch = match.getValue();
-        
-        if (await canNavigate(nextMatch, currentMatch)) {
+        const prevLocation = location.getValue();
+
+        const result = await canNavigate(nextMatch, currentMatch);
+        if (result === true) {
             location.setValue(nextLocation);
             match.setValue(nextMatch);
             options.afterEach?.(nextMatch!, currentMatch);
+        } else if (typeof result === 'string') {
+            // Guard requested a redirect. Replacing re-enters runSync for the new
+            // URL (which runs its own guards); do NOT roll back to prevLocation.
+            history.replace(result);
+        } else if (nextLocation.href !== prevLocation.href) {
+            // Guard rejected. `history.push`/popstate already moved the URL, so
+            // roll it back to the last committed location — otherwise the address
+            // bar shows a route the app never navigated to.
+            history.replace(prevLocation.href);
         }
     };
-    
+
+    // Sync wrapper (the actual history subscriber): captures the in-flight promise
+    // synchronously so `navigate()` — which pushes to history and returns right
+    // after — can await the outcome of the sync it just triggered.
+    const syncFromHistory = () => {
+        pendingSync = runSync();
+        return pendingSync;
+    };
+
     const canNavigate = async (
         to: TExoRouteMatch | undefined,
         from: TExoRouteMatch | undefined
-    ): Promise<boolean> => {
+    ): Promise<boolean | string> => {
         if (!to) return true;
-        
-        const guards = [];
-        
+
+        const guards: TExoRouteGuard[] = [];
+
         if (options.beforeEach) {
             guards.push(options.beforeEach);
         }
-        
-        if (from?.route.beforeLeave) {
-            guards.push(...collectRouteGuards(from.route, 'beforeLeave'));
+
+        // beforeLeave guards across the WHOLE branch being left, deepest first
+        // (leaf → root), so a layout's beforeLeave runs, not just the leaf's.
+        if (from) {
+            const fromChain = matchRouteChain(routes, from.pathname);
+            for (let i = fromChain.length - 1; i >= 0; i--) {
+                guards.push(...collectRouteGuards(fromChain[i].route, 'beforeLeave'));
+            }
         }
-        
-        if (to.route.beforeEnter) {
-            guards.push(...collectRouteGuards(to.route, 'beforeEnter'));
+
+        // beforeEnter guards across the WHOLE branch being entered, root → leaf,
+        // so an ancestor/layout guard (e.g. requireAuth on `/admin`) runs even
+        // when the matched leaf itself declares no beforeEnter.
+        const toChain = matchRouteChain(routes, to.pathname);
+        for (const entered of toChain) {
+            guards.push(...collectRouteGuards(entered.route, 'beforeEnter'));
         }
-        
+
         if (guards.length === 0) return true;
-        
+
         navigationState.setValue('loading');
         const result = await executeGuards(guards, to, from);
         navigationState.setValue('idle');
-        
-        if (typeof result === 'string') {
-            history.replace(result);
-            return false;
-        }
-        
+
         return result;
     };
-    
+
     const unsubscribe = history.subscribe(syncFromHistory);
-    const navigate = (to: string, options: TExoNavigateOptions = {}) =>
-        commitNavigation(location, () => {
-            if (options.replace) {
-                history.replace(to);
-            } else {
-                history.push(to);
-            }
-        });
+    const navigate = (to: string, options: TExoNavigateOptions = {}) => {
+        if (options.replace) {
+            history.replace(to, options.state);
+        } else {
+            history.push(to, options.state);
+        }
+        // `history` notifies synchronously, so `pendingSync` is now the sync for
+        // this navigation. Resolve with the committed location once it settles.
+        return pendingSync.then(() => location.getValue());
+    };
     const getQuery = ((options?: TExoQueryParseOptions) => {
         return parseSearch(location.getValue().search, options);
     }) as TExoRouter['getQuery'];
@@ -104,12 +139,16 @@ export function createRouter(
         routes,
         location,
         match,
+        matches,
         navigationState,
         getLocation() {
             return location.getValue();
         },
         getMatch() {
             return match.getValue();
+        },
+        getMatches() {
+            return matches.getValue();
         },
         getNavigationState() {
             return navigationState.getValue();
@@ -177,25 +216,6 @@ export function createRouter(
             history.dispose?.();
         },
     };
-}
-
-function commitNavigation(
-    location: TExoRouter['location'],
-    commit: () => void
-): Promise<TExoLocation> {
-    return new Promise((resolve, reject) => {
-        const unsubscribe = location.subscribe(() => {
-            unsubscribe();
-            resolve(location.getValue());
-        });
-
-        try {
-            commit();
-        } catch (error) {
-            unsubscribe();
-            reject(error);
-        }
-    });
 }
 
 function normalizeSearch(search: string): string {

@@ -1,12 +1,7 @@
 import type { TExoSchema } from '@exodra/core';
+import type { ExoEvent, ExoInputEvent } from '@exodra/jsx';
 import { bindable } from '@exodra/reactivity';
-import {
-    createData,
-    ROW_H,
-    VIEWPORT_H,
-    OVERSCAN,
-    type Slot,
-} from './virtual-data';
+import { createData, ROW_H, VIEWPORT_H, type Slot } from './virtual-data';
 import { rowFor, onScreenReadout } from './virtual-row';
 
 // Windowed (virtual) list over an oimdb ordered GLOBAL index. N rows in the data,
@@ -26,7 +21,8 @@ export const virtualMetrics = { filterRuns: 0, windowRenders: 0 };
 export default function virtualPage(): TExoSchema {
     virtualMetrics.filterRuns = 0;
     virtualMetrics.windowRenders = 0;
-    const { kit, ordered, viewport } = createData();
+    const data = createData();
+    const { ordered, viewport } = data;
 
     const query = bindable('');
 
@@ -42,14 +38,12 @@ export default function virtualPage(): TExoSchema {
             : all;
     };
 
-    // A scroll is O(1): derive the range and write it to the shared viewport.
+    // A scroll is O(1): stimulate the window neuron with the new scroll position;
+    // it derives the range and writes the shared viewport (drain → flush).
     let lastTop = 0;
     const publish = (scrollTop: number): void => {
         lastTop = scrollTop;
-        const total = filtered.length;
-        const start = Math.max(0, Math.floor(scrollTop / ROW_H) - OVERSCAN);
-        const end = Math.min(total, Math.ceil((scrollTop + VIEWPORT_H) / ROW_H) + OVERSCAN);
-        viewport.setProperty('v', { start, end, total });
+        data.scroll(scrollTop, filtered.length);
     };
 
     // The list window subscribes to the viewport. Rendering a change is O(window):
@@ -70,7 +64,7 @@ export default function virtualPage(): TExoSchema {
             if (!slot) continue;
             live.add(slot.pk);
             let s = cache.get(slot.pk);
-            if (!s) cache.set(slot.pk, (s = rowFor(kit, slot, i, vp.total)));
+            if (!s) cache.set(slot.pk, (s = rowFor(data, slot, i, vp.total)));
             next.push(s);
         }
         for (const pk of cache.keys()) if (!live.has(pk)) cache.delete(pk);
@@ -82,8 +76,8 @@ export default function virtualPage(): TExoSchema {
     renderWindow();
 
     let raf = 0;
-    const onScroll = (e: Event): void => {
-        const top = (e.target as HTMLElement).scrollTop;
+    const onScroll = (e: ExoEvent<HTMLElement>): void => {
+        const top = e.currentTarget.scrollTop;
         if (raf) return;
         raf = 1;
         const run = (): void => { raf = 0; publish(top); };
@@ -91,8 +85,8 @@ export default function virtualPage(): TExoSchema {
         else run();
     };
 
-    const onSearch = (e: Event): void => {
-        query.setValue((e.target as HTMLInputElement).value);
+    const onSearch = (e: ExoInputEvent): void => {
+        query.setValue(e.currentTarget.value);
         cache.clear();
         refilter();
         publish(0); // reset to top under the new filter

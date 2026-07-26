@@ -8,15 +8,15 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
-    "@exodra/core": "*",
-    "@exodra/dom": "*",
-    "@exodra/string": "*",
-    "@exodra/reactivity": "*",
-    "@exodra/ssr": "*",
-    "@exodra/jsx": "*",
-    "@exodra/router": "*",
+    "@exodra/core": "^0.2.0",
+    "@exodra/dom": "^0.2.0",
+    "@exodra/string": "^0.2.0",
+    "@exodra/reactivity": "^0.2.0",
+    "@exodra/ssr": "^0.2.0",
+    "@exodra/jsx": "^0.2.0",
+    "@exodra/router": "^0.2.0",
     "@types/node": "^22.10.5",
     "jsdom": "^25.0.0",
-    "vitest": "^1.6.1"
+    "vitest": "^4.0.16"
   }
 }

@@ -163,3 +163,5 @@ docs-site/build/
 # Claude Code tooling (local to the workflow, not part of the public repo)
 .claude/
 .claude-hooks/
+
+.swc/

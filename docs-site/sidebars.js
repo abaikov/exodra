@@ -23,6 +23,7 @@ const sidebars = {
       label: 'Core Concepts',
       collapsed: false,
       items: [
+        'concept',
         'core/concepts',
       ],
     },
@@ -32,8 +33,11 @@ const sidebars = {
       items: [
         'guides/jsx',
         'guides/components',
+        'guides/rendering',
         'guides/lists',
+        'guides/optimizations',
         'guides/ssr',
+        'guides/testing',
         'guides/react',
         'guides/ai-development',
       ],
@@ -48,6 +52,8 @@ const sidebars = {
         'api/router',
         'api/string',
         'api/forms',
+        'api/attrs',
+        'api/style',
       ],
     },
     {
@@ -55,8 +61,12 @@ const sidebars = {
       label: 'Tooling',
       items: [
         'tooling/create-exodra',
+        'tooling/cdn',
         'tooling/vite-plugin',
         'tooling/babel-plugin',
+        'tooling/babel-preset',
+        'tooling/bundlers',
+        'tooling/swc-plugin',
         'tooling/introspect',
         'tooling/profiler',
       ],

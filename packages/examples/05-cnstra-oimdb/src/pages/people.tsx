@@ -1,7 +1,7 @@
 import type { TExoSchema } from '@exodra/core';
+import { fromOimdb, keyedChildren } from '@oimdb/exodra';
 import type { Member, Team } from '../domain/types';
 import { getRuntime } from '../app/runtime';
-import { keyedList } from '../lib/keyed-list';
 
 export default function peoplePage(): TExoSchema {
     const rt = getRuntime();
@@ -17,27 +17,27 @@ export default function peoplePage(): TExoSchema {
             <input
                 static={{ class: 'member__name', value: m.name }}
                 handlers={{
-                    onInput: (e: Event) =>
+                    onInput: e =>
                         rt.patchEntity('members', m.id, {
-                            name: (e.target as HTMLInputElement).value,
+                            name: e.currentTarget.value,
                         }),
                 }}
             />
             <input
                 static={{ class: 'member__role', value: m.role }}
                 handlers={{
-                    onInput: (e: Event) =>
+                    onInput: e =>
                         rt.patchEntity('members', m.id, {
-                            role: (e.target as HTMLInputElement).value,
+                            role: e.currentTarget.value,
                         }),
                 }}
             />
             <select
                 static={{ class: 'member__team' }}
                 handlers={{
-                    onChange: (e: Event) =>
+                    onChange: e =>
                         rt.patchEntity('members', m.id, {
-                            teamId: (e.target as HTMLSelectElement).value,
+                            teamId: e.currentTarget.value,
                         }),
                 }}
             >
@@ -84,31 +84,37 @@ export default function peoplePage(): TExoSchema {
 
     // A team panel rebuilds only when its member SET changes; a name/role edit
     // leaves the key unchanged, so the reconcile is a no-op and focus is kept.
-    const panels = keyedList({
-        items: teams,
-        key: t => `${t.id}:${membersOf(t.id).map(m => m.id).join('+')}`,
-        render: teamSection,
-        subscribe: refresh => [
-            rt.oimdbInstance.members.collection.subscribeOnAnyUpdate(refresh),
-            rt.oimdbInstance.teams.collection.subscribeOnAnyUpdate(refresh),
-        ],
-    });
+    // The panel key depends on RELATED data (the member set), not just the `teams`
+    // array, so the wrapping bindable must forward every store update
+    // (`alwaysNotify`) and let `keyedChildren` dedup on the rendered key set —
+    // gating on the `teams` array alone would swallow member add/remove.
+    const panels = keyedChildren(
+        fromOimdb(
+            teams,
+            cb => {
+                const us = [
+                    rt.oimdbInstance.members.collection.subscribeOnAnyUpdate(cb),
+                    rt.oimdbInstance.teams.collection.subscribeOnAnyUpdate(cb),
+                ];
+                return () => us.forEach(u => u());
+            },
+            { alwaysNotify: true }
+        ),
+        {
+            key: t => `${t.id}:${membersOf(t.id).map(m => m.id).join('+')}`,
+            render: teamSection,
+        }
+    );
 
     return (
-        <div
-            static={{
-                class: 'page page--people',
-                onExoMount: panels.mount,
-                onExoUnmount: panels.unmount,
-            }}
-        >
+        <div static={{ class: 'page page--people' }}>
             <div static={{ class: 'page__bar' }}>
                 <h1 static={{ class: 'page__title' }}>People</h1>
                 <span static={{ class: 'page__hint' }}>
                     {`${rt.oimdbInstance.members.collection.getAll().length} members`}
                 </span>
             </div>
-            <div static={{ class: 'panels' }} bindable={{ children: panels.children }} />
+            <div static={{ class: 'panels' }} bindable={{ children: panels }} />
         </div>
     );
 }

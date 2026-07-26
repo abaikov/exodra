@@ -1,0 +1,46 @@
+{
+  "name": "esbuild-plugin-exodra",
+  "version": "0.1.0",
+  "description": "esbuild plugin that compiles Exodra JSX (delegates to the canonical Babel pipeline)",
+  "keywords": [
+    "exodra",
+    "esbuild",
+    "esbuild-plugin",
+    "jsx",
+    "tsup"
+  ],
+  "main": "dist/index.cjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc && mv dist/index.js dist/index.cjs",
+    "prepublishOnly": "npm run build",
+    "test": "vitest run"
+  },
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/esbuild-plugin-exodra"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
+  },
+  "dependencies": {
+    "babel-preset-exodra": "^0.1.0"
+  },
+  "peerDependencies": {
+    "esbuild": ">=0.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.27.0"
+  }
+}

@@ -1,5 +1,4 @@
-export { ExoNode } from './ExoNode';
-export { walkSchema, type TExoWalkResult } from './walkSchema';
+export { walkSchema, type TExoWalkNode } from './walkSchema';
 export { createContextKey } from './factory/createContextKey';
 export { defineComponent } from './factory/defineComponent';
 export { h } from './factory/h';

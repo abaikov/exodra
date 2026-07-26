@@ -15,17 +15,18 @@
     "devtools:oimdb": "oimdb-devtools"
   },
   "dependencies": {
-    "@cnstra/core": "^2.3.0",
-    "@cnstra/devtools": "^1.1.2",
+    "@cnstra/core": "^2.5.0",
+    "@cnstra/devtools": "^1.2.0",
     "@cnstra/mcp": "^1.1.1",
-    "@exodra/core": "^0.1.0",
-    "@exodra/dom": "^0.1.0",
-    "@exodra/jsx": "^0.1.0",
-    "@exodra/reactivity": "^0.1.0",
-    "@exodra/ssr": "^0.1.0",
-    "@exodra/string": "^0.1.0",
-    "@oimdb/core": "^3.8.0",
-    "@oimdb/devtools": "^1.0.4",
+    "@exodra/core": "^0.2.0",
+    "@exodra/dom": "^0.2.0",
+    "@exodra/jsx": "^0.2.0",
+    "@exodra/reactivity": "^0.2.0",
+    "@exodra/ssr": "^0.2.0",
+    "@exodra/string": "^0.2.0",
+    "@oimdb/core": "^3.11.1",
+    "@oimdb/devtools": "^1.1.0",
+    "@oimdb/exodra": "^0.1.1",
     "@oimdb/mcp": "^1.2.0"
   },
   "devDependencies": {

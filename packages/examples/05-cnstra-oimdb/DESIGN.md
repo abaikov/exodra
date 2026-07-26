@@ -20,7 +20,7 @@ src/
   domain/       types.ts, seed.ts            — the vocabulary: entities + a deterministic seed
   store/        workspace-store.ts           — the oimdb instance: collections + derived indexes
   cns/          collaterals.ts + *-neuron.ts — orchestration: channels + one file per domain neuron
-  lib/          keyed-list.ts                — reusable, app-agnostic primitives
+  lib/          same-rows.ts                 — a small shared helper (list content-compare)
   app/          runtime, routes, shell,      — application wiring (composition root)
                 mount-app, persistence, devtools
   pages/        board, tasks, …, virtual*    — one route component per file
@@ -42,9 +42,11 @@ what keeps a growing app from turning into a pile of `utils`.
 - **Blast radius is bounded.** Changing how tasks persist touches
   `cns/task-persist-neuron.ts` and nothing else; changing the data shape touches
   `domain/` + `store/`.
-- **`lib/` signals "extractable."** `keyed-list.ts` is framework-level, not
-  workspace-specific — putting it in `lib/` (not `app/`) says "this could become a
-  package," and keeps app wiring out of a reusable helper.
+- **`lib/` signals "extractable."** It once held `keyed-list.ts` — framework-level,
+  not workspace-specific. That primitive has since graduated into the published
+  `@oimdb/exodra` bridge (§5), so `lib/` now holds only the tiny `same-rows.ts`
+  content-compare helper. The `lib/`-signals-extractable instinct was right — the code
+  became a real package.
 
 **Trade-offs / downsides (honest).**
 - **`app/` is the widest folder** — runtime, routing, shell, persistence, devtools
@@ -196,42 +198,56 @@ is fine-grained updates with no reconciler on the hot path.
 
 ---
 
-## 5. Lists — one primitive, `keyedList`
+## 5. Lists — the `@oimdb/exodra` bridge (`fromOimdb` + `keyedChildren`)
 
 **Decision.** Every list (board columns, task list, people, taxonomy, activity)
-renders through `lib/keyed-list.ts`: it maps ordered items to **identity-stable**
-child schemas (cached by key) driven through a `bindable<TExoSchema[]>`, with an
-element-wise key-compare guard (no per-refresh allocation) so a field edit is a no-op.
+renders through the published **`@oimdb/exodra`** adapter — not hand-rolled app code.
+An oimdb `(read, subscribe)` pair is wrapped by `fromOimdb(read, subscribe, {equals})`
+into a read-only bindable, and `keyedChildren(source, {key, render})` maps it to
+**identity-stable** child schemas (cached by key). Per-entity fields (the board card)
+use `fromSelector(collection.select.byPk(id))` + `derive`.
 
 **Rationale.** The renderer reconciles children **by reference identity** — same
-schema object ⇒ same DOM node reused. So the whole game is handing back stable
-schemas: cache each row by key, recompute the array only when the *key set*
-changes. A field edit (which does not change keys) is then a reconcile no-op and
-the focused input keeps focus; a real add/move/remove touches only the diff. One
-primitive means every list page reads the same way.
+schema object ⇒ same DOM node reused. So the game is handing back stable schemas:
+`keyedChildren` caches each row by key and rebuilds the array only when the *key set*
+changes. A field edit (same key) is a reconcile no-op and the focused input keeps
+focus; a real add/move/remove touches only the diff. Two things the bridge buys over
+the earlier hand-rolled `lib/keyed-list.ts`:
+
+- **Ref-counted subscriptions.** `fromOimdb`/`fromSelector` subscribe to oimdb only
+  while the bindable has a downstream subscriber (the renderer, build→dispose) and
+  tear down on unmount. So there is **no `mount()/unmount()` plumbing and no
+  `onExoMount`/`onExoUnmount` list wiring** on page roots — it disappeared from every
+  page. The board card's per-task subscription is now just `byPk` + `derive`, with no
+  manual dispose.
+- **A real, published primitive.** The list logic is a package (its only dependency is
+  the contract, `@exodra/reactivity-types`), not copy-pasted app code. This example is
+  where the pattern was prototyped before it shipped as `@oimdb/exodra`.
+
+**`equals` vs `alwaysNotify` (the one real subtlety).** oimdb `getAll()` /
+`getManyByPks()` allocate a fresh array each call, so `fromOimdb`'s default `Object.is`
+would fire on every flush. Two settings, chosen per list:
+- `{ equals: sameRows }` (element-wise, `lib/same-rows.ts`) — for lists whose key
+  depends ONLY on the read array (taxonomy, activity). Cheapest; suppresses no-op emits.
+- `{ alwaysNotify: true }` — for lists whose key encodes **related-collection** data
+  (people: members-per-team; projects: task/milestone counts; tasks: comment count).
+  The top-level array ref is unchanged when a *related* entity changes, so `sameRows`
+  would swallow it; `alwaysNotify` forwards every update and lets `keyedChildren` dedup
+  on its own key cache — reproducing the old whole-collection subscribe exactly.
 
 **Alternatives (the three list models — all valid, different jobs).**
 1. **`bindable<TExoSchema[]>` + identity reconcile** — hand the current array, the
-   renderer computes the delta (O(n) reference diff). This is what `keyedList` wraps.
+   renderer computes the delta (O(n) reference diff). This is what `keyedChildren` wraps.
 2. **`bindableList` + `subscribeOps`** — emit exact `insert/move/remove` ops
-   (O(delta)); for producers that already know the mutation (drag, a command
-   stream). Overkill when you just have "the current set."
+   (O(delta)); for producers that already know the mutation (drag, a command stream).
+   The bridge exposes this too (`listFromCommandStream`). Overkill for "the current set."
 3. **`list()` + `.reset()`** — rebuild all rows on change. Simple, but loses focus
-   unless guarded, and rebuilds unrelated rows. This is what the pages used
-   *before* `keyedList` — replaced because it was a second pattern doing the same
-   job worse.
+   unless guarded, and rebuilds unrelated rows. What the pages used two iterations ago.
 
-**Trade-offs.** `keyedList` re-diffs the visible array on each structural change
-(O(n)); a command stream would be O(delta). For normal lists O(n) is nothing and the
-code is far simpler, so it is the default. See §9 for the case where the array model
-is wrong (huge lists) and §5-note for when to reach for ops.
-
-**Note — why not command streams everywhere.** Command streams (`bindableList`) win
-only when a producer emits the exact mutation and you need O(delta). For "here is
-the current set," making the producer compute a delta the renderer can compute
-itself is ceremony. So `keyedList` is the default and command streams are the
-specialist tool — the flagship uses `keyedList` for all lists and reaches for the
-array-window in the virtual list (§9).
+**Trade-offs.** `keyedChildren` re-runs its key function on each forwarded update
+(O(n)); a command stream would be O(delta). For normal lists O(n) is nothing, so the
+array model is the default. See §9 for the huge-list case (the virtual list keeps a
+bespoke window, not `keyedChildren`).
 
 ---
 
@@ -325,7 +341,7 @@ prop-drilling and no perf cost.
 - **Render all 10k rows** — trivial code, dies on DOM size.
 - **A virtualization library** — works, but hides the mechanism a flagship exists to
   show.
-- **`keyedList` (§5) for the window** — you *could*, but the window is a
+- **`keyedChildren` (§5) for the window** — you *could*, but the window is a
   scroll-derived slice; the array model is exactly right and needs no per-key cache
   beyond the visible set.
 
@@ -390,8 +406,10 @@ value.
 **Addressed since the first cut** (kept here as a record of what "done" means):
 *entry SSR now renders the matched route, not just the board (§7); the virtual list
 is screen-reader-complete — `role="list"` + per-row `aria-setsize`/`aria-posinset`,
-re-baked when the filter changes total (§9); `keyedList`'s structural guard is now an
-element-wise key compare, not a `keys.join('|')` allocation (§5).*
+re-baked when the filter changes total (§9); the hand-rolled `lib/keyed-list.ts`
+graduated into the published `@oimdb/exodra` bridge — every list now runs on
+`fromOimdb` + `keyedChildren` with ref-counted subscriptions, deleting all the manual
+`mount`/`unmount` plumbing (§5).*
 
 Still open, by value:
 
@@ -405,11 +423,12 @@ Still open, by value:
   SPA with a synchronous SSR `render()` (§7) does not need. The singleton is the
   right seam today; worth revisiting only if the app must host two runtimes at once.
 - **Reference-data CRUD lists re-check all keys per edit.** The single-list pages
-  (`tasks`, etc.) subscribe to a whole collection and let `keyedList`'s guard no-op
-  unchanged edits — correct, but the guard still walks O(list) keys per edit (now an
-  element-wise compare, no allocation). The board avoids this with per-status-key
-  subscriptions (§2); the single-list pages could too if partitioned, but a flat list
-  has no natural partition key, so the O(list) guard is the honest cost.
+  (`tasks`, etc.) use `fromOimdb` with `alwaysNotify` over a whole collection and let
+  `keyedChildren`'s key cache no-op unchanged edits (§5) — correct, but it still walks
+  O(list) keys per forwarded update. The board avoids this with per-status-key
+  subscriptions via `entitiesBySetIndexKey`/`fromOimdb` on the index key (§2); the
+  single-list pages could too if partitioned, but a flat list has no natural partition
+  key, so the O(list) pass is the honest cost.
 - **The virtual window renders through the async viewport (§9).** Routing the list
   render through the shared oimdb object adds a microtask hop per scroll frame
   (imperceptible, and it buys the decoupled readout). A latency-critical list could
@@ -419,6 +438,7 @@ Still open, by value:
 
 The through-line: **make what can change explicit** (bucketed props, typed
 collaterals, keyed lists) and **give every concern one home** (layered folders,
-per-domain neurons, one list primitive, one store name). The honest soft spots and
+per-domain neurons, one list primitive — now the `@oimdb/exodra` bridge — one store
+name). The honest soft spots and
 where the design could go next are listed in §12 — deliberate boundaries, written
 down so the reader can weigh them rather than discover them.

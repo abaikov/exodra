@@ -1,7 +1,8 @@
 import type { TExoSchema } from '@exodra/core';
 import { bindable } from '@exodra/reactivity';
+import { fromOimdb, keyedChildren } from '@oimdb/exodra';
 import { getRuntime } from '../app/runtime';
-import { keyedList } from '../lib/keyed-list';
+import { sameRows } from '../lib/same-rows';
 
 // The shared shape of a "swatch" reference entity (tags carry `label`, labels
 // carry `name`; both carry `id` + `color`). Tag and Label are both assignable to
@@ -19,12 +20,12 @@ function swatchEditor(
     title: string,
     name: 'tags' | 'labels',
     nameField: 'label' | 'name'
-) {
+): TExoSchema {
     const rt = getRuntime();
     const draft = bindable('');
 
-    const items = (): Swatchable[] =>
-        (rt.oimdbInstance[name].collection.getAll() as readonly Swatchable[]).slice();
+    const items = (): readonly Swatchable[] =>
+        rt.oimdbInstance[name].collection.getAll() as readonly Swatchable[];
 
     const row = (item: Swatchable): TExoSchema => (
         <li static={{ class: 'swatch', 'data-id': item.id }}>
@@ -32,18 +33,18 @@ function swatchEditor(
             <input
                 static={{ class: 'swatch__name', value: String(item[nameField] ?? '') }}
                 handlers={{
-                    onInput: (e: Event) =>
+                    onInput: e =>
                         rt.patchEntity(name, item.id, {
-                            [nameField]: (e.target as HTMLInputElement).value,
+                            [nameField]: e.currentTarget.value,
                         }),
                 }}
             />
             <input
                 static={{ class: 'swatch__color', type: 'color', value: item.color }}
                 handlers={{
-                    onInput: (e: Event) =>
+                    onInput: e =>
                         rt.patchEntity(name, item.id, {
-                            color: (e.target as HTMLInputElement).value,
+                            color: e.currentTarget.value,
                         }),
                 }}
             />
@@ -56,18 +57,21 @@ function swatchEditor(
         </li>
     );
 
-    // Rebuild a row only when the SET changes (add/remove) — a field edit leaves
-    // the key (id) unchanged, so the reconcile is a no-op and focus is kept.
-    const rows = keyedList({
-        items,
-        key: r => r.id,
-        render: row,
-        subscribe: refresh => [
-            rt.oimdbInstance[name].collection.subscribeOnAnyUpdate(refresh),
-        ],
-    });
+    // Identity-stable rows straight off the collection. `@oimdb/exodra` owns the
+    // (lazy, ref-counted) subscription — it subscribes only while this list is
+    // mounted and tears down on unmount — so there is no mount/unmount plumbing
+    // here. `keyedChildren` keys by id, so a field edit (same id) is a reconcile
+    // no-op and the focused input keeps focus.
+    const rows = keyedChildren(
+        fromOimdb(
+            items,
+            cb => rt.oimdbInstance[name].collection.subscribeOnAnyUpdate(cb),
+            { equals: sameRows }
+        ),
+        { key: r => r.id, render: row }
+    );
 
-    const add = () => {
+    const add = (): void => {
         const v = draft.getValue().trim();
         if (!v) return;
         const id = `${name}-${v.toLowerCase().replace(/\s+/g, '-')}-${items().length}`;
@@ -75,57 +79,36 @@ function swatchEditor(
         draft.setValue('');
     };
 
-    return {
-        mount: rows.mount,
-        unmount: rows.unmount,
-        schema: (
-            <section static={{ class: 'panel' }}>
-                <h2 static={{ class: 'panel__title' }}>{title}</h2>
-                <ul static={{ class: 'swatches' }} bindable={{ children: rows.children }} />
-                <div static={{ class: 'panel__add' }}>
-                    <input
-                        static={{
-                            class: 'add__input',
-                            placeholder: `New ${title.toLowerCase()}…`,
-                        }}
-                        bindable={{ value: draft }}
-                        handlers={{
-                            onInput: (e: Event) =>
-                                draft.setValue(
-                                    (e.target as HTMLInputElement).value
-                                ),
-                            onKeyDown: (e: KeyboardEvent) => {
-                                if (e.key === 'Enter') add();
-                            },
-                        }}
-                    />
-                    <button static={{ class: 'btn' }} handlers={{ onClick: () => add() }}>
-                        Add
-                    </button>
-                </div>
-            </section>
-        ) as TExoSchema,
-    };
+    return (
+        <section static={{ class: 'panel' }}>
+            <h2 static={{ class: 'panel__title' }}>{title}</h2>
+            <ul static={{ class: 'swatches' }} bindable={{ children: rows }} />
+            <div static={{ class: 'panel__add' }}>
+                <input
+                    static={{
+                        class: 'add__input',
+                        placeholder: `New ${title.toLowerCase()}…`,
+                    }}
+                    bindable={{ value: draft }}
+                    handlers={{
+                        onInput: e =>
+                            draft.setValue(e.currentTarget.value),
+                        onKeyDown: e => {
+                            if (e.key === 'Enter') add();
+                        },
+                    }}
+                />
+                <button static={{ class: 'btn' }} handlers={{ onClick: () => add() }}>
+                    Add
+                </button>
+            </div>
+        </section>
+    );
 }
 
 export default function taxonomyPage(): TExoSchema {
-    const tags = swatchEditor('Tags', 'tags', 'label');
-    const labels = swatchEditor('Labels', 'labels', 'name');
-
     return (
-        <div
-            static={{
-                class: 'page page--taxonomy',
-                onExoMount: () => {
-                    tags.mount();
-                    labels.mount();
-                },
-                onExoUnmount: () => {
-                    tags.unmount();
-                    labels.unmount();
-                },
-            }}
-        >
+        <div static={{ class: 'page page--taxonomy' }}>
             <div static={{ class: 'page__bar' }}>
                 <h1 static={{ class: 'page__title' }}>Tags &amp; Labels</h1>
                 <span static={{ class: 'page__hint' }}>
@@ -133,8 +116,8 @@ export default function taxonomyPage(): TExoSchema {
                 </span>
             </div>
             <div static={{ class: 'panels' }}>
-                {tags.schema}
-                {labels.schema}
+                {swatchEditor('Tags', 'tags', 'label')}
+                {swatchEditor('Labels', 'labels', 'name')}
             </div>
         </div>
     );

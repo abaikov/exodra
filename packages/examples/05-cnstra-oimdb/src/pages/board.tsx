@@ -1,9 +1,10 @@
 import type { TExoSchema } from '@exodra/core';
-import { bindable } from '@exodra/reactivity';
+import { bindable, derive } from '@exodra/reactivity';
+import { fromSelector, fromOimdb, keyedChildren } from '@oimdb/exodra';
 import type { Status, Task, TaskPriority } from '../domain/types';
 import { getRuntime } from '../app/runtime';
 import { orderedStatuses } from '../store/workspace-store';
-import { keyedList } from '../lib/keyed-list';
+import { sameRows } from '../lib/same-rows';
 
 const PRIORITY_GLYPH: Record<TaskPriority, string> = {
     urgent: '⛌',
@@ -14,24 +15,21 @@ const PRIORITY_GLYPH: Record<TaskPriority, string> = {
 
 // --- a single reactive task card -------------------------------------------
 
-interface Card {
-    pk: string;
-    schema: TExoSchema;
-    dispose(): void;
-}
-
-function createCard(taskId: string, statuses: Status[]): Card {
+// The card's fields are DERIVED from one ref-counted `byPk` bindable: `@oimdb/exodra`
+// subscribes to the task's own key only while the card is mounted and tears down on
+// unmount (no manual dispose). Field reactivity is thus scoped to THIS task — a change
+// to another task never touches this card.
+function createCard(taskId: string, statuses: Status[]): TExoSchema {
     const rt = getRuntime();
+    const taskB = fromSelector(rt.oimdbInstance.tasks.select.byPk(taskId));
+
+    const title = derive(taskB, t => t?.title ?? '');
+    const cls = derive(taskB, t => (t ? cardClass(t) : 'card'));
+    const prio = derive(taskB, t => (t ? PRIORITY_GLYPH[t.priority] : ''));
+    const assignee = derive(taskB, t => (t ? assigneeName(rt, t) : 'Unassigned'));
+    const meta = derive(taskB, t => (t ? metaLine(rt, t) : ''));
+
     const read = () => rt.oimdbInstance.tasks.collection.getOneByPk(taskId);
-    const initial = read();
-    if (!initial) throw new Error(`card: missing task ${taskId}`);
-
-    const title = bindable(initial.title);
-    const cls = bindable(cardClass(initial));
-    const prio = bindable(PRIORITY_GLYPH[initial.priority]);
-    const assignee = bindable(assigneeName(rt, initial));
-    const meta = bindable(metaLine(rt, initial));
-
     const idxOf = (sid: string) => statuses.findIndex(s => s.id === sid);
     const moveBy = (delta: number) => {
         const t = read();
@@ -41,7 +39,7 @@ function createCard(taskId: string, statuses: Status[]): Card {
         rt.moveTask(taskId, statuses[i].id);
     };
 
-    const schema = (
+    return (
         <article bindable={{ class: cls }} static={{ 'data-id': taskId }}>
             <div static={{ class: 'card__top' }}>
                 <span static={{ class: 'card__prio' }} bindable={{ textContent: prio }} />
@@ -73,18 +71,6 @@ function createCard(taskId: string, statuses: Status[]): Card {
             </div>
         </article>
     );
-
-    const dispose = rt.oimdbInstance.tasks.collection.subscribeOnKey(taskId, () => {
-        const t = read();
-        if (!t) return;
-        title.setValue(t.title);
-        cls.setValue(cardClass(t));
-        prio.setValue(PRIORITY_GLYPH[t.priority]);
-        assignee.setValue(assigneeName(rt, t));
-        meta.setValue(metaLine(rt, t));
-    });
-
-    return { pk: taskId, schema, dispose };
 }
 
 function cardClass(t: Task): string {
@@ -109,62 +95,42 @@ function metaLine(rt: ReturnType<typeof getRuntime>, t: Task): string {
     return [project, label, tags].filter(Boolean).join(' · ');
 }
 
-// --- a status column: the shared keyedList over the column's ordered tasks ---
+// --- a status column: identity-stable cards over the column's ordered tasks ---
 
-function createColumn(status: Status, statuses: Status[]) {
+function createColumn(status: Status, statuses: Status[]): TExoSchema {
     const rt = getRuntime();
-    const count = bindable('0');
 
-    const orderedTasks = (): Task[] =>
+    const orderedTasks = (): readonly Task[] =>
         [...rt.oimdbInstance.tasksByStatus.getPksByKey(status.id)]
             .map(pk => rt.oimdbInstance.tasks.collection.getOneByPk(pk))
             .filter((t): t is Task => Boolean(t))
             .sort((a, b) => a.createdAt - b.createdAt);
 
-    // Each card is a per-key reactive node (its own subscribeOnKey drives field
-    // reactivity); keyedList keeps its schema identity-stable, so a field edit is a
-    // reconcile no-op (focus kept) and a move/add/remove only touches the diff. A
-    // card that leaves the column is disposed via render's { dispose }.
-    const col = keyedList({
-        items: orderedTasks,
+    // Subscribe to THIS column's status key only (MEMBERSHIP): a move fires exactly
+    // the two affected columns, an add/delete fires one, and a field edit that does
+    // not change status never fires here — the card's own `byPk` handles the field.
+    // `keyedChildren` keeps each card's schema identity-stable, so a move/add/remove
+    // only touches the diff and a card that stays keeps its DOM node.
+    const ordered = fromOimdb(
+        orderedTasks,
+        cb => rt.oimdbInstance.tasksByStatus.subscribeOnKey(status.id, cb),
+        { equals: sameRows }
+    );
+    const cards = keyedChildren(ordered, {
         key: t => t.id,
-        render: t => {
-            const card = createCard(t.id, statuses);
-            return { schema: card.schema, dispose: card.dispose };
-        },
+        render: t => createCard(t.id, statuses),
     });
+    const count = derive(ordered, list => String(list.length));
 
-    const refresh = () => {
-        col.refresh();
-        count.setValue(String(col.size()));
-    };
-    refresh();
-
-    // Subscribe to THIS column's status key only. A field edit that doesn't change
-    // a task's status never fires here (the card's own subscribeOnKey handles the
-    // field); a move fires exactly the two affected columns; an add/delete fires
-    // one. Fine-grained — not "refresh every column on any task change".
-    let stop: (() => void) | null = null;
-    const mount = () => {
-        stop = rt.oimdbInstance.tasksByStatus.subscribeOnKey(status.id, refresh);
-    };
-    const dispose = () => {
-        stop?.();
-        stop = null;
-        col.unmount();
-    };
-
-    const schema = (
+    return (
         <section static={{ class: 'col', 'data-status': status.id }}>
             <header static={{ class: 'col__head', style: `--c:${status.color}` }}>
                 <span static={{ class: 'col__name' }}>{status.name}</span>
                 <span static={{ class: 'col__count' }} bindable={{ textContent: count }} />
             </header>
-            <div static={{ class: 'col__body' }} bindable={{ children: col.children }} />
+            <div static={{ class: 'col__body' }} bindable={{ children: cards }} />
         </section>
     );
-
-    return { schema, mount, dispose };
 }
 
 // --- the page ---------------------------------------------------------------
@@ -173,8 +139,6 @@ export default function boardPage(): TExoSchema {
     const rt = getRuntime();
     const statuses = orderedStatuses(rt.oimdbInstance);
     const projects = rt.oimdbInstance.projects.collection.getAll().filter(p => !p.archived);
-
-    const columns = statuses.map(s => createColumn(s, statuses));
 
     const newTitle = bindable('');
     const addProject = bindable(projects[0]?.id ?? '');
@@ -197,13 +161,7 @@ export default function boardPage(): TExoSchema {
     };
 
     return (
-        <div
-            static={{
-                class: 'page page--board',
-                onExoMount: () => columns.forEach(c => c.mount()),
-                onExoUnmount: () => columns.forEach(c => c.dispose()),
-            }}
-        >
+        <div static={{ class: 'page page--board' }}>
             <div static={{ class: 'page__bar' }}>
                 <h1 static={{ class: 'page__title' }}>Board</h1>
                 <span static={{ class: 'page__spacer' }} />
@@ -215,11 +173,9 @@ export default function boardPage(): TExoSchema {
                     }}
                     bindable={{ value: newTitle }}
                     handlers={{
-                        onInput: (e: Event) =>
-                            newTitle.setValue(
-                                (e.target as HTMLInputElement).value
-                            ),
-                        onKeyDown: (e: KeyboardEvent) => {
+                        onInput: e =>
+                            newTitle.setValue(e.currentTarget.value),
+                        onKeyDown: e => {
                             if (e.key === 'Enter') submit();
                         },
                     }}
@@ -227,10 +183,8 @@ export default function boardPage(): TExoSchema {
                 <select
                     bindable={{ value: addProject }}
                     handlers={{
-                        onChange: (e: Event) =>
-                            addProject.setValue(
-                                (e.target as HTMLSelectElement).value
-                            ),
+                        onChange: e =>
+                            addProject.setValue(e.currentTarget.value),
                     }}
                 >
                     {projects.map(p => (
@@ -244,7 +198,7 @@ export default function boardPage(): TExoSchema {
                     Add task
                 </button>
             </div>
-            <div static={{ class: 'board' }}>{columns.map(c => c.schema)}</div>
+            <div static={{ class: 'board' }}>{statuses.map(s => createColumn(s, statuses))}</div>
         </div>
     );
 }

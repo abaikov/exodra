@@ -1,10 +1,12 @@
 {
   "name": "@exodra/reactivity",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "unpkg": "./dist/exodra.global.js",
+  "jsdelivr": "./dist/exodra.global.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -54,9 +56,9 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "devDependencies": {
-    "vitest": "^1.2.1"
+    "vitest": "^4.0.16"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@exodra/reactivity-types": "^0.1.0"
   }
 }

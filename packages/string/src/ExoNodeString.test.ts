@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { h } from '@exodra/core';
+import { h, createContextKey } from '@exodra/core';
+import type { TExoContext } from '@exodra/core';
 import { bindable, list } from '@exodra/reactivity';
 import { createExoBindable } from '../../reactivity/src/createExoBindable';
 import { createExoBindableList } from '../../reactivity/src/createExoBindableList';
@@ -27,7 +28,7 @@ describe('ExoNodeString', () => {
         expect(node.html).toBe('<div>hello</div>');
     });
 
-    it('updates when a child text binding changes', () => {
+    it('renders a bindable text child once (one-shot)', () => {
         const text = createExoBindable('hello');
         const node = new ExoNodeString({
             type: 'div',
@@ -45,12 +46,10 @@ describe('ExoNodeString', () => {
             },
         });
 
-        text.setValue('world');
-
-        expect(node.html).toBe('<div>world</div>');
+        expect(node.html).toBe('<div>hello</div>');
     });
 
-    it('renders serializable attributes and updates bound attributes', () => {
+    it('renders serializable attributes and bound attributes (one-shot)', () => {
         const className = createExoBindable('first');
         const node = new ExoNodeString({
             type: 'button',
@@ -68,12 +67,6 @@ describe('ExoNodeString', () => {
 
         expect(node.html).toBe(
             '<button id="action" class="first">go</button>'
-        );
-
-        className.setValue('second');
-
-        expect(node.html).toBe(
-            '<button id="action" class="second">go</button>'
         );
     });
 
@@ -109,7 +102,7 @@ describe('ExoNodeString', () => {
         ).toBe('<strong>component</strong>');
     });
 
-    it('updates children from bindable list operations', () => {
+    it('renders bindableList children once (one-shot)', () => {
         const childA = {
             type: '#text',
             attrs: { static: { textContent: 'a' } },
@@ -117,10 +110,6 @@ describe('ExoNodeString', () => {
         const childB = {
             type: '#text',
             attrs: { static: { textContent: 'b' } },
-        };
-        const childC = {
-            type: '#text',
-            attrs: { static: { textContent: 'c' } },
         };
         const children = createExoBindableList([childA, childB]);
         const node = new ExoNodeString({
@@ -133,47 +122,8 @@ describe('ExoNodeString', () => {
         });
 
         expect(node.html).toBe('<div>ab</div>');
-
-        children.insert(1, childC);
-        expect(node.html).toBe('<div>acb</div>');
-
-        children.move(0, 2);
-        expect(node.html).toBe('<div>cba</div>');
-
-        children.remove(1);
-        expect(node.html).toBe('<div>ca</div>');
     });
 
-    it('updates children from set and reset operations', () => {
-        const childA = {
-            type: '#text',
-            attrs: { static: { textContent: 'a' } },
-        };
-        const childB = {
-            type: '#text',
-            attrs: { static: { textContent: 'b' } },
-        };
-        const childC = {
-            type: '#text',
-            attrs: { static: { textContent: 'c' } },
-        };
-        const children = createExoBindableList([childA, childB]);
-        const node = new ExoNodeString({
-            type: 'div',
-            attrs: {
-                bindableLists: {
-                    children,
-                },
-            },
-        });
-
-        children.set(1, childC);
-        expect(node.html).toBe('<div>ac</div>');
-
-        children.reset([childC, childA]);
-        expect(node.html).toBe('<div>ca</div>');
-    });
-    
     it('renders with h factory', () => {
         const app = h('section', { 
             static: {
@@ -298,25 +248,178 @@ describe('ExoNodeString', () => {
             expect(html).toBe('<ul><li>Static</li><li>Dynamic 1</li><li>Dynamic 2</li></ul>');
         });
 
-        it('updates when fragment bindableList changes', () => {
+        it('renders fragment bindableList children once (one-shot)', () => {
             const items = list([
                 h('div', { static: { children: 'Initial' } })
             ]);
-            
+
             const fragment = h('#fragment', {
                 bindableLists: {
                     children: items
                 }
             });
-            
+
             const node = new ExoNodeString(fragment);
             expect(node.html).toBe('<div>Initial</div>');
-            
-            items.push(h('div', { static: { children: 'Added' } }));
-            expect(node.html).toBe('<div>Initial</div><div>Added</div>');
-            
-            items.reset([h('div', { static: { children: 'Reset' } })]);
-            expect(node.html).toBe('<div>Reset</div>');
+        });
+    });
+
+    describe('void elements', () => {
+        it('emits no closing tag for br/hr', () => {
+            expect(renderToString(h('br', {}))).toBe('<br>');
+            expect(renderToString(h('hr', {}))).toBe('<hr>');
+        });
+
+        it('emits void elements with attributes and no closing tag', () => {
+            expect(
+                renderToString(h('img', { static: { src: 'x.png', alt: 'x' } }))
+            ).toBe('<img src="x.png" alt="x">');
+            expect(
+                renderToString(h('input', { static: { type: 'text', value: 'v' } }))
+            ).toBe('<input type="text" value="v">');
+            expect(
+                renderToString(h('meta', { static: { charset: 'utf-8' } }))
+            ).toBe('<meta charset="utf-8">');
+            expect(
+                renderToString(h('link', { static: { rel: 'stylesheet', href: 'a.css' } }))
+            ).toBe('<link rel="stylesheet" href="a.css">');
+        });
+
+        it('non-void elements still get a closing tag', () => {
+            expect(renderToString(h('div', {}))).toBe('<div></div>');
+            expect(renderToString(h('span', {}))).toBe('<span></span>');
+        });
+    });
+
+    describe('textContent edge cases', () => {
+        it('nullish static textContent falls back to children, not "null"', () => {
+            const node = new ExoNodeString({
+                type: 'div',
+                attrs: {
+                    static: {
+                        textContent: null,
+                        children: { type: '#text', attrs: { static: { textContent: 'kids' } } },
+                    },
+                },
+            } as ConstructorParameters<typeof ExoNodeString>[0]);
+            expect(node.html).toBe('<div>kids</div>');
+        });
+
+        it('bindable null textContent falls back to static textContent', () => {
+            const node = new ExoNodeString({
+                type: 'div',
+                attrs: {
+                    bindables: { textContent: createExoBindable(null) },
+                    static: { textContent: 'fallback' },
+                },
+            } as ConstructorParameters<typeof ExoNodeString>[0]);
+            expect(node.html).toBe('<div>fallback</div>');
+        });
+    });
+
+    describe('duplicate class/className', () => {
+        it('emits a single class attribute when both class and className are set', () => {
+            const html = renderToString(
+                h('div', { static: { class: 'a', className: 'b' } })
+            );
+            // Exactly one class attribute (no `class="a" class="b"`).
+            expect(html.match(/class=/g)?.length).toBe(1);
+            expect(html).toBe('<div class="b"></div>');
+        });
+    });
+
+    describe('component context', () => {
+        it('reads static via ctx.getConstant', () => {
+            const Comp = (ctx: TExoContext) => ({
+                type: 'b',
+                attrs: { static: { textContent: ctx.getConstant('label') } },
+            });
+            expect(
+                renderToString({ type: Comp, attrs: { static: { label: 'hi' } } })
+            ).toBe('<b>hi</b>');
+        });
+
+        it('reads bindables via ctx.getBindable', () => {
+            const Comp = (ctx: TExoContext) => ({
+                type: 'b',
+                attrs: {
+                    static: {
+                        textContent: (ctx.getBindable('count') as { getValue(): number }).getValue(),
+                    },
+                },
+            });
+            expect(
+                renderToString({
+                    type: Comp,
+                    attrs: { bindables: { count: createExoBindable(7) } },
+                })
+            ).toBe('<b>7</b>');
+        });
+
+        it('reads bindableLists via ctx.getBindableList', () => {
+            const Comp = (ctx: TExoContext) => {
+                const items = ctx.getBindableList('items') as { snapshot(): unknown[] };
+                return {
+                    type: 'span',
+                    attrs: { static: { textContent: items.snapshot().length } },
+                };
+            };
+            expect(
+                renderToString({
+                    type: Comp,
+                    attrs: { bindableLists: { items: createExoBindableList([1, 2, 3]) } },
+                })
+            ).toBe('<span>3</span>');
+        });
+
+        it('threads provide() from a parent component into inject() of a descendant', () => {
+            const themeKey = createContextKey<string>('theme');
+            const Child = (ctx: TExoContext) => ({
+                type: 'em',
+                attrs: { static: { textContent: ctx.inject(themeKey) } },
+            });
+            const Parent = (ctx: TExoContext) => {
+                ctx.provide(themeKey, 'dark');
+                return { type: Child, attrs: {} };
+            };
+            expect(renderToString({ type: Parent, attrs: {} })).toBe('<em>dark</em>');
+        });
+
+        it('inject() returns the fallback when nothing is provided', () => {
+            const missingKey = createContextKey<string>('missing');
+            const Comp = (ctx: TExoContext) => ({
+                type: 'em',
+                attrs: { static: { textContent: ctx.inject(missingKey, 'default') } },
+            });
+            expect(renderToString({ type: Comp, attrs: {} })).toBe('<em>default</em>');
+        });
+    });
+
+    describe('dangerouslySetInnerHTML', () => {
+        it('emits raw inner HTML verbatim, skipping children', () => {
+            const html = renderToString({
+                type: 'div',
+                attrs: {
+                    static: {
+                        dangerouslySetInnerHTML: { __html: '<b>raw & unescaped</b>' },
+                        children: { type: '#text', attrs: { static: { textContent: 'ignored' } } },
+                    },
+                },
+            });
+            expect(html).toBe('<div><b>raw & unescaped</b></div>');
+        });
+
+        it('falls back to normal rendering when __html is nullish', () => {
+            const html = renderToString({
+                type: 'div',
+                attrs: {
+                    static: {
+                        dangerouslySetInnerHTML: { __html: null },
+                        textContent: 'shown',
+                    },
+                },
+            });
+            expect(html).toBe('<div>shown</div>');
         });
     });
 });

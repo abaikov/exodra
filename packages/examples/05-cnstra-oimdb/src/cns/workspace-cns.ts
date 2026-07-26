@@ -9,6 +9,7 @@ import {
     createTaskSettleNeuron,
 } from './task-persist-neuron';
 import { createActivityNeuron } from './activity-neuron';
+import { createReferenceNeuron } from './reference-neuron';
 import {
     addTaskRequested,
     moveTaskRequested,
@@ -17,6 +18,9 @@ import {
     deleteTaskRequested,
     addCommentRequested,
     archiveProjectRequested,
+    refUpsertRequested,
+    refPatchRequested,
+    refRemoveRequested,
 } from './collaterals';
 
 // The channels are part of the CNS public surface — re-export so callers keep
@@ -55,6 +59,7 @@ export function createWorkspaceCns(
     const persistNeuron = createTaskPersistNeuron(oimdbInstance, persistDelayMs, persistShouldFail);
     const settleNeuron = createTaskSettleNeuron(oimdbInstance);
     const activityNeuron = createActivityNeuron(oimdbInstance, now, newId);
+    const referenceNeuron = createReferenceNeuron(oimdbInstance);
 
     const cns = new CNS([
         taskNeuron,
@@ -63,6 +68,7 @@ export function createWorkspaceCns(
         persistNeuron,
         settleNeuron,
         activityNeuron,
+        referenceNeuron,
     ]);
 
     const registry = createPersistRegistry({
@@ -72,6 +78,7 @@ export function createWorkspaceCns(
         persistNeuron,
         settleNeuron,
         activityNeuron,
+        referenceNeuron,
     });
     registry.registerCollateral('addTaskRequested', addTaskRequested);
     registry.registerCollateral('moveTaskRequested', moveTaskRequested);
@@ -80,6 +87,9 @@ export function createWorkspaceCns(
     registry.registerCollateral('deleteTaskRequested', deleteTaskRequested);
     registry.registerCollateral('addCommentRequested', addCommentRequested);
     registry.registerCollateral('archiveProjectRequested', archiveProjectRequested);
+    registry.registerCollateral('refUpsertRequested', refUpsertRequested);
+    registry.registerCollateral('refPatchRequested', refPatchRequested);
+    registry.registerCollateral('refRemoveRequested', refRemoveRequested);
 
     return { cns, registry };
 }

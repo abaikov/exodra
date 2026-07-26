@@ -116,6 +116,48 @@ console.log('\n── add-task saga: optimistic pending insert ──');
     ok('count grew by 1', rt.oimdbInstance.tasks.collection.getAll().length === n + 1);
 }
 
+console.log('\n── cnstra drain → oimdb flush: the ONLY commit point ──');
+{
+    // Every mutation is a stimulation; the runtime's addDrainListener flushes the
+    // (scheduler-less) oimdb queue when the turn drains, so subscribers fire on
+    // that same synchronous tick — for orchestrated commands AND reference-data.
+    let taskSync = false;
+    const off1 = rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(() => { taskSync = true; });
+    rt.addTask({
+        projectId: 'p-engine',
+        title: 'drain sync task',
+        priority: 'medium',
+        statusId: 's-backlog',
+        assigneeId: null,
+        labelId: null,
+        tagIds: [],
+        milestoneId: null,
+    });
+    off1();
+    ok('orchestrated command flushed synchronously (drain)', taskSync);
+
+    let refSync = false;
+    const off2 = rt.oimdbInstance.tags.collection.subscribeOnAnyUpdate(() => { refSync = true; });
+    rt.createEntity('tags', { id: 'tg-drain', name: 'Drain', color: '#0af' });
+    off2();
+    ok('reference-data write ALSO flushed synchronously (goes through CNS)', refSync);
+
+    // Nothing flushes without a CNS drain: a raw write straight to the collection
+    // (bypassing the runtime, which no app code does) never notifies — no
+    // scheduler — until an explicit flush. Proves the drain is the only commit.
+    let rawSync = false;
+    const off3 = rt.oimdbInstance.labels.collection.subscribeOnAnyUpdate(() => { rawSync = true; });
+    rt.oimdbInstance.labels.collection.upsertOne({ id: 'lb-raw', name: 'Raw', color: '#000' } as never);
+    const rawBeforeTick = rawSync;
+    await tick();
+    const rawAfterTick = rawSync;
+    rt.oimdbInstance.queue.flush();
+    off3();
+    ok('raw non-CNS write did NOT flush synchronously', !rawBeforeTick);
+    ok('raw non-CNS write did NOT flush on a microtask either (no scheduler)', !rawAfterTick);
+    ok('raw write flushed only on an explicit queue.flush()', rawSync);
+}
+
 console.log(`\n${'='.repeat(48)}`);
 console.log(`FLAGSHIP SMOKE: ${pass} passed, ${fail.length} failed`);
 if (fail.length) {

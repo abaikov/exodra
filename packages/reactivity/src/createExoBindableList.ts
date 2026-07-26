@@ -1,5 +1,11 @@
 import type { TExoListOp } from '@exodra/reactivity-types';
 import type { TExoWritableBindableList } from '@exodra/reactivity-types';
+import {
+    __DEV__,
+    beginFlush,
+    endFlush,
+    warnWriteDuringFlush,
+} from './dev-flush-guard';
 
 export function createExoBindableList<TItem>(
     initialItems: readonly TItem[]
@@ -11,8 +17,13 @@ export function createExoBindableList<TItem>(
     const emit = (event: TExoListOp<TItem>) => {
         // Only emit if we have subscribers
         if (subscribers.size > 0) {
-            for (const update of subscribers) {
-                update(event);
+            if (__DEV__) beginFlush('bindableList');
+            try {
+                for (const update of subscribers) {
+                    update(event);
+                }
+            } finally {
+                if (__DEV__) endFlush();
             }
         }
     };
@@ -29,16 +40,19 @@ export function createExoBindableList<TItem>(
             };
         },
         insert(index, item) {
+            if (__DEV__) warnWriteDuringFlush('bindableList.insert');
             const clampedIndex = Math.max(0, Math.min(index, items.length));
             items.splice(clampedIndex, 0, item);
             emit({ type: 'insert', index: clampedIndex, item });
         },
         push(item) {
+            if (__DEV__) warnWriteDuringFlush('bindableList.push');
             const index = items.length;
             items.push(item);
             emit({ type: 'insert', index, item });
         },
         remove(index, count = 1) {
+            if (__DEV__) warnWriteDuringFlush('bindableList.remove');
             const clampedIndex = Math.max(0, Math.min(index, items.length));
             const clampedCount = Math.max(
                 0,
@@ -48,6 +62,7 @@ export function createExoBindableList<TItem>(
             emit({ type: 'remove', index: clampedIndex, count: clampedCount });
         },
         move(from, to, count = 1) {
+            if (__DEV__) warnWriteDuringFlush('bindableList.move');
             if (count <= 0 || from < 0 || from >= items.length) {
                 return;
             }
@@ -68,6 +83,7 @@ export function createExoBindableList<TItem>(
             });
         },
         set(index, item) {
+            if (__DEV__) warnWriteDuringFlush('bindableList.set');
             if (index < 0 || index >= items.length) {
                 return;
             }
@@ -76,6 +92,7 @@ export function createExoBindableList<TItem>(
             emit({ type: 'set', index, item });
         },
         reset(nextItems) {
+            if (__DEV__) warnWriteDuringFlush('bindableList.reset');
             // Avoid unnecessary copies
             items = Array.isArray(nextItems) ? nextItems as TItem[] : [...nextItems];
             emit({ type: 'reset', items: items.slice() });

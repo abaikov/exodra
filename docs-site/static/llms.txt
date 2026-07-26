@@ -38,6 +38,15 @@ not a silent no-op.
 There is NO magic mapping of `onClick` → handlers. You put it in `handlers={{}}`
 yourself. Types remove the escape hatch; the compiler enforces it.
 
+**`props={obj}`** spreads a full bucket object (the plural schema shape:
+`static`/`bindables`/`bindableLists`/`handlers`/`bindableHandlers`) into the
+element. It's a plain JS spread — `props={base} static={{…}}` compiles to
+`h(tag, { ...base, static: {…} })`, so inline buckets whole-field-REPLACE the
+spread (no deep merge). Helpers return exactly this shape, so `props={bindText(x)}`
+drops in. Want two-level merge? Do it explicitly: `props={mergeAttrs(a, b)}`.
+Note: children fold into `static.children`, so an element with children + a
+helper that carries `static` will have that `static` replaced wholesale.
+
 ## Reactivity primitives (`@exodra/reactivity`)
 
 - `bindable(initial)` → `{ getValue(), setValue(v), subscribe(fn): () => void }`.
@@ -118,9 +127,30 @@ infer their return types from it. Omit the generic and the component stays loose
   `@exodra/reactivity-types` for the contract only (type-only import); at runtime it
   duck-types (`'subscribe' in binding`), so any conforming reactive value works.
 - `@exodra/jsx` + `@exodra/babel-plugin-jsx` — JSX types + the compiler.
-- `@exodra/router` — lazy routes (`lazy(() => import())`), history, guards.
+- `babel-preset-exodra` — one-line Babel pipeline (syntax-jsx + the plugin +
+  preset-typescript). The integration hub: `presets: ['exodra']` in `babel.config.js`
+  makes Jest (via `babel-jest`), webpack (`babel-loader`), and Parcel compile Exodra
+  JSX. Also exports `transformExodraJsx(code, id)`, the single runner the bundler
+  plugins share. NOT `ts-jest`/`@swc/jest` — they don't run Babel plugins.
+- `esbuild-plugin-exodra` / `rollup-plugin-exodra` / `bun-plugin-exodra` — thin
+  plugins that delegate to that runner (esbuild/tsup, Rollup, Bun).
+- `swc-plugin-exodra` — native Rust/Wasm SWC plugin (Next.js default, `swc-loader`).
+  Full parity with the Babel plugin; version-tied to `swc_core`/`@swc/core`.
+- `@exodra/router` — lazy routes (`lazy(() => import())`), history, guards. Route
+  `handle` (arbitrary metadata) surfaces on the whole matched branch via
+  `router.getMatches()` (root → leaf: breadcrumbs/titles). Per-navigation location
+  `state` via `navigate(to, { state })` / `<Link state>` → `location.state` (History
+  API, survives back/forward, not in URL; use query params for shareable state).
 - `@exodra/ssr` / `@exodra/string` — server rendering.
 - `@exodra/forms` — form bindables (`bind:value` / `bind:checked` runtime).
+- `@exodra/attrs` — `mergeAttrs(base, ...partials)`: compose typed attrs buckets
+  (`static`/`bindables`/`handlers`/…) into one props object. Shallow two-level,
+  last-wins; `onExoMount`/`onExoUnmount` compose. It's the runtime of `bind:` and
+  the explicit opt-in merge for `props={mergeAttrs(...)}`. (Moved here from
+  `@exodra/jsx`.) Never recurse a deep merge — bucket values are live signals.
+- `@exodra/style` — build the `style` string from objects: `style({ color: 'red',
+  fontSize: 12 })` → `"color:red;font-size:12px"` (camelCase→kebab, auto-px,
+  `--custom` props, conditionals). Zero deps; output goes in `static.style`.
 - `@exodra/react` — render React components inside Exodra as islands:
   `reactIsland(Component, propsOrBindable)`. React is a peer dependency.
 - `@exodra/vite-plugin` — Vite integration (file-based routing, JSX transform, HMR).

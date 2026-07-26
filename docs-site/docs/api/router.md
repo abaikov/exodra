@@ -94,10 +94,12 @@ A `TExoRouter` exposes reactive state and navigation methods:
 | --- | --- |
 | `routes` | The route table. |
 | `location` | A bindable of the current `{ pathname, search, hash, href }`. |
-| `match` | A bindable of the current `TExoRouteMatch \| undefined`. |
+| `match` | A bindable of the current `TExoRouteMatch \| undefined` (the leaf). |
+| `matches` | A bindable of the matched branch, root → leaf (`TExoRouteMatch[]`). |
 | `navigationState` | A bindable of `'idle' \| 'loading' \| 'submitting'`. |
 | `getLocation()` | Current location value. |
-| `getMatch()` | Current match value. |
+| `getMatch()` | Current (leaf) match value. |
+| `getMatches()` | The full matched branch, root → leaf. |
 | `navigate(to, options?)` | Navigate; returns `Promise<TExoLocation>`. |
 | `setPathname(pathname, options?)` | Navigate keeping the current search/hash. |
 | `setSearch(search, options?)` | Replace the search string/object. |
@@ -111,13 +113,68 @@ A `TExoRouter` exposes reactive state and navigation methods:
 ### navigate()
 
 ```typescript
-router.navigate(to: string, options?: { replace?: boolean }): Promise<TExoLocation>;
+router.navigate(
+  to: string,
+  options?: { replace?: boolean; state?: unknown }
+): Promise<TExoLocation>;
 ```
 
 ```javascript
 await router.navigate('/users/123');
 await router.navigate('/login', { replace: true });
+await router.navigate('/checkout', { state: { from: 'cart' } }); // see "Location state"
 ```
+
+### Route `handle` and the match chain
+
+Attach arbitrary static metadata to a route with `handle` — the equivalent of
+React Router's route `handle`. It surfaces on **every** entry of the matched
+branch, so `getMatches()` (root → leaf) is your breadcrumb / title / layout-flag
+source. `getMatch()` returns just the leaf.
+
+```javascript
+const routes = [
+  { path: '/', component: Root, handle: { crumb: 'Home' }, children: [
+    { path: 'users', component: Users, handle: { crumb: 'Users' }, children: [
+      { path: ':id', component: User, handle: { crumb: 'Profile' } },
+    ]},
+  ]},
+];
+
+// Breadcrumbs straight off the branch. Each match also carries its own resolved
+// `pathname` (params substituted) and the shared `params`.
+const crumbs = derive(router.matches, matches =>
+  matches.map(m => ({ label: m.handle.crumb, href: m.pathname }))
+);
+// at /users/42 → [{Home, /}, {Users, /users}, {Profile, /users/42}]
+```
+
+Declaratively, pass `handle` on `<Route>`:
+
+```jsx
+<Route path="/users" component={Users} handle={{ crumb: 'Users' }} />
+```
+
+`handle` is typed `unknown` — cast it to your own metadata shape at the read site.
+
+### Location state
+
+Carry per-navigation data that should **not** live in the URL — a "came from"
+hint, a scroll target, a small object you don't want to serialize into query
+params. It's stored in the History API, so it survives back/forward, and is read
+back on `location.state`:
+
+```javascript
+await router.navigate('/checkout', { state: { from: 'cart' } });
+router.getLocation().state; // { from: 'cart' }
+
+// Or on a Link:
+// <Link to="/checkout" state={{ from: 'cart' }}>Checkout</Link>
+```
+
+> Location `state` is lost on a hard reload and is not shareable (not in the
+> URL). If you need state that survives reloads or is linkable, use query params
+> (`setQuery` / `bindQuery`) instead. `state` is typed `unknown`.
 
 ### Reacting to location
 
@@ -206,9 +263,11 @@ import { Link } from '@exodra/router';
 
 <Link static={{ to: '/', children: 'Home' }} />
 <Link static={{ to: '/about', replace: true, children: 'About' }} />
+<Link static={{ to: '/checkout', state: { from: 'cart' }, children: 'Checkout' }} />
 ```
 
-There is **no** `activeClass` prop — derive an active class from
+`replace` (History replace) and `state` (per-entry [location state](#location-state))
+are optional. There is **no** `activeClass` prop — derive an active class from
 `router.location` (see [Reacting to location](#reacting-to-location)).
 
 ## useRouter()

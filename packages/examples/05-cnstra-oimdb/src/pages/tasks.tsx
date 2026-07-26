@@ -1,8 +1,8 @@
 import type { TExoSchema } from '@exodra/core';
+import { fromOimdb, keyedChildren } from '@oimdb/exodra';
 import type { Comment, Task } from '../domain/types';
 import { getRuntime } from '../app/runtime';
 import { orderedStatuses } from '../store/workspace-store';
-import { keyedList } from '../lib/keyed-list';
 
 const PRIORITIES: Task['priority'][] = ['urgent', 'high', 'medium', 'low'];
 
@@ -45,9 +45,9 @@ export default function tasksPage(): TExoSchema {
                     <input
                         static={{ class: 'trow__title', value: t.title }}
                         handlers={{
-                            onInput: (e: Event) =>
+                            onInput: e =>
                                 rt.patchEntity('tasks', t.id, {
-                                    title: (e.target as HTMLInputElement).value,
+                                    title: e.currentTarget.value,
                                 }),
                         }}
                     />
@@ -57,10 +57,10 @@ export default function tasksPage(): TExoSchema {
                             title: 'Status (moveTask → cnstra → activity)',
                         }}
                         handlers={{
-                            onChange: (e: Event) =>
+                            onChange: e =>
                                 rt.moveTask(
                                     t.id,
-                                    (e.target as HTMLSelectElement).value
+                                    e.currentTarget.value
                                 ),
                         }}
                     >
@@ -76,8 +76,8 @@ export default function tasksPage(): TExoSchema {
                             title: 'Assignee (assignTask → cnstra)',
                         }}
                         handlers={{
-                            onChange: (e: Event) => {
-                                const v = (e.target as HTMLSelectElement).value;
+                            onChange: e => {
+                                const v = e.currentTarget.value;
                                 rt.assignTask(t.id, v || null);
                             },
                         }}
@@ -94,9 +94,9 @@ export default function tasksPage(): TExoSchema {
                     <select
                         static={{ class: 'trow__prio' }}
                         handlers={{
-                            onChange: (e: Event) =>
+                            onChange: e =>
                                 rt.patchEntity('tasks', t.id, {
-                                    priority: (e.target as HTMLSelectElement).value,
+                                    priority: e.currentTarget.value,
                                 }),
                         }}
                     >
@@ -109,8 +109,8 @@ export default function tasksPage(): TExoSchema {
                     <select
                         static={{ class: 'trow__label' }}
                         handlers={{
-                            onChange: (e: Event) => {
-                                const v = (e.target as HTMLSelectElement).value;
+                            onChange: e => {
+                                const v = e.currentTarget.value;
                                 rt.patchEntity('tasks', t.id, {
                                     labelId: v || null,
                                 });
@@ -133,10 +133,10 @@ export default function tasksPage(): TExoSchema {
                             title: 'Comma-separated tag ids (setTaskTags → cnstra)',
                         }}
                         handlers={{
-                            onChange: (e: Event) =>
+                            onChange: e =>
                                 rt.setTaskTags(
                                     t.id,
-                                    (e.target as HTMLInputElement).value
+                                    e.currentTarget.value
                                         .split(',')
                                         .map(s => s.trim())
                                         .filter(Boolean)
@@ -162,14 +162,14 @@ export default function tasksPage(): TExoSchema {
                                 placeholder: 'Comment as Ada…',
                             }}
                             handlers={{
-                                onInput: (e: Event) => {
-                                    composer = (e.target as HTMLInputElement).value;
+                                onInput: e => {
+                                    composer = e.currentTarget.value;
                                 },
-                                onKeyDown: (e: KeyboardEvent) => {
+                                onKeyDown: e => {
                                     if (e.key === 'Enter' && composer.trim()) {
                                         rt.addComment(t.id, 'm-ada', composer.trim());
                                         composer = '';
-                                        (e.target as HTMLInputElement).value = '';
+                                        e.currentTarget.value = '';
                                     }
                                 },
                             }}
@@ -183,31 +183,37 @@ export default function tasksPage(): TExoSchema {
     // A task row rebuilds only on a STRUCTURAL change (add/remove/settle, comment
     // count) — editing a title/tags field or a select leaves the key unchanged, so
     // the reconcile is a no-op and input focus is kept.
-    const rows = keyedList({
-        items: allTasks,
-        key: t => `${t.id}:${t.pending ? 1 : 0}:${commentsOf(t.id).length}`,
-        render: taskRow,
-        subscribe: refresh => [
-            rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(refresh),
-            rt.oimdbInstance.comments.collection.subscribeOnAnyUpdate(refresh),
-        ],
-    });
+    // The row key depends on RELATED data (comment count), not just the `tasks`
+    // array, so the wrapping bindable forwards every store update (`alwaysNotify`)
+    // and lets `keyedChildren` dedup on the rendered key set — gating on the
+    // `tasks` array alone would swallow comment add/remove.
+    const rows = keyedChildren(
+        fromOimdb(
+            allTasks,
+            cb => {
+                const us = [
+                    rt.oimdbInstance.tasks.collection.subscribeOnAnyUpdate(cb),
+                    rt.oimdbInstance.comments.collection.subscribeOnAnyUpdate(cb),
+                ];
+                return () => us.forEach(u => u());
+            },
+            { alwaysNotify: true }
+        ),
+        {
+            key: t => `${t.id}:${t.pending ? 1 : 0}:${commentsOf(t.id).length}`,
+            render: taskRow,
+        }
+    );
 
     return (
-        <div
-            static={{
-                class: 'page page--tasks',
-                onExoMount: rows.mount,
-                onExoUnmount: rows.unmount,
-            }}
-        >
+        <div static={{ class: 'page page--tasks' }}>
             <div static={{ class: 'page__bar' }}>
                 <h1 static={{ class: 'page__title' }}>Tasks</h1>
                 <span static={{ class: 'page__hint' }}>
                     edit anything — status/assignee/tags flow through cnstra
                 </span>
             </div>
-            <ul static={{ class: 'tasklist' }} bindable={{ children: rows.children }} />
+            <ul static={{ class: 'tasklist' }} bindable={{ children: rows }} />
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { bindable } from './bindable';
 import { list } from './list';
 import { createPersistor, persist, getPersistor } from './persistor';
@@ -108,6 +108,45 @@ describe('Persistor', () => {
         expect(state._0).toEqual([1, 2, 3]); // auto-generated key
     });
     
+    it('throws on a duplicate key registered for two different observables', () => {
+        const persistor = createPersistor();
+
+        persistor.register(bindable('a'), 'dup');
+        // A different observable under the same key would silently overwrite the
+        // first and lose its state — must fail loudly.
+        expect(() => persistor.register(bindable('b'), 'dup')).toThrow(
+            /duplicate key "dup"/
+        );
+    });
+
+    it('re-registering the SAME observable under the same key is idempotent', () => {
+        const persistor = createPersistor();
+        const value = bindable('x');
+
+        persistor.register(value, 'k');
+        expect(() => persistor.register(value, 'k')).not.toThrow();
+
+        expect(JSON.parse(persistor.serialize())).toEqual({ k: 'x' });
+    });
+
+    it('warns once when an auto (positional) key is used', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const persistor = createPersistor();
+
+        persistor.register(bindable('first'));
+        persistor.register(bindable('second'));
+
+        // One warning total, not one per auto-keyed registration.
+        expect(warn).toHaveBeenCalledTimes(1);
+        expect(warn.mock.calls[0][0]).toMatch(/positional auto-key/);
+
+        // Explicit keys stay silent.
+        persistor.register(bindable('third'), 'named');
+        expect(warn).toHaveBeenCalledTimes(1);
+
+        warn.mockRestore();
+    });
+
     it('handles SSR workflow', () => {
         // Server side
         const serverPersistor = createPersistor();

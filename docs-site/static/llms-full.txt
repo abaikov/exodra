@@ -194,88 +194,135 @@ The optimized bundle will be in the `dist/` folder.
 
 These are Exodra's **own** benchmarks — not an independent third‑party comparison.
 They run in headless Chromium (Playwright) over a Vite build and compare Exodra
-against Solid, Svelte, and React on the same workloads. Numbers move with
-hardware and framework versions, so treat them as a directional signal and
-**reproduce them yourself**:
+against **Solid, Svelte, and React** on the same workloads. Numbers move with
+hardware, browser, and framework versions, so treat them as a **directional**
+signal and reproduce them yourself:
 
 ```bash
 npm run bench
 ```
 
-## Headline: initial render of a large tree
+## The suite: six axes
 
-This is the case that does real, measurable work (millisecond scale), so it's the
-one worth taking seriously. Time to build and mount a large component tree, plus
-the **retained JS heap** for one mounted instance — so you can see the speed *and*
-its memory cost side by side (numbers are approximate and move between runs):
+The suite is deliberately small — **six benchmarks, one per axis** that matters
+for a UI framework, no overlap. All four frameworks run **interleaved** in one
+process (order rotated every round, so a load spike can't bias one), GC before
+each sample, full spread reported. Each scenario is sized above the browser's
+~0.1 ms timer clamp. Crucially, **each framework performs the task via its own
+idiomatic API** — no framework is forced onto another's path.
 
-| Framework  | Median (render) | Retained heap |
-|------------|-----------------|---------------|
-| **Exodra** | **~1 ms**       | ~0.18 MB      |
-| Solid      | ~2–3 ms         | ~0.14 MB      |
-| Svelte     | ~4 ms           | ~0.42 MB      |
-| React      | ~5 ms           | ~0.54 MB      |
+| Axis | What it measures | Result |
+|------|------------------|--------|
+| **list-update** | Targeted list mutations via the **imperative** engine (move / insert / remove / append) | **Exodra #1** — ~19× vs Solid, ~65× vs Svelte, ~585× vs React |
+| **reconcile** | **Declarative** keyed diff — replace a 200-row list with a shuffled order, ×30 | **Exodra #1** — ~1.2× vs Solid, ~4.7× vs Svelte, ~10.7× vs React |
+| **app-update** | Fat batch on **the app** — 80 cards, details toggle + dynamic tag list ×5 | **Exodra #1** — ~1.2× vs Solid, ~1.3× vs Svelte, ~5× vs React |
+| **reactive-update** | 1000 value changes → DOM, ×3 | **Exodra #1** — ~1.6× vs Solid, ~2.7× vs Svelte, ~8.8× vs React |
+| **toggle** | Conditional mount/unmount, ×50 | Tie (Exodra ≈ Solid ≈ Svelte; React ~4× slower) |
+| **initial-render** | Mounting **the same app** app-update updates (80 cards, details toggle + dynamic tag lists) | Solid #1, **Exodra #2** — ~1.2× behind Solid, ~2.6× ahead of Svelte, ~4× ahead of React (and **leanest heap**) |
 
-Exodra sits firmly in the **top tier** here — it posts the lowest render time in
-our runs, with Solid essentially neck‑and‑neck, and both clearly ahead of Svelte
-and React. We won't claim a permanent "fastest framework" crown from our own
-harness; the honest read is "as fast as the fastest." What earns it that spot is
-architectural: no virtual‑DOM diffing and no per‑prop runtime type dispatch (the
-static/reactive/event split is resolved at compile time).
+Example medians from one run (ms) — plus retained heap:
 
-**At what cost?** Not memory: Exodra is also among the leanest. Credit where it's
-due — **Solid has the smallest footprint** (~0.14 MB, marginally under Exodra's
-~0.18 MB), though it renders a bit slower here. React is the heaviest and the
-slowest. The takeaway isn't "Exodra wins everything" — it's that Exodra is
-top‑tier on speed *and* memory, without trading one for the other.
+| Axis | unit | Exodra | Solid | Svelte | React |
+|------|------|--------|-------|--------|-------|
+| list-update | ms/80 ops | **0.10** | 1.90 | 6.50 | 58.5 |
+| reconcile | ms/30 reconciles | **2.53** | 2.93 | 12.0 | 27.0 |
+| app-update | ms/5 rounds | **4.24** | 5.18 | 5.50 | 21.5 |
+| reactive-update | ms/3000 changes | **1.20** | 1.90 | 3.20 | 10.6 |
+| toggle | ms/50 toggles | 0.30 | 0.30 | 0.20 | 1.10 |
+| initial-render | ms/mount | 0.86 | **0.72** | 2.26 | 3.56 |
+| *retained heap* | MB/app | **0.23** | 0.31 | 0.46 | 0.46 |
 
-## Fine‑grained updates
+## The honest read
 
-Single‑operation updates (one signal write, one list op) complete in **well under
-a millisecond** for both Exodra and Solid — below the timer's resolution, so the
-**median is effectively 0 ms for everyone**. We report the *average* below only to
-show Exodra is in the same class, not to claim a meaningful multiplier. Treat
-these as "both are effectively instant."
+- **Targeted list updates (imperative) — Exodra wins by a wide margin.** Exodra's
+  list is an **imperative engine**: `move` / `insert` / `remove` / `push` directly
+  mutate the DOM for a known change, no diff. Solid, Svelte and React have no
+  imperative list API, so each mutation is a state‑set their keyed block must diff —
+  Exodra does far less work. When you *know* the change, express it as an op.
+- **Declarative reconcile (keyed diff) — Exodra also wins.** When you instead just
+  hand over a new array, Exodra's `updateChildren` does a **minimal‑move** keyed
+  reconcile (it keeps the longest already‑in‑order run in place — the LIS — and moves
+  only the rest, exactly like the best compilers). On a 200‑row shuffle it edges
+  Solid (~1.2×) and is far ahead of Svelte (~4.7×) and React (~10.7×, vDOM). So
+  Exodra leads **both** list paths — imperative *and* declarative.
+- **Fat real‑app update — Exodra #1.** 80 cards, each toggling a details block and
+  growing/shrinking a **dynamic tag list**, driven by real clicks; tags reconciled
+  declaratively with node reuse verified for all four. Exodra ~1.2× vs Solid, ~1.3×
+  vs Svelte, ~5× vs React. The bench **asserts every framework's clicks actually
+  mutate the DOM** before timing (React needs `flushSync`, or it would measure
+  nothing).
+- **Fine‑grained reactive updates — Exodra wins.** Writing many signals straight to
+  the DOM (Exodra, Solid) beats reconciling an array (Svelte, React); among the
+  fine‑grained pair, Exodra edges Solid.
+- **Toggle — a three‑way tie** between Exodra, Solid and Svelte; React trails.
+- **Initial render — Solid leads, Exodra a close second** (well ahead of Svelte and
+  React). This mounts **the exact same app** the update axes then update — 80
+  fully‑dynamic cards — so mount and update cost are measured on ONE app. Solid's
+  compile‑time HTML‑template `cloneNode` still edges Exodra on first mount (~1.2×),
+  but the gap is narrow.
 
-| Benchmark              | Exodra (avg) | Solid (avg) | Svelte (avg) |
-|------------------------|--------------|-------------|--------------|
-| Conditional render     | ~0.009 ms    | ~0.025 ms   | ~0.075 ms    |
-| List operations        | ~0.001 ms    | ~0.020 ms   | ~0.021 ms    |
-| Advanced list ops      | ~0.004 ms    | ~0.033 ms   | —            |
-| Nested components       | ~0.001 ms   | ~0.001 ms   | —            |
-| Multiple signals       | ~0.014 ms    | ~0.024 ms   | —            |
-| Effect performance     | ~0.001 ms    | ~0.002 ms   | —            |
-| Signal operations      | ~0 ms        | ~0 ms       | —            |
+**Memory.** On this app Exodra retains the **least** per mounted app (~0.23 MB),
+clearly under Solid (~0.31 MB), with Svelte and React heavier (~0.46 MB) — the
+per‑node records buy cheap fine‑grained updates *and*, here, the smallest footprint.
+(Memory is app‑shaped.)
 
-(Not every micro‑benchmark implements every framework — dashes mean "not
-measured in this case.")
+## The bottom line
+
+**Exodra is top‑tier**, in the same class as Solid — the two no‑vDOM/compiled
+front‑runners, both far ahead of Svelte and React on the update‑heavy work. The
+architecture makes a deliberate trade: it **spends a little more building the tree up
+front** (wiring fine‑grained bindings; ~1.2× behind Solid on first mount) **to move
+faster on every update after** — it leads all four update axes (imperative list ops
+by a lot, declarative reconcile, the fat real‑app batch, fine‑grained reactivity),
+ties toggle, and holds the least memory. Since apps mount once and update
+continuously, that's the trade worth making. No clean sweep — Solid keeps the
+first‑mount crown — but on the work an app actually spends its life doing, Exodra is
+at or ahead of the front.
+
+## Clone + patch (a mount optimization — not exercised here)
+
+Exodra's compiler can mark a **mostly‑static repeated subtree** (a list item written
+inline in a `.map()`) with a cache key; the renderer then builds the skeleton once
+and **clones + patches only the holes** per occurrence instead of building every
+node. It narrows the first‑mount gap to Solid on static‑heavy lists. The unified
+benchmark app above is **fully dynamic** (every card has a conditional block and a
+reactive list), so nothing here is clone‑cacheable and this path doesn't fire — the
+~1.2× mount gap is the honest all‑dynamic case. See the
+[Optimizations guide](./guides/optimizations.md) for where clone+patch applies.
 
 ## Methodology
 
-- **Harness:** headless Chromium driven by Playwright, running against a Vite
-  build of the benchmark app (`packages/benchmarks`).
-- **Sampling:** each case runs many iterations after a warm‑up; we report the
-  **median** (and, for sub‑millisecond cases, the average) per run.
-- **Memory:** retained heap is measured per framework by forcing GC
-  (`--js-flags=--expose-gc`) and reading `performance.memory.usedJSHeapSize`
-  (`--enable-precise-memory-info`) before/after mounting one instance. It's a
-  directional figure, not an exact allocation count.
-- **What's measured:** the timed region is the framework's update/render work for
-  that operation — verification of the resulting DOM happens *outside* the timed
-  region.
-- **Verification:** every Exodra case asserts the DOM actually changed (e.g.
-  `Item 0` is present/absent) before its numbers count — a benchmark that renders
-  nothing is a failed benchmark, not a fast one.
+- **Harness:** headless Chromium (Playwright) over a Vite build of
+  `packages/benchmarks`. One shared A/B harness (`src/harness.ts`) drives all six
+  axes; each bench is `src/benchmarks/<axis>.tsx`. initial‑render and app‑update
+  mount the **same** app (`src/benchmarks/todo-app.tsx`) — one measures its mount, the
+  other its update.
+- **Idiomatic API per side:** for lists we measure BOTH paths — Exodra's imperative
+  ops (`move`/`insert`/…) in *list-update*, and the declarative keyed diff
+  (`bindables.children` ↔ Solid `<For>` / Svelte `{#each}` / React keyed map) in
+  *reconcile*. Conditionals via Solid `<Show>` / Svelte `{#if}` / React `&&` / Exodra
+  fragment. No framework is forced onto another's path.
+- **Fair flushing:** Svelte batches updates asynchronously — we call
+  `flush()` (`svelte/internal`) per operation so its reconcile lands in the timed
+  region (otherwise it flushes after, reading as a bogus 0 ms). React batches too —
+  we use `flushSync` per operation. Exodra and Solid are synchronous.
+- **Interleaved:** all frameworks alternate every round, order rotated, so machine
+  load is shared. GC (`--js-flags=--expose-gc`) before each sample; only the
+  operation under test is timed (setup/teardown are untimed). Full spread reported
+  (min / p25 / median / p75 / max) per framework.
+- **Memory:** retained heap via forced GC + `performance.memory.usedJSHeapSize`
+  (`--enable-precise-memory-info`) around one mounted app. Directional.
 
 ## Honest caveats
 
-- These are **our** benchmarks. A framework author's own harness always deserves
-  a skeptical eye — run it yourself.
-- Micro‑benchmarks that land under the timer's resolution are **ties**, not wins.
-  The initial‑render macro‑benchmark is the meaningful comparison.
-- Results depend on hardware, browser, and the exact versions of each framework.
-- The goal isn't "we win every line" — it's that removing virtual‑DOM diffing and
-  per‑update type dispatch shows up on real render workloads.
+- These are **our** benchmarks — a framework author's own harness deserves a
+  skeptical eye. Run it yourself.
+- We do **not** claim "fastest framework." Exodra is top‑tier alongside Solid: it
+  leads every update axis (imperative list ops by a lot, declarative reconcile, the
+  fat app‑update, reactive updates), ties toggle, retains the least memory on this
+  app, and is a close second to Solid on first mount.
+- Results depend on hardware, browser, and framework versions; the initial‑render
+  delta is noisy run‑to‑run.
 
 ## Reproduce
 
@@ -293,6 +340,12 @@ npm run bench
 ## Three Props Architecture
 
 The foundation of Exodra's performance is the Three Props Architecture:
+
+![Every prop lands in exactly one typed bucket: static, bindable, bindableList, handlers, bindableHandlers](/img/buckets.svg)
+
+At author time every prop is sorted into one of five typed buckets — the three
+below, plus `handlers` and `bindableHandlers` for events. The compiler knows the
+static/reactive/event split up front, so the renderer never dispatches on it.
 
 ### 1. Static Props
 
@@ -485,20 +538,19 @@ function DataFetcher(ctx) {
 
 ## Performance Optimizations
 
-### Static Hoisting
+Correctness never depends on any optimization. The always‑on model is already fast
+— compile‑time three‑props dispatch (no per‑prop runtime type check) and
+fine‑grained updates with no virtual DOM — and on top of that:
 
-Static content is created once and reused:
+- **Clone + patch templates.** The compiler marks a mostly‑static repeated subtree
+  with a `cacheKey`; the renderer builds its skeleton once and **clones + patches**
+  it per occurrence instead of building every node.
+- **Imperative list updates.** A `bindableList`'s `move` / `insert` / `remove` /
+  `push` do **targeted DOM operations**, not a diff.
+- **`cache:key`** lets you clone‑cache a repeated static subtree by hand.
 
-```javascript
-// Static nodes cached at compile time
-const _static1 = h('div', { 
-  static: { class: 'header' } 
-});
-```
-
-### Minimal Diffing
-
-Only reactive properties are checked for updates, static props are skipped entirely.
+See **[Optimizations](../guides/optimizations.md)** for what works out of the box,
+what you tune by hand, and what the compiler adds automatically.
 
 
 ==============================================================================
@@ -1007,6 +1059,8 @@ reconciles the **actual** DOM against the new set of child schemas **by
 reference identity**. Understanding that one rule is the key to fast, focus-safe
 lists.
 
+![Reconcile by identity: the same schema object keeps (and moves) its DOM node, a new object builds one and fires onExoMount, a removed object is torn down and fires onExoUnmount](/img/reconcile-identity.svg)
+
 There are two channels for a reactive list of children, plus one pattern you'll
 reach for constantly.
 
@@ -1102,9 +1156,11 @@ add/move/remove changes the key set and only the diff churns.
 > content changes the key, so that one row rebuilds; unrelated rows keep their
 > nodes.
 
-This "keyed list" pattern is small enough to keep as a local helper, and it's how
-the [`05-cnstra-oimdb` flagship](https://github.com/abaikov/exodra/tree/master/packages/examples/05-cnstra-oimdb)
-renders every list (see `src/app/keyed-list.ts`).
+This "keyed list" pattern is small enough to keep as a local helper. It's also
+packaged for store-backed lists: the
+[`05-cnstra-oimdb` flagship](https://github.com/abaikov/exodra/tree/master/packages/examples/05-cnstra-oimdb)
+renders every list with `@oimdb/exodra`'s `keyedChildren(source, { key, render })`,
+which wraps exactly this cache-by-key reconcile over an oimdb read + subscribe.
 
 ## Rows that own a subscription
 
@@ -1136,6 +1192,8 @@ Both compile to the same reconciler underneath — the only question is whether
 
 ==============================================================================
 # Server-Side Rendering & Hydration
+
+![SSR and hydration: the server grows the schema into HTML, the client reuses that same HTML and reconnects the reactivity wires instead of rebuilding](/img/ssr-hydration.svg)
 
 Exodra renders to an HTML string on the server and **hydrates** the existing DOM
 on the client (no teardown, no flash). Three packages cooperate:
@@ -1353,6 +1411,88 @@ script that copies it into `window.__EXODRA_STATE__`.
    `renderPersistorHydration()`.
 2. **Client:** restore reactive state with `autoHydrate()`, then `hydrate()` the
    server-rendered DOM rather than re-mounting.
+
+
+==============================================================================
+# Testing
+
+Testing Exodra components means compiling Exodra JSX in your test runner. Which
+transform to configure depends on the runner.
+
+## Vitest
+
+Vitest uses Vite, so the [Vite plugin](../tooling/vite-plugin.md) already compiles
+your components — add it to `vitest.config.ts` the same way you add it to
+`vite.config.ts`:
+
+```typescript
+// vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import exodra from '@exodra/vite-plugin';
+
+export default defineConfig({
+  plugins: [exodra()],
+  test: { environment: 'jsdom' },
+});
+```
+
+`environment: 'jsdom'` runs the tests under **[jsdom](https://github.com/jsdom/jsdom)**
+— a DOM implementation for Node — so `document` exists and you can mount and assert
+against real elements without a browser. To scope jsdom to a single file instead of
+the whole config, put the pragma at the top of that file:
+
+```tsx
+// @vitest-environment jsdom
+```
+
+Then mount and assert against the real DOM:
+
+```tsx
+import { mount } from '@exodra/dom';
+import { bindable } from '@exodra/reactivity';
+
+it('updates on setValue', () => {
+  const label = bindable('a');
+  const el = document.createElement('div');
+  const { dispose } = mount(<span bindable={{ textContent: label }} />, el);
+  expect(el.querySelector('span')?.textContent).toBe('a');
+  label.setValue('b');
+  expect(el.querySelector('span')?.textContent).toBe('b');
+  dispose();
+});
+```
+
+## Jest
+
+Jest **can** compile Exodra JSX — through `babel-jest` (its default Babel
+transform), which picks up `babel.config.js` automatically. Add the
+[Babel preset](../tooling/babel-preset.md):
+
+```javascript
+// babel.config.js
+module.exports = { presets: ['exodra'] };
+```
+
+Component tests then compile the same way Vite compiles them. Mount with
+`@exodra/dom` under jsdom — set the test environment in `jest.config.js`:
+
+```javascript
+// jest.config.js
+module.exports = { testEnvironment: 'jsdom' };
+```
+
+:::warning ts-jest / @swc/jest do not work
+`ts-jest` and `@swc/jest` do **not** run Babel plugins, so they cannot compile
+Exodra JSX. If Jest reports an unexpected token on `<`, or *"namespace tags are
+not supported"* on `bind:value`, switch the transform to `babel-jest` and add the
+preset above. (SWC users can instead use the [SWC plugin](../tooling/swc-plugin.md).)
+:::
+
+## SSR / string output
+
+For a fast, browser-free assertion you can render a schema to HTML with
+[`@exodra/string`](../api/string.md) and assert on the string instead of mounting
+into a DOM.
 
 
 ==============================================================================
@@ -2358,10 +2498,12 @@ A `TExoRouter` exposes reactive state and navigation methods:
 | --- | --- |
 | `routes` | The route table. |
 | `location` | A bindable of the current `{ pathname, search, hash, href }`. |
-| `match` | A bindable of the current `TExoRouteMatch \| undefined`. |
+| `match` | A bindable of the current `TExoRouteMatch \| undefined` (the leaf). |
+| `matches` | A bindable of the matched branch, root → leaf (`TExoRouteMatch[]`). |
 | `navigationState` | A bindable of `'idle' \| 'loading' \| 'submitting'`. |
 | `getLocation()` | Current location value. |
-| `getMatch()` | Current match value. |
+| `getMatch()` | Current (leaf) match value. |
+| `getMatches()` | The full matched branch, root → leaf. |
 | `navigate(to, options?)` | Navigate; returns `Promise<TExoLocation>`. |
 | `setPathname(pathname, options?)` | Navigate keeping the current search/hash. |
 | `setSearch(search, options?)` | Replace the search string/object. |
@@ -2375,13 +2517,68 @@ A `TExoRouter` exposes reactive state and navigation methods:
 ### navigate()
 
 ```typescript
-router.navigate(to: string, options?: { replace?: boolean }): Promise<TExoLocation>;
+router.navigate(
+  to: string,
+  options?: { replace?: boolean; state?: unknown }
+): Promise<TExoLocation>;
 ```
 
 ```javascript
 await router.navigate('/users/123');
 await router.navigate('/login', { replace: true });
+await router.navigate('/checkout', { state: { from: 'cart' } }); // see "Location state"
 ```
+
+### Route `handle` and the match chain
+
+Attach arbitrary static metadata to a route with `handle` — the equivalent of
+React Router's route `handle`. It surfaces on **every** entry of the matched
+branch, so `getMatches()` (root → leaf) is your breadcrumb / title / layout-flag
+source. `getMatch()` returns just the leaf.
+
+```javascript
+const routes = [
+  { path: '/', component: Root, handle: { crumb: 'Home' }, children: [
+    { path: 'users', component: Users, handle: { crumb: 'Users' }, children: [
+      { path: ':id', component: User, handle: { crumb: 'Profile' } },
+    ]},
+  ]},
+];
+
+// Breadcrumbs straight off the branch. Each match also carries its own resolved
+// `pathname` (params substituted) and the shared `params`.
+const crumbs = derive(router.matches, matches =>
+  matches.map(m => ({ label: m.handle.crumb, href: m.pathname }))
+);
+// at /users/42 → [{Home, /}, {Users, /users}, {Profile, /users/42}]
+```
+
+Declaratively, pass `handle` on `<Route>`:
+
+```jsx
+<Route path="/users" component={Users} handle={{ crumb: 'Users' }} />
+```
+
+`handle` is typed `unknown` — cast it to your own metadata shape at the read site.
+
+### Location state
+
+Carry per-navigation data that should **not** live in the URL — a "came from"
+hint, a scroll target, a small object you don't want to serialize into query
+params. It's stored in the History API, so it survives back/forward, and is read
+back on `location.state`:
+
+```javascript
+await router.navigate('/checkout', { state: { from: 'cart' } });
+router.getLocation().state; // { from: 'cart' }
+
+// Or on a Link:
+// <Link to="/checkout" state={{ from: 'cart' }}>Checkout</Link>
+```
+
+> Location `state` is lost on a hard reload and is not shareable (not in the
+> URL). If you need state that survives reloads or is linkable, use query params
+> (`setQuery` / `bindQuery`) instead. `state` is typed `unknown`.
 
 ### Reacting to location
 
@@ -2470,9 +2667,11 @@ import { Link } from '@exodra/router';
 
 <Link static={{ to: '/', children: 'Home' }} />
 <Link static={{ to: '/about', replace: true, children: 'About' }} />
+<Link static={{ to: '/checkout', state: { from: 'cart' }, children: 'Checkout' }} />
 ```
 
-There is **no** `activeClass` prop — derive an active class from
+`replace` (History replace) and `state` (per-entry [location state](#location-state))
+are optional. There is **no** `activeClass` prop — derive an active class from
 `router.location` (see [Reacting to location](#reacting-to-location)).
 
 ## useRouter()
@@ -3275,17 +3474,57 @@ items.map(item =>
 
 ## Two-way binding directives
 
-`bind:value` / `bind:checked` compile to a `mergeAttrs(...)` call plus the
-appropriate `@exodra/forms` helper (picked from the element / type at compile
-time, so only the used variants are imported):
+`bind:value` / `bind:checked` compile to a `mergeAttrs(...)` call (imported from
+[`@exodra/attrs`](../api/attrs.md)) plus the appropriate `@exodra/forms` helper
+(picked from the element / type at compile time, so only the used variants are
+imported):
 
 ```jsx
 // Input
 <input bind:value={inputValue} />
 
 // Output
+import { mergeAttrs } from '@exodra/attrs';
+import { bindText } from '@exodra/forms';
 h('input', mergeAttrs({}, bindText(inputValue)))
 ```
+
+## `props={}` — spread a bucket object
+
+`props={obj}` spreads a full bucket object (the schema shape:
+`static` / `bindables` / `bindableLists` / `handlers` / `bindableHandlers`) into
+the element. The compiler does the **dumbest, most predictable** thing — a plain
+JS object spread, no implicit merge:
+
+```jsx
+// Input
+<button props={base} static={{ class: 'btn' }} handlers={{ onClick: f }} />
+
+// Output — spread first (the base), inline buckets after (they win)
+h('button', { ...base, static: { class: 'btn' }, handlers: { onClick: f } })
+```
+
+- **Plain spread, one level.** An inline bucket **replaces** that whole
+  top-level field of the spread object — `static` overrides `base.static`
+  wholesale, it does not descend into it. That's exactly JS spread semantics, so
+  there is nothing hidden to learn.
+- **The object is the schema shape** (plural buckets), so helpers that return it
+  drop straight in: `props={bindText(name)}` (`@exodra/forms`),
+  `props={bindField(patch, 'title')}` (`@oimdb/exodra`). This is the Exodra
+  "prop-getter" pattern.
+- **Pick your own merge strategy** — because you build the object yourself. Want
+  two-level composition? Ask for it explicitly:
+  `props={mergeAttrs(base, getInputProps())}`.
+- **`exo:schema` still wins** (it replaces everything); combined with `bind:`,
+  the spread object becomes the `mergeAttrs` base.
+- **Watch children + a helper's `static`.** JSX children fold into `static.children`,
+  creating an inline `static` bucket — which then replaces a helper's `static`
+  wholesale. Keep `static` out of a helper used with children, or merge it
+  yourself. (Real helpers usually return `handlers`/`bindables`, which don't
+  collide.)
+
+An element that carries a `props={}` spread is never static-hoisted (the spread
+is a runtime value).
 
 ## Options
 
@@ -3304,6 +3543,261 @@ There is no `optimize` option.
   [@exodra/babel-plugin-jsx](https://www.npmjs.com/package/@exodra/babel-plugin-jsx)
 - GitHub:
   [packages/babel-plugin-jsx](https://github.com/abaikov/exodra/tree/master/packages/babel-plugin-jsx)
+
+
+==============================================================================
+# Babel Preset
+
+`babel-preset-exodra` is the one-line way to compile Exodra JSX with Babel. It
+bundles the whole pipeline — JSX syntax (with the namespaced `bind:` / `cache:`
+directives), the [Babel plugin](./babel-plugin.md), and
+`@babel/preset-typescript` for `.ts` / `.tsx` — so you don't assemble those three
+by hand.
+
+It is the integration hub: [Jest](../guides/testing.md), webpack, Parcel, and the
+[bundler plugins](./bundlers.md) for esbuild / Rollup / Bun all run through it, so
+every toolchain compiles Exodra JSX **identically**.
+
+## Installation
+
+```bash
+npm install --save-dev babel-preset-exodra
+```
+
+## Usage
+
+```javascript
+// babel.config.js
+module.exports = {
+  presets: ['exodra'],
+};
+```
+
+Babel resolves the `exodra` shorthand to `babel-preset-exodra`.
+
+### Options
+
+```javascript
+// babel.config.js
+module.exports = {
+  presets: [
+    ['exodra', {
+      importSource: '@exodra/core', // where auto-imported h/text come from
+      hoistStatic: true,            // compile-time clone-cache for static subtrees
+      typescript: true,             // include preset-typescript (turn off if TS is handled elsewhere)
+    }],
+  ],
+};
+```
+
+## Programmatic runner
+
+The preset also exports the single function every bundler plugin calls, so there
+is one copy of the pipeline **and** its invocation:
+
+```javascript
+import { transformExodraJsx } from 'babel-preset-exodra';
+
+const result = await transformExodraJsx(sourceCode, '/abs/path/File.tsx');
+// -> { code, map } | null   (typescript defaults on for .tsx, off otherwise)
+```
+
+## Not with ts-jest / @swc/jest
+
+`ts-jest` and `@swc/jest` do **not** run Babel plugins, so they cannot compile
+Exodra JSX. Use `babel-jest` with this preset (see [Testing](../guides/testing.md)),
+or the native [SWC plugin](./swc-plugin.md).
+
+
+==============================================================================
+# Bundlers & build tools
+
+Exodra JSX is compiled by a **Babel** plugin, so any tool that can run Babel can
+compile it — through the [Babel preset](./babel-preset.md). Tools that do **not**
+run Babel plugins (esbuild, SWC, Bun's native transpiler) each have a dedicated
+plugin that hands the file to Babel; those wrap the same preset, so every path
+compiles identically.
+
+| Tool | How | Package |
+| --- | --- | --- |
+| Vite / Vitest | plugin | [`@exodra/vite-plugin`](./vite-plugin.md) |
+| Jest | `babel-jest` + preset | [`babel-preset-exodra`](./babel-preset.md) |
+| esbuild / tsup | plugin | `esbuild-plugin-exodra` |
+| Rollup | plugin | `rollup-plugin-exodra` |
+| Bun | plugin | `bun-plugin-exodra` |
+| webpack | `babel-loader` + preset | *(no package — see below)* |
+| Parcel | `.babelrc` + preset | *(no package — see below)* |
+| SWC / Next.js | native Wasm plugin | [`swc-plugin-exodra`](./swc-plugin.md) |
+
+## Vite
+
+See [Vite Plugin](./vite-plugin.md). It also adds HMR and file-based routing.
+
+## esbuild / tsup
+
+```javascript
+import * as esbuild from 'esbuild';
+import { exodra } from 'esbuild-plugin-exodra';
+
+await esbuild.build({
+  entryPoints: ['src/main.tsx'],
+  bundle: true,
+  outfile: 'dist/main.js',
+  plugins: [exodra()],
+});
+```
+
+With tsup:
+
+```javascript
+// tsup.config.ts
+import { defineConfig } from 'tsup';
+import { exodra } from 'esbuild-plugin-exodra';
+
+export default defineConfig({
+  entry: ['src/main.tsx'],
+  esbuildPlugins: [exodra()],
+});
+```
+
+## Rollup
+
+```javascript
+// rollup.config.js
+import { exodra } from 'rollup-plugin-exodra';
+
+export default {
+  input: 'src/main.tsx',
+  output: { dir: 'dist', format: 'esm' },
+  plugins: [exodra()],
+};
+```
+
+## Bun
+
+```javascript
+import { exodra } from 'bun-plugin-exodra';
+
+await Bun.build({
+  entrypoints: ['./src/main.tsx'],
+  outdir: './dist',
+  plugins: [exodra()],
+});
+```
+
+Each plugin accepts `{ filter?, importSource? }` (`include` instead of `filter`
+for Rollup).
+
+## webpack
+
+No package needed — `babel-loader` runs the preset:
+
+```javascript
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.[jt]sx$/,
+        use: { loader: 'babel-loader', options: { presets: ['exodra'] } },
+      },
+    ],
+  },
+  resolve: { extensions: ['.js', '.jsx', '.ts', '.tsx'] },
+};
+```
+
+## Parcel
+
+Parcel reads Babel config automatically:
+
+```json
+// .babelrc
+{ "presets": ["exodra"] }
+```
+
+## SWC / Next.js
+
+SWC does not run Babel plugins. Use the native [SWC plugin](./swc-plugin.md).
+
+
+==============================================================================
+# SWC Plugin
+
+`swc-plugin-exodra` is a native Rust/Wasm SWC plugin that compiles Exodra JSX for
+SWC-based toolchains — Next.js's default compiler, `@swc/jest`, `swc-loader` —
+which cannot run Babel plugins. It is a port of the [Babel plugin](./babel-plugin.md).
+
+## Parity
+
+Full parity with the Babel plugin, verified by compiling the same inputs through
+both and comparing output:
+
+- intrinsic + component elements → `h("tag" | Comp, { ...buckets })`
+- the five typed buckets and `props={...}` spreads
+- children → `static.children` (text → `text("…")`)
+- `bind:value` / `bind:checked` → `mergeAttrs(base, bindText|bindNumber|bindChecked|bindSelect(…))`
+- `cacheKey` / `cache:key` → the 3rd arg of `h()`
+- fragments: static → array; `<>{items}</>` → `h(Fragment, { bindableLists })`
+- compile-time static hoisting (a shared `Symbol()` cacheKey for static elements
+  inside a loop / `.map()`)
+- shadow-safe auto-imports (a local `text` / `h` falls back to a `_text` uid)
+- strict flat-attribute errors, with a code frame
+
+Emitted code is identical up to SWC's own codegen formatting (arrow spacing,
+quote style).
+
+## Installation
+
+```bash
+npm install --save-dev swc-plugin-exodra
+```
+
+The published package ships a prebuilt `.wasm`. To build from source you need the
+Rust toolchain and the `wasm32-wasip1` target:
+
+```bash
+rustup target add wasm32-wasip1
+npm run build
+```
+
+## Usage
+
+### .swcrc / @swc/core
+
+```jsonc
+{
+  "jsc": {
+    "parser": { "syntax": "typescript", "tsx": true },
+    "experimental": {
+      "plugins": [["swc-plugin-exodra", {}]]
+    }
+  }
+}
+```
+
+### Next.js
+
+```javascript
+// next.config.js
+module.exports = {
+  experimental: {
+    swcPlugins: [['swc-plugin-exodra', {}]],
+  },
+};
+```
+
+## Version compatibility
+
+An SWC Wasm plugin is tied to the `swc_core` version it was built against, which
+must be compatible with your `@swc/core` / Next.js version. A mismatch fails to
+load with *"ensure the version of `swc_core` … is compatible with the host
+runtime"*. Rebuild (or upgrade) the plugin against a matching `swc_core` when you
+upgrade SWC.
+
+If you would rather not manage that, use the [Babel pipeline](./babel-preset.md):
+under Next.js, adding a `babel.config.js` with `presets: ['exodra']` opts the
+project into Babel and disables the SWC transform.
 
 
 ==============================================================================
@@ -3411,176 +3905,113 @@ Beyond the main API, the package exports:
 ==============================================================================
 # Profiler
 
-[`@exodra/profiler`](https://www.npmjs.com/package/@exodra/profiler) is
-performance profiling for Exodra applications, similar to the React Profiler. It
-works by externally patching classes (the `ExoNode` class, or any class you pass
-it) to time their methods — there is no built-in profiling in the core, it is
-added at runtime when you import this package.
+[`@exodra/dom-profiler`](https://www.npmjs.com/package/@exodra/dom-profiler)
+profiles the Exodra **DOM renderer** (`ExoNodeDom`): it patches the renderer's
+methods (`buildTree`, `updateChildren`, `setupBindings`, `applyStatic`, …) to
+record how long each takes and how often it runs. There is no profiling built into
+the core — it is added at runtime when you import this package, and removed again
+when you `stop()`.
+
+It works **wherever `ExoNodeDom` runs** — the browser, [jsdom](../guides/testing.md),
+or plain Node with a DOM shim — because timing uses `performance.now()` with a
+`Date.now()` fallback and it needs no browser‑only APIs.
 
 ## Installation
 
 ```bash
-npm install --save-dev @exodra/profiler
+npm install --save-dev @exodra/dom-profiler
 ```
-
-## What it provides
-
-- **`Profiler` component** — wrap part of your tree to measure it.
-- **`profileExoNode` / `ExodraProfiler`** — patch the `ExoNode` class to collect metrics.
-- **`profileClass` / `ClassProfiler`** — profile any class's methods.
-- **Chrome DevTools integration** — a global devtools hook is installed in development.
 
 ## Basic usage
 
-`startProfiling()` / `stopProfiling()` drive the shared `profiler` instance. Wrap
-specific subtrees with `withProfiler` or the `Profiler` component.
+```ts
+import { profileDom } from '@exodra/dom-profiler';
+import { mount } from '@exodra/dom';
 
-```tsx
-import { Profiler, withProfiler, startProfiling, stopProfiling } from '@exodra/profiler';
+const profiler = profileDom();      // patch ExoNodeDom (global, reversible)
 
-// Begin recording on the shared profiler instance
-startProfiling();
+mount(app, container);              // exercise the renderer
 
-function App() {
-  return withProfiler('App', (
-    <div static={{ class: 'app' }}>
-      <Profiler
-        static={{
-          id: 'MainContent',
-          onRender: (id, phase, duration) => {
-            console.log(`${id} (${phase}) took ${duration}ms`);
-          },
-          children: <ExpensiveComponent />,
-        }}
-      />
-    </div>
-  ));
+console.table(profiler.stop());     // per-method report; also restores the class
+```
+
+`profileDom` patches `ExoNodeDom` **globally** (every instance is profiled) and
+**reversibly** — `stop()` restores the original methods.
+
+- `getReport()` — aggregated timings so far, heaviest first.
+- `reset()` — clear collected samples, keep profiling active.
+- `stop()` — restore `ExoNodeDom` and return the final report.
+
+### Focusing on specific methods
+
+```ts
+const profiler = profileDom({
+  methods: ['buildTree', 'updateChildren', 'setupBindings'], // allow-list
+  // excludeMethods: ['createDomElement'],                    // or deny-list
+});
+```
+
+### Under jsdom
+
+Since it only uses `performance.now()`/`Date.now()`, it profiles the renderer the
+same way inside a jsdom test (or any Node DOM environment):
+
+```ts
+// @vitest-environment jsdom
+import { profileDom } from '@exodra/dom-profiler';
+import { mount } from '@exodra/dom';
+
+const profiler = profileDom();
+const container = document.createElement('div');
+document.body.appendChild(container);
+mount(app, container);
+console.table(profiler.stop());
+```
+
+## Report format
+
+`getReport()` / `stop()` return one entry per profiled method, sorted by total
+time:
+
+```ts
+interface TExoDomProfileEntry {
+  method: string;   // e.g. 'buildTree'
+  count: number;    // how many times it ran
+  totalMs: number;  // total wall time
+  avgMs: number;    // totalMs / count
+  maxMs: number;    // slowest single call
 }
-
-// Stop and read the report (may be null if nothing was recorded)
-const report = stopProfiling();
-if (report) {
-  console.table(report.components);
-}
-```
-
-### `withProfiler(id, component, onRender?)`
-
-Wraps a schema (or list of schemas) in the `Profiler` component. If `onRender` is
-omitted, timings are logged to the console.
-
-```tsx
-import { withProfiler } from '@exodra/profiler';
-
-const profiled = withProfiler('Header', <Header />, (id, phase, duration) => {
-  console.log(`${id}: ${phase} ${duration.toFixed(2)}ms`);
-});
-```
-
-### `Profiler` component
-
-`Profiler` reads `id`, `onRender`, and `children` from its `static` bucket. The
-`onRender` callback receives `(id, phase, duration)`, where `phase` is `'render'`
-or `'unmount'`. With no `onRender`, the children pass through unprofiled.
-
-```tsx
-<Profiler
-  static={{
-    id: 'TodoList',
-    onRender: (id, phase, duration) => console.log(id, phase, duration),
-    children: <TodoList />,
-  }}
-/>
-```
-
-## Profiling the ExoNode class
-
-To time `ExoNode` lifecycle methods (`init`, `dispose`, `setChildren`) across the
-whole app, patch the `ExoNode` class. Once patched, profiling cannot be removed
-without restarting the app.
-
-```typescript
-import { profileExoNode, ExodraProfiler } from '@exodra/profiler';
-import { ExoNode } from '@exodra/core';
-
-// Low-level: receive raw metrics for each lifecycle call
-profileExoNode(ExoNode, (metrics) => {
-  console.log(metrics.componentId, metrics.phase, metrics.duration);
-});
-
-// Or use ExodraProfiler to aggregate into a report
-const appProfiler = new ExodraProfiler(ExoNode);
-appProfiler.start();
-// ...interact with the app...
-const report = appProfiler.stop(); // also console.table()s the report
-```
-
-`startProfiling(callback)` can also patch `ExoNode` directly when given a callback:
-
-```typescript
-import { startProfiling } from '@exodra/profiler';
-
-startProfiling((metrics) => {
-  console.log(metrics.phase, metrics.duration);
-});
 ```
 
 ## Profiling any class
 
-`profileClass` patches the prototype methods of any class. `ClassProfiler` does
-the same for multiple classes and aggregates the results.
+The underlying `profileClass` patches the prototype methods of **any** class and
+returns a `restore()` — use it to profile your own services:
 
-```typescript
-import { profileClass, ClassProfiler } from '@exodra/profiler';
+```ts
+import { profileClass } from '@exodra/dom-profiler';
 
-profileClass(MyService, (metrics) => {
-  console.log(`${metrics.className}.${metrics.method}: ${metrics.duration}ms`);
+const restore = profileClass(MyService, (sample) => {
+  console.log(`${sample.className}.${sample.method}: ${sample.durationMs}ms`);
 }, {
   methods: ['load', 'save'],    // optional allow-list
   excludeMethods: ['toString'], // optional deny-list
-  includePrivate: false,        // skip `_`-prefixed methods (default)
 });
 
-const batch = new ClassProfiler();
-batch.profileClasses([ServiceA, ServiceB]);
-batch.start();
-// ...
-const summary = batch.stop();   // ProfileMetrics[]
-console.log(batch.getReport()); // { 'ClassA.method': { count, totalTime, avgTime } }
+// ...exercise MyService...
+restore(); // put the original methods back
 ```
 
-## Chrome DevTools integration
+## Deprecated: `@exodra/profiler`
 
-In development (`NODE_ENV !== 'production'`), importing this package installs a
-`window.__EXODRA_DEVTOOLS_HOOK__` hook exposing `start` / `stop` / `getReport`.
-Use the Performance tab to record while interacting with your app.
-
-## Report format
-
-```typescript
-interface ProfileReport {
-  totalDuration: number;   // Total profiling time (ms)
-  componentCount: number;  // Unique components
-  totalRenders: number;    // Total recorded lifecycle calls
-  components: Array<{
-    id: string;            // Component identifier
-    renders: number;       // Recorded calls
-    totalTime: number;     // Total time spent
-    averageTime: number;   // Average time
-    percentOfTotal: number;// % of total time
-    averageDepth: number;  // Average tree depth
-    averageChildren: number;// Average child count
-  }>;
-}
-```
-
-> There is **no** `ProfilerNode` class. Profiling is applied by patching an
-> existing class with `profileExoNode` / `profileClass`, not by subclassing.
-> `getProfilingReport()` currently returns `null` (snapshot-without-stop is not
-> implemented). The `enableProfiling` / `disableProfiling` / `isProfiling` /
-> `createProfilingMiddleware` middleware helpers are deprecated.
+The older
+[`@exodra/profiler`](https://www.npmjs.com/package/@exodra/profiler) package is
+**deprecated**. It profiled the per‑node `ExoNode` base class, which has been
+removed — the DOM and string renderers no longer share a base. Its generic
+`profileClass` still works on any class, but use **`@exodra/dom-profiler`** to
+profile the live DOM renderer.
 
 ## Links
 
-- npm: [`@exodra/profiler`](https://www.npmjs.com/package/@exodra/profiler)
-- GitHub: [`packages/profiler`](https://github.com/abaikov/exodra/tree/master/packages/profiler)
+- npm: [`@exodra/dom-profiler`](https://www.npmjs.com/package/@exodra/dom-profiler)
+- GitHub: [`packages/dom-profiler`](https://github.com/abaikov/exodra/tree/master/packages/dom-profiler)

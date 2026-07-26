@@ -18,6 +18,9 @@ import {
     deleteTaskRequested,
     addCommentRequested,
     archiveProjectRequested,
+    refUpsertRequested,
+    refPatchRequested,
+    refRemoveRequested,
     taskRejected,
     commentRejected,
     taskPersistRejected,
@@ -39,9 +42,10 @@ export interface WorkspaceRuntime {
     deleteTask(id: string): void;
     addComment(taskId: string, authorId: string, body: string): void;
     archiveProject(id: string): void;
-    // Reference-data CRUD (tags, labels, members, teams, projects, milestones).
-    // Reactive direct store writes — the orchestrated TASK lifecycle goes through
-    // the CNS above; reference data is plain reactive editing.
+    // Reference-data CRUD (tags, labels, members, teams, projects, milestones)
+    // and simple task-field edits. These carry no saga/validation, but they still
+    // go through the CNS (ref* commands → reference neuron) — NOT direct store
+    // writes — so every mutation in the app commits at the one CNS drain point.
     createEntity(name: EntityName, entity: Record<string, unknown>): void;
     patchEntity(name: EntityName, id: string, patch: Record<string, unknown>): void;
     removeEntity(name: EntityName, id: string): void;
@@ -54,6 +58,15 @@ export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
     if (snapshot) loadSnapshot(oimdbInstance, snapshot);
     const { cns } = createWorkspaceCns(oimdbInstance);
     const error = bindable('');
+
+    // cnstra 2.5.0: the ONE place the store commits. Every mutation in this app is
+    // a stimulation (there are no direct oimdb writes from the UI — see the ref*
+    // dispatchers below), and the store's queue has NO scheduler, so nothing
+    // flushes on its own. When a stimulation turn drains — the CNS settled,
+    // queueLength 0, no pending/active activations — we flush the queue once, so
+    // the whole command (however many neurons it rippled through, including the
+    // async persist saga's re-stimulation) commits on a single synchronous tick.
+    cns.addDrainListener(() => oimdbInstance.queue.flush());
 
     const send = (signal: Parameters<typeof cns.stimulate>[0]) => {
         error.setValue('');
@@ -77,10 +90,11 @@ export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
         archiveProject: id =>
             send(archiveProjectRequested.createSignal({ id })),
         createEntity: (name, entity) =>
-            oimdbInstance[name].collection.upsertOne(entity as never),
+            send(refUpsertRequested.createSignal({ name, entity })),
         patchEntity: (name, id, patch) =>
-            oimdbInstance[name].collection.upsertOneByPk(id, patch as never),
-        removeEntity: (name, id) => oimdbInstance[name].collection.removeOneByPk(id),
+            send(refPatchRequested.createSignal({ name, id, patch })),
+        removeEntity: (name, id) =>
+            send(refRemoveRequested.createSignal({ name, id })),
         bindErrors() {
             // Every domain emits its OWN rejection collateral; the UI cares about
             // all of them, so watch the set.

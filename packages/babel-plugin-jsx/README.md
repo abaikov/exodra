@@ -50,6 +50,13 @@ export default defineConfig({
 });
 ```
 
+### Testing with Jest
+
+For Jest (`babel-jest`), use [`babel-preset-exodra`](../babel-preset-exodra),
+which bundles this plugin, JSX syntax, and `@babel/preset-typescript` into a
+one-line `babel.config.js`. `ts-jest`/`@swc/jest` do not run Babel plugins and so
+cannot compile Exodra JSX.
+
 ## Features
 
 ### Typed-Bucket Architecture

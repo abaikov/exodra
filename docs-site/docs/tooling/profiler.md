@@ -4,176 +4,113 @@ title: Profiler
 
 # Profiler
 
-[`@exodra/profiler`](https://www.npmjs.com/package/@exodra/profiler) is
-performance profiling for Exodra applications, similar to the React Profiler. It
-works by externally patching classes (the `ExoNode` class, or any class you pass
-it) to time their methods — there is no built-in profiling in the core, it is
-added at runtime when you import this package.
+[`@exodra/dom-profiler`](https://www.npmjs.com/package/@exodra/dom-profiler)
+profiles the Exodra **DOM renderer** (`ExoNodeDom`): it patches the renderer's
+methods (`buildTree`, `updateChildren`, `setupBindings`, `applyStatic`, …) to
+record how long each takes and how often it runs. There is no profiling built into
+the core — it is added at runtime when you import this package, and removed again
+when you `stop()`.
+
+It works **wherever `ExoNodeDom` runs** — the browser, [jsdom](../guides/testing.md),
+or plain Node with a DOM shim — because timing uses `performance.now()` with a
+`Date.now()` fallback and it needs no browser‑only APIs.
 
 ## Installation
 
 ```bash
-npm install --save-dev @exodra/profiler
+npm install --save-dev @exodra/dom-profiler
 ```
-
-## What it provides
-
-- **`Profiler` component** — wrap part of your tree to measure it.
-- **`profileExoNode` / `ExodraProfiler`** — patch the `ExoNode` class to collect metrics.
-- **`profileClass` / `ClassProfiler`** — profile any class's methods.
-- **Chrome DevTools integration** — a global devtools hook is installed in development.
 
 ## Basic usage
 
-`startProfiling()` / `stopProfiling()` drive the shared `profiler` instance. Wrap
-specific subtrees with `withProfiler` or the `Profiler` component.
+```ts
+import { profileDom } from '@exodra/dom-profiler';
+import { mount } from '@exodra/dom';
 
-```tsx
-import { Profiler, withProfiler, startProfiling, stopProfiling } from '@exodra/profiler';
+const profiler = profileDom();      // patch ExoNodeDom (global, reversible)
 
-// Begin recording on the shared profiler instance
-startProfiling();
+mount(app, container);              // exercise the renderer
 
-function App() {
-  return withProfiler('App', (
-    <div static={{ class: 'app' }}>
-      <Profiler
-        static={{
-          id: 'MainContent',
-          onRender: (id, phase, duration) => {
-            console.log(`${id} (${phase}) took ${duration}ms`);
-          },
-          children: <ExpensiveComponent />,
-        }}
-      />
-    </div>
-  ));
+console.table(profiler.stop());     // per-method report; also restores the class
+```
+
+`profileDom` patches `ExoNodeDom` **globally** (every instance is profiled) and
+**reversibly** — `stop()` restores the original methods.
+
+- `getReport()` — aggregated timings so far, heaviest first.
+- `reset()` — clear collected samples, keep profiling active.
+- `stop()` — restore `ExoNodeDom` and return the final report.
+
+### Focusing on specific methods
+
+```ts
+const profiler = profileDom({
+  methods: ['buildTree', 'updateChildren', 'setupBindings'], // allow-list
+  // excludeMethods: ['createDomElement'],                    // or deny-list
+});
+```
+
+### Under jsdom
+
+Since it only uses `performance.now()`/`Date.now()`, it profiles the renderer the
+same way inside a jsdom test (or any Node DOM environment):
+
+```ts
+// @vitest-environment jsdom
+import { profileDom } from '@exodra/dom-profiler';
+import { mount } from '@exodra/dom';
+
+const profiler = profileDom();
+const container = document.createElement('div');
+document.body.appendChild(container);
+mount(app, container);
+console.table(profiler.stop());
+```
+
+## Report format
+
+`getReport()` / `stop()` return one entry per profiled method, sorted by total
+time:
+
+```ts
+interface TExoDomProfileEntry {
+  method: string;   // e.g. 'buildTree'
+  count: number;    // how many times it ran
+  totalMs: number;  // total wall time
+  avgMs: number;    // totalMs / count
+  maxMs: number;    // slowest single call
 }
-
-// Stop and read the report (may be null if nothing was recorded)
-const report = stopProfiling();
-if (report) {
-  console.table(report.components);
-}
-```
-
-### `withProfiler(id, component, onRender?)`
-
-Wraps a schema (or list of schemas) in the `Profiler` component. If `onRender` is
-omitted, timings are logged to the console.
-
-```tsx
-import { withProfiler } from '@exodra/profiler';
-
-const profiled = withProfiler('Header', <Header />, (id, phase, duration) => {
-  console.log(`${id}: ${phase} ${duration.toFixed(2)}ms`);
-});
-```
-
-### `Profiler` component
-
-`Profiler` reads `id`, `onRender`, and `children` from its `static` bucket. The
-`onRender` callback receives `(id, phase, duration)`, where `phase` is `'render'`
-or `'unmount'`. With no `onRender`, the children pass through unprofiled.
-
-```tsx
-<Profiler
-  static={{
-    id: 'TodoList',
-    onRender: (id, phase, duration) => console.log(id, phase, duration),
-    children: <TodoList />,
-  }}
-/>
-```
-
-## Profiling the ExoNode class
-
-To time `ExoNode` lifecycle methods (`init`, `dispose`, `setChildren`) across the
-whole app, patch the `ExoNode` class. Once patched, profiling cannot be removed
-without restarting the app.
-
-```typescript
-import { profileExoNode, ExodraProfiler } from '@exodra/profiler';
-import { ExoNode } from '@exodra/core';
-
-// Low-level: receive raw metrics for each lifecycle call
-profileExoNode(ExoNode, (metrics) => {
-  console.log(metrics.componentId, metrics.phase, metrics.duration);
-});
-
-// Or use ExodraProfiler to aggregate into a report
-const appProfiler = new ExodraProfiler(ExoNode);
-appProfiler.start();
-// ...interact with the app...
-const report = appProfiler.stop(); // also console.table()s the report
-```
-
-`startProfiling(callback)` can also patch `ExoNode` directly when given a callback:
-
-```typescript
-import { startProfiling } from '@exodra/profiler';
-
-startProfiling((metrics) => {
-  console.log(metrics.phase, metrics.duration);
-});
 ```
 
 ## Profiling any class
 
-`profileClass` patches the prototype methods of any class. `ClassProfiler` does
-the same for multiple classes and aggregates the results.
+The underlying `profileClass` patches the prototype methods of **any** class and
+returns a `restore()` — use it to profile your own services:
 
-```typescript
-import { profileClass, ClassProfiler } from '@exodra/profiler';
+```ts
+import { profileClass } from '@exodra/dom-profiler';
 
-profileClass(MyService, (metrics) => {
-  console.log(`${metrics.className}.${metrics.method}: ${metrics.duration}ms`);
+const restore = profileClass(MyService, (sample) => {
+  console.log(`${sample.className}.${sample.method}: ${sample.durationMs}ms`);
 }, {
   methods: ['load', 'save'],    // optional allow-list
   excludeMethods: ['toString'], // optional deny-list
-  includePrivate: false,        // skip `_`-prefixed methods (default)
 });
 
-const batch = new ClassProfiler();
-batch.profileClasses([ServiceA, ServiceB]);
-batch.start();
-// ...
-const summary = batch.stop();   // ProfileMetrics[]
-console.log(batch.getReport()); // { 'ClassA.method': { count, totalTime, avgTime } }
+// ...exercise MyService...
+restore(); // put the original methods back
 ```
 
-## Chrome DevTools integration
+## Deprecated: `@exodra/profiler`
 
-In development (`NODE_ENV !== 'production'`), importing this package installs a
-`window.__EXODRA_DEVTOOLS_HOOK__` hook exposing `start` / `stop` / `getReport`.
-Use the Performance tab to record while interacting with your app.
-
-## Report format
-
-```typescript
-interface ProfileReport {
-  totalDuration: number;   // Total profiling time (ms)
-  componentCount: number;  // Unique components
-  totalRenders: number;    // Total recorded lifecycle calls
-  components: Array<{
-    id: string;            // Component identifier
-    renders: number;       // Recorded calls
-    totalTime: number;     // Total time spent
-    averageTime: number;   // Average time
-    percentOfTotal: number;// % of total time
-    averageDepth: number;  // Average tree depth
-    averageChildren: number;// Average child count
-  }>;
-}
-```
-
-> There is **no** `ProfilerNode` class. Profiling is applied by patching an
-> existing class with `profileExoNode` / `profileClass`, not by subclassing.
-> `getProfilingReport()` currently returns `null` (snapshot-without-stop is not
-> implemented). The `enableProfiling` / `disableProfiling` / `isProfiling` /
-> `createProfilingMiddleware` middleware helpers are deprecated.
+The older
+[`@exodra/profiler`](https://www.npmjs.com/package/@exodra/profiler) package is
+**deprecated**. It profiled the per‑node `ExoNode` base class, which has been
+removed — the DOM and string renderers no longer share a base. Its generic
+`profileClass` still works on any class, but use **`@exodra/dom-profiler`** to
+profile the live DOM renderer.
 
 ## Links
 
-- npm: [`@exodra/profiler`](https://www.npmjs.com/package/@exodra/profiler)
-- GitHub: [`packages/profiler`](https://github.com/abaikov/exodra/tree/master/packages/profiler)
+- npm: [`@exodra/dom-profiler`](https://www.npmjs.com/package/@exodra/dom-profiler)
+- GitHub: [`packages/dom-profiler`](https://github.com/abaikov/exodra/tree/master/packages/dom-profiler)

@@ -1,4 +1,10 @@
 import type { TExoWritableBindable } from '@exodra/reactivity-types';
+import {
+    __DEV__,
+    beginFlush,
+    endFlush,
+    warnWriteDuringFlush,
+} from './dev-flush-guard';
 
 export function createExoBindable<TValue, TEvent = TValue>(
     initialValue: TValue,
@@ -13,6 +19,7 @@ export function createExoBindable<TValue, TEvent = TValue>(
             return value;
         },
         setValue(nextValue, event?) {
+            if (__DEV__) warnWriteDuringFlush('bindable.setValue');
             const previousValue = value;
             // Dedupe no-op state writes: if the value is unchanged and the caller
             // did not supply an explicit event, there is nothing to propagate —
@@ -26,9 +33,14 @@ export function createExoBindable<TValue, TEvent = TValue>(
             // Only create event if we have subscribers
             if (subscribers.size > 0) {
                 const evt = event ?? createEvent(nextValue, previousValue);
-                // Use for..of instead of forEach
-                for (const update of subscribers) {
-                    update(evt);
+                if (__DEV__) beginFlush('bindable.setValue');
+                try {
+                    // Use for..of instead of forEach
+                    for (const update of subscribers) {
+                        update(evt);
+                    }
+                } finally {
+                    if (__DEV__) endFlush();
                 }
             }
         },

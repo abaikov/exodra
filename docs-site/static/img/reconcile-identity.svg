@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" role="img" aria-label="Reconciliation by reference identity: same schema object keeps its DOM node, a new object builds one, a removed object tears its node down">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/><stop offset="1" stop-color="#101c33"/>
+    </linearGradient>
+    <filter id="glow2" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="880" height="340" rx="18" fill="url(#bg2)"/>
+  <text x="40" y="34" fill="#eaf1fb" font-family="ui-sans-serif,system-ui,sans-serif" font-size="16" font-weight="700">Reconcile by identity — not by diffing</text>
+  <text x="180" y="66" text-anchor="middle" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="12" font-weight="600" letter-spacing="1.5">BEFORE</text>
+  <text x="700" y="66" text-anchor="middle" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="12" font-weight="600" letter-spacing="1.5">AFTER</text>
+
+  <g font-family="ui-monospace,monospace" font-size="15" fill="#dbe6f5" text-anchor="middle">
+    <!-- before -->
+    <rect x="110" y="82" width="140" height="42" rx="9" fill="#1a2a44" stroke="#c7d6ea" stroke-width="1.4"/><text x="180" y="109">row A</text>
+    <rect x="110" y="146" width="140" height="42" rx="9" fill="#1a2a44" stroke="#c7d6ea" stroke-width="1.4"/><text x="180" y="173">row B</text>
+    <rect x="110" y="210" width="140" height="42" rx="9" fill="#1a2a44" stroke="#c7d6ea" stroke-width="1.4"/><text x="180" y="237">row C</text>
+    <!-- after -->
+    <rect x="630" y="82" width="140" height="42" rx="9" fill="#1a2a44" stroke="#c7d6ea" stroke-width="1.4"/><text x="700" y="109">row A</text>
+    <rect x="630" y="146" width="140" height="42" rx="9" fill="#132a2a" stroke="#2dd4bf" stroke-width="1.4"/><text x="700" y="173">row C</text>
+    <rect x="630" y="210" width="140" height="42" rx="9" fill="#20182a" stroke="#e0a3ff" stroke-width="1.4"/><text x="700" y="237">row D</text>
+  </g>
+
+  <!-- reused: A -> A -->
+  <path d="M250 103 L630 103" fill="none" stroke="#2dd4bf" stroke-width="2.2" filter="url(#glow2)"/>
+  <text x="440" y="95" text-anchor="middle" fill="#7ff3e4" font-family="ui-sans-serif,system-ui,sans-serif" font-size="11">same object → reused</text>
+  <!-- moved: C -> C (up) -->
+  <path d="M250 231 C 420 231, 470 167, 630 167" fill="none" stroke="#2dd4bf" stroke-width="2.2" filter="url(#glow2)"/>
+  <text x="452" y="214" text-anchor="middle" fill="#7ff3e4" font-family="ui-sans-serif,system-ui,sans-serif" font-size="11">moved, node kept</text>
+  <!-- removed: B -->
+  <g stroke="#ff7a90" stroke-width="2.4"><path d="M262 155 l16 16 M278 155 l-16 16"/></g>
+  <text x="300" y="150" fill="#ff9aa9" font-family="ui-sans-serif,system-ui,sans-serif" font-size="11">gone → removed · onExoUnmount</text>
+  <!-- built: D -->
+  <g stroke="#e0a3ff" stroke-width="2.4"><path d="M604 231 h20 M614 221 v20"/></g>
+  <text x="520" y="270" fill="#e6b8ff" font-family="ui-sans-serif,system-ui,sans-serif" font-size="11">new object → built · onExoMount</text>
+
+  <text x="440" y="318" text-anchor="middle" fill="#8aa0bd" font-family="ui-sans-serif,system-ui,sans-serif" font-size="11">Hand back the SAME schema object to keep the node (and its focus). No virtual DOM, no diff.</text>
+</svg>

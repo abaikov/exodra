@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { bindText, bindSelect, bindChecked, bindNumber } from './index';
+import { bindText, bindSelect, bindChecked, bindNumber, bindRadio } from './index';
+import { bindable } from '@exodra/reactivity';
 
 // Minimal writable-bindable stub (no @exodra/reactivity runtime needed).
 function stub<T>(initial: T) {
@@ -50,5 +51,37 @@ describe('@exodra/forms bind helpers', () => {
         expect(attrs.bindables.value).toBe(model);
         fire(attrs.handlers, 'onInput', { valueAsNumber: 42 });
         expect(model.getValue()).toBe(42);
+    });
+
+    describe('bindRadio (value-based radio group)', () => {
+        it('checked is derived: true only when the model equals this value', () => {
+            const model = bindable<string>('a');
+            const a = bindRadio(model, 'a');
+            const b = bindRadio(model, 'b');
+            expect((a.bindables.checked as { getValue(): boolean }).getValue()).toBe(true);
+            expect((b.bindables.checked as { getValue(): boolean }).getValue()).toBe(false);
+        });
+
+        it('onChange writes this radio value into the shared model', () => {
+            const model = bindable<string>('a');
+            const b = bindRadio(model, 'b');
+            fire(b.handlers, 'onChange', {});
+            expect(model.getValue()).toBe('b');
+        });
+
+        it('selecting another radio DESELECTS this one reactively (bindChecked cannot)', () => {
+            const model = bindable<string>('a');
+            const a = bindRadio(model, 'a');
+            const b = bindRadio(model, 'b');
+            const aChecked = a.bindables.checked as { getValue(): boolean };
+            const bChecked = b.bindables.checked as { getValue(): boolean };
+
+            expect(aChecked.getValue()).toBe(true);
+            // Pick radio B (its change handler updates the shared model).
+            fire(b.handlers, 'onChange', {});
+            // A is now deselected because its `checked` derives from model === 'a'.
+            expect(aChecked.getValue()).toBe(false);
+            expect(bChecked.getValue()).toBe(true);
+        });
     });
 });
