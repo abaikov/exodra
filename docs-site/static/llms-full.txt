@@ -192,19 +192,21 @@ The optimized bundle will be in the `dist/` folder.
 ==============================================================================
 # Benchmarks
 
-These are Exodra's **own** benchmarks — not an independent third‑party comparison.
-They run in headless Chromium (Playwright) over a Vite build and compare Exodra
-against **Solid, Voby, Svelte, and React** on the same workloads. (Voby is a newer
-fine‑grained / no‑vDOM library — a Solid‑lineage peer built on its own `oby`
-signals — added to see how a fresh signals framework stacks up.) Numbers move with
-hardware, browser, and framework versions, so treat them as a **directional**
-signal and reproduce them yourself:
+Six benchmarks, five frameworks, one machine. 🏁 We put Exodra head‑to‑head with
+**Solid, Voby, Svelte, and React** — each doing the same job through *its own*
+idiomatic API, never forced onto another's path. Voby is the wildcard: a newer
+fine‑grained / no‑vDOM library on its own `oby` signals, thrown in to see how a
+fresh signals framework lands.
+
+One caveat, said once so we can move on: this is **our** harness, not a third
+party's, and the numbers drift with hardware, browser, and versions. Treat them as
+*directional* — then run them yourself, it takes a minute:
 
 ```bash
 npm run bench
 ```
 
-## The suite: six axes
+## 📊 The suite — six axes, no filler
 
 The suite is deliberately small — **six benchmarks, one per axis** that matters
 for a UI framework, no overlap. All five frameworks run **interleaved** in one
@@ -239,14 +241,15 @@ paradigm) and holds the leanest heap of all five — it's a tiny runtime‑only
 library. Where Exodra pulls clear of both is **list-update**, because there it
 uses imperative ops, not a keyed diff — see below.
 
-## The honest read
+## 🔬 What the numbers are telling us
 
-- **Targeted list updates (imperative) — Exodra wins by a wide margin.** Exodra's
-  list is an **imperative engine**: `move` / `insert` / `remove` / `push` directly
-  mutate the DOM for a known change, no diff. Solid, Svelte and React have no
-  imperative list API, so each mutation is a state‑set their keyed block must diff —
-  Exodra does far less work. When you *know* the change, express it as an op.
-- **Declarative reconcile (keyed diff) — Exodra also wins.** When you instead just
+- **Imperative list ops are a blowout.** 🚀 Exodra's list is an *engine*, not a
+  guess: `move` / `insert` / `remove` / `push` hit the DOM directly for a change you
+  already know. Solid, Svelte and React have no imperative list API, so the *same*
+  mutation becomes a state‑set their keyed block has to diff. When you know exactly
+  what changed, telling the renderer beats making it re‑derive — and 0.1 ms vs 2.2 ms
+  is the size of that gap.
+- **Declarative reconcile — Exodra takes this one too.** When you instead just
   hand over a new array, Exodra's `updateChildren` does a **minimal‑move** keyed
   reconcile (it keeps the longest already‑in‑order run in place — the LIS — and moves
   only the rest, exactly like the best compilers). On a 200‑row shuffle it edges
@@ -258,13 +261,13 @@ uses imperative ops, not a keyed diff — see below.
   vs Svelte, ~5× vs React. The bench **asserts every framework's clicks actually
   mutate the DOM** before timing (React needs `flushSync`, or it would measure
   nothing).
-- **Fine‑grained reactive updates — Exodra wins.** Writing many signals straight to
+- **Fine‑grained reactive updates — home turf.** Writing many signals straight to
   the DOM (Exodra, Solid) beats reconciling an array (Svelte, React); among the
   fine‑grained pair, Exodra edges Solid.
 - **Toggle — a three‑way tie** between Exodra, Solid and Svelte; React trails.
 - **Voby — a fine‑grained peer that tracks Solid.** Voby is deliberately
   Solid‑lineage (same signals‑no‑vDOM model, `For`/`Show`, built on `oby`), so its
-  numbers sit right next to Solid's everywhere — which is the honest story of the
+  numbers sit right next to Solid's everywhere — which is the real story of the
   current crop of fast newcomers: they've *converged* on the fine‑grained model.
   Exodra is neck‑and‑neck with it on the same‑paradigm axes and pulls away only
   where the model differs — imperative list ops (list-update). Two real
@@ -287,21 +290,21 @@ records, so it carries less. Exodra's per‑node records (the WeakMap that power
 identity reconcile) cost a little heap for cheap fine‑grained updates and exact
 node reuse — a trade, not a free win. (Memory is app‑shaped.)
 
-## The bottom line
+## 🎯 The verdict
 
-**Exodra is top‑tier**, in the same class as the fine‑grained front‑runners Solid
-and Voby — all no‑vDOM, all far ahead of Svelte and React on the update‑heavy work.
-The architecture makes a deliberate trade: it **spends a little more building the
-tree up front** (wiring fine‑grained bindings; ~1.3× behind Solid on first mount)
-**to move faster on every update after** — it leads all four update axes (imperative
-list ops by a lot, declarative reconcile, the fat real‑app batch, fine‑grained
-reactivity) and ties toggle. Since apps mount once and update continuously, that's
-the trade worth making. No clean sweep — Solid keeps the first‑mount crown and Voby
-the leanest heap — but on the work an app actually spends its life doing, Exodra is
-at or ahead of the front. And note the deeper signal: Voby sitting right beside
-Solid shows the *fine‑grained model itself* is now table stakes; Exodra's real
-separation is elsewhere — imperative list ops, an explicit static/reactive split,
-and identity reconcile.
+Exodra rides at the front with Solid and Voby — the no‑vDOM, fine‑grained pack that
+leaves Svelte and React in the dust on anything update‑heavy. The trade it makes is
+deliberate, and it's the right one: pay a hair more up front wiring the tree (~1.3×
+behind Solid at first mount) to fly on every update after. Apps mount once and then
+update for the rest of their lives — so Exodra leading all four update axes and
+tying toggle is the half of the story that actually runs in production.
+
+Not a clean sweep, and we won't pretend otherwise: Solid keeps the first‑mount
+crown, Voby the lightest heap. But the most interesting result isn't any single
+number — it's Voby landing *right next to Solid*. That's the tell: **the fine‑grained
+model is now table stakes.** Everyone fast is fine‑grained. So Exodra's real edge was
+never "we have signals too" — it's the stuff nobody else ships: imperative list ops,
+an explicit static/reactive split, and identity reconcile.
 
 **Where these numbers come from (the model behind them).** None of this is
 micro‑tuning — each result falls out of a specific architectural choice:
@@ -328,10 +331,10 @@ and **clones + patches only the holes** per occurrence instead of building every
 node. It narrows the first‑mount gap to Solid on static‑heavy lists. The unified
 benchmark app above is **fully dynamic** (every card has a conditional block and a
 reactive list), so nothing here is clone‑cacheable and this path doesn't fire — the
-~1.2× mount gap is the honest all‑dynamic case. See the
+~1.2× mount gap is the un‑cherry‑picked all‑dynamic case. See the
 [Optimizations guide](./guides/optimizations.md) for where clone+patch applies.
 
-## Methodology
+## 🔧 How it runs
 
 - **Harness:** headless Chromium (Playwright) over a Vite build of
   `packages/benchmarks`. One shared A/B harness (`src/harness.ts`) drives all six
@@ -363,17 +366,14 @@ reactive list), so nothing here is clone‑cacheable and this path doesn't fire 
 - **Memory:** retained heap via forced GC + `performance.memory.usedJSHeapSize`
   (`--enable-precise-memory-info`) around one mounted app. Directional.
 
-## Honest caveats
+## 🧂 Grain of salt
 
-- These are **our** benchmarks — a framework author's own harness deserves a
-  skeptical eye. Run it yourself.
-- We do **not** claim "fastest framework." Exodra is top‑tier alongside Solid and
-  Voby: it leads every update axis (imperative list ops by a lot, declarative
-  reconcile, the fat app‑update, reactive updates), ties toggle, and is a close
-  second to Solid on first mount. It does **not** win everything — Solid takes first
-  mount and Voby the leanest heap.
-- Results depend on hardware, browser, and framework versions; the initial‑render
-  delta is noisy run‑to‑run.
+- **First mount is the noisy one.** The Solid‑vs‑Exodra mount gap wobbles run‑to‑run
+  — don't build a religion on a single number there.
+- **Ratios travel; milliseconds don't.** Your machine will spit out different
+  absolute times with a similar *shape*. Trust the ranking, not the digits.
+- **We're not the ones to trust here — the harness is.** Every framework's app lives
+  in `packages/benchmarks/src`, and the whole run is one command. Go poke holes.
 
 ## Reproduce
 
@@ -399,7 +399,7 @@ and the **bytes** it costs to get there. Two models compete:
   front and lazy‑loads code per interaction.
 
 Neither is universally faster. This is a genuine **trade‑off that depends on the
-shape of your app**, so the honest answer is a map, not a trophy. We built the
+shape of your app**, so the real answer is a map, not a trophy. We built the
 same three apps in Exodra, Solid, and Qwik — production builds, served statically,
 driven by real Chromium under **Fast 3G + 4× CPU throttling** (the conditions
 where payload size actually matters), median of 5 runs. Both models were set up
@@ -417,7 +417,7 @@ the way you'd ship them: code‑split, prefetch on.
 The HTML weight tells the same story from the other side (gzipped, 1000‑card todo):
 Exodra **~20 KB**, Solid ~39 KB, Qwik ~68 KB.
 
-## A note on magnitudes — don't over‑read these
+## 📏 Keep the magnitudes in perspective
 
 Keep the numbers in perspective before drawing conclusions:
 
@@ -437,7 +437,7 @@ Keep the numbers in perspective before drawing conclusions:
   connection everything is far faster and the absolute gaps shrink proportionally.
   Read these as **how the models rank and why**, not as "your users wait seconds."
 
-## What each model is genuinely good at
+## 🏗️ What each model is actually built for
 
 **Resumability (Qwik)** has a real, underrated strength: **automatic chunking.**
 You don't hand‑write `lazy()` — the compiler splits every handler and component
@@ -458,7 +458,7 @@ markers (Solid emits `data-hk` keys), no per‑node resume state (Qwik serialize
 into the markup). That advantage compounds on data‑dense UIs and long lists, which
 is why Exodra leads or ties across the map and pulls ahead as the app grows.
 
-## Why, briefly
+## 🧩 Why, in one breath
 
 - **Hydration is cheap.** Wiring even 30,000 nodes is ~150 ms of CPU — so *skipping*
   hydration saves little.
@@ -470,7 +470,7 @@ is why Exodra leads or ties across the map and pulls ahead as the app grows.
   cost a little more than it saves — most visibly on long lists, where the per‑node
   HTML tax adds up.
 
-## Careful caveats — please read
+## ⚠️ The fine print
 
 - **This assumes you code‑split.** Qwik's advantage is largest — and can flip the
   result outright — against a hydration SPA that ships **one giant un‑split
@@ -489,7 +489,7 @@ is why Exodra leads or ties across the map and pulls ahead as the app grows.
 - **These are our numbers.** Reproduce them — the harness is in
   `packages/benchmarks/ssr` (real prod builds + Playwright with CDP throttling).
 
-## In fairness to Qwik
+## 👏 Where Qwik genuinely wins
 
 A few things cut squarely in Qwik's favour, and our tests don't flatter it — so
 state them plainly:
@@ -535,8 +535,7 @@ closes or flips. Different tools, different targets — genuinely.
 Everything above is about the *client*. The other half of SSR is how fast the
 **server** turns a tree into an HTML string — the number that bounds how many pages
 a box can render per second. It is rarely a page's bottleneck (the network dominates
-time‑to‑first‑byte), but it caps throughput under load, so it's worth being honest
-about.
+time‑to‑first‑byte), but it caps throughput under load, so we measured it.
 
 For a 1,000‑node list on one core (warm, directional — reproduce yourself):
 
@@ -552,8 +551,7 @@ already renders a large page in a fraction of a millisecond; the compiler roughl
 halves that again and lands within ~1.5× of Solid's compiled output, close to the
 practical floor (a flat string concatenation with correct escaping of dynamic holes).
 
-Two things got it there and are worth stating plainly, because they're the honest
-mechanics rather than a headline: the walker was tightened (a single‑scan escape
+Two things got it there — the mechanics, not the headline: the walker was tightened (a single‑scan escape
 fast‑path, no per‑node dedup allocation for ordinary elements, cheaper attribute
 handling) for ~4× over its first cut; and the SSR compiler skips the per‑attribute
 name classification for compile‑time‑known attribute names, which alone is ~4× faster
@@ -561,7 +559,7 @@ name classification for compile‑time‑known attribute names, which alone is ~
 output — the compiled and walked HTML are asserted identical, so hydration can't
 drift.
 
-## Bottom line
+## 🎯 The verdict
 
 For **interactive, data‑dense UIs** — dashboards, tables, feeds, long lists — a
 small eager bundle beats resumability under real network conditions, and Exodra's
