@@ -5,6 +5,13 @@ title: Getting Started
 
 # Getting Started with Exodra
 
+Exodra is a fine‑grained, no‑virtual‑DOM UI framework. You write JSX; a compiler
+sorts every prop into a typed bucket; the renderer wires each reactive value
+straight to the one DOM node it touches. No diffing, no re‑renders — the parts that
+change are the only parts that move.
+
+Zero to a running app is one command:
+
 ## Installation
 
 ### Create a New Project

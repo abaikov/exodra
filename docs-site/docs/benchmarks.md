@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Benchmarks
 
-Six benchmarks, five frameworks, one machine. 🏁 We put Exodra head‑to‑head with
+Six benchmarks, five frameworks, one machine. We put Exodra head‑to‑head with
 **Solid, Voby, Svelte, and React** — each doing the same job through *its own*
 idiomatic API, never forced onto another's path. Voby is the wildcard: a newer
 fine‑grained / no‑vDOM library on its own `oby` signals, thrown in to see how a
@@ -19,7 +19,7 @@ party's, and the numbers drift with hardware, browser, and versions. Treat them 
 npm run bench
 ```
 
-## 📊 The suite — six axes, no filler
+## The suite — six axes, no filler
 
 The suite is deliberately small — **six benchmarks, one per axis** that matters
 for a UI framework, no overlap. All five frameworks run **interleaved** in one
@@ -54,9 +54,9 @@ paradigm) and holds the leanest heap of all five — it's a tiny runtime‑only
 library. Where Exodra pulls clear of both is **list-update**, because there it
 uses imperative ops, not a keyed diff — see below.
 
-## 🔬 What the numbers are telling us
+## What the numbers are telling us
 
-- **Imperative list ops are a blowout.** 🚀 Exodra's list is an *engine*, not a
+- **Imperative list ops are a blowout.** Exodra's list is an *engine*, not a
   guess: `move` / `insert` / `remove` / `push` hit the DOM directly for a change you
   already know. Solid, Svelte and React have no imperative list API, so the *same*
   mutation becomes a state‑set their keyed block has to diff. When you know exactly
@@ -103,7 +103,7 @@ records, so it carries less. Exodra's per‑node records (the WeakMap that power
 identity reconcile) cost a little heap for cheap fine‑grained updates and exact
 node reuse — a trade, not a free win. (Memory is app‑shaped.)
 
-## 🎯 The verdict
+## The verdict
 
 Exodra rides at the front with Solid and Voby — the no‑vDOM, fine‑grained pack that
 leaves Svelte and React in the dust on anything update‑heavy. The trade it makes is
@@ -147,7 +147,7 @@ reactive list), so nothing here is clone‑cacheable and this path doesn't fire 
 ~1.2× mount gap is the un‑cherry‑picked all‑dynamic case. See the
 [Optimizations guide](./guides/optimizations.md) for where clone+patch applies.
 
-## 🔧 How it runs
+## How it runs
 
 - **Harness:** headless Chromium (Playwright) over a Vite build of
   `packages/benchmarks`. One shared A/B harness (`src/harness.ts`) drives all six
@@ -179,7 +179,7 @@ reactive list), so nothing here is clone‑cacheable and this path doesn't fire 
 - **Memory:** retained heap via forced GC + `performance.memory.usedJSHeapSize`
   (`--enable-precise-memory-info`) around one mounted app. Directional.
 
-## 🧂 Grain of salt
+## Grain of salt
 
 - **First mount is the noisy one.** The Solid‑vs‑Exodra mount gap wobbles run‑to‑run
   — don't build a religion on a single number there.
@@ -230,7 +230,7 @@ the way you'd ship them: code‑split, prefetch on.
 The HTML weight tells the same story from the other side (gzipped, 1000‑card todo):
 Exodra **~20 KB**, Solid ~39 KB, Qwik ~68 KB.
 
-## 📏 Keep the magnitudes in perspective
+## Keep the magnitudes in perspective
 
 Keep the numbers in perspective before drawing conclusions:
 
@@ -250,7 +250,7 @@ Keep the numbers in perspective before drawing conclusions:
   connection everything is far faster and the absolute gaps shrink proportionally.
   Read these as **how the models rank and why**, not as "your users wait seconds."
 
-## 🏗️ What each model is actually built for
+## What each model is actually built for
 
 **Resumability (Qwik)** has a real, underrated strength: **automatic chunking.**
 You don't hand‑write `lazy()` — the compiler splits every handler and component
@@ -271,7 +271,7 @@ markers (Solid emits `data-hk` keys), no per‑node resume state (Qwik serialize
 into the markup). That advantage compounds on data‑dense UIs and long lists, which
 is why Exodra leads or ties across the map and pulls ahead as the app grows.
 
-## 🧩 Why, in one breath
+## Why, in one breath
 
 - **Hydration is cheap.** Wiring even 30,000 nodes is ~150 ms of CPU — so *skipping*
   hydration saves little.
@@ -283,7 +283,7 @@ is why Exodra leads or ties across the map and pulls ahead as the app grows.
   cost a little more than it saves — most visibly on long lists, where the per‑node
   HTML tax adds up.
 
-## ⚠️ The fine print
+## The fine print
 
 - **This assumes you code‑split.** Qwik's advantage is largest — and can flip the
   result outright — against a hydration SPA that ships **one giant un‑split
@@ -302,7 +302,7 @@ is why Exodra leads or ties across the map and pulls ahead as the app grows.
 - **These are our numbers.** Reproduce them — the harness is in
   `packages/benchmarks/ssr` (real prod builds + Playwright with CDP throttling).
 
-## 👏 Where Qwik genuinely wins
+## Where Qwik genuinely wins
 
 A few things cut squarely in Qwik's favour, and our tests don't flatter it — so
 state them plainly:
@@ -372,7 +372,7 @@ name classification for compile‑time‑known attribute names, which alone is ~
 output — the compiled and walked HTML are asserted identical, so hydration can't
 drift.
 
-## 🎯 The verdict
+## The verdict
 
 For **interactive, data‑dense UIs** — dashboards, tables, feeds, long lists — a
 small eager bundle beats resumability under real network conditions, and Exodra's

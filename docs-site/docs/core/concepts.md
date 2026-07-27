@@ -5,6 +5,11 @@ title: Core Concepts
 
 # Core Concepts
 
+Four ideas carry the whole framework: props live in **typed buckets**, a view is a
+**schema** whose object identity *is* how nodes are reused, reactivity is **explicit
+wiring** rather than magic tracking, and lifecycle fires **per node** as the tree
+lives and dies. Get these and the rest is detail.
+
 ## Three Props Architecture
 
 The foundation of Exodra's performance is the Three Props Architecture:
@@ -20,10 +25,10 @@ static/reactive/event split up front, so the renderer never dispatches on it.
 Properties that never change after initialization:
 
 ```jsx
-<div static={{ 
+<div static={{
   id: 'container',
   class: 'my-class',
-  'data-test': 'value' 
+  'data-test': 'value'
 }} />
 ```
 
@@ -152,7 +157,7 @@ function MyComponent({ name }) {
 ```jsx
 function App() {
   return h('div', {
-    static: { 
+    static: {
       class: 'app',
       children: [
         h(Header),
@@ -192,10 +197,10 @@ Components can use lifecycle hooks for setup and cleanup:
 ```javascript
 function Timer() {
   let interval;
-  
+
   return (
-    <div 
-      static={{ 
+    <div
+      static={{
         onExoMount: (node) => {
           interval = setInterval(() => {
             console.log('tick');
@@ -226,10 +231,10 @@ For component-level cleanup, use `ctx.onDispose()`:
 ```javascript
 function DataFetcher(ctx) {
   const data = bindable(null);
-  
+
   const controller = new AbortController();
   ctx.onDispose(() => controller.abort());
-  
+
   fetch('/api/data', { signal: controller.signal })
     .then(res => res.json())
     .then(result => data.setValue(result));
