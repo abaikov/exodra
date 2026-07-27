@@ -11,7 +11,13 @@ import syntaxJsx from '@babel/plugin-syntax-jsx';
 import { h, text } from '@exodra/core';
 import { createExoBindable } from '../../reactivity/src/createExoBindable';
 import { renderToString } from '@exodra/string';
-import { spaceAttribute, escapeOrRaw, markHtml, ssrContext } from '@exodra/string';
+import {
+    spaceAttribute,
+    spaceAttributeUnchecked,
+    escapeOrRaw,
+    markHtml,
+    ssrContext,
+} from '@exodra/string';
 import { emitSsr } from '../src/ssr-emit';
 
 type Schema = Parameters<typeof renderToString>[0];
@@ -40,6 +46,7 @@ function compiledHtml(jsxExpr: string, scope: Record<string, unknown>): string {
     // eslint-disable-next-line @typescript-eslint/no-implied-eval
     const fn = new Function(
         '_a',
+        '_au',
         '_esc',
         '_html',
         '_ctx',
@@ -48,7 +55,14 @@ function compiledHtml(jsxExpr: string, scope: Record<string, unknown>): string {
     );
     // emitSsr wraps output as SafeHtml; String() gives the HTML.
     return String(
-        fn(spaceAttribute, escapeOrRaw, markHtml, ssrContext, ...keys.map(k => scope[k]))
+        fn(
+            spaceAttribute,
+            spaceAttributeUnchecked,
+            escapeOrRaw,
+            markHtml,
+            ssrContext,
+            ...keys.map(k => scope[k])
+        )
     );
 }
 

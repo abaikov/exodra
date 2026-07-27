@@ -26,13 +26,18 @@ export async function benchmarkInitialRender(rounds = 100, batch = 5): Promise<v
     await abBench(
         'INITIAL RENDER — mount the 80-card todo app (details toggle + dynamic tag lists)',
         'ms/mount',
-        { exodra: prep(mounts.exodra), solid: prep(mounts.solid), svelte: prep(mounts.svelte), react: prep(mounts.react) },
+        {
+            exodra: prep(mounts.exodra), solid: prep(mounts.solid),
+            svelte: prep(mounts.svelte), react: prep(mounts.react),
+            voby: prep(mounts.voby),
+        },
         {
             rounds,
             batch,
             heap: {
                 exodra: heap(mounts.exodra), solid: heap(mounts.solid),
                 svelte: heap(mounts.svelte), react: heap(mounts.react),
+                voby: heap(mounts.voby),
             },
         },
     );

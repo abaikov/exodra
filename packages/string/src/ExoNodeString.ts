@@ -69,13 +69,18 @@ export class ExoNodeString {
         return this.renderNode(schema, {});
     }
 
-    // Render one node: resolve component chains (rendering their output with no
-    // wrapper), else serialize the element/text/fragment and recurse into children.
-    protected renderNode(schema: TExoNodeStringSchema, scope: TExoRenderScope): string {
+    // Render one node to its HTML string. Components render their output with no
+    // wrapper; elements are `<tag attrs>content</tag>`. Uses `+=` on purpose —
+    // V8's cons-strings make it cheaper than an array buffer + `join` here (an
+    // accumulator variant measured ~2× SLOWER). Children are only resolved and
+    // rendered when they're actually emitted: void / textContent / dangerous-HTML
+    // nodes skip that work entirely (the old code always rendered then discarded).
+    protected renderNode(
+        schema: TExoNodeStringSchema,
+        scope: TExoRenderScope
+    ): string {
         const type = schema.type;
         if (typeof type === 'function') {
-            // A component renders as the HTML of its output, no wrapper. Its context
-            // gets a fresh child scope so its provide() reaches its descendants.
             const childScope: TExoRenderScope = { parent: scope };
             const output = this.normalizeChildren(
                 (type as (ctx: TExoContext<TExoNodeStringSchema>) => unknown)(
@@ -89,12 +94,53 @@ export class ExoNodeString {
             return out;
         }
 
-        const children = this.resolveChildren(schema);
-        let childrenHtml = '';
-        for (let i = 0; i < children.length; i++) {
-            childrenHtml += this.renderNode(children[i], scope);
+        if (type === '#text') {
+            return this.escapeHtml(
+                schema.attrs?.bindables?.textContent?.getValue() ??
+                    schema.attrs?.static?.textContent ??
+                    ''
+            );
         }
-        return this.renderElement(schema, childrenHtml);
+
+        // Fragment (or any non-string marker): children with no wrapper.
+        if (typeof type !== 'string' || type === '#fragment') {
+            return this.renderChildren(this.resolveChildren(schema), scope);
+        }
+
+        const attrs = this.renderAttributes(schema);
+
+        // Void elements: no content, no closing tag.
+        if (VOID_ELEMENTS.has(type)) return `<${type}${attrs}>`;
+
+        // Raw inner HTML escape hatch: emit verbatim, skip children/textContent.
+        const rawHtml = schema.attrs?.static?.dangerouslySetInnerHTML as
+            | { __html?: unknown }
+            | undefined;
+        if (rawHtml && typeof rawHtml === 'object' && rawHtml.__html != null) {
+            return `<${type}${attrs}>${String(rawHtml.__html)}</${type}>`;
+        }
+
+        // Nullish textContent = no value → fall back to children (a literal
+        // `null`/`undefined` must not blank the children or print "null").
+        const textContent =
+            schema.attrs?.bindables?.textContent?.getValue() ??
+            schema.attrs?.static?.textContent;
+        const content =
+            textContent == null
+                ? this.renderChildren(this.resolveChildren(schema), scope)
+                : this.escapeHtml(textContent);
+        return `<${type}${attrs}>${content}</${type}>`;
+    }
+
+    private renderChildren(
+        children: readonly TExoNodeStringSchema[],
+        scope: TExoRenderScope
+    ): string {
+        let html = '';
+        for (let i = 0; i < children.length; i++) {
+            html += this.renderNode(children[i], scope);
+        }
+        return html;
     }
 
     // The component context — overridable so specialisations can hook inject/provide.
@@ -184,70 +230,44 @@ export class ExoNodeString {
         } as TExoNodeStringSchema;
     }
 
-    private renderElement(
-        schema: TExoNodeStringSchema,
-        childrenHtml: string
-    ): string {
-        const type = schema.type;
-        if (typeof type !== 'string') return childrenHtml;
-
-        if (type === '#text') {
-            const textContent =
-                schema.attrs?.bindables?.textContent?.getValue() ??
-                schema.attrs?.static?.textContent ??
-                '';
-            return this.escapeHtml(textContent);
-        }
-
-        // Fragment: children with no wrapper.
-        if (type === '#fragment') return childrenHtml;
-
-        const attrs = this.renderAttributes(schema);
-
-        // Void elements: no content, no closing tag.
-        if (VOID_ELEMENTS.has(type)) {
-            return `<${type}${attrs}>`;
-        }
-
-        // Raw inner HTML escape hatch: emit verbatim, skip children/textContent.
-        const rawHtml = schema.attrs?.static?.dangerouslySetInnerHTML as
-            | { __html?: unknown }
-            | undefined;
-        if (rawHtml && typeof rawHtml === 'object' && rawHtml.__html != null) {
-            return `<${type}${attrs}>${String(rawHtml.__html)}</${type}>`;
-        }
-
-        const textContent =
-            schema.attrs?.bindables?.textContent?.getValue() ??
-            schema.attrs?.static?.textContent;
-        // Nullish textContent = no value → fall back to children (a literal
-        // `null`/`undefined` must not blank the children or print "null").
-        const contentHtml =
-            textContent == null ? childrenHtml : this.escapeHtml(textContent);
-
-        return `<${type}${attrs}>${contentHtml}</${type}>`;
-    }
-
     private renderAttributes(schema: TExoNodeStringSchema): string {
+        const staticAttrs = schema.attrs?.static as
+            | Record<string, unknown>
+            | undefined;
+        const bindables = schema.attrs?.bindables as
+            | Record<string, TExoBindable<unknown, unknown>>
+            | undefined;
+
+        // Fast path (the common case): a single static bucket with no `className`
+        // can't produce a duplicate attribute — object keys are unique and only
+        // `className` normalises to a different name (`class`). So skip the dedup
+        // Map + entries array and concatenate directly. `for..in` also avoids the
+        // pairs array `Object.entries` would allocate per element.
+        if (staticAttrs && !bindables && !('className' in staticAttrs)) {
+            let s = '';
+            for (const name in staticAttrs) {
+                const attr = serializeAttribute(name, staticAttrs[name]);
+                if (attr) s += ` ${attr}`;
+            }
+            return s;
+        }
+
+        // Dedup path: `class`↔`className`, or the same key across both buckets.
+        // `seen` maps a normalized name → index in `entries`; last write wins.
         const entries: string[] = [];
-        // Normalized attribute name -> index in `entries`, so a repeated
-        // attribute (e.g. both `class` and `className`, which both serialize to
-        // `class`) does not emit a duplicate attribute — the last write wins.
         const seen = new Map<string, number>();
-        const staticAttrs = schema.attrs?.static;
         if (staticAttrs) {
-            for (const [name, value] of Object.entries(staticAttrs)) {
-                this.pushSerializableAttribute(entries, seen, name, value);
+            for (const name in staticAttrs) {
+                this.pushSerializableAttribute(entries, seen, name, staticAttrs[name]);
             }
         }
-        const bindables = schema.attrs?.bindables;
         if (bindables) {
-            for (const [name, bindable] of Object.entries(bindables)) {
+            for (const name in bindables) {
                 this.pushSerializableAttribute(
                     entries,
                     seen,
                     name,
-                    (bindable as TExoBindable<unknown, unknown>).getValue()
+                    bindables[name].getValue()
                 );
             }
         }

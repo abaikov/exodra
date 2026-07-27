@@ -84,7 +84,10 @@ export interface AppHandle {
     flip: () => void; // one update round: toggle every details + advance every tag list
     teardown: () => void;
 }
-export type Mounts = Record<'exodra' | 'solid' | 'svelte' | 'react', (c: HTMLElement) => AppHandle>;
+export type Mounts = Record<
+    'exodra' | 'solid' | 'svelte' | 'react' | 'voby',
+    (c: HTMLElement) => AppHandle
+>;
 
 // Dynamically import the runtimes and return per-framework `mount(container)` →
 // { flip, teardown }. Both benches build their scenarios from this SAME map.
@@ -96,6 +99,13 @@ export async function loadMounts(): Promise<Mounts> {
     const { createRoot } = await import('react-dom/client');
     const { flushSync } = await import('react-dom');
     const CardsDyn = (await import('./svelte/CardsDyn.svelte')).default;
+    // Newcomers (fine-grained/no-vDOM peers), authored via their hyperscript APIs
+    // so no per-framework JSX transform is needed.
+    const voby = await import('voby');
+    // voby batches DOM writes on its scheduler; `tick()` flushes them synchronously
+    // (the voby equivalent of react's flushSync / svelte's flush) so an update
+    // commits INSIDE the measured region — otherwise its numbers would be a lie.
+    const { tick: obyTick } = (await import('oby')) as { tick: () => void };
 
     const details = () => h('div', { static: { class: 'details', textContent: 'details…' } });
     const exoApp = () => {
@@ -119,6 +129,30 @@ export async function loadMounts(): Promise<Mounts> {
         return h('div', { static: { class: 'app', children: cards } });
     };
 
+    // --- Voby (fine-grained signals, hyperscript) ---
+    const { $, h: vh, render: vRender, For: vFor } = voby as {
+        $: (v: unknown) => { (): unknown; (v: unknown): void };
+        h: (...a: unknown[]) => unknown;
+        render: (child: unknown, parent: Element) => () => void;
+        For: unknown;
+    };
+    const vobyApp = () =>
+        vh('div', { class: 'app' }, IDX.map(i => {
+            const open = $(startsOpen(i)) as { (): boolean; (v: boolean): void };
+            const count = $(startCount(i)) as { (): number; (v: number): void };
+            return vh('div', { class: 'card', 'data-i': i },
+                vh('h3', `Task ${i}`),
+                vh('button', { class: 'tog', onClick: () => open(!open()) }, 'details'),
+                () => (open() ? vh('div', { class: 'details' }, 'details…') : null),
+                // Keyed reconcile via voby's <For> (mirrors Solid's) so the kept tag
+                // node is REUSED on update, not rebuilt — same fairness as everyone.
+                vh('div', { class: 'tags' },
+                    vh(vFor, { values: () => POOL.slice(0, count()) },
+                        (t: unknown) => vh('span', { class: 'tag' }, t))),
+                vh('button', { class: 'addtag', onClick: () => count(nextCount(count())) }, '+'),
+            );
+        }));
+
     return {
         exodra: (c: HTMLElement) => {
             const n = mount(exoApp() as never, c);
@@ -136,6 +170,10 @@ export async function loadMounts(): Promise<Mounts> {
             const r = createRoot(c);
             flushSync(() => r.render(rc(ReactApp)));
             return { flip: () => flushSync(() => { clickAll(c, '.tog'); clickAll(c, '.addtag'); }), teardown: () => r.unmount() };
+        },
+        voby: (c: HTMLElement) => {
+            const dispose = vRender(vobyApp(), c);
+            return { flip: () => { clickAll(c, '.tog'); clickAll(c, '.addtag'); obyTick(); }, teardown: () => dispose() };
         },
     };
 }

@@ -24,6 +24,32 @@ the model are already fast:
 - **Build once, mutate in place.** A node's DOM is built once; reactive changes
   mutate it, they don't rebuild.
 
+### The trade behind "no scheduler"
+
+Writing straight to the DOM is fast **precisely because** Exodra's core reactivity
+does **no glitch‑batching** — there is no scheduler coalescing writes or
+topologically ordering a derived graph the way Solid's or Voby's (`oby`) do. That
+is a deliberate design choice with two sides:
+
+- **The common case pays nothing.** A signal driving a DOM prop, or a `derive` off
+  a single source (plain pub/sub), has no deep dependency graph — so there is
+  nothing to glitch and nothing to batch. You skip the per‑write scheduler overhead
+  entirely. (This is why Exodra edges the scheduler‑based fine‑grained libs on the
+  `reactive-update` benchmark.)
+- **Heavy multi‑source state delegates coherence upward.** If you build many
+  interdependent values or computeds over collections, batching and glitch‑free
+  consistency are **not** the view layer's job — you hand them to the data layer. A
+  reactive store like [`@oimdb/*`](https://abaikov.github.io/oimdb/llms.txt) already
+  owns a transactional queue: it coalesces writes, flushes a consistent snapshot,
+  and feeds **already‑settled** values into bindables as plain direct writes. The
+  batching didn't disappear — it lives where a transaction model already exists,
+  instead of being duplicated inside the renderer.
+
+So the direct‑write speed in the benchmarks is one face of a coin whose other face
+is "core reactivity stays thin; the store owns coherence." Most apps never touch
+that other face; data‑dense ones get a clean division of labour instead of two
+schedulers.
+
 So a hand‑written app — or one that opts into nothing below — still runs correctly
 and quickly. The rest is about shaving specific costs.
 

@@ -11,5 +11,6 @@ export {
     serializeAttribute,
     serializeAttributeValue,
     spaceAttribute,
+    spaceAttributeUnchecked,
 } from './escape';
 export { ssrContext, runWithAmbient } from './ssr-context';

@@ -1,9 +1,8 @@
 import type { TExoSchema } from '@exodra/core';
 import { bindable, derive } from '@exodra/reactivity';
-import { exoSelector, exoSource, exoCombine, exoList } from '@oimdb/exodra';
+import { exoSelector, exoCombine } from '@oimdb/exodra';
 import type { Status, Task, TaskPriority } from '../domain/types';
 import { getRuntime } from '../app/runtime';
-import { orderedStatuses } from '../store/workspace-store';
 
 const PRIORITY_GLYPH: Record<TaskPriority, string> = {
     urgent: '⛌',
@@ -14,49 +13,31 @@ const PRIORITY_GLYPH: Record<TaskPriority, string> = {
 
 // --- a single reactive task card -------------------------------------------
 
-// Page-scoped "ticks": one ref-counted bindable per RELATED collection, shared by
-// every card. `assignee`/`meta` name OTHER entities (members/projects/labels/tags),
-// so a task-only `derive` would show a STALE name when the referenced entity is
-// renamed without touching the task. Combining the task bindable with these ticks
-// via `exoCombine` re-derives the text on either a task OR a referenced-entity
-// change — one collection subscription total per tick, not one per card.
-type Tick = ReturnType<typeof exoSource>;
-type BoardTicks = { members: Tick; meta: Tick };
-
-function makeTicks(rt: ReturnType<typeof getRuntime>): BoardTicks {
-    const tick = (...cols: { subscribeOnAnyUpdate(cb: () => void): () => void }[]): Tick =>
-        exoSource(
-            () => 0,
-            cb => {
-                const us = cols.map(c => c.subscribeOnAnyUpdate(cb));
-                return () => us.forEach(u => u());
-            }
-        );
-    const o = rt.oimdbInstance;
-    return {
-        members: tick(o.members.collection),
-        meta: tick(o.projects.collection, o.labels.collection, o.tags.collection),
-    };
-}
-
-// The card's task-only fields (title/class/priority) derive from ONE ref-counted
-// `byPk` bindable — reactivity scoped to THIS task. Cross-entity fields
-// (assignee/meta) additionally follow the shared ticks so they never go stale.
-function createCard(taskId: string, statuses: Status[], ticks: BoardTicks): TExoSchema {
+// Task-only fields (title/class/priority) derive from ONE ref-counted `byPk`
+// bindable — reactivity scoped to THIS task. Cross-entity fields (assignee/meta)
+// name OTHER entities (members/projects/labels/tags), so a task-only `derive`
+// would go STALE when a referenced entity is renamed. `exoCombine` with those
+// collections' `.all()` change-signals re-derives the text on either a task OR a
+// referenced-entity change — one shared subscription per collection, not per card.
+function createCard(taskId: string, statuses: Status[]): TExoSchema {
     const rt = getRuntime();
+    const v = rt.views;
     const taskB = exoSelector(rt.oimdbInstance.tasks.select.byPk(taskId));
 
     const title = derive(taskB, t => t?.title ?? '');
     const cls = derive(taskB, t => (t ? cardClass(t) : 'card'));
     const prio = derive(taskB, t => (t ? PRIORITY_GLYPH[t.priority] : ''));
-    const assignee = exoCombine([taskB, ticks.members], () => {
+    const assignee = exoCombine([taskB, v.members.all()], () => {
         const t = taskB.getValue();
         return t ? assigneeName(rt, t) : 'Unassigned';
     });
-    const meta = exoCombine([taskB, ticks.meta], () => {
-        const t = taskB.getValue();
-        return t ? metaLine(rt, t) : '';
-    });
+    const meta = exoCombine(
+        [taskB, v.projects.all(), v.labels.all(), v.tags.all()],
+        () => {
+            const t = taskB.getValue();
+            return t ? metaLine(rt, t) : '';
+        }
+    );
 
     const read = () => rt.oimdbInstance.tasks.collection.getOneByPk(taskId);
     const idxOf = (sid: string) => statuses.findIndex(s => s.id === sid);
@@ -126,26 +107,20 @@ function metaLine(rt: ReturnType<typeof getRuntime>, t: Task): string {
 
 // --- a status column: identity-stable cards over the column's ordered tasks ---
 
-function createColumn(status: Status, statuses: Status[], ticks: BoardTicks): TExoSchema {
+function createColumn(status: Status, statuses: Status[]): TExoSchema {
     const rt = getRuntime();
 
-    // O(delta) column: the ordered index (sorted by createdAt) feeds a command
-    // stream, and `exoList` forwards its insert/move/remove ops straight to the
-    // DOM — a move RELOCATES the existing card node (keeps its state), only the
-    // touched rows change, nothing re-sorts on read. Each card drives its own
-    // fields from a `byPk` bindable, so a field edit needs no list command at all.
-    const cards = exoList(
-        rt.oimdbInstance.tasksByStatusStream,
-        status.id,
-        slot => createCard(slot.pk, statuses, ticks)
+    // O(delta) column via the ordered-index facade: `.list()` drives a command
+    // stream (insert/move/remove) straight to the DOM — a move RELOCATES the
+    // existing card node (keeps its state), only touched rows change, nothing
+    // re-sorts on read. Each card drives its own fields from a `byPk` bindable, so
+    // a field edit needs no list command at all.
+    const cards = rt.views.tasks.byStatus.list(status.id, (_entity, pk) =>
+        createCard(pk, statuses)
     );
-    // Count tracks membership only (the status key), independent of the card ops.
-    const count = derive(
-        exoSource(
-            () => rt.oimdbInstance.tasksByStatus.getPksByKey(status.id).length,
-            cb => rt.oimdbInstance.tasksByStatus.subscribeOnKey(status.id, cb)
-        ),
-        n => String(n)
+    // Count tracks membership only (the status key), reactive off the facade.
+    const count = derive(rt.views.tasks.byStatus.pks(status.id), pks =>
+        String(pks.length)
     );
 
     return (
@@ -163,8 +138,7 @@ function createColumn(status: Status, statuses: Status[], ticks: BoardTicks): TE
 
 export default function boardPage(): TExoSchema {
     const rt = getRuntime();
-    const statuses = orderedStatuses(rt.oimdbInstance);
-    const ticks = makeTicks(rt);
+    const statuses = [...rt.views.statuses.byOrder.unsafeDense().getValue()];
     const projects = rt.oimdbInstance.projects.collection.getAll().filter(p => !p.archived);
 
     const newTitle = bindable('');
@@ -225,7 +199,7 @@ export default function boardPage(): TExoSchema {
                     Add task
                 </button>
             </div>
-            <div static={{ class: 'board' }}>{statuses.map(s => createColumn(s, statuses, ticks))}</div>
+            <div static={{ class: 'board' }}>{statuses.map(s => createColumn(s, statuses))}</div>
         </div>
     );
 }

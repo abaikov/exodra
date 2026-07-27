@@ -1,6 +1,6 @@
 import type { TExoSchema } from '@exodra/core';
-import { bindable } from '@exodra/reactivity';
-import { exoSource, exoChildren } from '@oimdb/exodra';
+import { bindable, derive } from '@exodra/reactivity';
+import { exoRows } from '@oimdb/exodra';
 import { getRuntime } from '../app/runtime';
 
 // The shared shape of a "swatch" reference entity (tags carry `label`, labels
@@ -22,57 +22,61 @@ function swatchEditor(
 ): TExoSchema {
     const rt = getRuntime();
     const draft = bindable('');
+    const view = rt.views[name];
 
-    const items = (): readonly Swatchable[] =>
-        rt.oimdbInstance[name].collection.getAll() as readonly Swatchable[];
+    // The list is just the collection's pks (`exoRows`, key = pk). Each row is
+    // built ONCE per pk and binds its own value: the swatch dot follows the entity
+    // reactively (a color edit repaints it in place), while the name/color inputs
+    // stay uncontrolled so the focused field keeps focus. Nothing is folded into a
+    // key, so a field edit is a reconcile no-op.
+    const row = (pk: string): TExoSchema => {
+        const item = view.byPk(pk);
+        const cur = item.getValue() as Swatchable | undefined;
+        return (
+            <li static={{ class: 'swatch', 'data-id': pk }}>
+                <span
+                    static={{ class: 'swatch__dot' }}
+                    bindable={{
+                        style: derive(
+                            item,
+                            (i: Swatchable | undefined) => `background:${i?.color ?? ''}`
+                        ),
+                    }}
+                />
+                <input
+                    static={{ class: 'swatch__name', value: String(cur?.[nameField] ?? '') }}
+                    handlers={{
+                        onInput: e =>
+                            rt.patchEntity(name, pk, {
+                                [nameField]: e.currentTarget.value,
+                            }),
+                    }}
+                />
+                <input
+                    static={{ class: 'swatch__color', type: 'color', value: cur?.color ?? '#64748b' }}
+                    handlers={{
+                        onInput: e =>
+                            rt.patchEntity(name, pk, {
+                                color: e.currentTarget.value,
+                            }),
+                    }}
+                />
+                <button
+                    static={{ class: 'swatch__del', 'aria-label': 'Delete' }}
+                    handlers={{ onClick: () => rt.removeEntity(name, pk) }}
+                >
+                    ✕
+                </button>
+            </li>
+        );
+    };
 
-    const row = (item: Swatchable): TExoSchema => (
-        <li static={{ class: 'swatch', 'data-id': item.id }}>
-            <span static={{ class: 'swatch__dot', style: `background:${item.color}` }} />
-            <input
-                static={{ class: 'swatch__name', value: String(item[nameField] ?? '') }}
-                handlers={{
-                    onInput: e =>
-                        rt.patchEntity(name, item.id, {
-                            [nameField]: e.currentTarget.value,
-                        }),
-                }}
-            />
-            <input
-                static={{ class: 'swatch__color', type: 'color', value: item.color }}
-                handlers={{
-                    onInput: e =>
-                        rt.patchEntity(name, item.id, {
-                            color: e.currentTarget.value,
-                        }),
-                }}
-            />
-            <button
-                static={{ class: 'swatch__del', 'aria-label': 'Delete' }}
-                handlers={{ onClick: () => rt.removeEntity(name, item.id) }}
-            >
-                ✕
-            </button>
-        </li>
-    );
-
-    // Identity-stable rows straight off the collection. `@oimdb/exodra` owns the
-    // (lazy, ref-counted) subscription — it subscribes only while this list is
-    // mounted and tears down on unmount — so there is no mount/unmount plumbing
-    // here. `exoChildren` keys by id, so a field edit (same id) is a reconcile
-    // no-op and the focused input keeps focus.
-    const rows = exoChildren(
-        exoSource(
-            items,
-            cb => rt.oimdbInstance[name].collection.subscribeOnAnyUpdate(cb)
-        ),
-        { key: r => r.id, render: row }
-    );
+    const rows = exoRows(view.allPks(), row);
 
     const add = (): void => {
         const v = draft.getValue().trim();
         if (!v) return;
-        const id = `${name}-${v.toLowerCase().replace(/\s+/g, '-')}-${items().length}`;
+        const id = `${name}-${v.toLowerCase().replace(/\s+/g, '-')}-${rt.oimdbInstance[name].collection.getAll().length}`;
         rt.createEntity(name, { id, [nameField]: v, color: '#64748b' });
         draft.setValue('');
     };

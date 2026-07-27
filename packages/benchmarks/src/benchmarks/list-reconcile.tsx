@@ -21,6 +21,16 @@ export async function benchmarkListReconcile(rounds = 100, batch = 1): Promise<v
     const { flushSync } = await import('react-dom');
     const SvList = (await import('./svelte/SvList.svelte')).default;
     const { flush } = await import('svelte/internal'); // Svelte batches async — flush per op to time it
+    // Voby has no imperative list API — same as the other diffing frameworks it sets
+    // a new array through <For> (keyed by Row identity → reuse/move); tick() flushes.
+    const { $, $$, h: vh, render: vRender, For: vFor } = (await import('voby')) as unknown as {
+        $: (v: unknown) => { (): unknown; (v: unknown): void };
+        $$: (v: unknown) => unknown;
+        h: (...a: unknown[]) => unknown;
+        render: (child: unknown, parent: Element) => () => void;
+        For: unknown;
+    };
+    const { tick: obyTick } = (await import('oby')) as unknown as { tick: () => void };
 
     let uid = 0;
     const seed = (): Row[] => Array.from({ length: ROWS }, (_, i) => ({ id: i, text: `row ${i}` }));
@@ -78,10 +88,21 @@ export async function benchmarkListReconcile(rounds = 100, batch = 1): Promise<v
         return { measure: () => runOps(data, () => flushSync(() => setRows([...data]))), cleanup: () => { root.unmount(); c.remove(); } };
     };
 
+    const vobyPrep = (): Scenario => {
+        const data = seed();
+        const c = el();
+        const rows = $(data.slice()) as { (): Row[]; (v: Row[]): void };
+        const dispose = vRender(
+            vh('ul', {}, vh(vFor, { values: rows }, (it: unknown) => vh('li', {}, () => ($$(it) as Row).text))),
+            c,
+        );
+        return { measure: () => runOps(data, () => { rows([...data]); obyTick(); }), cleanup: () => { dispose(); c.remove(); } };
+    };
+
     await abBench(
         `LIST UPDATE — ${OP_ROUNDS}×{move,insert,remove,append} (Exodra imperative vs keyed-diff)`,
         `ms/${OP_ROUNDS * 4} ops`,
-        { exodra: exoPrep, solid: solidPrep, svelte: sveltePrep, react: reactPrep },
+        { exodra: exoPrep, solid: solidPrep, svelte: sveltePrep, react: reactPrep, voby: vobyPrep },
         { rounds, batch }
     );
 }

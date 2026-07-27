@@ -1,66 +1,70 @@
 import type { TExoSchema } from '@exodra/core';
 import { exoSelector } from '@oimdb/exodra';
 import { derive } from '@exodra/reactivity';
-import { structuralList } from '../lib/structural-list';
-import type { Comment, Task } from '../domain/types';
+import type { Task } from '../domain/types';
 import { getRuntime } from '../app/runtime';
-import { orderedStatuses } from '../store/workspace-store';
 
 const PRIORITIES: Task['priority'][] = ['urgent', 'high', 'medium', 'low'];
 
 export default function tasksPage(): TExoSchema {
     const rt = getRuntime();
-    const statuses = orderedStatuses(rt.oimdbInstance);
-    const members = rt.oimdbInstance.members.collection.getAll();
-    const labels = rt.oimdbInstance.labels.collection.getAll();
+    const v = rt.views;
+    // Statuses have no add-UI in this app, so a snapshot can't go stale; members
+    // and labels DO change (People / Tags pages), so their <option> lists must be
+    // reactive — a snapshot here would be the classic stale-dropdown bug. Order
+    // comes from the index (`byOrder`), never a per-render JS sort.
+    const statuses = [...v.statuses.byOrder.unsafeDense().getValue()];
 
-    // Order lives in the index (createdAt-ordered global array index, maintained
-    // incrementally) — the read is a map over the cached ordered pks, never an
-    // O(T log T) getAll()+sort on every keystroke-driven flush.
-    const allTasks = (): Task[] =>
-        rt.oimdbInstance.tasksByCreated
-            .getPks()
-            .map(pk => rt.oimdbInstance.tasks.collection.getOneByPk(pk))
-            .filter((t): t is Task => Boolean(t));
-
-    // Pre-ordered by the index (createdAt) — no per-render sort. Drop holes.
-    const commentsOf = (taskId: string): Comment[] =>
-        rt.oimdbInstance.comments.collection
-            .getManyByPks([...rt.oimdbInstance.commentsByTask.getPksByKey(taskId)])
-            .filter((c): c is Comment => Boolean(c));
-
-    // Author name follows the member's own byPk bindable, so a member rename
-    // updates it in place — no stale text, no rebuilding the comment row.
-    const commentRow = (c: Comment): TExoSchema => {
+    // One comment row per pk; body + author bind to their own sources (a member
+    // rename updates the author in place, no rebuild).
+    const commentRow = (comment: ReturnType<typeof v.comments.byPk>): TExoSchema => {
+        const authorId = comment.getValue()?.authorId ?? '';
         const author = derive(
-            exoSelector(rt.oimdbInstance.members.select.byPk(c.authorId)),
+            exoSelector(rt.oimdbInstance.members.select.byPk(authorId)),
             m => m?.name ?? '?'
         );
         return (
             <li static={{ class: 'cmt' }}>
                 <b static={{ class: 'cmt__author' }} bindable={{ textContent: author }} />
-                <span static={{ class: 'cmt__body' }}>{c.body}</span>
+                <span
+                    static={{ class: 'cmt__body' }}
+                    bindable={{ textContent: derive(comment, c => c?.body ?? '') }}
+                />
             </li>
         );
     };
 
-    const taskRow = (t: Task): TExoSchema => {
+    // One row per TASK (list = createdAt-ordered pks, key = pk). Built ONCE; EVERY
+    // field binds to the task's own bindable — pending class, the four <select>
+    // values, and the comment count (via the index `.pks`). Editing a field is a
+    // reconcile no-op, so focus survives; nothing is folded into a key.
+    const taskRow = (
+        task: ReturnType<typeof v.tasks.byPk>,
+        pk: string
+    ): TExoSchema => {
+        const cur = task.getValue();
         let composer = '';
+        // Reactive <option> lists — follow the collections so they never go stale.
+        const assigneeOptions = derive(v.members.all(), ms => [
+            <option static={{ value: '' }}>Unassigned</option>,
+            ...ms.map(m => <option static={{ value: m.id }}>{m.name}</option>),
+        ]);
+        const labelOptions = derive(v.labels.all(), ls => [
+            <option static={{ value: '' }}>no label</option>,
+            ...ls.map(l => <option static={{ value: l.id }}>{l.name}</option>),
+        ]);
         return (
             <li
-                static={{
-                    class: t.pending ? 'trow trow--pending' : 'trow',
-                    'data-id': t.id,
+                static={{ 'data-id': pk }}
+                bindable={{
+                    class: derive(task, t => (t?.pending ? 'trow trow--pending' : 'trow')),
                 }}
             >
                 <div static={{ class: 'trow__main' }}>
                     <input
-                        static={{ class: 'trow__title', value: t.title }}
+                        static={{ class: 'trow__title', value: cur?.title ?? '' }}
                         handlers={{
-                            onInput: e =>
-                                rt.editTask(t.id, {
-                                    title: e.currentTarget.value,
-                                }),
+                            onInput: e => rt.editTask(pk, { title: e.currentTarget.value }),
                         }}
                     />
                     <select
@@ -68,18 +72,13 @@ export default function tasksPage(): TExoSchema {
                             class: 'trow__status',
                             title: 'Status (moveTask → cnstra → activity)',
                         }}
+                        bindable={{ value: derive(task, t => t?.statusId ?? '') }}
                         handlers={{
-                            onChange: e =>
-                                rt.moveTask(
-                                    t.id,
-                                    e.currentTarget.value
-                                ),
+                            onChange: e => rt.moveTask(pk, e.currentTarget.value),
                         }}
                     >
                         {statuses.map(s => (
-                            <option static={{ value: s.id, selected: s.id === t.statusId }}>
-                                {s.name}
-                            </option>
+                            <option static={{ value: s.id }}>{s.name}</option>
                         ))}
                     </select>
                     <select
@@ -87,67 +86,48 @@ export default function tasksPage(): TExoSchema {
                             class: 'trow__assignee',
                             title: 'Assignee (assignTask → cnstra)',
                         }}
-                        handlers={{
-                            onChange: e => {
-                                const v = e.currentTarget.value;
-                                rt.assignTask(t.id, v || null);
-                            },
+                        bindable={{
+                            value: derive(task, t => t?.assigneeId ?? ''),
+                            children: assigneeOptions,
                         }}
-                    >
-                        <option static={{ value: '', selected: !t.assigneeId }}>
-                            Unassigned
-                        </option>
-                        {members.map(m => (
-                            <option static={{ value: m.id, selected: m.id === t.assigneeId }}>
-                                {m.name}
-                            </option>
-                        ))}
-                    </select>
+                        handlers={{
+                            onChange: e => rt.assignTask(pk, e.currentTarget.value || null),
+                        }}
+                    />
                     <select
                         static={{ class: 'trow__prio' }}
+                        bindable={{ value: derive(task, t => t?.priority ?? 'medium') }}
                         handlers={{
                             onChange: e =>
-                                rt.editTask(t.id, {
+                                rt.editTask(pk, {
                                     priority: e.currentTarget.value as Task['priority'],
                                 }),
                         }}
                     >
                         {PRIORITIES.map(p => (
-                            <option static={{ value: p, selected: p === t.priority }}>
-                                {p}
-                            </option>
+                            <option static={{ value: p }}>{p}</option>
                         ))}
                     </select>
                     <select
                         static={{ class: 'trow__label' }}
-                        handlers={{
-                            onChange: e => {
-                                const v = e.currentTarget.value;
-                                rt.editTask(t.id, {
-                                    labelId: v || null,
-                                });
-                            },
+                        bindable={{
+                            value: derive(task, t => t?.labelId ?? ''),
+                            children: labelOptions,
                         }}
-                    >
-                        <option static={{ value: '', selected: !t.labelId }}>
-                            no label
-                        </option>
-                        {labels.map(l => (
-                            <option static={{ value: l.id, selected: l.id === t.labelId }}>
-                                {l.name}
-                            </option>
-                        ))}
-                    </select>
+                        handlers={{
+                            onChange: e => rt.editTask(pk, { labelId: e.currentTarget.value || null }),
+                        }}
+                    />
                     <input
                         static={{
                             class: 'trow__tags',
-                            value: t.tagIds.join(', '),
+                            value: (cur?.tagIds ?? []).join(', '),
                             title: 'Comma-separated tag ids (setTaskTags → cnstra)',
                         }}
                         handlers={{
                             onChange: e =>
                                 rt.setTaskTags(
-                                    t.id,
+                                    pk,
                                     e.currentTarget.value
                                         .split(',')
                                         .map(s => s.trim())
@@ -157,29 +137,34 @@ export default function tasksPage(): TExoSchema {
                     />
                     <button
                         static={{ class: 'trow__del', 'aria-label': 'Delete task' }}
-                        handlers={{ onClick: () => rt.deleteTask(t.id) }}
+                        handlers={{ onClick: () => rt.deleteTask(pk) }}
                     >
                         ✕
                     </button>
                 </div>
                 <details static={{ class: 'trow__comments' }}>
-                    <summary>{`${rt.oimdbInstance.commentsByTask.getPksByKey(t.id).length} comments`}</summary>
-                    <ul static={{ class: 'cmts' }}>
-                        {commentsOf(t.id).map(commentRow)}
-                    </ul>
+                    <summary
+                        bindable={{
+                            textContent: derive(
+                                v.comments.byTask.pks(pk),
+                                c => `${c.length} comments`
+                            ),
+                        }}
+                    />
+                    <ul
+                        static={{ class: 'cmts' }}
+                        bindable={{ children: v.comments.byTask.rows(pk, commentRow) }}
+                    />
                     <div static={{ class: 'cmt-add' }}>
                         <input
-                            static={{
-                                class: 'add__input',
-                                placeholder: 'Comment as Ada…',
-                            }}
+                            static={{ class: 'add__input', placeholder: 'Comment as Ada…' }}
                             handlers={{
                                 onInput: e => {
                                     composer = e.currentTarget.value;
                                 },
                                 onKeyDown: e => {
                                     if (e.key === 'Enter' && composer.trim()) {
-                                        rt.addComment(t.id, 'm-ada', composer.trim());
+                                        rt.addComment(pk, 'm-ada', composer.trim());
                                         composer = '';
                                         e.currentTarget.value = '';
                                     }
@@ -192,20 +177,7 @@ export default function tasksPage(): TExoSchema {
         );
     };
 
-    // A task row rebuilds only on a STRUCTURAL change (add/remove/settle, comment
-    // count) — editing a title/tags field or a select leaves the key unchanged, so
-    // the reconcile is a no-op and input focus is kept.
-    // The row key depends on RELATED data (comment count), not just the `tasks`
-    // array, so the wrapping bindable forwards every store update and lets
-    // `exoChildren` dedup on the rendered key set — gating on the `tasks` array
-    // alone would swallow comment add/remove.
-    const rows = structuralList(
-        allTasks,
-        [rt.oimdbInstance.tasks.collection, rt.oimdbInstance.comments.collection],
-        t =>
-            `${t.id}:${t.pending ? 1 : 0}:${rt.oimdbInstance.commentsByTask.getPksByKey(t.id).length}`,
-        taskRow
-    );
+    const rows = v.tasks.byCreated.rows(taskRow);
 
     return (
         <div static={{ class: 'page page--tasks' }}>

@@ -19,6 +19,12 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
     const { flushSync } = await import('react-dom');
     const SvToggle = (await import('./svelte/SvToggle.svelte')).default;
     const { flush } = await import('svelte/internal'); // Svelte batches async — flush per toggle to time it
+    const { $, h: vh, render: vRender } = (await import('voby')) as unknown as {
+        $: (v: unknown) => { (): unknown; (v: unknown): void };
+        h: (...a: unknown[]) => unknown;
+        render: (child: unknown, parent: Element) => () => void;
+    };
+    const { tick: obyTick } = (await import('oby')) as unknown as { tick: () => void };
 
     const el = (): HTMLElement => { const c = document.createElement('div'); document.body.appendChild(c); return c; };
 
@@ -60,10 +66,22 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
         return { measure: () => { for (let k = 1; k <= TOGGLES; k++) flushSync(() => setOn(k % 2 === 1)); }, cleanup: () => { root.unmount(); c.remove(); } };
     };
 
+    const vobyPrep = (): Scenario => {
+        const on = $(false) as { (): boolean; (v: boolean): void };
+        const c = el();
+        const dispose = vRender(
+            vh('div', {}, () => (on()
+                ? vh('div', { class: 'panel' }, vh('h4', {}, 'Panel'), vh('p', {}, 'body'), vh('button', { onClick: noop }, 'x'))
+                : null)),
+            c,
+        );
+        return { measure: () => { for (let k = 1; k <= TOGGLES; k++) { on(k % 2 === 1); obyTick(); } }, cleanup: () => { dispose(); c.remove(); } };
+    };
+
     await abBench(
         `TOGGLE — ${TOGGLES} mount/unmount of a panel`,
         `ms/${TOGGLES} toggles`,
-        { exodra: exoPrep, solid: solidPrep, svelte: sveltePrep, react: reactPrep },
+        { exodra: exoPrep, solid: solidPrep, svelte: sveltePrep, react: reactPrep, voby: vobyPrep },
         { rounds, batch }
     );
 }

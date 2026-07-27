@@ -19,6 +19,14 @@ export async function benchmarkReactiveUpdate(rounds = 100, batch = 1): Promise<
     const { flushSync } = await import('react-dom');
     const SvReactive = (await import('./svelte/SvReactive.svelte')).default;
     const { flush } = await import('svelte/internal'); // Svelte batches async — flush per sweep to time it
+    // Voby: fine-grained like Solid; oby.tick() flushes its scheduler synchronously
+    // (its flushSync) so a sweep commits inside the measured region.
+    const { $, h: vh, render: vRender } = (await import('voby')) as unknown as {
+        $: (v: unknown) => { (): unknown; (v: unknown): void };
+        h: (...a: unknown[]) => unknown;
+        render: (child: unknown, parent: Element) => () => void;
+    };
+    const { tick: obyTick } = (await import('oby')) as unknown as { tick: () => void };
 
     const el = (): HTMLElement => { const c = document.createElement('div'); document.body.appendChild(c); return c; };
     const sweepValues = (s: number): string[] => Array.from({ length: NODES }, (_, i) => `s${s}-${i}`);
@@ -59,10 +67,20 @@ export async function benchmarkReactiveUpdate(rounds = 100, batch = 1): Promise<
         return { measure: () => { for (let s = 0; s < SWEEPS; s++) flushSync(() => setValues(sweepValues(s))); }, cleanup: () => { root.unmount(); c.remove(); } };
     };
 
+    const vobyPrep = (): Scenario => {
+        const sigs = Array.from({ length: NODES }, (_, i) => $(`v${i}`));
+        const c = el();
+        const dispose = vRender(vh('div', {}, sigs.map(s => vh('span', {}, s))), c);
+        return {
+            measure: () => { for (let s = 0; s < SWEEPS; s++) { for (let i = 0; i < NODES; i++) sigs[i](`s${s}-${i}`); obyTick(); } },
+            cleanup: () => { dispose(); c.remove(); },
+        };
+    };
+
     await abBench(
         `REACTIVE UPDATE — ${NODES} nodes × ${SWEEPS} sweeps`,
         `ms/${NODES * SWEEPS} value changes`,
-        { exodra: exoPrep, solid: solidPrep, svelte: sveltePrep, react: reactPrep },
+        { exodra: exoPrep, solid: solidPrep, svelte: sveltePrep, react: reactPrep, voby: vobyPrep },
         { rounds, batch }
     );
 }

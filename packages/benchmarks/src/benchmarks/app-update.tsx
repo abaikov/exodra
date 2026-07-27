@@ -15,7 +15,7 @@ export async function benchmarkAppUpdate(rounds = 100, batch = 5): Promise<void>
     // card0's details toggle (starts open: 1 .details → 0) AND its tag count (starts
     // with 1 tag → 2), and that the kept tag node is REUSED (same element), not
     // rebuilt. A framework that silently no-ops fails here instead of "winning".
-    for (const name of ['exodra', 'solid', 'svelte', 'react'] as const) {
+    for (const name of ['exodra', 'solid', 'svelte', 'react', 'voby'] as const) {
         const c = el();
         const app = mounts[name](c);
         const card0 = () => c.querySelector('.card')!;
@@ -50,14 +50,18 @@ export async function benchmarkAppUpdate(rounds = 100, batch = 5): Promise<void>
     await abBench(
         `APP UPDATE — 80 cards: details toggle + dynamic tag list ×${ROUNDS} (fat real-app batch)`,
         `ms/${ROUNDS} rounds`,
-        { exodra: prep(mounts.exodra), solid: prep(mounts.solid), svelte: prep(mounts.svelte), react: prep(mounts.react) },
+        {
+            exodra: prep(mounts.exodra), solid: prep(mounts.solid),
+            svelte: prep(mounts.svelte), react: prep(mounts.react),
+            voby: prep(mounts.voby),
+        },
         { rounds, batch },
     );
 }
 
 export async function verifyAppUpdate(): Promise<void> {
     const mounts = await loadMounts();
-    for (const name of ['exodra', 'solid', 'svelte', 'react'] as const) {
+    for (const name of ['exodra', 'solid', 'svelte', 'react', 'voby'] as const) {
         const c = el();
         const app = mounts[name](c);
         const card0 = () => c.querySelector('.card')!;

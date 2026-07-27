@@ -10,9 +10,9 @@
   "devDependencies": {
     "@exodra/core": "^0.2.0",
     "@exodra/dom": "^0.2.0",
-    "@exodra/string": "^0.2.0",
+    "@exodra/string": "^0.3.0",
     "@exodra/reactivity": "^0.2.0",
-    "@exodra/ssr": "^0.2.0",
+    "@exodra/ssr": "^0.2.1",
     "@exodra/jsx": "^0.2.0",
     "@exodra/router": "^0.2.0",
     "@types/node": "^22.10.5",

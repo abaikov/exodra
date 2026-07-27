@@ -37,6 +37,16 @@ export async function benchmarkReconcile(rounds = 100, batch = 3): Promise<void>
     const { createRoot } = await import('react-dom/client');
     const { flushSync } = await import('react-dom');
     const SvReconcile = (await import('./svelte/SvReconcile.svelte')).default;
+    // Voby: keyed reconcile via <For> (keys by row-id value → reuse+move), same as
+    // Solid; oby.tick() flushes synchronously so each shuffle commits in-region.
+    const { $, $$, h: vh, render: vRender, For: vFor } = (await import('voby')) as unknown as {
+        $: (v: unknown) => { (): unknown; (v: unknown): void };
+        $$: (v: unknown) => unknown;
+        h: (...a: unknown[]) => unknown;
+        render: (child: unknown, parent: Element) => () => void;
+        For: unknown;
+    };
+    const { tick: obyTick } = (await import('oby')) as unknown as { tick: () => void };
 
     const el = (): HTMLElement => {
         const c = document.createElement('div');
@@ -99,10 +109,24 @@ export async function benchmarkReconcile(rounds = 100, batch = 3): Promise<void>
         };
     };
 
+    const vobyPrep = (): Scenario => {
+        const c = el();
+        const rows = $(IDS.slice()) as { (): number[]; (v: number[]): void };
+        const dispose = vRender(
+            vh('ul', {}, vh(vFor, { values: rows }, (id: unknown) => vh('li', { class: 'row' }, () => `#${$$(id)}`))),
+            c,
+        );
+        let seed = 1;
+        return {
+            measure: () => { for (let o = 0; o < OPS; o++) { rows(shuffled(IDS, seed++)); obyTick(); } },
+            cleanup: () => { dispose(); c.remove(); },
+        };
+    };
+
     await abBench(
         `RECONCILE — declarative replace of a ${N}-row keyed list, shuffled ×${OPS}`,
         `ms/${OPS} reconciles`,
-        { exodra: exoPrep, solid: solidPrep, svelte: sveltePrep, react: reactPrep },
+        { exodra: exoPrep, solid: solidPrep, svelte: sveltePrep, react: reactPrep, voby: vobyPrep },
         { rounds, batch },
     );
 }

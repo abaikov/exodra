@@ -1,6 +1,6 @@
 {
   "name": "@exodra/babel-plugin-jsx",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Babel plugin for transforming JSX to Exodra h() calls with three-props architecture",
   "keywords": [
     "exodra",

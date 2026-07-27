@@ -25,8 +25,14 @@ export function escapeOrRaw(value: unknown): string {
     return value instanceof SafeHtml ? value.value : escapeHtml(value);
 }
 
+// Most rendered strings (labels, ids, class names, numbers) contain none of the
+// four HTML-significant characters, so a single scan that bails early avoids four
+// `.replace` passes over the whole string in the common case.
+const NEEDS_ESCAPE = /[&<>"]/;
 export function escapeHtml(value: unknown): string {
-    return String(value)
+    const s = String(value);
+    if (!NEEDS_ESCAPE.test(s)) return s;
+    return s
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -39,7 +45,18 @@ export const escapeAttribute = escapeHtml;
 // `onClick` etc. are event handlers (not rendered); `onExoMount`/`onExoUnmount`
 // are lifecycle hooks handled elsewhere.
 export function isEventName(name: string): boolean {
-    return /^on[A-Z]/.test(name) && !name.startsWith('onExo');
+    // `on[A-Z]…` but not `onExo…` (lifecycle). A char check avoids running a
+    // regex for every attribute of every element during SSR.
+    if (
+        name.length < 3 ||
+        name.charCodeAt(0) !== 111 /* o */ ||
+        name.charCodeAt(1) !== 110 /* n */
+    ) {
+        return false;
+    }
+    const c = name.charCodeAt(2);
+    if (c < 65 || c > 90) return false; // third char not A–Z
+    return !name.startsWith('onExo');
 }
 
 // An object attribute value → `k: v; k2: v2` (e.g. an un-folded `style` object).
@@ -84,4 +101,24 @@ export function serializeAttribute(name: string, value: unknown): string {
 export function spaceAttribute(name: string, value: unknown): string {
     const attr = serializeAttribute(name, value);
     return attr ? ` ${attr}` : '';
+}
+
+// Same result as `spaceAttribute` for a NORMAL attribute name, but the caller has
+// already proven (at compile time) that `name` is a real attribute — not
+// `children`/`textContent`/a directive/an event — and already mapped `className`
+// to `class`. So this skips serializeAttribute's per-attribute name cascade, which
+// is ~76% of the per-attribute cost. The SSR compiler emits it as `_au` for
+// literal-named attribute holes; the runtime walker (unknown names) still uses the
+// full path. Byte-identical for normal names — pinned by the ssr-emit parity tests.
+export function spaceAttributeUnchecked(name: string, value: unknown): string {
+    if (
+        value === false ||
+        value === null ||
+        value === undefined ||
+        typeof value === 'function'
+    ) {
+        return '';
+    }
+    if (value === true) return ` ${name}`;
+    return ` ${name}="${escapeAttribute(serializeAttributeValue(value))}"`;
 }

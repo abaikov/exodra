@@ -1,6 +1,6 @@
 {
   "name": "@exodra/ssr",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -57,6 +57,6 @@
   },
   "peerDependencies": {
     "@exodra/core": "^0.2.0",
-    "@exodra/string": "^0.2.0"
+    "@exodra/string": "^0.3.0"
   }
 }

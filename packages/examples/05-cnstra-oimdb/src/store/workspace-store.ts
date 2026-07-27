@@ -1,11 +1,7 @@
 // oimdb store for the workspace: one collection per entity plus the derived
 // indexes the views read. derivedSetIndex auto-maintains groupings as tasks
 // change. API ref: https://abaikov.github.io/oimdb/llms.txt
-import {
-    OIMEventQueue,
-    createOIMCollectionKit,
-    createOIMOrderedListCommandStreamDiffDriven,
-} from '@oimdb/core';
+import { OIMEventQueue, createOIMCollectionKit } from '@oimdb/core';
 import type {
     Activity,
     Comment,
@@ -48,18 +44,13 @@ export function createWorkspaceStore() {
         t => t.projectId
     );
     // Board column: ORDER lives in the index (incremental), never re-sorted on
-    // read. `orderBy` keeps each status key sorted by createdAt as tasks change,
-    // and the array-based index unlocks the O(delta) command stream below.
+    // read. `orderBy` keeps each status key sorted by createdAt as tasks change;
+    // being array-based lets the facade's `.list()` drive an O(delta) command
+    // stream over it (moved rows relocate, they don't rebuild).
     const tasksByStatus = tasks.indexFactory.derivedArrayIndex<string>(
         t => t.statusId,
         { orderBy: t => t.createdAt }
     );
-    // Diff-driven ordered-list stream over the ordered index: per-key membership
-    // and reorder become position-addressed insert/move/remove commands, which
-    // `exoList` forwards 1:1 to the DOM (moved rows relocate, they don't rebuild).
-    const tasksByStatusStream =
-        createOIMOrderedListCommandStreamDiffDriven(queue, tasksByStatus);
-
     // Whole-collection createdAt order for the Tasks page, maintained incrementally
     // — the list read is a map over cached ordered pks, not a getAll()+sort per flush.
     const tasksByCreated = tasks.indexFactory.derivedArrayGlobalIndex({
@@ -94,6 +85,11 @@ export function createWorkspaceStore() {
     const activityByTime = activity.indexFactory.derivedArrayGlobalIndex({
         orderBy: a => -a.at,
     });
+    // Board/Tasks read statuses in column order — order lives in the index, not a
+    // per-render getAll().sort().
+    const statusesByOrder = statuses.indexFactory.derivedArrayGlobalIndex({
+        orderBy: s => s.order,
+    });
 
     return {
         queue,
@@ -109,7 +105,6 @@ export function createWorkspaceStore() {
         activity,
         tasksByProject,
         tasksByStatus,
-        tasksByStatusStream,
         tasksByCreated,
         tasksByMilestone,
         tasksByAssignee,
@@ -119,6 +114,7 @@ export function createWorkspaceStore() {
         milestonesByProject,
         commentsByTask,
         activityByTime,
+        statusesByOrder,
     };
 }
 
@@ -161,10 +157,4 @@ export function takeSnapshot(oimdbInstance: WorkspaceStore): WorkspaceSnapshot {
         comments: oimdbInstance.comments.collection.getAll(),
         activity: oimdbInstance.activity.collection.getAll(),
     };
-}
-
-// --- read helpers used across pages -----------------------------------------
-
-export function orderedStatuses(oimdbInstance: WorkspaceStore): Status[] {
-    return oimdbInstance.statuses.collection.getAll().slice().sort((a, b) => a.order - b.order);
 }

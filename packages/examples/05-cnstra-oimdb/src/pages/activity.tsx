@@ -1,6 +1,5 @@
 import type { TExoSchema } from '@exodra/core';
-import { bindable } from '@exodra/reactivity';
-import { exoSource, exoChildren } from '@oimdb/exodra';
+import { derive } from '@exodra/reactivity';
 import type { Activity } from '../domain/types';
 import { getRuntime } from '../app/runtime';
 
@@ -14,7 +13,10 @@ const KIND_ICON: Record<Activity['kind'], string> = {
     'project.archived': '📦',
 };
 
-function row(a: Activity): TExoSchema {
+// Activity records are append-only and immutable, so a build-time snapshot is
+// correct forever — no per-field bindable needed.
+function row(a: Activity | undefined): TExoSchema {
+    if (!a) return <li static={{ class: 'feed__item' }} />;
     return (
         <li static={{ class: 'feed__item', 'data-kind': a.kind }}>
             <span static={{ class: 'feed__icon' }}>{KIND_ICON[a.kind] ?? '•'}</span>
@@ -28,32 +30,16 @@ function row(a: Activity): TExoSchema {
 // activity neuron), and this page reconciles newest-first as they arrive.
 export default function activityPage(): TExoSchema {
     const rt = getRuntime();
-    const empty = bindable('');
-    const setEmpty = () =>
-        empty.setValue(
-            rt.oimdbInstance.activity.collection.getAll().length
-                ? ''
-                : 'No activity yet — do something on the Board.'
-        );
 
-    // Newest-first order lives in the index (maintained incrementally); each
-    // appended activity is one insert, not a full getAll()+sort of the whole log.
-    const feed = exoChildren(
-        exoSource(
-            () =>
-                rt.oimdbInstance.activityByTime
-                    .getPks()
-                    .map(pk => rt.oimdbInstance.activity.collection.getOneByPk(pk))
-                    .filter((a): a is Activity => Boolean(a)),
-            cb =>
-                rt.oimdbInstance.activity.collection.subscribeOnAnyUpdate(() => {
-                    cb();
-                    setEmpty();
-                })
-        ),
-        { key: a => a.id, render: row }
+    // Empty-state message, reactive off the whole collection — no manual toggle.
+    const empty = derive(rt.views.activity.all(), list =>
+        list.length ? '' : 'No activity yet — do something on the Board.'
     );
-    setEmpty();
+
+    // Newest-first order lives in the index (maintained incrementally). `.rows`
+    // keys by pk — no key function — and each appended activity is one insert, not
+    // a getAll()+sort of the whole log.
+    const feed = rt.views.activity.byTime.rows(a => row(a.getValue()));
 
     return (
         <div static={{ class: 'page page--activity' }}>

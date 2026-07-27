@@ -9,6 +9,8 @@ export default defineConfig({
     outDir: 'dist',
     splitting: false,
     treeshake: false,
-    keepNames: true,
+    // No minification here, so function names survive anyway — `keepNames` only
+    // added `__name(...)` wrappers that showed up as ~7% of SSR render CPU.
+    keepNames: false,
     tsconfig: 'tsconfig.tsup.json',
 });

@@ -10,6 +10,10 @@ import {
     type WorkspaceStore,
 } from '../store/workspace-store';
 import {
+    createWorkspaceViews,
+    type WorkspaceViews,
+} from '../store/workspace-views';
+import {
     createWorkspaceCns,
     addTaskRequested,
     moveTaskRequested,
@@ -37,6 +41,8 @@ import type {
 
 export interface WorkspaceRuntime {
     oimdbInstance: WorkspaceStore;
+    // Reactive read layer (facades over the store's collections + indexes).
+    views: WorkspaceViews;
     cns: WorkspaceCns['cns'];
     error: TExoWritableBindable<string>;
     // command dispatchers (stimulate the CNS; clear the error first)
@@ -83,6 +89,7 @@ export function createRuntime(snapshot?: WorkspaceSnapshot): WorkspaceRuntime {
 
     return {
         oimdbInstance,
+        views: createWorkspaceViews(oimdbInstance),
         cns,
         error,
         addTask: cmd => send(addTaskRequested.createSignal(cmd)),

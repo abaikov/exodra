@@ -56,6 +56,41 @@ const items = list([
 <ul bindableList={{ children: items }} />
 ```
 
+## Identity & Reconciliation
+
+The three buckets describe *what a node is*. This describes *how a node stays
+itself across updates* — and it's the model that most sets Exodra apart.
+
+A schema is a plain **value**: a tree of `h(...)` objects. There is no virtual
+DOM. The renderer keeps a map from **schema object → DOM node**, and on every
+update it reconciles by **reference identity**:
+
+- **Same schema reference** as before → the **same DOM node is reused** (moved if
+  its position changed, never rebuilt).
+- **New schema reference** → a node is built (its `onExoMount` fires).
+- **A schema that disappeared** → its node is removed, its bindings disposed
+  (its `onExoUnmount` fires).
+
+So **whether a node survives an update depends entirely on whether you hand back
+the same object.** That single rule is what preserves input focus, scroll
+position, and per-node state — no `key` prop, no heuristics: the reference *is*
+the key.
+
+This is not "work with the DOM imperatively." It's the functional idiom of
+**structural sharing** (as in persistent/immutable data): keep the reference for
+what's unchanged, mint a new one for what changed, and the renderer diffs the two
+by identity. You don't mutate a node's DOM — you decide which value to keep.
+
+The trade is deliberate. React hides identity and hands you `key` / `memo` as
+escape hatches when "describe and forget" breaks; Exodra makes identity
+**first-class**. You get precise control (exact reuse, no rebuild churn) in
+exchange for thinking about which schema objects are stable.
+
+In practice that means: **cache a node's schema by a stable key and only rebuild
+the array when the key set changes** — a field edit flows through the node's own
+`bindable` and keeps its DOM (and focus). The full focus-safe list pattern lives
+in [Lists & Reconciliation](../guides/lists.md).
+
 ## Reactivity System
 
 Exodra's reactivity is built from three primitives: `bindable`, `derive`, and

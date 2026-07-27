@@ -29,6 +29,7 @@ let usedStyle = false;
 // source file already binds one of those names (shadow-safety).
 export interface SsrHelperNames {
     a: string;
+    au: string;
     esc: string;
     html: string;
     ctx: string;
@@ -36,6 +37,7 @@ export interface SsrHelperNames {
 }
 let H: SsrHelperNames = {
     a: '_a',
+    au: '_au',
     esc: '_esc',
     html: '_html',
     ctx: '_ctx',
@@ -51,7 +53,7 @@ export function ssrHelperNames(): SsrHelperNames {
 export function resetSsrUsage(): void {
     usedCtx = false;
     usedStyle = false;
-    H = { a: '_a', esc: '_esc', html: '_html', ctx: '_ctx', style: '_style' };
+    H = { a: '_a', au: '_au', esc: '_esc', html: '_html', ctx: '_ctx', style: '_style' };
 }
 export function ssrUsedCtx(): boolean {
     return usedCtx;
@@ -143,9 +145,19 @@ function propKey(prop: t.ObjectProperty): string {
 const call = (fn: string, args: t.Expression[]): t.CallExpression =>
     t.callExpression(t.identifier(fn), args);
 
-// `_a(name, valueExpr)` — attribute hole (leading-space form, empty when omitted).
-const attrHole = (name: string, valueExpr: t.Expression): t.Expression =>
-    call(H.a, [t.stringLiteral(name), valueExpr]);
+// An attribute hole (leading-space form, empty when omitted). The name is known
+// at compile time: a content/lifecycle/event name never renders as an attribute,
+// so keep the full `_a` (returns '' at runtime, exact parity); any real attribute
+// uses `_au`, which skips serializeAttribute's per-attribute name cascade (~76% of
+// the per-attribute cost) since we've already classified the name and mapped
+// `className` → `class` here.
+const attrHole = (name: string, valueExpr: t.Expression): t.Expression => {
+    if (NON_ATTR.has(name) || isEventName(name)) {
+        return call(H.a, [t.stringLiteral(name), valueExpr]);
+    }
+    const attributeName = name === 'className' ? 'class' : name;
+    return call(H.au, [t.stringLiteral(attributeName), valueExpr]);
+};
 
 // `_esc(expr)` — escaped text hole.
 const escHole = (expr: t.Expression): t.Expression => call(H.esc, [expr]);
@@ -420,8 +432,14 @@ function collectChild(child: JSXChild, parts: Part[]): void {
 //   {c ? a : b}     → c ? <compiled a> : <compiled b>
 //   {<x/>}          → <x-template>   (raw HTML, not escaped)
 //   {scalar}        → _esc(scalar)   (escaped text)
-function compileChildExpression(expr: t.Expression): t.Expression {
-    if (t.isJSXElement(expr)) return emitSsr(expr);
+// `raw = true` means the result is composed into a string right here (a list
+// `.map(...).join('')` item, or a branch of one) rather than handed to a parent
+// as a SafeHtml hole — so an element can skip the `_html(...)` wrap: `.join('')`
+// (and template-literal interpolation) stringify it anyway, and
+// `String(markHtml(x)) === x`, so the output is byte-identical without the wrapper
+// or its per-item SafeHtml allocation.
+function compileChildExpression(expr: t.Expression, raw = false): t.Expression {
+    if (t.isJSXElement(expr)) return raw ? emitSsrRaw(expr) : emitSsr(expr);
     if (t.isJSXFragment(expr)) return emitFragment(expr);
 
     // Falsy branches render nothing (the walker drops null/undefined/false).
@@ -432,15 +450,15 @@ function compileChildExpression(expr: t.Expression): t.Expression {
     if (t.isConditionalExpression(expr)) {
         return t.conditionalExpression(
             expr.test,
-            compileChildExpression(expr.consequent),
-            compileChildExpression(expr.alternate)
+            compileChildExpression(expr.consequent, raw),
+            compileChildExpression(expr.alternate, raw)
         );
     }
 
     if (t.isLogicalExpression(expr) && expr.operator === '&&') {
         return t.conditionalExpression(
             expr.left,
-            compileChildExpression(expr.right),
+            compileChildExpression(expr.right, raw),
             t.stringLiteral('')
         );
     }
@@ -482,13 +500,15 @@ function compileCallback(
     if (t.isArrowFunctionExpression(cb) && !t.isBlockStatement(cb.body)) {
         return t.arrowFunctionExpression(
             cb.params,
-            compileChildExpression(cb.body as t.Expression)
+            // List items are join('')'d → compile the body in `raw` mode so an
+            // element skips its redundant `_html(...)` wrap.
+            compileChildExpression(cb.body as t.Expression, true)
         );
     }
     if (t.isBlockStatement(cb.body)) {
         const body = cb.body.body.map(stmt => {
             if (t.isReturnStatement(stmt) && stmt.argument) {
-                return t.returnStatement(compileChildExpression(stmt.argument));
+                return t.returnStatement(compileChildExpression(stmt.argument, true));
             }
             return stmt;
         });
@@ -540,4 +560,13 @@ export function emitSsr(node: t.JSXElement): t.Expression {
     const parts: Part[] = [];
     collect(node, parts);
     return markedTemplate(parts);
+}
+
+// Same as emitSsr but WITHOUT the `_html` wrapper — for contexts that stringify
+// the result immediately (list `.map(...).join('')` items), where the wrapper
+// would only add a per-item SafeHtml allocation the `join` then undoes.
+function emitSsrRaw(node: t.JSXElement): t.Expression {
+    const parts: Part[] = [];
+    collect(node, parts);
+    return buildTemplate(parts);
 }
