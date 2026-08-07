@@ -1,0 +1,984 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "createExodraApp",
+        "label": "createExodraApp",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(projectName, options): Promise<void>",
+            "full": "(projectName, options): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 274,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createExodraConfig",
+        "label": "createExodraConfig",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(_projectPath, _options): Promise<void>",
+            "full": "(_projectPath, _options): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 286,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "CreateOptions",
+        "label": "CreateOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "typescript?: boolean;",
+            "full": "typescript?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "javascript?: boolean;",
+            "full": "javascript?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "tailwind?: boolean;",
+            "full": "tailwind?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "eslint?: boolean;",
+            "full": "eslint?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "srcDir?: boolean;",
+            "full": "srcDir?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "ssr?: boolean;",
+            "full": "ssr?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "jsx?: boolean;",
+            "full": "jsx?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "app?: boolean;",
+            "full": "app?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "importAlias?: string;",
+            "full": "importAlias?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "useNpm?: boolean;",
+            "full": "useNpm?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "useYarn?: boolean;",
+            "full": "useYarn?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "usePnpm?: boolean;",
+            "full": "usePnpm?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "useBun?: boolean;",
+            "full": "useBun?: boolean;",
+            "parts": []
+          }
+        ],
+        "memberCount": 13,
+        "stereotype": "interface",
+        "width": 171,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "createPackageJson",
+        "label": "createPackageJson",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(projectPath, projectName, useTypeScript, options): Promise<void>",
+            "full": "(projectPath, projectName, useTypeScript, options): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 453,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createProjectFiles",
+        "label": "createProjectFiles",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(projectPath, projectName, useTypeScript, options): Promise<void>",
+            "full": "(projectPath, projectName, useTypeScript, options): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 453,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createSsrFiles",
+        "label": "createSsrFiles",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(projectPath, projectName, useJsx): Promise<void>",
+            "full": "(projectPath, projectName, useJsx): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Scaffold a server-side-rendered app: @exodra/ssr renders the body + a state script, and the client hydrates.",
+        "width": 350,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createSsrPackageJson",
+        "label": "createSsrPackageJson",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(projectPath, projectName, useJsx): Promise<void>",
+            "full": "(projectPath, projectName, useJsx): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 350,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "formatComponentName",
+        "label": "formatComponentName",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name, format): string",
+            "full": "(name, format): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "formatFileName",
+        "label": "formatFileName",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name, format): string",
+            "full": "(name, format): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "generateApiFile",
+        "label": "generateApiFile",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(routeName): string",
+            "full": "(routeName): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "An API route module exporting GET/POST handlers.",
+        "width": 158,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "generateComponentFile",
+        "label": "generateComponentFile",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(componentName, className): string",
+            "full": "(componentName, className): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A standalone component, usable as `h(Name, { static: { ...",
+        "width": 254,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "generatePageFile",
+        "label": "generatePageFile",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(pageName): string",
+            "full": "(pageName): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A page: a zero-arg function returning a schema, assignable to a router `component` (TExoRouteRenderer).",
+        "width": 152,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "initGit",
+        "label": "initGit",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(projectPath): Promise<void>",
+            "full": "(projectPath): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "loadConfig",
+        "label": "loadConfig",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): Promise<any>",
+            "full": "(): Promise<any>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "program",
+        "label": "program",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "setupEslint",
+        "label": "setupEslint",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(projectPath, useTypeScript): Promise<void>",
+            "full": "(projectPath, useTypeScript): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 312,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "setupTailwind",
+        "label": "setupTailwind",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(projectPath): Promise<void>",
+            "full": "(projectPath): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "updateRouter",
+        "label": "updateRouter",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(pageName, pagePath): Promise<void>",
+            "full": "(pageName, pagePath): Promise<void>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 261,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "createExodraApp→createExodraConfig",
+        "from": "createExodraApp",
+        "to": "createExodraConfig",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExodraApp→CreateOptions",
+        "from": "createExodraApp",
+        "to": "CreateOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExodraApp→createPackageJson",
+        "from": "createExodraApp",
+        "to": "createPackageJson",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExodraApp→createProjectFiles",
+        "from": "createExodraApp",
+        "to": "createProjectFiles",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExodraApp→initGit",
+        "from": "createExodraApp",
+        "to": "initGit",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExodraApp→setupEslint",
+        "from": "createExodraApp",
+        "to": "setupEslint",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExodraApp→setupTailwind",
+        "from": "createExodraApp",
+        "to": "setupTailwind",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExodraConfig→CreateOptions",
+        "from": "createExodraConfig",
+        "to": "CreateOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createPackageJson→CreateOptions",
+        "from": "createPackageJson",
+        "to": "CreateOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createPackageJson→createSsrPackageJson",
+        "from": "createPackageJson",
+        "to": "createSsrPackageJson",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createProjectFiles→CreateOptions",
+        "from": "createProjectFiles",
+        "to": "CreateOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createProjectFiles→createSsrFiles",
+        "from": "createProjectFiles",
+        "to": "createSsrFiles",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1253,
+    "height": 1074,
+    "nodes": [
+      {
+        "id": "createExodraApp",
+        "x": 24,
+        "y": 228,
+        "width": 274,
+        "height": 69
+      },
+      {
+        "id": "createExodraConfig",
+        "x": 445.5,
+        "y": 316.5,
+        "width": 286,
+        "height": 69
+      },
+      {
+        "id": "CreateOptions",
+        "x": 968.5,
+        "y": 421.3,
+        "width": 171,
+        "height": 189
+      },
+      {
+        "id": "createPackageJson",
+        "x": 362,
+        "y": 179.5,
+        "width": 453,
+        "height": 69
+      },
+      {
+        "id": "createProjectFiles",
+        "x": 362,
+        "y": 82.5,
+        "width": 453,
+        "height": 69
+      },
+      {
+        "id": "createSsrFiles",
+        "x": 879,
+        "y": 24,
+        "width": 350,
+        "height": 69
+      },
+      {
+        "id": "createSsrPackageJson",
+        "x": 879,
+        "y": 121,
+        "width": 350,
+        "height": 69
+      },
+      {
+        "id": "formatComponentName",
+        "x": 72,
+        "y": 325,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "formatFileName",
+        "x": 72,
+        "y": 422,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "generateApiFile",
+        "x": 82,
+        "y": 519,
+        "width": 158,
+        "height": 69
+      },
+      {
+        "id": "generateComponentFile",
+        "x": 34,
+        "y": 616,
+        "width": 254,
+        "height": 69
+      },
+      {
+        "id": "generatePageFile",
+        "x": 85,
+        "y": 713,
+        "width": 152,
+        "height": 69
+      },
+      {
+        "id": "initGit",
+        "x": 480.5,
+        "y": 413.5,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "loadConfig",
+        "x": 91.5,
+        "y": 810,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "program",
+        "x": 101,
+        "y": 907,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "setupEslint",
+        "x": 432.5,
+        "y": 510.5,
+        "width": 312,
+        "height": 69
+      },
+      {
+        "id": "setupTailwind",
+        "x": 480.5,
+        "y": 607.5,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "updateRouter",
+        "x": 30.5,
+        "y": 981,
+        "width": 261,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "createExodraApp→createExodraConfig",
+        "points": [
+          {
+            "x": 226.9,
+            "y": 297
+          },
+          {
+            "x": 330,
+            "y": 351
+          },
+          {
+            "x": 445.5,
+            "y": 351
+          }
+        ]
+      },
+      {
+        "id": "createExodraApp→CreateOptions",
+        "points": [
+          {
+            "x": 174.3,
+            "y": 297
+          },
+          {
+            "x": 330,
+            "y": 700.5
+          },
+          {
+            "x": 588.5,
+            "y": 700.5
+          },
+          {
+            "x": 847,
+            "y": 700.5
+          },
+          {
+            "x": 968.5,
+            "y": 592.1
+          }
+        ]
+      },
+      {
+        "id": "createExodraApp→createPackageJson",
+        "points": [
+          {
+            "x": 281.2,
+            "y": 228
+          },
+          {
+            "x": 330,
+            "y": 214
+          },
+          {
+            "x": 362,
+            "y": 214
+          }
+        ]
+      },
+      {
+        "id": "createExodraApp→createProjectFiles",
+        "points": [
+          {
+            "x": 201.1,
+            "y": 228
+          },
+          {
+            "x": 330,
+            "y": 117
+          },
+          {
+            "x": 362,
+            "y": 117
+          }
+        ]
+      },
+      {
+        "id": "createExodraApp→initGit",
+        "points": [
+          {
+            "x": 192.4,
+            "y": 297
+          },
+          {
+            "x": 330,
+            "y": 448
+          },
+          {
+            "x": 480.5,
+            "y": 448
+          }
+        ]
+      },
+      {
+        "id": "createExodraApp→setupEslint",
+        "points": [
+          {
+            "x": 181.6,
+            "y": 297
+          },
+          {
+            "x": 330,
+            "y": 545
+          },
+          {
+            "x": 432.5,
+            "y": 545
+          }
+        ]
+      },
+      {
+        "id": "createExodraApp→setupTailwind",
+        "points": [
+          {
+            "x": 176.4,
+            "y": 297
+          },
+          {
+            "x": 330,
+            "y": 642
+          },
+          {
+            "x": 480.5,
+            "y": 642
+          }
+        ]
+      },
+      {
+        "id": "createExodraConfig→CreateOptions",
+        "points": [
+          {
+            "x": 731.5,
+            "y": 351
+          },
+          {
+            "x": 847,
+            "y": 351
+          },
+          {
+            "x": 968.5,
+            "y": 447.7
+          }
+        ]
+      },
+      {
+        "id": "createPackageJson→CreateOptions",
+        "points": [
+          {
+            "x": 702.1,
+            "y": 248.5
+          },
+          {
+            "x": 847,
+            "y": 292.5
+          },
+          {
+            "x": 968.5,
+            "y": 423.5
+          }
+        ]
+      },
+      {
+        "id": "createPackageJson→createSsrPackageJson",
+        "points": [
+          {
+            "x": 740.9,
+            "y": 179.5
+          },
+          {
+            "x": 847,
+            "y": 155.5
+          },
+          {
+            "x": 879,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "createProjectFiles→CreateOptions",
+        "points": [
+          {
+            "x": 664.7,
+            "y": 151.5
+          },
+          {
+            "x": 847,
+            "y": 234
+          },
+          {
+            "x": 984.6,
+            "y": 421.3
+          }
+        ]
+      },
+      {
+        "id": "createProjectFiles→createSsrFiles",
+        "points": [
+          {
+            "x": 740.9,
+            "y": 82.5
+          },
+          {
+            "x": 847,
+            "y": 58.5
+          },
+          {
+            "x": 879,
+            "y": 58.5
+          }
+        ]
+      }
+    ]
+  }
+}

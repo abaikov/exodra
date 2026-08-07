@@ -10,7 +10,7 @@ function stub<T>(initial: T) {
         setValue: (next: T) => {
             value = next;
         },
-        subscribe: () => () => {},
+        onChange: () => () => {},
     };
 }
 

@@ -1,0 +1,63 @@
+{
+  "name": "@exodra/monorepo-atlas",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^3.1.0",
+    "@exodra/core": "^0.3.0",
+    "@exodra/dom": "^0.3.0",
+    "@exodra/reactivity": "^0.3.0",
+    "@exodra/string": "^0.4.1",
+    "dependency-cruiser": "^18.1.1",
+    "ts-morph": "^21.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.16",
+    "tsup": "^8.0.0"
+  },
+  "description": "Architecture atlas for a TypeScript repository: a monorepo dependency graph with rule violations, and a UML diagram of what is inside each package \u2014 built with Exodra",
+  "bin": {
+    "exo-atlas": "./dist/bin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./graph.js": "./dist/graph.js"
+  },
+  "license": "MIT",
+  "author": "Andrei Baikov",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/monorepo-atlas"
+  },
+  "keywords": [
+    "architecture",
+    "atlas",
+    "class-diagram",
+    "dependency-cruiser",
+    "dependency-graph",
+    "exodra",
+    "monorepo",
+    "typescript",
+    "uml",
+    "visualization"
+  ]
+}

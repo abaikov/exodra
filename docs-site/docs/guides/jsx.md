@@ -63,7 +63,7 @@ Directives are also available: `bind:value`, `bind:checked`, `cache:key` (alias
 
 ## Basic elements
 
-```jsx
+```jsx no-check  // separate illustrations, not one tree
 import { bindable } from '@exodra/reactivity';
 
 const message = bindable('Hello World');

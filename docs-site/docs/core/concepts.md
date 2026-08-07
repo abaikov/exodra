@@ -7,8 +7,8 @@ title: Core Concepts
 
 Four ideas carry the whole framework: props live in **typed buckets**, a view is a
 **schema** whose object identity *is* how nodes are reused, reactivity is **explicit
-wiring** rather than magic tracking, and lifecycle fires **per node** as the tree
-lives and dies. Get these and the rest is detail.
+wiring** rather than automatic tracking, and lifecycle fires **per node** as the
+tree is built and torn down. The rest of the framework follows from these four.
 
 ## Three Props Architecture
 
@@ -112,7 +112,7 @@ import { bindable } from '@exodra/reactivity';
 const count = bindable(0);
 count.setValue(count.getValue() + 1); // Triggers updates
 
-const unsubscribe = count.subscribe(next => {
+const unsubscribe = count.onChange(next => {
   console.log('Count changed:', next);
 });
 // call unsubscribe() to stop listening
@@ -135,7 +135,7 @@ There is no `effect()`. To run a side effect when a value changes, subscribe to
 the bindable directly:
 
 ```javascript
-const stop = count.subscribe(value => {
+const stop = count.onChange(value => {
   console.log('Count changed:', value);
 });
 ```

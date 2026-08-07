@@ -1,5 +1,4 @@
 import type { TExoBindable, TExoBindableList, TExoWritableBindable, TExoWritableBindableList } from '@exodra/reactivity-types';
-import { __DEV__ } from './dev-flush-guard';
 
 export interface TExoPersistor {
     register<T>(observable: TExoBindable<T, unknown> | TExoBindableList<T, unknown>, key?: string): void;
@@ -11,7 +10,6 @@ export interface TExoPersistor {
 class ExoPersistor implements TExoPersistor {
     private registry: Map<string, TExoBindable<unknown, unknown> | TExoBindableList<unknown, unknown>> = new Map();
     private autoIndex = 0;
-    private warnedAutoKey = false;
 
     register<T>(
         observable: TExoBindable<T, unknown> | TExoBindableList<T, unknown>,
@@ -25,17 +23,6 @@ class ExoPersistor implements TExoPersistor {
         // value into the wrong signal. Explicit keys are strongly recommended for
         // anything that crosses an SSR/hydration boundary.
         const actualKey = key ?? `_${this.autoIndex++}`;
-        if (__DEV__ && key === undefined && !this.warnedAutoKey) {
-            this.warnedAutoKey = true;
-            // eslint-disable-next-line no-console
-            console.warn(
-                `[exodra] persistor.register() was called without a key, so a ` +
-                    `positional auto-key ("${actualKey}") was used. Positional keys ` +
-                    `only survive serialize/hydrate when registration order is ` +
-                    `identical on both sides — otherwise state is loaded into the ` +
-                    `wrong observable. Pass a stable explicit key: persist(x, 'x').`
-            );
-        }
 
         // A different observable registered under an already-used key would be
         // silently overwritten, losing one of the two on serialize. Fail loudly.
@@ -54,13 +41,10 @@ class ExoPersistor implements TExoPersistor {
         const state: Record<string, unknown> = {};
         
         for (const [key, observable] of this.registry) {
-            if ('getValue' in observable) {
-                // It's a bindable
-                state[key] = observable.getValue();
-            } else if ('snapshot' in observable) {
-                // It's a list
-                state[key] = observable.snapshot();
-            }
+            // One protocol: a list's getValue() returns its array, so bindables and
+            // lists serialize through the same call. Only the WRITE side (hydrate)
+            // still has to tell them apart.
+            state[key] = observable.getValue();
         }
         
         return JSON.stringify(state);
@@ -89,7 +73,6 @@ class ExoPersistor implements TExoPersistor {
     clear(): void {
         this.registry.clear();
         this.autoIndex = 0;
-        this.warnedAutoKey = false;
     }
 }
 

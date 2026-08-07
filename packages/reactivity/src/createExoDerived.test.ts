@@ -17,7 +17,7 @@ describe('createExoDerived', () => {
         const label = createExoDerived(source, n => `n=${n}`);
         const seen: string[] = [];
 
-        const unsubscribe = label.subscribe(value => seen.push(value));
+        const unsubscribe = label.onChange(value => seen.push(value));
         source.setValue(2);
         source.setValue(3);
         unsubscribe();

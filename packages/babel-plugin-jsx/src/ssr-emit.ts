@@ -10,14 +10,11 @@
 // dangerouslySetInnerHTML. Those throw or are added in later slices.
 
 import * as t from '@babel/types';
+// The void-element table is IMPORTED, not copied: the compiled output and the
+// runtime walker must classify elements identically or they emit different HTML
+// for the same source. @exodra/core owns the table for exactly this reason.
+import { VOID_ELEMENTS } from '@exodra/core';
 import { foldObject } from './style-transform';
-
-// HTML void elements: no closing tag, no content. Must match the walker's table
-// (@exodra/string) so compiled SSR emits byte-identical, valid HTML.
-const VOID_ELEMENTS = new Set([
-    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-    'link', 'meta', 'param', 'source', 'track', 'wbr',
-]);
 
 // Per-file usage of runtime helpers, so the plugin only imports what is emitted:
 // `_ctx` (component context) and `_style` (@exodra/style, for a dynamic `style`).
@@ -62,9 +59,12 @@ export function ssrUsedStyle(): boolean {
     return usedStyle;
 }
 
-// Kept in sync with @exodra/string's escapeHtml — pinned by the ssr-emit parity
-// test (same precedent as style-transform mirroring @exodra/style).
-function escapeStatic(s: string): string {
+// Compile-time escaping of literal text. Deliberately a local copy of
+// @exodra/string's `escapeHtml` rather than an import: making the build-time
+// plugin depend on the SSR runtime package would push that install onto every
+// consumer, including client-only ones. The copy cannot drift silently —
+// `escape-parity.test.ts` asserts the two agree character for character.
+export function escapeStatic(s: string): string {
     return s
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')

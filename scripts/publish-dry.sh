@@ -14,44 +14,9 @@ if ! npm whoami > /dev/null 2>&1; then
     exit 1
 fi
 
-# Packages to check (dependency order)
-PACKAGES=(
-    "packages/core"
-    "packages/reactivity-types"
-    "packages/reactivity"
-    "packages/string"
-    "packages/dom"
-    "packages/ssr"
-    "packages/router"
-    "packages/jsx"
-    "packages/attrs"
-    "packages/forms"
-    "packages/style"
-    "packages/babel-plugin-jsx"
-    "packages/babel-preset-exodra"
-    "packages/esbuild-plugin-exodra"
-    "packages/rollup-plugin-exodra"
-    "packages/bun-plugin-exodra"
-    "packages/swc-plugin-exodra"
-    "packages/vite-plugin-exodra"
-    "packages/profiler"
-    "packages/dom-profiler"
-    "packages/react"
-    "packages/introspect"
-    "packages/create-exodra"
-)
-
-# Guard: fail loud if a non-private, publishable package is missing from PACKAGES.
-for pj in packages/*/package.json; do
-    dir="packages/$(basename "$(dirname "$pj")")"
-    [ "$(node -p "require('./$pj').private === true" 2>/dev/null)" = "true" ] && continue
-    listed=""
-    for p in "${PACKAGES[@]}"; do [ "$p" = "$dir" ] && listed=1 && break; done
-    if [ -z "$listed" ]; then
-        echo "❌ publish guard: $dir is publishable but NOT in PACKAGES — add it (or mark it private)."
-        exit 1
-    fi
-done
+# The same order the real publish uses, from the same place — a dry run that
+# checks a different list to the one that ships is worse than no dry run.
+IFS=$'\n' read -r -d '' -a PACKAGES < <(node scripts/publish-order.mjs && printf '\0')
 
 echo "📋 Packages to publish:"
 echo ""

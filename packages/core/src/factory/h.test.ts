@@ -5,7 +5,7 @@ import { text } from './text';
 describe('schema helpers', () => {
     it('creates schema nodes with static, bindables, and list bindings', () => {
         const bindables = { textContent: { getValue: () => 'hello' } };
-        const bindableLists = { children: { snapshot: () => [] } };
+        const bindableLists = { children: { getValue: () => [] } };
         const schema = h('div', { 
             static: {
                 id: 'app',

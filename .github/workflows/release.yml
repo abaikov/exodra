@@ -1,0 +1,97 @@
+name: Release
+
+# One push closes the loop. Changesets works out WHAT to bump from the changeset
+# files in the commit, cascades the bump through every dependent and rewrites the
+# internal ranges; the workflow then publishes whatever ended up with a version
+# npm does not have yet. No manual version editing, no separate release ceremony.
+#
+# Publishing happens here rather than from a laptop so every tarball carries a
+# provenance attestation — a signed statement binding the published bytes to this
+# repository, workflow and commit. That needs an OIDC token, which exists in
+# Actions and not on a developer machine.
+
+on:
+  push:
+    branches: [master, main]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run every check and pack, but do not publish'
+        type: boolean
+        default: true
+
+permissions:
+  # `contents: write` so the version bump and changelogs can be pushed back.
+  contents: write
+  # Mints the OIDC token npm signs the provenance with.
+  id-token: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Version and publish
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Changesets compares against the base branch, so it needs history.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          # Makes npm write an authenticated .npmrc from NODE_AUTH_TOKEN.
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+
+      # Apply any pending changesets: bump versions, cascade to dependents,
+      # rewrite internal ranges, write changelogs. A no-op when there are none,
+      # which is what makes an ordinary push safe.
+      - name: Apply changesets
+        id: version
+        run: |
+          if ls .changeset/*.md >/dev/null 2>&1 && \
+             [ "$(ls .changeset/*.md | grep -cv README)" -gt 0 ]; then
+            npx changeset version
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No pending changesets — versions unchanged."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The gate runs AFTER versioning, so it validates exactly what ships.
+      - name: release:check
+        run: npm run release:check
+
+      - name: Packed-artifact integration
+        run: npm run test:packed
+
+      - name: Dry run (pack only, no publish)
+        if: inputs.dry_run
+        run: npm run publish:dry
+
+      - name: Publish to npm
+        if: ${{ !inputs.dry_run }}
+        run: npm run publish:all
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # publish.sh leaves this unset locally; provenance is rejected outside CI.
+          NPM_CONFIG_PROVENANCE: 'true'
+
+      # Commit the bump back so the repo matches what is now on npm. Last, so a
+      # failed publish does not leave a version claiming to be released.
+      - name: Push version bump
+        if: ${{ !inputs.dry_run && steps.version.outputs.changed == 'true' }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: release [skip ci]" || exit 0
+          git push

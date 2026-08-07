@@ -9,6 +9,8 @@ export default defineConfig({
     outDir: 'dist',
     splitting: false,
     treeshake: false,
-    keepNames: true,
+    // No minification here, so function names survive anyway — `keepNames` only
+    // added esbuild `__name` wrappers as pure overhead in the shipped dist.
+    keepNames: false,
     tsconfig: 'tsconfig.tsup.json',
 });

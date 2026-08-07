@@ -1,0 +1,2166 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "ambient",
+        "label": "ambient",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "createStringNode",
+        "label": "createStringNode",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema): ExoNodeString",
+            "full": "(schema): ExoNodeString",
+            "parts": [
+              {
+                "text": "(schema): "
+              },
+              {
+                "text": "ExoNodeString",
+                "link": "ExoNodeString"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 184,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "escapeAttribute",
+        "label": "escapeAttribute",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Attribute-value escaping is currently identical to text escaping.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "escapeByReplace",
+        "label": "escapeByReplace",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(s): string",
+            "full": "(s): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "escapeByScan",
+        "label": "escapeByScan",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(s): string",
+            "full": "(s): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Copy the runs BETWEEN specials, splice in the entity for each.",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "escapeHtml",
+        "label": "escapeHtml",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): string",
+            "full": "(value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "escapeOrRaw",
+        "label": "escapeOrRaw",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): string",
+            "full": "(value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A child/text hole: splice SafeHtml raw, escape everything else.",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoNodeString",
+        "label": "ExoNodeString",
+        "kind": "runtime",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "schema: TExoNodeStringSchema",
+            "full": "schema: TExoNodeStringSchema",
+            "parts": [
+              {
+                "text": "schema: "
+              },
+              {
+                "text": "TExoNodeStringSchema",
+                "link": "TExoNodeStringSchema"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "html: string",
+            "full": "html: string",
+            "parts": []
+          },
+          {
+            "visibility": "#",
+            "doc": "Render a schema to its HTML string (root scope).",
+            "text": "render(schema): string",
+            "full": "render(schema): string",
+            "parts": []
+          },
+          {
+            "visibility": "#",
+            "doc": "Render one node to its HTML string.",
+            "text": "renderNode(schema, scope): string",
+            "full": "renderNode(schema, scope): string",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "renderChildren(children, scope): string",
+            "full": "renderChildren(children, scope): string",
+            "parts": []
+          },
+          {
+            "visibility": "#",
+            "doc": "The component context — overridable so specialisations can hook inject/provide.",
+            "text": "createContext(schema, scope): TExoContext<TExoN…",
+            "full": "createContext(schema, scope): TExoContext<TExoNodeStringSchema>",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "createContext(schema, scope): TExoContext<"
+              },
+              {
+                "text": "TExoNodeStringSchema",
+                "link": "TExoNodeStringSchema"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          },
+          {
+            "visibility": "#",
+            "doc": "Effective children for a schema (bindableLists > bindables > static), with primitive children turned into #text schemas.",
+            "text": "resolveChildren(schema): readonly TExoNode…",
+            "full": "resolveChildren(schema): readonly TExoNodeStringSchema[]",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "resolveChildren(schema): readonly "
+              },
+              {
+                "text": "TExoNodeStringSchema",
+                "link": "TExoNodeStringSchema"
+              },
+              {
+                "text": "[]"
+              }
+            ]
+          },
+          {
+            "visibility": "#",
+            "text": "normalizeChildren(children): readonly TExoNode…",
+            "full": "normalizeChildren(children): readonly TExoNodeStringSchema[]",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "normalizeChildren(children): readonly "
+              },
+              {
+                "text": "TExoNodeStringSchema",
+                "link": "TExoNodeStringSchema"
+              },
+              {
+                "text": "[]"
+              }
+            ]
+          },
+          {
+            "visibility": "-",
+            "text": "renderAttributes(schema): string",
+            "full": "renderAttributes(schema): string",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "pushSerializableAttribute(entries, seen, name, value): void",
+            "full": "pushSerializableAttribute(entries, seen, name, value): void",
+            "parts": []
+          },
+          {
+            "visibility": "#",
+            "text": "escapeHtml(value): string",
+            "full": "escapeHtml(value): string",
+            "parts": [
+              {
+                "text": "escapeHtml",
+                "link": "escapeHtml"
+              },
+              {
+                "text": "(value): string"
+              }
+            ]
+          }
+        ],
+        "memberCount": 11,
+        "doc": "Standalone SNAPSHOT renderer — serializes a schema to an HTML string in ONE pass, reading each bindable's current value once.",
+        "width": 344,
+        "height": 177,
+        "violations": []
+      },
+      {
+        "id": "INVALID_ATTR_NAME",
+        "label": "INVALID_ATTR_NAME",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "SECURITY — attribute-name validation.",
+        "width": 133,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "isEventName",
+        "label": "isEventName",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name): boolean",
+            "full": "(name): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "`onClick` etc.",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "isValidAttributeName",
+        "label": "isValidAttributeName",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name): boolean",
+            "full": "(name): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 152,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "MANUAL_SCAN_MAX_LEN",
+        "label": "MANUAL_SCAN_MAX_LEN",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Above this length the chained `.replace` wins: it scans in C++, whereas the manual loop pays a JS iteration per character.",
+        "width": 146,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "markHtml",
+        "label": "markHtml",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): SafeHtml",
+            "full": "(value): SafeHtml",
+            "parts": [
+              {
+                "text": "(value): "
+              },
+              {
+                "text": "SafeHtml",
+                "link": "SafeHtml"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Wrap a compiled template as SafeHtml (the compiled output's `_html`).",
+        "width": 146,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "NEEDS_ESCAPE",
+        "label": "NEEDS_ESCAPE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Most rendered strings (labels, ids, class names, numbers) contain none of the four HTML-significant characters, so a single scan that bails early avoids any rewriting pass at all in the common case.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "readAmbient",
+        "label": "readAmbient",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(key, fallback): TValue",
+            "full": "(key, fallback): TValue",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The ambient value for `key`, or `fallback` when nothing is installed.",
+        "width": 184,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "renderToString",
+        "label": "renderToString",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema): string",
+            "full": "(schema): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "runWithAmbient",
+        "label": "runWithAmbient",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(values, fn): T",
+            "full": "(values, fn): T",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "SafeHtml",
+        "label": "SafeHtml",
+        "kind": "runtime",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "toString(): string",
+            "full": "toString(): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "doc": "Shared HTML serialization primitives, used by BOTH the runtime walker (ExoNodeString) and the compiled SSR output, so the two emit byte-identical HTML.",
+        "width": 152,
+        "height": 57,
+        "violations": []
+      },
+      {
+        "id": "serializeAttribute",
+        "label": "serializeAttribute",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name, value): string",
+            "full": "(name, value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "One attribute → its HTML: `name=\"v\"`, a bare `name` (boolean true), or `''` when it must not render (children/textContent/directives/events/functions or a false/null/undefined value).",
+        "width": 171,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "serializeAttributeValue",
+        "label": "serializeAttributeValue",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): string",
+            "full": "(value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "An object attribute value → `k: v; k2: v2` (e.g.",
+        "width": 171,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "spaceAttribute",
+        "label": "spaceAttribute",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name, value): string",
+            "full": "(name, value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The same attribute, prefixed with a space, for splicing into a compiled SSR template `<tag${spaceAttribute(...)}>`.",
+        "width": 171,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "spaceAttributeUnchecked",
+        "label": "spaceAttributeUnchecked",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name, value): string",
+            "full": "(name, value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Same result as `spaceAttribute` for a NORMAL attribute name, but the caller has already proven (at compile time) that `name` is a real attribute — not `children`/`textContent`/a directive/an event — and already mapped `className` to `class…",
+        "width": 171,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "SsrAttrs",
+        "label": "SsrAttrs",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "static?: Record<string, unknown>;",
+            "full": "static?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindables?: Record<string, unknown>;",
+            "full": "bindables?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindableLists?: Record<string, unknown>;",
+            "full": "bindableLists?: Record<string, unknown>;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 293,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "ssrContext",
+        "label": "ssrContext",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(attrs): TExoContext",
+            "full": "(attrs): TExoContext",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 165,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoNodeStringSchema",
+        "label": "TExoNodeStringSchema",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoNodeSchema<TExoSchema['type'], TStr…",
+            "full": "TExoNodeSchema<TExoSchema['type'], TStringAttributes>",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "TExoNodeSchema<TExoSchema['type'], "
+              },
+              {
+                "text": "TStringAttributes",
+                "link": "TStringAttributes"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoRenderScope",
+        "label": "TExoRenderScope",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoScope",
+            "full": "TExoScope",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Component provide()/inject() scope, threaded parent→child during the walk.",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "textSchema",
+        "label": "textSchema",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): TExoNodeStringSchema",
+            "full": "(value): TExoNodeStringSchema",
+            "parts": [
+              {
+                "text": "(value): "
+              },
+              {
+                "text": "TExoNodeStringSchema",
+                "link": "TExoNodeStringSchema"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The canonical `#text` shape is `createTextSchema` in @exodra/core — this is a deliberate local copy, NOT an oversight.",
+        "width": 222,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TStringAttributes",
+        "label": "TStringAttributes",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoNodeAttributes<TExoNodeStringSchema>",
+            "full": "TExoNodeAttributes<TExoNodeStringSchema>",
+            "parts": [
+              {
+                "text": "TExoNodeAttributes<"
+              },
+              {
+                "text": "TExoNodeStringSchema",
+                "link": "TExoNodeStringSchema"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The shared bucket skeleton.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "VALID_NAME_CACHE_MAX",
+        "label": "VALID_NAME_CACHE_MAX",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Real apps use a small, fixed vocabulary of attribute names, so a bounded cache turns the check into a Set hit on the hot path.",
+        "width": 152,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "validAttributeNames",
+        "label": "validAttributeNames",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 146,
+        "height": 46,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "createStringNode→ExoNodeString",
+        "from": "createStringNode",
+        "to": "ExoNodeString",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/createStringNode.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/createStringNode.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "constructs",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "escapeAttribute→escapeHtml",
+        "from": "escapeAttribute",
+        "to": "escapeHtml",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "escapeHtml→escapeByReplace",
+        "from": "escapeHtml",
+        "to": "escapeByReplace",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "escapeHtml→escapeByScan",
+        "from": "escapeHtml",
+        "to": "escapeByScan",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "escapeHtml→MANUAL_SCAN_MAX_LEN",
+        "from": "escapeHtml",
+        "to": "MANUAL_SCAN_MAX_LEN",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "escapeHtml→NEEDS_ESCAPE",
+        "from": "escapeHtml",
+        "to": "NEEDS_ESCAPE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "escapeOrRaw→escapeHtml",
+        "from": "escapeOrRaw",
+        "to": "escapeHtml",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "escapeOrRaw→SafeHtml",
+        "from": "escapeOrRaw",
+        "to": "SafeHtml",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeString→escapeHtml",
+        "from": "ExoNodeString",
+        "to": "escapeHtml",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeString→serializeAttribute",
+        "from": "ExoNodeString",
+        "to": "serializeAttribute",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeString→TExoNodeStringSchema",
+        "from": "ExoNodeString",
+        "to": "TExoNodeStringSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeString→TExoRenderScope",
+        "from": "ExoNodeString",
+        "to": "TExoRenderScope",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeString→textSchema",
+        "from": "ExoNodeString",
+        "to": "textSchema",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "isValidAttributeName→INVALID_ATTR_NAME",
+        "from": "isValidAttributeName",
+        "to": "INVALID_ATTR_NAME",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "isValidAttributeName→VALID_NAME_CACHE_MAX",
+        "from": "isValidAttributeName",
+        "to": "VALID_NAME_CACHE_MAX",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "isValidAttributeName→validAttributeNames",
+        "from": "isValidAttributeName",
+        "to": "validAttributeNames",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "markHtml→SafeHtml",
+        "from": "markHtml",
+        "to": "SafeHtml",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "constructs",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readAmbient→ambient",
+        "from": "readAmbient",
+        "to": "ambient",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ambient.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ambient.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "renderToString→ExoNodeString",
+        "from": "renderToString",
+        "to": "ExoNodeString",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "composition",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/renderToString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "constructs",
+            "kind": "value"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/renderToString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runWithAmbient→ambient",
+        "from": "runWithAmbient",
+        "to": "ambient",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ambient.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ambient.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "serializeAttribute→escapeAttribute",
+        "from": "serializeAttribute",
+        "to": "escapeAttribute",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "serializeAttribute→isEventName",
+        "from": "serializeAttribute",
+        "to": "isEventName",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "serializeAttribute→isValidAttributeName",
+        "from": "serializeAttribute",
+        "to": "isValidAttributeName",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "serializeAttribute→serializeAttributeValue",
+        "from": "serializeAttribute",
+        "to": "serializeAttributeValue",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "spaceAttribute→serializeAttribute",
+        "from": "spaceAttribute",
+        "to": "serializeAttribute",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "spaceAttributeUnchecked→escapeAttribute",
+        "from": "spaceAttributeUnchecked",
+        "to": "escapeAttribute",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "spaceAttributeUnchecked→isValidAttributeName",
+        "from": "spaceAttributeUnchecked",
+        "to": "isValidAttributeName",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "spaceAttributeUnchecked→serializeAttributeValue",
+        "from": "spaceAttributeUnchecked",
+        "to": "serializeAttributeValue",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/escape.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ssrContext→readAmbient",
+        "from": "ssrContext",
+        "to": "readAmbient",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ssr-context.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ambient.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ssrContext→SsrAttrs",
+        "from": "ssrContext",
+        "to": "SsrAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ssr-context.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ssr-context.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoNodeStringSchema→TStringAttributes",
+        "from": "TExoNodeStringSchema",
+        "to": "TStringAttributes",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "textSchema→TExoNodeStringSchema",
+        "from": "textSchema",
+        "to": "TExoNodeStringSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TStringAttributes→TExoNodeStringSchema",
+        "from": "TStringAttributes",
+        "to": "TExoNodeStringSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "to": "/Users/abaikov/work/exodra/packages/string/src/ExoNodeString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1850,
+    "height": 951.8,
+    "nodes": [
+      {
+        "id": "ambient",
+        "x": 731,
+        "y": 73.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "createStringNode",
+        "x": 24,
+        "y": 50.8,
+        "width": 184,
+        "height": 69
+      },
+      {
+        "id": "escapeAttribute",
+        "x": 1052.5,
+        "y": 213,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "escapeByReplace",
+        "x": 1693,
+        "y": 419,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "escapeByScan",
+        "x": 1693,
+        "y": 322,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "escapeHtml",
+        "x": 1403,
+        "y": 279.3,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "escapeOrRaw",
+        "x": 1046,
+        "y": 384,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "ExoNodeString",
+        "x": 272,
+        "y": 380.5,
+        "width": 344,
+        "height": 177
+      },
+      {
+        "id": "INVALID_ATTR_NAME",
+        "x": 1403,
+        "y": 398.5,
+        "width": 133,
+        "height": 46
+      },
+      {
+        "id": "isEventName",
+        "x": 1046,
+        "y": 287,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "isValidAttributeName",
+        "x": 1036.5,
+        "y": 796.3,
+        "width": 152,
+        "height": 69
+      },
+      {
+        "id": "MANUAL_SCAN_MAX_LEN",
+        "x": 1680,
+        "y": 248,
+        "width": 146,
+        "height": 46
+      },
+      {
+        "id": "markHtml",
+        "x": 1039.5,
+        "y": 495.3,
+        "width": 146,
+        "height": 69
+      },
+      {
+        "id": "NEEDS_ESCAPE",
+        "x": 1693,
+        "y": 174,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "readAmbient",
+        "x": 352,
+        "y": 121,
+        "width": 184,
+        "height": 69
+      },
+      {
+        "id": "renderToString",
+        "x": 46.5,
+        "y": 639,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "runWithAmbient",
+        "x": 377.5,
+        "y": 24,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "SafeHtml",
+        "x": 1393.5,
+        "y": 472.5,
+        "width": 152,
+        "height": 57
+      },
+      {
+        "id": "serializeAttribute",
+        "x": 705.5,
+        "y": 297,
+        "width": 171,
+        "height": 69
+      },
+      {
+        "id": "serializeAttributeValue",
+        "x": 1027,
+        "y": 592.3,
+        "width": 171,
+        "height": 69
+      },
+      {
+        "id": "spaceAttribute",
+        "x": 358.5,
+        "y": 218,
+        "width": 171,
+        "height": 69
+      },
+      {
+        "id": "spaceAttributeUnchecked",
+        "x": 705.5,
+        "y": 611.5,
+        "width": 171,
+        "height": 69
+      },
+      {
+        "id": "SsrAttrs",
+        "x": 297.5,
+        "y": 585.5,
+        "width": 293,
+        "height": 99
+      },
+      {
+        "id": "ssrContext",
+        "x": 33.5,
+        "y": 393.5,
+        "width": 165,
+        "height": 69
+      },
+      {
+        "id": "TExoNodeStringSchema",
+        "x": 966,
+        "y": 699.3,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoRenderScope",
+        "x": 731,
+        "y": 421,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "textSchema",
+        "x": 680,
+        "y": 737.8,
+        "width": 222,
+        "height": 69
+      },
+      {
+        "id": "TStringAttributes",
+        "x": 1323,
+        "y": 699.3,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "VALID_NAME_CACHE_MAX",
+        "x": 1393.5,
+        "y": 807.8,
+        "width": 152,
+        "height": 46
+      },
+      {
+        "id": "validAttributeNames",
+        "x": 1396.5,
+        "y": 881.8,
+        "width": 146,
+        "height": 46
+      }
+    ],
+    "edges": [
+      {
+        "id": "createStringNode→ExoNodeString",
+        "points": [
+          {
+            "x": 136.9,
+            "y": 119.8
+          },
+          {
+            "x": 240,
+            "y": 289.5
+          },
+          {
+            "x": 343.4,
+            "y": 380.5
+          }
+        ]
+      },
+      {
+        "id": "escapeAttribute→escapeHtml",
+        "points": [
+          {
+            "x": 1153,
+            "y": 259
+          },
+          {
+            "x": 1291,
+            "y": 337.3
+          },
+          {
+            "x": 1403,
+            "y": 322.5
+          }
+        ]
+      },
+      {
+        "id": "escapeHtml→escapeByReplace",
+        "points": [
+          {
+            "x": 1513.6,
+            "y": 348.3
+          },
+          {
+            "x": 1648,
+            "y": 453.5
+          },
+          {
+            "x": 1693,
+            "y": 453.5
+          }
+        ]
+      },
+      {
+        "id": "escapeHtml→escapeByScan",
+        "points": [
+          {
+            "x": 1536,
+            "y": 329.7
+          },
+          {
+            "x": 1648,
+            "y": 356.5
+          },
+          {
+            "x": 1693,
+            "y": 356.5
+          }
+        ]
+      },
+      {
+        "id": "escapeHtml→MANUAL_SCAN_MAX_LEN",
+        "points": [
+          {
+            "x": 1536,
+            "y": 297.8
+          },
+          {
+            "x": 1648,
+            "y": 271
+          },
+          {
+            "x": 1680,
+            "y": 271
+          }
+        ]
+      },
+      {
+        "id": "escapeHtml→NEEDS_ESCAPE",
+        "points": [
+          {
+            "x": 1522.2,
+            "y": 279.3
+          },
+          {
+            "x": 1648,
+            "y": 197
+          },
+          {
+            "x": 1693,
+            "y": 197
+          }
+        ]
+      },
+      {
+        "id": "escapeOrRaw→escapeHtml",
+        "points": [
+          {
+            "x": 1173.3,
+            "y": 384
+          },
+          {
+            "x": 1291,
+            "y": 317.3
+          },
+          {
+            "x": 1403,
+            "y": 315.1
+          }
+        ]
+      },
+      {
+        "id": "escapeOrRaw→SafeHtml",
+        "points": [
+          {
+            "x": 1179,
+            "y": 453
+          },
+          {
+            "x": 1291,
+            "y": 511
+          },
+          {
+            "x": 1393.5,
+            "y": 505.3
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeString→escapeHtml",
+        "points": [
+          {
+            "x": 508.5,
+            "y": 380.5
+          },
+          {
+            "x": 648,
+            "y": 189
+          },
+          {
+            "x": 791,
+            "y": 189
+          },
+          {
+            "x": 934,
+            "y": 189
+          },
+          {
+            "x": 1112.5,
+            "y": 189
+          },
+          {
+            "x": 1291,
+            "y": 189
+          },
+          {
+            "x": 1420.1,
+            "y": 279.3
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeString→serializeAttribute",
+        "points": [
+          {
+            "x": 616,
+            "y": 408.3
+          },
+          {
+            "x": 648,
+            "y": 397
+          },
+          {
+            "x": 715.7,
+            "y": 366
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeString→TExoNodeStringSchema",
+        "points": [
+          {
+            "x": 520.7,
+            "y": 557.5
+          },
+          {
+            "x": 648,
+            "y": 704.5
+          },
+          {
+            "x": 791,
+            "y": 704.5
+          },
+          {
+            "x": 934,
+            "y": 704.5
+          },
+          {
+            "x": 966,
+            "y": 709.7
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeString→TExoRenderScope",
+        "points": [
+          {
+            "x": 616,
+            "y": 457.6
+          },
+          {
+            "x": 648,
+            "y": 455.5
+          },
+          {
+            "x": 731,
+            "y": 455.5
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeString→textSchema",
+        "points": [
+          {
+            "x": 503.5,
+            "y": 557.5
+          },
+          {
+            "x": 648,
+            "y": 772.3
+          },
+          {
+            "x": 680,
+            "y": 772.3
+          }
+        ]
+      },
+      {
+        "id": "isValidAttributeName→INVALID_ATTR_NAME",
+        "points": [
+          {
+            "x": 1127.5,
+            "y": 796.3
+          },
+          {
+            "x": 1291,
+            "y": 421.5
+          },
+          {
+            "x": 1403,
+            "y": 421.5
+          }
+        ]
+      },
+      {
+        "id": "isValidAttributeName→VALID_NAME_CACHE_MAX",
+        "points": [
+          {
+            "x": 1188.5,
+            "y": 830.8
+          },
+          {
+            "x": 1291,
+            "y": 830.8
+          },
+          {
+            "x": 1393.5,
+            "y": 830.8
+          }
+        ]
+      },
+      {
+        "id": "isValidAttributeName→validAttributeNames",
+        "points": [
+          {
+            "x": 1188.5,
+            "y": 862.3
+          },
+          {
+            "x": 1291,
+            "y": 904.8
+          },
+          {
+            "x": 1396.5,
+            "y": 904.8
+          }
+        ]
+      },
+      {
+        "id": "markHtml→SafeHtml",
+        "points": [
+          {
+            "x": 1185.5,
+            "y": 505.8
+          },
+          {
+            "x": 1291,
+            "y": 471.3
+          },
+          {
+            "x": 1393.5,
+            "y": 488.3
+          }
+        ]
+      },
+      {
+        "id": "readAmbient→ambient",
+        "points": [
+          {
+            "x": 536,
+            "y": 155.5
+          },
+          {
+            "x": 648,
+            "y": 155.5
+          },
+          {
+            "x": 735.5,
+            "y": 119.3
+          }
+        ]
+      },
+      {
+        "id": "renderToString→ExoNodeString",
+        "points": [
+          {
+            "x": 185.5,
+            "y": 640.4
+          },
+          {
+            "x": 240,
+            "y": 614.5
+          },
+          {
+            "x": 319.9,
+            "y": 557.5
+          }
+        ]
+      },
+      {
+        "id": "runWithAmbient→ambient",
+        "points": [
+          {
+            "x": 510.5,
+            "y": 58.5
+          },
+          {
+            "x": 648,
+            "y": 58.5
+          },
+          {
+            "x": 731,
+            "y": 80.4
+          }
+        ]
+      },
+      {
+        "id": "serializeAttribute→escapeAttribute",
+        "points": [
+          {
+            "x": 836.3,
+            "y": 297
+          },
+          {
+            "x": 934,
+            "y": 222.5
+          },
+          {
+            "x": 1052.5,
+            "y": 231.5
+          }
+        ]
+      },
+      {
+        "id": "serializeAttribute→isEventName",
+        "points": [
+          {
+            "x": 876.5,
+            "y": 325.5
+          },
+          {
+            "x": 934,
+            "y": 321.5
+          },
+          {
+            "x": 1046,
+            "y": 321.5
+          }
+        ]
+      },
+      {
+        "id": "serializeAttribute→isValidAttributeName",
+        "points": [
+          {
+            "x": 801.7,
+            "y": 366
+          },
+          {
+            "x": 934,
+            "y": 792.3
+          },
+          {
+            "x": 1036.5,
+            "y": 814.4
+          }
+        ]
+      },
+      {
+        "id": "serializeAttribute→serializeAttributeValue",
+        "points": [
+          {
+            "x": 824.9,
+            "y": 366
+          },
+          {
+            "x": 934,
+            "y": 477
+          },
+          {
+            "x": 1071.4,
+            "y": 592.3
+          }
+        ]
+      },
+      {
+        "id": "spaceAttribute→serializeAttribute",
+        "points": [
+          {
+            "x": 529.5,
+            "y": 264.1
+          },
+          {
+            "x": 648,
+            "y": 280.3
+          },
+          {
+            "x": 705.5,
+            "y": 300.9
+          }
+        ]
+      },
+      {
+        "id": "spaceAttributeUnchecked→escapeAttribute",
+        "points": [
+          {
+            "x": 804.1,
+            "y": 611.5
+          },
+          {
+            "x": 934,
+            "y": 268.8
+          },
+          {
+            "x": 1052.5,
+            "y": 247
+          }
+        ]
+      },
+      {
+        "id": "spaceAttributeUnchecked→isValidAttributeName",
+        "points": [
+          {
+            "x": 816.3,
+            "y": 680.5
+          },
+          {
+            "x": 934,
+            "y": 840.8
+          },
+          {
+            "x": 1036.5,
+            "y": 835
+          }
+        ]
+      },
+      {
+        "id": "spaceAttributeUnchecked→serializeAttributeValue",
+        "points": [
+          {
+            "x": 876.5,
+            "y": 646
+          },
+          {
+            "x": 934,
+            "y": 646
+          },
+          {
+            "x": 1027,
+            "y": 636
+          }
+        ]
+      },
+      {
+        "id": "ssrContext→readAmbient",
+        "points": [
+          {
+            "x": 131.7,
+            "y": 393.5
+          },
+          {
+            "x": 240,
+            "y": 155.5
+          },
+          {
+            "x": 352,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "ssrContext→SsrAttrs",
+        "points": [
+          {
+            "x": 136.7,
+            "y": 462.5
+          },
+          {
+            "x": 240,
+            "y": 635
+          },
+          {
+            "x": 297.5,
+            "y": 635
+          }
+        ]
+      },
+      {
+        "id": "TExoNodeStringSchema→TStringAttributes",
+        "points": [
+          {
+            "x": 1204.1,
+            "y": 699.3
+          },
+          {
+            "x": 1291,
+            "y": 666.5
+          },
+          {
+            "x": 1377.9,
+            "y": 699.3
+          }
+        ]
+      },
+      {
+        "id": "textSchema→TExoNodeStringSchema",
+        "points": [
+          {
+            "x": 902,
+            "y": 772.3
+          },
+          {
+            "x": 934,
+            "y": 772.3
+          },
+          {
+            "x": 966,
+            "y": 765.3
+          }
+        ]
+      },
+      {
+        "id": "TStringAttributes→TExoNodeStringSchema",
+        "points": [
+          {
+            "x": 1323,
+            "y": 765.3
+          },
+          {
+            "x": 1291,
+            "y": 772.3
+          },
+          {
+            "x": 1259,
+            "y": 765.3
+          }
+        ]
+      }
+    ]
+  }
+}

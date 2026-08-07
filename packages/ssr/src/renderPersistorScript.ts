@@ -1,4 +1,6 @@
+import { escapeAttribute } from '@exodra/string';
 import type { TExoPersistor } from '@exodra/reactivity';
+import { renderJsonScript } from './renderJsonScript';
 
 export interface TExoPersistorScriptOptions {
     id?: string;
@@ -20,19 +22,12 @@ export function renderPersistorScript(
         return '';
     }
     
-    const id = options.id || '__EXODRA_PERSISTOR__';
-    
-    const scriptAttrs = [
-        `id="${id}"`,
-        'type="application/json"'
-    ];
-    
-    if (options.nonce) {
-        scriptAttrs.push(`nonce="${options.nonce}"`);
-    }
-    
-    // Store as JSON in a script tag
-    return `<script ${scriptAttrs.join(' ')}>${escapeScriptContent(json)}</script>`;
+    // One emitter for both state channels — see renderJsonScript. This used to
+    // build the tag by hand with unescaped attributes and its own escaper.
+    return renderJsonScript(json, {
+        id: options.id || '__EXODRA_PERSISTOR__',
+        nonce: options.nonce,
+    });
 }
 
 /**
@@ -41,18 +36,23 @@ export function renderPersistorScript(
 export function renderHydrationScript(options: TExoPersistorScriptOptions = {}): string {
     const id = options.id || '__EXODRA_PERSISTOR__';
     const varName = options.variableName || 'window.__EXODRA_STATE__';
-    
+
+    // `id` is interpolated into JS source, so it goes in as a JSON string literal
+    // rather than inside hand-written quotes — an id containing a quote would
+    // otherwise end the literal and inject whatever follows.
     const script = `
 (function() {
-    var el = document.getElementById('${id}');
+    var el = document.getElementById(${JSON.stringify(id)});
     if (el && el.textContent) {
         ${varName} = JSON.parse(el.textContent);
     }
 })();`;
-    
-    const scriptAttrs = options.nonce ? `nonce="${options.nonce}"` : '';
-    
-    return `<script ${scriptAttrs}>${script}</script>`;
+
+    const nonce = options.nonce
+        ? ` nonce="${escapeAttribute(options.nonce)}"`
+        : '';
+
+    return `<script${nonce}>${script}</script>`;
 }
 
 /**
@@ -64,11 +64,4 @@ export function renderPersistorHydration(
 ): string {
     return renderPersistorScript(persistor, options) + 
            renderHydrationScript(options);
-}
-
-function escapeScriptContent(content: string): string {
-    return content
-        .replace(/</g, '\\u003C')
-        .replace(/>/g, '\\u003E')
-        .replace(/\//g, '\\u002F');
 }

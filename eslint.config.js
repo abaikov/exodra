@@ -78,6 +78,12 @@ export default [
         },
         rules: {
             ...tseslint.configs.recommended.rules,
+            // OFF for TypeScript on purpose (this is typescript-eslint's own
+            // recommendation). `no-undef` cannot see type declarations, so every
+            // DOM *type* looks undefined to it — which is why the globals list
+            // above kept growing one false positive at a time. TypeScript already
+            // errors on a genuinely undefined name, and it does so correctly.
+            'no-undef': 'off',
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 {

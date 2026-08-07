@@ -1,0 +1,783 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "now",
+        "label": "now",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): number",
+            "full": "(): number",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ProfilableClass",
+        "label": "ProfilableClass",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "new (...args: never[]) => object",
+            "full": "new (...args: never[]) => object",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 242,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "profileClass",
+        "label": "profileClass",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(ClassToProfile, callback, options): () => void",
+            "full": "(ClassToProfile, callback, options): () => void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Patch every (selected) prototype method of `ClassToProfile` to report the wall time of each call via `callback`.",
+        "width": 338,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "profileDom",
+        "label": "profileDom",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(options): TExoDomProfiler",
+            "full": "(options): TExoDomProfiler",
+            "parts": [
+              {
+                "text": "(options): "
+              },
+              {
+                "text": "TExoDomProfiler",
+                "link": "TExoDomProfiler"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Profile the live Exodra DOM renderer (`ExoNodeDom`): patches its methods (`buildTree`, `updateChildren`, `setupBindings`, `applyStatic`, …) to record how long each takes and how often it runs.",
+        "width": 203,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoDomProfileEntry",
+        "label": "TExoDomProfileEntry",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "method: string;",
+            "full": "method: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "count: number;",
+            "full": "count: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "totalMs: number;",
+            "full": "totalMs: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "avgMs: number;",
+            "full": "avgMs: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "maxMs: number;",
+            "full": "maxMs: number;",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "interface",
+        "doc": "Aggregated timing for one profiled method.",
+        "width": 146,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoDomProfiler",
+        "label": "TExoDomProfiler",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "getReport(): TExoDomProfileEntry[];",
+            "full": "getReport(): TExoDomProfileEntry[];",
+            "doc": "Aggregated report so far, sorted by total time (heaviest first).",
+            "parts": [
+              {
+                "text": "getReport(): "
+              },
+              {
+                "text": "TExoDomProfileEntry",
+                "link": "TExoDomProfileEntry"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "reset(): void;",
+            "full": "reset(): void;",
+            "doc": "Clear collected samples (keep profiling active).",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "stop(): TExoDomProfileEntry[];",
+            "full": "stop(): TExoDomProfileEntry[];",
+            "doc": "Restore `ExoNodeDom`'s original methods and return the final report.",
+            "parts": [
+              {
+                "text": "stop(): "
+              },
+              {
+                "text": "TExoDomProfileEntry",
+                "link": "TExoDomProfileEntry"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "interface",
+        "width": 261,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoProfileCallback",
+        "label": "TExoProfileCallback",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(sample: TExoProfileSample) => void",
+            "full": "(sample: TExoProfileSample) => void",
+            "parts": [
+              {
+                "text": "(sample: "
+              },
+              {
+                "text": "TExoProfileSample",
+                "link": "TExoProfileSample"
+              },
+              {
+                "text": ") => void"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 261,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoProfileOptions",
+        "label": "TExoProfileOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "methods?: readonly string[];",
+            "full": "methods?: readonly string[];",
+            "doc": "Only profile these methods (default: all own prototype methods).",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "excludeMethods?: readonly string[];",
+            "full": "excludeMethods?: readonly string[];",
+            "doc": "Never profile these methods.",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "width": 261,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "TExoProfileSample",
+        "label": "TExoProfileSample",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "className: string;",
+            "full": "className: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "method: string;",
+            "full": "method: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "durationMs: number;",
+            "full": "durationMs: number;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "interface",
+        "width": 158,
+        "height": 99,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "profileClass→now",
+        "from": "profileClass",
+        "to": "now",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileClass→ProfilableClass",
+        "from": "profileClass",
+        "to": "ProfilableClass",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileClass→TExoProfileCallback",
+        "from": "profileClass",
+        "to": "TExoProfileCallback",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileClass→TExoProfileOptions",
+        "from": "profileClass",
+        "to": "TExoProfileOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileDom→profileClass",
+        "from": "profileDom",
+        "to": "profileClass",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileDom→TExoDomProfileEntry",
+        "from": "profileDom",
+        "to": "TExoDomProfileEntry",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileDom→TExoDomProfiler",
+        "from": "profileDom",
+        "to": "TExoDomProfiler",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileDom→TExoProfileOptions",
+        "from": "profileDom",
+        "to": "TExoProfileOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileDom→TExoProfileSample",
+        "from": "profileDom",
+        "to": "TExoProfileSample",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoDomProfiler→TExoDomProfileEntry",
+        "from": "TExoDomProfiler",
+        "to": "TExoDomProfileEntry",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/dom-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoProfileCallback→TExoProfileSample",
+        "from": "TExoProfileCallback",
+        "to": "TExoProfileSample",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profile-class.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1200,
+    "height": 601.8,
+    "nodes": [
+      {
+        "id": "now",
+        "x": 763.5,
+        "y": 508.8,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "ProfilableClass",
+        "x": 702.5,
+        "y": 411.8,
+        "width": 242,
+        "height": 69
+      },
+      {
+        "id": "profileClass",
+        "x": 291,
+        "y": 411.3,
+        "width": 338,
+        "height": 69
+      },
+      {
+        "id": "profileDom",
+        "x": 24,
+        "y": 140.5,
+        "width": 203,
+        "height": 69
+      },
+      {
+        "id": "TExoDomProfileEntry",
+        "x": 750.5,
+        "y": 45.8,
+        "width": 146,
+        "height": 129
+      },
+      {
+        "id": "TExoDomProfiler",
+        "x": 329.5,
+        "y": 24,
+        "width": 261,
+        "height": 99
+      },
+      {
+        "id": "TExoProfileCallback",
+        "x": 693,
+        "y": 314.8,
+        "width": 261,
+        "height": 69
+      },
+      {
+        "id": "TExoProfileOptions",
+        "x": 693,
+        "y": 202.8,
+        "width": 261,
+        "height": 84
+      },
+      {
+        "id": "TExoProfileSample",
+        "x": 1018,
+        "y": 133.5,
+        "width": 158,
+        "height": 99
+      }
+    ],
+    "edges": [
+      {
+        "id": "profileClass→now",
+        "points": [
+          {
+            "x": 531.1,
+            "y": 480.3
+          },
+          {
+            "x": 661,
+            "y": 543.3
+          },
+          {
+            "x": 763.5,
+            "y": 543.3
+          }
+        ]
+      },
+      {
+        "id": "profileClass→ProfilableClass",
+        "points": [
+          {
+            "x": 629,
+            "y": 446.2
+          },
+          {
+            "x": 661,
+            "y": 446.3
+          },
+          {
+            "x": 702.5,
+            "y": 446.3
+          }
+        ]
+      },
+      {
+        "id": "profileClass→TExoProfileCallback",
+        "points": [
+          {
+            "x": 531.9,
+            "y": 411.3
+          },
+          {
+            "x": 661,
+            "y": 349.3
+          },
+          {
+            "x": 693,
+            "y": 349.3
+          }
+        ]
+      },
+      {
+        "id": "profileClass→TExoProfileOptions",
+        "points": [
+          {
+            "x": 494.5,
+            "y": 411.3
+          },
+          {
+            "x": 661,
+            "y": 244.8
+          },
+          {
+            "x": 693,
+            "y": 244.8
+          }
+        ]
+      },
+      {
+        "id": "profileDom→profileClass",
+        "points": [
+          {
+            "x": 142.5,
+            "y": 209.5
+          },
+          {
+            "x": 259,
+            "y": 445.8
+          },
+          {
+            "x": 291,
+            "y": 445.8
+          }
+        ]
+      },
+      {
+        "id": "profileDom→TExoDomProfileEntry",
+        "points": [
+          {
+            "x": 227,
+            "y": 154.7
+          },
+          {
+            "x": 259,
+            "y": 148.3
+          },
+          {
+            "x": 460,
+            "y": 148.3
+          },
+          {
+            "x": 661,
+            "y": 148.3
+          },
+          {
+            "x": 750.5,
+            "y": 127.3
+          }
+        ]
+      },
+      {
+        "id": "profileDom→TExoDomProfiler",
+        "points": [
+          {
+            "x": 170.9,
+            "y": 140.5
+          },
+          {
+            "x": 259,
+            "y": 73.5
+          },
+          {
+            "x": 329.5,
+            "y": 73.5
+          }
+        ]
+      },
+      {
+        "id": "profileDom→TExoProfileOptions",
+        "points": [
+          {
+            "x": 151.8,
+            "y": 140.5
+          },
+          {
+            "x": 259,
+            "y": 0
+          },
+          {
+            "x": 460,
+            "y": 0
+          },
+          {
+            "x": 661,
+            "y": 0
+          },
+          {
+            "x": 795.6,
+            "y": 202.8
+          }
+        ]
+      },
+      {
+        "id": "profileDom→TExoProfileSample",
+        "points": [
+          {
+            "x": 149.1,
+            "y": 140.5
+          },
+          {
+            "x": 259,
+            "y": -20
+          },
+          {
+            "x": 460,
+            "y": -20
+          },
+          {
+            "x": 661,
+            "y": -20
+          },
+          {
+            "x": 823.5,
+            "y": -20
+          },
+          {
+            "x": 986,
+            "y": -20
+          },
+          {
+            "x": 1069.9,
+            "y": 133.5
+          }
+        ]
+      },
+      {
+        "id": "TExoDomProfiler→TExoDomProfileEntry",
+        "points": [
+          {
+            "x": 590.5,
+            "y": 73.5
+          },
+          {
+            "x": 661,
+            "y": 73.5
+          },
+          {
+            "x": 750.5,
+            "y": 93.7
+          }
+        ]
+      },
+      {
+        "id": "TExoProfileCallback→TExoProfileSample",
+        "points": [
+          {
+            "x": 954,
+            "y": 349.3
+          },
+          {
+            "x": 986,
+            "y": 349.3
+          },
+          {
+            "x": 1064,
+            "y": 232.5
+          }
+        ]
+      }
+    ]
+  }
+}

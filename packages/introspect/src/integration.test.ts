@@ -118,5 +118,7 @@ describe('Exodra Integration Tests', () => {
       expect(result.suggestions).toBeDefined();
       expect(result.metrics).toBeDefined();
     }
-  }, 10000); // Increase timeout to 10 seconds
+  });
+  // No per-test timeout: the root vitest config already grants 30s for exactly
+  // these ts-morph passes. Overriding it here CAPPED them at 10s instead.
 });

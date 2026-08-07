@@ -1,0 +1,132 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "App",
+        "label": "App",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): import(\"/Users/abai…",
+            "full": "(): import(\"/Users/abaikov/work/exodra/packages/core/dist/types/TExoSchema\").TExoSchema",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Reactive state lives in bindables; the same App() renders on the server (to HTML) and hydrates on the client (wiring events + reactivity).",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "render",
+        "label": "render",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): { appHtml: string; …",
+            "full": "(): { appHtml: string; stateScript: string; }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "ExoNodeSsr renders the body and can carry serializable state in an embedded <script id=\"__EXODRA_STATE__\"> for the client to read on hydration.",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "root",
+        "label": "root",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "render→App",
+        "from": "render",
+        "to": "App",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/entry-server.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 492,
+    "height": 191,
+    "nodes": [
+      {
+        "id": "App",
+        "x": 278,
+        "y": 24,
+        "width": 190,
+        "height": 69
+      },
+      {
+        "id": "render",
+        "x": 24,
+        "y": 24,
+        "width": 190,
+        "height": 69
+      },
+      {
+        "id": "root",
+        "x": 59,
+        "y": 121,
+        "width": 120,
+        "height": 46
+      }
+    ],
+    "edges": [
+      {
+        "id": "render→App",
+        "points": [
+          {
+            "x": 214,
+            "y": 58.5
+          },
+          {
+            "x": 246,
+            "y": 58.5
+          },
+          {
+            "x": 278,
+            "y": 58.5
+          }
+        ]
+      }
+    ]
+  }
+}

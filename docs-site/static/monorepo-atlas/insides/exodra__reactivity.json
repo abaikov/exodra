@@ -1,0 +1,1325 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "autoHydrate",
+        "label": "autoHydrate",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(persistor): void",
+            "full": "(persistor): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Auto-hydrate on client startup Tries both window and script tag methods",
+        "width": 146,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "bindable",
+        "label": "bindable",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "combine",
+        "label": "combine",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "createExoBindable",
+        "label": "createExoBindable",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(initialValue, createEvent): TExoWritableBindabl…",
+            "full": "(initialValue, createEvent): TExoWritableBindable<TValue, TEvent>",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 350,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createExoBindableList",
+        "label": "createExoBindableList",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(initialItems): TExoWritableBindabl…",
+            "full": "(initialItems): TExoWritableBindableList<TItem>",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 267,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createExoCombined",
+        "label": "createExoCombined",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(sources, compute): TExoBindable<TValue…",
+            "full": "(sources, compute): TExoBindable<TValue, TValue>",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A read-only bindable computed from SEVERAL sources.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createExoDerived",
+        "label": "createExoDerived",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(source, map): TExoBindable<TValue…",
+            "full": "(source, map): TExoBindable<TValue, TValue>",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A read-only bindable computed from a source bindable.",
+        "width": 261,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createPersistor",
+        "label": "createPersistor",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): ExoPersistor",
+            "full": "(): ExoPersistor",
+            "parts": [
+              {
+                "text": "(): "
+              },
+              {
+                "text": "ExoPersistor",
+                "link": "ExoPersistor"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "derive",
+        "label": "derive",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "ExoPersistor",
+        "label": "ExoPersistor",
+        "kind": "runtime",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "-",
+            "text": "registry: Map<string, TExoBindable<un…",
+            "full": "registry: Map<string, TExoBindable<unknown, unknown> | TExoBindableList<unknown, unknown>>",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "-",
+            "text": "autoIndex: number",
+            "full": "autoIndex: number",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "register(observable, key): void",
+            "full": "register(observable, key): void",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "serialize(): string",
+            "full": "serialize(): string",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "hydrate(json): void",
+            "full": "hydrate(json): void",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "clear(): void",
+            "full": "clear(): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 6,
+        "width": 280,
+        "height": 132,
+        "violations": []
+      },
+      {
+        "id": "getPersistor",
+        "label": "getPersistor",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): ExoPersistor",
+            "full": "(): ExoPersistor",
+            "parts": [
+              {
+                "text": "(): "
+              },
+              {
+                "text": "ExoPersistor",
+                "link": "ExoPersistor"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "globalPersistor",
+        "label": "globalPersistor",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Global instance for SSR",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "hydrateFromScript",
+        "label": "hydrateFromScript",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(scriptId, persistor): void",
+            "full": "(scriptId, persistor): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Client-side hydration from script tag",
+        "width": 210,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "hydrateFromWindow",
+        "label": "hydrateFromWindow",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(windowKey, persistor): void",
+            "full": "(windowKey, persistor): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Client-side hydration from window state",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "list",
+        "label": "list",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "persist",
+        "label": "persist",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(observable, key): TExoBindable<T, unk…",
+            "full": "(observable, key): TExoBindable<T, unknown> | TExoBindableList<T, unknown>",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Helper to auto-register observables",
+        "width": 286,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoPersistor",
+        "label": "TExoPersistor",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "register<T>(observable: TExoBindable<T,…",
+            "full": "register<T>(observable: TExoBindable<T, unknown> | TExoBindableList<T, unknown>, key?: string): void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "serialize(): string;",
+            "full": "serialize(): string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "hydrate(json: string): void;",
+            "full": "hydrate(json: string): void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "clear(): void;",
+            "full": "clear(): void;",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "TExoSourceValues",
+        "label": "TExoSourceValues",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "{ [TIndex in keyof TSources]: TSources[…",
+            "full": "{ [TIndex in keyof TSources]: TSources[TIndex] extends TExoBindable< infer TValue, unknown > ? TValue : never; }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The value each source carries, as a tuple matching the sources.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "autoHydrate→getPersistor",
+        "from": "autoHydrate",
+        "to": "getPersistor",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "autoHydrate→hydrateFromScript",
+        "from": "autoHydrate",
+        "to": "hydrateFromScript",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "autoHydrate→hydrateFromWindow",
+        "from": "autoHydrate",
+        "to": "hydrateFromWindow",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "autoHydrate→TExoPersistor",
+        "from": "autoHydrate",
+        "to": "TExoPersistor",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "bindable→createExoBindable",
+        "from": "bindable",
+        "to": "createExoBindable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/bindable.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/createExoBindable.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "combine→createExoCombined",
+        "from": "combine",
+        "to": "createExoCombined",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/combine.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/createExoCombined.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoCombined→TExoSourceValues",
+        "from": "createExoCombined",
+        "to": "TExoSourceValues",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/createExoCombined.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/createExoCombined.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createPersistor→ExoPersistor",
+        "from": "createPersistor",
+        "to": "ExoPersistor",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "constructs",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "derive→createExoDerived",
+        "from": "derive",
+        "to": "createExoDerived",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/derive.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/createExoDerived.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoPersistor→TExoPersistor",
+        "from": "ExoPersistor",
+        "to": "TExoPersistor",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "realization",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "implements",
+            "kind": "value"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "getPersistor→ExoPersistor",
+        "from": "getPersistor",
+        "to": "ExoPersistor",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "constructs",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "getPersistor→globalPersistor",
+        "from": "getPersistor",
+        "to": "globalPersistor",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "globalPersistor→ExoPersistor",
+        "from": "globalPersistor",
+        "to": "ExoPersistor",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "hydrateFromScript→getPersistor",
+        "from": "hydrateFromScript",
+        "to": "getPersistor",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "hydrateFromScript→TExoPersistor",
+        "from": "hydrateFromScript",
+        "to": "TExoPersistor",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "hydrateFromWindow→getPersistor",
+        "from": "hydrateFromWindow",
+        "to": "getPersistor",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "hydrateFromWindow→TExoPersistor",
+        "from": "hydrateFromWindow",
+        "to": "TExoPersistor",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "list→createExoBindableList",
+        "from": "list",
+        "to": "createExoBindableList",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/list.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/createExoBindableList.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "persist→getPersistor",
+        "from": "persist",
+        "to": "getPersistor",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity/src/persistor.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1869,
+    "height": 732,
+    "nodes": [
+      {
+        "id": "autoHydrate",
+        "x": 24,
+        "y": 535.5,
+        "width": 146,
+        "height": 69
+      },
+      {
+        "id": "bindable",
+        "x": 37,
+        "y": 35.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "combine",
+        "x": 37,
+        "y": 229.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "createExoBindable",
+        "x": 234,
+        "y": 24,
+        "width": 350,
+        "height": 69
+      },
+      {
+        "id": "createExoBindableList",
+        "x": 275.5,
+        "y": 121,
+        "width": 267,
+        "height": 69
+      },
+      {
+        "id": "createExoCombined",
+        "x": 262.5,
+        "y": 218,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "createExoDerived",
+        "x": 278.5,
+        "y": 315,
+        "width": 261,
+        "height": 69
+      },
+      {
+        "id": "createPersistor",
+        "x": 1005,
+        "y": 320.8,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "derive",
+        "x": 37,
+        "y": 326.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "ExoPersistor",
+        "x": 1208,
+        "y": 514,
+        "width": 280,
+        "height": 132
+      },
+      {
+        "id": "getPersistor",
+        "x": 725,
+        "y": 559,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "globalPersistor",
+        "x": 1014.5,
+        "y": 549.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "hydrateFromScript",
+        "x": 304,
+        "y": 639,
+        "width": 210,
+        "height": 69
+      },
+      {
+        "id": "hydrateFromWindow",
+        "x": 301,
+        "y": 437.8,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "list",
+        "x": 37,
+        "y": 132.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "persist",
+        "x": 266,
+        "y": 541.3,
+        "width": 286,
+        "height": 69
+      },
+      {
+        "id": "TExoPersistor",
+        "x": 1552,
+        "y": 483.8,
+        "width": 293,
+        "height": 114
+      },
+      {
+        "id": "TExoSourceValues",
+        "x": 648,
+        "y": 218,
+        "width": 293,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "autoHydrate→getPersistor",
+        "points": [
+          {
+            "x": 119.4,
+            "y": 604.5
+          },
+          {
+            "x": 202,
+            "y": 732
+          },
+          {
+            "x": 409,
+            "y": 732
+          },
+          {
+            "x": 616,
+            "y": 732
+          },
+          {
+            "x": 750,
+            "y": 628
+          }
+        ]
+      },
+      {
+        "id": "autoHydrate→hydrateFromScript",
+        "points": [
+          {
+            "x": 132,
+            "y": 604.5
+          },
+          {
+            "x": 202,
+            "y": 673.5
+          },
+          {
+            "x": 304,
+            "y": 673.5
+          }
+        ]
+      },
+      {
+        "id": "autoHydrate→hydrateFromWindow",
+        "points": [
+          {
+            "x": 134.1,
+            "y": 535.5
+          },
+          {
+            "x": 202,
+            "y": 472.3
+          },
+          {
+            "x": 301,
+            "y": 472.3
+          }
+        ]
+      },
+      {
+        "id": "autoHydrate→TExoPersistor",
+        "points": [
+          {
+            "x": 120.2,
+            "y": 535.5
+          },
+          {
+            "x": 202,
+            "y": 413.8
+          },
+          {
+            "x": 409,
+            "y": 413.8
+          },
+          {
+            "x": 616,
+            "y": 413.8
+          },
+          {
+            "x": 794.5,
+            "y": 413.8
+          },
+          {
+            "x": 973,
+            "y": 413.8
+          },
+          {
+            "x": 1074.5,
+            "y": 413.8
+          },
+          {
+            "x": 1176,
+            "y": 413.8
+          },
+          {
+            "x": 1348,
+            "y": 413.8
+          },
+          {
+            "x": 1520,
+            "y": 413.8
+          },
+          {
+            "x": 1618.4,
+            "y": 483.8
+          }
+        ]
+      },
+      {
+        "id": "bindable→createExoBindable",
+        "points": [
+          {
+            "x": 157,
+            "y": 58.5
+          },
+          {
+            "x": 202,
+            "y": 58.5
+          },
+          {
+            "x": 234,
+            "y": 58.5
+          }
+        ]
+      },
+      {
+        "id": "combine→createExoCombined",
+        "points": [
+          {
+            "x": 157,
+            "y": 252.5
+          },
+          {
+            "x": 202,
+            "y": 252.5
+          },
+          {
+            "x": 262.5,
+            "y": 252.5
+          }
+        ]
+      },
+      {
+        "id": "createExoCombined→TExoSourceValues",
+        "points": [
+          {
+            "x": 555.5,
+            "y": 252.5
+          },
+          {
+            "x": 616,
+            "y": 252.5
+          },
+          {
+            "x": 648,
+            "y": 252.5
+          }
+        ]
+      },
+      {
+        "id": "createPersistor→ExoPersistor",
+        "points": [
+          {
+            "x": 1144,
+            "y": 355.3
+          },
+          {
+            "x": 1176,
+            "y": 355.3
+          },
+          {
+            "x": 1297.5,
+            "y": 514
+          }
+        ]
+      },
+      {
+        "id": "derive→createExoDerived",
+        "points": [
+          {
+            "x": 157,
+            "y": 349.5
+          },
+          {
+            "x": 202,
+            "y": 349.5
+          },
+          {
+            "x": 278.5,
+            "y": 349.5
+          }
+        ]
+      },
+      {
+        "id": "ExoPersistor→TExoPersistor",
+        "points": [
+          {
+            "x": 1488,
+            "y": 580
+          },
+          {
+            "x": 1520,
+            "y": 580
+          },
+          {
+            "x": 1552,
+            "y": 573
+          }
+        ]
+      },
+      {
+        "id": "getPersistor→ExoPersistor",
+        "points": [
+          {
+            "x": 864,
+            "y": 616.9
+          },
+          {
+            "x": 973,
+            "y": 653.5
+          },
+          {
+            "x": 1074.5,
+            "y": 653.5
+          },
+          {
+            "x": 1176,
+            "y": 653.5
+          },
+          {
+            "x": 1208,
+            "y": 639.8
+          }
+        ]
+      },
+      {
+        "id": "getPersistor→globalPersistor",
+        "points": [
+          {
+            "x": 864,
+            "y": 585.2
+          },
+          {
+            "x": 973,
+            "y": 572.3
+          },
+          {
+            "x": 1014.5,
+            "y": 572.3
+          }
+        ]
+      },
+      {
+        "id": "globalPersistor→ExoPersistor",
+        "points": [
+          {
+            "x": 1134.5,
+            "y": 572.3
+          },
+          {
+            "x": 1176,
+            "y": 572.3
+          },
+          {
+            "x": 1208,
+            "y": 573.7
+          }
+        ]
+      },
+      {
+        "id": "hydrateFromScript→getPersistor",
+        "points": [
+          {
+            "x": 514,
+            "y": 658.7
+          },
+          {
+            "x": 616,
+            "y": 644.3
+          },
+          {
+            "x": 725,
+            "y": 613.3
+          }
+        ]
+      },
+      {
+        "id": "hydrateFromScript→TExoPersistor",
+        "points": [
+          {
+            "x": 514,
+            "y": 683.3
+          },
+          {
+            "x": 616,
+            "y": 692.8
+          },
+          {
+            "x": 794.5,
+            "y": 692.8
+          },
+          {
+            "x": 973,
+            "y": 692.8
+          },
+          {
+            "x": 1074.5,
+            "y": 692.8
+          },
+          {
+            "x": 1176,
+            "y": 692.8
+          },
+          {
+            "x": 1348,
+            "y": 692.8
+          },
+          {
+            "x": 1520,
+            "y": 692.8
+          },
+          {
+            "x": 1631.6,
+            "y": 597.8
+          }
+        ]
+      },
+      {
+        "id": "hydrateFromWindow→getPersistor",
+        "points": [
+          {
+            "x": 517,
+            "y": 462.2
+          },
+          {
+            "x": 616,
+            "y": 453
+          },
+          {
+            "x": 750.7,
+            "y": 559
+          }
+        ]
+      },
+      {
+        "id": "hydrateFromWindow→TExoPersistor",
+        "points": [
+          {
+            "x": 517,
+            "y": 477.5
+          },
+          {
+            "x": 616,
+            "y": 482.3
+          },
+          {
+            "x": 794.5,
+            "y": 482.3
+          },
+          {
+            "x": 973,
+            "y": 482.3
+          },
+          {
+            "x": 1074.5,
+            "y": 482.3
+          },
+          {
+            "x": 1176,
+            "y": 482.3
+          },
+          {
+            "x": 1348,
+            "y": 482.3
+          },
+          {
+            "x": 1520,
+            "y": 482.3
+          },
+          {
+            "x": 1552,
+            "y": 492.7
+          }
+        ]
+      },
+      {
+        "id": "list→createExoBindableList",
+        "points": [
+          {
+            "x": 157,
+            "y": 155.5
+          },
+          {
+            "x": 202,
+            "y": 155.5
+          },
+          {
+            "x": 275.5,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "persist→getPersistor",
+        "points": [
+          {
+            "x": 552,
+            "y": 575.8
+          },
+          {
+            "x": 616,
+            "y": 575.8
+          },
+          {
+            "x": 725,
+            "y": 586.6
+          }
+        ]
+      }
+    ]
+  }
+}

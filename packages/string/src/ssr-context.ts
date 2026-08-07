@@ -1,39 +1,24 @@
-// The component context for compiled SSR output — a standalone mirror of
-// ExoNodeString.createContext, so a component reads its props via getConstant /
-// getBindable EXACTLY as it would under the runtime walker. The compiled output
-// imports this as `_ctx` and calls `Comp(_ctx({ static, bindables }))`.
+// The component context for compiled SSR output. The compiled output imports this
+// as `_ctx` and calls `Comp(_ctx({ static, bindables }))`, so a component reads
+// its props via getConstant / getBindable EXACTLY as it would under the runtime
+// walker (ExoNodeString.createContext).
+//
+// The two are separate copies of the same literal ON PURPOSE — one shared factory
+// measured +6-8ns per component, and this runs once per component of every
+// render. `context-contract.test.ts` pins their behaviour together instead.
 //
 // SLICE LIMIT: provide()/inject() use a per-component scope only — cross-component
-// context propagation and the SSR side-effect context (Status/Head via
-// ssrContextKey) are not threaded yet.
+// context propagation is not threaded yet. The SSR side-effect context
+// (Status/Head via ssrContextKey) does reach components, through the ambient.
 
-import type { TExoContext, TExoContextKey, TExoNodeSchema } from '@exodra/core';
-
-interface Scope {
-    values?: Map<symbol, unknown>;
-    parent?: Scope;
-}
-
-// Request-scoped ambient injections for compiled SSR: values that every component
-// in a render can `inject()` without a threaded scope — used for the SSR
-// side-effect context (Status/Head via ssrContextKey). Set only for the (sync)
-// duration of one render via runWithAmbient. @exodra/string never names
-// ssrContextKey (that lives in @exodra/ssr); it just consults the ambient map by
-// key.id, so there is no dependency cycle.
-let ambient: Map<symbol, unknown> | null = null;
-
-export function runWithAmbient<T>(
-    values: Map<symbol, unknown>,
-    fn: () => T
-): T {
-    const prev = ambient;
-    ambient = values;
-    try {
-        return fn();
-    } finally {
-        ambient = prev;
-    }
-}
+import {
+    injectFromScope,
+    type TExoContext,
+    type TExoContextKey,
+    type TExoNodeSchema,
+    type TExoScope,
+} from '@exodra/core';
+import { readAmbient } from './ambient';
 
 type SsrAttrs = {
     static?: Record<string, unknown>;
@@ -42,7 +27,7 @@ type SsrAttrs = {
 };
 
 export function ssrContext(attrs: SsrAttrs): TExoContext {
-    const scope: Scope = {};
+    const scope: TExoScope = {};
     const ctx = {
         schema: { attrs } as unknown as TExoNodeSchema,
         createNode: <TNodeSchema>(s: TNodeSchema): TNodeSchema => s,
@@ -53,12 +38,9 @@ export function ssrContext(attrs: SsrAttrs): TExoContext {
             (scope.values ??= new Map()).set(key.id, value);
         },
         inject: (key: TExoContextKey<unknown>, fallback?: unknown): unknown => {
-            for (let s: Scope | undefined = scope; s; s = s.parent) {
-                if (s.values?.has(key.id)) return s.values.get(key.id);
-            }
-            // Fall back to the request-scoped ambient (e.g. the SSR context).
-            if (ambient?.has(key.id)) return ambient.get(key.id);
-            return fallback;
+            // A provider up the scope chain wins; the request-scoped ambient (the
+            // SSR context) is the layer beneath it, the caller's fallback last.
+            return injectFromScope(scope, key.id, readAmbient(key.id, fallback));
         },
         onDispose: (): void => {},
     };

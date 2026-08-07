@@ -41,7 +41,7 @@ describe('Hydrate', () => {
             hydrateFromWindow();
             
             expect(counter.getValue()).toBe(42);
-            expect(items.snapshot()).toEqual(['a', 'b', 'c']);
+            expect(items.getValue()).toEqual(['a', 'b', 'c']);
         });
         
         it('handles JSON string in window', () => {
@@ -104,7 +104,7 @@ describe('Hydrate', () => {
             hydrateFromScript();
             
             expect(counter.getValue()).toBe(42);
-            expect(items.snapshot()).toEqual(['x', 'y', 'z']);
+            expect(items.getValue()).toEqual(['x', 'y', 'z']);
         });
         
         it('warns when script not found', () => {

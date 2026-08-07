@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createContextKey } from '@exodra/core';
-import { ssrContext, runWithAmbient } from './ssr-context';
+import { runWithAmbient } from './ambient';
+import { ssrContext } from './ssr-context';
 
 describe('ssrContext', () => {
     it('reads static / bindables / bindableLists via get*', () => {

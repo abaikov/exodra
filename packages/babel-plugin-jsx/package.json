@@ -1,6 +1,6 @@
 {
   "name": "@exodra/babel-plugin-jsx",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Babel plugin for transforming JSX to Exodra h() calls with three-props architecture",
   "keywords": [
     "exodra",
@@ -40,13 +40,15 @@
   "dependencies": {
     "@babel/helper-plugin-utils": "^7.24.0",
     "@babel/plugin-syntax-jsx": "^7.24.0",
-    "@babel/types": "^7.24.0"
+    "@babel/types": "^7.24.0",
+    "@exodra/core": "^0.3.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
+    "@exodra/string": "^0.4.1",
     "@types/babel__core": "^7.20.5"
   }
 }

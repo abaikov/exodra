@@ -8,6 +8,7 @@
 export type { TExoBindable } from './TExoBindable';
 export type { TExoBindableList } from './TExoBindableList';
 export type { TExoListOp } from './TExoListOp';
+export type { TExoNodeAttributes } from './TExoNodeAttributes';
 export type { TExoReactiveAttributeBindableLists } from './TExoReactiveAttributeBindableLists';
 export type { TExoReactiveAttributeBindables } from './TExoReactiveAttributeBindables';
 export type { TExoReactiveAttributeConstants } from './TExoReactiveAttributeConstants';

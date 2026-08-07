@@ -6,7 +6,7 @@ describe('createExoBindable', () => {
         const value = createExoBindable(1);
         const events: number[] = [];
 
-        const unsubscribe = value.subscribe(event => {
+        const unsubscribe = value.onChange(event => {
             events.push(event);
         });
 

@@ -6,7 +6,6 @@ import { bindable, list } from '@exodra/reactivity';
 import { createExoBindable } from '../../reactivity/src/createExoBindable';
 import { createExoBindableList } from '../../reactivity/src/createExoBindableList';
 import { ExoNodeDom } from './ExoNodeDom';
-import { __resetDomDevWarnings } from './dev';
 import { hydrate } from './hydrate';
 import { mount } from './mount';
 
@@ -571,6 +570,40 @@ describe('ExoNodeDom', () => {
         mounted.dispose();
     });
 
+    it('fires onExoMount for nested nodes on hydrate, with the right element', () => {
+        const calls: string[] = [];
+        const root = document.createElement('div');
+        root.innerHTML = '<span>a</span><em>b</em>';
+        const mounted = hydrate(
+            {
+                type: 'div',
+                attrs: {
+                    static: {
+                        onExoMount: n => calls.push(`root:${n.element.nodeName}`),
+                        children: [
+                            {
+                                type: 'span',
+                                attrs: {
+                                    static: {
+                                        textContent: 'a',
+                                        onExoMount: n =>
+                                            calls.push(`child:${n.element.nodeName}`),
+                                    },
+                                },
+                            },
+                            { type: 'em', attrs: { static: { textContent: 'b' } } },
+                        ],
+                    },
+                },
+            },
+            root
+        );
+
+        expect(calls).toEqual(['root:DIV', 'child:SPAN']);
+        expect(root.querySelector('span')).toBeTruthy();
+        mounted.dispose();
+    });
+
     it('hydrates list children and applies later list operations', () => {
         const childA = {
             type: 'li',
@@ -678,6 +711,162 @@ describe('ExoNodeDom', () => {
         expect(calls).toContain('unmount:DIV');
     });
 
+    it('runs disposers and onExoUnmount below a STATIC fragment', () => {
+        // Same gap as the mount side: disposeSchema descends via rec.children, and a
+        // static fragment kept its children only on the walk node.
+        const calls: string[] = [];
+        const text = createExoBindable('a');
+        let subscribed = 0;
+        const tracked = {
+            getValue: () => text.getValue(),
+            onChange: (cb: () => void) => {
+                subscribed += 1;
+                const un = text.onChange(cb);
+                return () => { subscribed -= 1; un(); };
+            },
+        };
+        const container = document.createElement('div');
+        const mounted = mount(
+            h('div', {
+                static: {
+                    children: [
+                        h('#fragment', {
+                            static: {
+                                children: [
+                                    h('span', {
+                                        bindables: { textContent: tracked },
+                                        static: {
+                                            onExoUnmount: () => calls.push('unmount'),
+                                        },
+                                    }),
+                                ],
+                            },
+                        }),
+                    ],
+                },
+            }),
+            container
+        );
+
+        expect(subscribed).toBe(1);
+        mounted.dispose();
+        expect(calls).toEqual(['unmount']);
+        expect(subscribed).toBe(0);
+    });
+
+    it('re-mounts the same schema object after dispose', () => {
+        // The record lives on the schema now, so a second mount reuses a stale
+        // record — it must be overwritten cleanly, not tripped over.
+        const schema = h('div', { static: { children: h('span', { static: { textContent: 'x' } }) } });
+        const c1 = document.createElement('div');
+        const first = mount(schema, c1);
+        expect(c1.innerHTML).toBe('<div><span>x</span></div>');
+        first.dispose();
+
+        const c2 = document.createElement('div');
+        const second = mount(schema, c2);
+        expect(c2.innerHTML).toBe('<div><span>x</span></div>');
+        expect(second.element).not.toBe(first.element);
+        second.dispose();
+    });
+
+    it('rejects the same schema rendered in two live positions', () => {
+        const shared = h('span', { static: { textContent: 'shared' } });
+        const c1 = document.createElement('div');
+        const live = mount(shared, c1);
+
+        const c2 = document.createElement('div');
+        expect(() => mount(shared, c2)).toThrow(/two live positions/);
+
+        live.dispose();
+    });
+
+    it('fires onExoMount parent-first, siblings in document order', () => {
+        // Hooks are queued as the tree is built, so they fire in build order. The
+        // old commit walked a stack, which fired siblings in REVERSE.
+        const calls: string[] = [];
+        const hook = (id: string) => ({
+            static: {
+                'data-id': id,
+                onExoMount: () => calls.push(id),
+            },
+        });
+        const container = document.createElement('div');
+        const mounted = mount(
+            {
+                type: 'div',
+                attrs: {
+                    static: {
+                        ...hook('root').static,
+                        children: [
+                            {
+                                type: 'span',
+                                attrs: {
+                                    static: {
+                                        ...hook('a').static,
+                                        children: [
+                                            { type: 'b', attrs: hook('a1') },
+                                            { type: 'i', attrs: hook('a2') },
+                                        ],
+                                    },
+                                },
+                            },
+                            { type: 'span', attrs: hook('b') },
+                        ],
+                    },
+                },
+            },
+            container
+        );
+
+        expect(calls).toEqual(['root', 'a', 'a1', 'a2', 'b']);
+        mounted.dispose();
+    });
+
+    it('fires onExoMount for children nested inside a STATIC fragment', () => {
+        // commitMountFrom descends via rec.children, but a static #fragment in the
+        // build path stores its children on the WALK node, not on a record — so a
+        // hook below a static fragment can be skipped entirely.
+        const calls: string[] = [];
+        const container = document.createElement('div');
+        const mounted = mount(
+            {
+                type: 'div',
+                attrs: {
+                    static: {
+                        children: [
+                            {
+                                type: '#fragment',
+                                attrs: {
+                                    static: {
+                                        children: [
+                                            {
+                                                type: 'span',
+                                                attrs: {
+                                                    static: {
+                                                        onExoMount: n =>
+                                                            calls.push(
+                                                                `mount:${n.element.nodeName}`
+                                                            ),
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+            container
+        );
+
+        expect(container.querySelectorAll('span')).toHaveLength(1);
+        expect(calls).toEqual(['mount:SPAN']);
+        mounted.dispose();
+    });
+
     it('subscribes each binding exactly once (no shadow tree)', () => {
         let reads = 0;
         const text = {
@@ -686,7 +875,7 @@ describe('ExoNodeDom', () => {
                 return 'x';
             },
             setValue: () => {},
-            subscribe: () => () => {},
+            onChange: () => () => {},
         };
         new ExoNodeDom({
             type: 'div',
@@ -1280,11 +1469,11 @@ describe('ExoNodeDom', () => {
         let subscribeCalls = 0;
         const makeRow = (label: string) => {
             const b = createExoBindable(label);
-            const realSubscribe = b.subscribe.bind(b);
-            (b as unknown as { subscribe: (cb: () => void) => () => void }).subscribe =
+            const realOnChange = b.onChange.bind(b);
+            (b as unknown as { onChange: (cb: () => void) => () => void }).onChange =
                 cb => {
                     subscribeCalls += 1;
-                    return realSubscribe(cb);
+                    return realOnChange(cb);
                 };
             return { b, schema: h('li', { bindables: { textContent: b } }) };
         };
@@ -1353,17 +1542,10 @@ describe('ExoNodeDom', () => {
     });
 });
 
-// --- dev diagnostics --------------------------------------------------------
+// --- hard errors --------------------------------------------------------
 
-describe('ExoNodeDom — dev diagnostics', () => {
+describe('ExoNodeDom — hard errors and misconfigured props', () => {
     type Ctor = ConstructorParameters<typeof ExoNodeDom>[0];
-    let errorSpy: ReturnType<typeof vi.spyOn>;
-
-    beforeEach(() => {
-        __resetDomDevWarnings();
-        errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    });
-    afterEach(() => errorSpy.mockRestore());
 
     it('errors point at the node: bad schema type names the node', () => {
         expect(
@@ -1385,55 +1567,26 @@ describe('ExoNodeDom — dev diagnostics', () => {
         ).toThrow(/component Empty.*no element to mount/s);
     });
 
-    it('warns (once) when a bindables entry is not a bindable', () => {
+    it('skips a nullish handler instead of throwing (intentional absence)', () => {
         const node = new ExoNodeDom({
-            type: 'div',
-            // a plain function landed in bindables (belongs in handlers)
-            attrs: { bindables: { title: (() => {}) as unknown } },
-        } as unknown as Ctor);
-        expect(node.element).toBeInstanceOf(HTMLDivElement);
-        expect(errorSpy).toHaveBeenCalledTimes(1);
-        const msg = String(errorSpy.mock.calls[0][0]);
-        expect(msg).toContain('bindables.title');
-        expect(msg).toContain('<div>');
-        expect(msg).toContain('function');
-    });
-
-    it('warns when a handlers entry is not a function', () => {
-        new ExoNodeDom({
-            type: 'button',
-            attrs: {
-                static: { id: 'go' },
-                handlers: { onClick: 'nope' as unknown },
-            },
-        } as unknown as Ctor);
-        expect(errorSpy).toHaveBeenCalledTimes(1);
-        const msg = String(errorSpy.mock.calls[0][0]);
-        expect(msg).toContain('handlers.onClick');
-        expect(msg).toContain('<button#go>');
-        expect(msg).toContain('not a function');
-    });
-
-    it('warns when a bindableHandlers entry is not a bindable', () => {
-        new ExoNodeDom({
-            type: 'button',
-            attrs: { bindableHandlers: { onClick: (() => {}) as unknown } },
-        } as unknown as Ctor);
-        expect(errorSpy).toHaveBeenCalledTimes(1);
-        expect(String(errorSpy.mock.calls[0][0])).toContain(
-            'bindableHandlers.onClick'
-        );
-    });
-
-    it('does NOT warn for a nullish handler (intentional absence)', () => {
-        new ExoNodeDom({
             type: 'button',
             attrs: { handlers: { onClick: undefined as unknown } },
         } as unknown as Ctor);
-        expect(errorSpy).not.toHaveBeenCalled();
+        expect(node.element).toBeInstanceOf(HTMLButtonElement);
     });
 
-    it('a valid handler still works and does not warn', () => {
+    it('skips a nullish bindable / bindableHandler instead of throwing', () => {
+        const node = new ExoNodeDom({
+            type: 'button',
+            attrs: {
+                bindables: { title: undefined as unknown },
+                bindableHandlers: { onClick: undefined as unknown },
+            },
+        } as unknown as Ctor);
+        expect(node.element).toBeInstanceOf(HTMLButtonElement);
+    });
+
+    it('a valid handler still works', () => {
         let clicks = 0;
         const node = new ExoNodeDom({
             type: 'button',
@@ -1443,7 +1596,6 @@ describe('ExoNodeDom — dev diagnostics', () => {
             new MouseEvent('click', { bubbles: true })
         );
         expect(clicks).toBe(1);
-        expect(errorSpy).not.toHaveBeenCalled();
     });
 
     // Regression: a fragment is transparent (no host element), so reactive children
@@ -1590,5 +1742,194 @@ describe('ExoNodeDom — dev diagnostics', () => {
             expect(order(ul)).toEqual(['z', 'a', 'b']);
             expect(nodeMap(ul).get('a')).toBe(nA);
         });
+    });
+});
+
+// --- review probes: paths whose guards changed when runtime diagnostics were removed
+describe('ExoNodeDom — post-diagnostics behaviour', () => {
+    type Ctor = ConstructorParameters<typeof ExoNodeDom>[0];
+
+    it('a truthy non-function in handlers fails loudly (no silent dead UI)', () => {
+        // The old code skipped it with a dev warning; with diagnostics gone the
+        // value reaches addEventListener. Whatever it does, it must not silently
+        // produce a button that looks wired but is not.
+        expect(() =>
+            new ExoNodeDom({
+                type: 'button',
+                attrs: { handlers: { onClick: 'nope' as unknown } },
+            } as unknown as Ctor)
+        ).toThrow();
+    });
+
+    it('re-mounts a schema whose subtree contains a component', () => {
+        const Inner = () => h('span', { static: { textContent: 'inner' } });
+        const schema = h('div', { static: { children: [h(Inner, {})] } });
+        const c1 = document.createElement('div');
+        const first = mount(schema, c1);
+        expect(c1.innerHTML).toBe('<div><span>inner</span></div>');
+        first.dispose();
+
+        const c2 = document.createElement('div');
+        const second = mount(schema, c2);
+        expect(c2.innerHTML).toBe('<div><span>inner</span></div>');
+        second.dispose();
+    });
+
+    it('re-mounts a schema whose subtree contains a STATIC fragment', () => {
+        const schema = h('div', {
+            static: {
+                children: [
+                    h('#fragment', {
+                        static: { children: [h('span', { static: { textContent: 'f' } })] },
+                    }),
+                ],
+            },
+        });
+        const c1 = document.createElement('div');
+        const first = mount(schema, c1);
+        expect(c1.querySelectorAll('span')).toHaveLength(1);
+        first.dispose();
+
+        const c2 = document.createElement('div');
+        const second = mount(schema, c2);
+        expect(c2.querySelectorAll('span')).toHaveLength(1);
+        second.dispose();
+    });
+
+    it('re-mounts a list host and keeps list ops working afterwards', () => {
+        const items = createExoBindableList([
+            h('li', { static: { textContent: 'a' } }),
+        ]);
+        const schema = h('ul', { bindableLists: { children: items } });
+        const c1 = document.createElement('div');
+        const first = mount(schema, c1);
+        expect(c1.innerHTML).toBe('<ul><li>a</li></ul>');
+        first.dispose();
+
+        const c2 = document.createElement('div');
+        const second = mount(schema, c2);
+        items.push(h('li', { static: { textContent: 'b' } }));
+        expect(c2.innerHTML).toBe('<ul><li>a</li><li>b</li></ul>');
+        second.dispose();
+    });
+
+    it('disposing a reactive fragment releases its subtree (no stale live position)', () => {
+        const kids = createExoBindableList([
+            h('span', { static: { textContent: 'x' } }),
+        ]);
+        const schema = h('div', {
+            static: { children: [h('#fragment', { bindableLists: { children: kids } })] },
+        });
+        const c1 = document.createElement('div');
+        const first = mount(schema, c1);
+        expect(c1.querySelectorAll('span')).toHaveLength(1);
+        first.dispose();
+
+        const c2 = document.createElement('div');
+        const second = mount(schema, c2);
+        expect(c2.querySelectorAll('span')).toHaveLength(1);
+        second.dispose();
+    });
+});
+
+describe('ExoNodeDom — list op / DOM consistency', () => {
+    // Index math in applyListOp (insert/remove/move/set/reset) and in the keyed
+    // reconcile is where off-by-ones hide. Invariant: after EVERY op the DOM must
+    // equal the list's own getValue(). Deterministic PRNG so a failure reproduces.
+    it('keeps the DOM equal to getValue() across 600 random ops', () => {
+        let seed = 12345;
+        const rnd = (n: number) => {
+            seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+            return seed % n;
+        };
+        const mk = (id: number) =>
+            h('li', { static: { 'data-id': String(id), textContent: String(id) } });
+
+        let nextId = 0;
+        const items = createExoBindableList([mk(nextId++), mk(nextId++), mk(nextId++)]);
+        const container = document.createElement('div');
+        const mounted = mount(h('ul', { bindableLists: { children: items } }), container);
+        const ul = container.querySelector('ul')!;
+
+        const domIds = () =>
+            [...ul.children].map(el => el.getAttribute('data-id')).join(',');
+        const listIds = () =>
+            (items.getValue() as ReadonlyArray<{ attrs?: { static?: Record<string, unknown> } }>)
+                .map(s => String(s.attrs?.static?.['data-id']))
+                .join(',');
+
+        for (let step = 0; step < 600; step++) {
+            const len = items.getValue().length;
+            switch (rnd(5)) {
+                case 0:
+                    items.insert(rnd(len + 1), mk(nextId++));
+                    break;
+                case 1:
+                    if (len > 0) items.remove(rnd(len), 1 + rnd(2));
+                    break;
+                case 2:
+                    if (len > 1) items.move(rnd(len), rnd(len), 1 + rnd(2));
+                    break;
+                case 3:
+                    if (len > 0) items.set(rnd(len), mk(nextId++));
+                    break;
+                default:
+                    items.reset(Array.from({ length: rnd(6) }, () => mk(nextId++)));
+            }
+            if (domIds() !== listIds()) {
+                throw new Error(`step ${step}: DOM [${domIds()}] != list [${listIds()}]`);
+            }
+        }
+        expect(domIds()).toBe(listIds());
+        mounted.dispose();
+    });
+});
+
+describe('ExoNodeDom — hydrate teardown parity', () => {
+    it('runs disposers below a STATIC fragment after HYDRATE too', () => {
+        // The build path had a leak here (a static fragment kept children only on
+        // the walk node, so dispose never descended). Hydrate builds its own
+        // records — assert it does not have the same hole.
+        const text = createExoBindable('a');
+        let live = 0;
+        const tracked = {
+            getValue: () => text.getValue(),
+            onChange: (cb: () => void) => {
+                live += 1;
+                const un = text.onChange(cb);
+                return () => { live -= 1; un(); };
+            },
+        };
+        const root = document.createElement('div');
+        root.innerHTML = '<span>a</span>';
+        const mounted = hydrate(
+            {
+                type: 'div',
+                attrs: {
+                    static: {
+                        children: [
+                            {
+                                type: '#fragment',
+                                attrs: {
+                                    static: {
+                                        children: [
+                                            {
+                                                type: 'span',
+                                                attrs: { bindables: { textContent: tracked } },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            } as unknown as Parameters<typeof hydrate>[0],
+            root
+        );
+
+        expect(live).toBe(1);
+        mounted.dispose();
+        expect(live).toBe(0);
     });
 });

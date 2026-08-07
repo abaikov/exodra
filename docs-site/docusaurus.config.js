@@ -67,7 +67,7 @@ const config = {
           onUntruncatedBlogPosts: 'warn',
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: ['./src/css/custom.css', require.resolve('./src/css/monorepo-atlas.css')],
         },
       }),
     ],

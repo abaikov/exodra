@@ -26,9 +26,9 @@ load — a single reactive runtime, no duplication.
 
 ```html
 <script type="module">
-  import { h, text }          from 'https://cdn.jsdelivr.net/npm/@exodra/core@0.1/+esm';
-  import { mount }            from 'https://cdn.jsdelivr.net/npm/@exodra/dom@0.1/+esm';
-  import { bindable, derive } from 'https://cdn.jsdelivr.net/npm/@exodra/reactivity@0.1/+esm';
+  import { h, text }          from 'https://cdn.jsdelivr.net/npm/@exodra/core@0.3/+esm';
+  import { mount }            from 'https://cdn.jsdelivr.net/npm/@exodra/dom@0.3/+esm';
+  import { bindable, derive } from 'https://cdn.jsdelivr.net/npm/@exodra/reactivity@0.3/+esm';
 
   const count = bindable(0);
   mount(h('div', { static: { children: [
@@ -47,11 +47,11 @@ version in one place):
 ```html
 <script type="importmap">
 { "imports": {
-  "@exodra/core":       "https://cdn.jsdelivr.net/npm/@exodra/core@0.1/+esm",
-  "@exodra/reactivity": "https://cdn.jsdelivr.net/npm/@exodra/reactivity@0.1/+esm",
-  "@exodra/dom":        "https://cdn.jsdelivr.net/npm/@exodra/dom@0.1/+esm",
-  "@exodra/router":     "https://cdn.jsdelivr.net/npm/@exodra/router@0.1/+esm",
-  "@exodra/forms":      "https://cdn.jsdelivr.net/npm/@exodra/forms@0.1/+esm"
+  "@exodra/core":       "https://cdn.jsdelivr.net/npm/@exodra/core@0.3/+esm",
+  "@exodra/reactivity": "https://cdn.jsdelivr.net/npm/@exodra/reactivity@0.3/+esm",
+  "@exodra/dom":        "https://cdn.jsdelivr.net/npm/@exodra/dom@0.3/+esm",
+  "@exodra/router":     "https://cdn.jsdelivr.net/npm/@exodra/router@0.3/+esm",
+  "@exodra/forms":      "https://cdn.jsdelivr.net/npm/@exodra/forms@0.3/+esm"
 }}
 </script>
 <script type="module">
@@ -69,9 +69,9 @@ package URL (via the package's `jsdelivr` field):
 
 ```html
 <!-- load the shared runtime FIRST, then the pieces that use it -->
-<script src="https://cdn.jsdelivr.net/npm/@exodra/core@0.1"></script>
-<script src="https://cdn.jsdelivr.net/npm/@exodra/reactivity@0.1"></script>
-<script src="https://cdn.jsdelivr.net/npm/@exodra/dom@0.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@exodra/core@0.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@exodra/reactivity@0.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@exodra/dom@0.3"></script>
 <script>
   const { h, text }          = Exodra.core;
   const { bindable, derive } = Exodra.reactivity;
@@ -103,7 +103,7 @@ before `dom` / `router` / `forms`.
 
 ## Versions
 
-CDNs serve exactly what's **published to npm**. Pin a version (`@exodra/core@0.1.2`)
-for production so a future release can't shift under you; use a range (`@0.1`) to
+CDNs serve exactly what's **published to npm**. Pin an exact version (`@exodra/core@0.3.0`)
+for production so a future release can't shift under you; use a range (`@0.3`) to
 follow patch/minor. Whatever code is on the CDN is the last published version — to
 get a change onto the CDN, publish a new version to npm.

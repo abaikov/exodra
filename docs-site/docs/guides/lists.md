@@ -49,7 +49,7 @@ work (only entering/leaving/moved nodes change).
 ## 2. `bindableList` + ops — when a producer emits exact mutations
 
 `list()` (see the [Reactivity API](../api/reactivity.md#list)) exposes
-`snapshot()` + `subscribeOps()`, emitting fine-grained
+`getValue()` + `onChange()`, emitting fine-grained
 `insert` / `move` / `remove` / `set` / `reset` operations. The renderer applies
 each op directly — no diffing.
 
@@ -136,3 +136,40 @@ subscription cost is O(visible), not O(total).
 
 Both compile to the same reconciler underneath — the only question is whether
 **you** hand it the delta (ops) or let it compute the delta from the new array.
+
+## When a row fails to build
+
+A list op mutates the list's array first and notifies its views second. If a view
+throws while applying the op — most often because a row's component throws while
+being built — the item is already in the list but never reached the DOM.
+
+The failure is **not silent**: the exception surfaces at the call site, so
+`items.push(badRow)` throws in your code. What is easy to miss is the aftermath —
+that list and that view have drifted apart, and index `N` in the list is no longer
+index `N` in the DOM. Every later index-based op (`remove`, `move`, `set`) then
+targets the wrong row.
+
+```ts
+try {
+    items.push(row);
+} catch (error) {
+    // The row is in `items`; the DOM never got it. Do not keep going as if the
+    // two still agree — repair the data, then force a full reconcile:
+    items.reset(itemsWithoutTheBrokenRow);
+}
+```
+
+`reset()` is the repair because it drives a full keyed reconcile from the list's
+current value: it brings the DOM to the list, whatever state a half-applied op
+left it in.
+
+**Why the framework does not recover for you.** Rolling the array back would
+repair the list but not the DOM — a `move` that throws mid-flight has already
+detached nodes, and an "undo" on the array does not put them back. Reconciling
+automatically would rebuild the same failing row and throw again, costing a full
+tree walk to arrive at the same error. Neither is a real guarantee, so Exodra does
+not pretend to offer one: it fails loudly at the line that caused it and leaves
+the recovery to code that knows which row is bad.
+
+A component that throws during build is a bug in that component. This section is
+about not compounding it.

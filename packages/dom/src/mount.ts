@@ -1,15 +1,14 @@
 import type { TExoSchema } from '@exodra/core';
 import { ExoNodeDom } from './ExoNodeDom';
-import { describeSchema } from './dev';
+import { describeSchema } from './describeSchema';
+import { diagnoseBuildFailure } from './diagnoseBuildFailure';
 import type { TExoDomMountResult } from './types/TExoDomMountResult';
 
 export function mount(
     schema: TExoSchema,
     container: Element | DocumentFragment
 ): TExoDomMountResult {
-    const node = new ExoNodeDom(
-        schema as ConstructorParameters<typeof ExoNodeDom>[0]
-    );
+    const node = buildRoot(schema);
 
     const root = node.element;
 
@@ -51,4 +50,22 @@ export function mount(
             node.dispose();
         },
     };
+}
+
+// Build the root, and if it throws, give the schema one pass to explain itself.
+// The render path stays check-free (see diagnoseBuildFailure); this costs nothing
+// until something has already failed.
+function buildRoot(schema: TExoSchema): ExoNodeDom {
+    try {
+        return new ExoNodeDom(
+            schema as ConstructorParameters<typeof ExoNodeDom>[0]
+        );
+    } catch (error) {
+        throw (
+            diagnoseBuildFailure(
+                schema as Parameters<typeof diagnoseBuildFailure>[0],
+                error
+            ) ?? error
+        );
+    }
 }

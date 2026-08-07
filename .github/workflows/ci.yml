@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+# Read-only: nothing here publishes or writes to the repo.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint, typecheck, build, test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Exactly the gate `npm run release` runs, so CI cannot pass while a
+      # release would fail: lint → typecheck → type-tests → build:all → tests.
+      - name: release:check
+        run: npm run release:check
+
+      # Installs the built tarballs into a throwaway project and renders with
+      # them — catches a broken `files`/`exports`/peer range that the in-repo
+      # test run cannot see.
+      - name: Packed-artifact integration
+        run: npm run test:packed
+
+  browser:
+    name: Browser-backed tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # @exodra/introspect's `explore` drives a real browser; without Chromium
+      # its end-to-end test skips itself, which would hide a regression.
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - run: npm run build
+
+      - name: introspect (browser exploration)
+        run: npx vitest run src/browser-explorer.test.ts
+        working-directory: packages/introspect

@@ -34,7 +34,11 @@ export function h(
     attrs: TExoSchemaProps = {},
     cacheKey?: symbol | string
 ): TExoSchema {
+    // `exoRecord` is written here (not grown later by the renderer) so every schema
+    // leaves this factory with its final hidden class — see TExoNodeSchema.
     return (
-        cacheKey === undefined ? { type, attrs } : { type, attrs, cacheKey }
+        cacheKey === undefined
+            ? { type, attrs, exoRecord: undefined }
+            : { type, attrs, cacheKey, exoRecord: undefined }
     ) as TExoSchema;
 }

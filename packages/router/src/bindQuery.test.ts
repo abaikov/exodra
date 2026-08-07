@@ -52,7 +52,7 @@ describe('router.bindQuery', () => {
         const status = router.bindQuery('status', { default: 'all' });
         const seen: string[] = [];
 
-        const unsubscribe = status.subscribe(value => seen.push(value));
+        const unsubscribe = status.onChange(value => seen.push(value));
         await status.setValue('active'); // own write
         await router.navigate('/?status=done'); // external navigation (e.g. back/forward)
         unsubscribe();
@@ -68,7 +68,7 @@ describe('router.bindQuery', () => {
         const tag = router.bindQuery('tag');
         const statusSeen: string[] = [];
 
-        status.subscribe(value => statusSeen.push(value));
+        status.onChange(value => statusSeen.push(value));
         await tag.setValue('ui');
 
         // `derive` re-maps on every location change, but the mapped status value

@@ -14,7 +14,7 @@ export interface ReadableBindable<T> {
     // No-arg listener: the island re-reads getValue() on notify, so it never uses
     // the event payload. This matches TExoBindable<T, TEvent = void> (void events),
     // which a `(value: T)` listener would reject.
-    subscribe(listener: () => void): () => void;
+    onChange(listener: () => void): () => void;
 }
 
 export interface ReactIslandOptions {
@@ -34,7 +34,7 @@ function isReadableBindable(value: unknown): value is ReadableBindable<unknown> 
         typeof value === 'object' &&
         value !== null &&
         typeof (value as { getValue?: unknown }).getValue === 'function' &&
-        typeof (value as { subscribe?: unknown }).subscribe === 'function'
+        typeof (value as { onChange?: unknown }).onChange === 'function'
     );
 }
 
@@ -92,7 +92,7 @@ export function reactIsland<P extends object>(
                     render();
                 }
                 if (reactive) {
-                    unsubscribe = (props as ReadableBindable<P>).subscribe(() =>
+                    unsubscribe = (props as ReadableBindable<P>).onChange(() =>
                         render()
                     );
                 }

@@ -14,6 +14,7 @@ const outFile = join(__dirname, '..', 'static', 'llms-full.txt');
 const ORDER = [
   'getting-started',
   'benchmarks',
+  'security',
   'core/concepts',
   'guides/jsx',
   'guides/components',

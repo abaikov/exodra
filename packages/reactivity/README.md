@@ -19,9 +19,9 @@ npm install @exodra/reactivity
 - **Persistence** (`persist`, `createPersistor`) and **hydration** helpers for SSR.
 
 There are no hidden globals: nothing is auto-tracked, there is no dependency graph,
-no effect scheduler, and no batching layer. You read with `getValue()` / `snapshot()`
+no effect scheduler, and no batching layer. You read with `getValue()` / `getValue()`
 and write with `setValue()` / list operations. Reactivity flows only through explicit
-`subscribe` / `subscribeOps` and through `derive`.
+`onChange` / `onChange` and through `derive`.
 
 > **Important:** values are read and written through methods, not a `.value` property.
 > Use `b.getValue()` / `b.setValue(next)`. There is no `.value`, `.get()`, or `.set()`.
@@ -42,7 +42,7 @@ name.getValue(); // 'John'
 name.setValue('Jane');
 
 // Subscribe to changes — returns an unsubscribe function
-const unsubscribe = name.subscribe(event => {
+const unsubscribe = name.onChange(event => {
   console.log('name changed:', event);
 });
 
@@ -55,7 +55,7 @@ A bindable exposes exactly three methods:
 | --- | --- |
 | `getValue()` | Returns the current value. |
 | `setValue(value, event?)` | Stores a new value and notifies subscribers. Identical writes (with no explicit `event`) are deduped and skip notification. |
-| `subscribe(fn)` | Registers a listener and returns an unsubscribe function. |
+| `onChange(fn)` | Registers a listener and returns an unsubscribe function. |
 
 ### Custom event payloads
 
@@ -65,7 +65,7 @@ map `(value, previousValue)` to a custom event payload that subscribers receive 
 ```typescript
 const count = bindable(0, (value, previous) => ({ value, delta: value - previous }));
 
-count.subscribe(event => console.log(event)); // { value: 1, delta: 1 }
+count.onChange(event => console.log(event)); // { value: 1, delta: 1 }
 count.setValue(1);
 ```
 
@@ -86,7 +86,7 @@ count.setValue(5);
 doubled.getValue(); // 10
 ```
 
-A derived bindable has `getValue()` and `subscribe()`, but no `setValue()` — it always
+A derived bindable has `getValue()` and `onChange()`, but no `setValue()` — it always
 reflects the mapped source value. To combine several sources, derive from the one that
 changes (or model the combination as a single source bindable).
 
@@ -104,10 +104,10 @@ const todos = list([
 ]);
 
 // Read an immutable snapshot of the current items
-todos.snapshot(); // [{ id: 1, ... }, { id: 2, ... }]
+todos.getValue(); // [{ id: 1, ... }, { id: 2, ... }]
 
 // Subscribe to the operation stream — returns an unsubscribe function
-const stop = todos.subscribeOps(op => {
+const stop = todos.onChange(op => {
   console.log(op.type); // 'insert' | 'remove' | 'move' | 'set' | 'reset'
 });
 
@@ -125,8 +125,8 @@ List API:
 
 | Method | Description |
 | --- | --- |
-| `snapshot()` | Returns a copy of the current items. |
-| `subscribeOps(fn)` | Subscribes to the operation stream; returns an unsubscribe function. |
+| `getValue()` | Returns a copy of the current items. |
+| `onChange(fn)` | Subscribes to the operation stream; returns an unsubscribe function. |
 | `push(item)` | Appends an item. |
 | `insert(index, item)` | Inserts an item at `index` (clamped to bounds). |
 | `remove(index, count?)` | Removes `count` items (default 1) starting at `index`. |
@@ -136,7 +136,7 @@ List API:
 
 > There are no array-style helpers such as `map`, `filter`, `forEach`, `get`,
 > `clear`, `removeAt`, `insertAt`, `pop`, `shift`, `splice`, or `length`. Read items
-> with `snapshot()`; react to changes with `subscribeOps()`.
+> with `getValue()`; react to changes with `onChange()`.
 
 Operation payloads (`TExoListOp`):
 
@@ -279,11 +279,11 @@ Exported types include `TExoBindable`, `TExoWritableBindable`, `TExoBindableList
 
 - `getValue()` — current value.
 - `setValue(value, event?)` — write a value (writable bindables only).
-- `subscribe(fn)` — listen for changes; returns an unsubscribe function.
+- `onChange(fn)` — listen for changes; returns an unsubscribe function.
 
 ### List methods
 
-- `snapshot()`, `subscribeOps(fn)`, `push(item)`, `insert(index, item)`,
+- `getValue()`, `onChange(fn)`, `push(item)`, `insert(index, item)`,
   `remove(index, count?)`, `move(from, to, count?)`, `set(index, item)`, `reset(items)`.
 
 ### Persistence

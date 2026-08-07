@@ -1,0 +1,51 @@
+{
+  "model": {
+    "granularity": "package",
+    "nodes": [],
+    "edges": [],
+    "rules": {
+      "no-circular": {
+        "severity": "error",
+        "comment": "A cycle between modules makes initialisation order load-order dependent."
+      },
+      "not-to-unresolvable": {
+        "severity": "error",
+        "comment": "An import that does not resolve is a broken build waiting to happen."
+      },
+      "no-undeclared-dep": {
+        "severity": "error",
+        "comment": "Imported but NOT in this package.json. It works in the monorepo (hoisted node_modules) and breaks for whoever installs the published package."
+      },
+      "core-is-zero-dep": {
+        "severity": "error",
+        "comment": "@exodra/core is the renderer-agnostic base: it must not depend on any other Exodra package, so any reactivity system can drive it."
+      },
+      "contract-package-is-zero-dep": {
+        "severity": "error",
+        "comment": "@exodra/reactivity-types is the shared CONTRACT: types only, no deps, so both renderers and every adapter can depend on it without pulling anything."
+      },
+      "renderers-do-not-know-each-other": {
+        "severity": "error",
+        "comment": "The live (dom) and snapshot (string) renderers deliberately share only core primitives — never each other."
+      },
+      "renderers-do-not-know-each-other-reverse": {
+        "severity": "error",
+        "comment": "The other direction of the same rule."
+      },
+      "runtime-does-not-import-build-tooling": {
+        "severity": "error",
+        "comment": "Compilers, plugins and scaffolding run at BUILD time. A runtime package importing one would ship it to the browser."
+      },
+      "no-deprecated-core": {
+        "severity": "error",
+        "comment": "Deprecated Node core modules will be removed."
+      }
+    }
+  },
+  "layout": {
+    "width": null,
+    "height": null,
+    "nodes": [],
+    "edges": []
+  }
+}

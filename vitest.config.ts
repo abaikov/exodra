@@ -21,6 +21,9 @@ export default defineConfig({
             '@exodra/router': aliasPath('./packages/router/src/index.ts'),
             '@exodra/string': aliasPath('./packages/string/src/index.ts'),
             '@exodra/ssr': aliasPath('./packages/ssr/src/index.ts'),
+            '@exodra/react-mount': aliasPath(
+                './packages/react-mount/src/index.ts'
+            ),
         },
     },
     test: {

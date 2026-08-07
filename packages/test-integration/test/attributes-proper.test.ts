@@ -81,7 +81,7 @@ describe('Proper Attribute Tests', () => {
         
         function ItemList(ctx: TExoContext) {
             const itemsBinding = ctx.getBindableList<typeof items>('items');
-            const itemsArray = itemsBinding?.snapshot() || [];
+            const itemsArray = itemsBinding?.getValue() || [];
             
             return h('ul', {
                 static: {
@@ -194,7 +194,7 @@ describe('Proper Attribute Tests', () => {
             
             // Bindable list
             const tagList = ctx.getBindableList<typeof tags>('tags');
-            const allTags = tagList?.snapshot() || [];
+            const allTags = tagList?.getValue() || [];
             
             return h('article', {
                 static: {
@@ -253,7 +253,7 @@ describe('Proper Attribute Tests', () => {
         
         function NotificationList(ctx: TExoContext) {
             const items = ctx.getBindableList<typeof notifications>('items');
-            const allItems = items?.snapshot() || [];
+            const allItems = items?.getValue() || [];
             
             return h('div', { 
                 static: {

@@ -30,7 +30,7 @@ plugin maps them to the plural core buckets.)
 
 ## API
 
-```ts
+```ts no-check  // signature notation, not an expression
 import { mount, hydrate } from '@exodra/dom';
 import type { TExoDomMountResult } from '@exodra/dom';
 
@@ -226,7 +226,7 @@ const ul = h('ul', {
 items.push('Item 3');
 ```
 
-`list` is op-based: it exposes `snapshot()`, `subscribeOps()`, `push`, `insert`,
+`list` is op-based: it exposes `getValue()`, `onChange()`, `push`, `insert`,
 `remove`, `move`, `set`, `reset`. It has no `map`/`filter`/`forEach`/`length`.
 
 ## Lifecycle Hooks

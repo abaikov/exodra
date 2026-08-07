@@ -22,7 +22,7 @@ export function hc(
             if ('getValue' in value && 'setValue' in value && 'subscribe' in value) {
                 // It's a bindable
                 bindables[key] = value;
-            } else if ('snapshot' in value && 'subscribeOps' in value) {
+            } else if ('getValue' in value && 'onChange' in value) {
                 // It's a bindable list
                 bindableLists[key] = value;
             } else {

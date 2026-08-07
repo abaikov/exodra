@@ -193,7 +193,7 @@ const cls = derive(router.location, loc =>
 ### bindQuery()
 
 Two-way binding for a single query parameter. `getValue()` reads the current
-value (or default), `subscribe()` fires on any URL change (including
+value (or default), `onChange()` fires on any URL change (including
 back/forward), and `setValue()` patches just that key into the URL.
 
 ```javascript
@@ -201,7 +201,7 @@ const project = router.bindQuery('project', { default: '' });
 
 project.getValue();            // current ?project= value, or ''
 project.setValue('alpha');     // → ?project=alpha
-project.subscribe(value => console.log('filter:', value));
+project.onChange(value => console.log('filter:', value));
 ```
 
 ## Components
@@ -258,7 +258,7 @@ import { Outlet } from '@exodra/router';
 
 Router-aware navigation anchor. The target is the `to` prop (in `static`).
 
-```jsx
+```jsx no-check  // sibling examples shown side by side
 import { Link } from '@exodra/router';
 
 <Link static={{ to: '/', children: 'Home' }} />

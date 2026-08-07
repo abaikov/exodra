@@ -1,0 +1,295 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "isReadableBindable",
+        "label": "isReadableBindable",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): boolean",
+            "full": "(value): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "reactIsland",
+        "label": "reactIsland",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(component, props, options): TExoSchema",
+            "full": "(component, props, options): TExoSchema",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Render a React component as an island inside an Exodra tree — now SSR-capable.",
+        "width": 286,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ReactIslandOptions",
+        "label": "ReactIslandOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "tag?: string;",
+            "full": "tag?: string;",
+            "doc": "Tag name for the host element React mounts into.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "ssr?: boolean;",
+            "full": "ssr?: boolean;",
+            "doc": "Server-render the island's markup into the initial HTML (default `true`).",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "width": 139,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "ReadableBindable",
+        "label": "ReadableBindable",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "getValue(): T;",
+            "full": "getValue(): T;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onChange(listener: () => void): () => v…",
+            "full": "onChange(listener: () => void): () => void;",
+            "doc": "No-arg listener: the island re-reads getValue() on notify, so it never uses the event payload.",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "doc": "Minimal structural shape of an Exodra bindable's read side.",
+        "width": 293,
+        "height": 84,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "isReadableBindable→ReadableBindable",
+        "from": "isReadableBindable",
+        "to": "ReadableBindable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reactIsland→isReadableBindable",
+        "from": "reactIsland",
+        "to": "isReadableBindable",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reactIsland→ReactIslandOptions",
+        "from": "reactIsland",
+        "to": "ReactIslandOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reactIsland→ReadableBindable",
+        "from": "reactIsland",
+        "to": "ReadableBindable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 894,
+    "height": 229,
+    "nodes": [
+      {
+        "id": "isReadableBindable",
+        "x": 374,
+        "y": 136,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "reactIsland",
+        "x": 24,
+        "y": 31.5,
+        "width": 286,
+        "height": 69
+      },
+      {
+        "id": "ReactIslandOptions",
+        "x": 374,
+        "y": 24,
+        "width": 139,
+        "height": 84
+      },
+      {
+        "id": "ReadableBindable",
+        "x": 577,
+        "y": 43.3,
+        "width": 293,
+        "height": 84
+      }
+    ],
+    "edges": [
+      {
+        "id": "isReadableBindable→ReadableBindable",
+        "points": [
+          {
+            "x": 513,
+            "y": 170.5
+          },
+          {
+            "x": 545,
+            "y": 170.5
+          },
+          {
+            "x": 635.6,
+            "y": 127.3
+          }
+        ]
+      },
+      {
+        "id": "reactIsland→isReadableBindable",
+        "points": [
+          {
+            "x": 224.8,
+            "y": 100.5
+          },
+          {
+            "x": 342,
+            "y": 170.5
+          },
+          {
+            "x": 374,
+            "y": 170.5
+          }
+        ]
+      },
+      {
+        "id": "reactIsland→ReactIslandOptions",
+        "points": [
+          {
+            "x": 310,
+            "y": 66
+          },
+          {
+            "x": 342,
+            "y": 66
+          },
+          {
+            "x": 374,
+            "y": 66
+          }
+        ]
+      },
+      {
+        "id": "reactIsland→ReadableBindable",
+        "points": [
+          {
+            "x": 258.5,
+            "y": 31.5
+          },
+          {
+            "x": 342,
+            "y": 0
+          },
+          {
+            "x": 443.5,
+            "y": 0
+          },
+          {
+            "x": 545,
+            "y": 0
+          },
+          {
+            "x": 635.6,
+            "y": 43.3
+          }
+        ]
+      }
+    ]
+  }
+}

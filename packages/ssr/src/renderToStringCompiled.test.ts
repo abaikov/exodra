@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { h } from '@exodra/core';
 import { ssrContext, markHtml } from '@exodra/string';
+import { ExoNodeSsr } from './ExoNodeSsr';
 import { renderToStringCompiled } from './renderToStringCompiled';
 import { Head, Header, State, Status } from './components';
 
@@ -117,6 +119,71 @@ describe('renderToStringCompiled', () => {
             const doc = build().renderDocument({ lang: 'a"b', rootId: 'c"d' });
             expect(doc).toContain('lang="a&quot;b"');
             expect(doc).toContain('id="c&quot;d"');
+        });
+
+        // These three options are declared by TExoSsrDocumentOptions and honored by
+        // the walker; compile mode used to accept and silently DROP them, because
+        // it had its own copy of renderDocument. Both modes now share one.
+        it('honors htmlAttributes, bodyAttributes, and an extra head', () => {
+            const doc = build().renderDocument({
+                htmlAttributes: { 'data-theme': 'dark' },
+                bodyAttributes: { class: 'ssr' },
+                head: h('meta', { static: { charset: 'utf-8' } }),
+            });
+            expect(doc).toContain('<html lang="en" data-theme="dark">');
+            expect(doc).toContain('<body class="ssr">');
+            // options.head is rendered BEFORE the head collected during the render
+            expect(doc).toContain('<head><meta charset="utf-8"><title>T</title></head>');
+        });
+
+        it('drops boolean-false/nullish/function attributes and emits bare names for true', () => {
+            const doc = build().renderDocument({
+                htmlAttributes: {
+                    hidden: true,
+                    'data-x': false,
+                    'data-y': null,
+                    'data-z': undefined,
+                    'data-fn': () => {},
+                },
+            });
+            const htmlTag = doc.slice(
+                doc.indexOf('<html'),
+                doc.indexOf('>', doc.indexOf('<html')) + 1
+            );
+            expect(htmlTag).toContain(' hidden');
+            expect(htmlTag).not.toContain('data-x');
+            expect(htmlTag).not.toContain('data-y');
+            expect(htmlTag).not.toContain('data-z');
+            expect(htmlTag).not.toContain('data-fn');
+        });
+    });
+
+    // The two render modes assemble the document with the SHARED context base, so
+    // the same options must produce the same wrapper. This is the guard against
+    // them drifting apart again.
+    describe('document parity with the walker', () => {
+        it('produces the same document as ExoNodeSsr for the same body/head/state', () => {
+            const options = {
+                lang: 'de',
+                rootId: 'root',
+                htmlAttributes: { 'data-theme': 'dark' },
+                bodyAttributes: { class: 'ssr' },
+                head: h('meta', { static: { charset: 'utf-8' } }),
+            };
+
+            const compiled = renderToStringCompiled(() => {
+                Head(ctx({ children: markHtml('<title>T</title>') }));
+                State(ctx({ name: 'k', value: 1 }));
+                return markHtml('<main>b</main>');
+            }).renderDocument(options);
+
+            const walked = new ExoNodeSsr(
+                h('main', { static: { textContent: 'b' } })
+            );
+            walked.addHead(h('title', { static: { textContent: 'T' } }));
+            walked.setState('k', 1);
+
+            expect(compiled).toBe(walked.renderDocument(options));
         });
     });
 });

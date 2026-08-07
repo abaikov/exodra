@@ -358,10 +358,10 @@ describe('ExoNodeString', () => {
 
         it('reads bindableLists via ctx.getBindableList', () => {
             const Comp = (ctx: TExoContext) => {
-                const items = ctx.getBindableList('items') as { snapshot(): unknown[] };
+                const items = ctx.getBindableList('items') as { getValue(): unknown[] };
                 return {
                     type: 'span',
-                    attrs: { static: { textContent: items.snapshot().length } },
+                    attrs: { static: { textContent: items.getValue().length } },
                 };
             };
             expect(

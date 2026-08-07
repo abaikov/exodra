@@ -44,7 +44,7 @@ const view = (
 ```
 
 `reactIsland` accepts either a plain props object (static island) or anything
-with `getValue()` + `subscribe()` — which a `TExoBindable` from
+with `getValue()` + `onChange()` — which a `TExoBindable` from
 `@exodra/reactivity` satisfies — for a reactive island. On each emit the island
 re-renders with fresh props.
 

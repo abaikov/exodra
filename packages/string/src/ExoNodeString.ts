@@ -1,47 +1,35 @@
-import type {
-    TExoContext,
-    TExoContextKey,
-    TExoNodeSchema,
-    TExoSchema,
+import {
+    injectFromScope,
+    VOID_ELEMENTS,
+    type TExoContext,
+    type TExoContextKey,
+    type TExoNodeSchema,
+    type TExoSchema,
+    type TExoScope,
 } from '@exodra/core';
-import type { TExoBindable, TExoBindableList } from '@exodra/reactivity-types';
+import type { TExoBindable, TExoNodeAttributes } from '@exodra/reactivity-types';
 import { escapeHtml, serializeAttribute } from './escape';
 
 type TExoNodeStringSchema = TExoNodeSchema<TExoSchema['type'], TStringAttributes>;
 
-// HTML void elements have no closing tag and no children. Emitting `<br></br>`
-// is invalid HTML and the parser reinterprets `</br>` as a second `<br>`, so a
-// void-element table is mandatory for correct SSR output.
-const VOID_ELEMENTS = new Set([
-    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-    'link', 'meta', 'param', 'source', 'track', 'wbr',
-]);
+// The shared bucket skeleton. A snapshot renderer has no event model and never
+// consumes list ops, so the handler buckets and the list event stay opaque.
+type TStringAttributes = TExoNodeAttributes<TExoNodeStringSchema>;
 
-type TStringAttributes = {
-    static?: Record<string, unknown> & {
-        children?: TExoNodeStringSchema | readonly TExoNodeStringSchema[];
-        textContent?: unknown;
-    };
-    bindables?: Record<string, TExoBindable<unknown, unknown>> & {
-        children?: TExoBindable<
-            TExoNodeStringSchema | readonly TExoNodeStringSchema[],
-            unknown
-        >;
-        textContent?: TExoBindable<unknown, unknown>;
-    };
-    bindableLists?: Record<string, TExoBindableList<unknown, unknown>> & {
-        children?: TExoBindableList<TExoNodeStringSchema, unknown>;
-    };
-    // Event handlers are ignored when serializing.
-    handlers?: Record<string, unknown>;
-    bindableHandlers?: Record<string, unknown>;
-};
+/** Component provide()/inject() scope, threaded parent→child during the walk. */
+export type TExoRenderScope = TExoScope;
 
-// Component provide()/inject() scope, threaded parent->child during the render walk.
-export interface TExoRenderScope {
-    values?: Map<symbol, unknown>;
-    parent?: TExoRenderScope;
-}
+// The canonical `#text` shape is `createTextSchema` in @exodra/core — this is a
+// deliberate local copy, NOT an oversight. Children normalisation runs per
+// primitive child of every render, and a cross-package call does not inline:
+// measured 12-17ns for this literal against 30-35ns for the imported factory
+// (objects escaping in both). `text-schema-shape.test.ts` pins the two shapes
+// together so the copy cannot drift.
+const textSchema = (value: string): TExoNodeStringSchema =>
+    ({
+        type: '#text',
+        attrs: { static: { textContent: value } },
+    }) as TExoNodeStringSchema;
 
 /**
  * Standalone SNAPSHOT renderer — serializes a schema to an HTML string in ONE pass,
@@ -144,6 +132,13 @@ export class ExoNodeString {
     }
 
     // The component context — overridable so specialisations can hook inject/provide.
+    //
+    // The compiled path (`ssrContext`) builds an equivalent context with its own
+    // copy of this literal. That copy is deliberate: factoring both onto one
+    // shared factory measured +6-8ns per component (6 runs out of 6 in the same
+    // direction), i.e. ~0.5% on a 500-component render — this runs once per
+    // component of every render. `context-contract.test.ts` asserts the two
+    // contexts behave identically instead.
     protected createContext(
         schema: TExoNodeStringSchema,
         scope: TExoRenderScope
@@ -164,12 +159,8 @@ export class ExoNodeString {
             provide: <T>(key: TExoContextKey<T>, value: T) => {
                 (scope.values ??= new Map()).set(key.id, value);
             },
-            inject: <T>(key: TExoContextKey<T>, fallback?: T) => {
-                for (let s: TExoRenderScope | undefined = scope; s; s = s.parent) {
-                    if (s.values?.has(key.id)) return s.values.get(key.id) as T;
-                }
-                return fallback as T;
-            },
+            inject: <T>(key: TExoContextKey<T>, fallback?: T) =>
+                injectFromScope(scope, key.id, fallback) as T,
             // One-shot render: nothing to dispose.
             onDispose: () => {},
         };
@@ -184,7 +175,7 @@ export class ExoNodeString {
 
         const childList = attrs?.bindableLists?.children;
         if (childList) {
-            return this.normalizeChildren(childList.snapshot());
+            return this.normalizeChildren(childList.getValue());
         }
 
         const childBinding = attrs?.bindables?.children;
@@ -192,7 +183,7 @@ export class ExoNodeString {
             const value = childBinding.getValue();
             return this.normalizeChildren(
                 typeof value === 'string'
-                    ? this.createTextSchema(value)
+                    ? textSchema(value)
                     : (value as TExoNodeStringSchema | readonly TExoNodeStringSchema[])
             );
         }
@@ -214,20 +205,13 @@ export class ExoNodeString {
             }
             const t = typeof c;
             if (t === 'string' || t === 'number' || t === 'bigint') {
-                out.push(this.createTextSchema(String(c)));
+                out.push(textSchema(String(c)));
                 return;
             }
             out.push(c as TExoNodeStringSchema);
         };
         push(children);
         return out;
-    }
-
-    private createTextSchema(text: string): TExoNodeStringSchema {
-        return {
-            type: '#text',
-            attrs: { static: { textContent: text } },
-        } as TExoNodeStringSchema;
     }
 
     private renderAttributes(schema: TExoNodeStringSchema): string {

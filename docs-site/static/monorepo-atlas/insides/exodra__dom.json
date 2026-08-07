@@ -1,0 +1,3754 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "buildRoot",
+        "label": "buildRoot",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema): ExoNodeDom",
+            "full": "(schema): ExoNodeDom",
+            "parts": [
+              {
+                "text": "(schema): "
+              },
+              {
+                "text": "ExoNodeDom",
+                "link": "ExoNodeDom"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Build the root, and if it throws, give the schema one pass to explain itself.",
+        "width": 165,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "checkNode",
+        "label": "checkNode",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema): string",
+            "full": "(schema): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "cloneCache",
+        "label": "cloneCache",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Clone-cache for `cacheKey` subtrees: built once, then cloned (+ patched at holes) for every later occurrence sharing the key.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "createBuildNode",
+        "label": "createBuildNode",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema, parent): TExoWalkNode<TExoNo…",
+            "full": "(schema, parent): TExoWalkNode<TExoNodeDomSchema, TExoBuildContext>",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(schema, parent): TExoWalkNode<"
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "text": "TExoBuildContext",
+                "link": "TExoBuildContext"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Node factory for the build walk.",
+        "width": 280,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "describeSchema",
+        "label": "describeSchema",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema): string",
+            "full": "(schema): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A short, human-locatable label for a schema node: `<button#save.primary>`, `component Counter`, `#text`, `<>`.",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "describeValue",
+        "label": "describeValue",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): string",
+            "full": "(value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "diagnoseBuildFailure",
+        "label": "diagnoseBuildFailure",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(root, cause): Error",
+            "full": "(root, cause): Error",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Walk the schema tree a failed build was given and return a better error for the first misconfigured bucket entry, or `undefined` if nothing explains the failure (in which case the original error is the honest one to show).",
+        "width": 165,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "EMPTY_NUMS",
+        "label": "EMPTY_NUMS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "ExoBuildContext",
+        "label": "ExoBuildContext",
+        "kind": "runtime",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "createNode: (schema: unknown) => unknown",
+            "full": "createNode: (schema: unknown) => unknown",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Allocated lazily on the first provide() call — a component that never provides costs no scope object.",
+            "text": "ownScope: TExoScope",
+            "full": "ownScope: TExoScope",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getConstant(name): unknown",
+            "full": "getConstant(name): unknown",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getBindable(name): unknown",
+            "full": "getBindable(name): unknown",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getBindableList(name): unknown",
+            "full": "getBindableList(name): unknown",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "provide(key, value): void",
+            "full": "provide(key, value): void",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "inject(key, fallback): unknown",
+            "full": "inject(key, fallback): unknown",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onDispose(cleanup): void",
+            "full": "onDispose(cleanup): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 8,
+        "doc": "Per-component build context as a single allocation: the methods live on the prototype rather than being re-created as closures for every component invocation.",
+        "width": 293,
+        "height": 162,
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom",
+        "label": "ExoNodeDom",
+        "kind": "runtime",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "doc": "The schema this node renders (root of its subtree).",
+            "text": "schema: TExoNodeDomSchema",
+            "full": "schema: TExoNodeDomSchema",
+            "parts": [
+              {
+                "text": "schema: "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              }
+            ]
+          },
+          {
+            "visibility": "-",
+            "doc": "Per node: element + children + disposers + (resolved) lifecycle schema.",
+            "text": "pendingMounts: TExoNodeDomSchema[]",
+            "full": "pendingMounts: TExoNodeDomSchema[]",
+            "parts": [
+              {
+                "text": "pendingMounts: "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": "[]"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "doc": "The root node of this subtree.",
+            "text": "element: Element | Text | Comment | …",
+            "full": "element: Element | Text | Comment | DocumentFragment",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "-",
+            "text": "hydratedElement: Element | Text | Comment",
+            "full": "hydratedElement: Element | Text | Comment",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "modifier": "static",
+            "doc": "Static hydrate method for SSR",
+            "text": "hydrate(schema, element): ExoNodeDom",
+            "full": "hydrate(schema, element): ExoNodeDom",
+            "parts": [
+              {
+                "text": "hydrate",
+                "link": "hydrate"
+              },
+              {
+                "text": "(schema, element): "
+              },
+              {
+                "text": "ExoNodeDom",
+                "link": "ExoNodeDom"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "record(schema): TExoNodeRecord",
+            "full": "record(schema): TExoNodeRecord",
+            "parts": [
+              {
+                "text": "record(schema): "
+              },
+              {
+                "text": "TExoNodeRecord",
+                "link": "TExoNodeRecord"
+              }
+            ]
+          },
+          {
+            "visibility": "#",
+            "doc": "Single-node model: this node owns its entire subtree (built in onInit via walkSchema).",
+            "text": "init(): void",
+            "full": "init(): void",
+            "parts": []
+          },
+          {
+            "visibility": "#",
+            "text": "onInit(): void",
+            "full": "onInit(): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Hydrate an existing SSR DOM tree against the schema.",
+            "text": "hydrateRoot(schema, element): void",
+            "full": "hydrateRoot(schema, element): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Wire a resolved (non-component) element/text schema onto a DOM node, then hydrate its children.",
+            "text": "hydrateElement(original, resolved, node, scope): void",
+            "full": "hydrateElement(original, resolved, node, scope): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Hydrate one child schema starting at childNodes[i]; return the next index.",
+            "text": "hydrateChild(schema, childNodes, i, scope): number",
+            "full": "hydrateChild(schema, childNodes, i, scope): number",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Invoke a component with a real context and reduce its result to a single root schema (matching the per-node renderers' contract).",
+            "text": "callComponent(schema, context): TExoNodeDomSchema",
+            "full": "callComponent(schema, context): TExoNodeDomSchema",
+            "parts": [
+              {
+                "text": "callComponent(schema, context): "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              }
+            ]
+          },
+          {
+            "visibility": "-",
+            "doc": "Build the DOM subtree for a schema using the core walkSchema traversal.",
+            "text": "buildTree(rootSchema, parentScope, svgParent): Element | Text | …",
+            "full": "buildTree(rootSchema, parentScope, svgParent): Element | Text | Comment | DocumentFragment",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Fast path for a homogeneous STATIC list of already-cached HOLE-FREE cache-key clones (a keyed list of identical static templates): clone each cached skeleton and append it directly, skipping a walkSchema frame + visit dispatch per child.",
+            "text": "tryInlineCachedClones(element, children): boolean",
+            "full": "tryInlineCachedClones(element, children): boolean",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Build a `cacheKey` subtree's SKELETON: structure + static attributes only, with dynamic holes (nodes carrying bindables/handlers) left EMPTY and their child-index path recorded in `holes`.",
+            "text": "buildSkeleton(schema, path, holes, svgParent): Element | Text",
+            "full": "buildSkeleton(schema, path, holes, svgParent): Element | Text",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Materialise one occurrence of a template: clone the skeleton, then for each hole navigate the clone AND the occurrence's schema by the same path and bind (textContent / attribute / handler).",
+            "text": "applyTemplate(entry, schema): Element",
+            "full": "applyTemplate(entry, schema): Element",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Creates the DOM node for a CONCRETE schema (components are already resolved by buildTree before this is called).",
+            "text": "createDomElement(schema, svg): Element | Text | …",
+            "full": "createDomElement(schema, svg): Element | Text | Comment",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Apply the static bucket to `element` in ONE pass — write attributes, set `textContent`, skip the non-attribute keys (lifecycle hooks are read elsewhere) — and hand back the raw `static.children` value (or undefined) so the caller finds chi…",
+            "text": "applyStatic(schema, element): unknown",
+            "full": "applyStatic(schema, element): unknown",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Apply one attribute value (string/boolean/null) — shared by static + bound.",
+            "text": "writeAttr(element, key, value): void",
+            "full": "writeAttr(element, key, value): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "setupBindings(schema, element, keySchema): void",
+            "full": "setupBindings(schema, element, keySchema): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Effective children for a schema (last-wins across buckets): a reactive bindableList / bindable overrides static children.",
+            "text": "childrenOf(schema, staticRaw): TExoNodeDomSchema…",
+            "full": "childrenOf(schema, staticRaw): TExoNodeDomSchema[]",
+            "parts": [
+              {
+                "text": "childrenOf(schema, staticRaw): "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": "…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "childrenOf(schema, staticRaw): "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": "[]"
+              }
+            ]
+          },
+          {
+            "visibility": "-",
+            "doc": "The element a lifecycle hook for `schema` is attached to.",
+            "text": "targetFor(schema): TExoDomMountTarget",
+            "full": "targetFor(schema): TExoDomMountTarget",
+            "parts": [
+              {
+                "text": "targetFor(schema): "
+              },
+              {
+                "text": "TExoDomMountTarget",
+                "link": "TExoDomMountTarget"
+              }
+            ]
+          },
+          {
+            "visibility": "-",
+            "doc": "Unmount a schema subtree: run + clear its disposers, fire onExoUnmount, then recurse.",
+            "text": "disposeSchema(schema, release): void",
+            "full": "disposeSchema(schema, release): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Normalise a reactive source's children into an array this renderer OWNS.",
+            "text": "adoptChildren(value): TExoNodeDomSchema…",
+            "full": "adoptChildren(value): TExoNodeDomSchema[]",
+            "parts": [
+              {
+                "text": "adoptChildren(value): "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": "…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "adoptChildren(value): "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": "[]"
+              }
+            ]
+          },
+          {
+            "visibility": "#",
+            "text": "normalizeChildren(children): TExoNodeDomSchema…",
+            "full": "normalizeChildren(children): TExoNodeDomSchema[]",
+            "parts": [
+              {
+                "text": "normalizeChildren(children): "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": "…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "normalizeChildren(children): "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": "[]"
+              }
+            ]
+          },
+          {
+            "visibility": "-",
+            "doc": "Build a FRAGMENT whose children are reactive.",
+            "text": "subscribeFragmentChildren(recordKey, childBindable, childList): void",
+            "full": "subscribeFragmentChildren(recordKey, childBindable, childList): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "buildReactiveFragment(schema, parent, scope): void",
+            "full": "buildReactiveFragment(schema, parent, scope): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Anchor-scoped reconcile for a reactive fragment: the same identity diff as updateChildren, but bounded to the nodes between the fragment's start/end anchors (sibling nodes in the shared parent are untouched) and inserting before the end an…",
+            "text": "updateFragmentChildren(schema, newChildren): void",
+            "full": "updateFragmentChildren(schema, newChildren): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "updateChildren(schema, element, newChildren): void",
+            "full": "updateChildren(schema, element, newChildren): void",
+            "parts": []
+          },
+          {
+            "visibility": "#",
+            "doc": "Backend node-mutation hooks — the ONLY DOM-tree operations.",
+            "text": "domInsert(parent, node, before): void",
+            "full": "domInsert(parent, node, before): void",
+            "parts": []
+          },
+          {
+            "visibility": "#",
+            "text": "domRemove(parent, node): void",
+            "full": "domRemove(parent, node): void",
+            "parts": []
+          },
+          {
+            "visibility": "#",
+            "text": "domReplace(parent, next, prev): void",
+            "full": "domReplace(parent, next, prev): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "The node at list position `i`.",
+            "text": "nodeAt(current, i): ChildNode",
+            "full": "nodeAt(current, i): ChildNode",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "applyListOp(schema, element, op): void",
+            "full": "applyListOp(schema, element, op): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Reuse a detached element for a schema if one exists, else build a fresh one.",
+            "text": "reuseOrBuild(schema, scope, svgParent): Element | Text | …",
+            "full": "reuseOrBuild(schema, scope, svgParent): Element | Text | Comment",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "buildTree for a reactive-list ITEM: the reconcile assumes one DOM node per item, so a multi-node result (a #fragment / a component resolving to one) must fail loudly rather than silently corrupt sibling positions.",
+            "text": "buildListItem(schema, scope, svgParent): Element | Text | …",
+            "full": "buildListItem(schema, scope, svgParent): Element | Text | Comment",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Re-establish bindings across a previously-built, now-detached subtree.",
+            "text": "reattach(schema): Element | Text | …",
+            "full": "reattach(schema): Element | Text | Comment",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "doc": "Commit mount — fire onExoMount across the whole subtree (parent-first), not just the root, so nested mount hooks (and behaviour directives) run.",
+            "text": "commitMount(): void",
+            "full": "commitMount(): void",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "doc": "Fire the onExoMount hooks queued by the build (parent-first, in build order).",
+            "text": "flushMounts(): void",
+            "full": "flushMounts(): void",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "doc": "Dispose the whole subtree (disposers + onExoUnmount, recursively) and detach the root from the DOM.",
+            "text": "dispose(): void",
+            "full": "dispose(): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 40,
+        "doc": "Standalone LIVE renderer — owns and mutates a real DOM subtree, patching it in place on reactive change.",
+        "width": 299,
+        "height": 177,
+        "violations": []
+      },
+      {
+        "id": "FRAGMENT_LIST_ITEM_ERROR",
+        "label": "FRAGMENT_LIST_ITEM_ERROR",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A reactive-children list reconciles by index, assuming each item maps to exactly ONE DOM node.",
+        "width": 178,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "getSequence",
+        "label": "getSequence",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(arr): number[]",
+            "full": "(arr): number[]",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "getSequence (Vue-style): the indices of `arr` forming a LONGEST INCREASING subsequence, treating 0 as \"new/not-reused\" (skipped).",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "hydrate",
+        "label": "hydrate",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema, element): TExoDomMountResult",
+            "full": "(schema, element): TExoDomMountResult",
+            "parts": [
+              {
+                "text": "(schema, element): "
+              },
+              {
+                "text": "TExoDomMountResult",
+                "link": "TExoDomMountResult"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 274,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "isBindable",
+        "label": "isBindable",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): boolean",
+            "full": "(value): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Reactive buckets must hold `{ getValue, onChange }` (TExoBindable); `handlers` must hold functions.",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "isSvgElement",
+        "label": "isSvgElement",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(type, parentIsSvg): boolean",
+            "full": "(type, parentIsSvg): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Which namespace this ELEMENT belongs to.",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "isSvgHost",
+        "label": "isSvgHost",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node): boolean",
+            "full": "(node): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Are children appended to this node SVG?",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "mount",
+        "label": "mount",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema, container): TExoDomMountResult",
+            "full": "(schema, container): TExoDomMountResult",
+            "parts": [
+              {
+                "text": "(schema, container): "
+              },
+              {
+                "text": "TExoDomMountResult",
+                "link": "TExoDomMountResult"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 286,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "sharedCreateNode",
+        "label": "sharedCreateNode",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema): unknown",
+            "full": "(schema): unknown",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Identity createNode shared by every component context (schema IS the node in the single-node model).",
+        "width": 146,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "SVG_NS",
+        "label": "SVG_NS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "SVG lives in its own namespace: an <svg> built with createElement is an unknown HTML element that renders nothing.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "svgContextFor",
+        "label": "svgContextFor",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(type, parentIsSvg): boolean",
+            "full": "(type, parentIsSvg): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Which namespace this element's CHILDREN belong to.",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TDomAttributes",
+        "label": "TDomAttributes",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoNodeAttributes< TExoNodeDomSchema, …",
+            "full": "TExoNodeAttributes< TExoNodeDomSchema, { onExoMount?: (node: TExoDomMountTarget) => void; onExoUnmount?: (node: TExoDomMountTarget) => void; }, TExoListOp<TExoNodeDomSchema>, Record<string, (event: Event) => void>, Record<string, TExoBindable<(event: Event) => void, unknown>> >",
+            "parts": [
+              {
+                "text": "TExoNodeAttributes< "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": ", …"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "TExoNodeAttributes< "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": ", { onExoMount?: (node: "
+              },
+              {
+                "text": "TExoDomMountTarget",
+                "link": "TExoDomMountTarget"
+              },
+              {
+                "text": ") => void; onExoUnmount?: (node: "
+              },
+              {
+                "text": "TExoDomMountTarget",
+                "link": "TExoDomMountTarget"
+              },
+              {
+                "text": ") => void; }, TExoListOp<"
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": ">, Record<string, (event: Event) => void>, Record<string, TExoBindable<(event: Event) => void, unknown>> >"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The shared bucket skeleton, filled in with what is specific to a LIVE renderer: lifecycle hooks in the static bucket, list ops on reactive children (they drive the reconcile), and real DOM event handlers.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoBuildContext",
+        "label": "TExoBuildContext",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "element: Element | Text | Comment | Doc…",
+            "full": "element: Element | Text | Comment | DocumentFragment;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "scope?: TExoBuildScope;",
+            "full": "scope?: TExoBuildScope;",
+            "parts": [
+              {
+                "text": "scope?: "
+              },
+              {
+                "text": "TExoBuildScope",
+                "link": "TExoBuildScope"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "svg?: boolean;",
+            "full": "svg?: boolean;",
+            "doc": "Whether children of this node belong to the SVG namespace.",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoBuildScope",
+        "label": "TExoBuildScope",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoScope",
+            "full": "TExoScope",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Component provide()/inject() scope, chained parent->child during the build walk (the single-node model has no per-node tree to carry context, so we thread it).",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoDomMountResult",
+        "label": "TExoDomMountResult",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "node: ExoNodeDom;",
+            "full": "node: ExoNodeDom;",
+            "parts": [
+              {
+                "text": "node: "
+              },
+              {
+                "text": "ExoNodeDom",
+                "link": "ExoNodeDom"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "element: Element | Text;",
+            "full": "element: Element | Text;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "dispose(): void;",
+            "full": "dispose(): void;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 190,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoDomMountTarget",
+        "label": "TExoDomMountTarget",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "element: Element | Text | Comment;",
+            "full": "element: Element | Text | Comment;",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "interface",
+        "doc": "Lifecycle hooks receive the element they are attached to.",
+        "width": 254,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoLabelableSchema",
+        "label": "TExoLabelableSchema",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "type?: unknown;",
+            "full": "type?: unknown;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "attrs?: { static?: Record<string, unkno…",
+            "full": "attrs?: { static?: Record<string, unknown> } | null;",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "doc": "A short, human-locatable label for a schema node, used by the renderer's HARD errors (`<button#save.primary>` beats a minified \"schema type: undefined\").",
+        "width": 293,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "TExoNodeDomSchema",
+        "label": "TExoNodeDomSchema",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoNodeSchema< TExoSchema['type'], TDo…",
+            "full": "TExoNodeSchema< TExoSchema['type'], TDomAttributes, TExoNodeRecord >",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "TExoNodeSchema< TExoSchema['type'], "
+              },
+              {
+                "text": "TDomAttributes",
+                "link": "TDomAttributes"
+              },
+              {
+                "text": ", "
+              },
+              {
+                "text": "TExoNodeRecord",
+                "link": "TExoNodeRecord"
+              },
+              {
+                "text": " >"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The third parameter types the `exoRecord` slot as THIS renderer's record, so every read is plain property access instead of a cast at each site.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoNodeRecord",
+        "label": "TExoNodeRecord",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "element?: Element | Text | Comment;",
+            "full": "element?: Element | Text | Comment;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "children?: TExoNodeDomSchema[];",
+            "full": "children?: TExoNodeDomSchema[];",
+            "parts": [
+              {
+                "text": "children?: "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "disposers?: Array<() => void>;",
+            "full": "disposers?: Array<() => void>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "lifecycle?: TExoNodeDomSchema;",
+            "full": "lifecycle?: TExoNodeDomSchema;",
+            "parts": [
+              {
+                "text": "lifecycle?: "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "fragStart?: Comment;",
+            "full": "fragStart?: Comment;",
+            "doc": "For a FRAGMENT with reactive children only: the fragment has no host element, so its children live between two comment anchors in the parent and are reconciled in that range on update.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "fragEnd?: Comment;",
+            "full": "fragEnd?: Comment;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "scope?: TExoBuildScope;",
+            "full": "scope?: TExoBuildScope;",
+            "doc": "Ancestor provide()/inject() scope captured at build time for a host that builds children DYNAMICALLY later (a reactive fragment, or an element with reactive `children`).",
+            "parts": [
+              {
+                "text": "scope?: "
+              },
+              {
+                "text": "TExoBuildScope",
+                "link": "TExoBuildScope"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          }
+        ],
+        "memberCount": 7,
+        "stereotype": "interface",
+        "doc": "Per-schema bookkeeping, kept in ONE record on the schema's `exoRecord` slot (cheaper than 3-4 parallel structures).",
+        "width": 261,
+        "height": 159,
+        "violations": []
+      },
+      {
+        "id": "TExoTemplate",
+        "label": "TExoTemplate",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "skeleton: Element;",
+            "full": "skeleton: Element;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "holes: number[][];",
+            "full": "holes: number[][];",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "doc": "A compiled template for a `cacheKey` subtree: the static skeleton (built once, cloned per occurrence) plus the child-index PATHS to its dynamic \"holes\" (nodes carrying bindables/handlers).",
+        "width": 152,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "textSchema",
+        "label": "textSchema",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): TExoNodeDomSchema",
+            "full": "(value): TExoNodeDomSchema",
+            "parts": [
+              {
+                "text": "(value): "
+              },
+              {
+                "text": "TExoNodeDomSchema",
+                "link": "TExoNodeDomSchema"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Wrap a primitive child (string/number) as a #text schema node.",
+        "width": 203,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "buildRoot→diagnoseBuildFailure",
+        "from": "buildRoot",
+        "to": "diagnoseBuildFailure",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "specifier": "calls",
+            "kind": "value"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "buildRoot→ExoNodeDom",
+        "from": "buildRoot",
+        "to": "ExoNodeDom",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "constructs",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "checkNode→describeSchema",
+        "from": "checkNode",
+        "to": "describeSchema",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/describeSchema.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "checkNode→describeValue",
+        "from": "checkNode",
+        "to": "describeValue",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "checkNode→isBindable",
+        "from": "checkNode",
+        "to": "isBindable",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "checkNode→TExoNodeDomSchema",
+        "from": "checkNode",
+        "to": "TExoNodeDomSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "cloneCache→TExoTemplate",
+        "from": "cloneCache",
+        "to": "TExoTemplate",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createBuildNode→TExoBuildContext",
+        "from": "createBuildNode",
+        "to": "TExoBuildContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createBuildNode→TExoNodeDomSchema",
+        "from": "createBuildNode",
+        "to": "TExoNodeDomSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeSchema→TExoLabelableSchema",
+        "from": "describeSchema",
+        "to": "TExoLabelableSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/describeSchema.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/describeSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "diagnoseBuildFailure→checkNode",
+        "from": "diagnoseBuildFailure",
+        "to": "checkNode",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "diagnoseBuildFailure→TExoNodeDomSchema",
+        "from": "diagnoseBuildFailure",
+        "to": "TExoNodeDomSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoBuildContext→ExoNodeDom",
+        "from": "ExoBuildContext",
+        "to": "ExoNodeDom",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoBuildContext→sharedCreateNode",
+        "from": "ExoBuildContext",
+        "to": "sharedCreateNode",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoBuildContext→TExoBuildScope",
+        "from": "ExoBuildContext",
+        "to": "TExoBuildScope",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoBuildContext→TExoNodeDomSchema",
+        "from": "ExoBuildContext",
+        "to": "TExoNodeDomSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→cloneCache",
+        "from": "ExoNodeDom",
+        "to": "cloneCache",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→createBuildNode",
+        "from": "ExoNodeDom",
+        "to": "createBuildNode",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→describeSchema",
+        "from": "ExoNodeDom",
+        "to": "describeSchema",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/describeSchema.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→EMPTY_NUMS",
+        "from": "ExoNodeDom",
+        "to": "EMPTY_NUMS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→ExoBuildContext",
+        "from": "ExoNodeDom",
+        "to": "ExoBuildContext",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "composition",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "constructs",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→FRAGMENT_LIST_ITEM_ERROR",
+        "from": "ExoNodeDom",
+        "to": "FRAGMENT_LIST_ITEM_ERROR",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→getSequence",
+        "from": "ExoNodeDom",
+        "to": "getSequence",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→hydrate",
+        "from": "ExoNodeDom",
+        "to": "hydrate",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/hydrate.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→isSvgElement",
+        "from": "ExoNodeDom",
+        "to": "isSvgElement",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→isSvgHost",
+        "from": "ExoNodeDom",
+        "to": "isSvgHost",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→SVG_NS",
+        "from": "ExoNodeDom",
+        "to": "SVG_NS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→svgContextFor",
+        "from": "ExoNodeDom",
+        "to": "svgContextFor",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→TExoBuildContext",
+        "from": "ExoNodeDom",
+        "to": "TExoBuildContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→TExoBuildScope",
+        "from": "ExoNodeDom",
+        "to": "TExoBuildScope",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→TExoDomMountTarget",
+        "from": "ExoNodeDom",
+        "to": "TExoDomMountTarget",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→TExoNodeDomSchema",
+        "from": "ExoNodeDom",
+        "to": "TExoNodeDomSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→TExoNodeRecord",
+        "from": "ExoNodeDom",
+        "to": "TExoNodeRecord",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→TExoTemplate",
+        "from": "ExoNodeDom",
+        "to": "TExoTemplate",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoNodeDom→textSchema",
+        "from": "ExoNodeDom",
+        "to": "textSchema",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "hydrate→diagnoseBuildFailure",
+        "from": "hydrate",
+        "to": "diagnoseBuildFailure",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "specifier": "calls",
+            "kind": "value"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/diagnoseBuildFailure.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "hydrate→ExoNodeDom",
+        "from": "hydrate",
+        "to": "ExoNodeDom",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "hydrate→TExoDomMountResult",
+        "from": "hydrate",
+        "to": "TExoDomMountResult",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/hydrate.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/types/TExoDomMountResult.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "isSvgHost→SVG_NS",
+        "from": "isSvgHost",
+        "to": "SVG_NS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mount→buildRoot",
+        "from": "mount",
+        "to": "buildRoot",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mount→describeSchema",
+        "from": "mount",
+        "to": "describeSchema",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/describeSchema.ts",
+            "specifier": "calls",
+            "kind": "value"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/describeSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mount→TExoDomMountResult",
+        "from": "mount",
+        "to": "TExoDomMountResult",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/mount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/types/TExoDomMountResult.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "svgContextFor→isSvgElement",
+        "from": "svgContextFor",
+        "to": "isSvgElement",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TDomAttributes→TExoDomMountTarget",
+        "from": "TDomAttributes",
+        "to": "TExoDomMountTarget",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TDomAttributes→TExoNodeDomSchema",
+        "from": "TDomAttributes",
+        "to": "TExoNodeDomSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBuildContext→TExoBuildScope",
+        "from": "TExoBuildContext",
+        "to": "TExoBuildScope",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoDomMountResult→ExoNodeDom",
+        "from": "TExoDomMountResult",
+        "to": "ExoNodeDom",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/types/TExoDomMountResult.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoNodeDomSchema→TDomAttributes",
+        "from": "TExoNodeDomSchema",
+        "to": "TDomAttributes",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoNodeDomSchema→TExoNodeRecord",
+        "from": "TExoNodeDomSchema",
+        "to": "TExoNodeRecord",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoNodeRecord→TExoBuildScope",
+        "from": "TExoNodeRecord",
+        "to": "TExoBuildScope",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoNodeRecord→TExoNodeDomSchema",
+        "from": "TExoNodeRecord",
+        "to": "TExoNodeDomSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "textSchema→TExoNodeDomSchema",
+        "from": "textSchema",
+        "to": "TExoNodeDomSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "to": "/Users/abaikov/work/exodra/packages/dom/src/ExoNodeDom.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 2933,
+    "height": 1854.3,
+    "nodes": [
+      {
+        "id": "buildRoot",
+        "x": 374,
+        "y": 1020.5,
+        "width": 165,
+        "height": 69
+      },
+      {
+        "id": "checkNode",
+        "x": 1661,
+        "y": 971.3,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "cloneCache",
+        "x": 1043,
+        "y": 670.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "createBuildNode",
+        "x": 1590.5,
+        "y": 1564.5,
+        "width": 280,
+        "height": 69
+      },
+      {
+        "id": "describeSchema",
+        "x": 2018,
+        "y": 785.8,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "describeValue",
+        "x": 2021,
+        "y": 909.8,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "diagnoseBuildFailure",
+        "x": 1329.5,
+        "y": 1189.3,
+        "width": 165,
+        "height": 69
+      },
+      {
+        "id": "EMPTY_NUMS",
+        "x": 1043,
+        "y": 24,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "ExoBuildContext",
+        "x": 1584,
+        "y": 1346.3,
+        "width": 293,
+        "height": 162
+      },
+      {
+        "id": "ExoNodeDom",
+        "x": 603,
+        "y": 742.5,
+        "width": 299,
+        "height": 177
+      },
+      {
+        "id": "FRAGMENT_LIST_ITEM_ERROR",
+        "x": 1014,
+        "y": 98,
+        "width": 178,
+        "height": 46
+      },
+      {
+        "id": "getSequence",
+        "x": 1036.5,
+        "y": 172,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "hydrate",
+        "x": 966,
+        "y": 744.3,
+        "width": 274,
+        "height": 69
+      },
+      {
+        "id": "isBindable",
+        "x": 2018,
+        "y": 1006.8,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "isSvgElement",
+        "x": 1304,
+        "y": 298.3,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "isSvgHost",
+        "x": 1036.5,
+        "y": 386,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "mount",
+        "x": 24,
+        "y": 577.5,
+        "width": 286,
+        "height": 69
+      },
+      {
+        "id": "sharedCreateNode",
+        "x": 2014.5,
+        "y": 1103.8,
+        "width": 146,
+        "height": 69
+      },
+      {
+        "id": "SVG_NS",
+        "x": 1352,
+        "y": 426.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "svgContextFor",
+        "x": 995,
+        "y": 269,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "TDomAttributes",
+        "x": 2298,
+        "y": 964.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoBuildContext",
+        "x": 1941,
+        "y": 1689.8,
+        "width": 293,
+        "height": 99
+      },
+      {
+        "id": "TExoBuildScope",
+        "x": 2722,
+        "y": 1761.3,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "TExoDomMountResult",
+        "x": 1317,
+        "y": 500.8,
+        "width": 190,
+        "height": 99
+      },
+      {
+        "id": "TExoDomMountTarget",
+        "x": 2655,
+        "y": 1376,
+        "width": 254,
+        "height": 69
+      },
+      {
+        "id": "TExoLabelableSchema",
+        "x": 2298,
+        "y": 1084.5,
+        "width": 293,
+        "height": 84
+      },
+      {
+        "id": "TExoNodeDomSchema",
+        "x": 1941,
+        "y": 1280.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoNodeRecord",
+        "x": 2314,
+        "y": 1556.3,
+        "width": 261,
+        "height": 159
+      },
+      {
+        "id": "TExoTemplate",
+        "x": 1336,
+        "y": 627.8,
+        "width": 152,
+        "height": 84
+      },
+      {
+        "id": "textSchema",
+        "x": 1629,
+        "y": 1123.8,
+        "width": 203,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "buildRoot→diagnoseBuildFailure",
+        "points": [
+          {
+            "x": 477.5,
+            "y": 1089.5
+          },
+          {
+            "x": 571,
+            "y": 1243
+          },
+          {
+            "x": 752.5,
+            "y": 1243
+          },
+          {
+            "x": 934,
+            "y": 1243
+          },
+          {
+            "x": 1103,
+            "y": 1243
+          },
+          {
+            "x": 1272,
+            "y": 1243
+          },
+          {
+            "x": 1329.5,
+            "y": 1235.1
+          }
+        ]
+      },
+      {
+        "id": "buildRoot→ExoNodeDom",
+        "points": [
+          {
+            "x": 474.1,
+            "y": 1020.5
+          },
+          {
+            "x": 571,
+            "y": 831
+          },
+          {
+            "x": 603,
+            "y": 831
+          }
+        ]
+      },
+      {
+        "id": "checkNode→describeSchema",
+        "points": [
+          {
+            "x": 1781.8,
+            "y": 971.3
+          },
+          {
+            "x": 1909,
+            "y": 885.8
+          },
+          {
+            "x": 2018,
+            "y": 845.8
+          }
+        ]
+      },
+      {
+        "id": "checkNode→describeValue",
+        "points": [
+          {
+            "x": 1800,
+            "y": 981.8
+          },
+          {
+            "x": 1909,
+            "y": 944.3
+          },
+          {
+            "x": 2021,
+            "y": 944.3
+          }
+        ]
+      },
+      {
+        "id": "checkNode→isBindable",
+        "points": [
+          {
+            "x": 1800,
+            "y": 1019.6
+          },
+          {
+            "x": 1909,
+            "y": 1041.3
+          },
+          {
+            "x": 2018,
+            "y": 1041.3
+          }
+        ]
+      },
+      {
+        "id": "checkNode→TExoNodeDomSchema",
+        "points": [
+          {
+            "x": 1744.8,
+            "y": 1040.3
+          },
+          {
+            "x": 1909,
+            "y": 1437.3
+          },
+          {
+            "x": 2037,
+            "y": 1349.8
+          }
+        ]
+      },
+      {
+        "id": "cloneCache→TExoTemplate",
+        "points": [
+          {
+            "x": 1163,
+            "y": 693.3
+          },
+          {
+            "x": 1272,
+            "y": 693.3
+          },
+          {
+            "x": 1336,
+            "y": 682.5
+          }
+        ]
+      },
+      {
+        "id": "createBuildNode→TExoBuildContext",
+        "points": [
+          {
+            "x": 1767.4,
+            "y": 1633.5
+          },
+          {
+            "x": 1909,
+            "y": 1766
+          },
+          {
+            "x": 1941,
+            "y": 1761.2
+          }
+        ]
+      },
+      {
+        "id": "createBuildNode→TExoNodeDomSchema",
+        "points": [
+          {
+            "x": 1764.4,
+            "y": 1564.5
+          },
+          {
+            "x": 1909,
+            "y": 1417.3
+          },
+          {
+            "x": 2027.1,
+            "y": 1349.8
+          }
+        ]
+      },
+      {
+        "id": "describeSchema→TExoLabelableSchema",
+        "points": [
+          {
+            "x": 2107.6,
+            "y": 854.8
+          },
+          {
+            "x": 2266,
+            "y": 1126.5
+          },
+          {
+            "x": 2298,
+            "y": 1126.5
+          }
+        ]
+      },
+      {
+        "id": "diagnoseBuildFailure→checkNode",
+        "points": [
+          {
+            "x": 1434.2,
+            "y": 1189.3
+          },
+          {
+            "x": 1552,
+            "y": 1005.8
+          },
+          {
+            "x": 1661,
+            "y": 1005.8
+          }
+        ]
+      },
+      {
+        "id": "diagnoseBuildFailure→TExoNodeDomSchema",
+        "points": [
+          {
+            "x": 1461,
+            "y": 1258.3
+          },
+          {
+            "x": 1552,
+            "y": 1322.3
+          },
+          {
+            "x": 1730.5,
+            "y": 1322.3
+          },
+          {
+            "x": 1909,
+            "y": 1322.3
+          },
+          {
+            "x": 1941,
+            "y": 1321
+          }
+        ]
+      },
+      {
+        "id": "ExoBuildContext→ExoNodeDom",
+        "points": [
+          {
+            "x": 1584,
+            "y": 1462.1
+          },
+          {
+            "x": 1552,
+            "y": 1469.8
+          },
+          {
+            "x": 1412,
+            "y": 1469.8
+          },
+          {
+            "x": 1272,
+            "y": 1469.8
+          },
+          {
+            "x": 1103,
+            "y": 1469.8
+          },
+          {
+            "x": 934,
+            "y": 1469.8
+          },
+          {
+            "x": 777.6,
+            "y": 919.5
+          }
+        ]
+      },
+      {
+        "id": "ExoBuildContext→sharedCreateNode",
+        "points": [
+          {
+            "x": 1780.5,
+            "y": 1346.3
+          },
+          {
+            "x": 1909,
+            "y": 1138.3
+          },
+          {
+            "x": 2014.5,
+            "y": 1138.3
+          }
+        ]
+      },
+      {
+        "id": "ExoBuildContext→TExoBuildScope",
+        "points": [
+          {
+            "x": 1766.2,
+            "y": 1508.3
+          },
+          {
+            "x": 1909,
+            "y": 1832.8
+          },
+          {
+            "x": 2087.5,
+            "y": 1832.8
+          },
+          {
+            "x": 2266,
+            "y": 1832.8
+          },
+          {
+            "x": 2444.5,
+            "y": 1832.8
+          },
+          {
+            "x": 2623,
+            "y": 1832.8
+          },
+          {
+            "x": 2722,
+            "y": 1809.7
+          }
+        ]
+      },
+      {
+        "id": "ExoBuildContext→TExoNodeDomSchema",
+        "points": [
+          {
+            "x": 1846.2,
+            "y": 1346.3
+          },
+          {
+            "x": 1909,
+            "y": 1302.3
+          },
+          {
+            "x": 1941,
+            "y": 1304.6
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→cloneCache",
+        "points": [
+          {
+            "x": 869.1,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 693.3
+          },
+          {
+            "x": 1043,
+            "y": 693.3
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→createBuildNode",
+        "points": [
+          {
+            "x": 773.4,
+            "y": 919.5
+          },
+          {
+            "x": 934,
+            "y": 1599
+          },
+          {
+            "x": 1103,
+            "y": 1599
+          },
+          {
+            "x": 1272,
+            "y": 1599
+          },
+          {
+            "x": 1412,
+            "y": 1599
+          },
+          {
+            "x": 1552,
+            "y": 1599
+          },
+          {
+            "x": 1590.5,
+            "y": 1599
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→describeSchema",
+        "points": [
+          {
+            "x": 902,
+            "y": 836.1
+          },
+          {
+            "x": 934,
+            "y": 837.3
+          },
+          {
+            "x": 1103,
+            "y": 837.3
+          },
+          {
+            "x": 1272,
+            "y": 837.3
+          },
+          {
+            "x": 1412,
+            "y": 837.3
+          },
+          {
+            "x": 1552,
+            "y": 837.3
+          },
+          {
+            "x": 1730.5,
+            "y": 837.3
+          },
+          {
+            "x": 1909,
+            "y": 837.3
+          },
+          {
+            "x": 2018,
+            "y": 826.9
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→EMPTY_NUMS",
+        "points": [
+          {
+            "x": 773,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 47
+          },
+          {
+            "x": 1043,
+            "y": 47
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→ExoBuildContext",
+        "points": [
+          {
+            "x": 781.5,
+            "y": 919.5
+          },
+          {
+            "x": 934,
+            "y": 1384.8
+          },
+          {
+            "x": 1103,
+            "y": 1384.8
+          },
+          {
+            "x": 1272,
+            "y": 1384.8
+          },
+          {
+            "x": 1412,
+            "y": 1384.8
+          },
+          {
+            "x": 1552,
+            "y": 1384.8
+          },
+          {
+            "x": 1584,
+            "y": 1392.4
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→FRAGMENT_LIST_ITEM_ERROR",
+        "points": [
+          {
+            "x": 775.1,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 121
+          },
+          {
+            "x": 1014,
+            "y": 121
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→getSequence",
+        "points": [
+          {
+            "x": 778.2,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 206.5
+          },
+          {
+            "x": 1036.5,
+            "y": 206.5
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→hydrate",
+        "points": [
+          {
+            "x": 902,
+            "y": 761
+          },
+          {
+            "x": 934,
+            "y": 746
+          },
+          {
+            "x": 966,
+            "y": 752.2
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→isSvgElement",
+        "points": [
+          {
+            "x": 786.7,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 362
+          },
+          {
+            "x": 1103,
+            "y": 362
+          },
+          {
+            "x": 1272,
+            "y": 362
+          },
+          {
+            "x": 1304,
+            "y": 355.3
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→isSvgHost",
+        "points": [
+          {
+            "x": 791.6,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 420.5
+          },
+          {
+            "x": 1036.5,
+            "y": 420.5
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→SVG_NS",
+        "points": [
+          {
+            "x": 798.3,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 480
+          },
+          {
+            "x": 1103,
+            "y": 480
+          },
+          {
+            "x": 1272,
+            "y": 480
+          },
+          {
+            "x": 1352,
+            "y": 462.7
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→svgContextFor",
+        "points": [
+          {
+            "x": 783,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 303.5
+          },
+          {
+            "x": 995,
+            "y": 303.5
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→TExoBuildContext",
+        "points": [
+          {
+            "x": 770.8,
+            "y": 919.5
+          },
+          {
+            "x": 934,
+            "y": 1707.5
+          },
+          {
+            "x": 1103,
+            "y": 1707.5
+          },
+          {
+            "x": 1272,
+            "y": 1707.5
+          },
+          {
+            "x": 1412,
+            "y": 1707.5
+          },
+          {
+            "x": 1552,
+            "y": 1707.5
+          },
+          {
+            "x": 1730.5,
+            "y": 1707.5
+          },
+          {
+            "x": 1909,
+            "y": 1707.5
+          },
+          {
+            "x": 1941,
+            "y": 1713.2
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→TExoBuildScope",
+        "points": [
+          {
+            "x": 768.9,
+            "y": 919.5
+          },
+          {
+            "x": 934,
+            "y": 1812.8
+          },
+          {
+            "x": 1103,
+            "y": 1812.8
+          },
+          {
+            "x": 1272,
+            "y": 1812.8
+          },
+          {
+            "x": 1412,
+            "y": 1812.8
+          },
+          {
+            "x": 1552,
+            "y": 1812.8
+          },
+          {
+            "x": 1730.5,
+            "y": 1812.8
+          },
+          {
+            "x": 1909,
+            "y": 1812.8
+          },
+          {
+            "x": 2087.5,
+            "y": 1812.8
+          },
+          {
+            "x": 2266,
+            "y": 1812.8
+          },
+          {
+            "x": 2444.5,
+            "y": 1812.8
+          },
+          {
+            "x": 2623,
+            "y": 1812.8
+          },
+          {
+            "x": 2722,
+            "y": 1802.2
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→TExoDomMountTarget",
+        "points": [
+          {
+            "x": 775.4,
+            "y": 919.5
+          },
+          {
+            "x": 934,
+            "y": 1532.3
+          },
+          {
+            "x": 1103,
+            "y": 1532.3
+          },
+          {
+            "x": 1272,
+            "y": 1532.3
+          },
+          {
+            "x": 1412,
+            "y": 1532.3
+          },
+          {
+            "x": 1552,
+            "y": 1532.3
+          },
+          {
+            "x": 1730.5,
+            "y": 1532.3
+          },
+          {
+            "x": 1909,
+            "y": 1532.3
+          },
+          {
+            "x": 2087.5,
+            "y": 1532.3
+          },
+          {
+            "x": 2266,
+            "y": 1532.3
+          },
+          {
+            "x": 2444.5,
+            "y": 1532.3
+          },
+          {
+            "x": 2623,
+            "y": 1532.3
+          },
+          {
+            "x": 2736.9,
+            "y": 1445
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→TExoNodeDomSchema",
+        "points": [
+          {
+            "x": 788.1,
+            "y": 919.5
+          },
+          {
+            "x": 934,
+            "y": 1282.3
+          },
+          {
+            "x": 1103,
+            "y": 1282.3
+          },
+          {
+            "x": 1272,
+            "y": 1282.3
+          },
+          {
+            "x": 1412,
+            "y": 1282.3
+          },
+          {
+            "x": 1552,
+            "y": 1282.3
+          },
+          {
+            "x": 1730.5,
+            "y": 1282.3
+          },
+          {
+            "x": 1909,
+            "y": 1282.3
+          },
+          {
+            "x": 1941,
+            "y": 1288.2
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→TExoNodeRecord",
+        "points": [
+          {
+            "x": 771.9,
+            "y": 919.5
+          },
+          {
+            "x": 934,
+            "y": 1660.8
+          },
+          {
+            "x": 1103,
+            "y": 1660.8
+          },
+          {
+            "x": 1272,
+            "y": 1660.8
+          },
+          {
+            "x": 1412,
+            "y": 1660.8
+          },
+          {
+            "x": 1552,
+            "y": 1660.8
+          },
+          {
+            "x": 1730.5,
+            "y": 1660.8
+          },
+          {
+            "x": 1909,
+            "y": 1660.8
+          },
+          {
+            "x": 2087.5,
+            "y": 1660.8
+          },
+          {
+            "x": 2266,
+            "y": 1660.8
+          },
+          {
+            "x": 2314,
+            "y": 1654
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→TExoTemplate",
+        "points": [
+          {
+            "x": 828.6,
+            "y": 742.5
+          },
+          {
+            "x": 934,
+            "y": 620
+          },
+          {
+            "x": 1103,
+            "y": 620
+          },
+          {
+            "x": 1272,
+            "y": 620
+          },
+          {
+            "x": 1336,
+            "y": 642.7
+          }
+        ]
+      },
+      {
+        "id": "ExoNodeDom→textSchema",
+        "points": [
+          {
+            "x": 801.6,
+            "y": 919.5
+          },
+          {
+            "x": 934,
+            "y": 1158.3
+          },
+          {
+            "x": 1103,
+            "y": 1158.3
+          },
+          {
+            "x": 1272,
+            "y": 1158.3
+          },
+          {
+            "x": 1412,
+            "y": 1158.3
+          },
+          {
+            "x": 1552,
+            "y": 1158.3
+          },
+          {
+            "x": 1629,
+            "y": 1158.3
+          }
+        ]
+      },
+      {
+        "id": "hydrate→diagnoseBuildFailure",
+        "points": [
+          {
+            "x": 1116.9,
+            "y": 813.3
+          },
+          {
+            "x": 1272,
+            "y": 1197.5
+          },
+          {
+            "x": 1329.5,
+            "y": 1208.3
+          }
+        ]
+      },
+      {
+        "id": "hydrate→ExoNodeDom",
+        "points": [
+          {
+            "x": 966,
+            "y": 794.4
+          },
+          {
+            "x": 934,
+            "y": 798
+          },
+          {
+            "x": 902,
+            "y": 803.8
+          }
+        ]
+      },
+      {
+        "id": "hydrate→TExoDomMountResult",
+        "points": [
+          {
+            "x": 1135.6,
+            "y": 744.3
+          },
+          {
+            "x": 1272,
+            "y": 600
+          },
+          {
+            "x": 1317,
+            "y": 584
+          }
+        ]
+      },
+      {
+        "id": "isSvgHost→SVG_NS",
+        "points": [
+          {
+            "x": 1169.5,
+            "y": 420.5
+          },
+          {
+            "x": 1272,
+            "y": 420.5
+          },
+          {
+            "x": 1352,
+            "y": 437.2
+          }
+        ]
+      },
+      {
+        "id": "mount→buildRoot",
+        "points": [
+          {
+            "x": 180.6,
+            "y": 646.5
+          },
+          {
+            "x": 342,
+            "y": 1055
+          },
+          {
+            "x": 374,
+            "y": 1055
+          }
+        ]
+      },
+      {
+        "id": "mount→describeSchema",
+        "points": [
+          {
+            "x": 176.9,
+            "y": 577.5
+          },
+          {
+            "x": 342,
+            "y": 0
+          },
+          {
+            "x": 456.5,
+            "y": 0
+          },
+          {
+            "x": 571,
+            "y": 0
+          },
+          {
+            "x": 752.5,
+            "y": 0
+          },
+          {
+            "x": 934,
+            "y": 0
+          },
+          {
+            "x": 1103,
+            "y": 0
+          },
+          {
+            "x": 1272,
+            "y": 0
+          },
+          {
+            "x": 1412,
+            "y": 0
+          },
+          {
+            "x": 1552,
+            "y": 0
+          },
+          {
+            "x": 1730.5,
+            "y": 0
+          },
+          {
+            "x": 1909,
+            "y": 0
+          },
+          {
+            "x": 2080,
+            "y": 785.8
+          }
+        ]
+      },
+      {
+        "id": "mount→TExoDomMountResult",
+        "points": [
+          {
+            "x": 251.1,
+            "y": 577.5
+          },
+          {
+            "x": 342,
+            "y": 540.3
+          },
+          {
+            "x": 456.5,
+            "y": 540.3
+          },
+          {
+            "x": 571,
+            "y": 540.3
+          },
+          {
+            "x": 752.5,
+            "y": 540.3
+          },
+          {
+            "x": 934,
+            "y": 540.3
+          },
+          {
+            "x": 1103,
+            "y": 540.3
+          },
+          {
+            "x": 1272,
+            "y": 540.3
+          },
+          {
+            "x": 1317,
+            "y": 543.5
+          }
+        ]
+      },
+      {
+        "id": "svgContextFor→isSvgElement",
+        "points": [
+          {
+            "x": 1211,
+            "y": 303.5
+          },
+          {
+            "x": 1272,
+            "y": 303.5
+          },
+          {
+            "x": 1304,
+            "y": 310.2
+          }
+        ]
+      },
+      {
+        "id": "TDomAttributes→TExoDomMountTarget",
+        "points": [
+          {
+            "x": 2591,
+            "y": 999
+          },
+          {
+            "x": 2623,
+            "y": 999
+          },
+          {
+            "x": 2768.7,
+            "y": 1376
+          }
+        ]
+      },
+      {
+        "id": "TDomAttributes→TExoNodeDomSchema",
+        "points": [
+          {
+            "x": 2298,
+            "y": 990.8
+          },
+          {
+            "x": 2266,
+            "y": 989
+          },
+          {
+            "x": 2106.4,
+            "y": 1280.8
+          }
+        ]
+      },
+      {
+        "id": "TExoBuildContext→TExoBuildScope",
+        "points": [
+          {
+            "x": 2234,
+            "y": 1739.3
+          },
+          {
+            "x": 2266,
+            "y": 1739.3
+          },
+          {
+            "x": 2444.5,
+            "y": 1739.3
+          },
+          {
+            "x": 2623,
+            "y": 1739.3
+          },
+          {
+            "x": 2722,
+            "y": 1774.4
+          }
+        ]
+      },
+      {
+        "id": "TExoDomMountResult→ExoNodeDom",
+        "points": [
+          {
+            "x": 1317,
+            "y": 516.2
+          },
+          {
+            "x": 1272,
+            "y": 500
+          },
+          {
+            "x": 1103,
+            "y": 500
+          },
+          {
+            "x": 934,
+            "y": 500
+          },
+          {
+            "x": 801,
+            "y": 742.5
+          }
+        ]
+      },
+      {
+        "id": "TExoNodeDomSchema→TDomAttributes",
+        "points": [
+          {
+            "x": 2108.5,
+            "y": 1280.8
+          },
+          {
+            "x": 2266,
+            "y": 1022
+          },
+          {
+            "x": 2298,
+            "y": 1017.9
+          }
+        ]
+      },
+      {
+        "id": "TExoNodeDomSchema→TExoNodeRecord",
+        "points": [
+          {
+            "x": 2110.4,
+            "y": 1349.8
+          },
+          {
+            "x": 2266,
+            "y": 1584
+          },
+          {
+            "x": 2314,
+            "y": 1597.9
+          }
+        ]
+      },
+      {
+        "id": "TExoNodeRecord→TExoBuildScope",
+        "points": [
+          {
+            "x": 2575,
+            "y": 1635.8
+          },
+          {
+            "x": 2623,
+            "y": 1635.8
+          },
+          {
+            "x": 2747.7,
+            "y": 1761.3
+          }
+        ]
+      },
+      {
+        "id": "TExoNodeRecord→TExoNodeDomSchema",
+        "points": [
+          {
+            "x": 2314,
+            "y": 1635.8
+          },
+          {
+            "x": 2266,
+            "y": 1635.8
+          },
+          {
+            "x": 2106.7,
+            "y": 1349.8
+          }
+        ]
+      },
+      {
+        "id": "textSchema→TExoNodeDomSchema",
+        "points": [
+          {
+            "x": 1832,
+            "y": 1158.3
+          },
+          {
+            "x": 1909,
+            "y": 1158.3
+          },
+          {
+            "x": 2048.3,
+            "y": 1280.8
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -65,7 +65,7 @@ export function matchRoutes(
     const normalizedPathname = normalizePathname(pathname);
     const pathSegments = splitPath(normalizedPathname);
 
-    for (const compiledRoute of compileRoutes(routes)) {
+    for (const compiledRoute of compileRouteTable(routes)) {
         const params = matchSegments(compiledRoute.segments, pathSegments, compiledRoute.route);
         if (!params) {
             continue;
@@ -93,7 +93,7 @@ export function matchRouteChain(
     const normalizedPathname = normalizePathname(pathname);
     const pathSegments = splitPath(normalizedPathname);
 
-    for (const compiledRoute of compileRoutes(routes)) {
+    for (const compiledRoute of compileRouteTable(routes)) {
         const params = matchSegments(compiledRoute.segments, pathSegments, compiledRoute.route);
         if (!params) {
             continue;
@@ -125,6 +125,21 @@ export function matchRouteChain(
     }
 
     return [];
+}
+
+// Compiling a route table is PURE — it depends only on the table, which is
+// configuration and does not change. It used to run on every navigation (both
+// matchers call it first), rebuilding one object plus a split path array per
+// route each time. Cached by table identity so the work happens once per router.
+const compiledCache = new WeakMap<readonly TExoRoute[], TCompiledRoute[]>();
+
+function compileRouteTable(routes: readonly TExoRoute[]): TCompiledRoute[] {
+    let compiled = compiledCache.get(routes);
+    if (!compiled) {
+        compiled = compileRoutes(routes);
+        compiledCache.set(routes, compiled);
+    }
+    return compiled;
 }
 
 function compileRoutes(

@@ -1,0 +1,514 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "formatValue",
+        "label": "formatValue",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(key, value): string",
+            "full": "(key, value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 165,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "isUnitless",
+        "label": "isUnitless",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(key): boolean",
+            "full": "(key): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 126,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "style",
+        "label": "style",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(args): string",
+            "full": "(args): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Build a CSS style string from objects / strings.",
+        "width": 126,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "StyleArg",
+        "label": "StyleArg",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "StyleObject | string | null | undefined…",
+            "full": "StyleObject | string | null | undefined | false",
+            "parts": [
+              {
+                "text": "StyleObject",
+                "link": "StyleObject"
+              },
+              {
+                "text": " | string | null | undefined…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "StyleObject",
+                "link": "StyleObject"
+              },
+              {
+                "text": " | string | null | undefined | false"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Anything accepted as an argument: an object, a raw CSS string, or a falsy value (skipped — handy for conditionals).",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "StyleObject",
+        "label": "StyleObject",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "Record< string, StyleScalar | readonly …",
+            "full": "Record< string, StyleScalar | readonly (string | number)[] >",
+            "parts": [
+              {
+                "text": "Record< string, "
+              },
+              {
+                "text": "StyleScalar",
+                "link": "StyleScalar"
+              },
+              {
+                "text": " | readonly …"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "Record< string, "
+              },
+              {
+                "text": "StyleScalar",
+                "link": "StyleScalar"
+              },
+              {
+                "text": " | readonly (string | number)[] >"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "A single style object: camelCase or kebab-case keys, plus `--custom` props.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "StyleScalar",
+        "label": "StyleScalar",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "string | number | null | undefined | fa…",
+            "full": "string | number | null | undefined | false",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "toKebab",
+        "label": "toKebab",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(key): string",
+            "full": "(key): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "UNITLESS",
+        "label": "UNITLESS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Numeric values for these properties are used as-is (no `px` appended).",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "formatValue→isUnitless",
+        "from": "formatValue",
+        "to": "isUnitless",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "to": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "isUnitless→UNITLESS",
+        "from": "isUnitless",
+        "to": "UNITLESS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "to": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "style→formatValue",
+        "from": "style",
+        "to": "formatValue",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "to": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "style→StyleArg",
+        "from": "style",
+        "to": "StyleArg",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "to": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "style→toKebab",
+        "from": "style",
+        "to": "toKebab",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "to": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "StyleArg→StyleObject",
+        "from": "StyleArg",
+        "to": "StyleObject",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "to": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "StyleObject→StyleScalar",
+        "from": "StyleObject",
+        "to": "StyleScalar",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "to": "/Users/abaikov/work/exodra/packages/style/src/style.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1245,
+    "height": 311,
+    "nodes": [
+      {
+        "id": "formatValue",
+        "x": 278,
+        "y": 218,
+        "width": 165,
+        "height": 69
+      },
+      {
+        "id": "isUnitless",
+        "x": 654.5,
+        "y": 218,
+        "width": 126,
+        "height": 69
+      },
+      {
+        "id": "style",
+        "x": 24,
+        "y": 121,
+        "width": 126,
+        "height": 69
+      },
+      {
+        "id": "StyleArg",
+        "x": 214,
+        "y": 121,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "StyleObject",
+        "x": 571,
+        "y": 121,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "StyleScalar",
+        "x": 928,
+        "y": 121,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "toKebab",
+        "x": 300.5,
+        "y": 24,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "UNITLESS",
+        "x": 1014.5,
+        "y": 229.5,
+        "width": 120,
+        "height": 46
+      }
+    ],
+    "edges": [
+      {
+        "id": "formatValue→isUnitless",
+        "points": [
+          {
+            "x": 443,
+            "y": 252.5
+          },
+          {
+            "x": 539,
+            "y": 252.5
+          },
+          {
+            "x": 654.5,
+            "y": 252.5
+          }
+        ]
+      },
+      {
+        "id": "isUnitless→UNITLESS",
+        "points": [
+          {
+            "x": 780.5,
+            "y": 252.5
+          },
+          {
+            "x": 896,
+            "y": 252.5
+          },
+          {
+            "x": 1014.5,
+            "y": 252.5
+          }
+        ]
+      },
+      {
+        "id": "style→formatValue",
+        "points": [
+          {
+            "x": 120.8,
+            "y": 190
+          },
+          {
+            "x": 182,
+            "y": 252.5
+          },
+          {
+            "x": 278,
+            "y": 252.5
+          }
+        ]
+      },
+      {
+        "id": "style→StyleArg",
+        "points": [
+          {
+            "x": 150,
+            "y": 155.5
+          },
+          {
+            "x": 182,
+            "y": 155.5
+          },
+          {
+            "x": 214,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "style→toKebab",
+        "points": [
+          {
+            "x": 120.8,
+            "y": 121
+          },
+          {
+            "x": 182,
+            "y": 58.5
+          },
+          {
+            "x": 300.5,
+            "y": 58.5
+          }
+        ]
+      },
+      {
+        "id": "StyleArg→StyleObject",
+        "points": [
+          {
+            "x": 507,
+            "y": 155.5
+          },
+          {
+            "x": 539,
+            "y": 155.5
+          },
+          {
+            "x": 571,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "StyleObject→StyleScalar",
+        "points": [
+          {
+            "x": 864,
+            "y": 155.5
+          },
+          {
+            "x": 896,
+            "y": 155.5
+          },
+          {
+            "x": 928,
+            "y": 155.5
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,487 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "ClassProfiler",
+        "label": "ClassProfiler",
+        "kind": "runtime",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "-",
+            "text": "metrics: ProfileMetrics[]",
+            "full": "metrics: ProfileMetrics[]",
+            "parts": [
+              {
+                "text": "metrics: "
+              },
+              {
+                "text": "ProfileMetrics",
+                "link": "ProfileMetrics"
+              },
+              {
+                "text": "[]"
+              }
+            ]
+          },
+          {
+            "visibility": "-",
+            "text": "isRecording: boolean",
+            "full": "isRecording: boolean",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "profileClasses(classes, options): void",
+            "full": "profileClasses(classes, options): void",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "start(): void",
+            "full": "start(): void",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "stop(): ProfileMetrics[]",
+            "full": "stop(): ProfileMetrics[]",
+            "parts": [
+              {
+                "text": "stop(): "
+              },
+              {
+                "text": "ProfileMetrics",
+                "link": "ProfileMetrics"
+              },
+              {
+                "text": "[]"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "getReport(): { [key: string]: …",
+            "full": "getReport(): { [key: string]: { count: number; totalTime: number; avgTime: number; }; }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 6,
+        "doc": "Batch profiler for multiple classes",
+        "width": 280,
+        "height": 132,
+        "violations": []
+      },
+      {
+        "id": "ProfilableClass",
+        "label": "ProfilableClass",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "new (...args: never[]) => object",
+            "full": "new (...args: never[]) => object",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Generic class profiler that can patch any class for performance monitoring Zero overhead when not imported",
+        "width": 242,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ProfileCallback",
+        "label": "ProfileCallback",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(metrics: ProfileMetrics) => void",
+            "full": "(metrics: ProfileMetrics) => void",
+            "parts": [
+              {
+                "text": "(metrics: "
+              },
+              {
+                "text": "ProfileMetrics",
+                "link": "ProfileMetrics"
+              },
+              {
+                "text": ") => void"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 248,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "profileClass",
+        "label": "profileClass",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(ClassToProfile, callback, options): void",
+            "full": "(ClassToProfile, callback, options): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Profile any class by patching its prototype methods",
+        "width": 299,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ProfileMetrics",
+        "label": "ProfileMetrics",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "className: string;",
+            "full": "className: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "method: string;",
+            "full": "method: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "duration: number;",
+            "full": "duration: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "timestamp: number;",
+            "full": "timestamp: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "args?: unknown[];",
+            "full": "args?: unknown[];",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "interface",
+        "width": 152,
+        "height": 129,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "ClassProfiler→ProfilableClass",
+        "from": "ClassProfiler",
+        "to": "ProfilableClass",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ClassProfiler→profileClass",
+        "from": "ClassProfiler",
+        "to": "profileClass",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ClassProfiler→ProfileMetrics",
+        "from": "ClassProfiler",
+        "to": "ProfileMetrics",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ProfileCallback→ProfileMetrics",
+        "from": "ProfileCallback",
+        "to": "ProfileMetrics",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileClass→ProfilableClass",
+        "from": "profileClass",
+        "to": "ProfilableClass",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "profileClass→ProfileCallback",
+        "from": "profileClass",
+        "to": "ProfileCallback",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "to": "/Users/abaikov/work/exodra/packages/profiler/src/class-profiler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1219,
+    "height": 273.3,
+    "nodes": [
+      {
+        "id": "ClassProfiler",
+        "x": 24,
+        "y": 61.8,
+        "width": 280,
+        "height": 132
+      },
+      {
+        "id": "ProfilableClass",
+        "x": 734,
+        "y": 180.3,
+        "width": 242,
+        "height": 69
+      },
+      {
+        "id": "ProfileCallback",
+        "x": 731,
+        "y": 83.3,
+        "width": 248,
+        "height": 69
+      },
+      {
+        "id": "profileClass",
+        "x": 368,
+        "y": 93.3,
+        "width": 299,
+        "height": 69
+      },
+      {
+        "id": "ProfileMetrics",
+        "x": 1043,
+        "y": 24,
+        "width": 152,
+        "height": 129
+      }
+    ],
+    "edges": [
+      {
+        "id": "ClassProfiler→ProfilableClass",
+        "points": [
+          {
+            "x": 281,
+            "y": 193.8
+          },
+          {
+            "x": 336,
+            "y": 224.8
+          },
+          {
+            "x": 517.5,
+            "y": 224.8
+          },
+          {
+            "x": 699,
+            "y": 224.8
+          },
+          {
+            "x": 734,
+            "y": 222.5
+          }
+        ]
+      },
+      {
+        "id": "ClassProfiler→profileClass",
+        "points": [
+          {
+            "x": 304,
+            "y": 127.8
+          },
+          {
+            "x": 336,
+            "y": 127.8
+          },
+          {
+            "x": 368,
+            "y": 127.8
+          }
+        ]
+      },
+      {
+        "id": "ClassProfiler→ProfileMetrics",
+        "points": [
+          {
+            "x": 304,
+            "y": 72
+          },
+          {
+            "x": 336,
+            "y": 59.3
+          },
+          {
+            "x": 517.5,
+            "y": 59.3
+          },
+          {
+            "x": 699,
+            "y": 59.3
+          },
+          {
+            "x": 855,
+            "y": 59.3
+          },
+          {
+            "x": 1011,
+            "y": 59.3
+          },
+          {
+            "x": 1043,
+            "y": 67.9
+          }
+        ]
+      },
+      {
+        "id": "ProfileCallback→ProfileMetrics",
+        "points": [
+          {
+            "x": 979,
+            "y": 117.8
+          },
+          {
+            "x": 1011,
+            "y": 117.8
+          },
+          {
+            "x": 1043,
+            "y": 109.1
+          }
+        ]
+      },
+      {
+        "id": "profileClass→ProfilableClass",
+        "points": [
+          {
+            "x": 646.6,
+            "y": 162.3
+          },
+          {
+            "x": 699,
+            "y": 176.3
+          },
+          {
+            "x": 734,
+            "y": 184.9
+          }
+        ]
+      },
+      {
+        "id": "profileClass→ProfileCallback",
+        "points": [
+          {
+            "x": 667,
+            "y": 119.5
+          },
+          {
+            "x": 699,
+            "y": 117.8
+          },
+          {
+            "x": 731,
+            "y": 117.8
+          }
+        ]
+      }
+    ]
+  }
+}

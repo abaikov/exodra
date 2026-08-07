@@ -45,7 +45,21 @@ npx exo-introspect analyze --ai --provider anthropic --format markdown -o report
 - `routes` - analyze routes and navigation structure (`-p, --path`)
 - `explain <file>` - AI explanation of a code file (`--provider`, `--api-key`)
 - `check-thresholds <file>` - check a saved analysis JSON against quality gates (`--max-errors`, `--max-warnings`, `--min-score`)
-- `explore` - launch and explore the app in a browser with optional AI analysis (`--headless`, `--scenarios`, `--url`, `--ai`)
+- `explore` - launch and explore the app in a real browser with optional AI analysis (`--headless`, `--scenarios`, `--url`, `--ai`)
+
+  Requires **Playwright**, declared as an optional peer dependency so the rest of
+  the CLI installs without downloading a browser:
+
+  ```bash
+  npm i -D playwright && npx playwright install chromium
+  ```
+
+  Without it `explore` fails with a clear message — it never reports success it did
+  not achieve. It attaches to an already-running server at `--url`, or starts
+  `npm run dev` and polls until that URL answers. What it reports is measured:
+  navigation timing, First Contentful Paint, JS heap, transferred script bytes, the
+  rendered element tree with layout boxes, screenshots, the result of each
+  `--scenarios` click, and accessibility findings derived from the page itself.
 - `setup` - automatic AI ecosystem setup (`--interactive`, `--silent`, `--project-root`)
 - `setup-cursor` - generate Cursor (Claude Code) integration (`-p, --path`)
 - `ai providers` - list configured AI providers

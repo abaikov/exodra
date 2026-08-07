@@ -10,11 +10,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@exodra/core": "^0.2.0",
-    "@exodra/dom": "^0.2.0",
-    "@exodra/reactivity": "^0.2.0",
-    "@exodra/ssr": "^0.2.0",
-    "@exodra/string": "^0.2.0"
+    "@exodra/core": "^0.3.0",
+    "@exodra/dom": "^0.3.0",
+    "@exodra/reactivity": "^0.3.0",
+    "@exodra/ssr": "^0.3.0",
+    "@exodra/string": "^0.4.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

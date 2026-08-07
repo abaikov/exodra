@@ -12,8 +12,8 @@ export function createExoDerived<TSource, TValue>(
         getValue() {
             return map(source.getValue());
         },
-        subscribe(update) {
-            return source.subscribe(() => update(map(source.getValue())));
+        onChange(update) {
+            return source.onChange(() => update(map(source.getValue())));
         },
     };
 }

@@ -7,7 +7,7 @@ describe('router history adapters', () => {
     it('navigates with memory history', () => {
         const history = createMemoryHistory('/start');
         const updates: string[] = [];
-        history.subscribe(() => updates.push(history.getLocation().href));
+        history.onChange(() => updates.push(history.getLocation().href));
 
         history.push('/next?tab=one');
         history.replace('/final#done');
@@ -20,7 +20,7 @@ describe('router history adapters', () => {
         window.history.replaceState(null, '', '/initial');
         const history = createBrowserHistory({ window });
         const updates: string[] = [];
-        history.subscribe(() => updates.push(history.getLocation().href));
+        history.onChange(() => updates.push(history.getLocation().href));
 
         history.push('/browser-next');
         history.replace('/browser-final?ok=1');

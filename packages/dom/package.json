@@ -1,6 +1,6 @@
 {
   "name": "@exodra/dom",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -56,12 +56,12 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "devDependencies": {
-    "@exodra/reactivity": "^0.2.0",
+    "@exodra/reactivity": "^0.3.0",
     "jsdom": "^23.0.1",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@exodra/core": "^0.2.0",
-    "@exodra/reactivity-types": "^0.1.0"
+    "@exodra/core": "^0.3.0",
+    "@exodra/reactivity-types": "^0.2.0"
   }
 }

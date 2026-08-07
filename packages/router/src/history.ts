@@ -35,7 +35,7 @@ export function createMemoryHistory(
             location.state = nextState;
             notify(subscribers);
         },
-        subscribe(update) {
+        onChange(update) {
             subscribers.add(update);
             return () => {
                 subscribers.delete(update);
@@ -87,7 +87,7 @@ export function createBrowserHistory(
             browserWindow.history.replaceState(state ?? null, '', addBasePath(to, basePath));
             notifySubscribers();
         },
-        subscribe(update) {
+        onChange(update) {
             subscribers.add(update);
             return () => {
                 subscribers.delete(update);

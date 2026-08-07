@@ -1,0 +1,406 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "bindChecked",
+        "label": "bindChecked",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(model): TExoBindAttrs",
+            "full": "(model): TExoBindAttrs",
+            "parts": [
+              {
+                "text": "(model): "
+              },
+              {
+                "text": "TExoBindAttrs",
+                "link": "TExoBindAttrs"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "<input type=\"checkbox\" bind:checked>: checked <-> boolean bindable.",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "bindNumber",
+        "label": "bindNumber",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(model): TExoBindAttrs",
+            "full": "(model): TExoBindAttrs",
+            "parts": [
+              {
+                "text": "(model): "
+              },
+              {
+                "text": "TExoBindAttrs",
+                "link": "TExoBindAttrs"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "<input type=\"number|range\" bind:value>: numeric value <-> number bindable.",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "bindRadio",
+        "label": "bindRadio",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(model, value): TExoBindAttrs",
+            "full": "(model, value): TExoBindAttrs",
+            "parts": [
+              {
+                "text": "(model, value): "
+              },
+              {
+                "text": "TExoBindAttrs",
+                "link": "TExoBindAttrs"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "<input type=\"radio\" value=\"X\">: a group of radios shares ONE model holding the SELECTED value.",
+        "width": 222,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "bindSelect",
+        "label": "bindSelect",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(model): TExoBindAttrs",
+            "full": "(model): TExoBindAttrs",
+            "parts": [
+              {
+                "text": "(model): "
+              },
+              {
+                "text": "TExoBindAttrs",
+                "link": "TExoBindAttrs"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "<select bind:value>: selection <-> string bindable (fires on change).",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "bindText",
+        "label": "bindText",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(model): TExoBindAttrs",
+            "full": "(model): TExoBindAttrs",
+            "parts": [
+              {
+                "text": "(model): "
+              },
+              {
+                "text": "TExoBindAttrs",
+                "link": "TExoBindAttrs"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "<input bind:value> / <textarea bind:value>: text value <-> string bindable.",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoBindAttrs",
+        "label": "TExoBindAttrs",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "bindables: Record<string, unknown>;",
+            "full": "bindables: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "handlers: Record<string, (event: Event)…",
+            "full": "handlers: Record<string, (event: Event) => void>;",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 84,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "bindChecked→TExoBindAttrs",
+        "from": "bindChecked",
+        "to": "TExoBindAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "bindNumber→TExoBindAttrs",
+        "from": "bindNumber",
+        "to": "TExoBindAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "bindRadio→TExoBindAttrs",
+        "from": "bindRadio",
+        "to": "TExoBindAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "bindSelect→TExoBindAttrs",
+        "from": "bindSelect",
+        "to": "TExoBindAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "bindText→TExoBindAttrs",
+        "from": "bindText",
+        "to": "TExoBindAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 627,
+    "height": 505,
+    "nodes": [
+      {
+        "id": "bindChecked",
+        "x": 46,
+        "y": 412,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "bindNumber",
+        "x": 46,
+        "y": 315,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "bindRadio",
+        "x": 24,
+        "y": 218,
+        "width": 222,
+        "height": 69
+      },
+      {
+        "id": "bindSelect",
+        "x": 46,
+        "y": 121,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "bindText",
+        "x": 46,
+        "y": 24,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "TExoBindAttrs",
+        "x": 310,
+        "y": 210.5,
+        "width": 293,
+        "height": 84
+      }
+    ],
+    "edges": [
+      {
+        "id": "bindChecked→TExoBindAttrs",
+        "points": [
+          {
+            "x": 224,
+            "y": 446.5
+          },
+          {
+            "x": 278,
+            "y": 446.5
+          },
+          {
+            "x": 417.9,
+            "y": 294.5
+          }
+        ]
+      },
+      {
+        "id": "bindNumber→TExoBindAttrs",
+        "points": [
+          {
+            "x": 224,
+            "y": 349.5
+          },
+          {
+            "x": 278,
+            "y": 349.5
+          },
+          {
+            "x": 379.2,
+            "y": 294.5
+          }
+        ]
+      },
+      {
+        "id": "bindRadio→TExoBindAttrs",
+        "points": [
+          {
+            "x": 246,
+            "y": 252.5
+          },
+          {
+            "x": 278,
+            "y": 252.5
+          },
+          {
+            "x": 310,
+            "y": 252.5
+          }
+        ]
+      },
+      {
+        "id": "bindSelect→TExoBindAttrs",
+        "points": [
+          {
+            "x": 224,
+            "y": 155.5
+          },
+          {
+            "x": 278,
+            "y": 155.5
+          },
+          {
+            "x": 379.2,
+            "y": 210.5
+          }
+        ]
+      },
+      {
+        "id": "bindText→TExoBindAttrs",
+        "points": [
+          {
+            "x": 224,
+            "y": 58.5
+          },
+          {
+            "x": 278,
+            "y": 58.5
+          },
+          {
+            "x": 417.9,
+            "y": 210.5
+          }
+        ]
+      }
+    ]
+  }
+}

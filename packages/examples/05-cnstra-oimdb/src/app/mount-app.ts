@@ -131,6 +131,6 @@ export function mountApp(
         void renderRoute().finally(finishBoot);
     }
 
-    router.match.subscribe(() => void renderRoute());
+    router.match.onChange(() => void renderRoute());
     return router;
 }

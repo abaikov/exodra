@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-exodra",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Rollup plugin that compiles Exodra JSX (delegates to the canonical Babel pipeline)",
   "keywords": [
     "exodra",
@@ -33,7 +33,7 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "dependencies": {
-    "babel-preset-exodra": "^0.1.0"
+    "babel-preset-exodra": "^0.1.2"
   },
   "peerDependencies": {
     "rollup": "^3.0.0 || ^4.0.0"

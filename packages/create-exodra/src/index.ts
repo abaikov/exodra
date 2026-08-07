@@ -213,17 +213,17 @@ async function createPackageJson(projectPath: string, projectName: string, useTy
       ...(options.eslint ? { lint: 'eslint . --ext ts,tsx,js,jsx --fix' } : {})
     },
     dependencies: {
-      '@exodra/core': '^0.1.0',
-      '@exodra/jsx': '^0.1.0', 
-      '@exodra/dom': '^0.1.0',
-      '@exodra/reactivity': '^0.1.0',
-      ...(options.app ? { '@exodra/router': '^0.1.0' } : {})
+      '@exodra/core': '^0.3.0',
+      '@exodra/jsx': '^0.2.1', 
+      '@exodra/dom': '^0.3.0',
+      '@exodra/reactivity': '^0.3.0',
+      ...(options.app ? { '@exodra/router': '^0.3.0' } : {})
     },
     devDependencies: {
       vite: '^5.0.0',
       '@vitejs/plugin-react': '^4.2.0',
-      '@exodra/babel-plugin-jsx': '^0.1.0',
-      '@exodra/vite-plugin': '^0.1.0',
+      '@exodra/babel-plugin-jsx': '^0.3.0',
+      '@exodra/vite-plugin': '^0.2.1',
       ...(useTypeScript ? {
         typescript: '^5.3.3',
         '@types/node': '^20.0.0'
@@ -476,11 +476,11 @@ async function createSsrPackageJson(projectPath: string, projectName: string, us
       typecheck: 'tsc --noEmit',
     },
     dependencies: {
-      '@exodra/core': '^0.1.0',
-      '@exodra/dom': '^0.1.0',
-      '@exodra/reactivity': '^0.1.0',
-      '@exodra/ssr': '^0.1.0',
-      '@exodra/string': '^0.1.0',
+      '@exodra/core': '^0.3.0',
+      '@exodra/dom': '^0.3.0',
+      '@exodra/reactivity': '^0.3.0',
+      '@exodra/ssr': '^0.3.1',
+      '@exodra/string': '^0.4.1',
     },
     devDependencies: {
       '@types/express': '^5.0.0',
@@ -495,7 +495,7 @@ async function createSsrPackageJson(projectPath: string, projectName: string, us
             '@babel/core': '^7.24.0',
             '@babel/plugin-syntax-jsx': '^7.24.0',
             '@babel/preset-typescript': '^7.24.0',
-            '@exodra/babel-plugin-jsx': '^0.1.0',
+            '@exodra/babel-plugin-jsx': '^0.3.0',
           }
         : {}),
     },

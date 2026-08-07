@@ -1,0 +1,1889 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "createContextKey",
+        "label": "createContextKey",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name): TExoContextKey<TVal…",
+            "full": "(name): TExoContextKey<TValue>",
+            "parts": [
+              {
+                "text": "(name): "
+              },
+              {
+                "text": "TExoContextKey",
+                "link": "TExoContextKey"
+              },
+              {
+                "text": "<TVal…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(name): "
+              },
+              {
+                "text": "TExoContextKey",
+                "link": "TExoContextKey"
+              },
+              {
+                "text": "<TValue>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createTextSchema",
+        "label": "createTextSchema",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(textContent): TExoSchema",
+            "full": "(textContent): TExoSchema",
+            "parts": [
+              {
+                "text": "(textContent): "
+              },
+              {
+                "text": "TExoSchema",
+                "link": "TExoSchema"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The canonical `#text` node shape.",
+        "width": 197,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "defineComponent",
+        "label": "defineComponent",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(component): TExoComponent<TSche…",
+            "full": "(component): TExoComponent<TSchema, TResult> & { readonly __exoProps?: A; }",
+            "parts": [
+              {
+                "text": "(component): "
+              },
+              {
+                "text": "TExoComponent",
+                "link": "TExoComponent"
+              },
+              {
+                "text": "<TSche…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(component): "
+              },
+              {
+                "text": "TExoComponent",
+                "link": "TExoComponent"
+              },
+              {
+                "text": "<TSchema, TResult> & { readonly __exoProps?: A; }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Define an Exodra component.",
+        "width": 248,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoBucketOf",
+        "label": "ExoBucketOf",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "A extends { [P in K]?: infer V; } ? Non…",
+            "full": "A extends { [P in K]?: infer V; } ? NonNullable<V> extends object ? NonNullable<V> : Record<never, never> : Record<never, never>",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Extract one bucket's declared shape from a component's props type `A`, tolerating optional buckets (strip `undefined`) and falling back to an empty shape when the bucket is not declared — so keyed getters degrade to the loose `<TValue>(nam…",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "h",
+        "label": "h",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(type, attrs, cacheKey): TExoSchema",
+            "full": "(type, attrs, cacheKey): TExoSchema",
+            "parts": [
+              {
+                "text": "(type, attrs, cacheKey): "
+              },
+              {
+                "text": "TExoSchema",
+                "link": "TExoSchema"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Creates an Exodra schema node for elements or components.",
+        "width": 261,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "injectFromScope",
+        "label": "injectFromScope",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(scope, key, fallback): TValue",
+            "full": "(scope, key, fallback): TValue",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Resolve a context key by walking a provide()/inject() scope chain child→parent, returning `fallback` when no ancestor provided it.",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoComponent",
+        "label": "TExoComponent",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(context: TExoContext<TSchema>) => TRes…",
+            "full": "(context: TExoContext<TSchema>) => TResult | readonly TResult[]",
+            "parts": [
+              {
+                "text": "(context: "
+              },
+              {
+                "text": "TExoContext",
+                "link": "TExoContext"
+              },
+              {
+                "text": "<TSchema>) => TRes…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(context: "
+              },
+              {
+                "text": "TExoContext",
+                "link": "TExoContext"
+              },
+              {
+                "text": "<TSchema>) => TResult | readonly TResult[]"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoComponentProps",
+        "label": "TExoComponentProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "static?: Record<string, unknown>;",
+            "full": "static?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindable?: Record<string, unknown>;",
+            "full": "bindable?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindableList?: Record<string, unknown>;",
+            "full": "bindableList?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "handlers?: Record<string, unknown>;",
+            "full": "handlers?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindableHandlers?: Record<string, unkno…",
+            "full": "bindableHandlers?: Record<string, unknown>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "children?: unknown;",
+            "full": "children?: unknown;",
+            "parts": []
+          }
+        ],
+        "memberCount": 6,
+        "stereotype": "interface",
+        "doc": "The JSX-facing prop shape a component accepts: the typed buckets a caller may pass to `<Comp static={{…}} bindable={{…}} … />`.",
+        "width": 293,
+        "height": 144,
+        "violations": []
+      },
+      {
+        "id": "TExoContext",
+        "label": "TExoContext",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "schema: TSchema;",
+            "full": "schema: TSchema;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "createNode<TNodeSchema extends TExoNode…",
+            "full": "createNode<TNodeSchema extends TExoNodeSchema>( schema: TNodeSchema ): TNodeSchema;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "createNode<TNodeSchema extends "
+              },
+              {
+                "text": "TExoNodeSchema",
+                "link": "TExoNodeSchema"
+              },
+              {
+                "text": ">( schema: TNodeSchema ): TNodeSchema;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "getConstant<TValue = unknown>(name: str…",
+            "full": "getConstant<TValue = unknown>(name: string): TValue | undefined;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getBindable<TValue = unknown>(name: str…",
+            "full": "getBindable<TValue = unknown>(name: string): TValue | undefined;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getBindableList<TValue = unknown>(name:…",
+            "full": "getBindableList<TValue = unknown>(name: string): TValue | undefined;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "provide<TValue>(key: TExoContextKey<TVa…",
+            "full": "provide<TValue>(key: TExoContextKey<TValue>, value: TValue): void;",
+            "parts": [
+              {
+                "text": "provide<TValue>(key: "
+              },
+              {
+                "text": "TExoContextKey",
+                "link": "TExoContextKey"
+              },
+              {
+                "text": "<TVa…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "provide<TValue>(key: "
+              },
+              {
+                "text": "TExoContextKey",
+                "link": "TExoContextKey"
+              },
+              {
+                "text": "<TValue>, value: TValue): void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "inject<TValue>( key: TExoContextKey<TVa…",
+            "full": "inject<TValue>( key: TExoContextKey<TValue>, fallback?: TValue ): TValue | undefined;",
+            "parts": [
+              {
+                "text": "inject<TValue>( key: "
+              },
+              {
+                "text": "TExoContextKey",
+                "link": "TExoContextKey"
+              },
+              {
+                "text": "<TVa…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "inject<TValue>( key: "
+              },
+              {
+                "text": "TExoContextKey",
+                "link": "TExoContextKey"
+              },
+              {
+                "text": "<TValue>, fallback?: TValue ): TValue | undefined;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onDispose(cleanup: () => void): void;",
+            "full": "onDispose(cleanup: () => void): void;",
+            "parts": []
+          }
+        ],
+        "memberCount": 8,
+        "stereotype": "type",
+        "width": 293,
+        "height": 174,
+        "violations": []
+      },
+      {
+        "id": "TExoContextKey",
+        "label": "TExoContextKey",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly id: symbol;",
+            "full": "readonly id: symbol;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly name?: string;",
+            "full": "readonly name?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly __value?: TValue;",
+            "full": "readonly __value?: TValue;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 203,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoNodeSchema",
+        "label": "TExoNodeSchema",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "type: TType;",
+            "full": "type: TType;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "attrs: TAttrs;",
+            "full": "attrs: TAttrs;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "cacheKey?: symbol | string;",
+            "full": "cacheKey?: symbol | string;",
+            "doc": "Optional clone-cache key.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "exoRecord?: TRecord;",
+            "full": "exoRecord?: TRecord;",
+            "doc": "Renderer-private bookkeeping slot (the DOM renderer's per-node record).",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "type",
+        "width": 210,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "TExoSchema",
+        "label": "TExoSchema",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoNodeSchema< string | ((context: TEx…",
+            "full": "TExoNodeSchema< string | ((context: TExoContext) => TExoSchema | readonly TExoSchema[]), { static?: Record<string, unknown> & { children?: TExoSchema | readonly TExoSchema[] | null; textContent?: unknown; }; bindables?: Record<string, unknown>; bindableLists?: Record<string, unknown>; } >",
+            "parts": [
+              {
+                "text": "TExoNodeSchema",
+                "link": "TExoNodeSchema"
+              },
+              {
+                "text": "< string | ((context: TEx…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "TExoNodeSchema",
+                "link": "TExoNodeSchema"
+              },
+              {
+                "text": "< string | ((context: "
+              },
+              {
+                "text": "TExoContext",
+                "link": "TExoContext"
+              },
+              {
+                "text": ") => "
+              },
+              {
+                "text": "TExoSchema",
+                "link": "TExoSchema"
+              },
+              {
+                "text": " | readonly "
+              },
+              {
+                "text": "TExoSchema",
+                "link": "TExoSchema"
+              },
+              {
+                "text": "[]), { static?: Record<string, unknown> & { children?: "
+              },
+              {
+                "text": "TExoSchema",
+                "link": "TExoSchema"
+              },
+              {
+                "text": " | readonly "
+              },
+              {
+                "text": "TExoSchema",
+                "link": "TExoSchema"
+              },
+              {
+                "text": "[] | null; textContent?: unknown; }; bindables?: Record<string, unknown>; bindableLists?: Record<string, unknown>; } >"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoSchemaProps",
+        "label": "TExoSchemaProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "static?: Record<string, unknown>;",
+            "full": "static?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindables?: Record<string, unknown>;",
+            "full": "bindables?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindableLists?: Record<string, unknown>;",
+            "full": "bindableLists?: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "handlers?: Record<string, (event: Event…",
+            "full": "handlers?: Record<string, (event: Event) => void>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindableHandlers?: Record<string, unkno…",
+            "full": "bindableHandlers?: Record<string, unknown>;",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "doc": "The props object `h()` takes: the five attribute buckets, nothing else.",
+        "width": 293,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoScope",
+        "label": "TExoScope",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "values?: Map<symbol, unknown>;",
+            "full": "values?: Map<symbol, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "parent?: TExoScope;",
+            "full": "parent?: TExoScope;",
+            "parts": [
+              {
+                "text": "parent?: "
+              },
+              {
+                "text": "TExoScope",
+                "link": "TExoScope"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "doc": "A link in the component provide()/inject() chain.",
+        "width": 229,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "TExoTypedContext",
+        "label": "TExoTypedContext",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "Omit< TExoContext<TSchema>, 'getConstan…",
+            "full": "Omit< TExoContext<TSchema>, 'getConstant' | 'getBindable' | 'getBindableList' > & { getConstant<K extends keyof ExoBucketOf<A, 'static'>>( name: K ): ExoBucketOf<A, 'static'>[K]; getConstant<TValue = unknown>(name: string): TValue | undefined; getBindable<K extends keyof ExoBucketOf<A, 'bindable'>>( name: K ): ExoBucketOf<A, 'bindable'>[K]; getBindable<TValue = unknown>(name: string): TValue | undefined; getBindableList<K extends keyof ExoBucketOf<A, 'bindableList'>>( name: K ): ExoBucketOf<A, 'bindableList'>[K]; getBindableList<TValue = unknown>(name: string): TValue | undefined; }",
+            "parts": [
+              {
+                "text": "Omit< "
+              },
+              {
+                "text": "TExoContext",
+                "link": "TExoContext"
+              },
+              {
+                "text": "<TSchema>, 'getConstan…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "Omit< "
+              },
+              {
+                "text": "TExoContext",
+                "link": "TExoContext"
+              },
+              {
+                "text": "<TSchema>, 'getConstant' | 'getBindable' | 'getBindableList' > & { getConstant<K extends keyof "
+              },
+              {
+                "text": "ExoBucketOf",
+                "link": "ExoBucketOf"
+              },
+              {
+                "text": "<A, 'static'>>( name: K ): "
+              },
+              {
+                "text": "ExoBucketOf",
+                "link": "ExoBucketOf"
+              },
+              {
+                "text": "<A, 'static'>[K]; getConstant<TValue = unknown>(name: string): TValue | undefined; getBindable<K extends keyof "
+              },
+              {
+                "text": "ExoBucketOf",
+                "link": "ExoBucketOf"
+              },
+              {
+                "text": "<A, 'bindable'>>( name: K ): "
+              },
+              {
+                "text": "ExoBucketOf",
+                "link": "ExoBucketOf"
+              },
+              {
+                "text": "<A, 'bindable'>[K]; getBindable<TValue = unknown>(name: string): TValue | undefined; getBindableList<K extends keyof "
+              },
+              {
+                "text": "ExoBucketOf",
+                "link": "ExoBucketOf"
+              },
+              {
+                "text": "<A, 'bindableList'>>( name: K ): "
+              },
+              {
+                "text": "ExoBucketOf",
+                "link": "ExoBucketOf"
+              },
+              {
+                "text": "<A, 'bindableList'>[K]; getBindableList<TValue = unknown>(name: string): TValue | undefined; }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The context passed to a component defined via `defineComponent<A>`.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoWalkNode",
+        "label": "TExoWalkNode",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoWalkNodeBase<TSchema> & Partial<TCo…",
+            "full": "TExoWalkNodeBase<TSchema> & Partial<TContext> & { readonly parent: TExoWalkNode<TSchema, TContext> | undefined; }",
+            "parts": [
+              {
+                "text": "TExoWalkNodeBase",
+                "link": "TExoWalkNodeBase"
+              },
+              {
+                "text": "<TSchema> & Partial<TCo…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "TExoWalkNodeBase",
+                "link": "TExoWalkNodeBase"
+              },
+              {
+                "text": "<TSchema> & Partial<TContext> & { readonly parent: "
+              },
+              {
+                "text": "TExoWalkNode",
+                "link": "TExoWalkNode"
+              },
+              {
+                "text": "<TSchema, TContext> | undefined; }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The node passed to visit().",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoWalkNodeBase",
+        "label": "TExoWalkNodeBase",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly schema: TSchema;",
+            "full": "readonly schema: TSchema;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "children: readonly TSchema[] | undefine…",
+            "full": "children: readonly TSchema[] | undefined;",
+            "doc": "visit() sets this: children schemas to descend into.",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "doc": "Base bookkeeping every walked node carries.",
+        "width": 293,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "text",
+        "label": "text",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): TExoSchema",
+            "full": "(value): TExoSchema",
+            "parts": [
+              {
+                "text": "(value): "
+              },
+              {
+                "text": "TExoSchema",
+                "link": "TExoSchema"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Public front door for a `#text` node: `text('hello')`.",
+        "width": 158,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "VOID_ELEMENTS",
+        "label": "VOID_ELEMENTS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "HTML void elements: no closing tag and no content.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "walkSchema",
+        "label": "walkSchema",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(root, visit, createNode): TExoWalkNode<TSchem…",
+            "full": "(root, visit, createNode): TExoWalkNode<TSchema, TContext>",
+            "parts": [
+              {
+                "text": "(root, visit, createNode): "
+              },
+              {
+                "text": "TExoWalkNode",
+                "link": "TExoWalkNode"
+              },
+              {
+                "text": "<TSchem…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(root, visit, createNode): "
+              },
+              {
+                "text": "TExoWalkNode",
+                "link": "TExoWalkNode"
+              },
+              {
+                "text": "<TSchema, TContext>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Pure, iterative, depth-first schema traversal.",
+        "width": 338,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "createContextKey→TExoContextKey",
+        "from": "createContextKey",
+        "to": "TExoContextKey",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/createContextKey.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoContextKey.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createTextSchema→TExoSchema",
+        "from": "createTextSchema",
+        "to": "TExoSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/createTextSchema.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "defineComponent→TExoComponent",
+        "from": "defineComponent",
+        "to": "TExoComponent",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/defineComponent.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoComponent.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "defineComponent→TExoComponentProps",
+        "from": "defineComponent",
+        "to": "TExoComponentProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/defineComponent.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoComponentProps.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "defineComponent→TExoSchema",
+        "from": "defineComponent",
+        "to": "TExoSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/defineComponent.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "defineComponent→TExoTypedContext",
+        "from": "defineComponent",
+        "to": "TExoTypedContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/defineComponent.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoTypedContext.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoBucketOf→TExoComponentProps",
+        "from": "ExoBucketOf",
+        "to": "TExoComponentProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoTypedContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoComponentProps.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "h→TExoSchema",
+        "from": "h",
+        "to": "TExoSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/h.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "h→TExoSchemaProps",
+        "from": "h",
+        "to": "TExoSchemaProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/h.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoSchemaProps.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "injectFromScope→TExoScope",
+        "from": "injectFromScope",
+        "to": "TExoScope",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/injectFromScope.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoScope.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoComponent→TExoContext",
+        "from": "TExoComponent",
+        "to": "TExoContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoComponent.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoContext.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoComponent→TExoNodeSchema",
+        "from": "TExoComponent",
+        "to": "TExoNodeSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoComponent.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoNodeSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoContext→TExoContextKey",
+        "from": "TExoContext",
+        "to": "TExoContextKey",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoContextKey.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoContext→TExoNodeSchema",
+        "from": "TExoContext",
+        "to": "TExoNodeSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoNodeSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoSchema→TExoContext",
+        "from": "TExoSchema",
+        "to": "TExoContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoSchema.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoContext.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoSchema→TExoNodeSchema",
+        "from": "TExoSchema",
+        "to": "TExoNodeSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoSchema.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoNodeSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoTypedContext→ExoBucketOf",
+        "from": "TExoTypedContext",
+        "to": "ExoBucketOf",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoTypedContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoTypedContext.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoTypedContext→TExoContext",
+        "from": "TExoTypedContext",
+        "to": "TExoContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoTypedContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoContext.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoTypedContext→TExoNodeSchema",
+        "from": "TExoTypedContext",
+        "to": "TExoNodeSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/types/TExoTypedContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoNodeSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoWalkNode→TExoWalkNodeBase",
+        "from": "TExoWalkNode",
+        "to": "TExoWalkNodeBase",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/walkSchema.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/walkSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "text→createTextSchema",
+        "from": "text",
+        "to": "createTextSchema",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/text.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/factory/createTextSchema.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "text→TExoSchema",
+        "from": "text",
+        "to": "TExoSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/factory/text.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/types/TExoSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "walkSchema→TExoWalkNode",
+        "from": "walkSchema",
+        "to": "TExoWalkNode",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/core/src/walkSchema.ts",
+            "to": "/Users/abaikov/work/exodra/packages/core/src/walkSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1814,
+    "height": 1142.8,
+    "nodes": [
+      {
+        "id": "createContextKey",
+        "x": 1178.5,
+        "y": 250.3,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "createTextSchema",
+        "x": 474,
+        "y": 844.5,
+        "width": 197,
+        "height": 69
+      },
+      {
+        "id": "defineComponent",
+        "x": 448.5,
+        "y": 635.5,
+        "width": 248,
+        "height": 69
+      },
+      {
+        "id": "ExoBucketOf",
+        "x": 1140,
+        "y": 61.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "h",
+        "x": 442,
+        "y": 538.5,
+        "width": 261,
+        "height": 69
+      },
+      {
+        "id": "injectFromScope",
+        "x": 78.5,
+        "y": 802.3,
+        "width": 229,
+        "height": 69
+      },
+      {
+        "id": "TExoComponent",
+        "x": 783,
+        "y": 1049.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoComponentProps",
+        "x": 1497,
+        "y": 24,
+        "width": 293,
+        "height": 144
+      },
+      {
+        "id": "TExoContext",
+        "x": 1140,
+        "y": 438.8,
+        "width": 293,
+        "height": 174
+      },
+      {
+        "id": "TExoContextKey",
+        "x": 1542,
+        "y": 196,
+        "width": 203,
+        "height": 99
+      },
+      {
+        "id": "TExoNodeSchema",
+        "x": 1538.5,
+        "y": 693,
+        "width": 210,
+        "height": 114
+      },
+      {
+        "id": "TExoSchema",
+        "x": 783,
+        "y": 571.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoSchemaProps",
+        "x": 783,
+        "y": 405.8,
+        "width": 293,
+        "height": 129
+      },
+      {
+        "id": "TExoScope",
+        "x": 458,
+        "y": 732.5,
+        "width": 229,
+        "height": 84
+      },
+      {
+        "id": "TExoTypedContext",
+        "x": 783,
+        "y": 308.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoWalkNode",
+        "x": 426,
+        "y": 997.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoWalkNodeBase",
+        "x": 783,
+        "y": 937.8,
+        "width": 293,
+        "height": 84
+      },
+      {
+        "id": "text",
+        "x": 114,
+        "y": 542.3,
+        "width": 158,
+        "height": 69
+      },
+      {
+        "id": "VOID_ELEMENTS",
+        "x": 133,
+        "y": 923.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "walkSchema",
+        "x": 24,
+        "y": 997.5,
+        "width": 338,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "createContextKey→TExoContextKey",
+        "points": [
+          {
+            "x": 1394.5,
+            "y": 284.8
+          },
+          {
+            "x": 1465,
+            "y": 284.8
+          },
+          {
+            "x": 1542,
+            "y": 267.8
+          }
+        ]
+      },
+      {
+        "id": "createTextSchema→TExoSchema",
+        "points": [
+          {
+            "x": 671,
+            "y": 879
+          },
+          {
+            "x": 751,
+            "y": 879
+          },
+          {
+            "x": 906.9,
+            "y": 640.5
+          }
+        ]
+      },
+      {
+        "id": "defineComponent→TExoComponent",
+        "points": [
+          {
+            "x": 587.4,
+            "y": 704.5
+          },
+          {
+            "x": 751,
+            "y": 1084.3
+          },
+          {
+            "x": 783,
+            "y": 1084.3
+          }
+        ]
+      },
+      {
+        "id": "defineComponent→TExoComponentProps",
+        "points": [
+          {
+            "x": 585.1,
+            "y": 635.5
+          },
+          {
+            "x": 751,
+            "y": 180.8
+          },
+          {
+            "x": 929.5,
+            "y": 180.8
+          },
+          {
+            "x": 1108,
+            "y": 180.8
+          },
+          {
+            "x": 1286.5,
+            "y": 180.8
+          },
+          {
+            "x": 1465,
+            "y": 180.8
+          },
+          {
+            "x": 1497,
+            "y": 165.6
+          }
+        ]
+      },
+      {
+        "id": "defineComponent→TExoSchema",
+        "points": [
+          {
+            "x": 696.5,
+            "y": 670
+          },
+          {
+            "x": 751,
+            "y": 670
+          },
+          {
+            "x": 833.3,
+            "y": 640.5
+          }
+        ]
+      },
+      {
+        "id": "defineComponent→TExoTypedContext",
+        "points": [
+          {
+            "x": 591.3,
+            "y": 635.5
+          },
+          {
+            "x": 751,
+            "y": 343.3
+          },
+          {
+            "x": 783,
+            "y": 343.3
+          }
+        ]
+      },
+      {
+        "id": "ExoBucketOf→TExoComponentProps",
+        "points": [
+          {
+            "x": 1433,
+            "y": 96
+          },
+          {
+            "x": 1465,
+            "y": 96
+          },
+          {
+            "x": 1497,
+            "y": 96
+          }
+        ]
+      },
+      {
+        "id": "h→TExoSchema",
+        "points": [
+          {
+            "x": 703,
+            "y": 573
+          },
+          {
+            "x": 751,
+            "y": 573
+          },
+          {
+            "x": 783,
+            "y": 578.9
+          }
+        ]
+      },
+      {
+        "id": "h→TExoSchemaProps",
+        "points": [
+          {
+            "x": 632.4,
+            "y": 538.5
+          },
+          {
+            "x": 751,
+            "y": 470.3
+          },
+          {
+            "x": 783,
+            "y": 470.3
+          }
+        ]
+      },
+      {
+        "id": "injectFromScope→TExoScope",
+        "points": [
+          {
+            "x": 304.4,
+            "y": 802.3
+          },
+          {
+            "x": 394,
+            "y": 774.5
+          },
+          {
+            "x": 458,
+            "y": 774.5
+          }
+        ]
+      },
+      {
+        "id": "TExoComponent→TExoContext",
+        "points": [
+          {
+            "x": 949.7,
+            "y": 1049.8
+          },
+          {
+            "x": 1108,
+            "y": 779.5
+          },
+          {
+            "x": 1225.3,
+            "y": 612.8
+          }
+        ]
+      },
+      {
+        "id": "TExoComponent→TExoNodeSchema",
+        "points": [
+          {
+            "x": 1076,
+            "y": 1108.9
+          },
+          {
+            "x": 1108,
+            "y": 1114.3
+          },
+          {
+            "x": 1286.5,
+            "y": 1114.3
+          },
+          {
+            "x": 1465,
+            "y": 1114.3
+          },
+          {
+            "x": 1615.6,
+            "y": 807
+          }
+        ]
+      },
+      {
+        "id": "TExoContext→TExoContextKey",
+        "points": [
+          {
+            "x": 1335.7,
+            "y": 438.8
+          },
+          {
+            "x": 1465,
+            "y": 210
+          },
+          {
+            "x": 1542,
+            "y": 225.3
+          }
+        ]
+      },
+      {
+        "id": "TExoContext→TExoNodeSchema",
+        "points": [
+          {
+            "x": 1318.6,
+            "y": 612.8
+          },
+          {
+            "x": 1465,
+            "y": 1009.8
+          },
+          {
+            "x": 1604.3,
+            "y": 807
+          }
+        ]
+      },
+      {
+        "id": "TExoSchema→TExoContext",
+        "points": [
+          {
+            "x": 982.7,
+            "y": 571.5
+          },
+          {
+            "x": 1108,
+            "y": 490.3
+          },
+          {
+            "x": 1140,
+            "y": 496.6
+          }
+        ]
+      },
+      {
+        "id": "TExoSchema→TExoNodeSchema",
+        "points": [
+          {
+            "x": 945.5,
+            "y": 640.5
+          },
+          {
+            "x": 1108,
+            "y": 989.8
+          },
+          {
+            "x": 1286.5,
+            "y": 989.8
+          },
+          {
+            "x": 1465,
+            "y": 989.8
+          },
+          {
+            "x": 1601.1,
+            "y": 807
+          }
+        ]
+      },
+      {
+        "id": "TExoTypedContext→ExoBucketOf",
+        "points": [
+          {
+            "x": 954.4,
+            "y": 308.8
+          },
+          {
+            "x": 1108,
+            "y": 96
+          },
+          {
+            "x": 1140,
+            "y": 96
+          }
+        ]
+      },
+      {
+        "id": "TExoTypedContext→TExoContext",
+        "points": [
+          {
+            "x": 978,
+            "y": 377.8
+          },
+          {
+            "x": 1108,
+            "y": 470.3
+          },
+          {
+            "x": 1140,
+            "y": 480.2
+          }
+        ]
+      },
+      {
+        "id": "TExoTypedContext→TExoNodeSchema",
+        "points": [
+          {
+            "x": 1076,
+            "y": 343.3
+          },
+          {
+            "x": 1108,
+            "y": 343.3
+          },
+          {
+            "x": 1286.5,
+            "y": 343.3
+          },
+          {
+            "x": 1465,
+            "y": 343.3
+          },
+          {
+            "x": 1618.5,
+            "y": 693
+          }
+        ]
+      },
+      {
+        "id": "TExoWalkNode→TExoWalkNodeBase",
+        "points": [
+          {
+            "x": 690.4,
+            "y": 997.5
+          },
+          {
+            "x": 751,
+            "y": 979.8
+          },
+          {
+            "x": 783,
+            "y": 979.8
+          }
+        ]
+      },
+      {
+        "id": "text→createTextSchema",
+        "points": [
+          {
+            "x": 215.9,
+            "y": 611.3
+          },
+          {
+            "x": 394,
+            "y": 879
+          },
+          {
+            "x": 474,
+            "y": 879
+          }
+        ]
+      },
+      {
+        "id": "text→TExoSchema",
+        "points": [
+          {
+            "x": 272,
+            "y": 552.3
+          },
+          {
+            "x": 394,
+            "y": 514.5
+          },
+          {
+            "x": 572.5,
+            "y": 514.5
+          },
+          {
+            "x": 751,
+            "y": 514.5
+          },
+          {
+            "x": 862.2,
+            "y": 571.5
+          }
+        ]
+      },
+      {
+        "id": "walkSchema→TExoWalkNode",
+        "points": [
+          {
+            "x": 362,
+            "y": 1032
+          },
+          {
+            "x": 394,
+            "y": 1032
+          },
+          {
+            "x": 426,
+            "y": 1032
+          }
+        ]
+      }
+    ]
+  }
+}

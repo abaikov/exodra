@@ -33,11 +33,13 @@ describe('renderPersistorScript', () => {
         persistor.register(html, 'html');
         
         const script = renderPersistorScript(persistor);
-        
-        // Should escape < > / in the JSON content
-        expect(script).toContain('\\u003C\\u002Fscript\\u003E');
+
+        // What matters is that the payload cannot open OR close a tag, not which
+        // characters a particular escaper happens to encode: `<` and `>` are
+        // escaped, so no markup can form regardless of what surrounds them.
+        expect(script).toContain('\\u003C/script\\u003E');
         expect(script).toContain('\\u003Cdiv\\u003E');
-        // The closing </script> tag is expected, but not in the JSON content
+        // The only literal </script> is the element's own closing tag.
         expect(script.indexOf('</script>')).toBeGreaterThan(0);
         expect(script.indexOf('</script>')).toBe(script.lastIndexOf('</script>'));
         expect(script).not.toContain('"</script>"');
@@ -69,9 +71,11 @@ describe('renderPersistorScript', () => {
 describe('renderHydrationScript', () => {
     it('renders inline script for hydration', () => {
         const script = renderHydrationScript();
-        
-        expect(script).toContain('<script >');
-        expect(script).toContain('document.getElementById(\'__EXODRA_PERSISTOR__\')');
+
+        expect(script.startsWith('<script>')).toBe(true);
+        // The id goes in as a JSON string literal, so a quote in it cannot end
+        // the literal and inject code.
+        expect(script).toContain('document.getElementById("__EXODRA_PERSISTOR__")');
         expect(script).toContain('window.__EXODRA_STATE__');
         expect(script).toContain('JSON.parse(el.textContent)');
     });
@@ -82,8 +86,20 @@ describe('renderHydrationScript', () => {
             variableName: 'window.APP_STATE'
         });
         
-        expect(script).toContain('document.getElementById(\'my-state\')');
+        expect(script).toContain('document.getElementById("my-state")');
         expect(script).toContain('window.APP_STATE = JSON.parse');
+    });
+
+    it('an id containing a quote cannot break out of the script', () => {
+        const script = renderHydrationScript({ id: 'a"b\'c' });
+
+        expect(script).toContain('document.getElementById("a\\"b\'c")');
+        // Executable proof: the emitted body still parses as JS.
+        const body = script.slice(
+            script.indexOf('>') + 1,
+            script.lastIndexOf('</script>')
+        );
+        expect(() => new Function(body)).not.toThrow();
     });
     
     it('adds nonce attribute when provided', () => {

@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "lib": ["ES2020", "DOM"],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "baseUrl": ".",
+    // Siblings resolve to their BUILT types, like every other package here —
+    // pulling their sources into this program makes tsc demand they be listed.
+    "paths": {
+      "@exodra/core": ["../core/dist/index.d.ts"],
+      "@exodra/dom": ["../dom/dist/index.d.ts"],
+      "@exodra/string": ["../string/dist/index.d.ts"],
+      "@exodra/reactivity": ["../reactivity/dist/index.d.ts"],
+      "@exodra/reactivity-types": ["../reactivity-types/dist/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/*.test.ts"]
+}

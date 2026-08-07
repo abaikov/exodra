@@ -695,12 +695,27 @@ program
     
     try {
       const { ExodraBrowserExplorer } = await import('./browser-explorer.js');
-      const explorer = new ExodraBrowserExplorer(process.cwd());
+      // The flags this command advertises were previously parsed and dropped.
+      const explorer = new ExodraBrowserExplorer(process.cwd(), {
+        baseUrl: options.url,
+        headless: options.headless !== false,
+        scenarios: options.scenarios
+          ? String(options.scenarios)
+              .split(',')
+              .map((s: string) => s.trim())
+              .filter(Boolean)
+          : undefined,
+      });
 
       spinner.text = 'Launching application and browser...';
-      
-      const results = await explorer.explore();
-      
+
+      let results;
+      try {
+        results = await explorer.explore();
+      } finally {
+        await explorer.cleanup();
+      }
+
       spinner.succeed('Browser exploration completed!');
       
       // Display results
@@ -708,10 +723,13 @@ program
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       
       // Performance summary
+      const shown = (value: number, unit: string) =>
+        value < 0 ? chalk.gray('not reported by the browser') : `${value}${unit}`;
       console.log('\n' + chalk.blue('⚡ Performance Metrics:'));
-      console.log(`  Load Time: ${results.performance.loadTime}ms`);
-      console.log(`  Render Time: ${results.performance.renderTime}ms`);
-      console.log(`  Memory Usage: ${results.performance.memoryUsage}MB`);
+      console.log(`  Load Time: ${shown(results.performance.loadTime, 'ms')}`);
+      console.log(`  First Contentful Paint: ${shown(results.performance.renderTime, 'ms')}`);
+      console.log(`  JS Heap: ${shown(results.performance.memoryUsage, 'MB')}`);
+      console.log(`  Script Transferred: ${shown(results.performance.bundleSize, 'KB')}`);
       
       // Component analysis
       if (results.componentTree?.length > 0) {
@@ -781,14 +799,19 @@ program
         }
       }
       
-      console.log('\n' + chalk.gray('Screenshots and detailed logs saved to ./exploration-results/'));
+      if (results.screenshots.length > 0) {
+        console.log('\n' + chalk.gray('Screenshots:'));
+        results.screenshots.forEach((file: string) => console.log(chalk.gray(`  ${file}`)));
+      }
       
     } catch (error) {
       spinner.fail('Browser exploration failed');
       console.error(chalk.red('Error:'), (error as Error).message);
-      
-      if ((error as Error).message.includes('npm run dev')) {
-        console.log(chalk.yellow('\n💡 Make sure your app has a "dev" script in package.json'));
+
+      if ((error as Error).name === 'ExplorationUnavailableError') {
+        console.log(
+          chalk.yellow('\n💡 Nothing was measured — the numbers above are absent, not zero.')
+        );
       }
       
       process.exit(1);

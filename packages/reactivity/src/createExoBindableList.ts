@@ -1,58 +1,50 @@
 import type { TExoListOp } from '@exodra/reactivity-types';
 import type { TExoWritableBindableList } from '@exodra/reactivity-types';
-import {
-    __DEV__,
-    beginFlush,
-    endFlush,
-    warnWriteDuringFlush,
-} from './dev-flush-guard';
-
 export function createExoBindableList<TItem>(
     initialItems: readonly TItem[]
 ): TExoWritableBindableList<TItem> {
     const subscribers = new Set<(event: TExoListOp<TItem>) => void>();
-    // Avoid copying if already an array
-    let items = Array.isArray(initialItems) ? initialItems as TItem[] : [...initialItems];
+    // COPY the caller's array. The ops below splice `items` in place, so aliasing
+    // the argument would mutate an array the caller still owns (a `push()` here
+    // would silently grow their array too).
+    let items = [...initialItems];
 
     const emit = (event: TExoListOp<TItem>) => {
         // Only emit if we have subscribers
         if (subscribers.size > 0) {
-            if (__DEV__) beginFlush('bindableList');
-            try {
-                for (const update of subscribers) {
-                    update(event);
-                }
-            } finally {
-                if (__DEV__) endFlush();
+            for (const update of subscribers) {
+                update(event);
             }
         }
     };
 
     return {
-        snapshot() {
-            // Return readonly view to prevent external mutations
-            return items.slice();
+        getValue() {
+            // The SAME array every read, as TExoBindableList documents ("a stable
+            // array the ops describe deltas into"). Copying here instead would
+            // allocate O(n) on every read — including once per op for a consumer
+            // that re-reads — and would break any consumer that holds the value
+            // and follows the ops. Consumers that intend to MUTATE what they read
+            // (the DOM reconciler keeps its own list) copy on their side.
+            return items;
         },
-        subscribeOps(update) {
+        onChange(update) {
             subscribers.add(update);
             return () => {
                 subscribers.delete(update);
             };
         },
         insert(index, item) {
-            if (__DEV__) warnWriteDuringFlush('bindableList.insert');
             const clampedIndex = Math.max(0, Math.min(index, items.length));
             items.splice(clampedIndex, 0, item);
             emit({ type: 'insert', index: clampedIndex, item });
         },
         push(item) {
-            if (__DEV__) warnWriteDuringFlush('bindableList.push');
             const index = items.length;
             items.push(item);
             emit({ type: 'insert', index, item });
         },
         remove(index, count = 1) {
-            if (__DEV__) warnWriteDuringFlush('bindableList.remove');
             const clampedIndex = Math.max(0, Math.min(index, items.length));
             const clampedCount = Math.max(
                 0,
@@ -62,7 +54,6 @@ export function createExoBindableList<TItem>(
             emit({ type: 'remove', index: clampedIndex, count: clampedCount });
         },
         move(from, to, count = 1) {
-            if (__DEV__) warnWriteDuringFlush('bindableList.move');
             if (count <= 0 || from < 0 || from >= items.length) {
                 return;
             }
@@ -71,9 +62,21 @@ export function createExoBindableList<TItem>(
             const movedItems = items.splice(from, clampedCount);
             const clampedTo = Math.max(0, Math.min(to, items.length));
 
-            // Avoid spread for better performance
-            for (let i = 0; i < movedItems.length; i++) {
-                items.splice(clampedTo + i, 0, movedItems[i]);
+            // ONE batched insert, not `count` of them: every splice shifts the
+            // tail, so inserting item-by-item is O(count·n) where a single insert
+            // is O(n). Spread is chunked only because `splice(i, 0, ...huge)` can
+            // overflow the argument stack — the common count of 1 takes one call.
+            const CHUNK = 8192;
+            if (movedItems.length <= CHUNK) {
+                items.splice(clampedTo, 0, ...movedItems);
+            } else {
+                for (let i = 0; i < movedItems.length; i += CHUNK) {
+                    items.splice(
+                        clampedTo + i,
+                        0,
+                        ...movedItems.slice(i, i + CHUNK)
+                    );
+                }
             }
             emit({
                 type: 'move',
@@ -83,7 +86,6 @@ export function createExoBindableList<TItem>(
             });
         },
         set(index, item) {
-            if (__DEV__) warnWriteDuringFlush('bindableList.set');
             if (index < 0 || index >= items.length) {
                 return;
             }
@@ -92,10 +94,12 @@ export function createExoBindableList<TItem>(
             emit({ type: 'set', index, item });
         },
         reset(nextItems) {
-            if (__DEV__) warnWriteDuringFlush('bindableList.reset');
-            // Avoid unnecessary copies
-            items = Array.isArray(nextItems) ? nextItems as TItem[] : [...nextItems];
-            emit({ type: 'reset', items: items.slice() });
+            // Copy for the same reason as the constructor: the ops mutate `items`.
+            items = [...nextItems];
+            // Carries the live array, not a snapshot of it — no consumer reads
+            // this payload (they re-read getValue()), so a defensive copy here
+            // was pure allocation on every reset.
+            emit({ type: 'reset', items });
         },
     };
 }

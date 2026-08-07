@@ -7,6 +7,14 @@ tags: [performance, architecture, benchmarks]
 
 # WeakMap Core vs Legacy: A Design Deep Dive
 
+:::note This post has been superseded
+
+Exodra no longer uses a WeakMap for per-node bookkeeping — the record now lives in a
+slot on the schema itself. The *design* argument below still holds; it just lost to
+a measurement. See
+[WeakMaps Are the Cleaner Separation — Patching Is Faster](/blog/weakmap-vs-patching).
+:::
+
 Exodra moved from a legacy per-node bookkeeping model to a WeakMap-based core. This post is about *why that's a better design* — less work per node, GC-driven cleanup, and cache-friendly lookups. It is deliberately light on "X% faster" numbers, because the honest, reproducible timings come from `npm run bench`, not prose.
 
 {/* truncate */}

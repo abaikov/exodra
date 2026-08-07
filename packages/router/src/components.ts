@@ -127,8 +127,8 @@ export function Outlet(context: TExoContext): TExoSchema {
         })
     );
 
-    context.onDispose(router.match.subscribe(update));
-    context.onDispose(router.navigationState.subscribe(update));
+    context.onDispose(router.match.onChange(update));
+    context.onDispose(router.navigationState.onChange(update));
 
     return h(props.as ?? 'div', {
         bindables: {

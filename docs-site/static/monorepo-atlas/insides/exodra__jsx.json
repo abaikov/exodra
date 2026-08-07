@@ -1,0 +1,4184 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "AnchorElementProps",
+        "label": "AnchorElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "href?: string;",
+            "full": "href?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "target?: '_blank' | '_self' | '_parent'…",
+            "full": "target?: '_blank' | '_self' | '_parent' | '_top';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "rel?: string;",
+            "full": "rel?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "download?: string | boolean;",
+            "full": "download?: string | boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "ping?: string;",
+            "full": "ping?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "hreflang?: string;",
+            "full": "hreflang?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "media?: string;",
+            "full": "media?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "referrerPolicy?: string;",
+            "full": "referrerPolicy?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 8,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 174,
+        "violations": []
+      },
+      {
+        "id": "AudioElementProps",
+        "label": "AudioElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "src?: string;",
+            "full": "src?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "controls?: boolean;",
+            "full": "controls?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autoPlay?: boolean;",
+            "full": "autoPlay?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "loop?: boolean;",
+            "full": "loop?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "muted?: boolean;",
+            "full": "muted?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "preload?: 'none' | 'metadata' | 'auto';",
+            "full": "preload?: 'none' | 'metadata' | 'auto';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "crossOrigin?: 'anonymous' | 'use-creden…",
+            "full": "crossOrigin?: 'anonymous' | 'use-credentials';",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 7,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 159,
+        "violations": []
+      },
+      {
+        "id": "ButtonElementProps",
+        "label": "ButtonElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "type?: 'button' | 'submit' | 'reset';",
+            "full": "type?: 'button' | 'submit' | 'reset';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "disabled?: boolean;",
+            "full": "disabled?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autoFocus?: boolean;",
+            "full": "autoFocus?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "form?: string;",
+            "full": "form?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "name?: string;",
+            "full": "name?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "value?: string;",
+            "full": "value?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 6,
+        "stereotype": "interface",
+        "width": 274,
+        "height": 144,
+        "violations": []
+      },
+      {
+        "id": "ExoAttrValue",
+        "label": "ExoAttrValue",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "string | number | boolean | null | unde…",
+            "full": "string | number | boolean | null | undefined",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Primitive DOM attribute value.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoBindableBucket",
+        "label": "ExoBindableBucket",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "textContent?: ExoBindableValue;",
+            "full": "textContent?: ExoBindableValue;",
+            "parts": [
+              {
+                "text": "textContent?: "
+              },
+              {
+                "text": "ExoBindableValue",
+                "link": "ExoBindableValue"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "value?: ExoBindableValue;",
+            "full": "value?: ExoBindableValue;",
+            "parts": [
+              {
+                "text": "value?: "
+              },
+              {
+                "text": "ExoBindableValue",
+                "link": "ExoBindableValue"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "class?: ExoBindableValue;",
+            "full": "class?: ExoBindableValue;",
+            "parts": [
+              {
+                "text": "class?: "
+              },
+              {
+                "text": "ExoBindableValue",
+                "link": "ExoBindableValue"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "className?: ExoBindableValue;",
+            "full": "className?: ExoBindableValue;",
+            "parts": [
+              {
+                "text": "className?: "
+              },
+              {
+                "text": "ExoBindableValue",
+                "link": "ExoBindableValue"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "children?: ExoBindableValue;",
+            "full": "children?: ExoBindableValue;",
+            "doc": "A reactive single child (signal of a schema).",
+            "parts": [
+              {
+                "text": "children?: "
+              },
+              {
+                "text": "ExoBindableValue",
+                "link": "ExoBindableValue"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "[attr: string]: ExoBindableValue | unde…",
+            "full": "[attr: string]: ExoBindableValue | undefined;",
+            "parts": [
+              {
+                "text": "[attr: string]: "
+              },
+              {
+                "text": "ExoBindableValue",
+                "link": "ExoBindableValue"
+              },
+              {
+                "text": " | unde…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "[attr: string]: "
+              },
+              {
+                "text": "ExoBindableValue",
+                "link": "ExoBindableValue"
+              },
+              {
+                "text": " | undefined;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 6,
+        "stereotype": "interface",
+        "doc": "The `bindable` bucket: reactive scalar values keyed by prop name.",
+        "width": 293,
+        "height": 144,
+        "violations": []
+      },
+      {
+        "id": "ExoBindableHandlers",
+        "label": "ExoBindableHandlers",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "{ [K in keyof ExoEventHandlers]?: TExoB…",
+            "full": "{ [K in keyof ExoEventHandlers]?: TExoBindable<EventListener | null, unknown>; }",
+            "parts": [
+              {
+                "text": "{ [K in keyof "
+              },
+              {
+                "text": "ExoEventHandlers",
+                "link": "ExoEventHandlers"
+              },
+              {
+                "text": "]?: TExoB…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "{ [K in keyof "
+              },
+              {
+                "text": "ExoEventHandlers",
+                "link": "ExoEventHandlers"
+              },
+              {
+                "text": "]?: TExoBindable<EventListener | null, unknown>; }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The `bindableHandlers` bucket: reactive event handlers (signal of a listener).",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoBindableListBucket",
+        "label": "ExoBindableListBucket",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "children?: TExoBindableList<TExoSchema,…",
+            "full": "children?: TExoBindableList<TExoSchema, unknown>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "[attr: string]: TExoBindableList<unknow…",
+            "full": "[attr: string]: TExoBindableList<unknown, unknown> | undefined;",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "doc": "The `bindableList` bucket: reactive lists keyed by prop name (usually children).",
+        "width": 293,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "ExoBindableValue",
+        "label": "ExoBindableValue",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoBindable<unknown, unknown>",
+            "full": "TExoBindable<unknown, unknown>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Any reactive scalar (textContent, value, an attribute, a single child…).",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoChild",
+        "label": "ExoChild",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoSchema | string | number | boolean …",
+            "full": "TExoSchema | string | number | boolean | null | undefined",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "A static (never-changing) child.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoEvent",
+        "label": "ExoEvent",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "Ev & { readonly currentTarget: E; }",
+            "full": "Ev & { readonly currentTarget: E; }",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "A DOM event whose `currentTarget` is narrowed to the element the handler is attached to — so `event.currentTarget.value` on an `<input>` is typed with NO cast.",
+        "width": 261,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoEventHandlers",
+        "label": "ExoEventHandlers",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "onClick?: (event: ExoEvent<E, MouseEven…",
+            "full": "onClick?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onClick?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEven…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onClick?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onDblClick?: (event: ExoEvent<E, MouseE…",
+            "full": "onDblClick?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onDblClick?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseE…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onDblClick?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseDown?: (event: ExoEvent<E, Mouse…",
+            "full": "onMouseDown?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onMouseDown?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Mouse…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onMouseDown?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseUp?: (event: ExoEvent<E, MouseEv…",
+            "full": "onMouseUp?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onMouseUp?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEv…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onMouseUp?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseEnter?: (event: ExoEvent<E, Mous…",
+            "full": "onMouseEnter?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onMouseEnter?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Mous…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onMouseEnter?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseLeave?: (event: ExoEvent<E, Mous…",
+            "full": "onMouseLeave?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onMouseLeave?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Mous…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onMouseLeave?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseMove?: (event: ExoEvent<E, Mouse…",
+            "full": "onMouseMove?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onMouseMove?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Mouse…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onMouseMove?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseOver?: (event: ExoEvent<E, Mouse…",
+            "full": "onMouseOver?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onMouseOver?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Mouse…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onMouseOver?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseOut?: (event: ExoEvent<E, MouseE…",
+            "full": "onMouseOut?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onMouseOut?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseE…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onMouseOut?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onContextMenu?: (event: ExoEvent<E, Mou…",
+            "full": "onContextMenu?: (event: ExoEvent<E, MouseEvent>) => void;",
+            "parts": [
+              {
+                "text": "onContextMenu?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Mou…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onContextMenu?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, MouseEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onFocus?: (event: ExoEvent<E, FocusEven…",
+            "full": "onFocus?: (event: ExoEvent<E, FocusEvent>) => void;",
+            "parts": [
+              {
+                "text": "onFocus?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, FocusEven…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onFocus?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, FocusEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onBlur?: (event: ExoEvent<E, FocusEvent…",
+            "full": "onBlur?: (event: ExoEvent<E, FocusEvent>) => void;",
+            "parts": [
+              {
+                "text": "onBlur?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, FocusEvent…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onBlur?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, FocusEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onInput?: (event: ExoEvent<E>) => void;",
+            "full": "onInput?: (event: ExoEvent<E>) => void;",
+            "parts": [
+              {
+                "text": "onInput?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onChange?: (event: ExoEvent<E>) => void;",
+            "full": "onChange?: (event: ExoEvent<E>) => void;",
+            "parts": [
+              {
+                "text": "onChange?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onSubmit?: (event: ExoEvent<E, SubmitEv…",
+            "full": "onSubmit?: (event: ExoEvent<E, SubmitEvent>) => void;",
+            "parts": [
+              {
+                "text": "onSubmit?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, SubmitEv…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onSubmit?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, SubmitEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onReset?: (event: ExoEvent<E>) => void;",
+            "full": "onReset?: (event: ExoEvent<E>) => void;",
+            "parts": [
+              {
+                "text": "onReset?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onKeyDown?: (event: ExoEvent<E, Keyboar…",
+            "full": "onKeyDown?: (event: ExoEvent<E, KeyboardEvent>) => void;",
+            "parts": [
+              {
+                "text": "onKeyDown?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Keyboar…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onKeyDown?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, KeyboardEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onKeyUp?: (event: ExoEvent<E, KeyboardE…",
+            "full": "onKeyUp?: (event: ExoEvent<E, KeyboardEvent>) => void;",
+            "parts": [
+              {
+                "text": "onKeyUp?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, KeyboardE…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onKeyUp?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, KeyboardEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onKeyPress?: (event: ExoEvent<E, Keyboa…",
+            "full": "onKeyPress?: (event: ExoEvent<E, KeyboardEvent>) => void;",
+            "parts": [
+              {
+                "text": "onKeyPress?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Keyboa…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onKeyPress?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, KeyboardEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onScroll?: (event: ExoEvent<E>) => void;",
+            "full": "onScroll?: (event: ExoEvent<E>) => void;",
+            "parts": [
+              {
+                "text": "onScroll?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onWheel?: (event: ExoEvent<E, WheelEven…",
+            "full": "onWheel?: (event: ExoEvent<E, WheelEvent>) => void;",
+            "parts": [
+              {
+                "text": "onWheel?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, WheelEven…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onWheel?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, WheelEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onLoad?: (event: ExoEvent<E>) => void;",
+            "full": "onLoad?: (event: ExoEvent<E>) => void;",
+            "parts": [
+              {
+                "text": "onLoad?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onError?: (event: ExoEvent<E>) => void;",
+            "full": "onError?: (event: ExoEvent<E>) => void;",
+            "parts": [
+              {
+                "text": "onError?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onPointerDown?: (event: ExoEvent<E, Poi…",
+            "full": "onPointerDown?: (event: ExoEvent<E, PointerEvent>) => void;",
+            "parts": [
+              {
+                "text": "onPointerDown?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Poi…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onPointerDown?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, PointerEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onPointerUp?: (event: ExoEvent<E, Point…",
+            "full": "onPointerUp?: (event: ExoEvent<E, PointerEvent>) => void;",
+            "parts": [
+              {
+                "text": "onPointerUp?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Point…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onPointerUp?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, PointerEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onPointerMove?: (event: ExoEvent<E, Poi…",
+            "full": "onPointerMove?: (event: ExoEvent<E, PointerEvent>) => void;",
+            "parts": [
+              {
+                "text": "onPointerMove?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Poi…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onPointerMove?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, PointerEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onTouchStart?: (event: ExoEvent<E, Touc…",
+            "full": "onTouchStart?: (event: ExoEvent<E, TouchEvent>) => void;",
+            "parts": [
+              {
+                "text": "onTouchStart?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Touc…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onTouchStart?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, TouchEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onTouchEnd?: (event: ExoEvent<E, TouchE…",
+            "full": "onTouchEnd?: (event: ExoEvent<E, TouchEvent>) => void;",
+            "parts": [
+              {
+                "text": "onTouchEnd?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, TouchE…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onTouchEnd?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, TouchEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onTouchMove?: (event: ExoEvent<E, Touch…",
+            "full": "onTouchMove?: (event: ExoEvent<E, TouchEvent>) => void;",
+            "parts": [
+              {
+                "text": "onTouchMove?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, Touch…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onTouchMove?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, TouchEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onDragStart?: (event: ExoEvent<E, DragE…",
+            "full": "onDragStart?: (event: ExoEvent<E, DragEvent>) => void;",
+            "parts": [
+              {
+                "text": "onDragStart?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, DragE…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onDragStart?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, DragEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onDragEnd?: (event: ExoEvent<E, DragEve…",
+            "full": "onDragEnd?: (event: ExoEvent<E, DragEvent>) => void;",
+            "parts": [
+              {
+                "text": "onDragEnd?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, DragEve…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onDragEnd?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, DragEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onDragOver?: (event: ExoEvent<E, DragEv…",
+            "full": "onDragOver?: (event: ExoEvent<E, DragEvent>) => void;",
+            "parts": [
+              {
+                "text": "onDragOver?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, DragEv…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onDragOver?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, DragEvent>) => void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onDrop?: (event: ExoEvent<E, DragEvent>…",
+            "full": "onDrop?: (event: ExoEvent<E, DragEvent>) => void;",
+            "parts": [
+              {
+                "text": "onDrop?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, DragEvent>…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "onDrop?: (event: "
+              },
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<E, DragEvent>) => void;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 33,
+        "stereotype": "interface",
+        "doc": "The `handlers` bucket: typed DOM event handlers.",
+        "width": 293,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "ExoFormEvent",
+        "label": "ExoFormEvent",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "ExoEvent<HTMLFormElement, Ev>",
+            "full": "ExoEvent<HTMLFormElement, Ev>",
+            "parts": [
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<HTMLFormElement, Ev>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 222,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoInputEvent",
+        "label": "ExoInputEvent",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "ExoEvent<HTMLInputElement, Ev>",
+            "full": "ExoEvent<HTMLInputElement, Ev>",
+            "parts": [
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<HTMLInputElement, Ev>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Ergonomic aliases for the common form elements.",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoIntrinsicProps",
+        "label": "ExoIntrinsicProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "static?: ExoStaticBucket;",
+            "full": "static?: ExoStaticBucket;",
+            "parts": [
+              {
+                "text": "static?: "
+              },
+              {
+                "text": "ExoStaticBucket",
+                "link": "ExoStaticBucket"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "bindable?: ExoBindableBucket;",
+            "full": "bindable?: ExoBindableBucket;",
+            "parts": [
+              {
+                "text": "bindable?: "
+              },
+              {
+                "text": "ExoBindableBucket",
+                "link": "ExoBindableBucket"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "bindableList?: ExoBindableListBucket;",
+            "full": "bindableList?: ExoBindableListBucket;",
+            "parts": [
+              {
+                "text": "bindableList?: "
+              },
+              {
+                "text": "ExoBindableListBucket",
+                "link": "ExoBindableListBucket"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "handlers?: ExoEventHandlers<E>;",
+            "full": "handlers?: ExoEventHandlers<E>;",
+            "parts": [
+              {
+                "text": "handlers?: "
+              },
+              {
+                "text": "ExoEventHandlers",
+                "link": "ExoEventHandlers"
+              },
+              {
+                "text": "<E>;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "bindableHandlers?: ExoBindableHandlers;",
+            "full": "bindableHandlers?: ExoBindableHandlers;",
+            "parts": [
+              {
+                "text": "bindableHandlers?: "
+              },
+              {
+                "text": "ExoBindableHandlers",
+                "link": "ExoBindableHandlers"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "children?: ExoJsxChildren;",
+            "full": "children?: ExoJsxChildren;",
+            "parts": [
+              {
+                "text": "children?: "
+              },
+              {
+                "text": "ExoJsxChildren",
+                "link": "ExoJsxChildren"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "props?: Partial<TExoSchema['attrs']>;",
+            "full": "props?: Partial<TExoSchema['attrs']>;",
+            "doc": "`props={obj}` — spread a full bucket object (the schema shape: `static` / `bindables` / `bindableLists` / `handlers` / `bindableHandlers`) into the element.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'cache:key'?: symbol | string;",
+            "full": "'cache:key'?: symbol | string;",
+            "doc": "compiler directives (consumed by @exodra/babel-plugin-jsx, not DOM attrs)",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'exo:schema'?: TExoSchema['attrs'];",
+            "full": "'exo:schema'?: TExoSchema['attrs'];",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'bind:value'?: ExoWritable;",
+            "full": "'bind:value'?: ExoWritable;",
+            "parts": [
+              {
+                "text": "'bind:value'?: "
+              },
+              {
+                "text": "ExoWritable",
+                "link": "ExoWritable"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "'bind:checked'?: ExoWritable;",
+            "full": "'bind:checked'?: ExoWritable;",
+            "parts": [
+              {
+                "text": "'bind:checked'?: "
+              },
+              {
+                "text": "ExoWritable",
+                "link": "ExoWritable"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          }
+        ],
+        "memberCount": 11,
+        "stereotype": "interface",
+        "doc": "--- intrinsic element props ------------------------------------------------ One props shape for every intrinsic element: STRICT — only the five typed buckets, children, and the compiler directives.",
+        "width": 286,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "ExoJsxChildren",
+        "label": "ExoJsxChildren",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "| ExoChild | readonly ExoChild[] | read…",
+            "full": "| ExoChild | readonly ExoChild[] | readonly (ExoChild | readonly ExoChild[])[]",
+            "parts": [
+              {
+                "text": "| "
+              },
+              {
+                "text": "ExoChild",
+                "link": "ExoChild"
+              },
+              {
+                "text": " | readonly "
+              },
+              {
+                "text": "ExoChild",
+                "link": "ExoChild"
+              },
+              {
+                "text": "[] | read…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "| "
+              },
+              {
+                "text": "ExoChild",
+                "link": "ExoChild"
+              },
+              {
+                "text": " | readonly "
+              },
+              {
+                "text": "ExoChild",
+                "link": "ExoChild"
+              },
+              {
+                "text": "[] | readonly ("
+              },
+              {
+                "text": "ExoChild",
+                "link": "ExoChild"
+              },
+              {
+                "text": " | readonly "
+              },
+              {
+                "text": "ExoChild",
+                "link": "ExoChild"
+              },
+              {
+                "text": "[])[]"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "JSX children, as authored — flattened into `static.children` by the compiler.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoSelectEvent",
+        "label": "ExoSelectEvent",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "ExoEvent<HTMLSelectElement, Ev>",
+            "full": "ExoEvent<HTMLSelectElement, Ev>",
+            "parts": [
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<HTMLSelectElement, Ev>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 235,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoStaticBucket",
+        "label": "ExoStaticBucket",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "id?: string;",
+            "full": "id?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "class?: string;",
+            "full": "class?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "className?: string;",
+            "full": "className?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "style?: string;",
+            "full": "style?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "title?: string;",
+            "full": "title?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "role?: string;",
+            "full": "role?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "hidden?: boolean;",
+            "full": "hidden?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "tabIndex?: number;",
+            "full": "tabIndex?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "lang?: string;",
+            "full": "lang?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "dir?: 'ltr' | 'rtl' | 'auto';",
+            "full": "dir?: 'ltr' | 'rtl' | 'auto';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "draggable?: boolean;",
+            "full": "draggable?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "contentEditable?: boolean | 'true' | 'f…",
+            "full": "contentEditable?: boolean | 'true' | 'false';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "type?: string;",
+            "full": "type?: string;",
+            "doc": "form / interactive",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "name?: string;",
+            "full": "name?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "value?: string | number;",
+            "full": "value?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "placeholder?: string;",
+            "full": "placeholder?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "disabled?: boolean;",
+            "full": "disabled?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "checked?: boolean;",
+            "full": "checked?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "selected?: boolean;",
+            "full": "selected?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readOnly?: boolean;",
+            "full": "readOnly?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "required?: boolean;",
+            "full": "required?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autocomplete?: string;",
+            "full": "autocomplete?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autofocus?: boolean;",
+            "full": "autofocus?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "min?: string | number;",
+            "full": "min?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "max?: string | number;",
+            "full": "max?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "step?: string | number;",
+            "full": "step?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "multiple?: boolean;",
+            "full": "multiple?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "rows?: number;",
+            "full": "rows?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "cols?: number;",
+            "full": "cols?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "href?: string;",
+            "full": "href?: string;",
+            "doc": "anchor / media / table",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "target?: string;",
+            "full": "target?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "rel?: string;",
+            "full": "rel?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "src?: string;",
+            "full": "src?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "alt?: string;",
+            "full": "alt?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "width?: string | number;",
+            "full": "width?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "height?: string | number;",
+            "full": "height?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "for?: string;",
+            "full": "for?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "htmlFor?: string;",
+            "full": "htmlFor?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "colSpan?: number;",
+            "full": "colSpan?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "rowSpan?: number;",
+            "full": "rowSpan?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "textContent?: string | number;",
+            "full": "textContent?: string | number;",
+            "doc": "text + children",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "children?: ExoJsxChildren;",
+            "full": "children?: ExoJsxChildren;",
+            "parts": [
+              {
+                "text": "children?: "
+              },
+              {
+                "text": "ExoJsxChildren",
+                "link": "ExoJsxChildren"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "onExoMount?: (node: { element: unknown …",
+            "full": "onExoMount?: (node: { element: unknown }) => void;",
+            "doc": "lifecycle hooks — read from `static` by the renderer",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onExoUnmount?: (node: { element: unknow…",
+            "full": "onExoUnmount?: (node: { element: unknown }) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "[attr: `data-${string}`]: ExoAttrValue;",
+            "full": "[attr: `data-${string}`]: ExoAttrValue;",
+            "doc": "data-* / aria-*",
+            "parts": [
+              {
+                "text": "[attr: `data-${string}`]: "
+              },
+              {
+                "text": "ExoAttrValue",
+                "link": "ExoAttrValue"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "[attr: `aria-${string}`]: ExoAttrValue;",
+            "full": "[attr: `aria-${string}`]: ExoAttrValue;",
+            "parts": [
+              {
+                "text": "[attr: `aria-${string}`]: "
+              },
+              {
+                "text": "ExoAttrValue",
+                "link": "ExoAttrValue"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          }
+        ],
+        "memberCount": 46,
+        "stereotype": "interface",
+        "doc": "The `static` bucket: plain DOM attributes + static children + lifecycle hooks.",
+        "width": 158,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "ExoTextAreaEvent",
+        "label": "ExoTextAreaEvent",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "ExoEvent<HTMLTextAreaElement, Ev>",
+            "full": "ExoEvent<HTMLTextAreaElement, Ev>",
+            "parts": [
+              {
+                "text": "ExoEvent",
+                "link": "ExoEvent"
+              },
+              {
+                "text": "<HTMLTextAreaElement, Ev>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 248,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoWritable",
+        "label": "ExoWritable",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoWritableBindable<unknown, unknown>",
+            "full": "TExoWritableBindable<unknown, unknown>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "A writable bindable, e.g.",
+        "width": 280,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "FormElementProps",
+        "label": "FormElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "action?: string;",
+            "full": "action?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "method?: 'get' | 'post' | 'dialog';",
+            "full": "method?: 'get' | 'post' | 'dialog';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "encType?: 'application/x-www-form-urlen…",
+            "full": "encType?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "target?: '_blank' | '_self' | '_parent'…",
+            "full": "target?: '_blank' | '_self' | '_parent' | '_top';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autoComplete?: 'on' | 'off';",
+            "full": "autoComplete?: 'on' | 'off';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "noValidate?: boolean;",
+            "full": "noValidate?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "acceptCharset?: string;",
+            "full": "acceptCharset?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "name?: string;",
+            "full": "name?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 8,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 174,
+        "violations": []
+      },
+      {
+        "id": "Fragment",
+        "label": "Fragment",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Fragment symbol for <></> syntax.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "HTMLElementProps",
+        "label": "HTMLElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "id?: string;",
+            "full": "id?: string;",
+            "doc": "Global HTML attributes",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "className?: string;",
+            "full": "className?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "class?: string;",
+            "full": "class?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "style?: string | Record<string, string …",
+            "full": "style?: string | Record<string, string | number>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "title?: string;",
+            "full": "title?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "lang?: string;",
+            "full": "lang?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "dir?: 'ltr' | 'rtl' | 'auto';",
+            "full": "dir?: 'ltr' | 'rtl' | 'auto';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "hidden?: boolean;",
+            "full": "hidden?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "tabIndex?: number;",
+            "full": "tabIndex?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "accessKey?: string;",
+            "full": "accessKey?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "contentEditable?: boolean | 'true' | 'f…",
+            "full": "contentEditable?: boolean | 'true' | 'false';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "draggable?: boolean;",
+            "full": "draggable?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "spellCheck?: boolean;",
+            "full": "spellCheck?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "translate?: 'yes' | 'no';",
+            "full": "translate?: 'yes' | 'no';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "role?: string;",
+            "full": "role?: string;",
+            "doc": "ARIA attributes",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'aria-label'?: string;",
+            "full": "'aria-label'?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'aria-labelledby'?: string;",
+            "full": "'aria-labelledby'?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'aria-describedby'?: string;",
+            "full": "'aria-describedby'?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'aria-expanded'?: boolean;",
+            "full": "'aria-expanded'?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'aria-hidden'?: boolean;",
+            "full": "'aria-hidden'?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'aria-disabled'?: boolean;",
+            "full": "'aria-disabled'?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'aria-required'?: boolean;",
+            "full": "'aria-required'?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "'aria-live'?: 'off' | 'polite' | 'asser…",
+            "full": "'aria-live'?: 'off' | 'polite' | 'assertive';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "[key: `data-${string}`]: string | numbe…",
+            "full": "[key: `data-${string}`]: string | number | boolean | undefined;",
+            "doc": "Data attributes",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onClick?: (event: MouseEvent) => void;",
+            "full": "onClick?: (event: MouseEvent) => void;",
+            "doc": "Event handlers",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseDown?: (event: MouseEvent) => vo…",
+            "full": "onMouseDown?: (event: MouseEvent) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseUp?: (event: MouseEvent) => void;",
+            "full": "onMouseUp?: (event: MouseEvent) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseEnter?: (event: MouseEvent) => v…",
+            "full": "onMouseEnter?: (event: MouseEvent) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseLeave?: (event: MouseEvent) => v…",
+            "full": "onMouseLeave?: (event: MouseEvent) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseOver?: (event: MouseEvent) => vo…",
+            "full": "onMouseOver?: (event: MouseEvent) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onMouseOut?: (event: MouseEvent) => voi…",
+            "full": "onMouseOut?: (event: MouseEvent) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onFocus?: (event: FocusEvent) => void;",
+            "full": "onFocus?: (event: FocusEvent) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onBlur?: (event: FocusEvent) => void;",
+            "full": "onBlur?: (event: FocusEvent) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onKeyDown?: (event: KeyboardEvent) => v…",
+            "full": "onKeyDown?: (event: KeyboardEvent) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onKeyUp?: (event: KeyboardEvent) => voi…",
+            "full": "onKeyUp?: (event: KeyboardEvent) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onKeyPress?: (event: KeyboardEvent) => …",
+            "full": "onKeyPress?: (event: KeyboardEvent) => void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onChange?: (event: Event) => void;",
+            "full": "onChange?: (event: Event) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onInput?: (event: Event) => void;",
+            "full": "onInput?: (event: Event) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onSubmit?: (event: Event) => void;",
+            "full": "onSubmit?: (event: Event) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onLoad?: (event: Event) => void;",
+            "full": "onLoad?: (event: Event) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onError?: (event: Event) => void;",
+            "full": "onError?: (event: Event) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onScroll?: (event: Event) => void;",
+            "full": "onScroll?: (event: Event) => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onResize?: (event: Event) => void;",
+            "full": "onResize?: (event: Event) => void;",
+            "parts": []
+          }
+        ],
+        "memberCount": 43,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "ImageElementProps",
+        "label": "ImageElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "src?: string;",
+            "full": "src?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "alt?: string;",
+            "full": "alt?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "width?: number | string;",
+            "full": "width?: number | string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "height?: number | string;",
+            "full": "height?: number | string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "loading?: 'lazy' | 'eager';",
+            "full": "loading?: 'lazy' | 'eager';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "decoding?: 'async' | 'sync' | 'auto';",
+            "full": "decoding?: 'async' | 'sync' | 'auto';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "crossOrigin?: 'anonymous' | 'use-creden…",
+            "full": "crossOrigin?: 'anonymous' | 'use-credentials';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "referrerPolicy?: string;",
+            "full": "referrerPolicy?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "srcSet?: string;",
+            "full": "srcSet?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "sizes?: string;",
+            "full": "sizes?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "useMap?: string;",
+            "full": "useMap?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 11,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "InputElementProps",
+        "label": "InputElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "type?: 'text' | 'email' | 'password' | …",
+            "full": "type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'time' | 'datetime-local' | 'month' | 'week' | 'checkbox' | 'radio' | 'file' | 'submit' | 'reset' | 'button' | 'hidden';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "value?: string | number;",
+            "full": "value?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "defaultValue?: string | number;",
+            "full": "defaultValue?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "placeholder?: string;",
+            "full": "placeholder?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "disabled?: boolean;",
+            "full": "disabled?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly?: boolean;",
+            "full": "readonly?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "required?: boolean;",
+            "full": "required?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "checked?: boolean;",
+            "full": "checked?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "defaultChecked?: boolean;",
+            "full": "defaultChecked?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "min?: string | number;",
+            "full": "min?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "max?: string | number;",
+            "full": "max?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "step?: string | number;",
+            "full": "step?: string | number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "minLength?: number;",
+            "full": "minLength?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "maxLength?: number;",
+            "full": "maxLength?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "pattern?: string;",
+            "full": "pattern?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autocomplete?: string;",
+            "full": "autocomplete?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autoFocus?: boolean;",
+            "full": "autoFocus?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "multiple?: boolean;",
+            "full": "multiple?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "size?: number;",
+            "full": "size?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "accept?: string;",
+            "full": "accept?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "capture?: boolean | 'user' | 'environme…",
+            "full": "capture?: boolean | 'user' | 'environment';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "name?: string;",
+            "full": "name?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "form?: string;",
+            "full": "form?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 23,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "LabelElementProps",
+        "label": "LabelElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "htmlFor?: string;",
+            "full": "htmlFor?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "form?: string;",
+            "full": "form?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "width": 146,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "OptionElementProps",
+        "label": "OptionElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "value?: string;",
+            "full": "value?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "disabled?: boolean;",
+            "full": "disabled?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "selected?: boolean;",
+            "full": "selected?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "label?: string;",
+            "full": "label?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "interface",
+        "width": 158,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "SelectElementProps",
+        "label": "SelectElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "value?: string | string[];",
+            "full": "value?: string | string[];",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "defaultValue?: string | string[];",
+            "full": "defaultValue?: string | string[];",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "disabled?: boolean;",
+            "full": "disabled?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "required?: boolean;",
+            "full": "required?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "multiple?: boolean;",
+            "full": "multiple?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "size?: number;",
+            "full": "size?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autoFocus?: boolean;",
+            "full": "autoFocus?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "name?: string;",
+            "full": "name?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "form?: string;",
+            "full": "form?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 9,
+        "stereotype": "interface",
+        "width": 248,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "TextareaElementProps",
+        "label": "TextareaElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "value?: string;",
+            "full": "value?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "defaultValue?: string;",
+            "full": "defaultValue?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "placeholder?: string;",
+            "full": "placeholder?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "disabled?: boolean;",
+            "full": "disabled?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly?: boolean;",
+            "full": "readonly?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "required?: boolean;",
+            "full": "required?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "rows?: number;",
+            "full": "rows?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "cols?: number;",
+            "full": "cols?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "minLength?: number;",
+            "full": "minLength?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "maxLength?: number;",
+            "full": "maxLength?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "wrap?: 'hard' | 'soft';",
+            "full": "wrap?: 'hard' | 'soft';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autoFocus?: boolean;",
+            "full": "autoFocus?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "name?: string;",
+            "full": "name?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "form?: string;",
+            "full": "form?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 14,
+        "stereotype": "interface",
+        "width": 178,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "VideoElementProps",
+        "label": "VideoElementProps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "src?: string;",
+            "full": "src?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "poster?: string;",
+            "full": "poster?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "width?: number | string;",
+            "full": "width?: number | string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "height?: number | string;",
+            "full": "height?: number | string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "controls?: boolean;",
+            "full": "controls?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "autoPlay?: boolean;",
+            "full": "autoPlay?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "loop?: boolean;",
+            "full": "loop?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "muted?: boolean;",
+            "full": "muted?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "preload?: 'none' | 'metadata' | 'auto';",
+            "full": "preload?: 'none' | 'metadata' | 'auto';",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "crossOrigin?: 'anonymous' | 'use-creden…",
+            "full": "crossOrigin?: 'anonymous' | 'use-credentials';",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 10,
+        "stereotype": "interface",
+        "width": 197,
+        "height": 189,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "AnchorElementProps→HTMLElementProps",
+        "from": "AnchorElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "AudioElementProps→HTMLElementProps",
+        "from": "AudioElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ButtonElementProps→HTMLElementProps",
+        "from": "ButtonElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoBindableBucket→ExoBindableValue",
+        "from": "ExoBindableBucket",
+        "to": "ExoBindableValue",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoBindableHandlers→ExoEventHandlers",
+        "from": "ExoBindableHandlers",
+        "to": "ExoEventHandlers",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoEventHandlers→ExoEvent",
+        "from": "ExoEventHandlers",
+        "to": "ExoEvent",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoFormEvent→ExoEvent",
+        "from": "ExoFormEvent",
+        "to": "ExoEvent",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoInputEvent→ExoEvent",
+        "from": "ExoInputEvent",
+        "to": "ExoEvent",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoBindableBucket",
+        "from": "ExoIntrinsicProps",
+        "to": "ExoBindableBucket",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoBindableHandlers",
+        "from": "ExoIntrinsicProps",
+        "to": "ExoBindableHandlers",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoBindableListBucket",
+        "from": "ExoIntrinsicProps",
+        "to": "ExoBindableListBucket",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoEventHandlers",
+        "from": "ExoIntrinsicProps",
+        "to": "ExoEventHandlers",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoJsxChildren",
+        "from": "ExoIntrinsicProps",
+        "to": "ExoJsxChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoStaticBucket",
+        "from": "ExoIntrinsicProps",
+        "to": "ExoStaticBucket",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoWritable",
+        "from": "ExoIntrinsicProps",
+        "to": "ExoWritable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoJsxChildren→ExoChild",
+        "from": "ExoJsxChildren",
+        "to": "ExoChild",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoSelectEvent→ExoEvent",
+        "from": "ExoSelectEvent",
+        "to": "ExoEvent",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoStaticBucket→ExoAttrValue",
+        "from": "ExoStaticBucket",
+        "to": "ExoAttrValue",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoStaticBucket→ExoJsxChildren",
+        "from": "ExoStaticBucket",
+        "to": "ExoJsxChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoTextAreaEvent→ExoEvent",
+        "from": "ExoTextAreaEvent",
+        "to": "ExoEvent",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/jsx-runtime.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "FormElementProps→HTMLElementProps",
+        "from": "FormElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ImageElementProps→HTMLElementProps",
+        "from": "ImageElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "InputElementProps→HTMLElementProps",
+        "from": "InputElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "LabelElementProps→HTMLElementProps",
+        "from": "LabelElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "OptionElementProps→HTMLElementProps",
+        "from": "OptionElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "SelectElementProps→HTMLElementProps",
+        "from": "SelectElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TextareaElementProps→HTMLElementProps",
+        "from": "TextareaElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "VideoElementProps→HTMLElementProps",
+        "from": "VideoElementProps",
+        "to": "HTMLElementProps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "to": "/Users/abaikov/work/exodra/packages/jsx/src/html-types.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1412,
+    "height": 2895.8,
+    "nodes": [
+      {
+        "id": "AnchorElementProps",
+        "x": 24,
+        "y": 2697.8,
+        "width": 293,
+        "height": 174
+      },
+      {
+        "id": "AudioElementProps",
+        "x": 24,
+        "y": 2510.8,
+        "width": 293,
+        "height": 159
+      },
+      {
+        "id": "ButtonElementProps",
+        "x": 33.5,
+        "y": 2338.8,
+        "width": 274,
+        "height": 144
+      },
+      {
+        "id": "ExoAttrValue",
+        "x": 738,
+        "y": 468,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "ExoBindableBucket",
+        "x": 381,
+        "y": 1073,
+        "width": 293,
+        "height": 144
+      },
+      {
+        "id": "ExoBindableHandlers",
+        "x": 381,
+        "y": 867.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "ExoBindableListBucket",
+        "x": 381,
+        "y": 755.8,
+        "width": 293,
+        "height": 84
+      },
+      {
+        "id": "ExoBindableValue",
+        "x": 770,
+        "y": 1110.5,
+        "width": 229,
+        "height": 69
+      },
+      {
+        "id": "ExoChild",
+        "x": 1095,
+        "y": 585.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "ExoEvent",
+        "x": 1111,
+        "y": 1013.5,
+        "width": 261,
+        "height": 69
+      },
+      {
+        "id": "ExoEventHandlers",
+        "x": 738,
+        "y": 699.5,
+        "width": 293,
+        "height": 189
+      },
+      {
+        "id": "ExoFormEvent",
+        "x": 773.5,
+        "y": 916.5,
+        "width": 222,
+        "height": 69
+      },
+      {
+        "id": "ExoInputEvent",
+        "x": 770,
+        "y": 1013.5,
+        "width": 229,
+        "height": 69
+      },
+      {
+        "id": "ExoIntrinsicProps",
+        "x": 27.5,
+        "y": 614.3,
+        "width": 286,
+        "height": 189
+      },
+      {
+        "id": "ExoJsxChildren",
+        "x": 738,
+        "y": 585.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "ExoSelectEvent",
+        "x": 767,
+        "y": 1207.5,
+        "width": 235,
+        "height": 69
+      },
+      {
+        "id": "ExoStaticBucket",
+        "x": 448.5,
+        "y": 418,
+        "width": 158,
+        "height": 189
+      },
+      {
+        "id": "ExoTextAreaEvent",
+        "x": 760.5,
+        "y": 1304.5,
+        "width": 248,
+        "height": 69
+      },
+      {
+        "id": "ExoWritable",
+        "x": 387.5,
+        "y": 321,
+        "width": 280,
+        "height": 69
+      },
+      {
+        "id": "FormElementProps",
+        "x": 24,
+        "y": 2136.8,
+        "width": 293,
+        "height": 174
+      },
+      {
+        "id": "Fragment",
+        "x": 110.5,
+        "y": 1516.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "HTMLElementProps",
+        "x": 381,
+        "y": 1714,
+        "width": 293,
+        "height": 189
+      },
+      {
+        "id": "ImageElementProps",
+        "x": 24,
+        "y": 1919.8,
+        "width": 293,
+        "height": 189
+      },
+      {
+        "id": "InputElementProps",
+        "x": 24,
+        "y": 1702.8,
+        "width": 293,
+        "height": 189
+      },
+      {
+        "id": "LabelElementProps",
+        "x": 97.5,
+        "y": 1590.8,
+        "width": 146,
+        "height": 84
+      },
+      {
+        "id": "OptionElementProps",
+        "x": 91.5,
+        "y": 1374.8,
+        "width": 158,
+        "height": 114
+      },
+      {
+        "id": "SelectElementProps",
+        "x": 46.5,
+        "y": 1157.8,
+        "width": 248,
+        "height": 189
+      },
+      {
+        "id": "TextareaElementProps",
+        "x": 81.5,
+        "y": 241,
+        "width": 178,
+        "height": 189
+      },
+      {
+        "id": "VideoElementProps",
+        "x": 72,
+        "y": 24,
+        "width": 197,
+        "height": 189
+      }
+    ],
+    "edges": [
+      {
+        "id": "AnchorElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 317,
+            "y": 2784.8
+          },
+          {
+            "x": 349,
+            "y": 2784.8
+          },
+          {
+            "x": 510.2,
+            "y": 1903
+          }
+        ]
+      },
+      {
+        "id": "AudioElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 317,
+            "y": 2590.3
+          },
+          {
+            "x": 349,
+            "y": 2590.3
+          },
+          {
+            "x": 505.9,
+            "y": 1903
+          }
+        ]
+      },
+      {
+        "id": "ButtonElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 307.5,
+            "y": 2410.8
+          },
+          {
+            "x": 349,
+            "y": 2410.8
+          },
+          {
+            "x": 499.5,
+            "y": 1903
+          }
+        ]
+      },
+      {
+        "id": "ExoBindableBucket→ExoBindableValue",
+        "points": [
+          {
+            "x": 674,
+            "y": 1145
+          },
+          {
+            "x": 706,
+            "y": 1145
+          },
+          {
+            "x": 770,
+            "y": 1145
+          }
+        ]
+      },
+      {
+        "id": "ExoBindableHandlers→ExoEventHandlers",
+        "points": [
+          {
+            "x": 674,
+            "y": 902.3
+          },
+          {
+            "x": 706,
+            "y": 902.3
+          },
+          {
+            "x": 738,
+            "y": 882.8
+          }
+        ]
+      },
+      {
+        "id": "ExoEventHandlers→ExoEvent",
+        "points": [
+          {
+            "x": 1031,
+            "y": 794
+          },
+          {
+            "x": 1063,
+            "y": 794
+          },
+          {
+            "x": 1217.3,
+            "y": 1013.5
+          }
+        ]
+      },
+      {
+        "id": "ExoFormEvent→ExoEvent",
+        "points": [
+          {
+            "x": 995.5,
+            "y": 951
+          },
+          {
+            "x": 1063,
+            "y": 951
+          },
+          {
+            "x": 1178,
+            "y": 1013.5
+          }
+        ]
+      },
+      {
+        "id": "ExoInputEvent→ExoEvent",
+        "points": [
+          {
+            "x": 999,
+            "y": 1048
+          },
+          {
+            "x": 1063,
+            "y": 1048
+          },
+          {
+            "x": 1111,
+            "y": 1048
+          }
+        ]
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoBindableBucket",
+        "points": [
+          {
+            "x": 209.2,
+            "y": 803.3
+          },
+          {
+            "x": 349,
+            "y": 1145
+          },
+          {
+            "x": 381,
+            "y": 1145
+          }
+        ]
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoBindableHandlers",
+        "points": [
+          {
+            "x": 257.7,
+            "y": 803.3
+          },
+          {
+            "x": 349,
+            "y": 902.3
+          },
+          {
+            "x": 381,
+            "y": 902.3
+          }
+        ]
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoBindableListBucket",
+        "points": [
+          {
+            "x": 313.5,
+            "y": 780
+          },
+          {
+            "x": 349,
+            "y": 797.8
+          },
+          {
+            "x": 381,
+            "y": 797.8
+          }
+        ]
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoEventHandlers",
+        "points": [
+          {
+            "x": 313.5,
+            "y": 708.8
+          },
+          {
+            "x": 349,
+            "y": 708.8
+          },
+          {
+            "x": 527.5,
+            "y": 708.8
+          },
+          {
+            "x": 706,
+            "y": 708.8
+          },
+          {
+            "x": 738,
+            "y": 724
+          }
+        ]
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoJsxChildren",
+        "points": [
+          {
+            "x": 313.5,
+            "y": 692.7
+          },
+          {
+            "x": 349,
+            "y": 688.8
+          },
+          {
+            "x": 527.5,
+            "y": 688.8
+          },
+          {
+            "x": 706,
+            "y": 688.8
+          },
+          {
+            "x": 794.6,
+            "y": 654.8
+          }
+        ]
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoStaticBucket",
+        "points": [
+          {
+            "x": 256.5,
+            "y": 614.3
+          },
+          {
+            "x": 349,
+            "y": 512.5
+          },
+          {
+            "x": 448.5,
+            "y": 512.5
+          }
+        ]
+      },
+      {
+        "id": "ExoIntrinsicProps→ExoWritable",
+        "points": [
+          {
+            "x": 218.3,
+            "y": 614.3
+          },
+          {
+            "x": 349,
+            "y": 355.5
+          },
+          {
+            "x": 387.5,
+            "y": 355.5
+          }
+        ]
+      },
+      {
+        "id": "ExoJsxChildren→ExoChild",
+        "points": [
+          {
+            "x": 1031,
+            "y": 620.3
+          },
+          {
+            "x": 1063,
+            "y": 620.3
+          },
+          {
+            "x": 1095,
+            "y": 620.3
+          }
+        ]
+      },
+      {
+        "id": "ExoSelectEvent→ExoEvent",
+        "points": [
+          {
+            "x": 1002,
+            "y": 1242
+          },
+          {
+            "x": 1063,
+            "y": 1242
+          },
+          {
+            "x": 1209.8,
+            "y": 1082.5
+          }
+        ]
+      },
+      {
+        "id": "ExoStaticBucket→ExoAttrValue",
+        "points": [
+          {
+            "x": 606.5,
+            "y": 508.1
+          },
+          {
+            "x": 706,
+            "y": 502.5
+          },
+          {
+            "x": 738,
+            "y": 502.5
+          }
+        ]
+      },
+      {
+        "id": "ExoStaticBucket→ExoJsxChildren",
+        "points": [
+          {
+            "x": 606.5,
+            "y": 534
+          },
+          {
+            "x": 706,
+            "y": 561
+          },
+          {
+            "x": 780.6,
+            "y": 585.8
+          }
+        ]
+      },
+      {
+        "id": "ExoTextAreaEvent→ExoEvent",
+        "points": [
+          {
+            "x": 1008.5,
+            "y": 1339
+          },
+          {
+            "x": 1063,
+            "y": 1339
+          },
+          {
+            "x": 1220.3,
+            "y": 1082.5
+          }
+        ]
+      },
+      {
+        "id": "FormElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 317,
+            "y": 2223.8
+          },
+          {
+            "x": 349,
+            "y": 2223.8
+          },
+          {
+            "x": 486.9,
+            "y": 1903
+          }
+        ]
+      },
+      {
+        "id": "ImageElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 317,
+            "y": 2014.3
+          },
+          {
+            "x": 349,
+            "y": 2014.3
+          },
+          {
+            "x": 445.5,
+            "y": 1903
+          }
+        ]
+      },
+      {
+        "id": "InputElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 317,
+            "y": 1797.3
+          },
+          {
+            "x": 349,
+            "y": 1797.3
+          },
+          {
+            "x": 381,
+            "y": 1799.3
+          }
+        ]
+      },
+      {
+        "id": "LabelElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 243.5,
+            "y": 1632.8
+          },
+          {
+            "x": 349,
+            "y": 1632.8
+          },
+          {
+            "x": 431.5,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "OptionElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 249.5,
+            "y": 1431.8
+          },
+          {
+            "x": 349,
+            "y": 1431.8
+          },
+          {
+            "x": 482.7,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "SelectElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 294.5,
+            "y": 1252.3
+          },
+          {
+            "x": 349,
+            "y": 1252.3
+          },
+          {
+            "x": 497.2,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "TextareaElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 259.5,
+            "y": 335.5
+          },
+          {
+            "x": 349,
+            "y": 335.5
+          },
+          {
+            "x": 516,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "VideoElementProps→HTMLElementProps",
+        "points": [
+          {
+            "x": 269,
+            "y": 118.5
+          },
+          {
+            "x": 349,
+            "y": 118.5
+          },
+          {
+            "x": 517.5,
+            "y": 1714
+          }
+        ]
+      }
+    ]
+  }
+}

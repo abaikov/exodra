@@ -3,16 +3,16 @@
 // oimdb_dump / oimdb_collection from the seeded store, so an AI assistant can
 // ask "what's the data model?" without running the app in a browser.
 import { createOIMDevMcpServer } from '@oimdb/mcp';
-import { createTodoStore } from '../src/store/todo-store';
+import { createWorkspaceStore, loadSnapshot } from '../src/store/workspace-store';
 import { registerOimdbDevtools } from '../src/app/devtools';
-import { seedLists, seedTodos } from '../src/domain/seed';
+import { createSeed } from '../src/domain/seed';
 
 // Build the store directly (not via bootstrap, which pulls in the JSX views) so
-// this server runs under tsx. Seed representative rows so entity field names are
-// available offline (TypeScript types are erased at runtime).
-const store = createTodoStore();
-store.lists.collection.upsertMany([...seedLists]);
-store.todos.collection.upsertMany([...seedTodos]);
+// this server runs under tsx. Seeded from the app's own snapshot so every
+// collection has representative rows — entity field names are only discoverable
+// from data, since TypeScript types are erased at runtime.
+const store = createWorkspaceStore();
+loadSnapshot(store, createSeed());
 const registry = registerOimdbDevtools(store);
 
 createOIMDevMcpServer({ registry })

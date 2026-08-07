@@ -108,7 +108,7 @@ export function createRouter(
         return result;
     };
 
-    const unsubscribe = history.subscribe(syncFromHistory);
+    const unsubscribe = history.onChange(syncFromHistory);
     const navigate = (to: string, options: TExoNavigateOptions = {}) => {
         if (options.replace) {
             history.replace(to, options.state);
@@ -200,7 +200,7 @@ export function createRouter(
             });
             return {
                 getValue: read.getValue,
-                subscribe: read.subscribe,
+                onChange: read.onChange,
                 setValue(next: string) {
                     // Clearing back to the default drops the key from the URL.
                     const patch =

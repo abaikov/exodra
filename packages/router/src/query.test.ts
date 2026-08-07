@@ -104,7 +104,7 @@ describe('router query utilities', () => {
             history: createMemoryHistory('/projects?tag=old#top'),
         });
         const updates: string[] = [];
-        router.location.subscribe(location => updates.push(location.href));
+        router.location.onChange(location => updates.push(location.href));
 
         const queryLocation = await router.setQuery({
             tag: ['core', 'router'],

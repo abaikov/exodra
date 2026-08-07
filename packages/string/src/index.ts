@@ -9,8 +9,10 @@ export {
     markHtml,
     SafeHtml,
     serializeAttribute,
+    isValidAttributeName,
     serializeAttributeValue,
     spaceAttribute,
     spaceAttributeUnchecked,
 } from './escape';
-export { ssrContext, runWithAmbient } from './ssr-context';
+export { runWithAmbient } from './ambient';
+export { ssrContext } from './ssr-context';

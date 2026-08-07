@@ -127,7 +127,7 @@ export type TExoHistory = {
     createHref(to: string): string;
     push(to: string, state?: unknown): void;
     replace(to: string, state?: unknown): void;
-    subscribe(update: () => void): () => void;
+    onChange(update: () => void): () => void;
     dispose?(): void;
 };
 
@@ -181,7 +181,7 @@ export type TExoRouter = {
         options?: TExoNavigateOptions
     ): Promise<TExoLocation>;
     // Two-way reactive binding for a single query parameter: getValue() reads the
-    // current value (or the default), subscribe() fires on any URL change
+    // current value (or the default), onChange() fires on any URL change
     // (including back/forward), and setValue() patches just that key into the URL
     // (clearing back to the default removes it).
     bindQuery(

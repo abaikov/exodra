@@ -1,0 +1,978 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "_button",
+        "label": "_button",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_ct",
+        "label": "_ct",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_CurrentTarget",
+        "label": "_CurrentTarget",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "ExoEvent<HTMLInputElement>['currentTarg…",
+            "full": "ExoEvent<HTMLInputElement>['currentTarget']",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "_flatClass",
+        "label": "_flatClass",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "--- 3.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_flatHandler",
+        "label": "_flatHandler",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "@ts-expect-error `onClick` must live in the `handlers` bucket, not flat",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_input",
+        "label": "_input",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "--- 1.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_OnInputParam",
+        "label": "_OnInputParam",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "NonNullable<ExoEventHandlers<HTMLInputE…",
+            "full": "NonNullable<ExoEventHandlers<HTMLInputElement>['onInput']> extends (e: infer E) => unknown ? E : never",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "_param",
+        "label": "_param",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_paramValue",
+        "label": "_paramValue",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_select",
+        "label": "_select",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "badBindable",
+        "label": "badBindable",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "@ts-expect-error count must be a TExoBindable<number>, not a raw number",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "badKey",
+        "label": "badKey",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "@ts-expect-error unknown key in the static bucket is rejected",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "badTitle",
+        "label": "badTitle",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "@ts-expect-error title must be a string, not a number",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "Loose",
+        "label": "Loose",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A component with NO declared props — bucket-shaped props, loose context.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "LooseAttrs",
+        "label": "LooseAttrs",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "JSX.LibraryManagedAttributes<typeof Loo…",
+            "full": "JSX.LibraryManagedAttributes<typeof Loose, unknown>",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "JSX.LibraryManagedAttributes<typeof "
+              },
+              {
+                "text": "Loose",
+                "link": "Loose"
+              },
+              {
+                "text": ", unknown>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "looseFlat",
+        "label": "looseFlat",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "@ts-expect-error flat (non-bucketed) props are not allowed",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "looseOk",
+        "label": "looseOk",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "---- Loose component: bucket-shaped props accepted, flat props rejected ----",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "ok",
+        "label": "ok",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "---- Typed component: strict checking against the declared buckets ----",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "onSearch",
+        "label": "onSearch",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(e): string",
+            "full": "(e): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "--- 2.",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "schema",
+        "label": "schema",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "Typed",
+        "label": "Typed",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A component that DECLARES its props via the phantom generic.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TypedAttrs",
+        "label": "TypedAttrs",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "JSX.LibraryManagedAttributes<typeof Typ…",
+            "full": "JSX.LibraryManagedAttributes<typeof Typed, unknown>",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "JSX.LibraryManagedAttributes<typeof "
+              },
+              {
+                "text": "Typed",
+                "link": "Typed"
+              },
+              {
+                "text": ", unknown>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "(1) This is EXACTLY the type TS uses to check `<Comp .../>` attributes.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "_ct→_CurrentTarget",
+        "from": "_ct",
+        "to": "_CurrentTarget",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "_param→_OnInputParam",
+        "from": "_param",
+        "to": "_OnInputParam",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "_paramValue→_param",
+        "from": "_paramValue",
+        "to": "_param",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "badBindable→TypedAttrs",
+        "from": "badBindable",
+        "to": "TypedAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "badKey→TypedAttrs",
+        "from": "badKey",
+        "to": "TypedAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "badTitle→TypedAttrs",
+        "from": "badTitle",
+        "to": "TypedAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "Loose→schema",
+        "from": "Loose",
+        "to": "schema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "LooseAttrs→Loose",
+        "from": "LooseAttrs",
+        "to": "Loose",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "looseFlat→LooseAttrs",
+        "from": "looseFlat",
+        "to": "LooseAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "looseOk→LooseAttrs",
+        "from": "looseOk",
+        "to": "LooseAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ok→TypedAttrs",
+        "from": "ok",
+        "to": "TypedAttrs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "Typed→schema",
+        "from": "Typed",
+        "to": "schema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TypedAttrs→Typed",
+        "from": "TypedAttrs",
+        "to": "Typed",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1066,
+    "height": 1079,
+    "nodes": [
+      {
+        "id": "_button",
+        "x": 24,
+        "y": 24,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_ct",
+        "x": 24,
+        "y": 98,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_CurrentTarget",
+        "x": 208,
+        "y": 86.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "_flatClass",
+        "x": 24,
+        "y": 172,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_flatHandler",
+        "x": 24,
+        "y": 246,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_input",
+        "x": 24,
+        "y": 320,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_OnInputParam",
+        "x": 565,
+        "y": 382.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "_param",
+        "x": 294.5,
+        "y": 394,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_paramValue",
+        "x": 24,
+        "y": 394,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_select",
+        "x": 24,
+        "y": 468,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "badBindable",
+        "x": 24,
+        "y": 764,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "badKey",
+        "x": 24,
+        "y": 690,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "badTitle",
+        "x": 24,
+        "y": 616,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "Loose",
+        "x": 651.5,
+        "y": 875,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "LooseAttrs",
+        "x": 208,
+        "y": 863.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "looseFlat",
+        "x": 24,
+        "y": 912,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "looseOk",
+        "x": 24,
+        "y": 838,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "ok",
+        "x": 24,
+        "y": 542,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "onSearch",
+        "x": 24,
+        "y": 986,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "schema",
+        "x": 922,
+        "y": 764,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "Typed",
+        "x": 651.5,
+        "y": 653,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TypedAttrs",
+        "x": 208,
+        "y": 641.5,
+        "width": 293,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "_ct→_CurrentTarget",
+        "points": [
+          {
+            "x": 144,
+            "y": 121
+          },
+          {
+            "x": 176,
+            "y": 121
+          },
+          {
+            "x": 208,
+            "y": 121
+          }
+        ]
+      },
+      {
+        "id": "_param→_OnInputParam",
+        "points": [
+          {
+            "x": 414.5,
+            "y": 417
+          },
+          {
+            "x": 533,
+            "y": 417
+          },
+          {
+            "x": 565,
+            "y": 417
+          }
+        ]
+      },
+      {
+        "id": "_paramValue→_param",
+        "points": [
+          {
+            "x": 144,
+            "y": 417
+          },
+          {
+            "x": 176,
+            "y": 417
+          },
+          {
+            "x": 294.5,
+            "y": 417
+          }
+        ]
+      },
+      {
+        "id": "badBindable→TypedAttrs",
+        "points": [
+          {
+            "x": 144,
+            "y": 787
+          },
+          {
+            "x": 176,
+            "y": 787
+          },
+          {
+            "x": 299,
+            "y": 710.5
+          }
+        ]
+      },
+      {
+        "id": "badKey→TypedAttrs",
+        "points": [
+          {
+            "x": 144,
+            "y": 713
+          },
+          {
+            "x": 176,
+            "y": 713
+          },
+          {
+            "x": 208,
+            "y": 706.4
+          }
+        ]
+      },
+      {
+        "id": "badTitle→TypedAttrs",
+        "points": [
+          {
+            "x": 144,
+            "y": 639
+          },
+          {
+            "x": 176,
+            "y": 639
+          },
+          {
+            "x": 208,
+            "y": 645.6
+          }
+        ]
+      },
+      {
+        "id": "Loose→schema",
+        "points": [
+          {
+            "x": 771.5,
+            "y": 898
+          },
+          {
+            "x": 890,
+            "y": 898
+          },
+          {
+            "x": 962.9,
+            "y": 810
+          }
+        ]
+      },
+      {
+        "id": "LooseAttrs→Loose",
+        "points": [
+          {
+            "x": 501,
+            "y": 898
+          },
+          {
+            "x": 533,
+            "y": 898
+          },
+          {
+            "x": 651.5,
+            "y": 898
+          }
+        ]
+      },
+      {
+        "id": "looseFlat→LooseAttrs",
+        "points": [
+          {
+            "x": 144,
+            "y": 935
+          },
+          {
+            "x": 176,
+            "y": 935
+          },
+          {
+            "x": 208,
+            "y": 928.4
+          }
+        ]
+      },
+      {
+        "id": "looseOk→LooseAttrs",
+        "points": [
+          {
+            "x": 144,
+            "y": 861
+          },
+          {
+            "x": 176,
+            "y": 861
+          },
+          {
+            "x": 208,
+            "y": 867.6
+          }
+        ]
+      },
+      {
+        "id": "ok→TypedAttrs",
+        "points": [
+          {
+            "x": 144,
+            "y": 565
+          },
+          {
+            "x": 176,
+            "y": 565
+          },
+          {
+            "x": 299,
+            "y": 641.5
+          }
+        ]
+      },
+      {
+        "id": "Typed→schema",
+        "points": [
+          {
+            "x": 771.5,
+            "y": 676
+          },
+          {
+            "x": 890,
+            "y": 676
+          },
+          {
+            "x": 962.9,
+            "y": 764
+          }
+        ]
+      },
+      {
+        "id": "TypedAttrs→Typed",
+        "points": [
+          {
+            "x": 501,
+            "y": 676
+          },
+          {
+            "x": 533,
+            "y": 676
+          },
+          {
+            "x": 651.5,
+            "y": 676
+          }
+        ]
+      }
+    ]
+  }
+}

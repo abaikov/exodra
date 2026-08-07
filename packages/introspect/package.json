@@ -1,6 +1,6 @@
 {
   "name": "@exodra/introspect",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "AI-powered introspection ecosystem with universal AI tool integration and extensible plugin system for Exodra applications",
   "type": "module",
   "main": "./dist/index.js",
@@ -77,8 +77,9 @@
   },
   "peerDependencies": {
     "typescript": ">=5.0.0",
-    "@exodra/core": "^0.2.0",
-    "@exodra/jsx": "^0.2.0"
+    "@exodra/core": "^0.3.0",
+    "@exodra/jsx": "^0.2.1",
+    "playwright": ">=1.40.0"
   },
   "keywords": [
     "exodra",
@@ -96,5 +97,10 @@
     "typescript"
   ],
   "author": "Andrei Baikov",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
+  }
 }

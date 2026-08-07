@@ -7,7 +7,7 @@ describe('createExoBindableList', () => {
         const list = createExoBindableList(['a', 'b']);
         const events: Array<TExoListOp<string>> = [];
 
-        list.subscribeOps(event => {
+        list.onChange(event => {
             events.push(event);
         });
 
@@ -17,7 +17,7 @@ describe('createExoBindableList', () => {
         list.remove(0);
         list.reset(['z']);
 
-        expect(list.snapshot()).toEqual(['z']);
+        expect(list.getValue()).toEqual(['z']);
         expect(events).toEqual([
             { type: 'insert', index: 1, item: 'x' },
             { type: 'move', from: 0, to: 2, count: 1 },
@@ -34,13 +34,13 @@ describe('createExoBindableList', () => {
         const children = createExoBindableList([childA, childB, childC]);
         const events: Array<TExoListOp<typeof childA>> = [];
 
-        children.subscribeOps(event => {
+        children.onChange(event => {
             events.push(event);
         });
 
         children.move(0, 2);
 
-        expect(children.snapshot()).toEqual([childB, childC, childA]);
+        expect(children.getValue()).toEqual([childB, childC, childA]);
         expect(events).toEqual([
             { type: 'move', from: 0, to: 2, count: 1 },
         ]);

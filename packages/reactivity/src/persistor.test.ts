@@ -94,7 +94,7 @@ describe('Persistor', () => {
         
         persistor.hydrate(ssrState);
         
-        expect(items.snapshot()).toEqual(['a', 'b', 'c']);
+        expect(items.getValue()).toEqual(['a', 'b', 'c']);
     });
     
     it('persist helper auto-registers with global persistor', () => {
@@ -129,22 +129,19 @@ describe('Persistor', () => {
         expect(JSON.parse(persistor.serialize())).toEqual({ k: 'x' });
     });
 
-    it('warns once when an auto (positional) key is used', () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-        const persistor = createPersistor();
+    it('assigns positional auto-keys, and leaves explicit keys alone', () => {
+        // Auto keys are positional, so they only round-trip when registration order
+        // matches on both sides — that is the contract, not a warning.
+        const a = createPersistor();
+        a.register(bindable('first'));
+        a.register(bindable('second'));
+        a.register(bindable('third'), 'named');
 
-        persistor.register(bindable('first'));
-        persistor.register(bindable('second'));
-
-        // One warning total, not one per auto-keyed registration.
-        expect(warn).toHaveBeenCalledTimes(1);
-        expect(warn.mock.calls[0][0]).toMatch(/positional auto-key/);
-
-        // Explicit keys stay silent.
-        persistor.register(bindable('third'), 'named');
-        expect(warn).toHaveBeenCalledTimes(1);
-
-        warn.mockRestore();
+        const state = JSON.parse(a.serialize());
+        expect(Object.keys(state).sort()).toEqual(['_0', '_1', 'named']);
+        expect(state._0).toBe('first');
+        expect(state._1).toBe('second');
+        expect(state.named).toBe('third');
     });
 
     it('handles SSR workflow', () => {
@@ -172,6 +169,6 @@ describe('Persistor', () => {
         clientPersistor.hydrate(ssrJson);
         
         expect(clientCounter.getValue()).toBe(42);
-        expect(clientTodos.snapshot()).toEqual(['Buy milk', 'Write code']);
+        expect(clientTodos.getValue()).toEqual(['Buy milk', 'Write code']);
     });
 });

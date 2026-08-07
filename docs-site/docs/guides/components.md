@@ -152,7 +152,7 @@ const SearchableList = defineComponent(context => {
 ## Side effects and cleanup
 
 There is no `effect`. To run a side effect in response to a bindable, use
-`bindable.subscribe` and register the teardown with `context.onDispose`. The same
+`bindable.onChange` and register the teardown with `context.onDispose`. The same
 pattern covers timers, listeners, and subscriptions.
 
 ```jsx
@@ -180,7 +180,7 @@ Reacting to a bindable change:
 const Logger = defineComponent(context => {
   const count = context.getBindable('count'); // a bindable prop
   if (count) {
-    const unsubscribe = count.subscribe(value => console.log('count:', value));
+    const unsubscribe = count.onChange(value => console.log('count:', value));
     context.onDispose(unsubscribe);
   }
   return [];

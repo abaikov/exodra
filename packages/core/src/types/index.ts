@@ -6,4 +6,4 @@ export type { TExoContextKey } from './TExoContextKey';
 export type { TExoNodeSchema } from './TExoNodeSchema';
 export type { TExoSchema } from './TExoSchema';
 export type { TExoSchemaProps } from './TExoSchemaProps';
-export type { TExoChild, TExoChildren } from './TExoChild';
+export type { TExoScope } from './TExoScope';

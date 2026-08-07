@@ -1,0 +1,118 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "exodra",
+        "label": "exodra",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(options): Plugin<any>",
+            "full": "(options): Plugin<any>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExodraRollupOptions",
+        "label": "ExodraRollupOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "include?: RegExp;",
+            "full": "include?: RegExp;",
+            "doc": "Which files to compile.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "importSource?: string;",
+            "full": "importSource?: string;",
+            "doc": "Module the auto-imported `h`/`text` come from.",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "width": 178,
+        "height": 84,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "exodra→ExodraRollupOptions",
+        "from": "exodra",
+        "to": "ExodraRollupOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/rollup-plugin-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/rollup-plugin-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 468,
+    "height": 132,
+    "nodes": [
+      {
+        "id": "exodra",
+        "x": 24,
+        "y": 31.5,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "ExodraRollupOptions",
+        "x": 266,
+        "y": 24,
+        "width": 178,
+        "height": 84
+      }
+    ],
+    "edges": [
+      {
+        "id": "exodra→ExodraRollupOptions",
+        "points": [
+          {
+            "x": 202,
+            "y": 66
+          },
+          {
+            "x": 234,
+            "y": 66
+          },
+          {
+            "x": 266,
+            "y": 66
+          }
+        ]
+      }
+    ]
+  }
+}

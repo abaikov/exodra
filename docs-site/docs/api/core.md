@@ -127,7 +127,7 @@ The context object passed to components exposes:
 | `createNode(schema)` | Create a child node from a schema. |
 
 > There is **no** `onMount`, `get`, `getChildren`, `createContext`, or
-> `createProvider`. Use `onDispose` for cleanup and `bindable.subscribe` for
+> `createProvider`. Use `onDispose` for cleanup and `bindable.onChange` for
 > side effects.
 
 ## createContextKey()

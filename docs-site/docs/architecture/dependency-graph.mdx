@@ -1,0 +1,75 @@
+---
+title: Dependency graph
+description: The architecture of this repository, generated from the code and checked in CI.
+---
+
+import DependencyGraph from '@site/src/components/DependencyGraph';
+
+# Dependency graph
+
+Two levels, both read out of the source. The **packages** and how they depend on
+each other; and, when you open one, **what is inside it** — its classes,
+functions and types, and how they reach each other.
+
+Nothing here is drawn by hand: `npm run atlas` regenerates it and
+`npm run atlas:verify` fails the build when it no longer matches the
+code.
+
+<DependencyGraph />
+
+## Reading it
+
+- **Left to right** is dependency order: a package sits to the left of what it needs.
+- **Colour** is the kind of thing, and the legend says which — it changes with the
+  level, because inside a package the categories are class, function and type.
+- **Dashed edges** are `import type`: erased at build time, so they cost nothing
+  at runtime.
+- **Dotted edges** are dynamic `import()` — a code-split boundary, not a
+  load-time dependency.
+- **Thickness** is how many references stand behind an edge.
+- **A red dashed ring** marks a broken architecture rule; the panel names the
+  rule and quotes the reason it exists.
+
+Type a name in the box above the drawing to find it — everything that does not
+match steps back, and <kbd>Enter</kbd> goes to the first match. The arrow keys
+pan, <kbd>+</kbd> and <kbd>-</kbd> zoom, <kbd>0</kbd> fits it back in view and
+<kbd>Esc</kbd> clears the selection. The address bar follows you, so a diagram
+you are looking at can be linked to.
+
+Select anything to see the detail panel: for a package, what it depends on and
+what depends on it, with the individual imports behind each edge and whether
+`package.json` admits to them; inside a package, which declaration calls,
+constructs, extends or merely mentions which.
+
+## The rules behind it
+
+The layering is not a drawing convention — it is enforced. `npm run graph:check`
+fails the build when a package reaches somewhere it should not: core stays
+dependency-free, the two renderers never reference each other, and build-time
+tooling never leaks into the runtime.
+
+## In your own repository
+
+The same tool works on any TypeScript or JavaScript workspace. It reads the
+layout from `package.json` or `pnpm-workspace.yaml`, and picks up your
+dependency-cruiser rules if you have them:
+
+```bash
+npx exo-graph --out static/graph
+```
+
+```html
+<link rel="stylesheet" href="/graph/graph.css" />
+<div id="exo-graph"></div>
+<script type="module" src="/graph/graph.js"></script>
+```
+
+Colours are yours: every mark paints from a CSS custom property, so a stylesheet
+of your own is enough to make it look like your site.
+
+```css
+.exo-graph {
+    --exo-kind-runtime: var(--your-primary);
+    --exo-surface: var(--your-surface);
+}
+```

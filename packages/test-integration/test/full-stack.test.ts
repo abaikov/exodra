@@ -24,7 +24,7 @@ describe('Full Stack Integration', () => {
                     h('h1', { static: { children: `Count: ${counter.getValue()}` } }),
                     h('ul', {
                         static: {
-                            children: todos.snapshot().map((todo, i) => 
+                            children: todos.getValue().map((todo, i) => 
                                 h('li', { static: { key: i, children: todo } })
                             )
                         }
@@ -55,7 +55,7 @@ describe('Full Stack Integration', () => {
         persistor.hydrate('{"counter":42,"todos":["Buy milk","Write tests"]}');
         
         expect(counter.getValue()).toBe(42);
-        expect(todos.snapshot()).toEqual(['Buy milk', 'Write tests']);
+        expect(todos.getValue()).toEqual(['Buy milk', 'Write tests']);
         
         // 6. Client-side would render DOM here
         // DOM rendering requires proper setup, tested separately
@@ -74,7 +74,7 @@ describe('Full Stack Integration', () => {
                         h('p', { static: { children: value.getValue() } }),
                         h('ul', {
                             static: {
-                                children: items.snapshot().map(n => h('li', { static: { key: n, children: String(n) } }))
+                                children: items.getValue().map(n => h('li', { static: { key: n, children: String(n) } }))
                             }
                         })
                     ]

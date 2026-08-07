@@ -1,0 +1,2876 @@
+{
+  "model": {
+    "granularity": "package",
+    "legend": {
+      "runtime": "Runtime",
+      "tooling": "Build tooling",
+      "app": "Apps & examples",
+      "other": "From npm"
+    },
+    "nodes": [
+      {
+        "id": "@exodra/attrs",
+        "label": "attrs",
+        "kind": "runtime",
+        "layer": 1,
+        "moduleCount": 2,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/babel-plugin-jsx",
+        "label": "babel-plugin-jsx",
+        "kind": "tooling",
+        "layer": 1,
+        "moduleCount": 7,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/benchmarks",
+        "label": "benchmarks",
+        "kind": "app",
+        "layer": 3,
+        "moduleCount": 68,
+        "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/core",
+        "label": "core",
+        "kind": "runtime",
+        "layer": 0,
+        "moduleCount": 19,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/dom",
+        "label": "dom",
+        "kind": "runtime",
+        "layer": 1,
+        "moduleCount": 7,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/dom-profiler",
+        "label": "dom-profiler",
+        "kind": "runtime",
+        "layer": 2,
+        "moduleCount": 3,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb",
+        "label": "examples-cnstra-oimdb",
+        "kind": "app",
+        "layer": 3,
+        "moduleCount": 41,
+        "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-ssr-test",
+        "label": "examples-ssr-test",
+        "kind": "app",
+        "layer": 3,
+        "moduleCount": 4,
+        "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/forms",
+        "label": "forms",
+        "kind": "runtime",
+        "layer": 2,
+        "moduleCount": 1,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/introspect",
+        "label": "introspect",
+        "kind": "tooling",
+        "layer": 1,
+        "moduleCount": 20,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/jsx",
+        "label": "jsx",
+        "kind": "runtime",
+        "layer": 1,
+        "moduleCount": 4,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/monorepo-atlas",
+        "label": "monorepo-atlas",
+        "kind": "tooling",
+        "layer": 2,
+        "moduleCount": 30,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/profiler",
+        "label": "profiler",
+        "kind": "runtime",
+        "layer": 0,
+        "moduleCount": 2,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/react",
+        "label": "react",
+        "kind": "runtime",
+        "layer": 1,
+        "moduleCount": 2,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/react-mount",
+        "label": "react-mount",
+        "kind": "runtime",
+        "layer": 2,
+        "moduleCount": 4,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/reactivity",
+        "label": "reactivity",
+        "kind": "runtime",
+        "layer": 1,
+        "moduleCount": 11,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/reactivity-types",
+        "label": "reactivity-types",
+        "kind": "runtime",
+        "layer": 0,
+        "moduleCount": 11,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/router",
+        "label": "router",
+        "kind": "runtime",
+        "layer": 2,
+        "moduleCount": 10,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/ssr",
+        "label": "ssr",
+        "kind": "runtime",
+        "layer": 2,
+        "moduleCount": 11,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/string",
+        "label": "string",
+        "kind": "runtime",
+        "layer": 1,
+        "moduleCount": 7,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/style",
+        "label": "style",
+        "kind": "runtime",
+        "layer": 0,
+        "moduleCount": 2,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/type-tests",
+        "label": "type-tests",
+        "kind": "app",
+        "layer": 2,
+        "moduleCount": 2,
+        "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/vite-plugin",
+        "label": "vite-plugin",
+        "kind": "tooling",
+        "layer": 2,
+        "moduleCount": 3,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "babel-preset-exodra",
+        "label": "babel-preset-exodra",
+        "kind": "tooling",
+        "layer": 2,
+        "moduleCount": 1,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "bun-plugin-exodra",
+        "label": "bun-plugin-exodra",
+        "kind": "tooling",
+        "layer": 0,
+        "moduleCount": 1,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "create-exodra",
+        "label": "create-exodra",
+        "kind": "tooling",
+        "layer": 1,
+        "moduleCount": 3,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "esbuild-plugin-exodra",
+        "label": "esbuild-plugin-exodra",
+        "kind": "tooling",
+        "layer": 1,
+        "moduleCount": 1,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "rollup-plugin-exodra",
+        "label": "rollup-plugin-exodra",
+        "kind": "tooling",
+        "layer": 1,
+        "moduleCount": 1,
+        "published": true,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "@exodra/attrs→@exodra/core",
+        "from": "@exodra/attrs",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/attrs/src/mergeAttrs.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/babel-plugin-jsx→@exodra/core",
+        "from": "@exodra/babel-plugin-jsx",
+        "to": "@exodra/core",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-jsx/src/ssr-emit.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/core",
+        "from": "@exodra/benchmarks",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 6,
+        "evidence": [
+          {
+            "from": "packages/benchmarks/src/exodra/schema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/exodra/schema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/app-heavy.mjs",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/app.mjs",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/land.mjs",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/todo.mjs",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/dom",
+        "from": "@exodra/benchmarks",
+        "to": "@exodra/dom",
+        "kinds": [
+          "dynamic",
+          "value"
+        ],
+        "weight": 10,
+        "evidence": [
+          {
+            "from": "packages/benchmarks/src/benchmarks/todo-app.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/list-reconcile.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/reactive-update.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/reconcile.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/toggle.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/exodra/mount.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/client-heavy.mjs",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/client-land.mjs",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/client-todo.mjs",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/client.mjs",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/reactivity",
+        "from": "@exodra/benchmarks",
+        "to": "@exodra/reactivity",
+        "kinds": [
+          "dynamic",
+          "type-only",
+          "value"
+        ],
+        "weight": 10,
+        "evidence": [
+          {
+            "from": "packages/benchmarks/src/benchmarks/todo-app.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/exodra/schema.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/list-reconcile.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/reactive-update.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/reconcile.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/toggle.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/app-heavy.mjs",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/app.mjs",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/land.mjs",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/todo.mjs",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/ssr",
+        "from": "@exodra/benchmarks",
+        "to": "@exodra/ssr",
+        "kinds": [
+          "value"
+        ],
+        "weight": 7,
+        "evidence": [
+          {
+            "from": "packages/benchmarks/ssr/fastnet.mjs",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/heavy-measure.mjs",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/hyd.mjs",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/land-measure.mjs",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/measure.mjs",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/sweep.mjs",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/todo-measure.mjs",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/dom-profiler→@exodra/dom",
+        "from": "@exodra/dom-profiler",
+        "to": "@exodra/dom",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/dom-profiler/src/dom-profiler.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/dom→@exodra/core",
+        "from": "@exodra/dom",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 3,
+        "evidence": [
+          {
+            "from": "packages/dom/src/ExoNodeDom.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/mount.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/dom→@exodra/reactivity-types",
+        "from": "@exodra/dom",
+        "to": "@exodra/reactivity-types",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/dom/src/ExoNodeDom.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/core",
+        "from": "@exodra/examples-cnstra-oimdb",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 12,
+        "evidence": [
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/board.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/people.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/mount-app.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/routes.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/activity.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/projects.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/tasks.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/taxonomy.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual-row.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/shell.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/entry-server.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/dom",
+        "from": "@exodra/examples-cnstra-oimdb",
+        "to": "@exodra/dom",
+        "kinds": [
+          "dynamic",
+          "value"
+        ],
+        "weight": 3,
+        "evidence": [
+          {
+            "from": "packages/examples/05-cnstra-oimdb/scripts/smoke-flagship.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "dynamic"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/mount-app.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/scripts/smoke-virtual.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "dynamic"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/jsx",
+        "from": "@exodra/examples-cnstra-oimdb",
+        "to": "@exodra/jsx",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual.tsx",
+            "to": "packages/jsx/src/index.ts",
+            "specifier": "@exodra/jsx",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/reactivity",
+        "from": "@exodra/examples-cnstra-oimdb",
+        "to": "@exodra/reactivity",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 14,
+        "evidence": [
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/runtime.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/runtime.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/board.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/people.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/mount-app.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/activity.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/projects.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/tasks.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/taxonomy.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual-row.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/shell.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/shell.tsx",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/entry-server.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/router",
+        "from": "@exodra/examples-cnstra-oimdb",
+        "to": "@exodra/router",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 5,
+        "evidence": [
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/mount-app.ts",
+            "to": "packages/router/src/index.ts",
+            "specifier": "@exodra/router",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/routes.ts",
+            "to": "packages/router/src/index.ts",
+            "specifier": "@exodra/router",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/routes.ts",
+            "to": "packages/router/src/index.ts",
+            "specifier": "@exodra/router",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/app/shell.tsx",
+            "to": "packages/router/src/index.ts",
+            "specifier": "@exodra/router",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/entry-server.ts",
+            "to": "packages/router/src/index.ts",
+            "specifier": "@exodra/router",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/ssr",
+        "from": "@exodra/examples-cnstra-oimdb",
+        "to": "@exodra/ssr",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/examples/05-cnstra-oimdb/src/entry-server.ts",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-ssr-test→@exodra/core",
+        "from": "@exodra/examples-ssr-test",
+        "to": "@exodra/core",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/examples/ssr-test/src/app.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-ssr-test→@exodra/dom",
+        "from": "@exodra/examples-ssr-test",
+        "to": "@exodra/dom",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/examples/ssr-test/src/entry-client.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-ssr-test→@exodra/reactivity",
+        "from": "@exodra/examples-ssr-test",
+        "to": "@exodra/reactivity",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/examples/ssr-test/src/app.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-ssr-test→@exodra/ssr",
+        "from": "@exodra/examples-ssr-test",
+        "to": "@exodra/ssr",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/examples/ssr-test/src/entry-server.ts",
+            "to": "packages/ssr/src/index.ts",
+            "specifier": "@exodra/ssr",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/forms→@exodra/reactivity",
+        "from": "@exodra/forms",
+        "to": "@exodra/reactivity",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/forms/src/index.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/forms/src/index.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/jsx→@exodra/core",
+        "from": "@exodra/jsx",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/jsx/src/jsx-runtime.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/jsx→@exodra/reactivity-types",
+        "from": "@exodra/jsx",
+        "to": "@exodra/reactivity-types",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/jsx/src/jsx-runtime.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/core",
+        "from": "@exodra/monorepo-atlas",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 8,
+        "evidence": [
+          {
+            "from": "packages/monorepo-atlas/src/view/explorer.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/explorer.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/controls.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/controls.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/details.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/details.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/graphView.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/graphView.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/dom",
+        "from": "@exodra/monorepo-atlas",
+        "to": "@exodra/dom",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/monorepo-atlas/src/client/mountExplorer.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/reactivity",
+        "from": "@exodra/monorepo-atlas",
+        "to": "@exodra/reactivity",
+        "kinds": [
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/monorepo-atlas/src/view/viewState.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/details.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/reactivity-types",
+        "from": "@exodra/monorepo-atlas",
+        "to": "@exodra/reactivity-types",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 3,
+        "evidence": [
+          {
+            "from": "packages/monorepo-atlas/src/view/controls.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/viewState.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/monorepo-atlas/src/view/details.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          }
+        ],
+        "declared": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/string",
+        "from": "@exodra/monorepo-atlas",
+        "to": "@exodra/string",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/monorepo-atlas/src/generate/buildArtifacts.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/react-mount→@exodra/core",
+        "from": "@exodra/react-mount",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/react-mount/src/types/index.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-mount/src/useExoMount.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/react-mount→@exodra/dom",
+        "from": "@exodra/react-mount",
+        "to": "@exodra/dom",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/react-mount/src/useExoMount.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/react→@exodra/core",
+        "from": "@exodra/react",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/reactivity→@exodra/reactivity-types",
+        "from": "@exodra/reactivity",
+        "to": "@exodra/reactivity-types",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 6,
+        "evidence": [
+          {
+            "from": "packages/reactivity/src/index.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/reactivity/src/createExoBindable.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/reactivity/src/createExoCombined.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/reactivity/src/createExoBindableList.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/reactivity/src/createExoDerived.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/reactivity/src/persistor.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/router→@exodra/core",
+        "from": "@exodra/router",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 3,
+        "evidence": [
+          {
+            "from": "packages/router/src/components.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/router/src/context.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/router→@exodra/reactivity",
+        "from": "@exodra/router",
+        "to": "@exodra/reactivity",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 4,
+        "evidence": [
+          {
+            "from": "packages/router/src/components.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/router/src/createRouter.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/router/src/createRouter.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/ssr→@exodra/core",
+        "from": "@exodra/ssr",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 7,
+        "evidence": [
+          {
+            "from": "packages/ssr/src/components.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/ssr/src/context.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/ssr/src/types.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/ssr/src/normalizeSchemas.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/ssr/src/ExoNodeSsr.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/ssr/src/ExoSsrContextBase.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/ssr/src/renderSchemas.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/ssr→@exodra/reactivity",
+        "from": "@exodra/ssr",
+        "to": "@exodra/reactivity",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/ssr/src/renderPersistorScript.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/ssr→@exodra/string",
+        "from": "@exodra/ssr",
+        "to": "@exodra/string",
+        "kinds": [
+          "value"
+        ],
+        "weight": 6,
+        "evidence": [
+          {
+            "from": "packages/ssr/src/ExoNodeSsr.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/ssr/src/ExoSsrContextBase.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/ssr/src/renderJsonScript.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/ssr/src/renderSchemas.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/ssr/src/renderPersistorScript.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/ssr/src/renderToStringCompiled.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/string→@exodra/core",
+        "from": "@exodra/string",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 4,
+        "evidence": [
+          {
+            "from": "packages/string/src/createStringNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/ExoNodeString.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/src/renderToString.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/ssr-context.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/string→@exodra/reactivity-types",
+        "from": "@exodra/string",
+        "to": "@exodra/reactivity-types",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/string/src/ExoNodeString.ts",
+            "to": "packages/reactivity-types/src/index.ts",
+            "specifier": "@exodra/reactivity-types",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/core",
+        "from": "@exodra/type-tests",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/type-tests/src/typed-components.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/typed-components.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/jsx",
+        "from": "@exodra/type-tests",
+        "to": "@exodra/jsx",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/type-tests/src/jsx-inference.tsx",
+            "to": "packages/jsx/src/index.ts",
+            "specifier": "@exodra/jsx",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/typed-components.ts",
+            "to": "packages/jsx/src/index.ts",
+            "specifier": "@exodra/jsx",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/reactivity",
+        "from": "@exodra/type-tests",
+        "to": "@exodra/reactivity",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/type-tests/src/typed-components.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/typed-components.ts",
+            "to": "packages/reactivity/src/index.ts",
+            "specifier": "@exodra/reactivity",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/vite-plugin→@exodra/core",
+        "from": "@exodra/vite-plugin",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/vite-plugin-exodra/src/client.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/vite-plugin→@exodra/dom",
+        "from": "@exodra/vite-plugin",
+        "to": "@exodra/dom",
+        "kinds": [
+          "dynamic"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/vite-plugin-exodra/src/client.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "dynamic"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "babel-preset-exodra→@exodra/babel-plugin-jsx",
+        "from": "babel-preset-exodra",
+        "to": "@exodra/babel-plugin-jsx",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/babel-preset-exodra/src/index.ts",
+            "to": "packages/babel-plugin-jsx/src/index.ts",
+            "specifier": "@exodra/babel-plugin-jsx",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      }
+    ],
+    "rules": {
+      "no-circular": {
+        "severity": "error",
+        "comment": "A cycle between modules makes initialisation order load-order dependent."
+      },
+      "not-to-unresolvable": {
+        "severity": "error",
+        "comment": "An import that does not resolve is a broken build waiting to happen."
+      },
+      "no-undeclared-dep": {
+        "severity": "error",
+        "comment": "Imported but NOT in this package.json. It works in the monorepo (hoisted node_modules) and breaks for whoever installs the published package."
+      },
+      "core-is-zero-dep": {
+        "severity": "error",
+        "comment": "@exodra/core is the renderer-agnostic base: it must not depend on any other Exodra package, so any reactivity system can drive it."
+      },
+      "contract-package-is-zero-dep": {
+        "severity": "error",
+        "comment": "@exodra/reactivity-types is the shared CONTRACT: types only, no deps, so both renderers and every adapter can depend on it without pulling anything."
+      },
+      "renderers-do-not-know-each-other": {
+        "severity": "error",
+        "comment": "The live (dom) and snapshot (string) renderers deliberately share only core primitives — never each other."
+      },
+      "renderers-do-not-know-each-other-reverse": {
+        "severity": "error",
+        "comment": "The other direction of the same rule."
+      },
+      "runtime-does-not-import-build-tooling": {
+        "severity": "error",
+        "comment": "Compilers, plugins and scaffolding run at BUILD time. A runtime package importing one would ship it to the browser."
+      },
+      "no-deprecated-core": {
+        "severity": "error",
+        "comment": "Deprecated Node core modules will be removed."
+      }
+    }
+  },
+  "layout": {
+    "width": 884,
+    "height": 1340,
+    "nodes": [
+      {
+        "id": "@exodra/attrs",
+        "x": 529,
+        "y": 1126,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/babel-plugin-jsx",
+        "x": 504,
+        "y": 1058,
+        "width": 146,
+        "height": 40
+      },
+      {
+        "id": "@exodra/benchmarks",
+        "x": 64.5,
+        "y": 800,
+        "width": 102,
+        "height": 40
+      },
+      {
+        "id": "@exodra/core",
+        "x": 739,
+        "y": 844,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/dom",
+        "x": 529,
+        "y": 744,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/dom-profiler",
+        "x": 297,
+        "y": 818,
+        "width": 117,
+        "height": 40
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb",
+        "x": 24,
+        "y": 438,
+        "width": 183,
+        "height": 40
+      },
+      {
+        "id": "@exodra/examples-ssr-test",
+        "x": 38.5,
+        "y": 178,
+        "width": 154,
+        "height": 40
+      },
+      {
+        "id": "@exodra/forms",
+        "x": 307.5,
+        "y": 24,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/introspect",
+        "x": 64.5,
+        "y": 868,
+        "width": 102,
+        "height": 40
+      },
+      {
+        "id": "@exodra/jsx",
+        "x": 529,
+        "y": 516,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/monorepo-atlas",
+        "x": 289.5,
+        "y": 386,
+        "width": 132,
+        "height": 40
+      },
+      {
+        "id": "@exodra/profiler",
+        "x": 67.5,
+        "y": 936,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/react",
+        "x": 529,
+        "y": 604,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/react-mount",
+        "x": 301,
+        "y": 750,
+        "width": 109,
+        "height": 40
+      },
+      {
+        "id": "@exodra/reactivity",
+        "x": 526,
+        "y": 32,
+        "width": 102,
+        "height": 40
+      },
+      {
+        "id": "@exodra/reactivity-types",
+        "x": 714,
+        "y": 68,
+        "width": 146,
+        "height": 40
+      },
+      {
+        "id": "@exodra/router",
+        "x": 307.5,
+        "y": 318,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/ssr",
+        "x": 307.5,
+        "y": 182,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/string",
+        "x": 529,
+        "y": 284,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/style",
+        "x": 67.5,
+        "y": 1004,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/type-tests",
+        "x": 304.5,
+        "y": 250,
+        "width": 102,
+        "height": 40
+      },
+      {
+        "id": "@exodra/vite-plugin",
+        "x": 301,
+        "y": 454,
+        "width": 109,
+        "height": 40
+      },
+      {
+        "id": "babel-preset-exodra",
+        "x": 271,
+        "y": 1058,
+        "width": 169,
+        "height": 40
+      },
+      {
+        "id": "bun-plugin-exodra",
+        "x": 38.5,
+        "y": 1072,
+        "width": 154,
+        "height": 40
+      },
+      {
+        "id": "create-exodra",
+        "x": 53.5,
+        "y": 1140,
+        "width": 124,
+        "height": 40
+      },
+      {
+        "id": "esbuild-plugin-exodra",
+        "x": 24,
+        "y": 1208,
+        "width": 183,
+        "height": 40
+      },
+      {
+        "id": "rollup-plugin-exodra",
+        "x": 27.5,
+        "y": 1276,
+        "width": 176,
+        "height": 40
+      }
+    ],
+    "edges": [
+      {
+        "id": "@exodra/attrs→@exodra/core",
+        "points": [
+          {
+            "x": 625,
+            "y": 1146
+          },
+          {
+            "x": 682,
+            "y": 1146
+          },
+          {
+            "x": 779.6,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/babel-plugin-jsx→@exodra/core",
+        "points": [
+          {
+            "x": 650,
+            "y": 1078
+          },
+          {
+            "x": 682,
+            "y": 1078
+          },
+          {
+            "x": 777.2,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/core",
+        "points": [
+          {
+            "x": 127,
+            "y": 840
+          },
+          {
+            "x": 239,
+            "y": 1034
+          },
+          {
+            "x": 355.5,
+            "y": 1034
+          },
+          {
+            "x": 472,
+            "y": 1034
+          },
+          {
+            "x": 577,
+            "y": 1034
+          },
+          {
+            "x": 682,
+            "y": 1034
+          },
+          {
+            "x": 774.6,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/dom",
+        "points": [
+          {
+            "x": 155.3,
+            "y": 840
+          },
+          {
+            "x": 239,
+            "y": 882
+          },
+          {
+            "x": 355.5,
+            "y": 882
+          },
+          {
+            "x": 472,
+            "y": 882
+          },
+          {
+            "x": 559.2,
+            "y": 784
+          }
+        ]
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/reactivity",
+        "points": [
+          {
+            "x": 119.1,
+            "y": 800
+          },
+          {
+            "x": 239,
+            "y": 138
+          },
+          {
+            "x": 355.5,
+            "y": 138
+          },
+          {
+            "x": 472,
+            "y": 138
+          },
+          {
+            "x": 552.6,
+            "y": 72
+          }
+        ]
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/ssr",
+        "points": [
+          {
+            "x": 119.9,
+            "y": 800
+          },
+          {
+            "x": 239,
+            "y": 260
+          },
+          {
+            "x": 315.3,
+            "y": 222
+          }
+        ]
+      },
+      {
+        "id": "@exodra/dom-profiler→@exodra/dom",
+        "points": [
+          {
+            "x": 414,
+            "y": 838
+          },
+          {
+            "x": 472,
+            "y": 838
+          },
+          {
+            "x": 548.6,
+            "y": 784
+          }
+        ]
+      },
+      {
+        "id": "@exodra/dom→@exodra/core",
+        "points": [
+          {
+            "x": 585.4,
+            "y": 784
+          },
+          {
+            "x": 682,
+            "y": 1014
+          },
+          {
+            "x": 773,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/dom→@exodra/reactivity-types",
+        "points": [
+          {
+            "x": 580.9,
+            "y": 744
+          },
+          {
+            "x": 682,
+            "y": 226
+          },
+          {
+            "x": 771.8,
+            "y": 108
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/core",
+        "points": [
+          {
+            "x": 120.1,
+            "y": 478
+          },
+          {
+            "x": 239,
+            "y": 994
+          },
+          {
+            "x": 355.5,
+            "y": 994
+          },
+          {
+            "x": 472,
+            "y": 994
+          },
+          {
+            "x": 577,
+            "y": 994
+          },
+          {
+            "x": 682,
+            "y": 994
+          },
+          {
+            "x": 770.8,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/dom",
+        "points": [
+          {
+            "x": 124.7,
+            "y": 478
+          },
+          {
+            "x": 239,
+            "y": 726
+          },
+          {
+            "x": 355.5,
+            "y": 726
+          },
+          {
+            "x": 472,
+            "y": 726
+          },
+          {
+            "x": 529,
+            "y": 746.6
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/jsx",
+        "points": [
+          {
+            "x": 142.9,
+            "y": 478
+          },
+          {
+            "x": 239,
+            "y": 548
+          },
+          {
+            "x": 355.5,
+            "y": 548
+          },
+          {
+            "x": 472,
+            "y": 548
+          },
+          {
+            "x": 529,
+            "y": 541.5
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/reactivity",
+        "points": [
+          {
+            "x": 122.8,
+            "y": 438
+          },
+          {
+            "x": 239,
+            "y": 118
+          },
+          {
+            "x": 355.5,
+            "y": 118
+          },
+          {
+            "x": 472,
+            "y": 118
+          },
+          {
+            "x": 545.2,
+            "y": 72
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/router",
+        "points": [
+          {
+            "x": 136.1,
+            "y": 438
+          },
+          {
+            "x": 239,
+            "y": 338
+          },
+          {
+            "x": 307.5,
+            "y": 338
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-cnstra-oimdb→@exodra/ssr",
+        "points": [
+          {
+            "x": 125.8,
+            "y": 438
+          },
+          {
+            "x": 239,
+            "y": 218
+          },
+          {
+            "x": 307.5,
+            "y": 208.6
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-ssr-test→@exodra/core",
+        "points": [
+          {
+            "x": 118.7,
+            "y": 218
+          },
+          {
+            "x": 239,
+            "y": 974
+          },
+          {
+            "x": 355.5,
+            "y": 974
+          },
+          {
+            "x": 472,
+            "y": 974
+          },
+          {
+            "x": 577,
+            "y": 974
+          },
+          {
+            "x": 682,
+            "y": 974
+          },
+          {
+            "x": 767.9,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-ssr-test→@exodra/dom",
+        "points": [
+          {
+            "x": 120.4,
+            "y": 218
+          },
+          {
+            "x": 239,
+            "y": 706
+          },
+          {
+            "x": 355.5,
+            "y": 706
+          },
+          {
+            "x": 472,
+            "y": 706
+          },
+          {
+            "x": 540.8,
+            "y": 744
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-ssr-test→@exodra/reactivity",
+        "points": [
+          {
+            "x": 138,
+            "y": 178
+          },
+          {
+            "x": 239,
+            "y": 88
+          },
+          {
+            "x": 355.5,
+            "y": 88
+          },
+          {
+            "x": 472,
+            "y": 88
+          },
+          {
+            "x": 526,
+            "y": 69.5
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-ssr-test→@exodra/ssr",
+        "points": [
+          {
+            "x": 192.5,
+            "y": 186.8
+          },
+          {
+            "x": 239,
+            "y": 180
+          },
+          {
+            "x": 307.5,
+            "y": 192.9
+          }
+        ]
+      },
+      {
+        "id": "@exodra/forms→@exodra/reactivity",
+        "points": [
+          {
+            "x": 403.5,
+            "y": 44
+          },
+          {
+            "x": 472,
+            "y": 44
+          },
+          {
+            "x": 526,
+            "y": 48.1
+          }
+        ]
+      },
+      {
+        "id": "@exodra/jsx→@exodra/core",
+        "points": [
+          {
+            "x": 582,
+            "y": 556
+          },
+          {
+            "x": 682,
+            "y": 954
+          },
+          {
+            "x": 763.7,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/jsx→@exodra/reactivity-types",
+        "points": [
+          {
+            "x": 583.4,
+            "y": 516
+          },
+          {
+            "x": 682,
+            "y": 206
+          },
+          {
+            "x": 769.2,
+            "y": 108
+          }
+        ]
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/core",
+        "points": [
+          {
+            "x": 359.9,
+            "y": 426
+          },
+          {
+            "x": 472,
+            "y": 934
+          },
+          {
+            "x": 577,
+            "y": 934
+          },
+          {
+            "x": 682,
+            "y": 934
+          },
+          {
+            "x": 757,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/dom",
+        "points": [
+          {
+            "x": 363.8,
+            "y": 426
+          },
+          {
+            "x": 472,
+            "y": 686
+          },
+          {
+            "x": 550.1,
+            "y": 744
+          }
+        ]
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/reactivity",
+        "points": [
+          {
+            "x": 361.6,
+            "y": 386
+          },
+          {
+            "x": 472,
+            "y": 24
+          },
+          {
+            "x": 526,
+            "y": 38.4
+          }
+        ]
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/reactivity-types",
+        "points": [
+          {
+            "x": 365.4,
+            "y": 386
+          },
+          {
+            "x": 472,
+            "y": 170
+          },
+          {
+            "x": 577,
+            "y": 170
+          },
+          {
+            "x": 682,
+            "y": 170
+          },
+          {
+            "x": 761.4,
+            "y": 108
+          }
+        ]
+      },
+      {
+        "id": "@exodra/monorepo-atlas→@exodra/string",
+        "points": [
+          {
+            "x": 382,
+            "y": 386
+          },
+          {
+            "x": 472,
+            "y": 318
+          },
+          {
+            "x": 529,
+            "y": 310.4
+          }
+        ]
+      },
+      {
+        "id": "@exodra/react-mount→@exodra/core",
+        "points": [
+          {
+            "x": 371.7,
+            "y": 790
+          },
+          {
+            "x": 472,
+            "y": 914
+          },
+          {
+            "x": 577,
+            "y": 914
+          },
+          {
+            "x": 682,
+            "y": 914
+          },
+          {
+            "x": 745,
+            "y": 884
+          }
+        ]
+      },
+      {
+        "id": "@exodra/react-mount→@exodra/dom",
+        "points": [
+          {
+            "x": 377.9,
+            "y": 750
+          },
+          {
+            "x": 472,
+            "y": 666
+          },
+          {
+            "x": 555.6,
+            "y": 744
+          }
+        ]
+      },
+      {
+        "id": "@exodra/react→@exodra/core",
+        "points": [
+          {
+            "x": 625,
+            "y": 624
+          },
+          {
+            "x": 682,
+            "y": 624
+          },
+          {
+            "x": 778.3,
+            "y": 844
+          }
+        ]
+      },
+      {
+        "id": "@exodra/reactivity→@exodra/reactivity-types",
+        "points": [
+          {
+            "x": 628,
+            "y": 52
+          },
+          {
+            "x": 682,
+            "y": 52
+          },
+          {
+            "x": 728.7,
+            "y": 68
+          }
+        ]
+      },
+      {
+        "id": "@exodra/router→@exodra/core",
+        "points": [
+          {
+            "x": 365.1,
+            "y": 358
+          },
+          {
+            "x": 472,
+            "y": 580
+          },
+          {
+            "x": 577,
+            "y": 580
+          },
+          {
+            "x": 682,
+            "y": 580
+          },
+          {
+            "x": 779.6,
+            "y": 844
+          }
+        ]
+      },
+      {
+        "id": "@exodra/router→@exodra/reactivity",
+        "points": [
+          {
+            "x": 362.5,
+            "y": 318
+          },
+          {
+            "x": 472,
+            "y": 4
+          },
+          {
+            "x": 533.3,
+            "y": 32
+          }
+        ]
+      },
+      {
+        "id": "@exodra/ssr→@exodra/core",
+        "points": [
+          {
+            "x": 363.5,
+            "y": 222
+          },
+          {
+            "x": 472,
+            "y": 492
+          },
+          {
+            "x": 577,
+            "y": 492
+          },
+          {
+            "x": 682,
+            "y": 492
+          },
+          {
+            "x": 781.4,
+            "y": 844
+          }
+        ]
+      },
+      {
+        "id": "@exodra/ssr→@exodra/reactivity",
+        "points": [
+          {
+            "x": 366.2,
+            "y": 182
+          },
+          {
+            "x": 472,
+            "y": -16
+          },
+          {
+            "x": 546.1,
+            "y": 32
+          }
+        ]
+      },
+      {
+        "id": "@exodra/ssr→@exodra/string",
+        "points": [
+          {
+            "x": 403.5,
+            "y": 202
+          },
+          {
+            "x": 472,
+            "y": 202
+          },
+          {
+            "x": 556.4,
+            "y": 284
+          }
+        ]
+      },
+      {
+        "id": "@exodra/string→@exodra/core",
+        "points": [
+          {
+            "x": 589.5,
+            "y": 324
+          },
+          {
+            "x": 682,
+            "y": 472
+          },
+          {
+            "x": 781.6,
+            "y": 844
+          }
+        ]
+      },
+      {
+        "id": "@exodra/string→@exodra/reactivity-types",
+        "points": [
+          {
+            "x": 584.7,
+            "y": 284
+          },
+          {
+            "x": 682,
+            "y": 32
+          },
+          {
+            "x": 749.5,
+            "y": 68
+          }
+        ]
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/core",
+        "points": [
+          {
+            "x": 376.3,
+            "y": 290
+          },
+          {
+            "x": 472,
+            "y": 382
+          },
+          {
+            "x": 577,
+            "y": 382
+          },
+          {
+            "x": 682,
+            "y": 382
+          },
+          {
+            "x": 782.6,
+            "y": 844
+          }
+        ]
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/jsx",
+        "points": [
+          {
+            "x": 364.7,
+            "y": 290
+          },
+          {
+            "x": 472,
+            "y": 524
+          },
+          {
+            "x": 529,
+            "y": 530.5
+          }
+        ]
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/reactivity",
+        "points": [
+          {
+            "x": 363.1,
+            "y": 250
+          },
+          {
+            "x": 472,
+            "y": -36
+          },
+          {
+            "x": 553.1,
+            "y": 32
+          }
+        ]
+      },
+      {
+        "id": "@exodra/vite-plugin→@exodra/core",
+        "points": [
+          {
+            "x": 376.3,
+            "y": 454
+          },
+          {
+            "x": 472,
+            "y": 362
+          },
+          {
+            "x": 577,
+            "y": 362
+          },
+          {
+            "x": 682,
+            "y": 362
+          },
+          {
+            "x": 782.8,
+            "y": 844
+          }
+        ]
+      },
+      {
+        "id": "@exodra/vite-plugin→@exodra/dom",
+        "points": [
+          {
+            "x": 369,
+            "y": 494
+          },
+          {
+            "x": 472,
+            "y": 646
+          },
+          {
+            "x": 559.2,
+            "y": 744
+          }
+        ]
+      },
+      {
+        "id": "babel-preset-exodra→@exodra/babel-plugin-jsx",
+        "points": [
+          {
+            "x": 440,
+            "y": 1078
+          },
+          {
+            "x": 472,
+            "y": 1078
+          },
+          {
+            "x": 504,
+            "y": 1078
+          }
+        ]
+      }
+    ]
+  }
+}

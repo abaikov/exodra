@@ -47,7 +47,7 @@ src/
 - **No Virtual DOM** - Direct DOM updates
 - **Reactive primitives** - `bindable()` and `derive()`
 - **Efficient list rendering** with `list()`
-- **Automatic memory management** with WeakMap-based core
+- **Automatic memory management** — a node's bookkeeping lives on its schema and dies with it
 
 ### 🚀 **Modern Developer Experience**
 - **TypeScript-first** with full type inference
@@ -160,7 +160,7 @@ All `@exodra/*` packages are published under the `0.x` line.
 |---------|-------------|
 | **[@exodra/core](./packages/core)** | Component system, `h()`/`text()`, schema walking, context |
 | **[@exodra/reactivity](./packages/reactivity)** | `bindable`, `derive`, `list`, and persistence/hydration |
-| **[@exodra/dom](./packages/dom)** | DOM `mount`/`hydrate` with WeakMap-based tracking |
+| **[@exodra/dom](./packages/dom)** | DOM `mount`/`hydrate` with identity-keyed node tracking |
 | **[@exodra/jsx](./packages/jsx)** | JSX `Fragment`, typed event types, and the typed JSX namespace |
 | **[@exodra/attrs](./packages/attrs)** | `mergeAttrs` — compose typed attrs buckets (runtime of `bind:`, opt-in merge for `props=`) |
 | **[@exodra/babel-plugin-jsx](./packages/babel-plugin-jsx)** | Babel plugin that compiles Exodra JSX to `h()` calls |
@@ -229,7 +229,7 @@ Exodra is fast by design:
 - **Three-props architecture** — the static/reactive/event split is decided at compile time, so there is no per-prop runtime type dispatch
 - **No Virtual DOM** — reactive bindings write to the DOM directly, no diffing
 - **Compile-time optimization** — static subtrees are hoisted and clone-cached
-- **WeakMap-based core** — teardown is driven by GC, so most code needs no manual disposal
+- **No side table** — each node's record sits in a slot on its own schema, so teardown is driven by GC and most code needs no manual disposal
 
 ### Benchmarks
 

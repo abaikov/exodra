@@ -57,6 +57,11 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Architecture',
+      items: ['architecture/dependency-graph', 'architecture/package-graph'],
+    },
+    {
+      type: 'category',
       label: 'Tooling',
       items: [
         'tooling/create-exodra',

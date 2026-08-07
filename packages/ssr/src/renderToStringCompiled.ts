@@ -10,89 +10,32 @@
 
 import { runWithAmbient } from '@exodra/string';
 import { ssrContextKey } from './context';
-import type {
-    TExoSsrDocumentOptions,
-    TExoSsrHeader,
-    TExoSsrStateScriptOptions,
-} from './types';
+import { ExoSsrContextBase } from './ExoSsrContextBase';
+import type { TExoSsrDocumentOptions, TExoSsrHeader } from './types';
 
-class CompiledSsrContext {
-    status = 200;
-    readonly headers: TExoSsrHeader[] = [];
-    readonly headHtml: string[] = [];
-    readonly state = new Map<string, unknown>();
-
-    setStatus(status: number): void {
-        this.status = status;
-    }
-    getStatus(): number {
-        return this.status;
-    }
-
-    setHeader(name: string, value: string): void {
-        const normalized = name.toLowerCase();
-        for (let i = this.headers.length - 1; i >= 0; i--) {
-            if (this.headers[i].name.toLowerCase() === normalized) {
-                this.headers.splice(i, 1);
-            }
-        }
-        this.headers.push({ name, value });
-    }
-    appendHeader(name: string, value: string): void {
-        this.headers.push({ name, value });
-    }
-    getHeader(name: string): string | undefined {
-        const values = this.getHeaderValues(name);
-        return values.length > 0 ? values.join(', ') : undefined;
-    }
-    getHeaderValues(name: string): readonly string[] {
-        const normalized = name.toLowerCase();
-        return this.headers
-            .filter(h => h.name.toLowerCase() === normalized)
-            .map(h => h.value);
-    }
-    getHeaders(): readonly TExoSsrHeader[] {
-        return this.headers.map(h => ({ ...h }));
-    }
+// Status/headers/state/document assembly all live in the shared base; compile
+// mode only differs in <head> storage and where the body comes from.
+class CompiledSsrContext extends ExoSsrContextBase {
+    private readonly headHtml: string[] = [];
+    private body = '';
 
     // Compiled children arrive as SafeHtml (already-rendered HTML), not schemas.
     addHead(value: unknown): void {
         const items = Array.isArray(value) ? value : [value];
         for (const item of items) this.headHtml.push(String(item));
     }
+
     renderHead(): string {
         return this.headHtml.join('');
     }
 
-    setState(key: string, value: unknown): void {
-        this.state.set(key, value);
+    setBody(html: string): void {
+        this.body = html;
     }
-    getState<TValue = unknown>(key: string): TValue | undefined {
-        return this.state.get(key) as TValue | undefined;
-    }
-    getStateSnapshot(): Record<string, unknown> {
-        return Object.fromEntries(this.state);
-    }
-    renderStateScript(options: TExoSsrStateScriptOptions = {}): string {
-        if (this.state.size === 0) return '';
-        // id/nonce are developer config, but escape them anyway so a stray quote
-        // can't break out of the attribute (mirrors the walker's renderAttributes).
-        const id = escapeAttr(options.id ?? '__EXODRA_STATE__');
-        const nonce = options.nonce
-            ? ` nonce="${escapeAttr(options.nonce)}"`
-            : '';
-        const json = escapeScriptJson(JSON.stringify(this.getStateSnapshot()));
-        return `<script id="${id}" type="application/json"${nonce}>${json}</script>`;
-    }
-}
 
-function escapeScriptJson(json: string): string {
-    return json
-        .replace(/</g, '\\u003C')
-        .replace(/>/g, '\\u003E')
-        .replace(/&/g, '\\u0026')
-        .replace(/\u2028/g, '\\u2028')
-        .replace(/\u2029/g, '\\u2029');
+    renderBody(): string {
+        return this.body;
+    }
 }
 
 export interface TExoCompiledSsrResult {
@@ -112,28 +55,6 @@ export interface TExoCompiledSsrResult {
     renderDocument(options?: TExoSsrDocumentOptions): string;
 }
 
-function escapeAttr(value: string): string {
-    return value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-function renderDocument(
-    body: string,
-    ctx: CompiledSsrContext,
-    options: TExoSsrDocumentOptions = {}
-): string {
-    const doctype =
-        options.doctype === false ? '' : `${options.doctype ?? '<!doctype html>'}\n`;
-    const lang = options.lang ?? 'en';
-    const rootId = options.rootId ?? 'app';
-    const head = ctx.renderHead();
-    const stateScript = ctx.renderStateScript({ nonce: options.nonce });
-    return `${doctype}<html lang="${escapeAttr(lang)}"><head>${head}</head><body><div id="${escapeAttr(rootId)}">${body}</div>${stateScript}</body></html>`;
-}
-
 // Run a compiled SSR page (a `() => SafeHtml` closure) with a fresh request SSR
 // context, returning the HTML plus everything the metadata components collected.
 export function renderToStringCompiled(
@@ -142,6 +63,7 @@ export function renderToStringCompiled(
     const ctx = new CompiledSsrContext();
     const values = new Map<symbol, unknown>([[ssrContextKey.id, ctx]]);
     const html = String(runWithAmbient(values, render));
+    ctx.setBody(html);
     return {
         html,
         status: ctx.getStatus(),
@@ -150,6 +72,6 @@ export function renderToStringCompiled(
         stateScript: ctx.renderStateScript(),
         state: ctx.getStateSnapshot(),
         renderDocument: (options?: TExoSsrDocumentOptions) =>
-            renderDocument(html, ctx, options),
+            ctx.renderDocument(options),
     };
 }

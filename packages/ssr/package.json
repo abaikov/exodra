@@ -1,6 +1,6 @@
 {
   "name": "@exodra/ssr",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -56,7 +56,13 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@exodra/core": "^0.2.0",
-    "@exodra/string": "^0.3.0"
+    "@exodra/core": "^0.3.0",
+    "@exodra/reactivity": "^0.3.0",
+    "@exodra/string": "^0.4.1"
+  },
+  "peerDependenciesMeta": {
+    "@exodra/reactivity": {
+      "optional": true
+    }
   }
 }

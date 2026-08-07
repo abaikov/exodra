@@ -1,0 +1,609 @@
+:where(.exo-graph) {
+    color-scheme: light;
+    --exo-surface: #fcfcfb;
+    --exo-plane: #f9f9f7;
+    --exo-ink: #0b0b0b;
+    --exo-ink-secondary: #52514e;
+    --exo-ink-muted: #898781;
+    --exo-edge: #c3c2b7;
+    --exo-edge-strong: #52514e;
+    --exo-border: rgba(11,11,11,0.10);
+    --exo-kind-runtime: #2a78d6;
+    --exo-kind-tooling: #e87ba4;
+    --exo-kind-app: #008300;
+    --exo-kind-other: #898781;
+    --exo-status-critical: #d03b3b;
+    --exo-status-warning: #fab219;
+}
+@media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme='light'])) :where(.exo-graph), :where(.exo-graph[data-mode='dark']) {
+        color-scheme: dark;
+        --exo-surface: #1a1a19;
+        --exo-plane: #0d0d0d;
+        --exo-ink: #ffffff;
+        --exo-ink-secondary: #c3c2b7;
+        --exo-ink-muted: #898781;
+        --exo-edge: #383835;
+        --exo-edge-strong: #c3c2b7;
+        --exo-border: rgba(255,255,255,0.10);
+        --exo-kind-runtime: #3987e5;
+        --exo-kind-tooling: #d55181;
+        --exo-kind-app: #008300;
+        --exo-kind-other: #898781;
+        --exo-status-critical: #d03b3b;
+        --exo-status-warning: #fab219;
+    }
+}
+:where(:root[data-theme='dark'] .exo-graph), :where(.exo-graph[data-mode='dark']) {
+    color-scheme: dark;
+    --exo-surface: #1a1a19;
+    --exo-plane: #0d0d0d;
+    --exo-ink: #ffffff;
+    --exo-ink-secondary: #c3c2b7;
+    --exo-ink-muted: #898781;
+    --exo-edge: #383835;
+    --exo-edge-strong: #c3c2b7;
+    --exo-border: rgba(255,255,255,0.10);
+    --exo-kind-runtime: #3987e5;
+    --exo-kind-tooling: #d55181;
+    --exo-kind-app: #008300;
+    --exo-kind-other: #898781;
+    --exo-status-critical: #d03b3b;
+    --exo-status-warning: #fab219;
+}
+:where(:root[data-theme='light'] .exo-graph), :where(.exo-graph[data-mode='light']) {
+    color-scheme: light;
+    --exo-surface: #fcfcfb;
+    --exo-plane: #f9f9f7;
+    --exo-ink: #0b0b0b;
+    --exo-ink-secondary: #52514e;
+    --exo-ink-muted: #898781;
+    --exo-edge: #c3c2b7;
+    --exo-edge-strong: #52514e;
+    --exo-border: rgba(11,11,11,0.10);
+    --exo-kind-runtime: #2a78d6;
+    --exo-kind-tooling: #e87ba4;
+    --exo-kind-app: #008300;
+    --exo-kind-other: #898781;
+    --exo-status-critical: #d03b3b;
+    --exo-status-warning: #fab219;
+}
+
+.exo-graph {
+    background: var(--exo-surface);
+    color: var(--exo-ink);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.exo-graph .exo-graph-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.exo-graph .exo-node {
+    fill: var(--exo-kind-other);
+    stroke: var(--exo-surface);
+    stroke-width: 2;
+    transition: opacity 120ms ease-out;
+}
+.exo-graph .exo-node--runtime { fill: var(--exo-kind-runtime); }
+.exo-graph .exo-node--tooling { fill: var(--exo-kind-tooling); }
+.exo-graph .exo-node--app { fill: var(--exo-kind-app); }
+
+/* A broken rule is never carried by colour alone: the dashed ring reads without
+   colour vision, in print, and in forced-colors mode. */
+.exo-graph .exo-node.is-violating {
+    stroke: var(--exo-status-critical);
+    stroke-width: 3;
+    stroke-dasharray: 5 3;
+}
+
+/*
+ * A box with members is a card: plain background, colour on the edge and in the
+ * title band, text in the page's own ink. Anything else means reading a
+ * monospaced signature on top of a fully saturated fill.
+ */
+.exo-graph .exo-node--card {
+    fill: var(--exo-plane);
+    stroke-width: 1.5;
+}
+.exo-graph .exo-node--card.exo-node--runtime { stroke: var(--exo-kind-runtime); }
+.exo-graph .exo-node--card.exo-node--tooling { stroke: var(--exo-kind-tooling); }
+.exo-graph .exo-node--card.exo-node--app { stroke: var(--exo-kind-app); }
+.exo-graph .exo-node--card.exo-node--other { stroke: var(--exo-border); }
+.exo-graph .exo-node-band { opacity: 0.16; pointer-events: none; }
+.exo-graph .exo-node-band--runtime { fill: var(--exo-kind-runtime); }
+.exo-graph .exo-node-band--tooling { fill: var(--exo-kind-tooling); }
+.exo-graph .exo-node-band--app { fill: var(--exo-kind-app); }
+.exo-graph .exo-node-band--other { fill: var(--exo-kind-other); }
+.exo-graph .exo-node-group--card .exo-node-label { fill: var(--exo-ink); }
+.exo-graph .exo-node-group--card .exo-node-stereotype { fill: var(--exo-ink-secondary); }
+.exo-graph .exo-node-group--card .exo-node-member { fill: var(--exo-ink-secondary); }
+.exo-graph .exo-node-group--card .exo-node-divider {
+    stroke: var(--exo-border);
+    opacity: 1;
+}
+
+.exo-graph .exo-node-label {
+    fill: var(--exo-surface);
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+}
+.exo-graph .exo-node-stereotype {
+    fill: var(--exo-surface);
+    font-size: 10px;
+    opacity: 0.85;
+    pointer-events: none;
+}
+.exo-graph .exo-node-divider { stroke: var(--exo-surface); stroke-width: 1; opacity: 0.5; }
+.exo-graph .exo-node-member {
+    fill: var(--exo-surface);
+    font-size: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    /* Off by default so a drag over a box pans instead of selecting text; the
+       linked runs turn it back on for themselves. */
+    pointer-events: none;
+}
+/* UML's own marks: a static is underlined, an abstract is italic. */
+.exo-graph .exo-node-member--static { text-decoration: underline; }
+.exo-graph .exo-node-member--abstract { font-style: italic; }
+.exo-graph .exo-node-member--more {
+    fill: var(--exo-ink-muted);
+    font-style: italic;
+}
+.exo-graph .exo-node-group { cursor: pointer; }
+
+/*
+ * The panel is where a box's contents are readable in full: a diagram that says
+ * "… 32 more" has to have somewhere to send the reader.
+ */
+.exo-graph .exo-graph-member-list {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+}
+.exo-graph .exo-graph-member-list li {
+    display: grid;
+    grid-template-columns: 1.2em 1fr auto;
+    gap: 2px 6px;
+    padding: 4px 0;
+    border-top: 1px solid var(--exo-border);
+}
+.exo-graph .exo-graph-member-list code {
+    font-size: 12px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+.exo-graph .exo-graph-visibility {
+    color: var(--exo-ink-muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    cursor: help;
+}
+.exo-graph .exo-graph-modifier {
+    align-self: start;
+    color: var(--exo-ink-secondary);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--exo-border);
+    border-radius: 3px;
+    padding: 0 4px;
+}
+.exo-graph .exo-graph-doc {
+    grid-column: 2 / -1;
+    margin: 2px 0 0;
+    color: var(--exo-ink-secondary);
+    font-size: 12px;
+    line-height: 1.5;
+}
+/*
+ * The drawing and the panel, side by side and the same height.
+ *
+ * Beside, not on top. A panel floating over the canvas is a piece of canvas that
+ * cannot be dragged — and it sits exactly where the reader just clicked, so the
+ * dead patch is the one they are most likely to grab. One row, one scroll each,
+ * nothing sticky pretending to be a header.
+ */
+.exo-graph .exo-graph-body {
+    display: flex;
+    align-items: stretch;
+}
+.exo-graph .exo-graph-body > .exo-graph-stage {
+    flex: 1 1 auto;
+    /* Without this a flex item refuses to shrink below its content. */
+    min-width: 0;
+}
+.exo-graph .exo-graph-link {
+    color: var(--exo-kind-runtime);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: pointer;
+}
+
+/* Too narrow for two columns: the panel goes under the drawing and gives back
+   most of the height it was using. */
+@media (max-width: 860px) {
+    .exo-graph .exo-graph-body { flex-wrap: wrap; }
+    .exo-graph .exo-graph-body > .exo-graph-details.is-open {
+        flex-basis: 100%;
+        width: 100%;
+        max-height: 40vh;
+        border-left-width: 0;
+        border-top: 1px solid var(--exo-border);
+    }
+    .exo-graph .exo-graph-details-body { width: 100%; }
+    .exo-graph .exo-graph-search input { min-width: 9rem; }
+}
+
+/*
+ * While a package's insides are on their way. Fetching is usually instant from
+ * cache and distinctly not instant on a phone — and a double-click that appears
+ * to do nothing gets clicked again.
+ */
+.exo-graph .exo-graph-status {
+    position: absolute;
+    left: 50%;
+    top: 12px;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: var(--exo-plane);
+    border: 1px solid var(--exo-border);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.18);
+    font-size: 0.85em;
+}
+.exo-graph .exo-graph-status--error {
+    border-color: var(--exo-status-critical);
+    color: var(--exo-status-critical);
+}
+.exo-graph .exo-graph-spinner {
+    width: 0.85em;
+    height: 0.85em;
+    border-radius: 50%;
+    border: 2px solid var(--exo-border);
+    border-top-color: var(--exo-kind-runtime);
+    animation: exo-graph-spin 0.7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    .exo-graph .exo-graph-spinner { animation: none; }
+}
+@keyframes exo-graph-spin { to { transform: rotate(360deg); } }
+
+.exo-graph .exo-graph-doc--lead {
+    grid-column: auto;
+    margin: 0 0 10px;
+    font-size: 13px;
+}
+.exo-graph .exo-node-link {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: pointer;
+    pointer-events: auto;
+}
+.exo-graph .exo-node-link:hover { text-decoration-style: solid; }
+
+/* UML notation. The line style and the arrowhead together say what the tie is:
+   solid + hollow triangle is "is a", dashed + hollow triangle is "implements",
+   filled diamond is "owns", dashed + open arrow is "merely uses". */
+.exo-graph .exo-edge--inheritance { stroke-dasharray: none; }
+.exo-graph .exo-edge--realization { stroke-dasharray: 6 4; }
+.exo-graph .exo-edge--composition { stroke-dasharray: none; }
+.exo-graph .exo-edge--association { stroke-dasharray: none; }
+.exo-graph .exo-edge--dependency { stroke-dasharray: 4 4; opacity: 0.75; }
+.exo-graph .exo-marker-hollow {
+    fill: var(--exo-plane);
+    stroke: var(--exo-edge-strong);
+    stroke-width: 1.5;
+}
+.exo-graph .exo-marker-filled { fill: var(--exo-edge-strong); }
+.exo-graph .exo-marker-open {
+    fill: none;
+    stroke: var(--exo-edge-strong);
+    stroke-width: 1.5;
+}
+.exo-graph .exo-node-group { cursor: pointer; }
+
+.exo-graph .exo-edge {
+    fill: none;
+    stroke: var(--exo-edge);
+    transition: opacity 120ms ease-out;
+}
+/* Erased at build time — drawn as absent as it is at runtime. */
+.exo-graph .exo-edge--type-only { stroke-dasharray: 4 4; opacity: 0.7; }
+/* A code-split boundary, not a load-time dependency. */
+.exo-graph .exo-edge--dynamic { stroke-dasharray: 1 5; stroke-linecap: round; }
+.exo-graph .exo-edge.is-violating { stroke: var(--exo-status-critical); }
+
+/* Focus: the touched neighbourhood stays, everything else recedes. Recede, not
+   hide — the shape of the whole graph is the context that makes a focus mean
+   something. */
+.exo-graph .is-dimmed { opacity: 0.12; }
+.exo-graph .is-related { opacity: 1; }
+.exo-graph .exo-node.is-focused {
+    stroke: var(--exo-edge-strong);
+    stroke-width: 3;
+}
+.exo-graph .exo-edge.is-related { stroke: var(--exo-edge-strong); }
+
+/* A search marks BOTH sides: the misses recede and the hits thicken. Dimming
+   alone is hard to spot on a drawing made mostly of small boxes. */
+.exo-graph .exo-node.is-unmatched { opacity: 0.12; }
+.exo-graph .exo-node-group:has(.exo-node.is-unmatched) text { opacity: 0.12; }
+.exo-graph .exo-node.is-match { stroke-width: 3; }
+
+/* Keyboard users have to be able to SEE where they are. */
+.exo-graph .exo-graph-stage:focus-visible {
+    outline: 2px solid var(--exo-kind-runtime);
+    outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .exo-graph .exo-node,
+    .exo-graph .exo-edge { transition: none; }
+}
+
+/* ── chrome ─────────────────────────────────────────────────────────────────
+   Shipped WITH the library, not left to the host. A host restyles by
+   overriding the custom properties; it should not have to write a stylesheet
+   before the thing looks like anything. */
+.exo-graph {
+    border: 1px solid var(--exo-border);
+    border-radius: 8px;
+    /* clip, not hidden: both keep the corners tidy, but hidden makes this a
+       scroll container, and a sticky child of a scroll container never sticks —
+       which is what the inspector card depends on. (This whole stylesheet is a
+       template literal: no backticks in it.) */
+    overflow: clip;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+.exo-graph .exo-graph-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--exo-border);
+    background: var(--exo-surface);
+}
+.exo-graph .exo-graph-search {
+    display: flex;
+    align-items: baseline;
+    /* Wide enough that the count does not read as part of the field — a search
+       input's own clear button already sits right at that edge. */
+    gap: 0.75rem;
+    margin-right: auto;
+}
+.exo-graph .exo-graph-search input {
+    font: inherit;
+    color: var(--exo-ink);
+    background: var(--exo-plane);
+    border: 1px solid var(--exo-border);
+    border-radius: 6px;
+    padding: 0.25rem 0.55rem;
+    min-width: 15rem;
+}
+.exo-graph .exo-graph-search input::placeholder { color: var(--exo-ink-muted); }
+.exo-graph .exo-graph-search-count {
+    color: var(--exo-ink-muted);
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+.exo-graph .exo-graph-relation-swatch { overflow: visible; }
+.exo-graph .exo-graph-legend--relations .exo-graph-legend-item { gap: 0.3rem; }
+.exo-graph .exo-graph-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-right: auto;
+}
+.exo-graph .exo-graph-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--exo-ink);
+}
+.exo-graph .exo-graph-swatch {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 3px;
+    background: var(--exo-kind-other);
+}
+.exo-graph .exo-graph-swatch--runtime { background: var(--exo-kind-runtime); }
+.exo-graph .exo-graph-swatch--tooling { background: var(--exo-kind-tooling); }
+.exo-graph .exo-graph-swatch--app { background: var(--exo-kind-app); }
+.exo-graph .exo-graph-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-bottom: 1px solid var(--exo-border);
+    color: var(--exo-ink-secondary);
+}
+.exo-graph .exo-graph-breadcrumb button,
+.exo-graph .exo-graph-open {
+    border: 1px solid var(--exo-border);
+    border-radius: 5px;
+    padding: 0.25rem 0.6rem;
+    background: transparent;
+    color: var(--exo-ink);
+    cursor: pointer;
+    font: inherit;
+}
+.exo-graph .exo-graph-open { margin-bottom: 0.6rem; }
+.exo-graph .exo-graph-breadcrumb button:hover,
+.exo-graph .exo-graph-open:hover { background: var(--exo-plane); }
+
+.exo-graph .exo-graph-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    color: var(--exo-ink);
+}
+
+/* A window onto the drawing, not a box that scrolls it: the reader drags to
+   move and pinches to zoom, so the surface must not scroll underneath them. */
+.exo-graph .exo-graph-stage {
+    position: relative;
+    height: 65vh;
+    min-height: 24rem;
+    /* The drawing is bigger than its box and is moved by dragging, so the box
+       has to cut it off. */
+    overflow: hidden;
+    background: var(--exo-plane);
+    /* The browser must not claim the gesture: touch-action stops it scrolling
+       or pinch-zooming the page, and user-select stops a drag from selecting
+       the labels instead of moving the graph — which is what makes panning feel
+       broken rather than merely imperfect. */
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+}
+.exo-graph .exo-graph-stage:active { cursor: grabbing; }
+.exo-graph .exo-graph-stage .exo-graph-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.exo-graph .exo-graph-zoom {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.exo-graph .exo-graph-zoom button {
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--exo-border);
+    border-radius: 5px;
+    background: var(--exo-surface);
+    color: var(--exo-ink);
+    cursor: pointer;
+    font: inherit;
+    line-height: 1;
+}
+.exo-graph .exo-graph-zoom button:hover { background: var(--exo-plane); }
+
+/*
+ * A drawer. Shut it takes no width at all, so the drawing has the whole stage;
+ * selecting something slides it in.
+ *
+ * It PUSHES the drawing rather than covering it. Sliding it over the canvas
+ * would be cheaper to animate, and it would also make the part of the canvas
+ * under it undraggable — which is the bug this layout exists to avoid.
+ */
+.exo-graph .exo-graph-details {
+    flex: 0 0 0;
+    width: 0;
+    /* The same height as the drawing beside it, with its own single scroll —
+       the panel must not stretch the page to the length of a class with forty
+       members. */
+    max-height: 65vh;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    border-left: 0 solid var(--exo-border);
+    color: var(--exo-ink);
+    transition:
+        flex-basis 180ms ease-out,
+        width 180ms ease-out;
+}
+.exo-graph .exo-graph-details.is-open {
+    flex-basis: 22rem;
+    width: 22rem;
+    overflow-y: auto;
+    border-left-width: 1px;
+}
+/* ONE box holds the contents and the padding. It keeps its own width while the
+   drawer moves, so the text slides out of view instead of reflowing narrower on
+   every frame — and every rule below can go on assuming the panel is padded. */
+.exo-graph .exo-graph-details-body {
+    box-sizing: border-box;
+    width: 22rem;
+    padding: 0.9rem;
+}
+.exo-graph .exo-graph-details-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+.exo-graph .exo-graph-details-head h3 { flex: 1; }
+.exo-graph .exo-graph-stereotype-tag {
+    color: var(--exo-ink-muted);
+    font-size: 0.8em;
+}
+.exo-graph .exo-graph-close {
+    border: 0;
+    background: none;
+    color: var(--exo-ink-muted);
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 0 0.2rem;
+    cursor: pointer;
+}
+.exo-graph .exo-graph-close:hover { color: var(--exo-ink); }
+
+@media (prefers-reduced-motion: reduce) {
+    .exo-graph .exo-graph-details { transition: none; }
+}
+.exo-graph .exo-graph-details h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+.exo-graph .exo-graph-details h4 {
+    margin: 1rem 0 0.35rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--exo-ink-secondary);
+}
+.exo-graph .exo-graph-facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.1rem 0.9rem;
+    margin: 0;
+}
+.exo-graph .exo-graph-facts dt { color: var(--exo-ink-secondary); }
+.exo-graph .exo-graph-facts dd { margin: 0; }
+.exo-graph .exo-graph-edge-list { list-style: none; margin: 0; padding: 0; }
+.exo-graph .exo-graph-edge-list > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--exo-border);
+}
+.exo-graph .exo-graph-edge-name { font-weight: 600; }
+.exo-graph .exo-graph-edge-kinds {
+    color: var(--exo-ink-secondary);
+    font-size: 0.85em;
+}
+.exo-graph .exo-graph-edge-list details { flex-basis: 100%; }
+.exo-graph .exo-graph-edge-list summary {
+    cursor: pointer;
+    color: var(--exo-ink-secondary);
+    font-size: 0.85em;
+}
+.exo-graph .exo-graph-edge-list details ul {
+    margin: 0.25rem 0 0;
+    padding-left: 1.1rem;
+    color: var(--exo-ink-secondary);
+    font-size: 0.85em;
+    word-break: break-all;
+}
+.exo-graph .exo-graph-violation {
+    flex-basis: 100%;
+    margin-top: 0.35rem;
+    padding: 0.45rem 0.7rem;
+    border-left: 3px solid var(--exo-status-critical);
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--exo-status-critical) 12%, transparent);
+}
+.exo-graph .exo-graph-violation p { margin: 0.25rem 0 0; font-size: 0.85em; }
+.exo-graph .exo-graph-empty { color: var(--exo-ink-secondary); margin: 0; }

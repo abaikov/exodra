@@ -1,87 +1,53 @@
 import type { TExoContext, TExoSchema } from '@exodra/core';
 import { useSsr } from './context';
+import { normalizeSchemas } from './normalizeSchemas';
 
 type TExoSsrChild = TExoSchema | readonly TExoSchema[] | null | undefined;
 
-type TExoHeadProps = {
-    children?: TExoSsrChild;
-};
+// Props are read through the context API (`getConstant`), the same way every
+// other component reads them — not by reaching into `schema.attrs.static`.
+// Metadata components render nothing: they only write to the SSR context, so
+// each returns an empty child list.
 
-type TExoStatusProps = {
-    code: number;
-};
-
-type TExoHeaderProps = {
-    name: string;
-    value: string;
-    append?: boolean;
-};
-
-type TExoStateProps = {
-    name: string;
-    value: unknown;
-};
-
+/** `<Head>{…}</Head>` — moves its children into the document `<head>`. */
 export function Head(context: TExoContext): readonly TExoSchema[] {
-    const props = getProps<TExoHeadProps>(context);
-    const children = normalizeChildren(props.children);
+    const children = normalizeSchemas(
+        context.getConstant<TExoSsrChild>('children')
+    );
 
     if (children.length > 0) {
         useSsr(context)?.addHead(children);
     }
 
-    // Return empty array - the Head component should not render anything in body
     return [];
 }
 
+/** `<Status code={404} />` — sets the response status. */
 export function Status(context: TExoContext): readonly TExoSchema[] {
-    const props = getProps<TExoStatusProps>(context);
-    useSsr(context)?.setStatus(props.code);
+    useSsr(context)?.setStatus(context.getConstant<number>('code') as number);
     return [];
 }
 
+/** `<Header name value append? />` — sets (or appends) a response header. */
 export function Header(context: TExoContext): readonly TExoSchema[] {
-    const props = getProps<TExoHeaderProps>(context);
+    const name = context.getConstant<string>('name') as string;
+    const value = context.getConstant<string>('value') as string;
     const ssr = useSsr(context);
 
-    if (props.append) {
-        ssr?.appendHeader(props.name, props.value);
+    if (context.getConstant<boolean>('append')) {
+        ssr?.appendHeader(name, value);
     } else {
-        ssr?.setHeader(props.name, props.value);
+        ssr?.setHeader(name, value);
     }
 
     return [];
 }
 
+/** `<State name value />` — adds an entry to the serialized SSR state. */
 export function State(context: TExoContext): readonly TExoSchema[] {
-    const props = getProps<TExoStateProps>(context);
-    useSsr(context)?.setState(props.name, props.value);
+    useSsr(context)?.setState(
+        context.getConstant<string>('name') as string,
+        context.getConstant('value')
+    );
     return [];
-}
-
-function getProps<TProps>(context: TExoContext): TProps {
-    // With the new h() function, props are in the constants bucket. The
-    // context schema's attrs are typed as `unknown`, so narrow structurally.
-    const attrs = context.schema.attrs as
-        | { static?: unknown }
-        | null
-        | undefined;
-
-    // If attrs has a constants bucket, return that
-    if (attrs?.static) {
-        return attrs.static as TProps;
-    }
-
-    // Otherwise return attrs directly (for backward compatibility)
-    return attrs as unknown as TProps;
-}
-
-function normalizeChildren(children: TExoSsrChild): TExoSchema[] {
-    if (children === undefined || children === null) {
-        return [];
-    }
-
-    return Array.isArray(children)
-        ? [...(children as readonly TExoSchema[])]
-        : [children as TExoSchema];
 }

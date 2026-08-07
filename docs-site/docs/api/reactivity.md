@@ -8,7 +8,7 @@ title: Reactivity API
 The `@exodra/reactivity` package provides Exodra's reactive primitives. There is
 **no `.value` property and no `signal`/`computed`/`effect`/`batch`** — every
 reactive value is accessed with explicit methods (`getValue()` / `setValue()` /
-`subscribe()`), which is what makes the renderer's wiring cheap and predictable.
+`onChange()`), which is what makes the renderer's wiring cheap and predictable.
 
 :::note Types vs implementation
 The reactive-value **contract** (`TExoBindable`, `TExoBindableList`, `TExoListOp`, and
@@ -18,7 +18,7 @@ dependencies. `@exodra/reactivity` is one *implementation* of that contract and
 re-exports the types, so importing them from here keeps working. Renderers
 (`@exodra/dom`, `@exodra/string`) and bridges (e.g. an oimdb adapter) depend only on
 the contract package, never on this implementation — which is why any conforming
-`{ getValue, subscribe }` value can be handed to a bucket.
+`{ getValue, onChange }` value can be handed to a bucket.
 :::
 
 ```bash
@@ -43,7 +43,7 @@ function bindable<TValue, TEvent = TValue>(
 type TExoWritableBindable<TValue, TEvent = TValue> = {
   getValue(): TValue;
   setValue(value: TValue, event?: TEvent): void;
-  subscribe(update: (event: TEvent) => void): () => void;
+  onChange(update: (event: TEvent) => void): () => void;
 };
 ```
 
@@ -51,14 +51,14 @@ type TExoWritableBindable<TValue, TEvent = TValue> = {
 - `setValue(next)` updates the value and notifies subscribers. A write that does
   not change the value (and has no explicit `event`) is skipped — no subscriber
   runs.
-- `subscribe(fn)` registers a listener and returns an unsubscribe function.
+- `onChange(fn)` registers a listener and returns an unsubscribe function.
 
 ```javascript
 import { bindable } from '@exodra/reactivity';
 
 const count = bindable(0);
 
-const unsubscribe = count.subscribe(value => {
+const unsubscribe = count.onChange(value => {
   console.log('count is now', value);
 });
 
@@ -87,7 +87,7 @@ const temperature = bindable(20, (value, previous) => ({
   delta: value - previous,
 }));
 
-temperature.subscribe(event => {
+temperature.onChange(event => {
   console.log(`changed by ${event.delta}`);
 });
 
@@ -141,8 +141,8 @@ snapshots, so the renderer only touches the nodes that changed.
 function list<TItem>(initialItems?: readonly TItem[]): TExoWritableBindableList<TItem>;
 
 type TExoWritableBindableList<TItem> = {
-  snapshot(): TItem[];
-  subscribeOps(update: (op: TExoListOp<TItem>) => void): () => void;
+  getValue(): readonly TItem[];
+  onChange(update: (op: TExoListOp<TItem>) => void): () => void;
   insert(index: number, item: TItem): void;
   push(item: TItem): void;
   remove(index: number, count?: number): void;
@@ -154,8 +154,8 @@ type TExoWritableBindableList<TItem> = {
 
 | Method | Description |
 | --- | --- |
-| `snapshot()` | Returns a copy of the current items. |
-| `subscribeOps(fn)` | Subscribe to list operations; returns an unsubscribe function. |
+| `getValue()` | Returns a copy of the current items. |
+| `onChange(fn)` | Subscribe to list operations; returns an unsubscribe function. |
 | `insert(index, item)` | Insert one item at `index` (clamped to bounds). |
 | `push(item)` | Append one item. |
 | `remove(index, count?)` | Remove `count` items (default `1`) at `index`. |
@@ -164,7 +164,7 @@ type TExoWritableBindableList<TItem> = {
 | `reset(items)` | Replace the entire contents. |
 
 > There is **no** `map` / `filter` / `forEach` / `get` / `length` / `pop` /
-> `shift` / `splice`. Derive your own arrays with `snapshot()` and standard
+> `shift` / `splice`. Derive your own arrays with `getValue()` and standard
 > array methods when you need them.
 
 ```javascript
@@ -176,7 +176,7 @@ items.push('c');          // insert at end
 items.insert(0, 'z');     // ['z', 'a', 'b', 'c']
 items.move(0, 2);         // move 'z' to index 2
 items.remove(1);          // remove one item at index 1
-items.snapshot();         // current items as a plain array
+items.getValue();         // current items as a plain array
 ```
 
 Bind a list directly into the `bindableList={{ children }}` bucket. Each item in
@@ -270,8 +270,8 @@ hydration flow.
 The reactive-value **contract** lives in its own types-only package —
 `@exodra/reactivity-types` — with **zero runtime and zero dependencies**:
 
-- `TExoBindable<TValue, TEvent>` — `{ getValue(): TValue; subscribe(cb): () => void }`
-- `TExoBindableList<TItem, TEvent>` — `{ snapshot(): readonly TItem[]; subscribeOps(cb): () => void }`
+- `TExoBindable<TValue, TEvent>` — `{ getValue(): TValue; onChange(cb): () => void }`
+- `TExoBindableList<TItem, TEvent>` — `{ getValue(): readonly TItem[]; onChange(cb): () => void }`
 - `TExoListOp<TItem>` — the `insert | remove | move | set | reset` op union
 - `TExoWritableBindable` / `TExoWritableBindableList` — the above plus mutators
 

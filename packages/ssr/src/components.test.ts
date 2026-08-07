@@ -5,7 +5,8 @@ import { ssrContextKey } from './context';
 import type { TExoSsrContext } from './types';
 
 // A recording SSR sink + a context wired to it. `staticProps` become the
-// component's props (h() puts props in the `static` bucket).
+// component's props (h() puts props in the `static` bucket) and are read the way
+// the real contexts serve them — through `getConstant`.
 function setup(staticProps?: Record<string, unknown>) {
     const calls: Array<[string, ...unknown[]]> = [];
     const sink = {
@@ -17,6 +18,7 @@ function setup(staticProps?: Record<string, unknown>) {
     } as unknown as TExoSsrContext;
     const context = {
         schema: { attrs: staticProps ? { static: staticProps } : {} },
+        getConstant: (name: string) => staticProps?.[name],
         inject: (key: unknown) => (key === ssrContextKey ? sink : undefined),
     } as unknown as TExoContext;
     return { context, calls };
@@ -80,19 +82,25 @@ describe('Head', () => {
     });
 });
 
-describe('getProps fallback (no static bucket)', () => {
-    it('reads props straight off attrs when there is no static bucket', () => {
-        // attrs itself carries the props (backward-compat path).
+describe('props come from the constants bucket only', () => {
+    it('ignores props written flat onto attrs (no `static` bucket)', () => {
+        // The old backward-compat path read `attrs` directly when there was no
+        // `static` bucket. Props are now read through the context API, so flat
+        // attrs simply carry nothing — the component is a no-op.
         const calls: Array<[string, ...unknown[]]> = [];
         const sink = {
             setStatus: (code: number) => calls.push(['setStatus', code]),
         } as unknown as TExoSsrContext;
+        const attrs: Record<string, unknown> = { code: 500 }; // flat, no bucket
         const context = {
-            schema: { attrs: { code: 500 } },
+            schema: { attrs },
+            // Exactly what the real contexts do: read the `static` bucket.
+            getConstant: (name: string) =>
+                (attrs.static as Record<string, unknown> | undefined)?.[name],
             inject: (key: unknown) => (key === ssrContextKey ? sink : undefined),
         } as unknown as TExoContext;
         Status(context);
-        expect(calls).toEqual([['setStatus', 500]]);
+        expect(calls).toEqual([['setStatus', undefined]]);
     });
 });
 
@@ -100,6 +108,8 @@ describe('no SSR context', () => {
     it('components are safe no-ops when useSsr() is undefined', () => {
         const context = {
             schema: { attrs: { static: { code: 200 } } },
+            getConstant: (name: string) =>
+                ({ code: 200 } as Record<string, unknown>)[name],
             inject: () => undefined,
         } as unknown as TExoContext;
         expect(() => Status(context)).not.toThrow();

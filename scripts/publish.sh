@@ -7,6 +7,12 @@ set -e
 
 echo "🚀 Publishing Exodra packages to NPM..."
 
+# Provenance is set by the release workflow via NPM_CONFIG_PROVENANCE, which npm
+# reads directly. It is rejected outside a supported CI, so it stays unset locally.
+if [[ -n "${NPM_CONFIG_PROVENANCE:-}" ]]; then
+    echo "🔏 Provenance attestation: ON"
+fi
+
 # Check if logged in to NPM
 if ! npm whoami > /dev/null 2>&1; then
     echo "❌ You're not logged in to NPM"
@@ -14,57 +20,44 @@ if ! npm whoami > /dev/null 2>&1; then
     exit 1
 fi
 
-# Check if @exodra organization exists
+# Org visibility is a first-run convenience check, not a safety gate: a granular
+# automation token (what CI uses) legitimately has publish rights WITHOUT org-read,
+# so a hard failure here would block every CI release. Warn and continue — a real
+# permissions problem still surfaces on the publish itself.
 ORG_CHECK=$(npm org ls @exodra 2>/dev/null || echo "not-found")
 if [[ "$ORG_CHECK" == "not-found" ]]; then
-    echo "❌ @exodra organization not found on NPM"
-    echo "Create it first: https://www.npmjs.com/org/create"
-    echo "Or update package.json to use different scope"
-    exit 1
+    echo "⚠️  Could not read the @exodra org (expected with a granular token)."
+    echo "    Continuing — publish will fail loudly if the rights are actually missing."
 fi
 
 # Build all packages
 echo "📦 Building packages..."
 npm run build:all
 
-# Packages to publish in dependency order (dependencies first)
-PACKAGES=(
-    "packages/core"
-    "packages/reactivity-types"
-    "packages/reactivity"
-    "packages/string"
-    "packages/dom"
-    "packages/ssr"
-    "packages/router"
-    "packages/jsx"
-    "packages/attrs"
-    "packages/forms"
-    "packages/style"
-    "packages/babel-plugin-jsx"
-    "packages/babel-preset-exodra"
-    "packages/esbuild-plugin-exodra"
-    "packages/rollup-plugin-exodra"
-    "packages/bun-plugin-exodra"
-    "packages/swc-plugin-exodra"
-    "packages/vite-plugin-exodra"
-    "packages/profiler"
-    "packages/dom-profiler"
-    "packages/react"
-    "packages/introspect"
-    "packages/create-exodra"
-)
+# Dependencies first, worked out from the manifests. A hand-kept list drifts —
+# this one held a package directory that had been renamed away months earlier,
+# and was missing a package that had been added.
+IFS=$'\n' read -r -d '' -a PACKAGES < <(node scripts/publish-order.mjs && printf '\0')
 
-# Guard: fail loud if a non-private, publishable package is missing from PACKAGES,
-# so the list can't silently drift when a new package is added.
-for pj in packages/*/package.json; do
-    dir="packages/$(basename "$(dirname "$pj")")"
-    [ "$(node -p "require('./$pj').private === true" 2>/dev/null)" = "true" ] && continue
-    listed=""
-    for p in "${PACKAGES[@]}"; do [ "$p" = "$dir" ] && listed=1 && break; done
-    if [ -z "$listed" ]; then
-        echo "❌ publish guard: $dir is publishable but NOT in PACKAGES — add it (or mark it private)."
-        exit 1
-    fi
+if [ ${#PACKAGES[@]} -eq 0 ]; then
+    echo "❌ publish order came back empty — refusing to publish nothing."
+    exit 1
+fi
+
+# Guard: whatever a package promises to ship has to actually be on disk. Without
+# this a package whose build was skipped publishes an empty tarball, and the
+# breakage lands on whoever installs it rather than on us.
+for package in "${PACKAGES[@]}"; do
+    while IFS= read -r entry; do
+        [ -z "$entry" ] && continue
+        # A files entry may be a glob; only plain paths are checked, which is
+        # what every package here uses.
+        case "$entry" in *"*"*) continue ;; esac
+        if [ ! -e "$package/$entry" ]; then
+            echo "❌ publish guard: $package promises '$entry' in package.json files, but it is not there. Build it first."
+            exit 1
+        fi
+    done < <(node -p "(require('./$package/package.json').files || []).join('\n')")
 done
 
 for package in "${PACKAGES[@]}"; do

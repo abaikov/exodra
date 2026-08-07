@@ -102,3 +102,69 @@ describe('spaceAttribute', () => {
         expect(spaceAttribute('title', undefined)).toBe('');
     });
 });
+
+describe('escapeHtml — the two implementations must agree (security-critical)', () => {
+    // Reference: the plain chained-replace escaper, applied unconditionally.
+    const reference = (v: unknown): string =>
+        String(v)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+
+    it('matches the reference on adversarial inputs', () => {
+        const cases = [
+            '',
+            '&',
+            '<',
+            '>',
+            '"',
+            '&<>"',
+            '&&&&',
+            '<script>alert("x")</script>',
+            '"><img src=x onerror=alert(1)>',
+            'a&b',
+            '&amp;', // already-escaped text must be escaped AGAIN
+            ' & ',
+            'ss&ss', // non-ascii neighbours
+            ' '.repeat(63) + '&',
+            ' '.repeat(64) + '&',
+            ' '.repeat(65) + '&',
+            '&' + ' '.repeat(200),
+        ];
+        for (const input of cases) {
+            expect(escapeHtml(input)).toBe(reference(input));
+        }
+    });
+
+    it('matches the reference across the length threshold, generated', () => {
+        let seed = 99;
+        const rnd = (n: number) => {
+            seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+            return seed % n;
+        };
+        const alphabet = ['a', 'b', ' ', '&', '<', '>', '"'];
+        for (let len = 0; len <= 130; len++) {
+            for (let trial = 0; trial < 12; trial++) {
+                let s = '';
+                for (let i = 0; i < len; i++) s += alphabet[rnd(alphabet.length)];
+                expect(escapeHtml(s)).toBe(reference(s));
+            }
+        }
+    });
+
+    it('never leaves a bare HTML-significant character in the output', () => {
+        const s = '<a href="x">& more &</a>'.repeat(6);
+        const out = escapeHtml(s);
+        expect(out).not.toMatch(/[<>"]/);
+        expect(out.match(/&(?!amp;|lt;|gt;|quot;)/)).toBeNull();
+    });
+
+    it('escapes non-string values through String() the same way', () => {
+        const values: unknown[] = [0, 1, -1, true, false, null, undefined, NaN];
+        for (const v of values) {
+            expect(escapeHtml(v)).toBe(reference(v));
+        }
+        expect(escapeHtml({ toString: () => '<x>' })).toBe(reference({ toString: () => '<x>' }));
+    });
+});

@@ -1,0 +1,597 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "babelPresetExodra",
+        "label": "babelPresetExodra",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(api, options): { presets: PluginIt…",
+            "full": "(api, options): { presets: PluginItem[]; plugins: PluginItem[]; }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 267,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exodraJsxPlugin",
+        "label": "exodraJsxPlugin",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "ExodraPresetOptions",
+        "label": "ExodraPresetOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "importSource?: string;",
+            "full": "importSource?: string;",
+            "doc": "Module the auto-imported `h`/`text` come from.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "hoistStatic?: boolean;",
+            "full": "hoistStatic?: boolean;",
+            "doc": "Compile-time clone-cache for static subtrees.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "typescript?: boolean;",
+            "full": "typescript?: boolean;",
+            "doc": "Include `@babel/preset-typescript` so `.ts`/`.tsx` sources are stripped of types.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "mode?: 'dom' | 'ssr';",
+            "full": "mode?: 'dom' | 'ssr';",
+            "doc": "'dom' (default) compiles JSX to h() schemas for the client renderer; 'ssr' compiles to HTML-string functions for the server (see",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "interface",
+        "width": 178,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "ExodraTransformOptions",
+        "label": "ExodraTransformOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "importSource?: string;",
+            "full": "importSource?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "hoistStatic?: boolean;",
+            "full": "hoistStatic?: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "typescript?: boolean;",
+            "full": "typescript?: boolean;",
+            "doc": "Run preset-typescript.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "mode?: 'dom' | 'ssr';",
+            "full": "mode?: 'dom' | 'ssr';",
+            "doc": "'dom' (default) or 'ssr' — see ExodraPresetOptions.mode.",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "interface",
+        "doc": "Options for {@link transformExodraJsx}, forwarded to the preset.",
+        "width": 178,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "ExodraTransformResult",
+        "label": "ExodraTransformResult",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "code: string;",
+            "full": "code: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "map: object | null;",
+            "full": "map: object | null;",
+            "doc": "Babel's raw source map object; cast to your bundler's map input type.",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "interface",
+        "doc": "Result of {@link transformExodraJsx}: emitted code plus a raw source map.",
+        "width": 158,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "presetTypescript",
+        "label": "presetTypescript",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 126,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "syntaxJsx",
+        "label": "syntaxJsx",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "transformExodraJsx",
+        "label": "transformExodraJsx",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(code, filename, options): Promise<ExodraTrans…",
+            "full": "(code, filename, options): Promise<ExodraTransformResult>",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(code, filename, options): Promise<"
+              },
+              {
+                "text": "ExodraTransformResult",
+                "link": "ExodraTransformResult"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Compile one Exodra JSX/TSX source through the preset.",
+        "width": 338,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "babelPresetExodra→exodraJsxPlugin",
+        "from": "babelPresetExodra",
+        "to": "exodraJsxPlugin",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "babelPresetExodra→ExodraPresetOptions",
+        "from": "babelPresetExodra",
+        "to": "ExodraPresetOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "babelPresetExodra→presetTypescript",
+        "from": "babelPresetExodra",
+        "to": "presetTypescript",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "babelPresetExodra→syntaxJsx",
+        "from": "babelPresetExodra",
+        "to": "syntaxJsx",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExodraTransformOptions→transformExodraJsx",
+        "from": "ExodraTransformOptions",
+        "to": "transformExodraJsx",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExodraTransformResult→transformExodraJsx",
+        "from": "ExodraTransformResult",
+        "to": "transformExodraJsx",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "transformExodraJsx→babelPresetExodra",
+        "from": "transformExodraJsx",
+        "to": "babelPresetExodra",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "transformExodraJsx→ExodraTransformOptions",
+        "from": "transformExodraJsx",
+        "to": "ExodraTransformOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "transformExodraJsx→ExodraTransformResult",
+        "from": "transformExodraJsx",
+        "to": "ExodraTransformResult",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/babel-preset-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1201,
+    "height": 384.5,
+    "nodes": [
+      {
+        "id": "babelPresetExodra",
+        "x": 668,
+        "y": 141,
+        "width": 267,
+        "height": 69
+      },
+      {
+        "id": "exodraJsxPlugin",
+        "x": 1028,
+        "y": 314.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "ExodraPresetOptions",
+        "x": 999,
+        "y": 172.5,
+        "width": 178,
+        "height": 114
+      },
+      {
+        "id": "ExodraTransformOptions",
+        "x": 24,
+        "y": 24,
+        "width": 178,
+        "height": 114
+      },
+      {
+        "id": "ExodraTransformResult",
+        "x": 722.5,
+        "y": 29,
+        "width": 158,
+        "height": 84
+      },
+      {
+        "id": "presetTypescript",
+        "x": 1025,
+        "y": 98.5,
+        "width": 126,
+        "height": 46
+      },
+      {
+        "id": "syntaxJsx",
+        "x": 1028,
+        "y": 24.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "transformExodraJsx",
+        "x": 266,
+        "y": 46.5,
+        "width": 338,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "babelPresetExodra→exodraJsxPlugin",
+        "points": [
+          {
+            "x": 836.7,
+            "y": 210
+          },
+          {
+            "x": 967,
+            "y": 337.5
+          },
+          {
+            "x": 1028,
+            "y": 337.5
+          }
+        ]
+      },
+      {
+        "id": "babelPresetExodra→ExodraPresetOptions",
+        "points": [
+          {
+            "x": 907.2,
+            "y": 210
+          },
+          {
+            "x": 967,
+            "y": 229.5
+          },
+          {
+            "x": 999,
+            "y": 229.5
+          }
+        ]
+      },
+      {
+        "id": "babelPresetExodra→presetTypescript",
+        "points": [
+          {
+            "x": 907.2,
+            "y": 141
+          },
+          {
+            "x": 967,
+            "y": 121.5
+          },
+          {
+            "x": 1025,
+            "y": 121.5
+          }
+        ]
+      },
+      {
+        "id": "babelPresetExodra→syntaxJsx",
+        "points": [
+          {
+            "x": 846.1,
+            "y": 141
+          },
+          {
+            "x": 967,
+            "y": 47.5
+          },
+          {
+            "x": 1028,
+            "y": 47.5
+          }
+        ]
+      },
+      {
+        "id": "ExodraTransformOptions→transformExodraJsx",
+        "points": [
+          {
+            "x": 202,
+            "y": 88.4
+          },
+          {
+            "x": 234,
+            "y": 91
+          },
+          {
+            "x": 266,
+            "y": 89.4
+          }
+        ]
+      },
+      {
+        "id": "ExodraTransformResult→transformExodraJsx",
+        "points": [
+          {
+            "x": 722.5,
+            "y": 66.2
+          },
+          {
+            "x": 636,
+            "y": 61
+          },
+          {
+            "x": 604,
+            "y": 64.2
+          }
+        ]
+      },
+      {
+        "id": "transformExodraJsx→babelPresetExodra",
+        "points": [
+          {
+            "x": 508.4,
+            "y": 115.5
+          },
+          {
+            "x": 636,
+            "y": 175.5
+          },
+          {
+            "x": 668,
+            "y": 175.5
+          }
+        ]
+      },
+      {
+        "id": "transformExodraJsx→ExodraTransformOptions",
+        "points": [
+          {
+            "x": 266,
+            "y": 72.6
+          },
+          {
+            "x": 234,
+            "y": 71
+          },
+          {
+            "x": 202,
+            "y": 73.6
+          }
+        ]
+      },
+      {
+        "id": "transformExodraJsx→ExodraTransformResult",
+        "points": [
+          {
+            "x": 604,
+            "y": 108.1
+          },
+          {
+            "x": 636,
+            "y": 113.3
+          },
+          {
+            "x": 722.5,
+            "y": 91.2
+          }
+        ]
+      }
+    ]
+  }
+}

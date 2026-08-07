@@ -1,6 +1,8 @@
 export { bindable } from './bindable';
+export { combine } from './combine';
 export { createExoBindable } from './createExoBindable';
 export { createExoBindableList } from './createExoBindableList';
+export { createExoCombined } from './createExoCombined';
 export { createExoDerived } from './createExoDerived';
 export { derive } from './derive';
 export { list } from './list';

@@ -1,9 +1,13 @@
 import type { TExoSchema } from '@exodra/core';
+// From the types-only contract package, NOT from @exodra/reactivity: these are
+// pure types, and depending on an implementation would force every consumer of
+// the JSX types to install a reactivity runtime they may not use (an app driven
+// by an adapter such as @oimdb/exodra never installs @exodra/reactivity).
 import type {
     TExoBindable,
     TExoBindableList,
     TExoWritableBindable,
-} from '@exodra/reactivity';
+} from '@exodra/reactivity-types';
 
 // Fragment symbol for <></> syntax.
 export const Fragment = Symbol.for('exodra.fragment');

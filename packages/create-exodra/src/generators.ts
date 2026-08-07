@@ -5,8 +5,8 @@
 //    which only exports JSX glue — `h` is a core export).
 //  - props go in the typed `static` bucket; flat props are invalid in Exodra.
 //  - the 3rd argument of `h()` is a cacheKey, NOT children — children live in
-//    `static.children` and must be schema nodes (use `text()` for strings, since
-//    a bare string is not a valid `TExoChild`).
+//    `static.children` and must be schema nodes (use `text()` for strings — a
+//    bare string is not a schema node).
 //
 // They are kept side-effect free and string-only so they can be unit-tested by
 // compiling + mounting their output (see generators.test.ts).

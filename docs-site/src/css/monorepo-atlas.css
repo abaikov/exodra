@@ -1,0 +1,27 @@
+/*
+ * The dependency graph, in the documentation's OWN colours.
+ *
+ * The library paints every mark from these custom properties and ships defaults;
+ * a host overrides the ones it cares about. Doing it in CSS rather than through
+ * JavaScript means the graph follows the site's theme switch for free — Infima
+ * swaps its variables, and the graph swaps with them.
+ */
+.exo-graph {
+    --exo-surface: var(--ifm-background-surface-color);
+    --exo-plane: var(--ifm-background-color);
+    --exo-ink: var(--ifm-font-color-base);
+    --exo-ink-secondary: var(--ifm-color-content-secondary);
+    --exo-ink-muted: var(--ifm-color-emphasis-600);
+    --exo-edge: var(--ifm-color-emphasis-400);
+    --exo-edge-strong: var(--ifm-font-color-base);
+    --exo-border: var(--ifm-toc-border-color);
+
+    --exo-kind-runtime: var(--ifm-color-primary);
+    --exo-kind-tooling: var(--ifm-color-warning-darkest);
+    --exo-kind-app: var(--ifm-color-success-darkest);
+    --exo-kind-other: var(--ifm-color-emphasis-500);
+    --exo-status-critical: var(--ifm-color-danger);
+    --exo-status-warning: var(--ifm-color-warning);
+
+    margin-bottom: var(--ifm-leading);
+}

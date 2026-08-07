@@ -1,0 +1,924 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "TExoBindable",
+        "label": "TExoBindable",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "getValue(): TValue;",
+            "full": "getValue(): TValue;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onChange(update: (event: TEvent) => voi…",
+            "full": "onChange(update: (event: TEvent) => void): () => void;",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "doc": "The one reactive primitive in Exodra.",
+        "width": 293,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "TExoBindableList",
+        "label": "TExoBindableList",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoBindable<readonly TItem[], TEvent>",
+            "full": "TExoBindable<readonly TItem[], TEvent>",
+            "parts": [
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "<readonly TItem[], TEvent>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "A list is not a second interface — it is a bindable whose value is an array and whose change event is a list op.",
+        "width": 280,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoListOp",
+        "label": "TExoListOp",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "| { type: 'insert'; index: number; item…",
+            "full": "| { type: 'insert'; index: number; item: TItem } | { type: 'remove'; index: number; count?: number } | { type: 'move'; from: number; to: number; count?: number } | { type: 'set'; index: number; item: TItem } | { type: 'reset'; items: readonly TItem[] }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoNodeAttributes",
+        "label": "TExoNodeAttributes",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "static?: Record<string, unknown> & TSta…",
+            "full": "static?: Record<string, unknown> & TStaticExtra & { children?: TSchema | readonly TSchema[]; textContent?: unknown; };",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindables?: Record<string, TExoBindable…",
+            "full": "bindables?: Record<string, TExoBindable<unknown, unknown>> & { children?: TExoBindable<TSchema | readonly TSchema[], unknown>; textContent?: TExoBindable<unknown, unknown>; };",
+            "parts": [
+              {
+                "text": "bindables?: Record<string, "
+              },
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "bindables?: Record<string, "
+              },
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "<unknown, unknown>> & { children?: "
+              },
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "<TSchema | readonly TSchema[], unknown>; textContent?: "
+              },
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "<unknown, unknown>; };"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "bindableLists?: Record<string, TExoBind…",
+            "full": "bindableLists?: Record<string, TExoBindableList<unknown, unknown>> & { children?: TExoBindableList<TSchema, TListEvent>; };",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "bindableLists?: Record<string, "
+              },
+              {
+                "text": "TExoBindableList",
+                "link": "TExoBindableList"
+              },
+              {
+                "text": "<unknown, unknown>> & { children?: "
+              },
+              {
+                "text": "TExoBindableList",
+                "link": "TExoBindableList"
+              },
+              {
+                "text": "<TSchema, TListEvent>; };"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "handlers?: THandlers;",
+            "full": "handlers?: THandlers;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindableHandlers?: TBindableHandlers;",
+            "full": "bindableHandlers?: TBindableHandlers;",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "interface",
+        "doc": "The five attribute buckets a renderer sees on a node, with the reactive ones typed.",
+        "width": 293,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributeBindableLists",
+        "label": "TExoReactiveAttributeBindableLists",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "Record< string, TExoBindableList<unknow…",
+            "full": "Record< string, TExoBindableList<unknown, unknown> >",
+            "parts": [
+              {
+                "text": "Record< string, "
+              },
+              {
+                "text": "TExoBindableList",
+                "link": "TExoBindableList"
+              },
+              {
+                "text": "<unknow…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "Record< string, "
+              },
+              {
+                "text": "TExoBindableList",
+                "link": "TExoBindableList"
+              },
+              {
+                "text": "<unknown, unknown> >"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributeBindables",
+        "label": "TExoReactiveAttributeBindables",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "Record< string, TExoBindable<unknown, u…",
+            "full": "Record< string, TExoBindable<unknown, unknown> >",
+            "parts": [
+              {
+                "text": "Record< string, "
+              },
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "<unknown, u…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "Record< string, "
+              },
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "<unknown, unknown> >"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributeConstants",
+        "label": "TExoReactiveAttributeConstants",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "Record<string, unknown>",
+            "full": "Record<string, unknown>",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributes",
+        "label": "TExoReactiveAttributes",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "static: TConstants;",
+            "full": "static: TConstants;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindables: TBindables;",
+            "full": "bindables: TBindables;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "bindableLists: TBindableLists;",
+            "full": "bindableLists: TBindableLists;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 229,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoWritableBindable",
+        "label": "TExoWritableBindable",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoBindable<TValue, TEvent> & { setVal…",
+            "full": "TExoBindable<TValue, TEvent> & { setValue(value: TValue, event?: TEvent): void; }",
+            "parts": [
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "<TValue, TEvent> & { setVal…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "TExoBindable",
+                "link": "TExoBindable"
+              },
+              {
+                "text": "<TValue, TEvent> & { setValue(value: TValue, event?: TEvent): void; }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoWritableBindableList",
+        "label": "TExoWritableBindableList",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoBindableList<TItem, TEvent> & { ins…",
+            "full": "TExoBindableList<TItem, TEvent> & { insert(index: number, item: TItem): void; push(item: TItem): void; remove(index: number, count?: number): void; move(from: number, to: number, count?: number): void; set(index: number, item: TItem): void; reset(items: readonly TItem[]): void; }",
+            "parts": [
+              {
+                "text": "TExoBindableList",
+                "link": "TExoBindableList"
+              },
+              {
+                "text": "<TItem, TEvent> & { ins…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "TExoBindableList",
+                "link": "TExoBindableList"
+              },
+              {
+                "text": "<TItem, TEvent> & { insert(index: number, item: TItem): void; push(item: TItem): void; remove(index: number, count?: number): void; move(from: number, to: number, count?: number): void; set(index: number, item: TItem): void; reset(items: readonly TItem[]): void; }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "TExoBindableList→TExoBindable",
+        "from": "TExoBindableList",
+        "to": "TExoBindable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindableList.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindable.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBindableList→TExoListOp",
+        "from": "TExoBindableList",
+        "to": "TExoListOp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindableList.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoListOp.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoNodeAttributes→TExoBindable",
+        "from": "TExoNodeAttributes",
+        "to": "TExoBindable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoNodeAttributes.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindable.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoNodeAttributes→TExoBindableList",
+        "from": "TExoNodeAttributes",
+        "to": "TExoBindableList",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoNodeAttributes.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindableList.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributeBindableLists→TExoBindableList",
+        "from": "TExoReactiveAttributeBindableLists",
+        "to": "TExoBindableList",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoReactiveAttributeBindableLists.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindableList.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributeBindables→TExoBindable",
+        "from": "TExoReactiveAttributeBindables",
+        "to": "TExoBindable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoReactiveAttributeBindables.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindable.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributes→TExoReactiveAttributeBindableLists",
+        "from": "TExoReactiveAttributes",
+        "to": "TExoReactiveAttributeBindableLists",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoReactiveAttributes.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoReactiveAttributeBindableLists.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributes→TExoReactiveAttributeBindables",
+        "from": "TExoReactiveAttributes",
+        "to": "TExoReactiveAttributeBindables",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoReactiveAttributes.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoReactiveAttributeBindables.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoReactiveAttributes→TExoReactiveAttributeConstants",
+        "from": "TExoReactiveAttributes",
+        "to": "TExoReactiveAttributeConstants",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoReactiveAttributes.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoReactiveAttributeConstants.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoWritableBindable→TExoBindable",
+        "from": "TExoWritableBindable",
+        "to": "TExoBindable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoWritableBindable.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindable.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoWritableBindableList→TExoBindableList",
+        "from": "TExoWritableBindableList",
+        "to": "TExoBindableList",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoWritableBindableList.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoBindableList.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoWritableBindableList→TExoListOp",
+        "from": "TExoWritableBindableList",
+        "to": "TExoListOp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoWritableBindableList.ts",
+            "to": "/Users/abaikov/work/exodra/packages/reactivity-types/src/TExoListOp.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1348,
+    "height": 647.3,
+    "nodes": [
+      {
+        "id": "TExoBindable",
+        "x": 1031,
+        "y": 122.3,
+        "width": 293,
+        "height": 84
+      },
+      {
+        "id": "TExoBindableList",
+        "x": 680.5,
+        "y": 433.5,
+        "width": 280,
+        "height": 69
+      },
+      {
+        "id": "TExoListOp",
+        "x": 1031,
+        "y": 554.3,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoNodeAttributes",
+        "x": 317,
+        "y": 183.3,
+        "width": 293,
+        "height": 129
+      },
+      {
+        "id": "TExoReactiveAttributeBindableLists",
+        "x": 317,
+        "y": 437.3,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoReactiveAttributeBindables",
+        "x": 674,
+        "y": 121,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoReactiveAttributeConstants",
+        "x": 355.5,
+        "y": 340.3,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "TExoReactiveAttributes",
+        "x": 24,
+        "y": 321.5,
+        "width": 229,
+        "height": 99
+      },
+      {
+        "id": "TExoWritableBindable",
+        "x": 674,
+        "y": 24,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoWritableBindableList",
+        "x": 317,
+        "y": 534.3,
+        "width": 293,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "TExoBindableList→TExoBindable",
+        "points": [
+          {
+            "x": 960.5,
+            "y": 468
+          },
+          {
+            "x": 999,
+            "y": 468
+          },
+          {
+            "x": 1152.8,
+            "y": 206.3
+          }
+        ]
+      },
+      {
+        "id": "TExoBindableList→TExoListOp",
+        "points": [
+          {
+            "x": 871.5,
+            "y": 502.5
+          },
+          {
+            "x": 999,
+            "y": 588.8
+          },
+          {
+            "x": 1031,
+            "y": 588.8
+          }
+        ]
+      },
+      {
+        "id": "TExoNodeAttributes→TExoBindable",
+        "points": [
+          {
+            "x": 610,
+            "y": 244.7
+          },
+          {
+            "x": 642,
+            "y": 244
+          },
+          {
+            "x": 820.5,
+            "y": 244
+          },
+          {
+            "x": 999,
+            "y": 244
+          },
+          {
+            "x": 1083.5,
+            "y": 206.3
+          }
+        ]
+      },
+      {
+        "id": "TExoNodeAttributes→TExoBindableList",
+        "points": [
+          {
+            "x": 506.3,
+            "y": 312.3
+          },
+          {
+            "x": 642,
+            "y": 516.5
+          },
+          {
+            "x": 693.5,
+            "y": 502.5
+          }
+        ]
+      },
+      {
+        "id": "TExoReactiveAttributeBindableLists→TExoBindableList",
+        "points": [
+          {
+            "x": 610,
+            "y": 468.7
+          },
+          {
+            "x": 642,
+            "y": 468
+          },
+          {
+            "x": 680.5,
+            "y": 468
+          }
+        ]
+      },
+      {
+        "id": "TExoReactiveAttributeBindables→TExoBindable",
+        "points": [
+          {
+            "x": 967,
+            "y": 155.5
+          },
+          {
+            "x": 999,
+            "y": 155.5
+          },
+          {
+            "x": 1031,
+            "y": 157.1
+          }
+        ]
+      },
+      {
+        "id": "TExoReactiveAttributes→TExoReactiveAttributeBindableLists",
+        "points": [
+          {
+            "x": 210.5,
+            "y": 420.5
+          },
+          {
+            "x": 285,
+            "y": 471.8
+          },
+          {
+            "x": 317,
+            "y": 471.8
+          }
+        ]
+      },
+      {
+        "id": "TExoReactiveAttributes→TExoReactiveAttributeBindables",
+        "points": [
+          {
+            "x": 172.2,
+            "y": 321.5
+          },
+          {
+            "x": 285,
+            "y": 155.5
+          },
+          {
+            "x": 463.5,
+            "y": 155.5
+          },
+          {
+            "x": 642,
+            "y": 155.5
+          },
+          {
+            "x": 674,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "TExoReactiveAttributes→TExoReactiveAttributeConstants",
+        "points": [
+          {
+            "x": 253,
+            "y": 373.9
+          },
+          {
+            "x": 285,
+            "y": 374.8
+          },
+          {
+            "x": 355.5,
+            "y": 374.8
+          }
+        ]
+      },
+      {
+        "id": "TExoWritableBindable→TExoBindable",
+        "points": [
+          {
+            "x": 967,
+            "y": 58.5
+          },
+          {
+            "x": 999,
+            "y": 58.5
+          },
+          {
+            "x": 1106.6,
+            "y": 122.3
+          }
+        ]
+      },
+      {
+        "id": "TExoWritableBindableList→TExoBindableList",
+        "points": [
+          {
+            "x": 492.4,
+            "y": 534.3
+          },
+          {
+            "x": 642,
+            "y": 356
+          },
+          {
+            "x": 765.5,
+            "y": 433.5
+          }
+        ]
+      },
+      {
+        "id": "TExoWritableBindableList→TExoListOp",
+        "points": [
+          {
+            "x": 610,
+            "y": 568.8
+          },
+          {
+            "x": 642,
+            "y": 568.8
+          },
+          {
+            "x": 820.5,
+            "y": 568.8
+          },
+          {
+            "x": 999,
+            "y": 568.8
+          },
+          {
+            "x": 1031,
+            "y": 572.3
+          }
+        ]
+      }
+    ]
+  }
+}
