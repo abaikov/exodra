@@ -51,7 +51,7 @@
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
         "babel-plugin-react-compiler": "^1.0.0",
-        "esbuild": "^0.27.7",
+        "esbuild": "^0.28.2",
         "million": "^3.1.11",
         "oby": "^15.1.2",
         "playwright": "^1.62.0",
