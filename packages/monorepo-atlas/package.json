@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "typescript": "^5.3.3",
-    "vitest": "^4.0.16",
+    "vitest": "^5.0.5",
     "tsup": "^8.0.0"
   },
   "description": "Architecture atlas for a TypeScript monorepo: the package dependency graph with rule violations and an entity model of what is inside each package, emitted as JSON data plus a stylesheet, and a --check mode that fails when the committed data is stale",

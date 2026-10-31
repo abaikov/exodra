@@ -63,7 +63,7 @@
     "@exodra/computed": "^0.3.0",
     "@exodra/string": "^0.4.1",
     "jsdom": "^23.0.1",
-    "vitest": "^4.0.16"
+    "vitest": "^5.0.5"
   },
   "peerDependencies": {
     "@exodra/context": "^0.3.0",

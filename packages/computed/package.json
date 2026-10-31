@@ -60,7 +60,7 @@
   "devDependencies": {
     "@exodra/bench-harness": "*",
     "@exodra/context": "^0.3.0",
-    "vitest": "^4.0.16"
+    "vitest": "^5.0.5"
   },
   "peerDependencies": {
     "@exodra/core": "^0.3.0"

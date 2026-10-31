@@ -55,7 +55,7 @@
     "@exodra/dom": "^0.3.0",
     "@exodra/list-reconcile": "^0.3.0",
     "jsdom": "^23.0.1",
-    "vitest": "^4.0.16"
+    "vitest": "^5.0.5"
   },
   "peerDependencies": {
     "@exodra/context": "^0.3.0",
