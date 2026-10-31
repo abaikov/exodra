@@ -1,0 +1,46 @@
+// AXIS `toggle` — Marko's shown-or-hidden panel LIST, the counterpart of `SvToggle.svelte`.
+//
+// IT USED TO BE ONE PANEL BEHIND AN `<if>` AND IT IS NOW A LIST OF PANELS, for one reason: at
+// one panel the whole axis measured 0.100 ms for every participant and 0.000 for its two
+// caching diagnostics, which is the browser's timer clamp and not a result. The scenario did
+// not change — build a subtree, throw it away, build it again with different data — only its
+// size did, and at N panels a show is real work. `toggle.tsx` carries the arithmetic.
+//
+// `<for>` AND NOT `<if>`, and that is what the rescale decided rather than a preference. The
+// hidden state is an EMPTY ARRAY, so the same list block expresses both states: handed `[]`,
+// `loop()` in marko/dist/dom.mjs destroys every row scope it holds; handed N rows against
+// nothing, it creates N of them from the prepared template clone. Wrapping that in an `<if>`
+// as well would add a branch nobody else on this axis has, and a CONSTANT list inside an `<if>`
+// is exactly the shape a compiler is entitled to hoist — which would make this participant fast
+// for a reason that has nothing to do with the scenario. The rows come from `input`, so there
+// is nothing to hoist.
+//
+// NOTHING IS KEPT ACROSS THE HIDDEN STATE, which is what makes this comparable to the rest of
+// the field. Emptying the list destroys the row scopes and their DOM; the next show builds
+// fresh ones. That is the same contract Solid, React, Svelte, Lit, stage0, uhtml, sinuous and
+// the schema core have here, and NOT the contract of the axis's caching diagnostics
+// (`exodraKept`, `mikadoPooled`). `toggle.tsx` asserts it rather than trusting it: the panel
+// nodes after a hide+show must be NEW elements.
+//
+// `by="id"` IS Marko's documented key and the same row identity React, Svelte and Lit's sibling
+// files use. It buys nothing on this axis — nothing survives an empty list, so there is no
+// survivor to match — and it is kept because it is what `MkList.marko` writes and because the
+// INDEX default would be the odd one out for a reason unrelated to the measurement.
+//
+// THE STATE COMES FROM `input`, NOT FROM A `<let>`. Marko cannot export an instance method the
+// way `SvToggle.svelte` exports `setRows`, so the harness drives this the one way a mounted
+// Marko template can be advanced from outside: `instance.update({ rows })`. A parent passing a
+// prop down is also what every Marko list in the wild looks like.
+//
+// THE BUTTON KEEPS ITS LISTENER. It does nothing, exactly as `noop` does nothing for Solid,
+// React and the schema core's event port — but attaching it is part of what a rebuild costs,
+// and dropping it would make this the one participant whose panel is cheaper to build.
+// `onClick` is set as an expando property by Marko's delegation (`_on` writes `el["$click"]`),
+// so it emits no attribute and cannot show up in the markup diff.
+//
+// THE PANEL'S TEXT COMES FROM THE ROW, because every show on this axis carries DIFFERENT data —
+// the two caching diagnostics would otherwise be re-attaching nodes that already read
+// correctly, which is not what a pool buys anybody in a real tab switch.
+//
+// One line on purpose — see `MkList.marko`; this axis diffs markup byte for byte.
+<div><for|r| of=input.rows by="id"><div class="panel"><h4>Panel</h4><p>${r.text}</p><button onClick() {}>x</button></div></for></div>

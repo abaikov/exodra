@@ -12,6 +12,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./browser": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/exodra.esm.js"
     }
   },
   "files": [
@@ -25,11 +29,12 @@
     "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
     "build": "tsup",
     "prepublishOnly": "npm run build",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "clean": "rm -rf dist .tsbuild tsconfig.tsbuildinfo",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "bench:attr-setter": "tsx bench/exo-attr-setter-bench.ts"
   },
-  "description": "High-performance DOM renderer for Exodra - mount, hydrate, and update with WeakMap-based tracking",
+  "description": "Browser backend for Exodra schemas - each schema compiles once into a prototype element, a walk and a setter per port; an instance is a clone plus one call per port, and hydration adopts server-printed markup",
   "keywords": [
     "exodra",
     "dom",
@@ -38,7 +43,6 @@
     "hydration",
     "ssr",
     "browser",
-    "weakmap",
     "performance",
     "reactive-dom",
     "fine-grained",
@@ -56,12 +60,13 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "devDependencies": {
-    "@exodra/reactivity": "^0.3.0",
+    "@exodra/computed": "^0.3.0",
+    "@exodra/string": "^0.4.1",
     "jsdom": "^23.0.1",
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@exodra/core": "^0.3.0",
-    "@exodra/reactivity-types": "^0.2.0"
+    "@exodra/context": "^0.3.0",
+    "@exodra/core": "^0.3.0"
   }
 }

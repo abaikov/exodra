@@ -1,0 +1,70 @@
+{
+  // THE TEST FILES OF `@exodra/dom`, COMPILED — 53 suites, the largest set in the repository, and
+  // the one that carried two of the three files the `exoStrPlan` → `strSchema` rename left red. The
+  // scheme is written out once in `packages/core/tsconfig.tests.json`.
+  //
+  // `paths` IS RESTATED IN FULL because `extends` replaces it wholesale rather than merging. The
+  // first four entries are the base's, unchanged; the last three are what the SUITES reach for and
+  // the sources do not:
+  //
+  //   `@exodra/string`     — the renderer-divergence and conformance suites render the same schema
+  //                          through both backends and compare. The live renderer itself never
+  //                          imports the snapshot one, and `.dependency-cruiser.cjs` has a rule
+  //                          saying so; this mapping is for test files only and adds no edge to
+  //                          the crawl, which excludes `\.test\.`.
+  //   `@exodra/test-utils` — `host()` / `detachedHost()` / `buildRow()` / `source()`, reached at
+  //                          RUN time through the root `vitest.config.ts` alias. Nothing but that
+  //                          alias has ever resolved this specifier, which is precisely why the
+  //                          compiler needs to be told.
+  //   `@exodra/dom`        — ITS OWN NAME, and leaving it out is what made this gate check the
+  //                          wrong thing for as long as it has existed. 50 suites here import the
+  //                          package by name rather than by relative path; with no mapping, node
+  //                          resolution walks to `packages/dom/dist/index.d.ts` — a BUILD ARTEFACT,
+  //                          and one `release:check` does not produce until `build:all`, six steps
+  //                          AFTER this gate. So the suites were being typechecked against whatever
+  //                          the last build happened to export, and agreement with the sources was
+  //                          a coincidence that held only while the two agreed. It stopped holding
+  //                          the moment the entry point changed: 67 errors, all of them
+  //                          "`@exodra/dom` has no exported member `ExoDomBackend`", against a
+  //                          barrel that exports it three times. Every other package in the repo
+  //                          already maps `@exodra/dom` to `.tsbuild`; this is that line, for the
+  //                          one package that needed it most and was the only one without it.
+  //
+  //                          IT POINTS AT `src/index.ts` AND NOT AT `.tsbuild`, which is the one
+  //                          difference from every other entry above and the whole reason this
+  //                          mapping works. The entries above name OTHER packages, which a
+  //                          suite can only reach as built declarations. This one names THIS
+  //                          package, whose sources these same suites also import by relative path
+  //                          — `../dom/exo-dom-node` beside `@exodra/dom` in one file is
+  //                          ordinary here. Point the specifier at `.tsbuild` and those two spell
+  //                          DIFFERENT types with the same name: `TExoDomNode` from the build
+  //                          and `TExoDomNode` from the source, structurally identical and
+  //                          mutually unassignable because `TExoDomChild.mount` is typed `this`.
+  //                          That produced 24 doppelganger errors whose message walked six levels
+  //                          down to `plan` before naming the two paths. `src/index.ts` is the
+  //                          identity the relative imports already have, so there is one type.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/list-reconcile": ["../list-reconcile/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"],
+      // The declarative machine half. Four suites here drive `withExoComputedMachine`,
+      // `exoTransition` and `exoWiring` through this backend; the renderer itself names none of
+      // them, which is why this is a test-only mapping and adds no edge to the crawl.
+      "@exodra/computed": ["../computed/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["./src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

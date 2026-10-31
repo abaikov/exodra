@@ -1,21 +1,48 @@
+// The SCHEMA dialect's type tests, and now the only compilation this package has.
+//
+// IT USED TO BE TWO, AND THAT IS WHY THE SOURCES SPENT A WHILE IN A FOLDER CALLED `src-schema`.
+// A file has exactly one `jsxImportSource`, so the legacy bucket dialect (`@exodra/jsx`) and this
+// one (`@exodra/jsx/schema`) could not share a run: they needed a directory each, the legacy one
+// held `src/`, and `test:types` ran `tsc` twice. The legacy dialect is gone — `@exodra/jsx` has no
+// root JSX runtime any more, and `defineComponentLegacy` is no longer in `@exodra/core` — so its
+// fixtures and its config went with it, the second run had nothing left to check, and the
+// surviving dialect took the plain `src/` back because there is no longer a second one to
+// distinguish it from.
+//
+// Everything resolves through `paths`, to SOURCE, so a test sees an edit without a build.
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "lib": ["ES2020", "DOM"],
-    "moduleResolution": "bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "@exodra/jsx",
-    "baseUrl": ".",
-    "paths": {
-      "@exodra/core": ["../core/src/index.ts"],
-      "@exodra/reactivity": ["../reactivity/src/index.ts"],
-      "@exodra/jsx": ["../jsx/src/index.ts"],
-      "@exodra/jsx/jsx-runtime": ["../jsx/src/jsx-runtime.ts"]
-    }
-  },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ESNext",
+        "lib": ["ES2020", "DOM"],
+        "moduleResolution": "bundler",
+        "strict": true,
+        "skipLibCheck": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "@exodra/jsx/schema",
+        "baseUrl": ".",
+        "paths": {
+            "@exodra/core": ["../core/src/index.ts"],
+      "@exodra/test-utils": ["../test-utils/src/index.ts"],
+            // THE BROWSER BACKEND, mapped to SOURCE like everything else here, and added for
+            // `composed-capability.ts` — the file that asks whether a component using a capability a
+            // PACK added can actually be handed to `render`. That question is unaskable without a
+            // backend to compose, and it cannot be asked from inside `packages/dom` either, because
+            // every `tsconfig` in this tree excludes `*.test.ts` and the answer is a compile error
+            // rather than an assertion. It is not in `package.json`'s `devDependencies`: `paths` is
+            // what resolves it, and adding a dependency that nothing installs would touch the
+            // lockfile for no gain.
+            "@exodra/dom": ["../dom/src/index.ts"],
+            "@exodra/string": ["../string/src/index.ts"],
+            "@exodra/jsx/schema/jsx-runtime": ["../jsx/src/schema/jsx-runtime.ts"],
+            "@exodra/jsx/schema/jsx-dev-runtime": [
+                "../jsx/src/schema/jsx-dev-runtime.ts"
+            ],
+            "@exodra/jsx/schema": ["../jsx/src/schema/index.ts"],
+            // The bare specifier is where `exoJsx` is imported from.
+            "@exodra/jsx": ["../jsx/src/schema/index.ts"]
+        }
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "incremental": false,
+    // The bundler's directory, stated here so it does not follow the typecheck's
+    // `.tsbuild` (see tsconfig.build.json).
+    "outDir": "./dist"
+    // No `paths`: this package imports no other Exodra package, so the BUILD has nothing to
+    // point at a sibling's `dist`.
+  }
+}

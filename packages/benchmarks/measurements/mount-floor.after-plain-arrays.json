@@ -1,0 +1,246 @@
+{
+  "axis": "mount-floor",
+  "label": "after-plain-arrays",
+  "quantum": 0.1,
+  "batch": 1,
+  "rows": [
+    {
+      "name": "CENSUS/html",
+      "reps": 20,
+      "min": 0.37,
+      "p25": 0.375,
+      "median": 0.38,
+      "p75": 0.385,
+      "max": 0.425,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/html·adj",
+      "reps": 20,
+      "min": 0.37,
+      "p25": 0.375,
+      "median": 0.38,
+      "p75": 0.385,
+      "max": 0.41,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/html·range",
+      "reps": 20,
+      "min": 0.365,
+      "p25": 0.375,
+      "median": 0.38,
+      "p75": 0.385,
+      "max": 0.41,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/html·tpl",
+      "reps": 20,
+      "min": 0.36,
+      "p25": 0.37,
+      "median": 0.37,
+      "p75": 0.38,
+      "max": 0.405,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/html·doc",
+      "reps": 20,
+      "min": 0.365,
+      "p25": 0.37,
+      "median": 0.375,
+      "p75": 0.38,
+      "max": 0.41,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone",
+      "reps": 20,
+      "min": 0.31,
+      "p25": 0.315,
+      "median": 0.32,
+      "p75": 0.32,
+      "max": 0.34,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·twin",
+      "reps": 20,
+      "min": 0.305,
+      "p25": 0.315,
+      "median": 0.32,
+      "p75": 0.325,
+      "max": 0.35,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone+refs",
+      "reps": 20,
+      "min": 0.31,
+      "p25": 0.315,
+      "median": 0.32,
+      "p75": 0.325,
+      "max": 0.36,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·page",
+      "reps": 20,
+      "min": 0.34,
+      "p25": 0.35,
+      "median": 0.35,
+      "p75": 0.36,
+      "max": 0.6,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·frag",
+      "reps": 20,
+      "min": 0.475,
+      "p25": 0.485,
+      "median": 0.49,
+      "p75": 0.495,
+      "max": 0.56,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·append",
+      "reps": 20,
+      "min": 0.32,
+      "p25": 0.325,
+      "median": 0.33,
+      "p75": 0.335,
+      "max": 0.375,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·shallow",
+      "reps": 20,
+      "min": 0.345,
+      "p25": 0.35,
+      "median": 0.355,
+      "p75": 0.36,
+      "max": 0.4,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·distinct",
+      "reps": 20,
+      "min": 0.315,
+      "p25": 0.32,
+      "median": 0.325,
+      "p75": 0.335,
+      "max": 0.395,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/card-clone",
+      "reps": 20,
+      "min": 0.275,
+      "p25": 0.28,
+      "median": 0.285,
+      "p75": 0.29,
+      "max": 0.32,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/app-clone",
+      "reps": 20,
+      "min": 0.23,
+      "p25": 0.235,
+      "median": 0.24,
+      "p75": 0.245,
+      "max": 0.265,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/app-clone·twin",
+      "reps": 20,
+      "min": 0.23,
+      "p25": 0.235,
+      "median": 0.24,
+      "p75": 0.245,
+      "max": 0.265,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/app-clone·fill",
+      "reps": 20,
+      "min": 0.275,
+      "p25": 0.285,
+      "median": 0.285,
+      "p75": 0.295,
+      "max": 0.32,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/app-clone·qsa",
+      "reps": 20,
+      "min": 0.29,
+      "p25": 0.295,
+      "median": 0.295,
+      "p75": 0.3,
+      "max": 0.325,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/create",
+      "reps": 20,
+      "min": 0.37,
+      "p25": 0.375,
+      "median": 0.38,
+      "p75": 0.385,
+      "max": 0.425,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/create+refs",
+      "reps": 20,
+      "min": 0.37,
+      "p25": 0.375,
+      "median": 0.38,
+      "p75": 0.385,
+      "max": 0.425,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/exodra",
+      "reps": 20,
+      "min": 0.37,
+      "p25": 0.38,
+      "median": 0.385,
+      "p75": 0.395,
+      "max": 0.58,
+      "section": "CENSUS"
+    }
+  ],
+  "nulls": [
+    {
+      "section": "CENSUS",
+      "unit": "ms",
+      "resolution": 0.005,
+      "pairs": [
+        {
+          "name": "clone",
+          "bias": 0,
+          "noise": 0.005,
+          "noiseP75": 0.01,
+          "worst": 0.025,
+          "what": "|clone − clone·twin|, true Δ = 0"
+        },
+        {
+          "name": "app-clone",
+          "bias": 0,
+          "noise": 0.005,
+          "noiseP75": 0.01,
+          "worst": 0.03,
+          "what": "|app-clone − app-clone·twin|, true Δ = 0"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    "mount-floor: the cheapest addressable+retained row is \"app-clone\", whose prototype was built from the app's own data at module load. THAT IS A BOUND AND NOT A TECHNIQUE — a renderer is handed its data after its templates are compiled. Quote the ADOPTABLE floor (\"clone+refs\", 0.3200 ms, 16.9%) for anything about what a framework could achieve; the 37.7% headline is the weaker, safer form of the same claim."
+  ]
+}

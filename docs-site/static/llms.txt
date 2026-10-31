@@ -1,175 +1,306 @@
 # Exodra — LLM reference
 
-Exodra is a schema-first reactive UI framework. There is **no virtual DOM**.
-Reactivity is **explicit**: every prop is placed in a typed bucket, so the
-compiler knows exactly what can change and the renderer only ever touches that.
-JSX is compiled by `@exodra/babel-plugin-jsx` into `h(type, attrs, cacheKey?)`
-calls — it is NOT React and NOT TypeScript's built-in JSX.
+Exodra is a schema-first, fine-grained UI runtime with **no virtual DOM** and no
+scheduler. Read this before writing any Exodra code; almost every mistake comes
+from assuming React (or from an older Exodra that no longer exists — see the last
+section).
 
-Read this before guessing. Most mistakes come from assuming React semantics.
+This file is hand-written and short. For the complete generated documentation, see
+**[llms-full.txt](https://exodra.org/llms-full.txt)**.
 
-This file is a compact cheat‑sheet. For the **complete documentation** (every
-guide and API page in one file), see **[llms-full.txt](https://exodra.org/llms-full.txt)**.
+## The one idea: a component is a SCHEMA plus a MACHINE
 
-## The five prop buckets (STRICT — this is the #1 gotcha)
+- a **schema** — the shape, built **once when the module loads**, with named
+  **ports**: places a value may be put later;
+- a **machine** — the behaviour of one instance: initial state, transitions that
+  write ports, event handlers, and effects that follow outside data.
 
-A node's props are ONLY these buckets. There are **no flat attributes**. A flat
-`class=`, `id=`, or `onClick=` is a **compile error** (the babel plugin throws),
-not a silent no-op.
+Nothing is diffed and nothing is walked at render time. A schema is compiled once
+per backend into a prototype, a walk plan and a writer per port; a render clones the
+prototype and runs the machine. The *same* machine runs on the server, on a client
+render and through hydration.
 
-```jsx
-<button
-  static={{ class: 'btn', id: 'save' }}          // plain DOM attrs (never change)
-  bindable={{ textContent: label }}              // reactive scalar values
-  bindableList={{ children: rows }}              // reactive list of children
-  handlers={{ onClick: (e) => save() }}          // DOM event handlers
-  bindableHandlers={{ onClick: handlerSignal }}  // reactive event handlers
-/>
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoEventPort, TExoTextPort } from '@exodra/core';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+
+const COUNTER_SCHEMA = createExoSchema((b) => {
+    let count!: TExoTextPort;
+    let increment!: TExoEventPort;
+    b.el('div', { class: 'counter' }, (div) => {
+        div.el('span', null, (span) => {
+            count = span.textPort();
+        });
+        div.el('button', { class: 'btn', type: 'button' }, (button) => {
+            increment = button.eventPort('click');
+            button.text('Increment');
+        });
+    });
+    return { count, increment };
+});
+const P = COUNTER_SCHEMA.ports;
+
+const m = createExoMachineBuilder<TExoDomNode, unknown, { n: number }>(COUNTER_SCHEMA);
+m.createInitialState(() => ({ n: 0 }));
+const showCount = m.transition((c) => {
+    c.text(P.count, c.state.n);
+});
+m.wire((c) => {
+    showCount(c);
+});
+m.on(P.increment, (c) => {
+    c.state.n += 1;
+    showCount(c);
+});
+export const COUNTER = m.done();
+
+const backend = withExoCompiler(new ExoDomBackend());
+const dispose = backend.render(COUNTER, document.body);
 ```
 
-- `static` — plain attributes + static children + lifecycle hooks (`onExoMount`,
-  `onExoUnmount`). Values are constants set once.
-- `bindable` — reactive scalars keyed by prop name (`textContent`, `value`,
-  `class`, an attribute, or a single reactive child via `children`).
-- `bindableList` — a reactive list of children (a `list()` / command source).
-- `handlers` — typed DOM event handlers (`onClick(e: MouseEvent)`, …).
-- `bindableHandlers` — a signal whose value is the current listener.
+**Schema cursor** (`b`): `el(tag, attrs?, fn?)` and `text(value)` declare what
+never changes; `port(name)`, `textPort()`, `eventPort(name)`, `refPort()` and
+`childrenPort()` declare a **place**.
 
-There is NO magic mapping of `onClick` → handlers. You put it in `handlers={{}}`
-yourself. Types remove the escape hatch; the compiler enforces it.
+**Machine builder** (`m`):
 
-**`props={obj}`** spreads a full bucket object (the plural schema shape:
-`static`/`bindables`/`bindableLists`/`handlers`/`bindableHandlers`) into the
-element. It's a plain JS spread — `props={base} static={{…}}` compiles to
-`h(tag, { ...base, static: {…} })`, so inline buckets whole-field-REPLACE the
-spread (no deep merge). Helpers return exactly this shape, so `props={bindText(x)}`
-drops in. Want two-level merge? Do it explicitly: `props={mergeAttrs(a, b)}`.
-Note: children fold into `static.children`, so an element with children + a
-helper that carries `static` will have that `static` replaced wholesale.
+- `createInitialState((c) => state)` runs **once** per instance and **returns the
+  state**. It is also where children ports are opened (`c.childList`, `c.one`,
+  `c.list`, `c.keyedList`). It does not write ports.
+- `transition((c, …args) => …)` — "state → ports" in one place. Returns a function
+  the wire, handlers and effects call.
+- `wire((c, params) => …)` writes ports from params; it re-runs through
+  `wireExoNode(node, MACHINE, params)`.
+- `on(port, (c, event) => …)` — an event handler.
+- `effect((c) => unsubscribe | null)` — follows outside data while the instance is
+  live.
+- `done()` → the machine value.
 
-## Reactivity primitives (`@exodra/reactivity`)
+**Exonode** (`c`): `text(port, v)`, `attr(port, v)`, `unsafeHtml(port, markup)`,
+`state`, `provide` / `inject`, `onTeardown(fn)`, and the children calls below.
 
-- `bindable(initial)` → `{ getValue(), setValue(v), subscribe(fn): () => void }`.
-- `derive(source, fn)` → computed read-only bindable.
-- `list(items)` → a bindable list with `snapshot()`, `subscribeOps(fn)`, and
-  ops `insert/move/remove/set/reset`. Op shape is `TExoListOp<T>`.
+## Data reaches ports through transitions and effects
 
-## Children live in three places
+There is no reactive-value package, no `.value`, no `bind`. Outside data is followed
+by an **effect** that draws first, then subscribes, and returns the unsubscribe:
 
-`static.children` (static), `bindable.children` (a reactive single child OR a
-reactive **array** of schemas), `bindableList.children` (a command/ops list).
-If specified in more than one, last wins (like CSS).
+```ts no-check
+const show = m.transition((c) => {
+    c.text(P.label, store.getValue());
+});
+m.effect((c) => {
+    show(c);
+    return store.onChange(() => show(c));
+});
+```
 
-## Lists & reconciliation (spend your attention here)
+`store` is whatever your data layer is — an `@oimdb/*` collection
+(`OIMEffectService.INSTANCE.subscribeEffect(db, () => show(c), slots)`) or any
+object with a subscription. The first `show(c)` must be synchronous inside the
+effect: hydration adopts server rows only while the instance is being armed.
 
-No vDOM. On a children update the renderer diffs the actual DOM against the new
-child schemas **by reference identity**:
+App state that belongs to one instance is machine state (`c.state.x`), changed by
+handlers and transitions.
 
-- same schema object as before → **same DOM node reused** (moved, not rebuilt)
-- new schema object → node built
-- schema gone → node removed, bindings disposed, `onExoUnmount` fired
+## Children ports
 
-**Consequence: a row keeps its DOM node (and input focus) only if you hand back
-the SAME schema object.** Two ways to feed a reactive list:
+A children port renders exactly where `childrenPort()` was called, so it can stand
+**between static siblings** with no wrapper.
 
-1. `bindable<TExoSchema[]>` in `bindable={{ children }}` — set a new array, the
-   renderer computes the delta (O(n) reference-diff, minimal DOM work). **Default.**
-2. `bindableList` (`list()`) — you emit exact `insert/move/remove` ops (O(delta)).
-   Use only when a producer already knows the mutation (command stream, drag).
+| Call | What stands there | Changes later? |
+| --- | --- | --- |
+| `c.one(port, machine, params)` | one instance | no |
+| `c.list(port, machine, count)` | `count` instances, each told its index | no |
+| `c.childList(port)` | a placed-children handle you drive yourself | yes |
+| `c.keyedList(port, keyOf, build, update)` | a keyed list (plugin) | yes |
 
-**Focus-safe list pattern (use this for editable lists):** cache each row's
-schema by a stable key, and only rebuild the array when the key SET changes — a
-field edit doesn't change keys, so it's a reconcile no-op and the row's own
-`bindable` updates in place (focus never moves). Encode structural content into
-the key when a row must rebuild on it (e.g. `` `${id}:${pending}:${count}` ``).
+`c.build(machine, index, params)` returns a complete, wired, detached child.
 
-## Lifecycle
+## Lists and identity
 
-`static.onExoMount(node)` / `static.onExoUnmount(node)` fire per node across the
-subtree — and **also for nodes added by a later reactive update**, not just the
-initial mount. So a row entering a reactive list runs `onExoMount` on insert and
-`onExoUnmount` on removal. Subscribe in `onExoMount`, tear down in
-`onExoUnmount` → only mounted rows hold subscriptions (O(visible), great for
-virtual lists). Component-level cleanup: `ctx.onDispose(fn)`.
+`reconcileExoOrder(kids, shown, keys, want, build)` from `@exodra/list-reconcile`
+reconciles **by identity**: the same key as before keeps its DOM node, a new key is
+built, a missing key is removed. Pass the items themselves as `keys` and identity
+is the item reference:
 
-## SSR & hydration
+```ts no-check
+m.createInitialState((c) => ({ rows: c.childList(P.rows), shown: [] as TItem[] }));
+const showRows = m.transition((c) => {
+    const want = items.getValue();
+    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) =>
+        c.build(ROW, i, item)
+    );
+});
+m.effect((c) => {
+    showRows(c);
+    return items.onChange(() => showRows(c));
+});
+```
 
-- `@exodra/string` / `@exodra/ssr` render to HTML on the server. `snapshot()`
-  must be synchronous — SSR reads the initial children with no flush.
-- The client HYDRATES the SSR DOM (reuses the existing nodes, wires bindings) —
-  it does not tear down and re-mount. Hydrate the shell and the page as separate
-  trees if you want to swap the page without touching the shell.
+**So a row keeps its DOM node, its focus and its scroll position only if you hand
+back the same object.** That is a fact about your data layer, not about the
+renderer.
 
-## Components & typed props
+**Keys are a plugin, never a core default.** Compose `EXO_KEYED_LIST_VOCABULARY`
+onto the backend (`composeExoPlugins(backend, EXO_KEYED_LIST_VOCABULARY)`) and call
+`c.keyedList(port, keyOf, build, update)` in `createInitialState`; it returns
+`{ reconcile(items) }` — keep it in state and call it from a transition. A surviving
+key keeps its row, and `update(row, item)` runs only when the object under the key
+changed. The free-function form is `createExoKeyedList(kids, keyOf, build, update)`.
 
-`defineComponent(fn)` where `fn` is `(ctx) => schema`. Props are read from the
-context by name: `ctx.getConstant('title')` (static bucket), `ctx.getBindable('n')`
-(bindable bucket), `ctx.getBindableList('rows')`. Component cleanup: `ctx.onDispose(fn)`.
+## Events
 
-Optionally declare props for type-checking: `defineComponent<{ static: { title: string };
-bindable: { count: TExoBindable<number> } }>(...)`. Then `<Comp static={{title}}
-bindable={{count}}/>` is type-checked against that shape AND the context getters
-infer their return types from it. Omit the generic and the component stays loose.
+`m.on(port, handler)`. How a listener reaches the DOM is the backend's `events`
+field: `EXO_DIRECT_EVENTS` (one listener per element) is the default;
+`createExoDelegatedEvents(names, options?)` attaches one root listener per event
+name. Compose it with
+`composeExoPlugins(backend, { events: () => createExoDelegatedEvents(['click']) })`.
+Delegation refuses non-bubbling events unconditionally and high-frequency ones
+unless `{ allowHighFrequency: true }`.
+
+## Contexts
+
+`c.provide(token, value)` / `c.inject(token)` on the exonode; the token is
+`exoContextToken<T>('name')` from `@exodra/context`. A context is not reactive by
+itself: put an object with a subscription in it and follow it with an effect.
+
+## SSR and hydration
+
+`renderExoPage(machine, { params, state, head, status })` from `@exodra/ssr` renders
+on the string backend and returns `{ html, status, headers, head, stateScript,
+state, renderDocument() }`. During the render a machine reaches the response with
+`c.inject(EXO_SSR_RESPONSE)` — `setStatus`, `setHeader`, `addHead`,
+`setState(key, value)`. On the client, `readExoStateScript()` returns that state.
+
+Hydration is a pack: `withExoHydration(withExoCompiler(new ExoDomBackend()))`, then
+`backend.hydrate(machine, container, params?)`. The container is the element whose
+first element child the server rendered.
+
+## Escape hatches
+
+- `exoForeignNode(c, element, hooks?)` gives a hand-built element the half a child
+  needs, so a list can place, move and drop it. Client render only.
+- `exoNodeDom(child)` reaches a child's DOM record.
+- `c.onTeardown(fn)` registers a teardown against the instance.
+- `c.unsafeHtml(childrenPort, html)` writes raw markup. Nothing escapes and nothing
+  sanitises.
+
+## JSX (optional — and it DOES need a compiler)
+
+JSX declares a **schema** and nothing else: markup plus named ports.
+`exoJsx<TPorts>(($) => <markup/>)` from `@exodra/jsx` is compiled by
+`@exodra/babel-plugin-schema` (or `swc-plugin-exodra` in Rust) into a module-level
+`createExoNamedSchema()` call; the value is a schema declaration whose `.ports` are
+named. It emits imports from `@exodra/core` only. There is **no runtime**: JSX that
+reaches the runtime uncompiled throws, and there is no `Fragment`. There are no props
+and no wire in a declaration — the machine (`createExoMachineBuilder(SCHEMA)`) fills
+the ports.
+
+| Written | Compiles to | Filled by the machine with |
+| --- | --- | --- |
+| `class="row"`, `tabindex={0}`, `disabled` | markup folded into the schema | — |
+| `data-id={$.id}` | `port('data-id', 'id')` | `c.attr(P.id, v)` |
+| `<b>{$.label}</b>` (the element's ONLY child) | `textPort('label')` | `c.text(P.label, v)` |
+| `onClick={$.toggle}`, `on:dblclick={$.edit}` | `eventPort('click', 'toggle')` — `onX` lowers the tail, `on:` keeps the name | `m.on(P.toggle, handler)` |
+| `ref={$.box}` | `refPort('box')` | — |
+| `unsafeHtml={$.body}` | `childrenPort('body')` | `c.unsafeHtml(P.body, html)` — nothing escapes |
+| `<$.rows />` | `childrenPort('rows')`, may stand among static siblings | `c.one` / `c.list` / `c.childList` + `reconcileExoOrder` |
+
+```tsx
+import { exoJsx } from '@exodra/jsx';
+import { createExoMachineBuilder } from '@exodra/core';
+import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+
+const COUNTER_SCHEMA = exoJsx<{ count: TExoTextPort; increment: TExoEventPort }>(($) => (
+  <button type="button" onClick={$.increment}>
+    <span>{$.count}</span>
+  </button>
+));
+const P = COUNTER_SCHEMA.ports;
+
+const m = createExoMachineBuilder<TExoMachineNode, unknown, { n: number }>(COUNTER_SCHEMA);
+m.createInitialState(() => ({ n: 0 }));
+const showCount = m.transition((c) => {
+  c.text(P.count, c.state.n);
+});
+m.wire((c) => {
+  showCount(c);
+});
+m.on(P.increment, (c) => {
+  c.state.n += 1;
+  showCount(c);
+});
+export const COUNTER = m.done();
+```
+
+Refused at compile time, each naming the element and the fix: any expression other
+than `$.name` (closures, `item.id`, conditionals); component tags (`<Row />`) and any
+`list=` / `props=` operand; fragments; `{...spread}`; a namespace other than `on:`; a
+lowercase inline handler (`onclick="…"`); a text port beside other children;
+`unsafeHtml` with children; a port name used twice; JSX outside `exoJsx()`; statements
+before the declaration's `return`.
+
+Setup: `npm i @exodra/jsx`, `npm i -D babel-preset-exodra`,
+`module.exports = { presets: ['exodra'] }`, and `"jsx": "react-jsx"` +
+`"jsxImportSource": "@exodra/jsx/schema"` in tsconfig. Options (preset and plugin):
+`schemaSource` (default `'@exodra/core'`), `schemaImport` (default
+`'createExoNamedSchema'`), `markerName` (default `'exoJsx'`).
+The native TypeScript JSX transform and `@babel/plugin-transform-react-jsx` are
+**incompatible** — they emit `jsx()` runtime calls and Exodra has no runtime to
+receive them.
 
 ## Packages
 
-- `@exodra/core` — schema (`h`, `text`, `defineComponent`, `TExoSchema`), base node.
-  Deliberately reactivity-AGNOSTIC: bucket values are typed `unknown`, so core can be
-  driven by any reactivity system. It depends on nothing.
-- `@exodra/reactivity-types` — the reactive-value CONTRACT, types only, zero runtime,
-  zero deps: `TExoBindable` (`getValue`/`subscribe`), `TExoBindableList`
-  (`snapshot`/`subscribeOps`), `TExoListOp`, and the writable variants. Renderers and
-  reactive-value implementations depend on THIS, not on each other — so a bindable is
-  a nominal contract, not a duck-typed lookalike.
-- `@exodra/reactivity` — one IMPLEMENTATION of that contract: `bindable`, `derive`,
-  `list`, persistence, hydrate helpers. Re-exports the types from `@exodra/reactivity-types`.
-- `@exodra/dom` — the DOM renderer (`mount`, `hydrate`, identity reconcile). Depends on
-  `@exodra/reactivity-types` for the contract only (type-only import); at runtime it
-  duck-types (`'subscribe' in binding`), so any conforming reactive value works.
-- `@exodra/jsx` + `@exodra/babel-plugin-jsx` — JSX types + the compiler.
-- `babel-preset-exodra` — one-line Babel pipeline (syntax-jsx + the plugin +
-  preset-typescript). The integration hub: `presets: ['exodra']` in `babel.config.js`
-  makes Jest (via `babel-jest`), webpack (`babel-loader`), and Parcel compile Exodra
-  JSX. Also exports `transformExodraJsx(code, id)`, the single runner the bundler
-  plugins share. NOT `ts-jest`/`@swc/jest` — they don't run Babel plugins.
-- `esbuild-plugin-exodra` / `rollup-plugin-exodra` / `bun-plugin-exodra` — thin
-  plugins that delegate to that runner (esbuild/tsup, Rollup, Bun).
-- `swc-plugin-exodra` — native Rust/Wasm SWC plugin (Next.js default, `swc-loader`).
-  Full parity with the Babel plugin; version-tied to `swc_core`/`@swc/core`.
-- `@exodra/router` — lazy routes (`lazy(() => import())`), history, guards. Route
-  `handle` (arbitrary metadata) surfaces on the whole matched branch via
-  `router.getMatches()` (root → leaf: breadcrumbs/titles). Per-navigation location
-  `state` via `navigate(to, { state })` / `<Link state>` → `location.state` (History
-  API, survives back/forward, not in URL; use query params for shareable state).
-- `@exodra/ssr` / `@exodra/string` — server rendering.
-- `@exodra/forms` — form bindables (`bind:value` / `bind:checked` runtime).
-- `@exodra/attrs` — `mergeAttrs(base, ...partials)`: compose typed attrs buckets
-  (`static`/`bindables`/`handlers`/…) into one props object. Shallow two-level,
-  last-wins; `onExoMount`/`onExoUnmount` compose. It's the runtime of `bind:` and
-  the explicit opt-in merge for `props={mergeAttrs(...)}`. (Moved here from
-  `@exodra/jsx`.) Never recurse a deep merge — bucket values are live signals.
-- `@exodra/style` — build the `style` string from objects: `style({ color: 'red',
-  fontSize: 12 })` → `"color:red;font-size:12px"` (camelCase→kebab, auto-px,
-  `--custom` props, conditionals). Zero deps; output goes in `static.style`.
-- `@exodra/react` — render React components inside Exodra as islands:
-  `reactIsland(Component, propsOrBindable)`. React is a peer dependency.
-- `@exodra/vite-plugin` — Vite integration (file-based routing, JSX transform, HMR).
-- `@exodra/profiler` — runtime profiling. `@exodra/introspect` — `exo-introspect`
-  CLI for static analysis (schemas/components/routes/performance) + AI integration.
-- `create-exodra` — `npm create exodra` scaffolding CLI.
+- `@exodra/core` — schemas, ports, the machine builder (`createExoMachineBuilder`,
+  `wireExoNode`), `createExoStatic`, `composeExoPlugins`, the shared escapers.
+- `@exodra/context` — `exoContextToken`, context frames, ids.
+- `@exodra/computed` — the declarative machine form (`withExoComputedMachine`).
+- `@exodra/dom` — the browser backend: `ExoDomBackend`, `withExoCompiler`,
+  `withExoHydration`, event packs, `exoForeignNode`.
+- `@exodra/list-reconcile` — `reconcileExoOrder`, `createExoKeyedList`,
+  `EXO_KEYED_LIST_VOCABULARY`.
+- `@exodra/string` — the server backend: `ExoStrBackend`.
+- `@exodra/ssr` — the rest of the response: `renderExoPage`, `EXO_SSR_RESPONSE`,
+  `readExoStateScript`.
+- `@exodra/jsx` — the JSX schema dialect.
+- `@exodra/babel-plugin-schema` — the JSX compiler. `babel-preset-exodra` wires it
+  in one line; `esbuild-plugin-exodra`, `rollup-plugin-exodra`, `bun-plugin-exodra`
+  and `@exodra/vite-plugin` delegate to the same runner; `swc-plugin-exodra` is the
+  Rust/Wasm equivalent for SWC.
+- `@exodra/router` — `createExoRouter`, `provideExoRouter`, `exoOutlet`, `ExoLink`,
+  history adapters, guards; a page receives its match as its wire's params.
+- `@exodra/forms` — `readExoControlValue` and friends.
+- `@exodra/dom-profiler`, `@exodra/introspect` — profiling, and ESLint rules plus a
+  source counter.
+- `@exodra/react`, `@exodra/react-mount`, `@exodra/react-compat` — React interop.
+- `create-exodra` — `npm create exodra` scaffolding.
 
-## Gotchas (learned the hard way)
+## Gotchas
 
-1. **Flat attrs are compile errors.** Every prop goes in a bucket.
-2. **Rebuild the babel plugin's `dist`** before running examples — a stale
-   `@exodra/babel-plugin-jsx/dist` mis-compiles JSX (e.g. `onClick` lands in
-   `static` → dead buttons). Examples import the BUILT dist, not `src`.
-3. **Identity-stable schemas = focus.** Rebuilding rows on every change loses
-   input focus; cache schemas by key + a structural guard.
-4. **Bridging a buffered command source (e.g. an oimdb ordered stream):** the
-   consumer takes the initial state via `snapshot()` AND the source may deliver
-   its buffered initial writes as "deltas" on the first flush after subscribe —
-   settle the source (flush) BEFORE the renderer subscribes, or you double-apply
-   the initial state.
-5. `bindable={{ children }}` where the value is an **array** goes through the
-   full identity reconcile — it is not limited to a single child.
+1. **`createInitialState` returns state and opens children ports; it does not write
+   ports.** Writing happens in transitions, called from `wire`, handlers and effects.
+2. **An effect draws before it subscribes.** Subscribing alone leaves the port empty
+   until the first change.
+3. **Identity is upstream.** Focus loss in an editable list is a data-layer
+   problem: hand back the same object, or use the keyed-list plugin.
+4. **A children port cannot be followed by static text** — the schema compiler
+   refuses this at module load. Wrap the text.
+5. **Inside a raw-text element** (`<script>`, `<style>`, …) a `textPort()` is
+   refused, a child *element* is refused, and static text is emitted verbatim.
+6. **A machine that calls `exoNodeDom` or `exoForeignNode` is a client machine.**
+   `@exodra/string` has no element.
+
+## What does NOT exist (delete this from your priors)
+
+- `@exodra/reactivity` / `@exodra/reactivity-types`: `exoBindable`, `exoDerive`,
+  `exoList`, `exoCombine`, `exoPersist`, persistors, `bindExoText` / `bindExoAttr`
+  / `bindExoHtml`. Use machine state, transitions and effects.
+- `c.bind`, `c.set`, `bindList`, `bindOne`, `bindMany`, `bindChildren`,
+  `reconcileExoChildren`, `reconcileExoKeyedChildren`, `attachExoKeyedList`.
+- `exoComponent`, `exoSchema`, `exoStatic`, `exoOne`, `renderExoRows`,
+  `hydrateExoRows`, `exoOwn`, `exoRuntime` / `exoDefaultRuntime`, `EXO_SSR`.
+- `h(type, attrs)` / `defineComponent(fn)` / prop buckets (`static`, `bindable`,
+  `handlers`, …).
+- `@exodra/babel-plugin-jsx`, `babel-plugin-exodra-jsx`, a `key` prop in JSX.

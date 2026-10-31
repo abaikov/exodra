@@ -1,0 +1,68 @@
+{
+  "name": "@exodra/computed",
+  "version": "0.3.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/exodra.global.js",
+  "jsdelivr": "./dist/exodra.global.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./browser": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/exodra.esm.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
+    "build": "tsup",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf dist .tsbuild tsconfig.tsbuildinfo",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "bench:commit": "tsx bench/machine/exo-machine-commit-bench.ts"
+  },
+  "description": "The declarative half of an Exodra machine - fields, derivations, transitions and the pending word that decides what re-runs",
+  "keywords": [
+    "exodra",
+    "computed",
+    "derived",
+    "state-machine",
+    "transition",
+    "fine-grained",
+    "reactive",
+    "performance",
+    "typescript"
+  ],
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/computed"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
+  },
+  "devDependencies": {
+    "@exodra/bench-harness": "*",
+    "@exodra/context": "^0.3.0",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "@exodra/core": "^0.3.0"
+  }
+}

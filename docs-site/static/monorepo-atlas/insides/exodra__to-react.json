@@ -1,0 +1,3299 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "call",
+        "label": "call",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name, args): t.CallExpression",
+            "full": "(name, args): t.CallExpression",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "capitalised",
+        "label": "capitalised",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name): string",
+            "full": "(name): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 126,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "collectPorts",
+        "label": "collectPorts",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(element, holder, ports): void",
+            "full": "(element, holder, ports): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "componentNameOf",
+        "label": "componentNameOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(constant): string",
+            "full": "(constant): string",
+            "parts": [
+              {
+                "text": "("
+              },
+              {
+                "text": "constant",
+                "link": "constant"
+              },
+              {
+                "text": "): string"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 152,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "constant",
+        "label": "constant",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name, init): t.VariableDeclarati…",
+            "full": "(name, init): t.VariableDeclaration",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 254,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "container",
+        "label": "container",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(expression): t.JSXExpressionCont…",
+            "full": "(expression): t.JSXExpressionContainer",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 254,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "COUNTER_SOURCE",
+        "label": "COUNTER_SOURCE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "cssObject",
+        "label": "cssObject",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(text): t.ObjectExpression",
+            "full": "(text): t.ObjectExpression",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 203,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "emitAttribute",
+        "label": "emitAttribute",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(attribute, holder, names): t.JSXAttribute | nu…",
+            "full": "(attribute, holder, names): t.JSXAttribute | null",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 344,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "emitComponent",
+        "label": "emitComponent",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(machine, schema, portOf, transitions, unsupported, runtime, freshName): t.FunctionDeclarati…",
+            "full": "(machine, schema, portOf, transitions, unsupported, runtime, freshName): t.FunctionDeclaration",
+            "parts": [
+              {
+                "text": "(machine, schema, "
+              },
+              {
+                "text": "portOf",
+                "link": "portOf"
+              },
+              {
+                "text": ", transitions, unsupported, runtime, freshName): t.FunctionDeclarati…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(machine, schema, "
+              },
+              {
+                "text": "portOf",
+                "link": "portOf"
+              },
+              {
+                "text": ", transitions, unsupported, runtime, freshName): t.FunctionDeclaration"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 632,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "emitReactMarkup",
+        "label": "emitReactMarkup",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(element, holder, names): t.JSXElement",
+            "full": "(element, holder, names): t.JSXElement",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 280,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "EXO_REACT_CHILDREN_RUNTIME",
+        "label": "EXO_REACT_CHILDREN_RUNTIME",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 190,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXODRA_SOURCES",
+        "label": "EXODRA_SOURCES",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "identifierOf",
+        "label": "identifierOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(port): string",
+            "full": "(port): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 126,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "isFunction",
+        "label": "isFunction",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node): node is TExoFunction",
+            "full": "(node): node is TExoFunction",
+            "parts": [
+              {
+                "text": "(node): node is "
+              },
+              {
+                "text": "TExoFunction",
+                "link": "TExoFunction"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "LIST_SOURCE",
+        "label": "LIST_SOURCE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "MACHINE_STEPS",
+        "label": "MACHINE_STEPS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "portName",
+        "label": "portName",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node, holder): string | null",
+            "full": "(node, holder): string | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 222,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "portOf",
+        "label": "portOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(expression, holder): string | null",
+            "full": "(expression, holder): string | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 261,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "REACT_ATTRIBUTE_NAMES",
+        "label": "REACT_ATTRIBUTE_NAMES",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 158,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "REACT_EVENT_PROPS",
+        "label": "REACT_EVENT_PROPS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 133,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "readHolder",
+        "label": "readHolder",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(fn): string | null",
+            "full": "(fn): string | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 158,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "readReactEventProp",
+        "label": "readReactEventProp",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(event): string",
+            "full": "(event): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "readRoot",
+        "label": "readRoot",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(fn): t.JSXElement | null",
+            "full": "(fn): t.JSXElement | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 197,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "rewriteConnectorCall",
+        "label": "rewriteConnectorCall",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(method, args, context): t.Expression | null",
+            "full": "(method, args, context): t.Expression | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 318,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "rewriteExoConnectorCalls",
+        "label": "rewriteExoConnectorCalls",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(fn, context, where): t.ArrowFunctionExpr…",
+            "full": "(fn, context, where): t.ArrowFunctionExpression",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 306,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "STATIC_DEFAULTS",
+        "label": "STATIC_DEFAULTS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TExoFunction",
+        "label": "TExoFunction",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "t.ArrowFunctionExpression | t.FunctionE…",
+            "full": "t.ArrowFunctionExpression | t.FunctionExpression",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoMachineSource",
+        "label": "TExoMachineSource",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly builder: string;",
+            "full": "readonly builder: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly schema: string;",
+            "full": "readonly schema: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly paramsType: t.TSType | null;",
+            "full": "readonly paramsType: t.TSType | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly stateType: t.TSType | null;",
+            "full": "readonly stateType: t.TSType | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "initial: t.ArrowFunctionExpression | t.…",
+            "full": "initial: t.ArrowFunctionExpression | t.FunctionExpression | null;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "wire: t.ArrowFunctionExpression | t.Fun…",
+            "full": "wire: t.ArrowFunctionExpression | t.FunctionExpression | null;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly transitions: { readonly name: …",
+            "full": "readonly transitions: { readonly name: string; readonly fn: t.ArrowFunctionExpression | t.FunctionExpression; }[];",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly handlers: Map<string, t.ArrowF…",
+            "full": "readonly handlers: Map<string, t.ArrowFunctionExpression | t.FunctionExpression>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly effects: (t.ArrowFunctionExpre…",
+            "full": "readonly effects: (t.ArrowFunctionExpression | t.FunctionExpression)[];",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "done: { readonly name: string; readonly…",
+            "full": "done: { readonly name: string; readonly exported: boolean } | null;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly ports: ReadonlyMap<string, TEx…",
+            "full": "readonly ports: ReadonlyMap<string, TExoPortSource>;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly ports: ReadonlyMap<string, "
+              },
+              {
+                "text": "TExoPortSource",
+                "link": "TExoPortSource"
+              },
+              {
+                "text": ">;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 11,
+        "stereotype": "type",
+        "width": 293,
+        "height": 189,
+        "violations": []
+      },
+      {
+        "id": "TExoMarkupNames",
+        "label": "TExoMarkupNames",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "value(port: string): string;",
+            "full": "value(port: string): string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "handler(port: string): string | null;",
+            "full": "handler(port: string): string | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "ref(port: string): string;",
+            "full": "ref(port: string): string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly styleOf: string;",
+            "full": "readonly styleOf: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "type",
+        "width": 274,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "TExoPortSource",
+        "label": "TExoPortSource",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly name: string;",
+            "full": "readonly name: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly kind: 'attr' | 'text' | 'event…",
+            "full": "readonly kind: 'attr' | 'text' | 'event' | 'children' | 'ref' | 'html';",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly attribute: string | null;",
+            "full": "readonly attribute: string | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly event: string | null;",
+            "full": "readonly event: string | null;",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "type",
+        "width": 293,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "TExoRewriteContext",
+        "label": "TExoRewriteContext",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly portOf: (node: t.Node) => stri…",
+            "full": "readonly portOf: (node: t.Node) => string | null;",
+            "parts": [
+              {
+                "text": "readonly "
+              },
+              {
+                "text": "portOf",
+                "link": "portOf"
+              },
+              {
+                "text": ": (node: t.Node) => stri…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "readonly "
+              },
+              {
+                "text": "portOf",
+                "link": "portOf"
+              },
+              {
+                "text": ": (node: t.Node) => string | null;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly setterOf: (port: string) => st…",
+            "full": "readonly setterOf: (port: string) => string;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly handlerSetterOf: (port: string…",
+            "full": "readonly handlerSetterOf: (port: string) => string;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly stateRef: string;",
+            "full": "readonly stateRef: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly teardownsRef: string;",
+            "full": "readonly teardownsRef: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly transitions: ReadonlySet<strin…",
+            "full": "readonly transitions: ReadonlySet<string>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly unsupported: string[];",
+            "full": "readonly unsupported: string[];",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly runtime: Set<string>;",
+            "full": "readonly runtime: Set<string>;",
+            "parts": []
+          }
+        ],
+        "memberCount": 8,
+        "stereotype": "type",
+        "width": 293,
+        "height": 174,
+        "violations": []
+      },
+      {
+        "id": "TExoSchemaSource",
+        "label": "TExoSchemaSource",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly holder: string | null;",
+            "full": "readonly holder: string | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly root: t.JSXElement;",
+            "full": "readonly root: t.JSXElement;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly ports: Map<string, TExoPortSou…",
+            "full": "readonly ports: Map<string, TExoPortSource>;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly ports: Map<string, "
+              },
+              {
+                "text": "TExoPortSource",
+                "link": "TExoPortSource"
+              },
+              {
+                "text": ">;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 293,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoTranslation",
+        "label": "TExoTranslation",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly code: string;",
+            "full": "readonly code: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly runtime: string | null;",
+            "full": "readonly runtime: string | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly unsupported: readonly string[];",
+            "full": "readonly unsupported: readonly string[];",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 293,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact",
+        "label": "translateExoToReact",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(source, fileName, runtimePath): TExoTranslation",
+            "full": "(source, fileName, runtimePath): TExoTranslation",
+            "parts": [
+              {
+                "text": "(source, fileName, runtimePath): "
+              },
+              {
+                "text": "TExoTranslation",
+                "link": "TExoTranslation"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 344,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "useCall",
+        "label": "useCall",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(hook, args, typeArgument): t.CallExpression",
+            "full": "(hook, args, typeArgument): t.CallExpression",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 318,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "collectPorts→portName",
+        "from": "collectPorts",
+        "to": "portName",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "collectPorts→TExoPortSource",
+        "from": "collectPorts",
+        "to": "TExoPortSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoPortSource.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "componentNameOf→capitalised",
+        "from": "componentNameOf",
+        "to": "capitalised",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "componentNameOf→constant",
+        "from": "componentNameOf",
+        "to": "constant",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitAttribute→container",
+        "from": "emitAttribute",
+        "to": "container",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitAttribute→cssObject",
+        "from": "emitAttribute",
+        "to": "cssObject",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitAttribute→portOf",
+        "from": "emitAttribute",
+        "to": "portOf",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitAttribute→REACT_ATTRIBUTE_NAMES",
+        "from": "emitAttribute",
+        "to": "REACT_ATTRIBUTE_NAMES",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitAttribute→readReactEventProp",
+        "from": "emitAttribute",
+        "to": "readReactEventProp",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/readReactEventProp.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitAttribute→STATIC_DEFAULTS",
+        "from": "emitAttribute",
+        "to": "STATIC_DEFAULTS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitAttribute→TExoMarkupNames",
+        "from": "emitAttribute",
+        "to": "TExoMarkupNames",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMarkupNames.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→capitalised",
+        "from": "emitComponent",
+        "to": "capitalised",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→componentNameOf",
+        "from": "emitComponent",
+        "to": "componentNameOf",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→constant",
+        "from": "emitComponent",
+        "to": "constant",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→emitReactMarkup",
+        "from": "emitComponent",
+        "to": "emitReactMarkup",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→identifierOf",
+        "from": "emitComponent",
+        "to": "identifierOf",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→portOf",
+        "from": "emitComponent",
+        "to": "portOf",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→rewriteExoConnectorCalls",
+        "from": "emitComponent",
+        "to": "rewriteExoConnectorCalls",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→TExoMachineSource",
+        "from": "emitComponent",
+        "to": "TExoMachineSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMachineSource.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→TExoRewriteContext",
+        "from": "emitComponent",
+        "to": "TExoRewriteContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoRewriteContext.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→TExoSchemaSource",
+        "from": "emitComponent",
+        "to": "TExoSchemaSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitComponent→useCall",
+        "from": "emitComponent",
+        "to": "useCall",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitReactMarkup→container",
+        "from": "emitReactMarkup",
+        "to": "container",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitReactMarkup→emitAttribute",
+        "from": "emitReactMarkup",
+        "to": "emitAttribute",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitReactMarkup→portOf",
+        "from": "emitReactMarkup",
+        "to": "portOf",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitReactMarkup→TExoMarkupNames",
+        "from": "emitReactMarkup",
+        "to": "TExoMarkupNames",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMarkupNames.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "isFunction→TExoFunction",
+        "from": "isFunction",
+        "to": "TExoFunction",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readHolder→TExoFunction",
+        "from": "readHolder",
+        "to": "TExoFunction",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readReactEventProp→REACT_EVENT_PROPS",
+        "from": "readReactEventProp",
+        "to": "REACT_EVENT_PROPS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/readReactEventProp.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/readReactEventProp.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readRoot→TExoFunction",
+        "from": "readRoot",
+        "to": "TExoFunction",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "rewriteConnectorCall→call",
+        "from": "rewriteConnectorCall",
+        "to": "call",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "rewriteConnectorCall→portOf",
+        "from": "rewriteConnectorCall",
+        "to": "portOf",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "rewriteConnectorCall→TExoRewriteContext",
+        "from": "rewriteConnectorCall",
+        "to": "TExoRewriteContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoRewriteContext.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "rewriteExoConnectorCalls→rewriteConnectorCall",
+        "from": "rewriteExoConnectorCalls",
+        "to": "rewriteConnectorCall",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "rewriteExoConnectorCalls→TExoRewriteContext",
+        "from": "rewriteExoConnectorCalls",
+        "to": "TExoRewriteContext",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoRewriteContext.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoMachineSource→TExoPortSource",
+        "from": "TExoMachineSource",
+        "to": "TExoPortSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMachineSource.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoPortSource.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoRewriteContext→portOf",
+        "from": "TExoRewriteContext",
+        "to": "portOf",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoRewriteContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoSchemaSource→TExoPortSource",
+        "from": "TExoSchemaSource",
+        "to": "TExoPortSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoPortSource.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→call",
+        "from": "translateExoToReact",
+        "to": "call",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→collectPorts",
+        "from": "translateExoToReact",
+        "to": "collectPorts",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→constant",
+        "from": "translateExoToReact",
+        "to": "constant",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→emitComponent",
+        "from": "translateExoToReact",
+        "to": "emitComponent",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→EXO_REACT_CHILDREN_RUNTIME",
+        "from": "translateExoToReact",
+        "to": "EXO_REACT_CHILDREN_RUNTIME",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/EXO_REACT_CHILDREN_RUNTIME.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→EXODRA_SOURCES",
+        "from": "translateExoToReact",
+        "to": "EXODRA_SOURCES",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→isFunction",
+        "from": "translateExoToReact",
+        "to": "isFunction",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→MACHINE_STEPS",
+        "from": "translateExoToReact",
+        "to": "MACHINE_STEPS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→readHolder",
+        "from": "translateExoToReact",
+        "to": "readHolder",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→readRoot",
+        "from": "translateExoToReact",
+        "to": "readRoot",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→TExoFunction",
+        "from": "translateExoToReact",
+        "to": "TExoFunction",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→TExoMachineSource",
+        "from": "translateExoToReact",
+        "to": "TExoMachineSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMachineSource.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→TExoPortSource",
+        "from": "translateExoToReact",
+        "to": "TExoPortSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoPortSource.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→TExoSchemaSource",
+        "from": "translateExoToReact",
+        "to": "TExoSchemaSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateExoToReact→TExoTranslation",
+        "from": "translateExoToReact",
+        "to": "TExoTranslation",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoTranslation.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "useCall→call",
+        "from": "useCall",
+        "to": "call",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 2783,
+    "height": 1949,
+    "nodes": [
+      {
+        "id": "call",
+        "x": 1937.5,
+        "y": 1181.8,
+        "width": 229,
+        "height": 69
+      },
+      {
+        "id": "capitalised",
+        "x": 1594,
+        "y": 1709.8,
+        "width": 126,
+        "height": 69
+      },
+      {
+        "id": "collectPorts",
+        "x": 1166.5,
+        "y": 1817.5,
+        "width": 229,
+        "height": 69
+      },
+      {
+        "id": "componentNameOf",
+        "x": 1205,
+        "y": 1652,
+        "width": 152,
+        "height": 69
+      },
+      {
+        "id": "constant",
+        "x": 1530,
+        "y": 1612.8,
+        "width": 254,
+        "height": 69
+      },
+      {
+        "id": "container",
+        "x": 2298,
+        "y": 1856,
+        "width": 254,
+        "height": 69
+      },
+      {
+        "id": "COUNTER_SOURCE",
+        "x": 136,
+        "y": 426.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "cssObject",
+        "x": 2323.5,
+        "y": 1759,
+        "width": 203,
+        "height": 69
+      },
+      {
+        "id": "emitAttribute",
+        "x": 1880,
+        "y": 1551.5,
+        "width": 344,
+        "height": 69
+      },
+      {
+        "id": "emitComponent",
+        "x": 432,
+        "y": 1240.3,
+        "width": 632,
+        "height": 69
+      },
+      {
+        "id": "emitReactMarkup",
+        "x": 1517,
+        "y": 1484.5,
+        "width": 280,
+        "height": 69
+      },
+      {
+        "id": "EXO_REACT_CHILDREN_RUNTIME",
+        "x": 653,
+        "y": 826.3,
+        "width": 190,
+        "height": 46
+      },
+      {
+        "id": "EXODRA_SOURCES",
+        "x": 688,
+        "y": 752.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "identifierOf",
+        "x": 1218,
+        "y": 1298.8,
+        "width": 126,
+        "height": 69
+      },
+      {
+        "id": "isFunction",
+        "x": 640,
+        "y": 655.3,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "LIST_SOURCE",
+        "x": 136,
+        "y": 500.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "MACHINE_STEPS",
+        "x": 688,
+        "y": 581.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "portName",
+        "x": 1546,
+        "y": 1827.5,
+        "width": 222,
+        "height": 69
+      },
+      {
+        "id": "portOf",
+        "x": 2294.5,
+        "y": 1141.5,
+        "width": 261,
+        "height": 69
+      },
+      {
+        "id": "REACT_ATTRIBUTE_NAMES",
+        "x": 2346,
+        "y": 1685,
+        "width": 158,
+        "height": 46
+      },
+      {
+        "id": "REACT_EVENT_PROPS",
+        "x": 2626,
+        "y": 1599.5,
+        "width": 133,
+        "height": 46
+      },
+      {
+        "id": "readHolder",
+        "x": 669,
+        "y": 484.3,
+        "width": 158,
+        "height": 69
+      },
+      {
+        "id": "readReactEventProp",
+        "x": 2355.5,
+        "y": 1588,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "readRoot",
+        "x": 649.5,
+        "y": 387.3,
+        "width": 197,
+        "height": 69
+      },
+      {
+        "id": "rewriteConnectorCall",
+        "x": 1498,
+        "y": 1123.3,
+        "width": 318,
+        "height": 69
+      },
+      {
+        "id": "rewriteExoConnectorCalls",
+        "x": 1128,
+        "y": 1094,
+        "width": 306,
+        "height": 69
+      },
+      {
+        "id": "STATIC_DEFAULTS",
+        "x": 2365,
+        "y": 1514,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TExoFunction",
+        "x": 1134.5,
+        "y": 408.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoMachineSource",
+        "x": 1134.5,
+        "y": 505.5,
+        "width": 293,
+        "height": 189
+      },
+      {
+        "id": "TExoMarkupNames",
+        "x": 2288,
+        "y": 1372,
+        "width": 274,
+        "height": 114
+      },
+      {
+        "id": "TExoPortSource",
+        "x": 1510.5,
+        "y": 925,
+        "width": 293,
+        "height": 114
+      },
+      {
+        "id": "TExoRewriteContext",
+        "x": 1905.5,
+        "y": 905,
+        "width": 293,
+        "height": 174
+      },
+      {
+        "id": "TExoSchemaSource",
+        "x": 1134.5,
+        "y": 191,
+        "width": 293,
+        "height": 99
+      },
+      {
+        "id": "TExoTranslation",
+        "x": 601.5,
+        "y": 24,
+        "width": 293,
+        "height": 99
+      },
+      {
+        "id": "translateExoToReact",
+        "x": 24,
+        "y": 574.8,
+        "width": 344,
+        "height": 69
+      },
+      {
+        "id": "useCall",
+        "x": 1498,
+        "y": 808,
+        "width": 318,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "collectPorts→portName",
+        "points": [
+          {
+            "x": 1395.5,
+            "y": 1858.2
+          },
+          {
+            "x": 1466,
+            "y": 1862
+          },
+          {
+            "x": 1546,
+            "y": 1862
+          }
+        ]
+      },
+      {
+        "id": "collectPorts→TExoPortSource",
+        "points": [
+          {
+            "x": 1395.5,
+            "y": 1840.1
+          },
+          {
+            "x": 1466,
+            "y": 1832.8
+          },
+          {
+            "x": 1644.2,
+            "y": 1039
+          }
+        ]
+      },
+      {
+        "id": "componentNameOf→capitalised",
+        "points": [
+          {
+            "x": 1357,
+            "y": 1694.4
+          },
+          {
+            "x": 1466,
+            "y": 1705.8
+          },
+          {
+            "x": 1594,
+            "y": 1731.6
+          }
+        ]
+      },
+      {
+        "id": "componentNameOf→constant",
+        "points": [
+          {
+            "x": 1357,
+            "y": 1682.4
+          },
+          {
+            "x": 1466,
+            "y": 1676.5
+          },
+          {
+            "x": 1530,
+            "y": 1666.7
+          }
+        ]
+      },
+      {
+        "id": "emitAttribute→container",
+        "points": [
+          {
+            "x": 2078.5,
+            "y": 1620.5
+          },
+          {
+            "x": 2256,
+            "y": 1852
+          },
+          {
+            "x": 2298,
+            "y": 1861.6
+          }
+        ]
+      },
+      {
+        "id": "emitAttribute→cssObject",
+        "points": [
+          {
+            "x": 2085.9,
+            "y": 1620.5
+          },
+          {
+            "x": 2256,
+            "y": 1793.5
+          },
+          {
+            "x": 2323.5,
+            "y": 1793.5
+          }
+        ]
+      },
+      {
+        "id": "emitAttribute→portOf",
+        "points": [
+          {
+            "x": 2224,
+            "y": 1577.6
+          },
+          {
+            "x": 2256,
+            "y": 1576
+          },
+          {
+            "x": 2410.4,
+            "y": 1210.5
+          }
+        ]
+      },
+      {
+        "id": "emitAttribute→REACT_ATTRIBUTE_NAMES",
+        "points": [
+          {
+            "x": 2185.4,
+            "y": 1551.5
+          },
+          {
+            "x": 2256,
+            "y": 1533.3
+          },
+          {
+            "x": 2402.8,
+            "y": 1685
+          }
+        ]
+      },
+      {
+        "id": "emitAttribute→readReactEventProp",
+        "points": [
+          {
+            "x": 2102.9,
+            "y": 1551.5
+          },
+          {
+            "x": 2256,
+            "y": 1447.8
+          },
+          {
+            "x": 2391.6,
+            "y": 1588
+          }
+        ]
+      },
+      {
+        "id": "emitAttribute→STATIC_DEFAULTS",
+        "points": [
+          {
+            "x": 2088.5,
+            "y": 1551.5
+          },
+          {
+            "x": 2256,
+            "y": 1393.3
+          },
+          {
+            "x": 2398,
+            "y": 1514
+          }
+        ]
+      },
+      {
+        "id": "emitAttribute→TExoMarkupNames",
+        "points": [
+          {
+            "x": 2085.1,
+            "y": 1551.5
+          },
+          {
+            "x": 2256,
+            "y": 1373.3
+          },
+          {
+            "x": 2288,
+            "y": 1383.8
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→capitalised",
+        "points": [
+          {
+            "x": 773,
+            "y": 1309.3
+          },
+          {
+            "x": 1096,
+            "y": 1754.3
+          },
+          {
+            "x": 1281,
+            "y": 1754.3
+          },
+          {
+            "x": 1466,
+            "y": 1754.3
+          },
+          {
+            "x": 1594,
+            "y": 1747.5
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→componentNameOf",
+        "points": [
+          {
+            "x": 777.2,
+            "y": 1309.3
+          },
+          {
+            "x": 1096,
+            "y": 1686.5
+          },
+          {
+            "x": 1205,
+            "y": 1686.5
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→constant",
+        "points": [
+          {
+            "x": 783.9,
+            "y": 1309.3
+          },
+          {
+            "x": 1096,
+            "y": 1608.8
+          },
+          {
+            "x": 1281,
+            "y": 1608.8
+          },
+          {
+            "x": 1466,
+            "y": 1608.8
+          },
+          {
+            "x": 1530,
+            "y": 1621.7
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→emitReactMarkup",
+        "points": [
+          {
+            "x": 797.2,
+            "y": 1309.3
+          },
+          {
+            "x": 1096,
+            "y": 1519
+          },
+          {
+            "x": 1281,
+            "y": 1519
+          },
+          {
+            "x": 1466,
+            "y": 1519
+          },
+          {
+            "x": 1517,
+            "y": 1519
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→identifierOf",
+        "points": [
+          {
+            "x": 953.2,
+            "y": 1309.3
+          },
+          {
+            "x": 1096,
+            "y": 1333.3
+          },
+          {
+            "x": 1218,
+            "y": 1333.3
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→portOf",
+        "points": [
+          {
+            "x": 1064,
+            "y": 1274.8
+          },
+          {
+            "x": 1096,
+            "y": 1274.8
+          },
+          {
+            "x": 1281,
+            "y": 1274.8
+          },
+          {
+            "x": 1466,
+            "y": 1274.8
+          },
+          {
+            "x": 1657,
+            "y": 1274.8
+          },
+          {
+            "x": 1848,
+            "y": 1274.8
+          },
+          {
+            "x": 2052,
+            "y": 1274.8
+          },
+          {
+            "x": 2256,
+            "y": 1274.8
+          },
+          {
+            "x": 2366,
+            "y": 1210.5
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→rewriteExoConnectorCalls",
+        "points": [
+          {
+            "x": 830.1,
+            "y": 1240.3
+          },
+          {
+            "x": 1096,
+            "y": 1128.5
+          },
+          {
+            "x": 1128,
+            "y": 1128.5
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→TExoMachineSource",
+        "points": [
+          {
+            "x": 789,
+            "y": 1240.3
+          },
+          {
+            "x": 1096,
+            "y": 982
+          },
+          {
+            "x": 1235.2,
+            "y": 694.5
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→TExoRewriteContext",
+        "points": [
+          {
+            "x": 780.1,
+            "y": 1240.3
+          },
+          {
+            "x": 1096,
+            "y": 901
+          },
+          {
+            "x": 1281,
+            "y": 901
+          },
+          {
+            "x": 1466,
+            "y": 901
+          },
+          {
+            "x": 1657,
+            "y": 901
+          },
+          {
+            "x": 1848,
+            "y": 901
+          },
+          {
+            "x": 1905.5,
+            "y": 926.6
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→TExoSchemaSource",
+        "points": [
+          {
+            "x": 777.8,
+            "y": 1240.3
+          },
+          {
+            "x": 1096,
+            "y": 871.8
+          },
+          {
+            "x": 1266.5,
+            "y": 290
+          }
+        ]
+      },
+      {
+        "id": "emitComponent→useCall",
+        "points": [
+          {
+            "x": 775.8,
+            "y": 1240.3
+          },
+          {
+            "x": 1096,
+            "y": 842.5
+          },
+          {
+            "x": 1281,
+            "y": 842.5
+          },
+          {
+            "x": 1466,
+            "y": 842.5
+          },
+          {
+            "x": 1498,
+            "y": 842.5
+          }
+        ]
+      },
+      {
+        "id": "emitReactMarkup→container",
+        "points": [
+          {
+            "x": 1674.3,
+            "y": 1553.5
+          },
+          {
+            "x": 1848,
+            "y": 1900.5
+          },
+          {
+            "x": 2052,
+            "y": 1900.5
+          },
+          {
+            "x": 2256,
+            "y": 1900.5
+          },
+          {
+            "x": 2298,
+            "y": 1898
+          }
+        ]
+      },
+      {
+        "id": "emitReactMarkup→emitAttribute",
+        "points": [
+          {
+            "x": 1755.4,
+            "y": 1553.5
+          },
+          {
+            "x": 1848,
+            "y": 1586
+          },
+          {
+            "x": 1880,
+            "y": 1586
+          }
+        ]
+      },
+      {
+        "id": "emitReactMarkup→portOf",
+        "points": [
+          {
+            "x": 1696.8,
+            "y": 1484.5
+          },
+          {
+            "x": 1848,
+            "y": 1353.3
+          },
+          {
+            "x": 2052,
+            "y": 1353.3
+          },
+          {
+            "x": 2256,
+            "y": 1353.3
+          },
+          {
+            "x": 2392.1,
+            "y": 1210.5
+          }
+        ]
+      },
+      {
+        "id": "emitReactMarkup→TExoMarkupNames",
+        "points": [
+          {
+            "x": 1688.4,
+            "y": 1484.5
+          },
+          {
+            "x": 1848,
+            "y": 1309.3
+          },
+          {
+            "x": 2052,
+            "y": 1309.3
+          },
+          {
+            "x": 2256,
+            "y": 1309.3
+          },
+          {
+            "x": 2344.6,
+            "y": 1372
+          }
+        ]
+      },
+      {
+        "id": "isFunction→TExoFunction",
+        "points": [
+          {
+            "x": 856,
+            "y": 689.8
+          },
+          {
+            "x": 1096,
+            "y": 689.8
+          },
+          {
+            "x": 1255.1,
+            "y": 477.5
+          }
+        ]
+      },
+      {
+        "id": "readHolder→TExoFunction",
+        "points": [
+          {
+            "x": 827,
+            "y": 518.8
+          },
+          {
+            "x": 1096,
+            "y": 518.8
+          },
+          {
+            "x": 1196.7,
+            "y": 477.5
+          }
+        ]
+      },
+      {
+        "id": "readReactEventProp→REACT_EVENT_PROPS",
+        "points": [
+          {
+            "x": 2494.5,
+            "y": 1622.5
+          },
+          {
+            "x": 2594,
+            "y": 1622.5
+          },
+          {
+            "x": 2626,
+            "y": 1622.5
+          }
+        ]
+      },
+      {
+        "id": "readRoot→TExoFunction",
+        "points": [
+          {
+            "x": 846.5,
+            "y": 421.8
+          },
+          {
+            "x": 1096,
+            "y": 421.8
+          },
+          {
+            "x": 1134.5,
+            "y": 426.2
+          }
+        ]
+      },
+      {
+        "id": "rewriteConnectorCall→call",
+        "points": [
+          {
+            "x": 1769.6,
+            "y": 1192.3
+          },
+          {
+            "x": 1848,
+            "y": 1216.3
+          },
+          {
+            "x": 1937.5,
+            "y": 1216.3
+          }
+        ]
+      },
+      {
+        "id": "rewriteConnectorCall→portOf",
+        "points": [
+          {
+            "x": 1816,
+            "y": 1157.8
+          },
+          {
+            "x": 1848,
+            "y": 1157.8
+          },
+          {
+            "x": 2052,
+            "y": 1157.8
+          },
+          {
+            "x": 2256,
+            "y": 1157.8
+          },
+          {
+            "x": 2294.5,
+            "y": 1161.9
+          }
+        ]
+      },
+      {
+        "id": "rewriteConnectorCall→TExoRewriteContext",
+        "points": [
+          {
+            "x": 1757.6,
+            "y": 1123.3
+          },
+          {
+            "x": 1848,
+            "y": 1092.3
+          },
+          {
+            "x": 1905.5,
+            "y": 1064
+          }
+        ]
+      },
+      {
+        "id": "rewriteExoConnectorCalls→rewriteConnectorCall",
+        "points": [
+          {
+            "x": 1434,
+            "y": 1152.7
+          },
+          {
+            "x": 1466,
+            "y": 1157.8
+          },
+          {
+            "x": 1498,
+            "y": 1157.8
+          }
+        ]
+      },
+      {
+        "id": "rewriteExoConnectorCalls→TExoRewriteContext",
+        "points": [
+          {
+            "x": 1378.4,
+            "y": 1094
+          },
+          {
+            "x": 1466,
+            "y": 1063
+          },
+          {
+            "x": 1657,
+            "y": 1063
+          },
+          {
+            "x": 1848,
+            "y": 1063
+          },
+          {
+            "x": 1905.5,
+            "y": 1043
+          }
+        ]
+      },
+      {
+        "id": "TExoMachineSource→TExoPortSource",
+        "points": [
+          {
+            "x": 1427.5,
+            "y": 600
+          },
+          {
+            "x": 1466,
+            "y": 600
+          },
+          {
+            "x": 1628.5,
+            "y": 925
+          }
+        ]
+      },
+      {
+        "id": "TExoRewriteContext→portOf",
+        "points": [
+          {
+            "x": 2198.5,
+            "y": 992
+          },
+          {
+            "x": 2256,
+            "y": 992
+          },
+          {
+            "x": 2393.3,
+            "y": 1141.5
+          }
+        ]
+      },
+      {
+        "id": "TExoSchemaSource→TExoPortSource",
+        "points": [
+          {
+            "x": 1427.5,
+            "y": 240.5
+          },
+          {
+            "x": 1466,
+            "y": 240.5
+          },
+          {
+            "x": 1642.3,
+            "y": 925
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→call",
+        "points": [
+          {
+            "x": 201.4,
+            "y": 643.8
+          },
+          {
+            "x": 400,
+            "y": 1920.5
+          },
+          {
+            "x": 748,
+            "y": 1920.5
+          },
+          {
+            "x": 1096,
+            "y": 1920.5
+          },
+          {
+            "x": 1281,
+            "y": 1920.5
+          },
+          {
+            "x": 1466,
+            "y": 1920.5
+          },
+          {
+            "x": 1657,
+            "y": 1920.5
+          },
+          {
+            "x": 1848,
+            "y": 1920.5
+          },
+          {
+            "x": 2042,
+            "y": 1250.8
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→collectPorts",
+        "points": [
+          {
+            "x": 201.7,
+            "y": 643.8
+          },
+          {
+            "x": 400,
+            "y": 1852
+          },
+          {
+            "x": 748,
+            "y": 1852
+          },
+          {
+            "x": 1096,
+            "y": 1852
+          },
+          {
+            "x": 1166.5,
+            "y": 1852
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→constant",
+        "points": [
+          {
+            "x": 201.9,
+            "y": 643.8
+          },
+          {
+            "x": 400,
+            "y": 1793.5
+          },
+          {
+            "x": 748,
+            "y": 1793.5
+          },
+          {
+            "x": 1096,
+            "y": 1793.5
+          },
+          {
+            "x": 1281,
+            "y": 1793.5
+          },
+          {
+            "x": 1466,
+            "y": 1793.5
+          },
+          {
+            "x": 1611.9,
+            "y": 1681.8
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→emitComponent",
+        "points": [
+          {
+            "x": 206.6,
+            "y": 643.8
+          },
+          {
+            "x": 400,
+            "y": 1274.8
+          },
+          {
+            "x": 432,
+            "y": 1274.8
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→EXO_REACT_CHILDREN_RUNTIME",
+        "points": [
+          {
+            "x": 225.3,
+            "y": 643.8
+          },
+          {
+            "x": 400,
+            "y": 849.3
+          },
+          {
+            "x": 653,
+            "y": 849.3
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→EXODRA_SOURCES",
+        "points": [
+          {
+            "x": 238.4,
+            "y": 643.8
+          },
+          {
+            "x": 400,
+            "y": 775.3
+          },
+          {
+            "x": 688,
+            "y": 775.3
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→isFunction",
+        "points": [
+          {
+            "x": 283.4,
+            "y": 643.8
+          },
+          {
+            "x": 400,
+            "y": 689.8
+          },
+          {
+            "x": 640,
+            "y": 689.8
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→MACHINE_STEPS",
+        "points": [
+          {
+            "x": 368,
+            "y": 605
+          },
+          {
+            "x": 400,
+            "y": 604.3
+          },
+          {
+            "x": 688,
+            "y": 604.3
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→readHolder",
+        "points": [
+          {
+            "x": 273.8,
+            "y": 574.8
+          },
+          {
+            "x": 400,
+            "y": 518.8
+          },
+          {
+            "x": 669,
+            "y": 518.8
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→readRoot",
+        "points": [
+          {
+            "x": 233.5,
+            "y": 574.8
+          },
+          {
+            "x": 400,
+            "y": 421.8
+          },
+          {
+            "x": 649.5,
+            "y": 421.8
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→TExoFunction",
+        "points": [
+          {
+            "x": 224.6,
+            "y": 574.8
+          },
+          {
+            "x": 400,
+            "y": 363.3
+          },
+          {
+            "x": 748,
+            "y": 363.3
+          },
+          {
+            "x": 1096,
+            "y": 363.3
+          },
+          {
+            "x": 1201,
+            "y": 408.5
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→TExoMachineSource",
+        "points": [
+          {
+            "x": 222.5,
+            "y": 574.8
+          },
+          {
+            "x": 400,
+            "y": 343.3
+          },
+          {
+            "x": 748,
+            "y": 343.3
+          },
+          {
+            "x": 1096,
+            "y": 343.3
+          },
+          {
+            "x": 1212.9,
+            "y": 505.5
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→TExoPortSource",
+        "points": [
+          {
+            "x": 211.9,
+            "y": 574.8
+          },
+          {
+            "x": 400,
+            "y": 167
+          },
+          {
+            "x": 748,
+            "y": 167
+          },
+          {
+            "x": 1096,
+            "y": 167
+          },
+          {
+            "x": 1281,
+            "y": 167
+          },
+          {
+            "x": 1466,
+            "y": 167
+          },
+          {
+            "x": 1643.6,
+            "y": 925
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→TExoSchemaSource",
+        "points": [
+          {
+            "x": 211.2,
+            "y": 574.8
+          },
+          {
+            "x": 400,
+            "y": 147
+          },
+          {
+            "x": 748,
+            "y": 147
+          },
+          {
+            "x": 1096,
+            "y": 147
+          },
+          {
+            "x": 1183.1,
+            "y": 191
+          }
+        ]
+      },
+      {
+        "id": "translateExoToReact→TExoTranslation",
+        "points": [
+          {
+            "x": 209.1,
+            "y": 574.8
+          },
+          {
+            "x": 400,
+            "y": 73.5
+          },
+          {
+            "x": 601.5,
+            "y": 73.5
+          }
+        ]
+      },
+      {
+        "id": "useCall→call",
+        "points": [
+          {
+            "x": 1816,
+            "y": 842.5
+          },
+          {
+            "x": 1848,
+            "y": 842.5
+          },
+          {
+            "x": 2033.2,
+            "y": 1181.8
+          }
+        ]
+      }
+    ]
+  }
+}

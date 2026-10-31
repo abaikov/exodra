@@ -32,24 +32,28 @@
         "layer": 0,
         "members": [
           {
-            "visibility": "+",
-            "text": "filter?: RegExp;",
-            "full": "filter?: RegExp;",
-            "doc": "Which files to compile.",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "importSource?: string;",
-            "full": "importSource?: string;",
-            "doc": "Module the auto-imported `h`/`text` come from.",
+            "text": "ExodraBundlerOptions",
+            "full": "ExodraBundlerOptions",
             "parts": []
           }
         ],
-        "memberCount": 2,
-        "stereotype": "interface",
-        "width": 178,
-        "height": 84,
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 165,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "MAP_COMMENT",
+        "label": "MAP_COMMENT",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "SPLIT SO THIS FILE DOES NOT CONTAIN THE MARKER IT EMITS.",
+        "width": 120,
+        "height": 46,
         "violations": []
       }
     ],
@@ -72,27 +76,53 @@
           }
         ],
         "violations": []
+      },
+      {
+        "id": "exodra→MAP_COMMENT",
+        "from": "exodra",
+        "to": "MAP_COMMENT",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/esbuild-plugin-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/esbuild-plugin-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
       }
     ],
     "rules": {}
   },
   "layout": {
-    "width": 436,
-    "height": 132,
+    "width": 423,
+    "height": 191,
     "nodes": [
       {
         "id": "exodra",
         "x": 24,
-        "y": 31.5,
+        "y": 55.3,
         "width": 146,
         "height": 69
       },
       {
         "id": "ExodraEsbuildOptions",
         "x": 234,
+        "y": 98,
+        "width": 165,
+        "height": 69
+      },
+      {
+        "id": "MAP_COMMENT",
+        "x": 256.5,
         "y": 24,
-        "width": 178,
-        "height": 84
+        "width": 120,
+        "height": 46
       }
     ],
     "edges": [
@@ -101,15 +131,32 @@
         "points": [
           {
             "x": 170,
-            "y": 66
+            "y": 119.5
           },
           {
             "x": 202,
-            "y": 66
+            "y": 132.5
           },
           {
             "x": 234,
-            "y": 66
+            "y": 132.5
+          }
+        ]
+      },
+      {
+        "id": "exodra→MAP_COMMENT",
+        "points": [
+          {
+            "x": 170,
+            "y": 60
+          },
+          {
+            "x": 202,
+            "y": 47
+          },
+          {
+            "x": 256.5,
+            "y": 47
           }
         ]
       }

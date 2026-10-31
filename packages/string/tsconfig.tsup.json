@@ -3,9 +3,13 @@
   "compilerOptions": {
     "incremental": false,
     "composite": false,
+    // The bundler's directory, stated here so it does not follow the typecheck's
+    // `.tsbuild` (see tsconfig.build.json).
+    "outDir": "./dist",
+    // The BUILD reads its dependencies' published bundles, not the typecheck's output.
     "paths": {
-      "@exodra/core": ["../core/dist/index.d.ts"],
-      "@exodra/reactivity": ["../reactivity/dist/index.d.ts"]
+      "@exodra/context": ["../context/dist/index.d.ts"],
+      "@exodra/core": ["../core/dist/index.d.ts"]
     }
   },
   "exclude": ["**/*.test.ts", "**/*.spec.ts"]

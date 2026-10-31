@@ -1,6 +1,199 @@
 # @exodra/ssr
 
-Server-side rendering for Exodra applications.
+Server-side rendering for Exodra applications: the full HTML document, the HTTP
+status, the response headers, the `<head>`, and the state transfer to the client.
+
+`new ExoStrBackend().render(APP)` from `@exodra/string` returns the instance's
+markup and nothing else. This package is the rest of the response: `renderExoPage`
+runs a component through that backend with the request installed as a context, and
+hands back the markup plus everything the wiring said about the response — status,
+headers, `<head>`, and the state script the client reads back.
+
+If you want *only* markup, you do not need this package at all:
+`new ExoStrBackend().render(APP)` is the whole of it.
+
+## renderExoPage
+
+`new ExoStrBackend().render(APP)` returns the instance's markup and nothing else —
+no doctype, no `<html>`, no `<head>`, no state script, no status and no headers.
+`renderExoPage` is the rest of the response.
+
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoTextPort } from '@exodra/core';
+import { renderExoPage, EXO_SSR_RESPONSE } from '@exodra/ssr';
+import type { TExoStrNode } from '@exodra/string';
+
+declare const res: {
+    status(code: number): void;
+    append(name: string, value: string): void;
+    send(body: string): void;
+};
+
+const APP_SCHEMA = createExoSchema(b => {
+    let title!: TExoTextPort;
+    b.el('main', { class: 'page' }, main => {
+        main.el('h1', null, h1 => { title = h1.textPort(); });
+    });
+    return { title };
+});
+// The builder's type argument names the exonode.
+const mApp = createExoMachineBuilder<TExoStrNode, { title: string }>(APP_SCHEMA);
+mApp.wire((c, params) => {
+    // The request, reached the ordinary way: it is a context, provided by
+    // `renderExoPage` and read with `inject`, anywhere in the tree.
+    const ssr = c.inject(EXO_SSR_RESPONSE)!;
+    ssr.setStatus(200);
+    ssr.setHeader('cache-control', 'no-store');
+    ssr.addHead('<title>' + params.title + '</title>');
+    ssr.setState('user', { id: 7 });
+
+    c.text(APP_SCHEMA.ports.title, params.title);
+});
+const APP = mApp.done();
+
+// In the request handler. `renderExoPage(machine, options?)` — there is no
+// instance count: it renders ONE root, and rows that vary are a list inside it.
+// `params` reaches the machine's `wire`, as `backend.render(machine, parent, params)` does.
+const page = renderExoPage(APP, { head: '<meta charset="utf-8">', params: { title: 'Home' } });
+res.status(page.status);
+for (const { name, value } of page.headers) res.append(name, value);
+res.send(page.renderDocument({ rootId: 'app' }));
+```
+
+`renderDocument()` emits
+
+```html
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Home</title></head>
+<body><div id="app">…the instances…</div><script id="__EXODRA_STATE__" type="application/json">…</script></body></html>
+```
+
+### Hydrating it
+
+`backend.hydrate` takes the element whose **element children are the instances** —
+that is the container `renderDocument` emitted, and **not** its first child.
+Handing it the first child adopts one level too deep: every port lands on the
+wrong node and nothing throws.
+
+```ts
+import { ExoDomBackend, withExoHydration } from '@exodra/dom';
+import type { TExoDomMachine } from '@exodra/dom';
+import { readExoStateScript } from '@exodra/ssr';
+
+declare const APP: TExoDomMachine;
+
+// ONE backend, at module level. `hydrate` exists only because this composes the
+// plugin — a backend built without it has no such method, in the type or at runtime.
+const backend = withExoHydration(new ExoDomBackend());
+
+const state = readExoStateScript();                  // what setState transferred
+backend.hydrate(APP, document.getElementById('app')!);   // the CONTAINER
+```
+
+There is no count to keep in step. `renderExoPage` renders one root and `hydrate`
+adopts one root, so the two cannot disagree about how many there were. What they
+*can* disagree about is the composition, which is why the browser's backend should
+compose the same plugins the server's did, for every name that exists on both
+sides — see below.
+
+**A reconciled list adopts the rows it was served.** A machine opens the child list
+in `createInitialState` and hands `reconcileExoOrder` its items from an effect that
+draws first; hydration hands the served rows to `build` in document order, sweeps
+the ones the client no longer wants and builds the ones it wants past them. The one
+shape it refuses is a child list standing behind another with only static markup
+between them: there the first row of the list behind cannot be told from a surplus
+of the one in front.
+
+**A value that moved between the response and the hydration is repaired, whatever
+wrote it.** An adopting fill compares what the server printed against what it is
+handed and writes only on disagreement, so a plain `c.text(P.title, title)` whose
+value the client computes differently is corrected on adoption. Following a data
+source afterwards is an effect: it draws once, synchronously, and subscribes.
+
+### State transfer
+
+`setState` builds a flat map; `renderStateScript` serialises it into
+`<script id="__EXODRA_STATE__" type="application/json">`, with `<`, `>`, `&`,
+U+2028 and U+2029 written as `\uXXXX` escapes so the payload can neither end the
+script element nor be re-parsed as anything else. `readExoStateScript()` reads it
+back on the client:
+
+```ts
+import { readExoStateScript } from '@exodra/ssr';
+
+const state = readExoStateScript() as { user?: { id: number } } | undefined;
+```
+
+### Why an injected object instead of `<Head>` / `<Status>` / …
+
+Frameworks usually spell this as components that render nothing and exist only to
+be found by a walker over the rendered tree.
+
+**The component form is not expressible here.** A component is a schema plus a
+machine, and a schema is rooted at an element — `compileExoStrSchema`'s `emit` opens
+`'<' + tag` before anything else can happen. There is no schema that renders
+nothing, so `<Status/>` would have to print a tag into the body. Nor is there a
+walk to find it in: children are attached because a machine *called* `c.one` /
+`c.list`, so a "component that only writes to the context" would have to be
+invoked by the very machine that could have written to the context itself.
+
+**The four were always one thing.** Each read one or two constants off itself and
+forwarded them to one method on the request. What that bought was JSX spelling;
+what it cost was four names, four prop vocabularies (`code`, `name`+`value`+
+`append`, `name`+`value`, `children`) and four casts —
+`context.getConstant<number>('code') as number` where `setStatus(404)` is checked
+by the compiler.
+
+**Order becomes visible.** Two `<Status>` in a tree resolve by document order of a
+walk that runs somewhere else; two `setStatus` calls resolve by the order they are
+written, in one function you are already reading. Likewise `setHeader` overriding
+against `appendHeader` accumulating: `append` is a different *method* rather than
+a boolean prop.
+
+**It composes with things that are not markup.** A router deciding a 404, a data
+layer setting `cache-control`, a loader stashing state — none of these are JSX,
+and with the component form each had to arrange to have a component rendered on
+its behalf.
+
+**What the component form was genuinely better at**, and it is `<Head>` alone: its
+children were authored as markup, in JSX, and the walker rendered them. `addHead`
+takes a string, so a head entry is now either a literal
+(`ssr.addHead('<title>Home</title>')`) or a component rendered on the spot
+(`ssr.addHead(strBackend.render(TITLE))`). That is a real loss of authoring
+comfort for a page with a large head, and it is the one place a future
+`<Head>`-shaped primitive would earn its keep.
+
+Nothing is provided by default: `c.inject(EXO_SSR_RESPONSE)` outside `renderExoPage` is
+`undefined`. A component rendered by a client render has no request to talk to,
+and a silent no-op object would hide that.
+
+### What this package exports
+
+- `renderExoPage(component, options?): TExoSsrPage` — the server entry point. It
+  renders **one** root; there is no instance count, because rows that vary are a
+  list inside the component rather than a repetition of it.
+  `options` (`TExoSsrPageOptions`): `backend`, `status`, `headers`, `head`, `state`,
+  `context`, `params`. `params` is handed to the page machine's `wire`. `context` is a frame the request's own is chained under, for a caller that
+  already has something to provide — a router handing the page its route. It is **passed
+  to `render`**, never installed in a module holder, so two requests rendering at once
+  cannot see each other's.
+  `backend` is the `ExoStrBackend` this page renders from — the object the
+  application composed. Left out, the page runs on a backend composed with
+  nothing. Build your own **once**, at module level, and pass the same object every
+  request: a schema is cached per backend by pointer, so one built per request
+  recompiles every declaration on every request.
+  `TExoSsrPage` carries `html`, `status`, `headers`, `head`, `stateScript`,
+  `state` and `renderDocument(options?)`.
+- `EXO_SSR_RESPONSE` — the context token a machine injects to reach the request. What it
+  resolves to is a `TExoSsrResponse`: `setStatus`, `setHeader`, `appendHeader`,
+  `addHead`, `setState`, and the getters behind them.
+- `ExoSsrResponse` — that object as a class, for a caller that drives the render
+  itself instead of going through `renderExoPage`.
+- `readExoStateScript()` — the client end of the state protocol.
+- `renderExoJsonScript(json, { id, nonce })` / `escapeExoJsonForScript(json)` — the one
+  emitter of a `<script type="application/json">` payload in this package, and its
+  escaper. The state script goes through it.
 
 ## Installation
 
@@ -8,331 +201,9 @@ Server-side rendering for Exodra applications.
 npm install @exodra/ssr @exodra/core @exodra/string
 ```
 
-## Overview
+---
 
-`@exodra/ssr` renders Exodra schemas to HTML on the server and helps you carry
-server state across to the client for hydration. It is built on top of
-`@exodra/string`: the core class `ExoNodeSsr` **extends** `ExoNodeString` and adds
-document `<head>` collection, response headers, HTTP status, and a serializable
-state map.
-
-What it provides:
-
-- **`ExoNodeSsr`** — the SSR renderer. Construct it with a schema, then call
-  `renderBody()`, `renderDocument()`, or `renderStateScript()`.
-- **Components** — `Head`, `Header`, `State`, `Status` collect head tags, response
-  headers, transferable state, and the HTTP status from inside your tree.
-- **`useSsr(context)`** — read the SSR context from inside a component.
-- **Persistor helpers** — `renderPersistorScript`, `renderHydrationScript`,
-  `renderPersistorHydration` embed a `@exodra/reactivity` persistor for the client.
-
-> Plain HTML string rendering (`renderToString`) lives in `@exodra/string`, not
-> here. There is **no** `renderToStream` in Exodra.
-
-## Basic Usage
-
-```typescript
-import { ExoNodeSsr } from '@exodra/ssr';
-import { h, text } from '@exodra/core';
-
-const app = h('div', {
-  static: {
-    id: 'app',
-    children: [
-      h('h1', { static: { children: text('Hello from Server') } }),
-      h('p', { static: { children: text('This is server-rendered') } }),
-    ],
-  },
-});
-
-const ssr = new ExoNodeSsr(app);
-
-// Just the markup for your root container:
-const body = ssr.renderBody();
-// <div id="app"><h1>Hello from Server</h1><p>This is server-rendered</p></div>
-
-// Or a full HTML document (doctype + <html><head><body>):
-const html = ssr.renderDocument({ lang: 'en', rootId: 'app' });
-```
-
-`new ExoNodeSsr(schema)` renders synchronously on construction (it initializes the
-subtree immediately). `renderBody()` returns the body markup; `renderDocument()`
-wraps it in `<!doctype html><html><head>…</head><body><div id="…">…body…</div>…</body></html>`,
-including any collected head tags and the embedded state script.
-
-## Express Integration
-
-```typescript
-import express from 'express';
-import { ExoNodeSsr } from '@exodra/ssr';
-import { App } from './App';
-
-const server = express();
-
-server.get('*', (req, res) => {
-  const ssr = new ExoNodeSsr(App(req.url));
-
-  // Apply any status/headers the tree requested via <Status> / <Header>.
-  res.status(ssr.getStatus());
-  for (const { name, value } of ssr.getHeaders()) {
-    res.append(name, value);
-  }
-
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>My App</title>
-        ${ssr.renderHead()}
-      </head>
-      <body>
-        <div id="root">${ssr.renderBody()}</div>
-        ${ssr.renderStateScript()}
-        <script type="module" src="/entry-client.js"></script>
-      </body>
-    </html>
-  `);
-});
-```
-
-`renderDocument()` does the same wrapping for you if you prefer not to hand-write
-the shell:
-
-```typescript
-res.send(ssr.renderDocument({ rootId: 'root' }));
-```
-
-## State Transfer & Hydration
-
-The most common pattern: collect a snapshot of your store on the server, embed it
-as a `<script>`, and read it back on the client before hydrating the DOM in place.
-
-### Server
-
-```typescript
-import { ExoNodeSsr } from '@exodra/ssr';
-
-const ssr = new ExoNodeSsr(App());
-
-// Stash any serializable data under a key:
-ssr.setState('workspace', takeSnapshot(store));
-
-const bodyHtml = ssr.renderBody();
-const stateScript = ssr.renderStateScript(); // <script id="__EXODRA_STATE__" type="application/json">…</script>
-```
-
-`renderStateScript()` emits a `<script id="__EXODRA_STATE__" type="application/json">`
-tag containing `getStateSnapshot()` as escaped JSON (or an empty string when no
-state was set). You can override the `id` and add a CSP `nonce`:
-`ssr.renderStateScript({ id: '__MY_STATE__', nonce })`.
-
-### Client
-
-```typescript
-import { hydrate } from '@exodra/dom';
-import { App } from './App';
-
-function readState() {
-  const el = document.getElementById('__EXODRA_STATE__');
-  if (!el?.textContent) return undefined;
-  try {
-    return JSON.parse(el.textContent);
-  } catch {
-    return undefined;
-  }
-}
-
-const root = document.getElementById('root');
-if (root) {
-  // Rebuild your store from the snapshot, then HYDRATE the existing DOM in place
-  // (no teardown, no flash). hydrate() returns { node, element, dispose }.
-  const { dispose } = hydrate(App(readState()), root);
-}
-```
-
-## Persistor-based Hydration
-
-If you use a `@exodra/reactivity` persistor, the package can embed and restore it
-for you. `renderPersistorHydration` combines the JSON `<script>` and the inline
-script that copies it onto `window.__EXODRA_STATE__`.
-
-### Server
-
-```typescript
-import { ExoNodeSsr, renderPersistorHydration } from '@exodra/ssr';
-import { getPersistor, persist, bindable } from '@exodra/reactivity';
-
-const user = bindable({ name: 'John' });
-persist(user, 'user'); // register the bindable on the global persistor
-
-const persistor = getPersistor();
-
-const ssr = new ExoNodeSsr(App());
-
-res.send(`
-  <div id="root">${ssr.renderBody()}</div>
-  ${renderPersistorHydration(persistor)}
-  <script type="module" src="/entry-client.js"></script>
-`);
-```
-
-### Client
-
-```typescript
-import { hydrate } from '@exodra/dom';
-import { autoHydrate } from '@exodra/reactivity';
-import { App } from './App';
-
-// Restore persisted state. autoHydrate() looks for window.__EXODRA_STATE__ first,
-// then a <script id="__EXODRA_PERSISTOR__"> tag, and feeds it to the persistor.
-autoHydrate();
-
-hydrate(App(), document.getElementById('root')!);
-```
-
-`hydrateFromWindow(windowKey?, persistor?)` and
-`hydrateFromScript(scriptId?, persistor?)` are the lower-level variants if you want
-to target a specific source. These hydration helpers are exported from
-**`@exodra/reactivity`**, not from `@exodra/ssr`.
-
-## Head, Headers, Status & State Components
-
-Inside your tree you can drive the SSR context declaratively. Each of these is a
-real Exodra component; props go in the `static` bucket (`exo:schema` / `static`
-in JSX). They render nothing into the body — they only mutate the SSR context.
-
-```typescript
-import { h } from '@exodra/core';
-import { Head, Header, State, Status } from '@exodra/ssr';
-
-function App() {
-  return h('div', {
-    static: {
-      children: [
-        // Push tags into <head> — children are arbitrary schemas:
-        h(Head, {
-          static: {
-            children: [
-              h('title', { static: { children: 'My Page Title' } }),
-              h('meta', {
-                static: { name: 'description', content: 'Page description' },
-              }),
-              h('link', {
-                static: { rel: 'canonical', href: 'https://example.com' },
-              }),
-            ],
-          },
-        }),
-
-        // Set the HTTP status (e.g. a 404 page):
-        h(Status, { static: { code: 200 } }),
-
-        // Set / append a response header:
-        h(Header, {
-          static: { name: 'Cache-Control', value: 'no-store' },
-        }),
-
-        // Add a key to the transferable state map:
-        h(State, { static: { name: 'user', value: { id: 1 } } }),
-
-        h('main', { static: { children: 'Page content' } }),
-      ],
-    },
-  });
-}
-
-const ssr = new ExoNodeSsr(App());
-ssr.getStatus();        // 200
-ssr.renderHead();       // "<title>My Page Title</title><meta …><link …>"
-ssr.getHeaders();       // [{ name: 'Cache-Control', value: 'no-store' }]
-ssr.getState('user');   // { id: 1 }
-```
-
-`<Header>` accepts an optional `append` prop (`static={{ name, value, append: true }}`)
-to add a header instead of replacing existing values for that name.
-
-### Reading the SSR context from a component
-
-```typescript
-import { useSsr } from '@exodra/ssr';
-
-function SetMeta(context) {
-  useSsr(context)?.addHead(
-    h('meta', { static: { name: 'robots', content: 'noindex' } })
-  );
-  return [];
-}
-```
-
-`useSsr(context)` returns the `TExoSsrContext` (the `ExoNodeSsr` instance) or
-`undefined` when not rendering under SSR.
-
-## Splitting Shell and Page (advanced)
-
-The flagship example renders the shell (with an empty outlet) and the matched page
-as two independent `ExoNodeSsr` trees and splices them — mirroring how the client
-hydrates them as two `ExoNodeDom` trees:
-
-```typescript
-import { ExoNodeSsr } from '@exodra/ssr';
-
-const shellSsr = new ExoNodeSsr(shellView(router));
-shellSsr.setState('workspace', takeSnapshot(store));
-
-let appHtml = shellSsr.renderBody();
-const pageHtml = new ExoNodeSsr(boardPage()).renderBody();
-appHtml = appHtml.replace(EMPTY_OUTLET, withPage(pageHtml));
-
-return { appHtml, stateScript: shellSsr.renderStateScript() };
-```
-
-## API Reference
-
-### `ExoNodeSsr` (class, extends `ExoNodeString`)
-
-Construct with `new ExoNodeSsr(schema, options?)`. `options` (`TExoSsrNodeOptions`):
-`status`, `headers`, `head`, `state`.
-
-Rendering:
-- `renderBody(): string` — body markup for your root container.
-- `renderDocument(options?): string` — full HTML document. Options
-  (`TExoSsrDocumentOptions`): `doctype`, `lang`, `rootId`, `nonce`, `head`,
-  `htmlAttributes`, `bodyAttributes`.
-- `renderHead(): string` — collected `<head>` tags as HTML.
-- `renderStateScript(options?): string` — the `<script id="__EXODRA_STATE__">`
-  state tag. Options: `id`, `nonce`.
-
-Status & headers:
-- `getStatus()` / `setStatus(code)`
-- `getHeaders()` / `getHeader(name)` / `getHeaderValues(name)`
-- `setHeader(name, value)` / `appendHeader(name, value)`
-
-State:
-- `setState(key, value)` / `getState(key)` / `getStateSnapshot()`
-- `addHead(schema | schema[])`
-
-### Components
-- `Head` — `static={{ children }}`; pushes schemas into `<head>`.
-- `Header` — `static={{ name, value, append? }}`; sets/appends a response header.
-- `Status` — `static={{ code }}`; sets the HTTP status.
-- `State` — `static={{ name, value }}`; adds a key to the transferable state map.
-
-### Context
-- `useSsr(context): TExoSsrContext | undefined`
-- `ssrContextKey` — the context key for the SSR context.
-
-### Persistor / hydration scripts
-- `renderPersistorScript(persistor, options?)` — `<script id="__EXODRA_PERSISTOR__"
-  type="application/json">` with serialized persistor state. Options: `id`, `nonce`,
-  `variableName`.
-- `renderHydrationScript(options?)` — inline script that copies the JSON into a
-  window variable (default `window.__EXODRA_STATE__`).
-- `renderPersistorHydration(persistor, options?)` — both of the above combined.
-
-Client-side hydration helpers (`hydrateFromWindow`, `hydrateFromScript`,
-`autoHydrate`) are exported from **`@exodra/reactivity`**.
-
-## License
+# License
 
 MIT
 

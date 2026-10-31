@@ -1,49 +1,31 @@
-// The canonical Exodra Babel integration, in one place.
-//
-//  - `default` export: a Babel PRESET that bundles the full pipeline (JSX syntax
-//    with `throwIfNamespace: false` so `bind:`/`cache:` survive, the
-//    `@exodra/babel-plugin-jsx` transform, and preset-typescript). This is the
-//    Jest / babel.config.js entry point:
-//
-//      // babel.config.js
-//      module.exports = { presets: ['exodra'] };
-//
-//  - `transformExodraJsx(code, filename)`: a small imperative RUNNER that applies
-//    that preset via `@babel/core`. It is the single source of truth every
-//    bundler plugin (Vite / esbuild / Rollup / Bun) calls, so there is exactly
-//    ONE copy of the pipeline AND its invocation — no drift between how tools
-//    compile Exodra JSX.
-//
-// ts-jest / @swc/jest do NOT run Babel plugins and so cannot compile Exodra JSX —
-// use `babel-jest` with the preset.
-
 import * as babel from '@babel/core';
 import type { ConfigAPI, PluginItem } from '@babel/core';
 
-// @babel/plugin-syntax-jsx and @babel/preset-typescript ship no type
-// declarations, and @exodra/babel-plugin-jsx ships as CommonJS with an empty
-// `export {}` .d.ts — so pull all three runtime values via require.
-/* eslint-disable @typescript-eslint/no-var-requires */
+// All three ship as CommonJS without usable type declarations, so the runtime
+// values come in via require.
+/* eslint-disable @typescript-eslint/no-require-imports */
 const syntaxJsx = require('@babel/plugin-syntax-jsx') as PluginItem;
 const presetTypescript = require('@babel/preset-typescript') as PluginItem;
-const exodraJsxPlugin = require('@exodra/babel-plugin-jsx') as PluginItem;
-/* eslint-enable @typescript-eslint/no-var-requires */
+const schemaPlugin = require('@exodra/babel-plugin-schema') as PluginItem;
+/* eslint-enable @typescript-eslint/no-require-imports */
 
-export interface ExodraPresetOptions {
-    /** Module the auto-imported `h`/`text` come from. Default `@exodra/core`. */
-    importSource?: string;
-    /** Compile-time clone-cache for static subtrees. Default `true`. */
-    hoistStatic?: boolean;
-    /**
-     * Include `@babel/preset-typescript` so `.ts`/`.tsx` sources are stripped of
-     * types. Default `true` — turn off if your pipeline already handles TS.
-     */
+// The slice a bundler plugin forwards, never the whole preset: a plugin whose options accept a
+// field it does not forward takes it with no error and no effect. `TExoSchemaPluginOptions`
+// declares `schemaSource` too and is not reused — that package is upstream of this one.
+export interface ExodraCompileOptions {
+    schemaSource?: string;
+}
+
+// For hosts that call the file filter `filter` — esbuild's word and Bun's. Rollup's plugin
+// spells the same field `include` after its own convention and so does not use this.
+export interface ExodraBundlerOptions extends ExodraCompileOptions {
+    filter?: RegExp;
+}
+
+export interface ExodraPresetOptions extends ExodraCompileOptions {
     typescript?: boolean;
-    /**
-     * 'dom' (default) compiles JSX to h() schemas for the client renderer; 'ssr'
-     * compiles to HTML-string functions for the server (see @exodra/babel-plugin-jsx).
-     */
-    mode?: 'dom' | 'ssr';
+    schemaImport?: string;
+    markerName?: string;
 }
 
 function babelPresetExodra(
@@ -52,58 +34,32 @@ function babelPresetExodra(
 ): { presets: PluginItem[]; plugins: PluginItem[] } {
     api.assertVersion(7);
 
-    const {
-        importSource = '@exodra/core',
-        hoistStatic = true,
-        typescript = true,
-        mode = 'dom',
-    } = options;
+    const { typescript = true, schemaSource, schemaImport, markerName } = options;
 
     const presets: PluginItem[] = [];
     if (typescript) {
-        presets.push([
-            presetTypescript,
-            { isTSX: true, allExtensions: true },
-        ]);
+        presets.push([presetTypescript, { isTSX: true, allExtensions: true }]);
     }
 
     return {
         presets,
         plugins: [
-            // Parse JSX; keep namespaced directives (`bind:value`, `cache:key`)
-            // instead of throwing, so the Exodra plugin can lower them.
+            // Babel's parser throws on namespaced JSX names by default, and on: is one.
             [syntaxJsx, { throwIfNamespace: false }],
-            [exodraJsxPlugin, { importSource, hoistStatic, mode }],
+            [schemaPlugin, { schemaSource, schemaImport, markerName }],
         ],
     };
 }
 
 export default babelPresetExodra;
 
-/** Result of {@link transformExodraJsx}: emitted code plus a raw source map. */
 export interface ExodraTransformResult {
     code: string;
-    /** Babel's raw source map object; cast to your bundler's map input type. */
     map: object | null;
 }
 
-/** Options for {@link transformExodraJsx}, forwarded to the preset. */
-export interface ExodraTransformOptions {
-    importSource?: string;
-    hoistStatic?: boolean;
-    /**
-     * Run preset-typescript. Defaults to `true` for `.tsx` files and `false`
-     * otherwise (a `.jsx` file has no types and must not be parsed as TSX).
-     */
-    typescript?: boolean;
-    /** 'dom' (default) or 'ssr' — see ExodraPresetOptions.mode. */
-    mode?: 'dom' | 'ssr';
-}
+export type ExodraTransformOptions = ExodraPresetOptions;
 
-/**
- * Compile one Exodra JSX/TSX source through the preset. The single invocation
- * every bundler plugin shares. Returns `null` when Babel emits nothing.
- */
 export async function transformExodraJsx(
     code: string,
     filename: string,
@@ -119,12 +75,9 @@ export async function transformExodraJsx(
         presets: [
             [
                 babelPresetExodra as PluginItem,
-                {
-                    typescript,
-                    importSource: options.importSource,
-                    hoistStatic: options.hoistStatic,
-                    mode: options.mode,
-                },
+                // `typescript` last: here it defaults off the file extension, not to the
+                // preset's `true` — a `.jsx` file has no types and must not be parsed as TSX.
+                { ...options, typescript },
             ],
         ],
     });

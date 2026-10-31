@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exodra — form controls without a bound model</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header class="page-head">
+    <h1 class="page-title">Form controls, one listener, no bound model</h1>
+    <p class="page-sub">
+        One machine. The <code>&lt;form&gt;</code> carries one <code>input</code> event port,
+        and every field inside it reports through it — text, number, checkbox, radio and select
+        all fire <code>input</code>:
+        <code>readExoControlValue(event.target)</code> reads the field, and a transition writes
+        the read-out on the right. Nothing writes a field's value back while you type — the
+        browser already holds it.
+        <br>
+        <span class="slot">the packages: @exodra/core · @exodra/dom · @exodra/forms</span>
+    </p>
+</header>
+
+<div id="app"></div>
+
+<div class="panels">
+    <section class="panel panel-wide">
+        <h2 class="panel-title">What to try</h2>
+        <p class="hint">
+            Type in the fields and watch the live read-out. Empty the age field: it reads
+            <code>NaN</code>, not <code>0</code>. Press <strong>Send</strong>: the submit read-out
+            comes from <code>readExoControlValues</code> over the ref ports, read at that moment,
+            not from the live state. <strong>Fill from code</strong> and <strong>Clear from
+            code</strong> are the programmatic direction: a transition writes the
+            <code>value</code> and <code>checked</code> ports, and <code>writeExoChoice</code> puts
+            the radio and option marks on the chosen value in one write each — the browser clears
+            the rest of the group. The submit read-out also reads the two radios through their ref
+            ports: the unchecked one comes back <code>undefined</code>. Clear is the case that needs a property
+            write: the attribute was empty all along, so an attribute write would leave your text
+            on screen.
+        </p>
+    </section>
+</div>
+
+<p id="boot" class="boot">Loading three packages from this repository's own <code>dist/</code>…</p>
+
+<p class="boot">
+    <strong>Status: this page has not been opened in a browser.</strong> Every <code>@exodra/forms</code> name it uses is
+    checked against the build before anything runs.
+    It renders from one <code>withExoCompiler(new ExoDomBackend())</code> built at module level.
+</p>
+
+<script type="importmap">
+{
+  "imports": {
+    "@exodra/core": "/packages/core/dist/index.js",
+    "@exodra/context": "/packages/context/dist/index.js",
+    "@exodra/dom": "/packages/dom/dist/index.js",
+    "@exodra/forms": "/packages/forms/dist/index.js"
+  }
+}
+</script>
+<script type="module">
+    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+    import * as exoForms from '@exodra/forms';
+
+    const { readExoControlValue, readExoControlValues, writeExoChoice } = exoForms;
+
+    const boot = document.getElementById('boot');
+    const missing = ['readExoControlValue', 'readExoControlValues', 'writeExoChoice'].filter(
+        (name) => exoForms[name] === undefined
+    );
+
+    if (missing.length > 0) {
+        boot.className = 'boot boot-error';
+        boot.textContent =
+            'This build of @exodra/forms is missing ' + missing.join(', ') + '. ' +
+            'Rebuild it: npm run build --workspace=@exodra/forms';
+        throw new Error('forms example: @exodra/forms/dist is missing ' + missing.join(', '));
+    }
+
+    const COLOURS = ['red', 'green'];
+    const SIZES = ['s', 'm', 'l'];
+    const SIZE_LABELS = ['Small', 'Medium', 'Large'];
+
+    const FORM_SCHEMA = createExoSchema((b) => {
+        let input;
+        let submit;
+        let nameValue;
+        let nameRef;
+        let ageValue;
+        let ageRef;
+        let agreedChecked;
+        let agreedRef;
+        let sizeRef;
+        let fill;
+        let clear;
+        let live;
+        let sent;
+        const colours = [];
+        const colourRefs = [];
+        const sizes = [];
+
+        b.el('div', { class: 'panels' }, (panels) => {
+            panels.el('section', { class: 'panel' }, (panel) => {
+                panel.el('h2', { class: 'panel-title' }, (h) => h.text('The form'));
+                panel.el('p', { class: 'panel-note' }, (p) =>
+                    p.text('One input port, on the <form>.')
+                );
+                panel.el('form', { class: 'form' }, (form) => {
+                    input = form.eventPort('input');
+                    submit = form.eventPort('submit');
+
+                    form.el('label', null, (l) => {
+                        l.text('Name — text, reads value');
+                        l.el('input', { type: 'text', name: 'name' }, (i) => {
+                            nameValue = i.port('value');
+                            nameRef = i.refPort();
+                        });
+                    });
+
+                    form.el('label', null, (l) => {
+                        l.text('Age — number, reads valueAsNumber');
+                        l.el('input', { type: 'number', name: 'age' }, (i) => {
+                            ageValue = i.port('value');
+                            ageRef = i.refPort();
+                        });
+                    });
+
+                    form.el('label', { class: 'row' }, (l) => {
+                        l.el('input', { type: 'checkbox', name: 'agreed' }, (i) => {
+                            agreedChecked = i.port('checked');
+                            agreedRef = i.refPort();
+                        });
+                        l.text('Agreed — checkbox, reads checked');
+                    });
+
+                    form.el('fieldset', null, (f) => {
+                        f.el('legend', null, (g) => g.text('Colour — radios, marked by writeExoChoice'));
+                        for (const colour of COLOURS) {
+                            f.el('label', { class: 'row' }, (l) => {
+                                l.el('input', { type: 'radio', name: 'colour', value: colour }, (i) => {
+                                    colours.push(i.port('checked'));
+                                    colourRefs.push(i.refPort());
+                                });
+                                l.text(colour);
+                            });
+                        }
+                    });
+
+                    form.el('label', null, (l) => {
+                        l.text('Size — select, options marked by writeExoChoice');
+                        l.el('select', { name: 'size' }, (s) => {
+                            sizeRef = s.refPort();
+                            SIZES.forEach((size, i) => {
+                                s.el('option', { value: size }, (o) => {
+                                    sizes.push(o.port('selected'));
+                                    o.text(SIZE_LABELS[i]);
+                                });
+                            });
+                        });
+                    });
+
+                    form.el('button', { type: 'submit' }, (button) => button.text('Send'));
+                });
+            });
+
+            panels.el('section', { class: 'panel' }, (panel) => {
+                panel.el('h2', { class: 'panel-title' }, (h) => h.text('Live read-out'));
+                panel.el('p', { class: 'panel-note' }, (p) =>
+                    p.text('c.state, written by the transitions the form events call.')
+                );
+                panel.el('pre', { class: 'readout' }, (pre) => {
+                    live = pre.textPort();
+                });
+                panel.el('p', null, (p) => {
+                    p.el('button', { type: 'button' }, (button) => {
+                        fill = button.eventPort('click');
+                        button.text('Fill from code');
+                    });
+                    p.text(' ');
+                    p.el('button', { type: 'button' }, (button) => {
+                        clear = button.eventPort('click');
+                        button.text('Clear from code');
+                    });
+                });
+                panel.el('h2', { class: 'panel-title' }, (h) => h.text('Submitted'));
+                panel.el('p', { class: 'panel-note' }, (p) =>
+                    p.text('readExoControlValues over the ref ports, at the moment of submit.')
+                );
+                panel.el('pre', { class: 'readout' }, (pre) => {
+                    sent = pre.textPort();
+                });
+            });
+        });
+
+        return {
+            input,
+            submit,
+            nameValue,
+            nameRef,
+            ageValue,
+            ageRef,
+            agreedChecked,
+            agreedRef,
+            sizeRef,
+            fill,
+            clear,
+            live,
+            sent,
+            colours,
+            colourRefs,
+            sizes,
+        };
+    });
+    const P = FORM_SCHEMA.ports;
+    const SUBMITTED_FIELDS = [P.nameRef, P.ageRef, P.agreedRef, P.sizeRef, ...P.colourRefs];
+
+    const describe = (state) =>
+        'name    ' + JSON.stringify(state.name) +
+        '\nage     ' + (Number.isNaN(state.age) ? 'NaN  ← the field is empty, not zero' : state.age) +
+        '\nagreed  ' + state.agreed +
+        '\ncolour  ' + JSON.stringify(state.colour) +
+        '\nsize    ' + JSON.stringify(state.size);
+
+    const mForm = createExoMachineBuilder(FORM_SCHEMA);
+    mForm.createInitialState((c) => {
+        const state = { name: '', age: Number.NaN, agreed: false, colour: 'green', size: 'm' };
+        writeExoChoice(c, P.colours, COLOURS, state.colour);
+        writeExoChoice(c, P.sizes, SIZES, state.size);
+        c.text(P.live, describe(state));
+        c.text(P.sent, 'nothing sent yet');
+        return state;
+    });
+
+    const take = mForm.transition((c, field) => {
+        const value = readExoControlValue(field);
+        if (field.name === 'name') c.state.name = value;
+        else if (field.name === 'age') c.state.age = value;
+        else if (field.name === 'agreed') c.state.agreed = value;
+        else if (field.name === 'colour') c.state.colour = value;
+        else if (field.name === 'size') c.state.size = value;
+        else return;
+        c.text(P.live, describe(c.state));
+    });
+
+    const setFromCode = mForm.transition((c, next) => {
+        c.attr(P.nameValue, next.name);
+        c.attr(P.ageValue, Number.isNaN(next.age) ? '' : next.age);
+        c.attr(P.agreedChecked, next.agreed);
+        writeExoChoice(c, P.colours, COLOURS, next.colour);
+        writeExoChoice(c, P.sizes, SIZES, next.size);
+        Object.assign(c.state, next);
+        c.text(P.live, describe(c.state));
+    });
+
+    const showSent = mForm.transition((c, values) => {
+        const [name, age, agreed, size, red, green] = values;
+        c.text(
+            P.sent,
+            'name    ' + JSON.stringify(name) +
+                '\nage     ' + age +
+                '\nagreed  ' + agreed +
+                '\nred     ' + JSON.stringify(red) +
+                '\ngreen   ' + JSON.stringify(green) +
+                '\nsize    ' + JSON.stringify(size)
+        );
+    });
+
+    mForm.on(P.input, (c, event) => take(c, event.target));
+    mForm.on(P.submit, (c, event) => {
+        event.preventDefault();
+        showSent(c, readExoControlValues(c, SUBMITTED_FIELDS));
+    });
+    mForm.on(P.fill, (c) =>
+        setFromCode(c, { name: 'Andrei', age: 41, agreed: true, colour: 'red', size: 'l' })
+    );
+    mForm.on(P.clear, (c) =>
+        setFromCode(c, { name: '', age: Number.NaN, agreed: false, colour: 'green', size: 's' })
+    );
+    const FORM = mForm.done();
+
+    const backend = withExoCompiler(new ExoDomBackend());
+    backend.render(FORM, document.getElementById('app'));
+
+    boot.remove();
+</script>
+
+</body>
+</html>

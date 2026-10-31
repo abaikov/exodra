@@ -1,34 +1,43 @@
-import { h, text } from '@exodra/core';
-import { bindable } from '@exodra/reactivity';
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 
-// Reactive state lives in bindables; the same App() renders on the server
-// (to HTML) and hydrates on the client (wiring events + reactivity).
-export function App() {
-    const count = bindable(0);
-    return h('div', {
-        static: {
-            id: 'app',
-            children: [
-                h('h1', { static: { children: text('Welcome to _ssr-test') } }),
-                h('p', {
-                    static: {
-                        children: text(
-                            'Server-rendered with @exodra/ssr, hydrated on the client.'
-                        ),
-                    },
-                }),
-                h('button', {
-                    static: {
-                        type: 'button',
-                        onClick: () => count.setValue(count.getValue() + 1),
-                        children: [
-                            text('Clicked '),
-                            h('strong', { bindables: { textContent: count } }),
-                            text(' times'),
-                        ],
-                    },
-                }),
-            ],
-        },
+const APP_SCHEMA = createExoSchema((b) => {
+    let count!: TExoTextPort;
+    let click!: TExoEventPort;
+    b.el('div', { class: 'app' }, (div) => {
+        div.el('h1', null, (h1) => {
+            h1.text('Welcome to _ssr-test');
+        });
+        div.el('p', null, (p) => {
+            p.text('Server-rendered with @exodra/ssr, hydrated on the client.');
+        });
+        div.el('button', { type: 'button' }, (button) => {
+            click = button.eventPort('click');
+            button.text('Clicked ');
+            button.el('strong', null, (strong) => {
+                count = strong.textPort();
+            });
+            button.text(' times');
+        });
     });
-}
+    return { count, click };
+});
+const P = APP_SCHEMA.ports;
+
+const mApp = createExoMachineBuilder<TExoMachineNode, unknown, { clicks: number }>(APP_SCHEMA);
+mApp.createInitialState(() => ({ clicks: 0 }));
+
+const showCount = mApp.transition((c) => {
+    c.text(P.count, c.state.clicks);
+});
+
+mApp.wire((c) => {
+    showCount(c);
+});
+
+mApp.on(P.click, (c) => {
+    c.state.clicks++;
+    showCount(c);
+});
+
+export const APP = mApp.done();

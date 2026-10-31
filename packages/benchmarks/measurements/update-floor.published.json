@@ -1,0 +1,269 @@
+{
+  "axis": "update-floor",
+  "label": "published",
+  "quantum": 0.1,
+  "batch": 16,
+  "rows": [
+    {
+      "name": "TEXT-ONE/exodra",
+      "min": 0.0794,
+      "p25": 0.0813,
+      "median": 0.0828,
+      "p75": 0.0844,
+      "max": 0.0916,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/floor",
+      "min": 0.0434,
+      "p25": 0.0444,
+      "median": 0.0516,
+      "p75": 0.0531,
+      "max": 0.0588,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/floor·twin",
+      "min": 0.0434,
+      "p25": 0.0447,
+      "median": 0.0516,
+      "p75": 0.0531,
+      "max": 0.0584,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/floor·guard",
+      "min": 0.0531,
+      "p25": 0.0547,
+      "median": 0.0747,
+      "p75": 0.0766,
+      "max": 0.0813,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/floor·bound",
+      "min": 0.0628,
+      "p25": 0.0641,
+      "median": 0.0653,
+      "p75": 0.0666,
+      "max": 0.0716,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/loop",
+      "min": 0.0047,
+      "p25": 0.005,
+      "median": 0.0153,
+      "p75": 0.0159,
+      "max": 0.0166,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-SWEEP/exodra",
+      "min": 73.75,
+      "p25": 76.5625,
+      "median": 77.5,
+      "p75": 79.6875,
+      "max": 86.5625,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "TEXT-SWEEP/floor",
+      "min": 44.0625,
+      "p25": 45.9375,
+      "median": 50.625,
+      "p75": 52.1875,
+      "max": 55,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "TEXT-SWEEP/floor·twin",
+      "min": 44.375,
+      "p25": 45.625,
+      "median": 50.625,
+      "p75": 51.875,
+      "max": 59.0625,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "TEXT-SWEEP/floor·bound",
+      "min": 59.0625,
+      "p25": 61.25,
+      "median": 62.1875,
+      "p75": 63.4375,
+      "max": 70.3125,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "TEXT-SWEEP/loop",
+      "min": 4.0625,
+      "p25": 4.6875,
+      "median": 10.3125,
+      "p75": 10.9375,
+      "max": 11.25,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "REORDER/exodra",
+      "min": 30.4688,
+      "p25": 36.7187,
+      "median": 37.2396,
+      "p75": 38.2812,
+      "max": 42.1875,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·told",
+      "min": 17.9688,
+      "p25": 18.4896,
+      "median": 19.0104,
+      "p75": 19.5313,
+      "max": 21.0937,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·twin",
+      "min": 18.2292,
+      "p25": 18.4896,
+      "median": 18.75,
+      "p75": 19.2708,
+      "max": 21.3542,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·diff",
+      "min": 21.3542,
+      "p25": 21.6146,
+      "median": 22.1354,
+      "p75": 22.6562,
+      "max": 24.4792,
+      "section": "REORDER"
+    },
+    {
+      "name": "GROW-SHRINK/exodra",
+      "min": 4.5,
+      "p25": 4.6406,
+      "median": 4.7813,
+      "p75": 4.9844,
+      "max": 5.6094,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "GROW-SHRINK/exodraOps",
+      "min": 1.2187,
+      "p25": 1.2656,
+      "median": 1.2969,
+      "p75": 1.3281,
+      "max": 1.3906,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "GROW-SHRINK/floor·told",
+      "min": 0.3594,
+      "p25": 0.3906,
+      "median": 0.3906,
+      "p75": 0.4062,
+      "max": 0.5313,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "GROW-SHRINK/floor·twin",
+      "min": 0.3594,
+      "p25": 0.3906,
+      "median": 0.3906,
+      "p75": 0.4062,
+      "max": 0.4688,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "GROW-SHRINK/floor·diff",
+      "min": 5.9687,
+      "p25": 6.0312,
+      "median": 6.1406,
+      "p75": 6.2656,
+      "max": 7.1563,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "WIDE/exodra",
+      "min": 102.3438,
+      "p25": 117.1875,
+      "median": 119.5313,
+      "p75": 123.4375,
+      "max": 128.125,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor",
+      "min": 50,
+      "p25": 51.5625,
+      "median": 52.3438,
+      "p75": 53.9063,
+      "max": 57.0312,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·twin",
+      "min": 50,
+      "p25": 50.7813,
+      "median": 52.3437,
+      "p75": 53.125,
+      "max": 57.0313,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·bound",
+      "min": 58.5938,
+      "p25": 60.9375,
+      "median": 61.7188,
+      "p75": 64.0625,
+      "max": 76.5625,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·record",
+      "min": 61.7187,
+      "p25": 65.625,
+      "median": 70.3125,
+      "p75": 73.4375,
+      "max": 78.9062,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·registry",
+      "min": 64.0625,
+      "p25": 65.625,
+      "median": 67.1875,
+      "p75": 68.75,
+      "max": 73.4375,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/exodra·children",
+      "min": 89.0625,
+      "p25": 94.5312,
+      "median": 96.0937,
+      "p75": 99.2188,
+      "max": 105.4688,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/exodra·kept",
+      "min": 46.875,
+      "p25": 48.4375,
+      "median": 49.2188,
+      "p75": 50.7813,
+      "max": 57.0313,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/exodra·twin",
+      "min": 105.4688,
+      "p25": 108.5938,
+      "median": 110.1563,
+      "p75": 113.2813,
+      "max": 137.5,
+      "section": "WIDE"
+    }
+  ]
+}

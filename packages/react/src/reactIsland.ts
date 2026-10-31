@@ -1,108 +1,65 @@
-import { h } from '@exodra/core';
-import type { TExoSchema } from '@exodra/core';
+import type { TExoChildrenPort } from '@exodra/core';
 import { createElement, type ComponentType } from 'react';
 import { createRoot, hydrateRoot, type Root } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
+import type { TExoReactWiring, TExoReactDomWiring } from './types/TExoReactWiring';
+import type { TExoReactIsland } from './types/TExoReactIsland';
 
-/**
- * Minimal structural shape of an Exodra bindable's read side. A real
- * `TExoBindable<T>` from `@exodra/reactivity` satisfies this, so callers can
- * pass one directly without this package depending on `@exodra/reactivity`.
- */
-export interface ReadableBindable<T> {
-    getValue(): T;
-    // No-arg listener: the island re-reads getValue() on notify, so it never uses
-    // the event payload. This matches TExoBindable<T, TEvent = void> (void events),
-    // which a `(value: T)` listener would reject.
-    onChange(listener: () => void): () => void;
-}
-
-export interface ReactIslandOptions {
-    /** Tag name for the host element React mounts into. Default: `'div'`. */
-    tag?: string;
-    /**
-     * Server-render the island's markup into the initial HTML (default `true`).
-     * On the server the React component is rendered to a string and placed in the
-     * host; on the client the island HYDRATES it. Set `false` for a client-only
-     * island (empty host on the server, `createRoot` on the client).
-     */
+export type TExoReactIslandOptions = {
     ssr?: boolean;
+};
+
+// Asked of the CONNECTOR, never the environment: `typeof document === 'undefined'` is wrong under
+// jsdom and in a browser bundle that pre-renders. Must probe every field `hostElement` indexes.
+function isExoDomWiring(c: TExoReactWiring): c is TExoReactDomWiring {
+    const dom = c as Partial<TExoReactDomWiring>;
+    return dom.nodes !== undefined && dom.schema?.elem !== undefined;
 }
 
-function isReadableBindable(value: unknown): value is ReadableBindable<unknown> {
-    return (
-        typeof value === 'object' &&
-        value !== null &&
-        typeof (value as { getValue?: unknown }).getValue === 'function' &&
-        typeof (value as { onChange?: unknown }).onChange === 'function'
-    );
+// `liveElem` FIRST: an adopting schema's `elem` leaves children-port entries at slot 0 — the
+// instance ROOT, not the island host — so hydration hands React the wrong element, nothing thrown.
+function hostElement(c: TExoReactDomWiring, port: TExoChildrenPort): Element {
+    const schema = c.schema;
+    return c.nodes[(schema.liveElem ?? schema.elem)[port.index]] as Element;
 }
 
-/**
- * Render a React component as an island inside an Exodra tree — now
- * SSR-capable.
- *
- * - **Server:** the React component is rendered to HTML and injected into the
- *   host, so the island's content is in the initial payload (SEO/no CLS).
- * - **Client:** if the host already contains server-rendered content the island
- *   HYDRATES it (`hydrateRoot`); otherwise it mounts fresh (`createRoot`).
- *   Exodra's own hydration leaves the React-owned host children untouched.
- *
- * Props are fully typed off the component: pass a plain `P` (static island) or a
- * `TExoBindable<P>` (reactive island — each emit re-renders it).
- */
-export function reactIsland<P extends object>(
-    component: ComponentType<P>,
-    props: P | ReadableBindable<P>,
-    options: ReactIslandOptions = {}
-): TExoSchema {
-    const tag = options.tag ?? 'div';
-    const reactive = isReadableBindable(props);
-    const read = (): P =>
-        reactive ? (props as ReadableBindable<P>).getValue() : (props as P);
-
-    // SERVER: emit the host with the React component's markup inside it.
-    if (options.ssr !== false && typeof document === 'undefined') {
-        const html = renderToString(createElement(component, read()));
-        return h(tag, {
-            static: {
-                'data-exo-react': '',
-                dangerouslySetInnerHTML: { __html: html },
-            },
-        });
+// The port must be its element's ONLY child — the DOM backend writes raw markup only where nothing
+// else would be deleted by it.
+export function reactIsland<TProps extends object>(
+    c: TExoReactWiring,
+    port: TExoChildrenPort,
+    component: ComponentType<TProps>,
+    props: TProps,
+    options: TExoReactIslandOptions = {}
+): TExoReactIsland<TProps> {
+    if (!isExoDomWiring(c)) {
+        // `ssr: false` prints an empty host on purpose: emptiness is what the browser below reads
+        // as "mount fresh".
+        if (options.ssr !== false) {
+            c.unsafeHtml(port, renderToString(createElement(component, props)));
+        }
+        return { render: () => undefined };
     }
 
-    // CLIENT: mount, or hydrate when the host was server-rendered.
-    let root: Root | null = null;
-    let unsubscribe: (() => void) | undefined;
+    const host = hostElement(c, port);
+    // Hydration and a client render run the same wire, so the markup is the only evidence of which.
+    const served = host.hasChildNodes();
+    let root: Root;
+    if (served) {
+        root = hydrateRoot(host, createElement(component, props));
+    } else {
+        root = createRoot(host);
+        root.render(createElement(component, props));
+    }
 
-    return h(tag, {
-        static: {
-            'data-exo-react': '',
-            onExoMount: (node: { element: unknown }) => {
-                const el = node.element as Element;
-                const render = (): void => {
-                    root?.render(createElement(component, read()));
-                };
-                if (el.hasChildNodes()) {
-                    // server-rendered content present → hydrate it in place
-                    root = hydrateRoot(el, createElement(component, read()));
-                } else {
-                    root = createRoot(el);
-                    render();
-                }
-                if (reactive) {
-                    unsubscribe = (props as ReadableBindable<P>).onChange(() =>
-                        render()
-                    );
-                }
-            },
-            onExoUnmount: () => {
-                unsubscribe?.();
-                unsubscribe = undefined;
-                root?.unmount();
-                root = null;
-            },
-        },
+    let stopped = false;
+    c.onTeardown(() => {
+        stopped = true;
+        root.unmount();
     });
+    return {
+        render: (next: TProps): void => {
+            if (!stopped) root.render(createElement(component, next));
+        },
+    };
 }

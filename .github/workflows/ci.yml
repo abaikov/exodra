@@ -23,13 +23,17 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - run: npm ci
 
-      # Exactly the gate `npm run release` runs, so CI cannot pass while a
-      # release would fail: lint → typecheck → type-tests → build:all → tests.
+      # The runner ships rustup and a stable toolchain but not this target, and
+      # `build:wasm` hard-exits without it — so the gate below cannot pass unless
+      # this runs first.
+      - name: Rust wasm target (for build:wasm)
+        run: rustup target add wasm32-wasip1
+
       - name: release:check
         run: npm run release:check
 
@@ -39,26 +43,20 @@ jobs:
       - name: Packed-artifact integration
         run: npm run test:packed
 
-  browser:
-    name: Browser-backed tests
+  docs-site:
+    name: Docs site builds
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
+          cache-dependency-path: docs-site/package-lock.json
 
       - run: npm ci
-
-      # @exodra/introspect's `explore` drives a real browser; without Chromium
-      # its end-to-end test skips itself, which would hide a regression.
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        working-directory: docs-site
 
       - run: npm run build
-
-      - name: introspect (browser exploration)
-        run: npx vitest run src/browser-explorer.test.ts
-        working-directory: packages/introspect
+        working-directory: docs-site

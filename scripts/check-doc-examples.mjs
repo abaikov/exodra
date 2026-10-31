@@ -27,7 +27,7 @@ import { spawnSync } from 'child_process';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = join(root, 'node_modules', '.doc-examples');
 
-const FENCE = /^```(ts|tsx|typescript|jsx|js)([^\n]*)\n([\s\S]*?)^```/gm;
+const FENCE = /^```(ts|tsx|typescript|jsx|js)(?![\w-])([^\n]*)\n([\s\S]*?)^```/gm;
 
 async function markdownFiles(dir, acc = []) {
     if (!existsSync(dir)) return acc;
@@ -50,6 +50,7 @@ const main = async () => {
 
     const files = [
         ...(await markdownFiles(join(root, 'docs-site', 'docs'))),
+        ...(await markdownFiles(join(root, 'docs-site', 'src'))),
         join(root, 'README.md'),
         ...packages.map(p => join(root, 'packages', p, 'README.md')).filter(existsSync),
     ];
@@ -64,20 +65,25 @@ const main = async () => {
 
     for (const file of files) {
         const text = await readFile(file, 'utf8');
-        for (const match of text.matchAll(FENCE)) {
-            const [, lang, info, code] = match;
-            if (/\bno-check\b/.test(info)) continue;
-            if (!/from\s+['"]@exodra\//.test(code)) continue;
-
+        const fences = [...text.matchAll(FENCE)]
+            .filter(([, , info]) => !/\b(no-check|signature)\b/.test(info))
+            .map(match => ({
+                info: match[2],
+                code: match[3],
+                line: lineOf(text, match.index) + 1,
+            }));
+        const setups = fences.filter(fence => /\bsetup\b/.test(fence.info));
+        const prelude = setups.map(fence => fence.code).join('\n');
+        const preludeLines = prelude === '' ? 0 : prelude.split('\n').length;
+        for (const fence of fences.filter(candidate => !/\bsetup\b/.test(candidate.info))) {
             const name = `example-${index++}.tsx`;
             origin.set(name, {
                 file: relative(root, file),
-                line: lineOf(text, match.index) + 1,
-                lang,
+                line: fence.line,
+                preludeLines,
+                setupLine: setups[0]?.line,
             });
-            // Wrapped in a module scope so examples cannot collide with each
-            // other through top-level declarations.
-            await writeFile(join(outDir, name), code);
+            await writeFile(join(outDir, name), `${prelude === '' ? '' : prelude + '\n'}${fence.code}\nexport {};\n`);
         }
     }
 
@@ -98,8 +104,22 @@ const main = async () => {
             paths[pkg.name] = [relative(outDir, index)];
         }
     }
-    paths['@exodra/jsx/jsx-runtime'] = [
-        relative(outDir, join(root, 'packages', 'jsx', 'src', 'jsx-runtime.ts')),
+    // THE JSX PACKAGE IS SHAPED DIFFERENTLY FROM EVERY OTHER ONE, and getting this wrong is how
+    // the gate spent its whole life checking the documentation against REACT.
+    //
+    // `packages/jsx/src/` holds one directory, `schema/`, and nothing else — there is no
+    // `src/index.ts` and no `src/jsx-runtime.ts`. So the loop above never mapped `@exodra/jsx` at
+    // all (its `existsSync` missed), the line below pointed at a file that does not exist, and
+    // both fell through to whatever `dist/` happened to hold. With no mapping and no `types: []`,
+    // `@types/react`'s global `JSX` namespace won, and every directive-JSX fence in the docs was
+    // type-checked against `DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, …>` — which is
+    // exactly the error this gate was reporting, about a dialect the project does not use.
+    const jsxSchema = join(root, 'packages', 'jsx', 'src', 'schema');
+    paths['@exodra/jsx'] = [relative(outDir, join(jsxSchema, 'index.ts'))];
+    paths['@exodra/jsx/schema'] = [relative(outDir, join(jsxSchema, 'index.ts'))];
+    paths['@exodra/jsx/schema/jsx-runtime'] = [relative(outDir, join(jsxSchema, 'jsx-runtime.ts'))];
+    paths['@exodra/jsx/schema/jsx-dev-runtime'] = [
+        relative(outDir, join(jsxSchema, 'jsx-dev-runtime.ts')),
     ];
 
     await writeFile(
@@ -115,7 +135,15 @@ const main = async () => {
                     skipLibCheck: true,
                     noEmit: true,
                     jsx: 'react-jsx',
-                    jsxImportSource: '@exodra/jsx',
+                    // THE SUBPATH, not the package root — `packages/jsx/package.json` declares
+                    // `./schema/jsx-runtime` and no `./jsx-runtime`, and the runtime's own header
+                    // spells the setting out. Naming the root resolved nothing and let React's
+                    // ambient JSX namespace answer instead.
+                    jsxImportSource: '@exodra/jsx/schema',
+                    // NO AMBIENT @types PACKAGES. Without this every `@types/*` in the workspace is
+                    // auto-included, and `@types/react` declares a global `JSX` namespace that
+                    // silently overrides this project's dialect.
+                    types: [],
                     // Examples elide detail on purpose; unused locals are not a
                     // documentation bug.
                     noUnusedLocals: false,
@@ -139,24 +167,7 @@ const main = async () => {
     const output = (result.stdout || '') + (result.stderr || '');
     const raw = output.split('\n').filter(line => /error TS\d+/.test(line));
 
-    // A fence that references a name or module it never declares is a FRAGMENT —
-    // documentation prose, not a program. Those produce cascades of downstream
-    // type errors that say nothing about the API, so the whole fence is skipped.
-    // What remains are errors that can only mean one thing: the docs describe an
-    // API that does not exist. That distinction is the difference between a check
-    // people act on and one they learn to ignore.
-    const FRAGMENT_CODES = /error TS(2304|2307|2503|2552|1005|2657)\b/;
-    const fragments = new Set();
-    for (const line of raw) {
-        const m = line.match(/(example-\d+)\.tsx/);
-        if (m && FRAGMENT_CODES.test(line)) fragments.add(m[1]);
-    }
-
     const errors = raw
-        .filter(line => {
-            const m = line.match(/(example-\d+)\.tsx/);
-            return !m || !fragments.has(m[1]);
-        })
         .map(line => {
             // tsc prints a path, not a bare basename — match the file anywhere in it.
             const match = line.match(/(example-\d+)\.tsx\((\d+),(\d+)\):\s*(.*)$/);
@@ -164,8 +175,10 @@ const main = async () => {
             const src = origin.get(match[1] + '.tsx');
             return {
                 file: src?.file ?? match[1],
-                // The fence's opening line plus the offset inside it.
-                line: (src?.line ?? 0) + Number(match[2]) - 1,
+                line:
+                    Number(match[2]) <= (src?.preludeLines ?? 0)
+                        ? (src?.setupLine ?? 0) + Number(match[2]) - 1
+                        : (src?.line ?? 0) + Number(match[2]) - (src?.preludeLines ?? 0) - 1,
                 message: match[4],
             };
         });
@@ -181,13 +194,7 @@ const main = async () => {
         process.exit(1);
     }
 
-    const checked = origin.size - fragments.size;
-    console.log(
-        `✓ ${checked} documentation examples typecheck against the source` +
-            (fragments.size > 0
-                ? ` (${fragments.size} skipped as fragments — they reference names they do not declare)`
-                : '')
-    );
+    console.log(`✓ ${origin.size} documentation examples typecheck against the source`);
 };
 
 await main();

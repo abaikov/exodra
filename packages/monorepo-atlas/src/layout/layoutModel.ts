@@ -2,30 +2,14 @@ import dagre from '@dagrejs/dagre';
 import type { TExoGraphModel } from '../model/types';
 import type { TExoGraphLayout, TExoLayoutEdge, TExoLayoutNode } from './types';
 
-/**
- * Turn the model into coordinates — at BUILD time, never in the browser.
- *
- * Positions are a pure function of the graph, so computing them once and
- * shipping them has three consequences worth the trouble:
- *
- *  - no layout engine reaches the page. dagre unpacks to ~850 kB and elkjs to
- *    ~8 MB; neither has any business in a docs page whose graph cannot change.
- *  - the SVG can be server-rendered, because the geometry is already known. The
- *    first paint is the finished diagram, before any script runs.
- *  - the output is diffable. The generated artefact is committed and verified,
- *    so the layout must be DETERMINISTIC — hence the sorting below, which pins
- *    the insertion order dagre would otherwise inherit from the model.
- *
- * Edges point from dependent to dependency, and dagre's default top-to-bottom
- * ranking then places a dependency BELOW whatever needs it: the foundation ends
- * up at the bottom of the picture, which is how architecture is read.
- */
+// Coordinates at BUILD time, never in the browser: no layout engine reaches the page (dagre
+// unpacks to ~850 kB, elkjs to ~8 MB), the SVG can be server-rendered, and the artefact is
+// committed and verified — so the layout must be DETERMINISTIC, hence the sorting below.
+// Edges point from dependent to dependency, so dagre's top-to-bottom ranking puts the foundation
+// at the bottom of the picture, which is how architecture is read.
 export type TExoLayoutOptions = {
-    /**
-     * Which way the ranks run. `LR` puts each rank in a COLUMN, which is what a
-     * page can actually show: a shallow graph laid top-to-bottom becomes a
-     * single wide band that has to be shrunk to fit, and its labels with it.
-     */
+    // Which way the ranks run. `LR` puts each rank in a COLUMN: a shallow graph laid top-to-bottom
+    // becomes one wide band that has to be shrunk to fit, and its labels with it.
     rankdir?: 'TB' | 'LR';
     /** Horizontal gap between nodes in the same rank. */
     nodeSpacing?: number;
@@ -86,7 +70,7 @@ export function layoutModel(
 
     dagre.layout(graph);
 
-    const laidOutNodes: TExoLayoutNode[] = nodes.map(node => {
+    const laidOutNodes: TExoLayoutNode[] = nodes.map((node) => {
         const box = graph.node(node.id);
         return {
             id: node.id,
@@ -124,10 +108,7 @@ export function layoutModel(
     };
 }
 
-/**
- * Wide enough for the label, floored so a one-character package still reads as a
- * box rather than a dot.
- */
+// Wide enough for the label, floored so a one-character package reads as a box, not a dot.
 export function nodeWidth(label: string, charWidth = DEFAULTS.charWidth): number {
     return Math.max(96, Math.round(label.length * charWidth) + 28);
 }

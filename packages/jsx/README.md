@@ -1,315 +1,124 @@
 # @exodra/jsx
 
-JSX/TSX support for Exodra — typed buckets, not flat React props.
+`exoJsx` — the marker for a JSX **schema declaration** — and the TypeScript types
+for the Exodra JSX dialect. Every `exoJsx(…)` call is compiled away by
+[`@exodra/babel-plugin-schema`](../babel-plugin-exodra-schema) into a module-level
+`createExoNamedSchema(…)`; nothing from this package survives into your bundle.
+
+A declaration holds markup and named ports, and nothing else. A literal attribute
+is markup; every port is named off `$` where it stands, and the machine fills it
+through `SCHEMA.ports`.
 
 ## Installation
 
 ```bash
-npm install @exodra/jsx @exodra/core @exodra/reactivity
-npm install --save-dev @exodra/babel-plugin-jsx
+npm install @exodra/jsx
 ```
 
-## Exodra JSX is NOT React
+## Configuration
 
-Exodra JSX looks like React JSX but compiles to something completely different,
-and the prop model is **strict and explicit**. This is the whole point of the
-library: the developer controls exactly what is static, what is reactive, and
-what is an event — so the renderer never has to guess. React and Solid trade
-that control for a "flat" prop syntax; Exodra does not.
-
-Every prop on an intrinsic element goes into one of five **typed buckets** (plus
-a few compiler directives). **Flat React-style props are a compile error**, both
-in TypeScript and in the babel plugin.
-
-```tsx
-// ❌ React style — every line below is a COMPILE ERROR in Exodra:
-<div id="x" className="y" onClick={fn} style={{ color: 'red' }} />
-
-// ✅ Exodra style — each prop declares its bucket:
-<div
-  static={{ id: 'x', class: 'y', style: 'color: red' }}
-  handlers={{ onClick: fn }}
-/>
-```
-
-### The buckets
-
-In JSX the buckets are written **singular**; the babel plugin maps them to the
-**plural** buckets of the core `h()` schema (`static` → `static`,
-`bindable` → `bindables`, `bindableList` → `bindableLists`, etc.).
-
-| JSX prop | Holds | Example |
-| --- | --- | --- |
-| `static={{…}}` | Plain DOM attributes + static children + lifecycle hooks. Never change. | `static={{ id: 'x', class: 'box' }}` |
-| `bindable={{…}}` | Reactive scalar values — `bindable`/`derive` **objects**, not thunks. | `bindable={{ textContent: title }}` |
-| `bindableList={{…}}` | Reactive lists (usually `children`) from `list()`. | `bindableList={{ children: items }}` |
-| `handlers={{…}}` | DOM event handlers. (Alias: `handler`.) | `handlers={{ onClick: fn }}` |
-| `bindableHandlers={{…}}` | Reactive event handlers — a bindable of a listener. (Alias: `bindableHandler`.) | `bindableHandlers={{ onClick: sig }}` |
-
-Reactive values are **objects passed directly**, never `() => x.value` thunks.
-Read them with `.getValue()`, write with `.setValue(...)`. There is no `.value`.
-
-```tsx
-import { bindable, derive } from '@exodra/reactivity';
-
-const title = bindable('Hello');
-const upper = derive(title, t => t.toUpperCase());
-
-// reactive text content:
-<span bindable={{ textContent: upper }} />
-```
-
-### Directives
-
-A handful of namespaced props are compiler directives, not buckets:
-
-- `bind:value={writable}` / `bind:checked={writable}` — two-way form binding
-  (compiled to `mergeAttrs(...)` + a `@exodra/forms` helper).
-- `cache:key={EXPR}` (alias `cacheKey`) — clone-cache key, becomes the 3rd arg
-  of `h()`.
-- `exo:schema={attrs}` — replace the entire props object with a raw schema attrs
-  object.
-
-## Configuration — only the Babel plugin works
-
-> **Important:** Exodra JSX is compiled **only** by `@exodra/babel-plugin-jsx`.
-> TypeScript's native JSX transform (`"jsx": "react-jsx"` + `jsxImportSource`),
-> esbuild's `jsx: 'automatic'`, and `@babel/plugin-transform-react-jsx` are all
-> **incompatible** — they emit `jsx()`/`jsxs()` runtime calls that do not exist
-> in Exodra. Do not use them.
-
-### .babelrc
-
-```json
-{
-  "plugins": [
-    ["@exodra/babel-plugin-jsx", { "hoistStatic": true }]
-  ]
-}
-```
-
-### tsconfig.json
-
-Use `preserve` so TypeScript only type-checks the JSX and leaves the transform to
-Babel:
+Point the type checker at the `/schema` subpath:
 
 ```json
 {
   "compilerOptions": {
-    "jsx": "preserve",
-    "types": ["@exodra/jsx"]
+    "jsx": "react-jsx",
+    "jsxImportSource": "@exodra/jsx/schema"
   }
 }
 ```
 
-The `@exodra/jsx` types supply the `JSX` namespace (`JSX.Element`,
-`JSX.IntrinsicElements`) so intrinsic elements and their buckets are fully typed.
+The package root resolves to the same module, so `import { exoJsx } from
+'@exodra/jsx'` and `import type { … } from '@exodra/jsx'` work;
+`jsxImportSource` must still name the `/schema` subpath, because TypeScript
+appends `/jsx-runtime` to it.
 
-## Basic Usage
-
-```tsx
-import { bindable, derive } from '@exodra/reactivity';
-import { mount } from '@exodra/dom';
-
-const count = bindable(0);
-const label = derive(count, c => `Count: ${c}`);
-
-const app = (
-  <div static={{ class: 'counter' }}>
-    <span bindable={{ textContent: label }} />
-    <button
-      static={{ class: 'btn' }}
-      handlers={{ onClick: () => count.setValue(count.getValue() + 1) }}
-    >
-      +1
-    </button>
-  </div>
-);
-
-const { dispose } = mount(app, document.getElementById('root')!);
-```
-
-## Components
-
-A component is a plain function that returns a schema (`JSX.Element`). It receives
-its own props object; intrinsic-element bucket rules apply inside it.
+## The dialect
 
 ```tsx
-import type { TExoSchema } from '@exodra/core';
+import { exoJsx } from '@exodra/jsx';
+import type {
+    TExoAttrPort,
+    TExoChildrenPort,
+    TExoEventPort,
+    TExoRefPort,
+    TExoTextPort,
+} from '@exodra/core';
 
-function Button(props: {
-  label: string;
-  onPress: () => void;
-}): TExoSchema {
-  return (
-    <button
-      static={{ class: 'btn', children: props.label }}
-      handlers={{ onClick: props.onPress }}
-    />
-  );
+interface TCardPorts {
+    id: TExoAttrPort;
+    title: TExoTextPort;
+    open: TExoEventPort;
+    edit: TExoEventPort;
+    box: TExoRefPort;
+    body: TExoChildrenPort;
+    tags: TExoChildrenPort;
 }
 
-// Usage:
-<Button label="Click me" onPress={() => alert('Clicked!')} />;
+export const CARD_SCHEMA = exoJsx<TCardPorts>(($) => (
+    <article class="card" data-id={$.id} ref={$.box} on:dblclick={$.edit}>
+        <h3>{$.title}</h3>
+        <button type="button" onClick={$.open}>
+            Open
+        </button>
+        <div class="card__body" unsafeHtml={$.body} />
+        <ul class="card__tags">
+            <$.tags />
+        </ul>
+    </article>
+));
 ```
 
-## Fragments
+- A literal (`class="card"`, `tabindex={0}`, bare `disabled`) — markup, baked into
+  the schema.
+- `data-id={$.id}` — an attribute port, filled with `c.attr(P.id, value)`.
+- `{$.title}` as an element's **only** child — a text port, filled with `c.text`.
+- `onClick={$.open}` (tail lowercased) or `on:dblclick={$.edit}` (name as written)
+  — an event port, handled with `m.on(P.open, handler)`.
+- `ref={$.box}` — a ref port: a reference to the element and no way to write it.
+- `unsafeHtml={$.body}` — a children port standing for the element's whole
+  content, filled with unescaped markup by `c.unsafeHtml`; nothing sanitises it.
+- `<$.tags />` — a children port among static siblings, filled by the machine with
+  `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder`.
 
-Group elements without a wrapper. `<></>` of static children flattens into the
-parent; a fragment wrapping a single reactive list becomes a real Fragment
-component carrying that `bindableList`.
+Any other expression, a component tag, a fragment or a spread is a compile error.
+`@exodra/babel-plugin-schema`'s README is the reference for what each form
+compiles to and every rule the compiler checks.
 
-```tsx
-const list = (
-  <>
-    <li static={{ children: 'Item 1' }} />
-    <li static={{ children: 'Item 2' }} />
-    <li static={{ children: 'Item 3' }} />
-  </>
-);
-```
+## What these types check
 
-`Fragment` is exported as a `Symbol.for('exodra.fragment')`.
+With a port interface as the type argument, `$` hands out each name as its port
+kind, so the kind must fit the position: `onClick={$.title}` with a text port is
+an error, as are `{$.open}` with an event port, `<$.id />` with an attribute
+port, and a name the interface does not declare. They also check the event
+**name** (`on:clik` is an error) for both `on:<event>` and `on<Event>`, including
+the camel forms (`onKeyDown`, `onDblClick`); that an event attribute takes a
+port, not a closure; that a lowercase `onclick="…"` is an error; that
+`unsafeHtml` takes a children port; and that `<$.tags>` takes no children.
 
-## Conditional Rendering
+Without a type argument every `$.name` is accepted in every position, and
+`.ports` is a record of untyped ports.
 
-Use a derived bindable as a single reactive child via `bindable={{ children }}`:
+What the types do **not** check is checked by the compiler instead, naming the
+element: that a text port is its element's only child, that an element with
+`unsafeHtml` has no children, that a port name is used once, and that there is
+no spread, fragment or namespace other than `on:`.
 
-```tsx
-import { bindable, derive } from '@exodra/reactivity';
+**The attribute index signatures stay open**, and a hyphenated name is not
+checked at all. TypeScript drops a hyphenated JSX attribute before any index
+signature is consulted, so `data-id={…}` is unchecked whatever is declared — the
+signatures for `data-` and `aria-` are documentation. The attribute names are a
+generous superset rather than a per-tag table, which cannot be both complete and
+correct; a type that rejects a valid program is worse than one that admits a typo.
 
-const loggedIn = bindable(false);
-const name = bindable('Ada');
+## Exports
 
-const view = derive(loggedIn, on =>
-  on
-    ? <span bindable={{ textContent: name }} />
-    : <a static={{ href: '/login', children: 'Please login' }} />
-);
-
-const root = <div bindable={{ children: view }} />;
-```
-
-## Lists
-
-A reactive list (`list()` from `@exodra/reactivity`) goes into the
-`bindableList` bucket. Static `.map()` over a plain array also works as static
-children:
-
-```tsx
-import { list } from '@exodra/reactivity';
-
-const items = list<TExoSchema>([]);
-
-// reactive list:
-<ul bindableList={{ children: items }} />;
-
-// static array of children:
-<ul>
-  {todos.map(t => (
-    <li static={{ children: t.text }} />
-  ))}
-</ul>;
-```
-
-There is no `key` prop — list reconciliation is driven by `list` ops
-(`insert`/`remove`/`move`/…), not by keys.
-
-## Event Handling
-
-```tsx
-function Form() {
-  const onSubmit = (e: SubmitEvent) => {
-    e.preventDefault();
-    // handle form
-  };
-
-  return (
-    <form handlers={{ onSubmit }}>
-      <input
-        static={{ type: 'text' }}
-        handlers={{
-          onInput: e => console.log((e.target as HTMLInputElement).value),
-        }}
-      />
-      <button static={{ type: 'submit', children: 'Submit' }} />
-    </form>
-  );
-}
-```
-
-## Forms and Two-Way Binding
-
-`bind:value` / `bind:checked` keep a writable bindable in sync with the input.
-The plugin picks the right `@exodra/forms` helper from the element/type:
-
-```tsx
-import { bindable } from '@exodra/reactivity';
-
-const text = bindable('');
-const agree = bindable(false);
-
-<input static={{ type: 'text' }} bind:value={text} />;
-<input static={{ type: 'checkbox' }} bind:checked={agree} />;
-```
-
-Or wire it manually with the `bindable` + `handlers` buckets:
-
-```tsx
-<input
-  static={{ type: 'text' }}
-  bindable={{ value: text }}
-  handlers={{ onInput: e => text.setValue((e.target as HTMLInputElement).value) }}
-/>;
-```
-
-## Class Names and Styles
-
-`class` and `style` are plain string attributes in the `static` bucket; a
-reactive class is a bindable/derived in the `bindable` bucket. `style` is a CSS
-string (not an object).
-
-```tsx
-import { bindable, derive } from '@exodra/reactivity';
-
-const active = bindable(false);
-const cls = derive(active, on => (on ? 'btn btn--active' : 'btn'));
-
-// static:
-<div static={{ class: 'container', style: 'color: red; font-size: 16px' }} />;
-
-// reactive:
-<div bindable={{ class: cls }} />;
-```
-
-## Lifecycle Hooks
-
-`onExoMount` / `onExoUnmount` live in the `static` bucket and receive `{ element }`:
-
-```tsx
-<div
-  static={{
-    class: 'page',
-    onExoMount: () => console.log('mounted'),
-    onExoUnmount: () => console.log('unmounted'),
-  }}
-/>;
-```
-
-## API Reference
-
-`@exodra/jsx` exports:
-
-| Export | Description |
-| --- | --- |
-| `Fragment` | `Symbol.for('exodra.fragment')` used for `<></>` |
-| `mergeAttrs` | Runtime glue emitted by the plugin for elements with directives |
-| `JSX` (type namespace) | `JSX.Element`, `JSX.IntrinsicElements`, etc. |
-| html types | Bucket/attribute type definitions for intrinsic elements |
-
-There is **no** `jsx`, `jsxs`, `FC`, or `HTMLAttributes` export. The babel
-plugin compiles JSX straight to `h()` calls — there is no `jsx()`/`jsxs()`
-runtime.
+`exoJsx`, and the types `TExoJsxPorts`, `TExoJsxAttrPort`, `TExoJsxTextPort`,
+`TExoJsxEventPort`, `TExoJsxRefPort`, `TExoJsxChildrenPort`, `TExoJsxAnyPort`,
+`TExoOnAttrs`, `TExoCamelEventName`, `TExoCamelOnAttrs`, `TExoAttrValue`,
+`TExoUnsafeHtmlAttrs`, `TExoRefAttrs`, `TExoElementAttrName`, `TExoElementAttrs`,
+`TExoSchemaElement`, `TExoSchemaChild`, `TExoSchemaChildren`,
+`TExoSchemaElementProps`, and `JSX`.
 
 ## License
 

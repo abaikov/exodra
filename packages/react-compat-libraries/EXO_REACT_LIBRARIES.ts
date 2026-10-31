@@ -1,0 +1,92 @@
+export const EXO_REACT_LIBRARIES = [
+    {
+        name: 'react-router',
+        version: '^8.5.1',
+        imports: ['react-router'],
+        mechanism: 'context tree, history listener in a layout effect, navigation inside startTransition, Link click handler reading event.button',
+    },
+    {
+        name: '@tanstack/react-query',
+        version: '^5.105.0',
+        imports: ['@tanstack/react-query'],
+        mechanism: 'useSyncExternalStore over an observer, updates batched through setTimeout, context provider',
+    },
+    {
+        name: 'swr',
+        version: '^2.5.1',
+        imports: ['swr'],
+        mechanism: 'use-sync-external-store shim (CJS require of react), useDebugValue, layout effects, cache provider context',
+    },
+    {
+        name: 'zustand',
+        version: '^5.0.16',
+        imports: ['zustand'],
+        mechanism: 'default import of React, useSyncExternalStore with a selector, useDebugValue',
+    },
+    {
+        name: 'jotai',
+        version: '^3.0.1',
+        imports: ['jotai'],
+        mechanism: 'default import of React, React.use, useReducer-driven re-render from a store subscription, Provider with an explicit store',
+    },
+    {
+        name: 'react-redux',
+        version: '^9.3.1',
+        imports: ['react-redux', '@reduxjs/toolkit'],
+        mechanism: 'React.version read at module load, use-sync-external-store/with-selector (CJS), useDebugValue, context provider',
+    },
+    {
+        name: 'react-hook-form',
+        version: '^7.91.0',
+        imports: ['react-hook-form'],
+        mechanism: 'default import of React, uncontrolled inputs through callback refs, onChange reading event.target, async submit',
+    },
+    {
+        name: 'formik',
+        version: '^2.4.9',
+        imports: ['formik'],
+        mechanism: 'controlled inputs through useReducer, handleChange reading event.target and optional event.persist, async submit',
+    },
+    {
+        name: '@radix-ui/react-dialog',
+        version: '^1.3.1',
+        imports: ['@radix-ui/react-dialog'],
+        mechanism: 'createPortal into document.body, composed refs, Slot via cloneElement, React.useId, document keydown capture listener for Escape',
+    },
+    {
+        name: '@headlessui/react',
+        version: '^2.2.10',
+        imports: ['@headlessui/react'],
+        mechanism: 'use-sync-external-store/with-selector, react-aria pointer and focus hooks, render-prop children',
+    },
+    {
+        name: '@emotion/react',
+        version: '^11.14.0',
+        imports: ['@emotion/react'],
+        mechanism: 'css prop through its own jsx, forwardRef wrapper, useInsertionEffect inserting <style> into document.head',
+    },
+    {
+        name: 'styled-components',
+        version: '^6.6.0',
+        imports: ['styled-components'],
+        mechanism: 'default import of React, forwardRef components, useDebugValue, layout effect inserting <style data-styled> into document.head',
+    },
+    {
+        name: 'framer-motion',
+        version: '^14.9.0',
+        imports: ['framer-motion'],
+        mechanism: 'motion components writing initial styles on first render, requestAnimationFrame frame loop, useInsertionEffect, contexts',
+    },
+    {
+        name: 'react-window',
+        version: '^2.5.2',
+        imports: ['react-window'],
+        mechanism: 'windowing from a pixel height in style, useSyncExternalStore client check, useImperativeHandle, createElement of a row component',
+    },
+    {
+        name: 'react-i18next',
+        version: '^17.1.9',
+        imports: ['react-i18next', 'i18next'],
+        mechanism: 'use-sync-external-store shim, context provider, re-render on an i18next languageChanged event',
+    },
+] as const;

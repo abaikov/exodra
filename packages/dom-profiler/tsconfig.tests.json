@@ -1,0 +1,29 @@
+{
+  // THE TEST FILES OF `@exodra/dom-profiler`, COMPILED. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // Extends `tsconfig.typecheck.json`, NOT `tsconfig.json`. The distinction is this package's own
+  // and is argued in that file's header: `tsconfig.json` is what tsup reads and its `paths` point
+  // at siblings' published `dist`, which the typecheck must not depend on. Following the typecheck
+  // config keeps the tests on tsc's own fresh `.tsbuild` output.
+  //
+  // `paths` restated in full (`extends` replaces it, never merges). The first three are that
+  // file's; `@exodra/test-utils` is what the suite adds.
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

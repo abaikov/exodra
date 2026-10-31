@@ -1,0 +1,31 @@
+{
+  // THE CONFIG TSUP BUILDS DECLARATIONS WITH, and it exists because the package's own
+  // `tsconfig.json` cannot do that job: it inherits `incremental` from the workspace build
+  // config (TS5074 without a `tsBuildInfoFile`) and tsup hands the compiler an entry list
+  // rather than the config's `include`, so every module the entries import comes back as
+  // TS6307 "not listed within the file list of project".
+  //
+  // It is a separate file rather than an edit to the main one because the main one is what
+  // `npm run typecheck` uses for the whole workspace, and loosening it there would loosen it
+  // for everybody.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "composite": false,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    // The siblings' PUBLISHED bundles, which is what a declaration build consumes.
+    // Restated because `tsconfig.json` now points every one of them at `.tsbuild` —
+    // tsc's own typecheck output, which exists before the build but is not what ships.
+    "paths": {
+      "@exodra/core": ["../core/dist/index.d.ts"],
+      "@exodra/dom": ["../dom/dist/index.d.ts"],
+      "@exodra/string": ["../string/dist/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["**/*.test.ts"]
+}

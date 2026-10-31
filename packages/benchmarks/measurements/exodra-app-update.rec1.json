@@ -1,0 +1,72 @@
+{
+  "axis": "exodra-app-update",
+  "label": "rec1",
+  "quantum": null,
+  "batch": 20,
+  "rows": [
+    {
+      "name": "floor",
+      "min": 2.875,
+      "p25": 2.905,
+      "median": 2.925,
+      "p75": 2.965,
+      "max": 3.26
+    },
+    {
+      "name": "mikado",
+      "min": 3.58,
+      "p25": 3.635,
+      "median": 3.675,
+      "p75": 3.715,
+      "max": 3.925
+    },
+    {
+      "name": "exodra",
+      "min": 3.71,
+      "p25": 3.825,
+      "median": 3.855,
+      "p75": 3.895,
+      "max": 5.58
+    },
+    {
+      "name": "marko",
+      "min": 3.785,
+      "p25": 3.96,
+      "median": 3.98,
+      "p75": 4.015,
+      "max": 4.315
+    },
+    {
+      "name": "mikadoReactive",
+      "min": 3.995,
+      "p25": 4.08,
+      "median": 4.1,
+      "p75": 4.145,
+      "max": 4.52
+    },
+    {
+      "name": "lit",
+      "min": 4.275,
+      "p25": 4.35,
+      "median": 4.38,
+      "p75": 4.46,
+      "max": 4.95
+    },
+    {
+      "name": "solid",
+      "min": 4.25,
+      "p25": 4.35,
+      "median": 4.405,
+      "p75": 4.47,
+      "max": 6.185
+    },
+    {
+      "name": "exodraOimdb",
+      "min": 7.295,
+      "p25": 7.445,
+      "median": 7.54,
+      "p75": 7.68,
+      "max": 8.765
+    }
+  ]
+}

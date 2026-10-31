@@ -4,132 +4,206 @@ title: String Renderer
 
 # String Renderer
 
-The `@exodra/string` package renders Exodra schemas to HTML strings. It is the
-server-side rendering engine — direct string concatenation, no virtual DOM — used
-for SSR, static site generation, email templates, and testing. The higher-level
-[`@exodra/ssr`](../guides/ssr.md) tooling builds on this package.
+`@exodra/string` is the **server backend** of the schema core. It runs the same
+component values [`@exodra/core`](./core.md) describes and the **same wiring
+function** [`@exodra/dom`](./dom.md) runs, and hands back markup instead of
+nodes.
+
+A schema is cut **once** into the fewest strings a render can be, so an instance
+is a handful of concatenations. No tree is ever built to be serialised.
 
 ```bash
 npm install @exodra/string @exodra/core
 ```
 
-Exports: `renderToString`, `createStringNode`, and `ExoNodeString`.
+## ExoStrBackend
 
-## renderToString()
-
-Renders a schema to an HTML string synchronously.
-
-```typescript
-function renderToString(schema: TExoSchema): string;
-```
-
-```javascript
-import { renderToString } from '@exodra/string';
-import { h, text } from '@exodra/core';
-
-const schema = h('div', {
-  static: {
-    id: 'app',
-    class: 'container',
-    children: [
-      h('h1', { static: { children: text('Hello World') } }),
-      h('p', { static: { children: text('Welcome to Exodra') } }),
-    ],
-  },
-});
-
-const html = renderToString(schema);
-// <div id="app" class="container"><h1>Hello World</h1><p>Welcome to Exodra</p></div>
-```
-
-### With components
-
-```javascript
-import { renderToString } from '@exodra/string';
-import { h, text } from '@exodra/core';
-
-function Card({ title, content }) {
-  return h('div', {
-    static: {
-      class: 'card',
-      children: [
-        h('h2', { static: { children: text(title) } }),
-        h('p', { static: { children: text(content) } }),
-      ],
-    },
-  });
+```ts no-check
+class ExoStrBackend {
+    constructor(...plugins: readonly TExoPlugin[]);
+    schema(component: TExoMachine<never>): TExoStrSchema;
+    render(component: TExoStrMachine, context?: TExoContextFrame | null, params?: unknown): string;
 }
-
-const html = renderToString(
-  h(Card, {
-    static: { title: 'My Card', content: 'Card content here' },
-  })
-);
 ```
 
-### Reactive values
+The server entry point is an **object you construct and render from**, exactly as
+[`ExoDomBackend`](./dom.md#exodombackend) is, and `render` is the same method name
+taking the component as one value — a page switches sides by switching which
+backend it holds, not by learning a second calling convention, and the return value
+*is* the difference.
 
-During SSR, reactive values are rendered with their initial state. Pass the
-bindable object directly into the `bindables` bucket (read the raw value with
-`.getValue()` — there is no `.value`).
+The **constructors differ**, and it is worth stating rather than discovering:
+`ExoDomBackend` takes nothing and is composed by wrapping it in `with*` decorators;
+this one still accepts a variadic list of plugins, merged after the connector
+surface.
 
-```javascript
-import { bindable } from '@exodra/reactivity';
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoTextPort } from '@exodra/core';
+import { ExoStrBackend } from '@exodra/string';
+import type { TExoStrNode } from '@exodra/string';
 
-const count = bindable(42);
-
-const schema = h('span', {
-  bindables: { textContent: count },
+const CARD_SCHEMA = createExoSchema((b) => {
+    let title!: TExoTextPort;
+    let body!: TExoTextPort;
+    b.el('article', { class: 'card' }, (card) => {
+        card.el('h2', null, (h2) => {
+            title = h2.textPort();
+        });
+        card.el('p', null, (p) => {
+            body = p.textPort();
+        });
+    });
+    return { title, body };
 });
-
-renderToString(schema);
-// <span>42</span>
-```
-
-### HTML escaping
-
-All text content is automatically escaped for security:
-
-```javascript
-const schema = h('div', {
-  static: { children: text('<script>alert("XSS")</script>') },
+const mCard = createExoMachineBuilder<TExoStrNode>(CARD_SCHEMA);
+mCard.wire((c) => {
+    c.text(CARD_SCHEMA.ports.title, 'Card');
+    c.text(CARD_SCHEMA.ports.body, 'Welcome to Exodra');
 });
+const CARD = mCard.done();
 
-renderToString(schema);
-// <div>&lt;script&gt;alert("XSS")&lt;/script&gt;</div>
+const backend = new ExoStrBackend();
+
+const html = backend.render(CARD);
+// <article class="card"><h2>Card</h2><p>Welcome to Exodra</p></article>
 ```
 
-## createStringNode()
+`render` prints **one** instance and takes **no count**, exactly as the browser
+backend mounts one. `createInitialState` receives `0` as its index, because a
+lone root has nothing else to be about. Rows that vary are a **list** — `list` /
+`one` on the exonode, which hand each row its own position as its index through
+the same signature.
 
-Low-level helper that creates an `ExoNodeString` for a schema. Most apps use
-`renderToString()` instead.
+### What it does not have, stated rather than discovered
 
-## ExoNodeString
+`ExoDomBackend` carries two replaceable implementation fields — `events` and
+`writers` — beside its record factories, and **neither has a field here**. A string
+has no listeners to attach; escaping and attribute form are decided by
+`compileExoStrSchema` through `EXO_STR_WRITERS`, which the two backends must agree
+on byte for byte or hydration is wrong; and there is nothing on this side to adopt.
+So this backend's composable surface is its **methods**: `new ExoStrBackend(...plugins)`
+merges its exonode surface onto itself first, so a pack naming `attr`, `text` or
+`list` receives the shipped body as `next` and may wrap it, and a pack naming
+something new adds it to `c.` for every component this backend runs.
 
-The string renderer implementation class. Usually not used directly —
-`@exodra/ssr` extends it as `ExoNodeSsr` to add head / state / header
-collection.
+That asymmetry is a bound on what a pack can promise. A pack that replaces
+`writers` composes into a DOM backend and is silently inert here, because
+nothing on this side reads that name. Composing it is not refused — the merge
+writes any name — so a pack that means to serve both sides has to say what it
+does on each.
 
-```javascript
-import { ExoNodeSsr } from '@exodra/ssr';
+## The exonode
 
-const ssr = new ExoNodeSsr(h(App));
-const bodyHtml = ssr.renderBody(); // uses @exodra/string under the hood
-```
+`TExoStrNode` is shaped **exactly** like `TExoDomNode`, method for
+method — both are **types** rather than classes, and both name an object whose
+prototype is its backend — because a component's wiring function is the one piece written by hand
+and it must not be able to tell which backend it is filling.
 
-## Integration with SSR
+| Method | On the server |
+| --- | --- |
+| `attr(port, value)` | Escape for an attribute position, and store. |
+| `text(port, value)` | Escape for a text position, and store. |
+| `unsafeHtml(port, markup)` | Store the markup as given, escaping nothing. |
+| `on(port, handler, subject?)` | Accepted in **both** forms and printed as nothing. The slot is still written. |
+| `onTeardown(off)` | Filed, and run at the end of the render — after the markup has been taken. |
+| `provide(token, value)` / `inject(token)` | The same chain and the same lookup rule the browser uses. |
+| `one(port, component)` | Render one nested instance into the port. |
+| `list(port, component, count)` | `count` instances, concatenated. |
+| `build(component, index?)` | Render one child and hand it back as a value. |
+| `childList(port)` | The port's children, for a caller to place into. |
 
-`@exodra/string` is the rendering engine that `@exodra/ssr` builds on. For full
-server-side rendering with head management, state transfer, and hydration, see
-the [SSR guide](../guides/ssr.md).
+Two of those are worth spelling out, because they look like omissions:
+
+- **`on` must accept both forms or the design breaks in half.** A component's
+  wiring function is written once and run by three backends; the moment
+  `c.on(H.click, TOGGLE_DONE, subject)` is a call the server does not have, every
+  component with a declarative handler needs a second wiring function.
+- **There is no `bind` here, and none is missing.** Following data is a
+  machine's effect: it draws through a transition, then subscribes. On this
+  backend the effect runs once while the instance is armed, the draw is the only
+  write that reaches the markup, and the render stops the effect as soon as the
+  markup is taken — so a server render reads the data once and leaves no
+  subscription behind the response.
+
+A **node** on this backend is a string of markup — the type it comes back
+as (`TExoNode`) is opaque, which is what lets one wiring function assemble
+children on all three backends without learning that the server's are strings
+and the browser's are DOM nodes.
+
+## Contexts on the server
+
+`provide` and `inject` are methods on the connector, as in the browser. What
+this backend threads is a **frame on the connector** rather than a mark on
+anything: there are no nodes, and the server builds strictly depth-first, once, so
+the chain in force is exactly the one the current call stack passed down.
+
+There is no module-level slot. The chain lives on the exonode
+(`TExoStrNode.context`) and is threaded downwards, so `provide` and `inject` touch
+no module state and no `finally` puts anything back. A caller with an OUTER frame
+of its own passes it as `render`'s second argument, or as `renderExoStrInstance`'s
+`context` when driving instances by hand (`packages/string/src/node/ExoStrBackend.ts`).
+`@exodra/ssr`'s `renderExoPage` is what uses it: it hands `render` an
+`exoContextFrame` carrying the request's response object, so a page can
+`c.inject(EXO_SSR_RESPONSE)` and two requests rendering at once cannot see each
+other's.
+
+## Escaping
+
+Text and attribute values are escaped through `escapeExoText` and
+`escapeExoAttributeValue`, which live in [`@exodra/core`](./core.md#escaping-and-the-shared-tables)
+so that the markup this package prints and the markup `@exodra/dom` parses its
+prototype from are **the same bytes**. That identity is what hydration rests on.
+
+## Compiled plans
+
+Exported for the same reason `@exodra/dom`'s are: a caller that renders
+instances itself — a compiler's output, a custom entry point, a streaming shell —
+needs **the plan the entry point would have built**. Without them it either
+re-exports blind or writes a second compiler, and the first thing a second
+compiler disagrees about is port numbering, which is shared with `@exodra/dom`
+and is the reason one wiring function can fill both backends. Every name here has
+a counterpart in the DOM package.
+
+| Export | Counterpart in `@exodra/dom` |
+| --- | --- |
+| `exoStrSchemaOf(machine, backend)` | `exoDomSchemaOf` |
+| `compileExoStrSchema(declaration, backend)` | `compileExoDomSchema` |
+| `renderExoStrInstance(schema, machine, index, context?, params?)` | `mountExoInstance` |
+| `EXO_STR_WRITERS` | *(none in the barrel — see below)* |
+
+The `backend` parameter is **not optional and not defaulted**: it is the plan cache
+key as well as the argument the compiler needs, and defaulting it would mean naming
+a composed backend from a module the connector imports, which closes a module
+cycle. `ExoStrBackend.render` passes `this`, and every nested call passes
+`connector.backend`. `renderExoStrInstance`'s `context` defaults to `null` — a caller
+driving this function by hand inherits no context, because nothing is read off an
+ambient any more.
+
+`EXO_STR_WRITERS` has no DOM counterpart and is exported anyway: its writers are
+what decide an attribute's **absence** — `disabled` for `false` is no attribute at
+all, not `disabled=""` — and a caller building writers by hand without them is the
+shape that produces a hydration mismatch on every conditional attribute.
+
+| Type | Purpose |
+| --- | --- |
+| `TExoStrSchema` | A schema compiled for this backend: cut into prepared strings, with a writer per port. |
+| `TExoStrWriter` | The per-port function that escapes a value for its position. |
+| `TExoStrMarkupFiller` | The prepared markup with a hole per port — hand it an instance's values, get the instance's markup. |
+| `TExoStrMachine` | `TExoMachine` with this backend's exonode in it — what `createExoMachineBuilder<TExoStrNode>(schema).done()` returns. |
+
+There is **no** `renderToStream`.
 
 ## API Reference
 
 | Export | Description |
 | --- | --- |
-| `renderToString(schema)` | Render a schema to an HTML string synchronously. |
-| `createStringNode(schema)` | Create an `ExoNodeString` for a schema (low-level). |
-| `ExoNodeString` | The string renderer implementation class. |
+| `ExoStrBackend` / `TExoStrBackend` / `TExoStrBackendConstructor` | The server backend: `new ExoStrBackend(...plugins)`, then `backend.render(component)`, which prints one instance as markup. The connector's methods are merged onto it first, so a pack naming one receives the shipped body as its `next`. |
+| `TExoStrNode` / `TExoStrNodeApi` / `TExoStrNodeFields` / `TExoStrSurface` | What a wiring function is handed on the server — **types**, not a class. An exonode is a plain object whose prototype is the composed backend. |
+| `createExoStrInstanceFactory` / `EXO_STR_NODE_VOCABULARY` | The factory that builds one of those objects — call it once per composed backend — and the exonode surface as the pack the backend merges onto itself. Exported for a custom entry point and for a tool that needs the list of method names. |
+| `exoStrSchemaOf` / `compileExoStrSchema` / `renderExoStrInstance` / `EXO_STR_WRITERS` | Plans, for custom entry points. Both plan functions take the **backend**. |
+| `exoForeignMarkup` / `TExoStrMark` / `EXO_STR_FOREIGN_VOCABULARY` / `TExoStrForeignApi` | Markup this backend did not print, placed like markup it did. |
+| `TExoStrApi` / `TExoStrMachine` / `TExoStrSchema` / `TExoStrWriter` / `TExoStrMarkupFiller` | Types. |
 
 ## Links
 

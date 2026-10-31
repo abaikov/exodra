@@ -1,0 +1,49 @@
+{
+  // THE TEST FILES OF `@exodra/babel-plugin-schema`, COMPILED — 4 suites, and they are the first
+  // group in this set that does NOT live under `src/`. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // TWO DEVIATIONS FROM THE COMMON SHAPE, both caused by that:
+  //
+  //   `include` names `tests/**/*.ts` beside `src/**/*.ts`, and `exclude` no longer names `tests`.
+  //   The base typecheck config excludes that directory outright, which is why its four files have
+  //   never reached a compiler by any route.
+  //
+  //   `rootDir` is widened from `"./src"` to `"."`. `rootDir` is an EMIT setting and there is no
+  //   emit here, but it is also what `checkSourceFilesBelongToPath` reads when it decides whether
+  //   to raise TS6059 ("not under rootDir"), and every file under `tests/` is outside `./src`.
+  //
+  //   `include` also names `types/**/*.ts`, which is one hand-written declaration file and no
+  //   sources. `types/babel-plugin-syntax-jsx.d.ts` is the ambient declaration for
+  //   `@babel/plugin-syntax-jsx` — a package that ships no `types` field and has no `@types/…`
+  //   counterpart on npm — which all four suites here import. It is deliberately NOT in
+  //   `tsconfig.typecheck.json`'s `include`: `src/` does not import that plugin and the BUILD
+  //   must not carry a declaration for it into `dist`. `packages/swc-plugin-exodra`'s test project
+  //   names the same file by relative path, so the two programs share one declaration rather than
+  //   one each.
+  //
+  // `paths` names the built declarations of `@exodra/core` and `@exodra/dom`, which
+  // `declaration.test.ts` renders a compiled declaration through; sources would sit outside
+  // `rootDir` and raise TS6059.
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "rootDir": ".",
+    "lib": ["ES2020", "DOM"],
+    "paths": {
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/list-reconcile": ["../list-reconcile/.tsbuild/index.d.ts"],
+      "@exodra/react-compat": ["../react-compat/.tsbuild/index.d.ts"],
+      "@exodra/react-compat/jsx-runtime": ["../react-compat/.tsbuild/jsx-runtime.d.ts"],
+      "@exodra/react-compat/names": ["../react-compat/.tsbuild/names.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "types/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

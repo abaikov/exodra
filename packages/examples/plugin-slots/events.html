@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exodra — how a listener reaches the DOM</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header class="page-head">
+    <h1 class="page-title">"How listeners are attached is the framework's business"</h1>
+    <p class="page-sub">
+        Two hundred rows, the same component, the same handler, rendered twice. The left panel gets
+        the shipped strategy — one <code>addEventListener</code> per row. The right one composes a
+        <strong>delegating</strong> pack over the same seam — one listener on the render root, and
+        the rows carry their handlers as properties. Both panels answer clicks; the counter under
+        each is written by a real handler.
+        <br>
+        <span class="slot">the seam: <code>backend.events</code> · the pack: createExoDelegatedEvents(['click'])</span>
+    </p>
+</header>
+
+<div class="panels">
+    <section class="panel">
+        <h2 class="panel-title">Shipped pack — direct</h2>
+        <p class="panel-note">withExoCompiler(new ExoDomBackend()) — no event pack composed.</p>
+        <div id="direct" style="max-height: 220px; overflow: auto;"></div>
+        <p class="readout" id="direct-out"></p>
+    </section>
+    <section class="panel">
+        <h2 class="panel-title">Delegated pack</h2>
+        <p class="panel-note">composeExoPlugins(withExoCompiler(new ExoDomBackend()), delegateClicks)</p>
+        <div id="delegated" style="max-height: 220px; overflow: auto;"></div>
+        <p class="readout" id="delegated-out"></p>
+    </section>
+</div>
+
+<p id="boot" class="boot">Loading three packages from this repository's own <code>dist/</code>…</p>
+
+<p class="boot">
+    <strong>Status: written against the source of <code>@exodra/core</code> and <code>@exodra/dom</code>; not yet opened in a browser.</strong>
+    The two hundred rows are a fixed list inside one shell machine (<code>c.list(port, ROW, 200)</code>),
+    so each panel is ONE <code>render</code> — a delegated pack installs its root listener per
+    render, and two hundred renders would have been two hundred roots.
+</p>
+
+<script type="importmap">
+{
+  "imports": {
+    "@exodra/core": "/packages/core/dist/index.js",
+    "@exodra/context": "/packages/context/dist/index.js",
+    "@exodra/dom": "/packages/dom/dist/index.js"
+  }
+}
+</script>
+<script type="module">
+    import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import * as exoDom from '@exodra/dom';
+
+    const { ExoDomBackend, createExoDelegatedEvents, EXO_DIRECT_EVENTS, withExoCompiler } = exoDom;
+
+    const boot = document.getElementById('boot');
+    if (
+        ExoDomBackend === undefined ||
+        createExoDelegatedEvents === undefined ||
+        withExoCompiler === undefined
+    ) {
+        boot.className = 'boot boot-error';
+        boot.textContent =
+            'This build of @exodra/dom does not export ExoDomBackend, createExoDelegatedEvents and ' +
+            'withExoCompiler. ' +
+            'Rebuild it: npm run build --workspace=@exodra/dom';
+        throw new Error('plugin-slots: @exodra/dom/dist predates the exports this page reads');
+    }
+
+    const ROWS = 200;
+
+    /**
+     * How many clicks each panel has answered: a tiny local store, so the readout can follow it.
+     * The row's click handler is declared on the MACHINE (`mRow.on`), which registers ONE shared
+     * function per machine with the row's exonode as its SUBJECT — the shape a delegated pack can
+     * read back off an element, so the same machine runs under both strategies.
+     */
+    function store(value) {
+        const listeners = new Set();
+        return {
+            getValue: () => value,
+            setValue(next) {
+                value = next;
+                for (const listener of listeners) listener();
+            },
+            onChange(listener) {
+                listeners.add(listener);
+                return () => listeners.delete(listener);
+            },
+        };
+    }
+
+    const hits = { direct: store(0), delegated: store(0) };
+
+    const ROW_SCHEMA = createExoSchema(
+        b => {
+            let label, click;
+            b.el('div', { class: 'row' }, row => {
+                click = row.eventPort('click');
+                label = row.textPort();
+            });
+            return { label, click };
+        }
+    );
+    const mRow = createExoMachineBuilder(ROW_SCHEMA);
+    mRow.createInitialState((c, index) => ({ index, hits: CURRENT_SIDE.hits }));
+    mRow.wire(c => {
+        c.text(ROW_SCHEMA.ports.label, 'row ' + c.state.index + ' · click me');
+    });
+    mRow.on(ROW_SCHEMA.ports.click, c => {
+        c.state.hits.setValue(c.state.hits.getValue() + 1);
+    });
+    const ROW = mRow.done();
+
+    /**
+     * THE SHELL: `backend.render(machine, parent)` mounts ONE instance, so the two hundred rows are
+     * a FIXED LIST inside it — `c.list(port, ROW, count)` opens the children port once, in
+     * `createInitialState`, and mounts one row per index.
+     */
+    const SHELL_SCHEMA = createExoSchema(
+        b => {
+            let rows;
+            b.el('div', { class: 'rows' }, host => { rows = host.childrenPort(); });
+            return { rows };
+        }
+    );
+    const mShell = createExoMachineBuilder(SHELL_SCHEMA);
+    mShell.createInitialState(c => {
+        c.list(SHELL_SCHEMA.ports.rows, ROW, ROWS);
+        return null;
+    });
+    const SHELL = mShell.done();
+
+    // ONE PACK, ONE NAME — the whole of what an application writes to change strategy. A pack is a
+    // bag of FACTORIES: `events` receives what already stands there (the direct strategy) as
+    // `next` and returns what stands there instead. This one ignores `next` — it replaces — and it
+    // writes nothing else, so the reconciler, the node source and the writers are untouched.
+    //
+    // THE FACTORY RUNS ONCE, AT CONSTRUCTION, which is why `createExoDelegatedEvents(['click'])` may sit
+    // inside it: one pack for the process, as that function's own header asks for. A pack built per
+    // render would re-compile and re-parse every schema it touches, because a plan is cached per
+    // (schema, backend) and the backend is compared by pointer.
+    const delegateClicks = { events: () => createExoDelegatedEvents(['click']) };
+
+    // ── the measurement ─────────────────────────────────────────────────────
+    //
+    // THE ONLY HONEST OBSERVABLE for this seam is how many listeners were registered, and no DOM
+    // API reports that. So `addEventListener` is counted for the duration of ONE render and put
+    // back immediately: nothing else on this page runs inside that window, so every call counted
+    // is one the renderer made.
+
+    const counted = render => {
+        const proto = EventTarget.prototype;
+        const real = proto.addEventListener;
+        let calls = 0;
+        proto.addEventListener = function (...args) {
+            calls += 1;
+            return real.apply(this, args);
+        };
+        try {
+            render();
+        } finally {
+            proto.addEventListener = real;
+        }
+        return calls;
+    };
+
+    /**
+     * WHICH PANEL IS BEING BUILT, read by each row's `createInitialState`. Sound because
+     * `backend.render` runs start to finish synchronously, `c.list` inside it included.
+     */
+    const CURRENT_SIDE = { hits: hits.direct };
+
+    // TWO BACKENDS, BOTH AT MODULE LEVEL. A backend is the plan cache key, compared by POINTER, so
+    // one built per render would recompile every schema — markup parse included — every time.
+    const directBackend = withExoCompiler(new ExoDomBackend());
+    const delegatedBackend = composeExoPlugins(withExoCompiler(new ExoDomBackend()), delegateClicks);
+
+    const listeners = {};
+    CURRENT_SIDE.hits = hits.direct;
+    listeners.direct = counted(() =>
+        directBackend.render(SHELL, document.getElementById('direct'))
+    );
+    CURRENT_SIDE.hits = hits.delegated;
+    listeners.delegated = counted(() =>
+        delegatedBackend.render(SHELL, document.getElementById('delegated'))
+    );
+
+    function report(side) {
+        document.getElementById(side + '-out').textContent =
+            'addEventListener calls during this render: ' + listeners[side] +
+            '\nrows: ' + ROWS +
+            '\nclicks answered: ' + hits[side].getValue();
+    }
+
+    report('direct');
+    report('delegated');
+    // The readout follows the store, so a click is answered by the machine handler and shown by this.
+    hits.direct.onChange(() => report('direct'));
+    hits.delegated.onChange(() => report('delegated'));
+
+    // AND THE TWO THINGS THAT GENUINELY CHANGE WITH THIS SEAM, said out loud rather than hidden:
+    // a row moved OUT of its render root stops responding under a delegated pack, and disposal is
+    // not symmetric — direct listeners die with their node, delegated ones die with the render's
+    // scope.
+    //
+    // THE TAKEOVER IS A FIELD ON THE BACKEND, read off the two objects themselves — there is no
+    // registry to ask and no provider order to print. A pack is merged in once, at construction,
+    // and what stands under a name afterwards IS the composition.
+    boot.textContent =
+        'left: backend.events === EXO_DIRECT_EVENTS → ' +
+        (directBackend.events === EXO_DIRECT_EVENTS) +
+        ' · right: same test → ' +
+        (delegatedBackend.events === EXO_DIRECT_EVENTS) +
+        ' · right: that pack installs a root listener → ' +
+        (delegatedBackend.events.install !== undefined);
+</script>
+
+</body>
+</html>

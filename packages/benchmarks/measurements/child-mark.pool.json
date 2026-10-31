@@ -1,0 +1,146 @@
+{
+  "axis": "child-mark",
+  "label": "pool",
+  "quantum": null,
+  "batch": 1,
+  "rows": [
+    {
+      "name": "clone",
+      "reps": 20,
+      "min": 0.085,
+      "p25": 0.09,
+      "median": 0.09,
+      "p75": 0.09,
+      "max": 0.095
+    },
+    {
+      "name": "clone+rec",
+      "reps": 20,
+      "min": 0.1,
+      "p25": 0.105,
+      "median": 0.105,
+      "p75": 0.105,
+      "max": 0.125
+    },
+    {
+      "name": "clone+rec+slot",
+      "reps": 20,
+      "min": 0.1,
+      "p25": 0.105,
+      "median": 0.105,
+      "p75": 0.105,
+      "max": 0.115
+    },
+    {
+      "name": "clone+rec2",
+      "reps": 20,
+      "min": 0.095,
+      "p25": 0.1,
+      "median": 0.1,
+      "p75": 0.105,
+      "max": 0.11
+    },
+    {
+      "name": "clone+rec2+slot2",
+      "reps": 20,
+      "min": 0.1,
+      "p25": 0.1,
+      "median": 0.105,
+      "p75": 0.105,
+      "max": 0.115
+    },
+    {
+      "name": "clone+rec+weak",
+      "reps": 20,
+      "min": 0.1,
+      "p25": 0.11,
+      "median": 0.11,
+      "p75": 0.115,
+      "max": 0.12
+    },
+    {
+      "name": "clone+rec2+weak2",
+      "reps": 20,
+      "min": 0.11,
+      "p25": 0.115,
+      "median": 0.115,
+      "p75": 0.12,
+      "max": 0.125
+    },
+    {
+      "name": "read·slot",
+      "reps": 4000,
+      "min": 0.0013,
+      "p25": 0.0013,
+      "median": 0.0013,
+      "p75": 0.0013,
+      "max": 0.0014
+    },
+    {
+      "name": "read·weak",
+      "reps": 4000,
+      "min": 0.0009,
+      "p25": 0.0009,
+      "median": 0.001,
+      "p75": 0.001,
+      "max": 0.001
+    },
+    {
+      "name": "walk·slot",
+      "reps": 500,
+      "min": 0.0286,
+      "p25": 0.0292,
+      "median": 0.0296,
+      "p75": 0.03,
+      "max": 0.0318
+    },
+    {
+      "name": "walk·weak",
+      "reps": 500,
+      "min": 0.0264,
+      "p25": 0.0268,
+      "median": 0.027,
+      "p75": 0.0274,
+      "max": 0.0288
+    },
+    {
+      "name": "pool·slot·first",
+      "reps": 1,
+      "min": 0.5,
+      "p25": 0.7,
+      "median": 0.7,
+      "p75": 0.8,
+      "max": 1.1
+    },
+    {
+      "name": "pool·slot·repeat",
+      "reps": 1,
+      "min": 0.5,
+      "p25": 0.6,
+      "median": 0.7,
+      "p75": 0.8,
+      "max": 1.4
+    },
+    {
+      "name": "pool·weak·first",
+      "reps": 1,
+      "min": 9.5,
+      "p25": 9.8,
+      "median": 10.2,
+      "p75": 11.2,
+      "max": 13.6
+    },
+    {
+      "name": "pool·weak·repeat",
+      "reps": 1,
+      "min": 3.5,
+      "p25": 3.7,
+      "median": 4,
+      "p75": 4.4,
+      "max": 6.1
+    }
+  ],
+  "refusals": [
+    "child-mark: the ladder resolved nothing for [slot·first, slot·second, transition, weak·insert, weak·update] — each is under the three-unit bar of 0.0150 ms (grid 0.0050 ms). THE DIFFERENCE IS TOO SMALL FOR THE GRID, not the region too short (every ladder region above cleared three ticks). MORE ROUNDS CANNOT HELP: the median of quantised samples stays quantised. The only knob is the ladder's repetition factor, and it would have to go from 20 to at least 60 — and if the true difference is single-digit ns per mark, to 250 (at 5 ns) or 1250 (at 1 ns). At that factor the live set is that many apps' worth of clones standing at once and a collection lands inside the timed region, where one pause is three orders of magnitude larger than the signal. READ THE POOL SECTION INSTEAD: it is the same question with the clone taken out of the region."
+  ]
+}

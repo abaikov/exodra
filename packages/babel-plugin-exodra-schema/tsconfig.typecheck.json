@@ -1,0 +1,28 @@
+{
+  // THE TYPECHECK PROJECT, and it is a separate file for a reason that is not cosmetic.
+  //
+  // This package's `build` is `tsc && mv dist/index.js dist/index.cjs`. Putting
+  // `composite: true` (which implies `incremental`) into `tsconfig.json` would give that
+  // `tsc` a `.tsbuildinfo` saying the outputs are current — while the `mv` had already
+  // moved `dist/index.js` away. A build that skips its emit leaves the `mv` with nothing
+  // to move, and the package ships whatever `dist` happened to hold.
+  //
+  // So the build config is left exactly as it was and the workspace graph references THIS
+  // file, whose emit goes to `.tsbuild` (gitignored, published by nothing).
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/react-compat/names": ["../react-compat/.tsbuild/names.d.ts"]
+    }
+  },
+  "references": [{ "path": "../react-compat" }],
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules", "tests", "**/*.test.ts", "**/*.spec.ts"]
+}

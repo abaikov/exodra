@@ -26,24 +26,6 @@
         "violations": []
       },
       {
-        "id": "createExodraConfig",
-        "label": "createExodraConfig",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(_projectPath, _options): Promise<void>",
-            "full": "(_projectPath, _options): Promise<void>",
-            "parts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "width": 286,
-        "height": 69,
-        "violations": []
-      },
-      {
         "id": "CreateOptions",
         "label": "CreateOptions",
         "kind": "app",
@@ -87,8 +69,9 @@
           },
           {
             "visibility": "+",
-            "text": "jsx?: boolean;",
-            "full": "jsx?: boolean;",
+            "text": "git?: boolean;",
+            "full": "git?: boolean;",
+            "doc": "`false` only when `--no-git` was passed; commander leaves a declared `--no-x` at `true` otherwise.",
             "parts": []
           },
           {
@@ -177,15 +160,15 @@
         "layer": 0,
         "members": [
           {
-            "text": "(projectPath, projectName, useJsx): Promise<void>",
-            "full": "(projectPath, projectName, useJsx): Promise<void>",
+            "text": "(projectPath, projectName): Promise<void>",
+            "full": "(projectPath, projectName): Promise<void>",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "Scaffold a server-side-rendered app: @exodra/ssr renders the body + a state script, and the client hydrates.",
-        "width": 350,
+        "doc": "Scaffold a server-side-rendered app on the schema core.",
+        "width": 299,
         "height": 69,
         "violations": []
       },
@@ -196,14 +179,14 @@
         "layer": 0,
         "members": [
           {
-            "text": "(projectPath, projectName, useJsx): Promise<void>",
-            "full": "(projectPath, projectName, useJsx): Promise<void>",
+            "text": "(projectPath, projectName, options): Promise<void>",
+            "full": "(projectPath, projectName, options): Promise<void>",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "width": 350,
+        "width": 357,
         "height": 69,
         "violations": []
       },
@@ -250,15 +233,15 @@
         "layer": 0,
         "members": [
           {
-            "text": "(routeName): string",
-            "full": "(routeName): string",
+            "text": "(routeName, useTypeScript): string",
+            "full": "(routeName, useTypeScript): string",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
         "doc": "An API route module exporting GET/POST handlers.",
-        "width": 158,
+        "width": 254,
         "height": 69,
         "violations": []
       },
@@ -269,15 +252,15 @@
         "layer": 0,
         "members": [
           {
-            "text": "(componentName, className): string",
-            "full": "(componentName, className): string",
+            "text": "(componentName, className, useTypeScript): string",
+            "full": "(componentName, className, useTypeScript): string",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "A standalone component, usable as `h(Name, { static: { ...",
-        "width": 254,
+        "doc": "A standalone component, filled from a parent with `c.one(port, Name)` or repeated with `c.list(port, Name, count)`.",
+        "width": 350,
         "height": 69,
         "violations": []
       },
@@ -288,15 +271,15 @@
         "layer": 0,
         "members": [
           {
-            "text": "(pageName): string",
-            "full": "(pageName): string",
+            "text": "(pageName, useTypeScript): string",
+            "full": "(pageName, useTypeScript): string",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "A page: a zero-arg function returning a schema, assignable to a router `component` (TExoRouteRenderer).",
-        "width": 152,
+        "doc": "A page: a machine default-exported from its module, which is what the generated route table resolves and what the router will mount.",
+        "width": 248,
         "height": 69,
         "violations": []
       },
@@ -404,25 +387,6 @@
       }
     ],
     "edges": [
-      {
-        "id": "createExodraApp→createExodraConfig",
-        "from": "createExodraApp",
-        "to": "createExodraConfig",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
       {
         "id": "createExodraApp→CreateOptions",
         "from": "createExodraApp",
@@ -538,25 +502,6 @@
         "violations": []
       },
       {
-        "id": "createExodraConfig→CreateOptions",
-        "from": "createExodraConfig",
-        "to": "CreateOptions",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
         "id": "createPackageJson→CreateOptions",
         "from": "createPackageJson",
         "to": "CreateOptions",
@@ -631,181 +576,184 @@
           }
         ],
         "violations": []
+      },
+      {
+        "id": "createSsrPackageJson→CreateOptions",
+        "from": "createSsrPackageJson",
+        "to": "CreateOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
       }
     ],
     "rules": {}
   },
   "layout": {
-    "width": 1253,
-    "height": 1074,
+    "width": 1795,
+    "height": 996.3,
     "nodes": [
       {
         "id": "createExodraApp",
-        "x": 24,
-        "y": 228,
+        "x": 62,
+        "y": 150.3,
         "width": 274,
         "height": 69
       },
       {
-        "id": "createExodraConfig",
-        "x": 445.5,
-        "y": 316.5,
-        "width": 286,
-        "height": 69
-      },
-      {
         "id": "CreateOptions",
-        "x": 968.5,
-        "y": 421.3,
+        "x": 1536,
+        "y": 402,
         "width": 171,
         "height": 189
       },
       {
         "id": "createPackageJson",
-        "x": 362,
-        "y": 179.5,
+        "x": 438,
+        "y": 432.8,
         "width": 453,
         "height": 69
       },
       {
         "id": "createProjectFiles",
-        "x": 362,
-        "y": 82.5,
+        "x": 955,
+        "y": 276.5,
         "width": 453,
         "height": 69
       },
       {
         "id": "createSsrFiles",
-        "x": 879,
-        "y": 24,
-        "width": 350,
+        "x": 1472,
+        "y": 266.5,
+        "width": 299,
         "height": 69
       },
       {
         "id": "createSsrPackageJson",
-        "x": 879,
-        "y": 121,
-        "width": 350,
+        "x": 1003,
+        "y": 403.5,
+        "width": 357,
         "height": 69
       },
       {
         "id": "formatComponentName",
-        "x": 72,
-        "y": 325,
+        "x": 110,
+        "y": 247.3,
         "width": 178,
         "height": 69
       },
       {
         "id": "formatFileName",
-        "x": 72,
-        "y": 422,
+        "x": 110,
+        "y": 344.3,
         "width": 178,
         "height": 69
       },
       {
         "id": "generateApiFile",
-        "x": 82,
-        "y": 519,
-        "width": 158,
-        "height": 69
-      },
-      {
-        "id": "generateComponentFile",
-        "x": 34,
-        "y": 616,
+        "x": 72,
+        "y": 441.3,
         "width": 254,
         "height": 69
       },
       {
+        "id": "generateComponentFile",
+        "x": 24,
+        "y": 538.3,
+        "width": 350,
+        "height": 69
+      },
+      {
         "id": "generatePageFile",
-        "x": 85,
-        "y": 713,
-        "width": 152,
+        "x": 75,
+        "y": 635.3,
+        "width": 248,
         "height": 69
       },
       {
         "id": "initGit",
-        "x": 480.5,
-        "y": 413.5,
+        "x": 556.5,
+        "y": 218,
         "width": 216,
         "height": 69
       },
       {
         "id": "loadConfig",
-        "x": 91.5,
-        "y": 810,
+        "x": 129.5,
+        "y": 732.3,
         "width": 139,
         "height": 69
       },
       {
         "id": "program",
-        "x": 101,
-        "y": 907,
+        "x": 139,
+        "y": 829.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "setupEslint",
-        "x": 432.5,
-        "y": 510.5,
+        "x": 508.5,
+        "y": 121,
         "width": 312,
         "height": 69
       },
       {
         "id": "setupTailwind",
-        "x": 480.5,
-        "y": 607.5,
+        "x": 556.5,
+        "y": 24,
         "width": 216,
         "height": 69
       },
       {
         "id": "updateRouter",
-        "x": 30.5,
-        "y": 981,
+        "x": 68.5,
+        "y": 903.3,
         "width": 261,
         "height": 69
       }
     ],
     "edges": [
       {
-        "id": "createExodraApp→createExodraConfig",
-        "points": [
-          {
-            "x": 226.9,
-            "y": 297
-          },
-          {
-            "x": 330,
-            "y": 351
-          },
-          {
-            "x": 445.5,
-            "y": 351
-          }
-        ]
-      },
-      {
         "id": "createExodraApp→CreateOptions",
         "points": [
           {
-            "x": 174.3,
-            "y": 297
+            "x": 219.3,
+            "y": 219.3
           },
           {
-            "x": 330,
-            "y": 700.5
+            "x": 406,
+            "y": 535.8
           },
           {
-            "x": 588.5,
-            "y": 700.5
+            "x": 664.5,
+            "y": 535.8
           },
           {
-            "x": 847,
-            "y": 700.5
+            "x": 923,
+            "y": 535.8
           },
           {
-            "x": 968.5,
-            "y": 592.1
+            "x": 1181.5,
+            "y": 535.8
+          },
+          {
+            "x": 1440,
+            "y": 535.8
+          },
+          {
+            "x": 1536,
+            "y": 515
           }
         ]
       },
@@ -813,16 +761,16 @@
         "id": "createExodraApp→createPackageJson",
         "points": [
           {
-            "x": 281.2,
-            "y": 228
+            "x": 224.3,
+            "y": 219.3
           },
           {
-            "x": 330,
-            "y": 214
+            "x": 406,
+            "y": 467.3
           },
           {
-            "x": 362,
-            "y": 214
+            "x": 438,
+            "y": 467.3
           }
         ]
       },
@@ -830,16 +778,24 @@
         "id": "createExodraApp→createProjectFiles",
         "points": [
           {
-            "x": 201.1,
-            "y": 228
+            "x": 255.6,
+            "y": 219.3
           },
           {
-            "x": 330,
-            "y": 117
+            "x": 406,
+            "y": 311
           },
           {
-            "x": 362,
-            "y": 117
+            "x": 664.5,
+            "y": 311
+          },
+          {
+            "x": 923,
+            "y": 311
+          },
+          {
+            "x": 955,
+            "y": 311
           }
         ]
       },
@@ -847,16 +803,16 @@
         "id": "createExodraApp→initGit",
         "points": [
           {
-            "x": 192.4,
-            "y": 297
+            "x": 304.4,
+            "y": 219.3
           },
           {
-            "x": 330,
-            "y": 448
+            "x": 406,
+            "y": 252.5
           },
           {
-            "x": 480.5,
-            "y": 448
+            "x": 556.5,
+            "y": 252.5
           }
         ]
       },
@@ -864,16 +820,16 @@
         "id": "createExodraApp→setupEslint",
         "points": [
           {
-            "x": 181.6,
-            "y": 297
+            "x": 336,
+            "y": 165.4
           },
           {
-            "x": 330,
-            "y": 545
+            "x": 406,
+            "y": 155.5
           },
           {
-            "x": 432.5,
-            "y": 545
+            "x": 508.5,
+            "y": 155.5
           }
         ]
       },
@@ -881,33 +837,16 @@
         "id": "createExodraApp→setupTailwind",
         "points": [
           {
-            "x": 176.4,
-            "y": 297
+            "x": 255.6,
+            "y": 150.3
           },
           {
-            "x": 330,
-            "y": 642
+            "x": 406,
+            "y": 58.5
           },
           {
-            "x": 480.5,
-            "y": 642
-          }
-        ]
-      },
-      {
-        "id": "createExodraConfig→CreateOptions",
-        "points": [
-          {
-            "x": 731.5,
-            "y": 351
-          },
-          {
-            "x": 847,
-            "y": 351
-          },
-          {
-            "x": 968.5,
-            "y": 447.7
+            "x": 556.5,
+            "y": 58.5
           }
         ]
       },
@@ -915,16 +854,24 @@
         "id": "createPackageJson→CreateOptions",
         "points": [
           {
-            "x": 702.1,
-            "y": 248.5
+            "x": 891,
+            "y": 492.9
           },
           {
-            "x": 847,
-            "y": 292.5
+            "x": 923,
+            "y": 496.5
           },
           {
-            "x": 968.5,
-            "y": 423.5
+            "x": 1181.5,
+            "y": 496.5
+          },
+          {
+            "x": 1440,
+            "y": 496.5
+          },
+          {
+            "x": 1536,
+            "y": 496.5
           }
         ]
       },
@@ -932,16 +879,16 @@
         "id": "createPackageJson→createSsrPackageJson",
         "points": [
           {
-            "x": 740.9,
-            "y": 179.5
+            "x": 891,
+            "y": 441.6
           },
           {
-            "x": 847,
-            "y": 155.5
+            "x": 923,
+            "y": 438
           },
           {
-            "x": 879,
-            "y": 155.5
+            "x": 1003,
+            "y": 438
           }
         ]
       },
@@ -949,16 +896,16 @@
         "id": "createProjectFiles→CreateOptions",
         "points": [
           {
-            "x": 664.7,
-            "y": 151.5
+            "x": 1311.7,
+            "y": 345.5
           },
           {
-            "x": 847,
-            "y": 234
+            "x": 1440,
+            "y": 379.5
           },
           {
-            "x": 984.6,
-            "y": 421.3
+            "x": 1536,
+            "y": 441.4
           }
         ]
       },
@@ -966,16 +913,33 @@
         "id": "createProjectFiles→createSsrFiles",
         "points": [
           {
-            "x": 740.9,
-            "y": 82.5
+            "x": 1408,
+            "y": 302.2
           },
           {
-            "x": 847,
-            "y": 58.5
+            "x": 1440,
+            "y": 301
           },
           {
-            "x": 879,
-            "y": 58.5
+            "x": 1472,
+            "y": 301
+          }
+        ]
+      },
+      {
+        "id": "createSsrPackageJson→CreateOptions",
+        "points": [
+          {
+            "x": 1360,
+            "y": 438
+          },
+          {
+            "x": 1440,
+            "y": 438
+          },
+          {
+            "x": 1536,
+            "y": 468.9
           }
         ]
       }

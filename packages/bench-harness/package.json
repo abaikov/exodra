@@ -1,0 +1,31 @@
+{
+  "name": "@exodra/bench-harness",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The measurement instrument the package benches share: the interleaved runner, the clock-grain probe, the null-pair resolution report and the sink no accumulator can be optimised away through. A development instrument — never published, never built into dist, consumed as TypeScript source by the tsx-run bench scripts of the packages that measure themselves.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "typecheck": "tsc -b",
+    "clean": "rm -rf .tsbuild tsconfig.tsbuildinfo"
+  },
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/bench-harness"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "axis": "mount-floor",
+  "label": "published",
+  "quantum": 0.1,
+  "batch": 4,
+  "rows": [
+    {
+      "name": "CENSUS/html",
+      "reps": 80,
+      "min": 0.26,
+      "p25": 0.2637,
+      "median": 0.265,
+      "p75": 0.27,
+      "max": 0.2963,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/html·adj",
+      "reps": 80,
+      "min": 0.26,
+      "p25": 0.2637,
+      "median": 0.2663,
+      "p75": 0.2713,
+      "max": 0.295,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/html·range",
+      "reps": 80,
+      "min": 0.2588,
+      "p25": 0.2625,
+      "median": 0.2662,
+      "p75": 0.2713,
+      "max": 0.3113,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/html·tpl",
+      "reps": 80,
+      "min": 0.2538,
+      "p25": 0.2575,
+      "median": 0.26,
+      "p75": 0.2663,
+      "max": 0.2825,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/html·doc",
+      "reps": 80,
+      "min": 0.255,
+      "p25": 0.26,
+      "median": 0.2625,
+      "p75": 0.2675,
+      "max": 0.2938,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone",
+      "reps": 80,
+      "min": 0.2125,
+      "p25": 0.215,
+      "median": 0.2175,
+      "p75": 0.2225,
+      "max": 0.2363,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·twin",
+      "reps": 80,
+      "min": 0.2125,
+      "p25": 0.215,
+      "median": 0.2175,
+      "p75": 0.2212,
+      "max": 0.2375,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone+refs",
+      "reps": 80,
+      "min": 0.2125,
+      "p25": 0.215,
+      "median": 0.2175,
+      "p75": 0.22,
+      "max": 0.235,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·page",
+      "reps": 80,
+      "min": 0.2337,
+      "p25": 0.2363,
+      "median": 0.2387,
+      "p75": 0.245,
+      "max": 0.2587,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·frag",
+      "reps": 80,
+      "min": 0.355,
+      "p25": 0.36,
+      "median": 0.3613,
+      "p75": 0.3688,
+      "max": 0.3963,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·append",
+      "reps": 80,
+      "min": 0.2225,
+      "p25": 0.225,
+      "median": 0.2275,
+      "p75": 0.2313,
+      "max": 0.2725,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·shallow",
+      "reps": 80,
+      "min": 0.2425,
+      "p25": 0.245,
+      "median": 0.2475,
+      "p75": 0.2525,
+      "max": 0.2775,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/clone·distinct",
+      "reps": 80,
+      "min": 0.2175,
+      "p25": 0.22,
+      "median": 0.2225,
+      "p75": 0.2275,
+      "max": 0.2475,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/card-clone",
+      "reps": 80,
+      "min": 0.2,
+      "p25": 0.2025,
+      "median": 0.2038,
+      "p75": 0.2075,
+      "max": 0.2213,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/app-clone",
+      "reps": 80,
+      "min": 0.1762,
+      "p25": 0.1788,
+      "median": 0.18,
+      "p75": 0.1838,
+      "max": 0.2025,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/app-clone·twin",
+      "reps": 80,
+      "min": 0.1762,
+      "p25": 0.1788,
+      "median": 0.1812,
+      "p75": 0.1838,
+      "max": 0.2288,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/app-clone·fill",
+      "reps": 80,
+      "min": 0.1975,
+      "p25": 0.2,
+      "median": 0.2012,
+      "p75": 0.205,
+      "max": 0.2262,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/app-clone·qsa",
+      "reps": 80,
+      "min": 0.2075,
+      "p25": 0.21,
+      "median": 0.2125,
+      "p75": 0.215,
+      "max": 0.2288,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/create",
+      "reps": 80,
+      "min": 0.2537,
+      "p25": 0.2575,
+      "median": 0.2588,
+      "p75": 0.265,
+      "max": 0.2975,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/create+refs",
+      "reps": 80,
+      "min": 0.255,
+      "p25": 0.2588,
+      "median": 0.2613,
+      "p75": 0.2662,
+      "max": 0.28,
+      "section": "CENSUS"
+    },
+    {
+      "name": "CENSUS/exodra",
+      "reps": 80,
+      "min": 0.2813,
+      "p25": 0.2887,
+      "median": 0.2938,
+      "p75": 0.2988,
+      "max": 0.3125,
+      "section": "CENSUS"
+    }
+  ]
+}

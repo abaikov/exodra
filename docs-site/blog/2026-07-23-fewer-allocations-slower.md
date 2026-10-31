@@ -7,6 +7,24 @@ tags: [performance, benchmarks, design-decisions]
 
 # When "Fewer Allocations" Costs You 11%
 
+:::note This post measures a renderer that has been deleted
+
+The iterative DOM **build walk** below — the per-node traversal frame, the context
+object, the visitor wrapper — belonged to the `ExoNodeDom` three-props renderer,
+which no longer exists (`packages/core/src/index.ts:10-12`,
+`packages/dom/src/index.ts:9-10`). There is no per-render tree walk to allocate for
+any more: a schema is compiled **once per process** into a prototype element, a walk
+plan and a setter per port, and a row is a `cloneNode` plus one indirect call per
+port (`packages/dom/src/index.ts:5-7`).
+
+**The lesson is the part that survives**, and it is why the post is kept: V8 sizes an
+object's in-object property store from the shape it is *constructed* with, so
+building an object whole beats growing it afterwards — and "fewer allocations" is a
+hypothesis about performance, not a finding, until it is measured.
+
+It is kept because a post is a record of what was believed when it was written.
+:::
+
 I refactored Exodra's DOM build walk to allocate **less** per node. It came out **11% slower**. Here is exactly why — with the measurements that caught it and the one-line change that fixed it.
 
 {/* truncate */}

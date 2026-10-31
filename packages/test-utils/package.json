@@ -1,0 +1,33 @@
+{
+  "name": "@exodra/test-utils",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Helpers shared by the Exodra test suites. Never published, never built into dist — consumers reach src through the root vitest alias.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "typecheck": "tsc -b",
+    "clean": "rm -rf .tsbuild tsconfig.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@exodra/core": "^0.3.0",
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.16"
+  },
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "homepage": "https://exodra.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abaikov/exodra.git",
+    "directory": "packages/test-utils"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
+  }
+}

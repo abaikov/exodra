@@ -15,38 +15,61 @@ npm install @exodra/core @exodra/dom react
 ```
 
 `@exodra/core`, `@exodra/dom` and `react` are **peer dependencies**, and nothing
-is bundled into this package. That is not packaging hygiene for its own sake: an
-Exodra tree keeps per-node bookkeeping on the schema objects themselves and
-refuses to render one schema in two live positions, so a second copy of
-`@exodra/dom` in the tree would break things in ways that are very hard to read.
-One copy, shared with every other `@exodra/*` package you use.
+is bundled into this package. One copy of the runtime, shared with every other
+`@exodra/*` package you use.
 
 ## Usage
 
 ### The component
 
-```tsx
+Everything here is a **React** file: React JSX, React props, React's `jsx`
+setting. Exodra's schema starts below `ExoMount`, inside the component you hand
+it. (The `@jsxImportSource` pragma below is shown once and is only needed in a
+project whose `tsconfig` points `jsxImportSource` at `@exodra/jsx/schema`; it tells
+TypeScript that this particular file is the React side of the boundary. A plain
+React app needs nothing.)
+
+```tsx setup
+/** @jsxImportSource react */
 import { ExoMount } from '@exodra/react-mount';
-import { h } from '@exodra/core';
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
+
+// Built ONCE, at module load — this is what a component is in this core. There are no props
+// anywhere: an initial state is `(exonode, index) => …`, and a mounted root is handed `0` as its
+// index. The EXONODE is typed `TExoMachineNode` — the surface all three backends share — rather
+// than `@exodra/dom`'s `TExoDomNode`, which would tie the component to the browser for no
+// reason.
+const CHART_SCHEMA = createExoSchema(b => {
+  let label!: TExoTextPort;
+  b.el('div', { class: 'chart' }, div => { label = div.textPort(); });
+  return { label };
+});
+const mChart = createExoMachineBuilder<TExoMachineNode>(CHART_SCHEMA);
+mChart.createInitialState(c => { c.text(CHART_SCHEMA.ports.label, 'rendered by Exodra'); });
+const CHART = mChart.done();
 
 function Panel() {
   return (
     <section className="panel">
       <h2>Rendered by React</h2>
-      <ExoMount
-        className="chart"
-        schema={() => h('div', { static: { textContent: 'rendered by Exodra' } })}
-      />
+      <ExoMount className="chart" component={CHART} />
     </section>
   );
 }
 ```
 
-`schema` takes a **factory**. It runs once per mount, so each mount gets a fresh
-tree — which matters for React StrictMode (it mounts every component twice in
-development) and for client-side navigation. A schema object works too; building
-one inline in `render` does not, because it would allocate a tree on every React
-render for nothing.
+`component` takes the component value itself. A **function** returning one works
+too, and is how you *choose* a component at mount time:
+
+```tsx
+declare const mode: 'chart' | 'table';
+declare const TABLE: typeof CHART;
+
+<ExoMount component={() => (mode === 'chart' ? CHART : TABLE)} deps={[mode]} />
+```
+
+The function runs once per mount, never per React render.
 
 ### The hook
 
@@ -56,93 +79,177 @@ container to be your own element:
 ```tsx
 import { useExoMount } from '@exodra/react-mount';
 
-function Chart({ data }: { data: Series }) {
-  const ref = useExoMount<HTMLElement>(() => buildChart(data), { deps: [data] });
+function Chart({ seriesId }: { seriesId: string }) {
+  const { ref } = useExoMount<HTMLElement>(CHART, { deps: [seriesId] });
   return <figure ref={ref} className="chart" />;
 }
 ```
 
-The returned ref goes on the element Exodra should fill.
+`ref` goes on the element Exodra should fill. `node` holds the island's exonode
+once it is mounted, so a React handler can fire a transition at it.
 
-## Reactivity crosses the boundary, re-renders do not
+### Params
 
-An Exodra bindable updates the DOM directly. React is not involved, does not
-re-render, and does not need to know:
+`params` reach the machine's `wire`. When they change — compared key by key — the
+wire re-runs on the same instance instead of re-mounting:
 
 ```tsx
-const label = bindable('idle');
+import type { TExoMachine } from '@exodra/core';
+import type { TExoDomNode } from '@exodra/dom';
 
-<ExoMount schema={() => h('span', { bindables: { textContent: label } })} />;
+declare const GREETING: TExoMachine<TExoDomNode, unknown, { name: string }>;
+declare const name: string;
 
-label.setValue('running'); // the span updates; React never re-rendered
+<ExoMount component={GREETING} params={{ name }} />
+```
+
+A machine with no `wire` is re-mounted instead; a wire that opens children
+refuses a re-run with `EXO0103`.
+
+### More than one instance
+
+There is no `count`, and there never can be one: `backend.buildRoot` builds a single
+instance and hands its initial state `0` as its index. Rows that vary are a
+**list**, which is a property of the component rather than of the mount — a
+children port filled with `c.list(port, ROW, count)` for a fixed number of them, or
+a child list opened in `createInitialState` and driven by
+`reconcileExoOrder(rows, shown, items, items, (item, i) => c.build(ROW, i, { item }))`
+from `@exodra/list-reconcile` in a transition, for a list that follows a source. Each
+row gets its index and, as the third argument, the params its `wire` reads.
+
+So mount one component that owns the list:
+
+```tsx
+declare const BOARD: typeof CHART;
+// BOARD's initial state opens c.childList(P.rows); an effect runs a transition that does
+//   c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => c.build(ROW, i))
+<ExoMount component={BOARD} />
+```
+
+That is also what a benchmark is comparing when another framework "renders 1000
+rows": the participant on both sides is a list, and the mount is the one root
+above it.
+
+## Updates cross the boundary, re-renders do not
+
+A machine that follows a source updates the DOM directly. React is not involved,
+does not re-render, and does not need to know:
+
+```tsx
+declare const status: { get(): string; subscribe(listener: () => void): () => void };
+// in the machine:
+//   const show = m.transition((c) => c.text(P.text, status.get()));
+//   m.effect((c) => { show(c); return status.subscribe(() => show(c)); });
+// — an effect that draws and subscribes; there is no `c.bind`.
+// When `status` changes, the text updates; React never re-rendered.
 ```
 
 Conversely, a parent React re-render does **not** rebuild the Exodra subtree.
 Passing a fresh arrow function on every render — the natural way to write it — is
 safe: re-mounting happens only when `deps` change.
 
-```tsx
-// Re-mounts when `chartId` changes, and only then.
-<ExoMount schema={() => buildChart(chartId)} deps={[chartId]} />
-```
-
 `deps` behaves like a `useEffect` dependency array, including the rule that it
 must keep a stable length between renders. Omit it to mount once.
 
 ## Server rendering and static sites
 
-Pass `html` — the output of `renderToString` from `@exodra/string` — and the
-markup ships inside the server-rendered page. On the client, Exodra **hydrates**
-that markup instead of rebuilding it: the first paint is the finished UI, and
-JavaScript only attaches behaviour.
+Pass `html` — the output of `@exodra/string`'s backend, for the **same
+component** — and the markup ships inside the server-rendered page. On the
+client, Exodra **hydrates** that markup instead of rebuilding it: the first paint
+is the finished UI, and JavaScript only attaches behaviour.
 
 ```tsx
 // build step (Node)
-import { renderToString } from '@exodra/string';
-const html = renderToString(buildChart(data));
+import { ExoStrBackend } from '@exodra/string';
+const html = new ExoStrBackend().render(CHART);
 
 // page
-<ExoMount schema={() => buildChart(data)} html={html} />
+<ExoMount component={CHART} html={html} />
 ```
 
 This is the shape a static site generator wants — Next.js, Astro, Docusaurus —
 where the page is pre-rendered React and the island must arrive as HTML.
 
-Two details are handled for you:
+Three details are handled for you:
 
 - The container is marked `suppressHydrationWarning`. React renders the markup
   verbatim and stops comparing it, because everything below the container belongs
   to Exodra.
-- When there is nothing to hydrate — a client-side navigation, or StrictMode's
-  second pass — it falls back to a normal mount instead of failing.
+- `hydrate` is handed **the container**, not the server's root element: it adopts
+  the container's first *element* child itself — by element and not by node, so a
+  formatting newline does not shift what is adopted.
+- When there is nothing to adopt — a client-side navigation, or StrictMode's
+  second pass, whose cleanup emptied the container — it falls back to a normal
+  render instead of failing.
+- **A reconciled children port adopts the rows it was served**, as long as its
+  effect draws synchronously when it starts: hydration hands the served rows to
+  `build` in document order, sweeps the surplus and builds the rest.
+- **Hydration is a plugin.** A backend composed without `withExoHydration` has no
+  `hydrate` at all, so an island handed such a backend renders rather than
+  adopting — which is what keeps the adopters out of a client-only bundle. That is
+  why `hydrate` is optional in the `backend` type. Left out entirely, the island
+  runs on this package's own module-level backend, which composes hydration
+  because an island over server markup is what this package is for.
+
+**Following a source is not a plugin.** An island's component is a
+`TExoDomMachine`, and a machine that follows a source does it in an effect that
+writes through the `attr` / `text` / `html` doors a bare `new ExoDomBackend()`
+already answers. So the `backend` type demands nothing for it; `hydrate` is the one member it treats as
+optional, because hydration genuinely is a pack.
+
+Everything replaceable about the renderer inside the container is decided by that
+one object: how events attach, how a value is written, what record an instance is.
+
+If you use a non-default event strategy (delegation), pass the **same backend**
+here that the page was rendered from, via `backend`. The event pack is no longer a
+separate argument that could disagree — it is a field on the backend, so handing
+over the same object is the whole of getting it right. Attaching listeners is the
+content of hydration, not a detail of it.
 
 If you are rendering the whole page with Exodra rather than embedding into React,
-you do not need this package: use `hydrate` from `@exodra/dom` directly.
+you do not need this package: build an `ExoDomBackend` from `@exodra/dom` and call
+`render` / `hydrate` on it directly.
 
 ## Lifecycle
 
-The Exodra tree is disposed when the React component unmounts: subscriptions are
-released, `onExoUnmount` hooks run, and the DOM is detached. Nothing is left
-following a bindable after React has dropped the component.
+The disposer that `backend.render` / `backend.hydrate` hands back **is** the
+effect's cleanup — that is the whole lifecycle story here, and why this package is
+as small as it is. On unmount, and on a `deps` change, subscriptions are released
+and the container is emptied, so a re-mount replaces the subtree instead of
+appending a second copy beside it.
+
+Emptying the container is this package's doing, not `render`'s: that entry
+point renders into somebody else's parent and has no claim on its contents. Here
+the contract is that React owns the container and Exodra owns everything inside
+it, so **do not put React children inside the mount element** — they will be
+removed on the first re-mount.
 
 ## API
 
 ### `ExoMount(props)`
 
-| prop        | type                                | description                                                        |
-| ----------- | ----------------------------------- | ------------------------------------------------------------------ |
-| `schema`    | `TExoSchema \| () => TExoSchema`    | The tree to mount. A factory is the normal choice.                  |
-| `html`      | `string`                            | Server-rendered markup to hydrate. Implies `hydrate`.               |
-| `hydrate`   | `boolean`                           | Adopt existing markup in the container instead of building.         |
-| `deps`      | `readonly unknown[]`                | Re-mount when these change. Defaults to mounting once.              |
-| `className` | `string`                            | Passed to the container element.                                    |
-| `id`        | `string`                            | Passed to the container element.                                    |
-| `style`     | `Record<string, string \| number>`  | Passed to the container element.                                    |
+| prop        | type                                       | description                                                  |
+| ----------- | ------------------------------------------ | ------------------------------------------------------------ |
+| `component` | `TExoMountSource<TParams>`                 | The component to render, or a function returning one.         |
+| `params`    | `TParams`                                  | Handed to the machine's `wire`; a change re-runs it on the same instance. |
+| `html`      | `string`                                   | Server-rendered markup to hydrate. Implies `hydrate`.         |
+| `hydrate`   | `boolean`                                  | Adopt existing markup in the container instead of building.   |
+| `backend`   | `TExoDomBackend` (optionally with `adoptRoot`) | The composed backend this island renders from. Build it once, at module level — it is the schema cache key and is compared by pointer. Defaults to this package's own backend, which composes `withExoHydration`. |
+| `deps`      | `readonly unknown[]`                       | Re-mount when these change. Defaults to mounting once.        |
+| `className` | `string`                                   | Passed to the container element.                              |
+| `id`        | `string`                                   | Passed to the container element.                              |
+| `style`     | `Record<string, string \| number>`         | Passed to the container element.                              |
+
+There is no `count` and no `events`. `render` mounts one instance, and the event
+strategy is a field on the `backend` rather than a parameter beside it — which is
+what makes a hydrating island unable to disagree with the render about how
+listeners attach.
 
 ### `useExoMount(source, options?)`
 
-Returns a ref to attach to the container element. `options` accepts `hydrate` and
-`deps` with the same meaning as above.
+Returns `{ ref, node }`: `ref` for the container element, `node` for the mounted
+exonode. `options` accepts `hydrate`, `deps`, `params` and `backend` with the same
+meaning as above.
 
 ## License
 

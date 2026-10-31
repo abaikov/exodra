@@ -1,0 +1,22 @@
+{
+  "name": "@exodra/term",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A FOURTH rendering backend for Exodra, written only against @exodra/core's exported connector surface: a live, retained-mode PLAIN-TEXT tree. It exists as the proof that a backend can be supplied from outside the three shipped ones, and as the record of what that costs. Private on purpose — nothing here is a product.",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -b",
+    "clean": "rm -rf .tsbuild tsconfig.tsbuildinfo"
+  },
+  "author": "Andrei Baikov",
+  "license": "MIT",
+  "peerDependencies": {
+    "@exodra/context": "^0.3.0",
+    "@exodra/core": "^0.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.16"
+  }
+}

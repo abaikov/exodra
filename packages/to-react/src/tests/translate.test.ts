@@ -1,0 +1,136 @@
+// @vitest-environment jsdom
+import { afterEach, describe, expect, it } from 'vitest';
+import * as babel from '@babel/core';
+import syntaxJsx from '@babel/plugin-syntax-jsx';
+import presetTypescript from '@babel/preset-typescript';
+import transformCommonjs from '@babel/plugin-transform-modules-commonjs';
+import { transform } from 'sucrase';
+import * as React from 'react';
+import * as ReactJsxRuntime from 'react/jsx-runtime';
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
+import * as exodraCore from '@exodra/core';
+import * as exodraListReconcile from '@exodra/list-reconcile';
+import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import schemaPlugin from '../../../babel-plugin-exodra-schema/src/index';
+import { translateExoToReact } from '../translateExoToReact';
+import { COUNTER_SOURCE, LIST_SOURCE } from './fixtures';
+
+type TModule = Record<string, unknown>;
+
+(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+
+function run(code: string, modules: Record<string, TModule>): TModule {
+    const exports: TModule = {};
+    const require = (name: string): TModule => {
+        const found = modules[name];
+        if (found === undefined) throw new Error(`no module ${name}`);
+        return found;
+    };
+    new Function('require', 'exports', code)(require, exports);
+    return exports;
+}
+
+function runExodra(source: string): TModule {
+    const out = babel.transformSync(source, {
+        filename: 'input.tsx',
+        babelrc: false,
+        configFile: false,
+        plugins: [
+            [syntaxJsx, { throwIfNamespace: false }],
+            [schemaPlugin as unknown as babel.PluginItem, {}],
+            transformCommonjs,
+        ],
+        presets: [[presetTypescript, { isTSX: true, allExtensions: true }]],
+    });
+    return run(out?.code ?? '', {
+        '@exodra/core': exodraCore,
+        '@exodra/list-reconcile': exodraListReconcile,
+    });
+}
+
+function compileReact(code: string): string {
+    return transform(code, {
+        transforms: ['typescript', 'jsx', 'imports'],
+        jsxRuntime: 'automatic',
+        production: true,
+    }).code;
+}
+
+function runReact(source: string): TModule {
+    const translation = translateExoToReact(source);
+    expect(translation.unsupported).toEqual([]);
+    const modules: Record<string, TModule> = { react: React, 'react/jsx-runtime': ReactJsxRuntime };
+    if (translation.runtime !== null) {
+        modules['./exo-react-runtime'] = run(compileReact(translation.runtime), modules);
+    }
+    return run(compileReact(translation.code), modules);
+}
+
+const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const cleanups: (() => void)[] = [];
+
+afterEach(() => {
+    for (const cleanup of cleanups.splice(0)) cleanup();
+});
+
+function mountBoth(source: string, name: string): { exodra: HTMLElement; react: HTMLElement } {
+    const exodra = document.createElement('div');
+    const react = document.createElement('div');
+    document.body.append(exodra, react);
+    const dispose = backend.render(runExodra(source)[name] as never, exodra);
+    const root = createRoot(react);
+    act(() => root.render(React.createElement(runReact(source)[name] as React.FC)));
+    cleanups.push(() => {
+        dispose();
+        act(() => root.unmount());
+        exodra.remove();
+        react.remove();
+    });
+    return { exodra, react };
+}
+
+function clickBoth(sides: { exodra: HTMLElement; react: HTMLElement }, selector: string): void {
+    (sides.exodra.querySelector(selector) as HTMLElement).click();
+    act(() => (sides.react.querySelector(selector) as HTMLElement).click());
+}
+
+describe('translateExoToReact', () => {
+    it('a counter renders the same DOM and reacts to clicks the same way', () => {
+        const sides = mountBoth(COUNTER_SOURCE, 'COUNTER');
+        expect(sides.react.innerHTML).toBe(sides.exodra.innerHTML);
+        for (let i = 0; i < 4; i++) {
+            clickBoth(sides, 'button');
+            expect(sides.react.innerHTML).toBe(sides.exodra.innerHTML);
+        }
+        expect(sides.react.querySelector('b')?.textContent).toBe('4');
+        expect(sides.react.querySelector('.counter')?.getAttribute('data-tone')).toBe('loud');
+    });
+
+    it('a reconciled list with built rows and a row re-wire matches after every step', () => {
+        const sides = mountBoth(LIST_SOURCE, 'LIST');
+        expect(sides.react.innerHTML).toBe(sides.exodra.innerHTML);
+        for (const selector of ['.add', '.add', '.reverse', '.finish', '.reverse', '.add']) {
+            clickBoth(sides, selector);
+            expect(sides.react.innerHTML).toBe(sides.exodra.innerHTML);
+        }
+        expect(sides.react.querySelectorAll('li')).toHaveLength(5);
+    });
+
+    it('keeps a row element across a reorder, like the Exodra list does', () => {
+        const sides = mountBoth(LIST_SOURCE, 'LIST');
+        const first = sides.react.querySelector('li');
+        clickBoth(sides, '.reverse');
+        expect(sides.react.querySelectorAll('li')[1]).toBe(first);
+    });
+
+    it('names what it cannot translate instead of emitting wrong code', () => {
+        const source = COUNTER_SOURCE.replace(
+            'export const COUNTER = m.done();',
+            'm.transitionOverrides({});\nexport const COUNTER = m.done();'
+        );
+        expect(translateExoToReact(source).unsupported).toEqual([
+            'm.transitionOverrides(…) has no React form',
+        ]);
+    });
+});

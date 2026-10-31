@@ -1,0 +1,204 @@
+{
+  "axis": "schema-build",
+  "label": "published",
+  "quantum": 0.1,
+  "batch": 1,
+  "rows": [
+    {
+      "name": "APP-US/literal",
+      "reps": 2000,
+      "min": 0.1,
+      "p25": 0.15,
+      "median": 0.15,
+      "p75": 0.15,
+      "max": 0.2,
+      "perElement": 18.8,
+      "section": "APP-US"
+    },
+    {
+      "name": "APP-US/literal·twin",
+      "reps": 2000,
+      "min": 0.1,
+      "p25": 0.15,
+      "median": 0.15,
+      "p75": 0.15,
+      "max": 0.2,
+      "perElement": 18.8,
+      "section": "APP-US"
+    },
+    {
+      "name": "APP-US/+number",
+      "reps": 2000,
+      "min": 0.2,
+      "p25": 0.25,
+      "median": 0.25,
+      "p75": 0.3,
+      "max": 0.35,
+      "perElement": 31.3,
+      "section": "APP-US"
+    },
+    {
+      "name": "APP-US/+builder",
+      "reps": 2000,
+      "min": 1.1,
+      "p25": 1.35,
+      "median": 1.4,
+      "p75": 1.5,
+      "max": 1.7,
+      "perElement": 175,
+      "section": "APP-US"
+    },
+    {
+      "name": "APP-US/+builder·twin",
+      "reps": 2000,
+      "min": 1.25,
+      "p25": 1.45,
+      "median": 1.5,
+      "p75": 1.6,
+      "max": 1.8,
+      "perElement": 187.5,
+      "section": "APP-US"
+    },
+    {
+      "name": "APP-US/+checks",
+      "reps": 2000,
+      "min": 1.75,
+      "p25": 2.05,
+      "median": 2.2,
+      "p75": 2.3,
+      "max": 2.5,
+      "perElement": 275,
+      "section": "APP-US"
+    },
+    {
+      "name": "APP-US/exoSchema",
+      "reps": 2000,
+      "min": 1.6,
+      "p25": 1.95,
+      "median": 2.05,
+      "p75": 2.15,
+      "max": 2.35,
+      "perElement": 256.3,
+      "section": "APP-US"
+    },
+    {
+      "name": "APP-US/checks·parts",
+      "reps": 2000,
+      "min": 0.5,
+      "p25": 0.55,
+      "median": 0.55,
+      "p75": 0.6,
+      "max": 0.65,
+      "perElement": 68.8,
+      "section": "APP-US"
+    },
+    {
+      "name": "PAGE-US/literal",
+      "reps": 200,
+      "min": 0,
+      "p25": 0.5,
+      "median": 1,
+      "p75": 1,
+      "max": 1.5,
+      "perElement": 15.4,
+      "section": "PAGE-US"
+    },
+    {
+      "name": "PAGE-US/+number",
+      "reps": 200,
+      "min": 1,
+      "p25": 1.5,
+      "median": 1.5,
+      "p75": 1.5,
+      "max": 2,
+      "perElement": 23.1,
+      "section": "PAGE-US"
+    },
+    {
+      "name": "PAGE-US/+builder",
+      "reps": 200,
+      "min": 8.5,
+      "p25": 11,
+      "median": 11.5,
+      "p75": 13,
+      "max": 15,
+      "perElement": 176.9,
+      "section": "PAGE-US"
+    },
+    {
+      "name": "PAGE-US/+checks",
+      "reps": 200,
+      "min": 14,
+      "p25": 19,
+      "median": 20.5,
+      "p75": 21.5,
+      "max": 25,
+      "perElement": 315.4,
+      "section": "PAGE-US"
+    },
+    {
+      "name": "PAGE-US/exoSchema",
+      "reps": 200,
+      "min": 14.5,
+      "p25": 18,
+      "median": 19,
+      "p75": 21,
+      "max": 24.5,
+      "perElement": 292.3,
+      "section": "PAGE-US"
+    },
+    {
+      "name": "SPEC-US/spec·warm",
+      "reps": 2000,
+      "min": 0.45,
+      "p25": 0.65,
+      "median": 0.75,
+      "p75": 0.8,
+      "max": 0.9,
+      "perElement": 750,
+      "section": "SPEC-US"
+    },
+    {
+      "name": "SPEC-US/spec·cold",
+      "reps": 2000,
+      "min": 3.45,
+      "p25": 3.85,
+      "median": 3.95,
+      "p75": 4.1,
+      "max": 4.5,
+      "perElement": 3950,
+      "section": "SPEC-US"
+    }
+  ],
+  "nulls": [
+    {
+      "section": "NULLS-US",
+      "unit": "µs",
+      "resolution": 0.1,
+      "pairs": [
+        {
+          "name": "literal",
+          "bias": 0,
+          "noise": 0,
+          "noiseP75": 0.05,
+          "worst": 0.1,
+          "what": "|literal − literal·twin|, true Δ = 0"
+        },
+        {
+          "name": "builder",
+          "bias": 0.1,
+          "noise": 0.1,
+          "noiseP75": 0.2,
+          "worst": 0.4,
+          "what": "|+builder − +builder·twin|, true Δ = 0"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    "schema-build PAGE-US/literal: its timed region landed at 0.200 ms, under 3 ticks of the 0.100 ms clock this run observed — the digits in that row are quantisation. Rerun with a larger batch: node scripts/run-one-axis.js schema-build 100 4",
+    "schema-build APP-US: the ladder does not nest beyond this run's resolution floor (0.100000 us). One or more steps are marked above. The steps that are under the floor are NOT measurements of a mechanism, they are the instrument, and none of them may be quoted. Rerun with a larger batch: node scripts/run-one-axis.js schema-build 100 4",
+    "schema-build PAGE-US: the ladder does not nest beyond this run's resolution floor (0.100000 us). One or more steps are marked above. The steps that are under the floor are NOT measurements of a mechanism, they are the instrument, and none of them may be quoted. Rerun with a larger batch: node scripts/run-one-axis.js schema-build 100 4",
+    "schema-build APP-US: the two estimates of the refusal cost disagree by 0.2500 us, more than this run's resolution floor. The axis does NOT pick one. Either the transcribed check bodies in `checks·parts` are not faithful to the six unexported checks they stand in for, or the ladder difference carries something besides the checks — the module boundary between this file and @exodra/core is the candidate, since rung 3 is local and rung 4 is imported. Read both before quoting either."
+  ]
+}

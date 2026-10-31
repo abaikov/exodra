@@ -1,0 +1,7413 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "assertExoConformanceRule",
+        "label": "assertExoConformanceRule",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(rule): void",
+            "full": "(rule): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Four assertions in the order below, because each makes the next meaningful.",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "cannotExpress",
+        "label": "cannotExpress",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(capabilities): TExoConformanceExpe…",
+            "full": "(capabilities): TExoConformanceExpectation",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(capabilities): "
+              },
+              {
+                "text": "TExoConformanceExpectation",
+                "link": "TExoConformanceExpectation"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "No such concept, for want of the named capabilities.",
+        "width": 267,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "canonicalExoPartition",
+        "label": "canonicalExoPartition",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(partition): readonly (readonly …",
+            "full": "(partition): readonly (readonly string[])[]",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 248,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "capabilitiesNeeded",
+        "label": "capabilitiesNeeded",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(rule): readonly string[]",
+            "full": "(rule): readonly string[]",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A RULE CANNOT NAME A CAPABILITY IT NEEDS.",
+        "width": 197,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "describeExoConformanceRun",
+        "label": "describeExoConformanceRun",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(verdicts): string",
+            "full": "(verdicts): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Every verdict, right ones included: a divergence is only readable next to what it diverges from.",
+        "width": 184,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "describeExoPartition",
+        "label": "describeExoPartition",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(partition): string",
+            "full": "(partition): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 158,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "describeProbe",
+        "label": "describeProbe",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(value): string",
+            "full": "(value): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Primitives print their value, anything else only its type: a node or a `DOMTokenList` has per-instance identity and would make every backend diverge for a reason that is not the rule's.",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "describeVerdict",
+        "label": "describeVerdict",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(verdict): string",
+            "full": "(verdict): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 146,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ELEMENT_NODE",
+        "label": "ELEMENT_NODE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_CAP_ELEMENT",
+        "label": "EXO_CAP_ELEMENT",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "What a backend HAS, as opposed to what it DOES.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_CAP_LIVE_TREE",
+        "label": "EXO_CAP_LIVE_TREE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "An event can be delivered to the artefact and a handler will run — a real `Event` on the DOM backends, `exoTermFire` over recorded listeners on `packages/term`.",
+        "width": 133,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_CAP_TEXT_NODE",
+        "label": "EXO_CAP_TEXT_NODE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Text lives in a NODE a third party can replace.",
+        "width": 133,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_CAP_UPDATE",
+        "label": "EXO_CAP_UPDATE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A source can change after the render and the artefact follows.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES",
+        "label": "EXO_CONFORMANCE_CAPABILITIES",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Every capability, for the completeness check and for readable failure messages.",
+        "width": 203,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_DOM",
+        "label": "EXO_DOM",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The backend IS the schema cache key and is compared by POINTER, so `compile` and `render` must hold the SAME object or they work on two different compiled schemas.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_EXPECT_UNDECLARED",
+        "label": "EXO_EXPECT_UNDECLARED",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "An expectation nobody has recorded yet.",
+        "width": 158,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_HYDRATE",
+        "label": "EXO_HYDRATE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "label": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "No such concept, so the rule never ran.",
+        "width": 190,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_OUTCOME_REFUSED",
+        "label": "EXO_OUTCOME_REFUSED",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The backend threw.",
+        "width": 146,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_OUTCOME_RENDERED",
+        "label": "EXO_OUTCOME_RENDERED",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The comparable artefact.",
+        "width": 152,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_STAGE_SCHEMA_COMPILE",
+        "label": "EXO_STAGE_SCHEMA_COMPILE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Once per schema per backend, before any instance exists.",
+        "width": 178,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_STAGE_UPDATE",
+        "label": "EXO_STAGE_UPDATE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A source changing after the render, and whatever the backend does about it.",
+        "width": 126,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_STAGE_WIRE",
+        "label": "EXO_STAGE_WIRE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The wiring function running against the connector — `set`, `bind`, `on`, `list`, `bindList`.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_STR",
+        "label": "EXO_STR",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Built once each: a schema is cached per (declaration, backend), compared by POINTER.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exoConformanceClassOf",
+        "label": "exoConformanceClassOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(verdict): string | null",
+            "full": "(verdict): string | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Two backends AGREE when this gives them the same string, so everything the suite calls \"the same behaviour\" is decided here and nowhere else.",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoConformancePartition",
+        "label": "exoConformancePartition",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(verdicts, skip): readonly (readonly …",
+            "full": "(verdicts, skip): readonly (readonly string[])[]",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The backends THAT RENDERED, grouped by artefact.",
+        "width": 280,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoConformanceTreeNames",
+        "label": "exoConformanceTreeNames",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The registry's keys, sorted — what a rule's `expect` is checked against.",
+        "width": 171,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exoConformanceTrees",
+        "label": "exoConformanceTrees",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Every rule's `expect` must name EXACTLY these keys, checked before anything renders, so adding a backend breaks the whole suite at once by name: no default, no fallback, no skip, no snapshot to regenerate, and the only way to green is to s…",
+        "width": 146,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter",
+        "label": "exoDomAdapter",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exoEntersForeignContent",
+        "label": "exoEntersForeignContent",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema): boolean",
+            "full": "(schema): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Does this schema put anything in foreign content — the only place an HTML page has namespaces.",
+        "width": 171,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ExoForeignProbe",
+        "label": "ExoForeignProbe",
+        "kind": "runtime",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "found: boolean",
+            "full": "found: boolean",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "supply: readonly unknown[]",
+            "full": "supply: readonly unknown[]",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "next: number",
+            "full": "next: number",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "minted(): TPort",
+            "full": "minted(): TPort",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "el(tag, _attrs, fn): this",
+            "full": "el(tag, _attrs, fn): this",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "text(): this",
+            "full": "text(): this",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "attrPort(first): TExoAttrPort",
+            "full": "attrPort(first): TExoAttrPort",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "stringPort(first): TExoAttrPort",
+            "full": "stringPort(first): TExoAttrPort",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "togglePort(first): TExoAttrPort",
+            "full": "togglePort(first): TExoAttrPort",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "port(name, portName): TExoAttrPort",
+            "full": "port(name, portName): TExoAttrPort",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "eventPort(first): TExoEventPort",
+            "full": "eventPort(first): TExoEventPort",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "refPort(given): TExoRefPort",
+            "full": "refPort(given): TExoRefPort",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "textPort(given): TExoTextPort",
+            "full": "textPort(given): TExoTextPort",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "childrenPort(given): TExoChildrenPort",
+            "full": "childrenPort(given): TExoChildrenPort",
+            "parts": []
+          }
+        ],
+        "memberCount": 14,
+        "width": 235,
+        "height": 177,
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter",
+        "label": "exoHydrateAdapter",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "`@exodra/string`'s bytes, parsed, then adopted by a DOM backend.",
+        "width": 133,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfChildren",
+        "label": "exoSketchOfChildren",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(parent, probe): string",
+            "full": "(parent, probe): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "`Node` and not `ParentNode`: this walks `childNodes`, which lives on `Node`, and a text run between two instances is part of the artefact so `children` would drop it.",
+        "width": 184,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfElement",
+        "label": "exoSketchOfElement",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(el, probe): string",
+            "full": "(el, probe): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "One line per node, indented by depth: element name, non-HTML namespace, sorted attributes, probed properties; text runs quoted.",
+        "width": 158,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfMarkup",
+        "label": "exoSketchOfMarkup",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(markup, probe): string",
+            "full": "(markup, probe): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A `<template>`'s `innerHTML` and not a `<div>`'s, matching how `@exodra/dom` parses its own prototype.",
+        "width": 184,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfTermNode",
+        "label": "exoSketchOfTermNode",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node): string",
+            "full": "(node): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A live plain-text tree in the SAME grammar a DOM subtree is sketched in.",
+        "width": 146,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfTermRoots",
+        "label": "exoSketchOfTermRoots",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(roots): string",
+            "full": "(roots): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 152,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoStrAdapter",
+        "label": "exoStrAdapter",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The only backend whose artefact is derived rather than held.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exoTermAdapter",
+        "label": "exoTermAdapter",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Written from outside `@exodra/core`'s exported surface.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "HTML_NS",
+        "label": "HTML_NS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "reason",
+        "label": "reason",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(error): string",
+            "full": "(error): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "refusesAt",
+        "label": "refusesAt",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(stage, matching): TExoConformanceExpe…",
+            "full": "(stage, matching): TExoConformanceExpectation",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(stage, matching): "
+              },
+              {
+                "text": "TExoConformanceExpectation",
+                "link": "TExoConformanceExpectation"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Threw, at a named LAYER.",
+        "width": 286,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "renders",
+        "label": "renders",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): TExoConformanceExpe…",
+            "full": "(): TExoConformanceExpectation",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(): "
+              },
+              {
+                "text": "TExoConformanceExpectation",
+                "link": "TExoConformanceExpectation"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "runExoConformanceRule",
+        "label": "runExoConformanceRule",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(rule): ReadonlyMap<string,…",
+            "full": "(rule): ReadonlyMap<string, TExoConformanceVerdict>",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(rule): ReadonlyMap<string, "
+              },
+              {
+                "text": "TExoConformanceVerdict",
+                "link": "TExoConformanceVerdict"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "ASSERTS NOTHING: judging is `assertExoConformanceRule`.",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "runOne",
+        "label": "runOne",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(rule, adapter): TExoConformanceVerd…",
+            "full": "(rule, adapter): TExoConformanceVerdict",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(rule, adapter): "
+              },
+              {
+                "text": "TExoConformanceVerdict",
+                "link": "TExoConformanceVerdict"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 274,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "sketchNode",
+        "label": "sketchNode",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node, depth, lines, probe): void",
+            "full": "(node, depth, lines, probe): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 248,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TERM_BACKEND",
+        "label": "TERM_BACKEND",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Built once: a schema is keyed on the backend by POINTER, so one built inside `render` would recompile every schema on every case, silently — the sketch is identical either way.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceAdapter",
+        "label": "TExoConformanceAdapter",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly name: string;",
+            "full": "readonly name: string;",
+            "doc": "The key a rule writes its expectation under; `pkg` is the full spelling, for messages.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly pkg: string;",
+            "full": "readonly pkg: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly can: ReadonlySet<string>;",
+            "full": "readonly can: ReadonlySet<string>;",
+            "doc": "What this backend HAS.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "compile(machine: TExoConformanceMachine…",
+            "full": "compile(machine: TExoConformanceMachine): void;",
+            "doc": "Throws for a refusal that belongs to the compiler rather than to the wiring.",
+            "parts": [
+              {
+                "text": "compile(machine: "
+              },
+              {
+                "text": "TExoConformanceMachine",
+                "link": "TExoConformanceMachine"
+              },
+              {
+                "text": "…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "compile(machine: "
+              },
+              {
+                "text": "TExoConformanceMachine",
+                "link": "TExoConformanceMachine"
+              },
+              {
+                "text": "): void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "render(machine: TExoConformanceMachine,…",
+            "full": "render(machine: TExoConformanceMachine, n: number): TExoConformanceRun;",
+            "parts": [
+              {
+                "text": "render(machine: "
+              },
+              {
+                "text": "TExoConformanceMachine",
+                "link": "TExoConformanceMachine"
+              },
+              {
+                "text": ",…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "render(machine: "
+              },
+              {
+                "text": "TExoConformanceMachine",
+                "link": "TExoConformanceMachine"
+              },
+              {
+                "text": ", n: number): "
+              },
+              {
+                "text": "TExoConformanceRun",
+                "link": "TExoConformanceRun"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "doc": "`compile` is split from `render` because some rules claim WHICH LAYER refuses a shape: calling only `render` records \"it threw\" and can neither confirm nor falsify that.",
+        "width": 293,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceExpectation",
+        "label": "TExoConformanceExpectation",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "| { readonly outcome: typeof EXO_OUTCOM…",
+            "full": "| { readonly outcome: typeof EXO_OUTCOME_RENDERED } | { readonly outcome: typeof EXO_OUTCOME_REFUSED; readonly stage: TExoConformanceStage; // Held to the WORDS only where the words are the point. readonly matching?: RegExp; } | { readonly outcome: typeof EXO_OUTCOME_CANNOT_EXPRESS; // EVERY capability this backend is missing and no others — exactly the set the runner // derived from the subject. A subset is a failure, not a shorthand. readonly capabilities: readonly string[]; } | { readonly outcome: typeof EXO_EXPECT_UNDECLARED; readonly why: string }",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "| { readonly outcome: typeof "
+              },
+              {
+                "text": "EXO_OUTCOME_RENDERED",
+                "link": "EXO_OUTCOME_RENDERED"
+              },
+              {
+                "text": " } | { readonly outcome: typeof "
+              },
+              {
+                "text": "EXO_OUTCOME_REFUSED",
+                "link": "EXO_OUTCOME_REFUSED"
+              },
+              {
+                "text": "; readonly stage: "
+              },
+              {
+                "text": "TExoConformanceStage",
+                "link": "TExoConformanceStage"
+              },
+              {
+                "text": "; // Held to the WORDS only where the words are the point. readonly matching?: RegExp; } | { readonly outcome: typeof "
+              },
+              {
+                "text": "EXO_OUTCOME_CANNOT_EXPRESS",
+                "link": "EXO_OUTCOME_CANNOT_EXPRESS"
+              },
+              {
+                "text": "; // EVERY capability this backend is missing and no others — exactly the set the runner // derived from the subject. A subset is a failure, not a shorthand. readonly capabilities: readonly string[]; } | { readonly outcome: typeof "
+              },
+              {
+                "text": "EXO_EXPECT_UNDECLARED",
+                "link": "EXO_EXPECT_UNDECLARED"
+              },
+              {
+                "text": "; readonly why: string }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "`UNDECLARED` is an expectation, never an outcome, and it ALWAYS FAILS: not a skip, not an `it.fails`, not a snapshot, but a failure carrying the verdict the run produced.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceMachine",
+        "label": "TExoConformanceMachine",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoMachine< TExoChildrenWiring & TExoM…",
+            "full": "TExoMachine< TExoChildrenWiring & TExoMachineNode & { childList(port: TExoChildrenPort): TExoConformancePlacement; } >",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "TExoMachine< TExoChildrenWiring & TExoMachineNode & { childList(port: TExoChildrenPort): "
+              },
+              {
+                "text": "TExoConformancePlacement",
+                "link": "TExoConformancePlacement"
+              },
+              {
+                "text": "; } >"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The MINIMAL exonode surface and not any backend's class, so one value reaches all four entry points WITH NO CAST: a wire's exonode parameter is contravariant, so a component typed against a backend's class is backend-only whatever the desi…",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoConformancePlacement",
+        "label": "TExoConformancePlacement",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly size: number;",
+            "full": "readonly size: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "at(i: number): TExoNode | undefined;",
+            "full": "at(i: number): TExoNode | undefined;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "insert(child: TExoNode, i?: number): vo…",
+            "full": "insert(child: TExoNode, i?: number): void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "move(from: number, to: number): void;",
+            "full": "move(from: number, to: number): void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "remove(i: number): void;",
+            "full": "remove(i: number): void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "removeAll(): void;",
+            "full": "removeAll(): void;",
+            "parts": []
+          }
+        ],
+        "memberCount": 6,
+        "stereotype": "type",
+        "doc": "The PLACEMENT DOOR, named here rather than imported: `@exodra/list-reconcile` is one composition over it and a rule may use another, so what this suite requires of a backend is the door.",
+        "width": 293,
+        "height": 144,
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceRule",
+        "label": "TExoConformanceRule",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly name: string;",
+            "full": "readonly name: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "subject(): TExoConformanceSubject;",
+            "full": "subject(): TExoConformanceSubject;",
+            "parts": [
+              {
+                "text": "subject(): "
+              },
+              {
+                "text": "TExoConformanceSubject",
+                "link": "TExoConformanceSubject"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly probe?: readonly string[];",
+            "full": "readonly probe?: readonly string[];",
+            "doc": "DOM properties printed into the artefact.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly expect: Readonly<Record<string…",
+            "full": "readonly expect: Readonly<Record<string, TExoConformanceExpectation>>;",
+            "doc": "One entry per registered backend.",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly expect: Readonly<Record<string, "
+              },
+              {
+                "text": "TExoConformanceExpectation",
+                "link": "TExoConformanceExpectation"
+              },
+              {
+                "text": ">>;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly agreement: readonly (readonly …",
+            "full": "readonly agreement: readonly (readonly string[])[];",
+            "doc": "One inner array per equivalence class of artefact: one class is AGREE, two a recorded DIVERGENCE.",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "doc": "A rule cannot NAME a capability it needs: a declaration nothing compares against the SUBJECT excuses a backend from a rule that asked it nothing.",
+        "width": 293,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceRun",
+        "label": "TExoConformanceRun",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "sketch(probe: readonly string[]): strin…",
+            "full": "sketch(probe: readonly string[]): string;",
+            "doc": "`probe` names DOM properties to print beside the attributes.",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "fire(type: string): void;",
+            "full": "fire(type: string): void;",
+            "doc": "Delivered to the FIRST instance's root.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "translate(): void;",
+            "full": "translate(): void;",
+            "doc": "Wraps the first Text node in a third party's `<font>`.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "dispose(): void;",
+            "full": "dispose(): void;",
+            "doc": "Called in a `finally`, so it must be safe to call twice.",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "type",
+        "doc": "Every method beyond `sketch` and `dispose` is gated by a capability the adapter declares; the runner never reaches one a backend lacks, having routed the rule to CANNOT-EXPRESS first.",
+        "width": 293,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceStage",
+        "label": "TExoConformanceStage",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "| typeof EXO_STAGE_SCHEMA_COMPILE | typ…",
+            "full": "| typeof EXO_STAGE_SCHEMA_COMPILE | typeof EXO_STAGE_WIRE | typeof EXO_STAGE_UPDATE",
+            "parts": [
+              {
+                "text": "| typeof "
+              },
+              {
+                "text": "EXO_STAGE_SCHEMA_COMPILE",
+                "link": "EXO_STAGE_SCHEMA_COMPILE"
+              },
+              {
+                "text": " | typ…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "| typeof "
+              },
+              {
+                "text": "EXO_STAGE_SCHEMA_COMPILE",
+                "link": "EXO_STAGE_SCHEMA_COMPILE"
+              },
+              {
+                "text": " | typeof "
+              },
+              {
+                "text": "EXO_STAGE_WIRE",
+                "link": "EXO_STAGE_WIRE"
+              },
+              {
+                "text": " | typeof "
+              },
+              {
+                "text": "EXO_STAGE_UPDATE",
+                "link": "EXO_STAGE_UPDATE"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Where a refusal came from.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceSubject",
+        "label": "TExoConformanceSubject",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly component: TExoConformanceMach…",
+            "full": "readonly component: TExoConformanceMachine;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly component: "
+              },
+              {
+                "text": "TExoConformanceMachine",
+                "link": "TExoConformanceMachine"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly instances?: number;",
+            "full": "readonly instances?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly update?: () => void;",
+            "full": "readonly update?: () => void;",
+            "doc": "Pulled AFTER the render and BEFORE the artefact is read.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly fire?: string;",
+            "full": "readonly fire?: string;",
+            "doc": "Delivered to instance 0's root after `update`.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly translate?: boolean;",
+            "full": "readonly translate?: boolean;",
+            "doc": "Wrap the first Text node in a third party's `<font>`.",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "doc": "Built FRESH per backend: a source at module scope would hand the second backend a cell the first had already subscribed to and moved, making the reported divergence an artefact of run order.",
+        "width": 293,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceVerdict",
+        "label": "TExoConformanceVerdict",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "| { readonly outcome: typeof EXO_OUTCOM…",
+            "full": "| { readonly outcome: typeof EXO_OUTCOME_RENDERED; readonly sketch: string; } | { readonly outcome: typeof EXO_OUTCOME_REFUSED; readonly stage: TExoConformanceStage; // Evidence only. Two refusals with different words at the same stage are one class. readonly message: string; } | { readonly outcome: typeof EXO_OUTCOME_CANNOT_EXPRESS; // EVERY capability the rule needs that the backend does not declare, not the first found: // a backend can lack two at once, and reporting one would make the recorded reason a // function of the derivation's order. In `EXO_CONFORMANCE_CAPABILITIES` order, so the // same absence always prints the same way. readonly capabilities: readonly string[]; }",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "| { readonly outcome: typeof "
+              },
+              {
+                "text": "EXO_OUTCOME_RENDERED",
+                "link": "EXO_OUTCOME_RENDERED"
+              },
+              {
+                "text": "; readonly sketch: string; } | { readonly outcome: typeof "
+              },
+              {
+                "text": "EXO_OUTCOME_REFUSED",
+                "link": "EXO_OUTCOME_REFUSED"
+              },
+              {
+                "text": "; readonly stage: "
+              },
+              {
+                "text": "TExoConformanceStage",
+                "link": "TExoConformanceStage"
+              },
+              {
+                "text": "; // Evidence only. Two refusals with different words at the same stage are one class. readonly message: string; } | { readonly outcome: typeof "
+              },
+              {
+                "text": "EXO_OUTCOME_CANNOT_EXPRESS",
+                "link": "EXO_OUTCOME_CANNOT_EXPRESS"
+              },
+              {
+                "text": "; // EVERY capability the rule needs that the backend does not declare, not the first found: // a backend can lack two at once, and reporting one would make the recorded "
+              },
+              {
+                "text": "reason",
+                "link": "reason"
+              },
+              {
+                "text": " a // function of the derivation's order. In `"
+              },
+              {
+                "text": "EXO_CONFORMANCE_CAPABILITIES",
+                "link": "EXO_CONFORMANCE_CAPABILITIES"
+              },
+              {
+                "text": "` order, so the // same absence always prints the same way. readonly capabilities: readonly string[]; }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "What one backend actually DID — observed, never declared.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TEXT_NODE",
+        "label": "TEXT_NODE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "translateFirstExoText",
+        "label": "translateFirstExoText",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(parent): void",
+            "full": "(parent): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "What a translator extension does to a page: the first Text node in document order is detached and re-hung inside a `<font>` the extension inserted.",
+        "width": 158,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "undeclared",
+        "label": "undeclared",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(why): TExoConformanceExpe…",
+            "full": "(why): TExoConformanceExpectation",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(why): "
+              },
+              {
+                "text": "TExoConformanceExpectation",
+                "link": "TExoConformanceExpectation"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Nobody has established what this backend does.",
+        "width": 210,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "walk",
+        "label": "walk",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(el, depth, lines, probe): void",
+            "full": "(el, depth, lines, probe): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 235,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "assertExoConformanceRule→describeExoConformanceRun",
+        "from": "assertExoConformanceRule",
+        "to": "describeExoConformanceRun",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→describeExoPartition",
+        "from": "assertExoConformanceRule",
+        "to": "describeExoPartition",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→describeVerdict",
+        "from": "assertExoConformanceRule",
+        "to": "describeVerdict",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→EXO_EXPECT_UNDECLARED",
+        "from": "assertExoConformanceRule",
+        "to": "EXO_EXPECT_UNDECLARED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→EXO_OUTCOME_CANNOT_EXPRESS",
+        "from": "assertExoConformanceRule",
+        "to": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_CANNOT_EXPRESS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→EXO_OUTCOME_REFUSED",
+        "from": "assertExoConformanceRule",
+        "to": "EXO_OUTCOME_REFUSED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_REFUSED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→EXO_OUTCOME_RENDERED",
+        "from": "assertExoConformanceRule",
+        "to": "EXO_OUTCOME_RENDERED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_RENDERED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→exoConformancePartition",
+        "from": "assertExoConformanceRule",
+        "to": "exoConformancePartition",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→exoConformanceTreeNames",
+        "from": "assertExoConformanceRule",
+        "to": "exoConformanceTreeNames",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→exoConformanceTrees",
+        "from": "assertExoConformanceRule",
+        "to": "exoConformanceTrees",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→runExoConformanceRule",
+        "from": "assertExoConformanceRule",
+        "to": "runExoConformanceRule",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→TExoConformanceRule",
+        "from": "assertExoConformanceRule",
+        "to": "TExoConformanceRule",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "assertExoConformanceRule→undeclared",
+        "from": "assertExoConformanceRule",
+        "to": "undeclared",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/assertExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/undeclared.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "cannotExpress→EXO_OUTCOME_CANNOT_EXPRESS",
+        "from": "cannotExpress",
+        "to": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/cannotExpress.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_CANNOT_EXPRESS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "cannotExpress→TExoConformanceExpectation",
+        "from": "cannotExpress",
+        "to": "TExoConformanceExpectation",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/cannotExpress.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CAP_ELEMENT",
+        "from": "capabilitiesNeeded",
+        "to": "EXO_CAP_ELEMENT",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_ELEMENT.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CAP_LIVE_TREE",
+        "from": "capabilitiesNeeded",
+        "to": "EXO_CAP_LIVE_TREE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_LIVE_TREE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CAP_TEXT_NODE",
+        "from": "capabilitiesNeeded",
+        "to": "EXO_CAP_TEXT_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_TEXT_NODE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CAP_UPDATE",
+        "from": "capabilitiesNeeded",
+        "to": "EXO_CAP_UPDATE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_UPDATE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CONFORMANCE_CAPABILITIES",
+        "from": "capabilitiesNeeded",
+        "to": "EXO_CONFORMANCE_CAPABILITIES",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CONFORMANCE_CAPABILITIES.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "capabilitiesNeeded→exoEntersForeignContent",
+        "from": "capabilitiesNeeded",
+        "to": "exoEntersForeignContent",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoEntersForeignContent.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "capabilitiesNeeded→TExoConformanceRule",
+        "from": "capabilitiesNeeded",
+        "to": "TExoConformanceRule",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeExoConformanceRun→describeVerdict",
+        "from": "describeExoConformanceRun",
+        "to": "describeVerdict",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeExoConformanceRun→exoConformanceTrees",
+        "from": "describeExoConformanceRun",
+        "to": "exoConformanceTrees",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeExoConformanceRun→TExoConformanceVerdict",
+        "from": "describeExoConformanceRun",
+        "to": "TExoConformanceVerdict",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeExoPartition→canonicalExoPartition",
+        "from": "describeExoPartition",
+        "to": "canonicalExoPartition",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeVerdict→EXO_OUTCOME_CANNOT_EXPRESS",
+        "from": "describeVerdict",
+        "to": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_CANNOT_EXPRESS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeVerdict→EXO_OUTCOME_REFUSED",
+        "from": "describeVerdict",
+        "to": "EXO_OUTCOME_REFUSED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_REFUSED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeVerdict→TExoConformanceVerdict",
+        "from": "describeVerdict",
+        "to": "TExoConformanceVerdict",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES→EXO_CAP_ELEMENT",
+        "from": "EXO_CONFORMANCE_CAPABILITIES",
+        "to": "EXO_CAP_ELEMENT",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CONFORMANCE_CAPABILITIES.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_ELEMENT.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES→EXO_CAP_LIVE_TREE",
+        "from": "EXO_CONFORMANCE_CAPABILITIES",
+        "to": "EXO_CAP_LIVE_TREE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CONFORMANCE_CAPABILITIES.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_LIVE_TREE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES→EXO_CAP_TEXT_NODE",
+        "from": "EXO_CONFORMANCE_CAPABILITIES",
+        "to": "EXO_CAP_TEXT_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CONFORMANCE_CAPABILITIES.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_TEXT_NODE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES→EXO_CAP_UPDATE",
+        "from": "EXO_CONFORMANCE_CAPABILITIES",
+        "to": "EXO_CAP_UPDATE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CONFORMANCE_CAPABILITIES.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_UPDATE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceClassOf→EXO_OUTCOME_CANNOT_EXPRESS",
+        "from": "exoConformanceClassOf",
+        "to": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_CANNOT_EXPRESS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceClassOf→EXO_OUTCOME_REFUSED",
+        "from": "exoConformanceClassOf",
+        "to": "EXO_OUTCOME_REFUSED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_REFUSED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceClassOf→TExoConformanceVerdict",
+        "from": "exoConformanceClassOf",
+        "to": "TExoConformanceVerdict",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformancePartition→canonicalExoPartition",
+        "from": "exoConformancePartition",
+        "to": "canonicalExoPartition",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformancePartition→EXO_OUTCOME_RENDERED",
+        "from": "exoConformancePartition",
+        "to": "EXO_OUTCOME_RENDERED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_RENDERED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformancePartition→exoConformanceClassOf",
+        "from": "exoConformancePartition",
+        "to": "exoConformanceClassOf",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformancePartition→TExoConformanceVerdict",
+        "from": "exoConformancePartition",
+        "to": "TExoConformanceVerdict",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceClassOf.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceTreeNames→exoConformanceTrees",
+        "from": "exoConformanceTreeNames",
+        "to": "exoConformanceTrees",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceTrees→exoDomAdapter",
+        "from": "exoConformanceTrees",
+        "to": "exoDomAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceTrees→exoHydrateAdapter",
+        "from": "exoConformanceTrees",
+        "to": "exoHydrateAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceTrees→exoStrAdapter",
+        "from": "exoConformanceTrees",
+        "to": "exoStrAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoStrAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceTrees→exoTermAdapter",
+        "from": "exoConformanceTrees",
+        "to": "exoTermAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoTermAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoConformanceTrees→TExoConformanceAdapter",
+        "from": "exoConformanceTrees",
+        "to": "TExoConformanceAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→EXO_CAP_ELEMENT",
+        "from": "exoDomAdapter",
+        "to": "EXO_CAP_ELEMENT",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_ELEMENT.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→EXO_CAP_LIVE_TREE",
+        "from": "exoDomAdapter",
+        "to": "EXO_CAP_LIVE_TREE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_LIVE_TREE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→EXO_CAP_TEXT_NODE",
+        "from": "exoDomAdapter",
+        "to": "EXO_CAP_TEXT_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_TEXT_NODE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→EXO_CAP_UPDATE",
+        "from": "exoDomAdapter",
+        "to": "EXO_CAP_UPDATE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_UPDATE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→EXO_DOM",
+        "from": "exoDomAdapter",
+        "to": "EXO_DOM",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→exoSketchOfChildren",
+        "from": "exoDomAdapter",
+        "to": "exoSketchOfChildren",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→TExoConformanceAdapter",
+        "from": "exoDomAdapter",
+        "to": "TExoConformanceAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→TExoConformanceMachine",
+        "from": "exoDomAdapter",
+        "to": "TExoConformanceMachine",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoDomAdapter→translateFirstExoText",
+        "from": "exoDomAdapter",
+        "to": "translateFirstExoText",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/translateFirstExoText.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoEntersForeignContent→ExoForeignProbe",
+        "from": "exoEntersForeignContent",
+        "to": "ExoForeignProbe",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "composition",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoEntersForeignContent.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoEntersForeignContent.ts",
+            "specifier": "constructs",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_CAP_ELEMENT",
+        "from": "exoHydrateAdapter",
+        "to": "EXO_CAP_ELEMENT",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_ELEMENT.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_CAP_LIVE_TREE",
+        "from": "exoHydrateAdapter",
+        "to": "EXO_CAP_LIVE_TREE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_LIVE_TREE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_CAP_TEXT_NODE",
+        "from": "exoHydrateAdapter",
+        "to": "EXO_CAP_TEXT_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_TEXT_NODE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_CAP_UPDATE",
+        "from": "exoHydrateAdapter",
+        "to": "EXO_CAP_UPDATE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_UPDATE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_HYDRATE",
+        "from": "exoHydrateAdapter",
+        "to": "EXO_HYDRATE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_STR",
+        "from": "exoHydrateAdapter",
+        "to": "EXO_STR",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→exoSketchOfChildren",
+        "from": "exoHydrateAdapter",
+        "to": "exoSketchOfChildren",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→TExoConformanceAdapter",
+        "from": "exoHydrateAdapter",
+        "to": "TExoConformanceAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→TExoConformanceMachine",
+        "from": "exoHydrateAdapter",
+        "to": "TExoConformanceMachine",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoHydrateAdapter→translateFirstExoText",
+        "from": "exoHydrateAdapter",
+        "to": "translateFirstExoText",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/translateFirstExoText.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfChildren→sketchNode",
+        "from": "exoSketchOfChildren",
+        "to": "sketchNode",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfElement→walk",
+        "from": "exoSketchOfElement",
+        "to": "walk",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfMarkup→exoSketchOfChildren",
+        "from": "exoSketchOfMarkup",
+        "to": "exoSketchOfChildren",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfMarkup.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfTermNode→walk",
+        "from": "exoSketchOfTermNode",
+        "to": "walk",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfTermNode.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoSketchOfTermRoots→walk",
+        "from": "exoSketchOfTermRoots",
+        "to": "walk",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfTermNode.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoStrAdapter→EXO_CAP_ELEMENT",
+        "from": "exoStrAdapter",
+        "to": "EXO_CAP_ELEMENT",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoStrAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_ELEMENT.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoStrAdapter→EXO_STR",
+        "from": "exoStrAdapter",
+        "to": "EXO_STR",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoStrAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoStrAdapter→exoSketchOfMarkup",
+        "from": "exoStrAdapter",
+        "to": "exoSketchOfMarkup",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoStrAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfMarkup.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoStrAdapter→TExoConformanceAdapter",
+        "from": "exoStrAdapter",
+        "to": "TExoConformanceAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoStrAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoStrAdapter→TExoConformanceMachine",
+        "from": "exoStrAdapter",
+        "to": "TExoConformanceMachine",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoStrAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoTermAdapter→EXO_CAP_LIVE_TREE",
+        "from": "exoTermAdapter",
+        "to": "EXO_CAP_LIVE_TREE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoTermAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_LIVE_TREE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoTermAdapter→EXO_CAP_UPDATE",
+        "from": "exoTermAdapter",
+        "to": "EXO_CAP_UPDATE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoTermAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_CAP_UPDATE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoTermAdapter→exoSketchOfTermRoots",
+        "from": "exoTermAdapter",
+        "to": "exoSketchOfTermRoots",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoTermAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfTermNode.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoTermAdapter→TERM_BACKEND",
+        "from": "exoTermAdapter",
+        "to": "TERM_BACKEND",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoTermAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoTermAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoTermAdapter→TExoConformanceAdapter",
+        "from": "exoTermAdapter",
+        "to": "TExoConformanceAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoTermAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoTermAdapter→TExoConformanceMachine",
+        "from": "exoTermAdapter",
+        "to": "TExoConformanceMachine",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/adapters/exoTermAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "refusesAt→EXO_OUTCOME_REFUSED",
+        "from": "refusesAt",
+        "to": "EXO_OUTCOME_REFUSED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/refusesAt.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_REFUSED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "refusesAt→TExoConformanceExpectation",
+        "from": "refusesAt",
+        "to": "TExoConformanceExpectation",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/refusesAt.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "refusesAt→TExoConformanceStage",
+        "from": "refusesAt",
+        "to": "TExoConformanceStage",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/refusesAt.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "renders→EXO_OUTCOME_RENDERED",
+        "from": "renders",
+        "to": "EXO_OUTCOME_RENDERED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/renders.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_RENDERED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "renders→TExoConformanceExpectation",
+        "from": "renders",
+        "to": "TExoConformanceExpectation",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/renders.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoConformanceRule→exoConformanceTrees",
+        "from": "runExoConformanceRule",
+        "to": "exoConformanceTrees",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoConformanceTrees.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoConformanceRule→runOne",
+        "from": "runExoConformanceRule",
+        "to": "runOne",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoConformanceRule→TExoConformanceRule",
+        "from": "runExoConformanceRule",
+        "to": "TExoConformanceRule",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoConformanceRule→TExoConformanceVerdict",
+        "from": "runExoConformanceRule",
+        "to": "TExoConformanceVerdict",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→capabilitiesNeeded",
+        "from": "runOne",
+        "to": "capabilitiesNeeded",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→EXO_OUTCOME_CANNOT_EXPRESS",
+        "from": "runOne",
+        "to": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_CANNOT_EXPRESS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→EXO_OUTCOME_REFUSED",
+        "from": "runOne",
+        "to": "EXO_OUTCOME_REFUSED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_REFUSED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→EXO_OUTCOME_RENDERED",
+        "from": "runOne",
+        "to": "EXO_OUTCOME_RENDERED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_RENDERED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→EXO_STAGE_SCHEMA_COMPILE",
+        "from": "runOne",
+        "to": "EXO_STAGE_SCHEMA_COMPILE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_STAGE_SCHEMA_COMPILE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→EXO_STAGE_UPDATE",
+        "from": "runOne",
+        "to": "EXO_STAGE_UPDATE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_STAGE_UPDATE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→EXO_STAGE_WIRE",
+        "from": "runOne",
+        "to": "EXO_STAGE_WIRE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_STAGE_WIRE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→reason",
+        "from": "runOne",
+        "to": "reason",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→TExoConformanceAdapter",
+        "from": "runOne",
+        "to": "TExoConformanceAdapter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→TExoConformanceRule",
+        "from": "runOne",
+        "to": "TExoConformanceRule",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→TExoConformanceRun",
+        "from": "runOne",
+        "to": "TExoConformanceRun",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runOne→TExoConformanceVerdict",
+        "from": "runOne",
+        "to": "TExoConformanceVerdict",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/runExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sketchNode→ELEMENT_NODE",
+        "from": "sketchNode",
+        "to": "ELEMENT_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sketchNode→TEXT_NODE",
+        "from": "sketchNode",
+        "to": "TEXT_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sketchNode→walk",
+        "from": "sketchNode",
+        "to": "walk",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceAdapter→TExoConformanceMachine",
+        "from": "TExoConformanceAdapter",
+        "to": "TExoConformanceMachine",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceAdapter→TExoConformanceRun",
+        "from": "TExoConformanceAdapter",
+        "to": "TExoConformanceRun",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceExpectation→EXO_EXPECT_UNDECLARED",
+        "from": "TExoConformanceExpectation",
+        "to": "EXO_EXPECT_UNDECLARED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceExpectation→EXO_OUTCOME_CANNOT_EXPRESS",
+        "from": "TExoConformanceExpectation",
+        "to": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_CANNOT_EXPRESS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceExpectation→EXO_OUTCOME_REFUSED",
+        "from": "TExoConformanceExpectation",
+        "to": "EXO_OUTCOME_REFUSED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_REFUSED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceExpectation→EXO_OUTCOME_RENDERED",
+        "from": "TExoConformanceExpectation",
+        "to": "EXO_OUTCOME_RENDERED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_RENDERED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceExpectation→TExoConformanceStage",
+        "from": "TExoConformanceExpectation",
+        "to": "TExoConformanceStage",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceMachine→TExoConformancePlacement",
+        "from": "TExoConformanceMachine",
+        "to": "TExoConformancePlacement",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceRule→TExoConformanceExpectation",
+        "from": "TExoConformanceRule",
+        "to": "TExoConformanceExpectation",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceRule→TExoConformanceSubject",
+        "from": "TExoConformanceRule",
+        "to": "TExoConformanceSubject",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceStage→EXO_STAGE_SCHEMA_COMPILE",
+        "from": "TExoConformanceStage",
+        "to": "EXO_STAGE_SCHEMA_COMPILE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_STAGE_SCHEMA_COMPILE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceStage→EXO_STAGE_UPDATE",
+        "from": "TExoConformanceStage",
+        "to": "EXO_STAGE_UPDATE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_STAGE_UPDATE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceStage→EXO_STAGE_WIRE",
+        "from": "TExoConformanceStage",
+        "to": "EXO_STAGE_WIRE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_STAGE_WIRE.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceSubject→TExoConformanceMachine",
+        "from": "TExoConformanceSubject",
+        "to": "TExoConformanceMachine",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceVerdict→EXO_OUTCOME_CANNOT_EXPRESS",
+        "from": "TExoConformanceVerdict",
+        "to": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_CANNOT_EXPRESS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceVerdict→EXO_OUTCOME_REFUSED",
+        "from": "TExoConformanceVerdict",
+        "to": "EXO_OUTCOME_REFUSED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_REFUSED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceVerdict→EXO_OUTCOME_RENDERED",
+        "from": "TExoConformanceVerdict",
+        "to": "EXO_OUTCOME_RENDERED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/constants/EXO_OUTCOME_RENDERED.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoConformanceVerdict→TExoConformanceStage",
+        "from": "TExoConformanceVerdict",
+        "to": "TExoConformanceStage",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceVerdict.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "translateFirstExoText→TEXT_NODE",
+        "from": "translateFirstExoText",
+        "to": "TEXT_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/translateFirstExoText.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "undeclared→EXO_EXPECT_UNDECLARED",
+        "from": "undeclared",
+        "to": "EXO_EXPECT_UNDECLARED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/undeclared.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "undeclared→TExoConformanceExpectation",
+        "from": "undeclared",
+        "to": "TExoConformanceExpectation",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/undeclared.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/types/TExoConformanceRule.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "walk→describeProbe",
+        "from": "walk",
+        "to": "describeProbe",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "walk→HTML_NS",
+        "from": "walk",
+        "to": "HTML_NS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "walk→sketchNode",
+        "from": "walk",
+        "to": "sketchNode",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "to": "/Users/abaikov/work/exodra/packages/conformance/src/exoSketchOfElement.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 3112,
+    "height": 3587.3,
+    "nodes": [
+      {
+        "id": "assertExoConformanceRule",
+        "x": 24,
+        "y": 3228.8,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "cannotExpress",
+        "x": 1241,
+        "y": 24,
+        "width": 267,
+        "height": 69
+      },
+      {
+        "id": "canonicalExoPartition",
+        "x": 1250.5,
+        "y": 3170.3,
+        "width": 248,
+        "height": 69
+      },
+      {
+        "id": "capabilitiesNeeded",
+        "x": 925.5,
+        "y": 1339.3,
+        "width": 197,
+        "height": 69
+      },
+      {
+        "id": "describeExoConformanceRun",
+        "x": 591,
+        "y": 3494.3,
+        "width": 184,
+        "height": 69
+      },
+      {
+        "id": "describeExoPartition",
+        "x": 945,
+        "y": 3405.8,
+        "width": 158,
+        "height": 69
+      },
+      {
+        "id": "describeProbe",
+        "x": 2955,
+        "y": 2226.3,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "describeVerdict",
+        "x": 1301.5,
+        "y": 3347.3,
+        "width": 146,
+        "height": 69
+      },
+      {
+        "id": "ELEMENT_NODE",
+        "x": 2713.5,
+        "y": 2867.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "EXO_CAP_ELEMENT",
+        "x": 1671.5,
+        "y": 2600,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "EXO_CAP_LIVE_TREE",
+        "x": 1665,
+        "y": 2429,
+        "width": 133,
+        "height": 46
+      },
+      {
+        "id": "EXO_CAP_TEXT_NODE",
+        "x": 1665,
+        "y": 2335,
+        "width": 133,
+        "height": 46
+      },
+      {
+        "id": "EXO_CAP_UPDATE",
+        "x": 1671.5,
+        "y": 2261,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES",
+        "x": 1273,
+        "y": 1312.8,
+        "width": 203,
+        "height": 46
+      },
+      {
+        "id": "EXO_DOM",
+        "x": 1671.5,
+        "y": 3096.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "EXO_EXPECT_UNDECLARED",
+        "x": 2009.5,
+        "y": 1363.5,
+        "width": 158,
+        "height": 46
+      },
+      {
+        "id": "EXO_HYDRATE",
+        "x": 1671.5,
+        "y": 2925.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "EXO_OUTCOME_CANNOT_EXPRESS",
+        "x": 1993.5,
+        "y": 1511.5,
+        "width": 190,
+        "height": 46
+      },
+      {
+        "id": "EXO_OUTCOME_REFUSED",
+        "x": 2015.5,
+        "y": 1714,
+        "width": 146,
+        "height": 46
+      },
+      {
+        "id": "EXO_OUTCOME_RENDERED",
+        "x": 2012.5,
+        "y": 1437.5,
+        "width": 152,
+        "height": 46
+      },
+      {
+        "id": "EXO_STAGE_SCHEMA_COMPILE",
+        "x": 2356.5,
+        "y": 817,
+        "width": 178,
+        "height": 46
+      },
+      {
+        "id": "EXO_STAGE_UPDATE",
+        "x": 2382.5,
+        "y": 743,
+        "width": 126,
+        "height": 46
+      },
+      {
+        "id": "EXO_STAGE_WIRE",
+        "x": 2385.5,
+        "y": 669,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "EXO_STR",
+        "x": 1671.5,
+        "y": 2694,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "exoConformanceClassOf",
+        "x": 1279.5,
+        "y": 1504,
+        "width": 190,
+        "height": 69
+      },
+      {
+        "id": "exoConformancePartition",
+        "x": 884,
+        "y": 1517,
+        "width": 280,
+        "height": 69
+      },
+      {
+        "id": "exoConformanceTreeNames",
+        "x": 597.5,
+        "y": 2204.3,
+        "width": 171,
+        "height": 46
+      },
+      {
+        "id": "exoConformanceTrees",
+        "x": 951,
+        "y": 2514.5,
+        "width": 146,
+        "height": 46
+      },
+      {
+        "id": "exoDomAdapter",
+        "x": 1314.5,
+        "y": 3046.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "exoEntersForeignContent",
+        "x": 1289,
+        "y": 1215.8,
+        "width": 171,
+        "height": 69
+      },
+      {
+        "id": "ExoForeignProbe",
+        "x": 1614,
+        "y": 1161.8,
+        "width": 235,
+        "height": 177
+      },
+      {
+        "id": "exoHydrateAdapter",
+        "x": 1308,
+        "y": 2815.5,
+        "width": 133,
+        "height": 46
+      },
+      {
+        "id": "exoSketchOfChildren",
+        "x": 1996.5,
+        "y": 2627.5,
+        "width": 184,
+        "height": 69
+      },
+      {
+        "id": "exoSketchOfElement",
+        "x": 2366.5,
+        "y": 1247,
+        "width": 158,
+        "height": 69
+      },
+      {
+        "id": "exoSketchOfMarkup",
+        "x": 1639.5,
+        "y": 2503,
+        "width": 184,
+        "height": 69
+      },
+      {
+        "id": "exoSketchOfTermNode",
+        "x": 2372.5,
+        "y": 1749.3,
+        "width": 146,
+        "height": 69
+      },
+      {
+        "id": "exoSketchOfTermRoots",
+        "x": 1655.5,
+        "y": 2164,
+        "width": 152,
+        "height": 69
+      },
+      {
+        "id": "exoStrAdapter",
+        "x": 1314.5,
+        "y": 2510.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "exoTermAdapter",
+        "x": 1314.5,
+        "y": 2126.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "HTML_NS",
+        "x": 2961.5,
+        "y": 2152.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "reason",
+        "x": 957.5,
+        "y": 569,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "refusesAt",
+        "x": 1231.5,
+        "y": 854.8,
+        "width": 286,
+        "height": 69
+      },
+      {
+        "id": "renders",
+        "x": 1279.5,
+        "y": 951.8,
+        "width": 190,
+        "height": 69
+      },
+      {
+        "id": "runExoConformanceRule",
+        "x": 266,
+        "y": 450,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "runOne",
+        "x": 546,
+        "y": 646.3,
+        "width": 274,
+        "height": 69
+      },
+      {
+        "id": "sketchNode",
+        "x": 2321.5,
+        "y": 2627.5,
+        "width": 248,
+        "height": 69
+      },
+      {
+        "id": "TERM_BACKEND",
+        "x": 1671.5,
+        "y": 1760.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TExoConformanceAdapter",
+        "x": 1585,
+        "y": 1905,
+        "width": 293,
+        "height": 129
+      },
+      {
+        "id": "TExoConformanceExpectation",
+        "x": 1585,
+        "y": 465,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoConformanceMachine",
+        "x": 1942,
+        "y": 1955.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoConformancePlacement",
+        "x": 2299,
+        "y": 1918.3,
+        "width": 293,
+        "height": 144
+      },
+      {
+        "id": "TExoConformanceRule",
+        "x": 1228,
+        "y": 362.8,
+        "width": 293,
+        "height": 129
+      },
+      {
+        "id": "TExoConformanceRun",
+        "x": 1942,
+        "y": 1221.5,
+        "width": 293,
+        "height": 114
+      },
+      {
+        "id": "TExoConformanceStage",
+        "x": 1942,
+        "y": 834.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoConformanceSubject",
+        "x": 1585,
+        "y": 308,
+        "width": 293,
+        "height": 129
+      },
+      {
+        "id": "TExoConformanceVerdict",
+        "x": 1585,
+        "y": 1632.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TEXT_NODE",
+        "x": 2713.5,
+        "y": 2793.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "translateFirstExoText",
+        "x": 1652.5,
+        "y": 2828.8,
+        "width": 158,
+        "height": 69
+      },
+      {
+        "id": "undeclared",
+        "x": 1269.5,
+        "y": 121,
+        "width": 210,
+        "height": 69
+      },
+      {
+        "id": "walk",
+        "x": 2656,
+        "y": 2183.5,
+        "width": 235,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "assertExoConformanceRule→describeExoConformanceRun",
+        "points": [
+          {
+            "x": 128.7,
+            "y": 3297.8
+          },
+          {
+            "x": 234,
+            "y": 3528.8
+          },
+          {
+            "x": 374,
+            "y": 3528.8
+          },
+          {
+            "x": 514,
+            "y": 3528.8
+          },
+          {
+            "x": 591,
+            "y": 3528.8
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→describeExoPartition",
+        "points": [
+          {
+            "x": 136.6,
+            "y": 3297.8
+          },
+          {
+            "x": 234,
+            "y": 3440.3
+          },
+          {
+            "x": 374,
+            "y": 3440.3
+          },
+          {
+            "x": 514,
+            "y": 3440.3
+          },
+          {
+            "x": 683,
+            "y": 3440.3
+          },
+          {
+            "x": 852,
+            "y": 3440.3
+          },
+          {
+            "x": 945,
+            "y": 3440.3
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→describeVerdict",
+        "points": [
+          {
+            "x": 148.2,
+            "y": 3297.8
+          },
+          {
+            "x": 234,
+            "y": 3381.8
+          },
+          {
+            "x": 374,
+            "y": 3381.8
+          },
+          {
+            "x": 514,
+            "y": 3381.8
+          },
+          {
+            "x": 683,
+            "y": 3381.8
+          },
+          {
+            "x": 852,
+            "y": 3381.8
+          },
+          {
+            "x": 1024,
+            "y": 3381.8
+          },
+          {
+            "x": 1196,
+            "y": 3381.8
+          },
+          {
+            "x": 1301.5,
+            "y": 3381.8
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→EXO_EXPECT_UNDECLARED",
+        "points": [
+          {
+            "x": 182.6,
+            "y": 3297.8
+          },
+          {
+            "x": 234,
+            "y": 3323.3
+          },
+          {
+            "x": 374,
+            "y": 3323.3
+          },
+          {
+            "x": 514,
+            "y": 3323.3
+          },
+          {
+            "x": 683,
+            "y": 3323.3
+          },
+          {
+            "x": 852,
+            "y": 3323.3
+          },
+          {
+            "x": 1024,
+            "y": 3323.3
+          },
+          {
+            "x": 1196,
+            "y": 3323.3
+          },
+          {
+            "x": 1374.5,
+            "y": 3323.3
+          },
+          {
+            "x": 1553,
+            "y": 3323.3
+          },
+          {
+            "x": 1731.5,
+            "y": 3323.3
+          },
+          {
+            "x": 1910,
+            "y": 3323.3
+          },
+          {
+            "x": 2086.4,
+            "y": 1409.5
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→EXO_OUTCOME_CANNOT_EXPRESS",
+        "points": [
+          {
+            "x": 202,
+            "y": 3292.7
+          },
+          {
+            "x": 234,
+            "y": 3303.3
+          },
+          {
+            "x": 374,
+            "y": 3303.3
+          },
+          {
+            "x": 514,
+            "y": 3303.3
+          },
+          {
+            "x": 683,
+            "y": 3303.3
+          },
+          {
+            "x": 852,
+            "y": 3303.3
+          },
+          {
+            "x": 1024,
+            "y": 3303.3
+          },
+          {
+            "x": 1196,
+            "y": 3303.3
+          },
+          {
+            "x": 1374.5,
+            "y": 3303.3
+          },
+          {
+            "x": 1553,
+            "y": 3303.3
+          },
+          {
+            "x": 1731.5,
+            "y": 3303.3
+          },
+          {
+            "x": 1910,
+            "y": 3303.3
+          },
+          {
+            "x": 2086.2,
+            "y": 1557.5
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→EXO_OUTCOME_REFUSED",
+        "points": [
+          {
+            "x": 202,
+            "y": 3278
+          },
+          {
+            "x": 234,
+            "y": 3283.3
+          },
+          {
+            "x": 374,
+            "y": 3283.3
+          },
+          {
+            "x": 514,
+            "y": 3283.3
+          },
+          {
+            "x": 683,
+            "y": 3283.3
+          },
+          {
+            "x": 852,
+            "y": 3283.3
+          },
+          {
+            "x": 1024,
+            "y": 3283.3
+          },
+          {
+            "x": 1196,
+            "y": 3283.3
+          },
+          {
+            "x": 1374.5,
+            "y": 3283.3
+          },
+          {
+            "x": 1553,
+            "y": 3283.3
+          },
+          {
+            "x": 1731.5,
+            "y": 3283.3
+          },
+          {
+            "x": 1910,
+            "y": 3283.3
+          },
+          {
+            "x": 2085.8,
+            "y": 1760
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→EXO_OUTCOME_RENDERED",
+        "points": [
+          {
+            "x": 202,
+            "y": 3263.3
+          },
+          {
+            "x": 234,
+            "y": 3263.3
+          },
+          {
+            "x": 374,
+            "y": 3263.3
+          },
+          {
+            "x": 514,
+            "y": 3263.3
+          },
+          {
+            "x": 683,
+            "y": 3263.3
+          },
+          {
+            "x": 852,
+            "y": 3263.3
+          },
+          {
+            "x": 1024,
+            "y": 3263.3
+          },
+          {
+            "x": 1196,
+            "y": 3263.3
+          },
+          {
+            "x": 1374.5,
+            "y": 3263.3
+          },
+          {
+            "x": 1553,
+            "y": 3263.3
+          },
+          {
+            "x": 1731.5,
+            "y": 3263.3
+          },
+          {
+            "x": 1910,
+            "y": 3263.3
+          },
+          {
+            "x": 2086.2,
+            "y": 1483.5
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→exoConformancePartition",
+        "points": [
+          {
+            "x": 117.2,
+            "y": 3228.8
+          },
+          {
+            "x": 234,
+            "y": 2277.3
+          },
+          {
+            "x": 374,
+            "y": 2277.3
+          },
+          {
+            "x": 514,
+            "y": 2277.3
+          },
+          {
+            "x": 683,
+            "y": 2277.3
+          },
+          {
+            "x": 852,
+            "y": 2277.3
+          },
+          {
+            "x": 1015.8,
+            "y": 1586
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→exoConformanceTreeNames",
+        "points": [
+          {
+            "x": 117,
+            "y": 3228.8
+          },
+          {
+            "x": 234,
+            "y": 2227.3
+          },
+          {
+            "x": 374,
+            "y": 2227.3
+          },
+          {
+            "x": 514,
+            "y": 2227.3
+          },
+          {
+            "x": 597.5,
+            "y": 2227.3
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→exoConformanceTrees",
+        "points": [
+          {
+            "x": 115.3,
+            "y": 3228.8
+          },
+          {
+            "x": 234,
+            "y": 1480.8
+          },
+          {
+            "x": 374,
+            "y": 1480.8
+          },
+          {
+            "x": 514,
+            "y": 1480.8
+          },
+          {
+            "x": 683,
+            "y": 1480.8
+          },
+          {
+            "x": 852,
+            "y": 1480.8
+          },
+          {
+            "x": 1020.3,
+            "y": 2514.5
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→runExoConformanceRule",
+        "points": [
+          {
+            "x": 114.5,
+            "y": 3228.8
+          },
+          {
+            "x": 234,
+            "y": 484.5
+          },
+          {
+            "x": 266,
+            "y": 484.5
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→TExoConformanceRule",
+        "points": [
+          {
+            "x": 114.4,
+            "y": 3228.8
+          },
+          {
+            "x": 234,
+            "y": 175.5
+          },
+          {
+            "x": 374,
+            "y": 175.5
+          },
+          {
+            "x": 514,
+            "y": 175.5
+          },
+          {
+            "x": 683,
+            "y": 175.5
+          },
+          {
+            "x": 852,
+            "y": 175.5
+          },
+          {
+            "x": 1024,
+            "y": 175.5
+          },
+          {
+            "x": 1196,
+            "y": 175.5
+          },
+          {
+            "x": 1328.8,
+            "y": 362.8
+          }
+        ]
+      },
+      {
+        "id": "assertExoConformanceRule→undeclared",
+        "points": [
+          {
+            "x": 114.3,
+            "y": 3228.8
+          },
+          {
+            "x": 234,
+            "y": 155.5
+          },
+          {
+            "x": 374,
+            "y": 155.5
+          },
+          {
+            "x": 514,
+            "y": 155.5
+          },
+          {
+            "x": 683,
+            "y": 155.5
+          },
+          {
+            "x": 852,
+            "y": 155.5
+          },
+          {
+            "x": 1024,
+            "y": 155.5
+          },
+          {
+            "x": 1196,
+            "y": 155.5
+          },
+          {
+            "x": 1269.5,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "cannotExpress→EXO_OUTCOME_CANNOT_EXPRESS",
+        "points": [
+          {
+            "x": 1501.5,
+            "y": 93
+          },
+          {
+            "x": 1553,
+            "y": 107
+          },
+          {
+            "x": 1731.5,
+            "y": 107
+          },
+          {
+            "x": 1910,
+            "y": 107
+          },
+          {
+            "x": 2085.6,
+            "y": 1511.5
+          }
+        ]
+      },
+      {
+        "id": "cannotExpress→TExoConformanceExpectation",
+        "points": [
+          {
+            "x": 1508,
+            "y": 58.5
+          },
+          {
+            "x": 1553,
+            "y": 58.5
+          },
+          {
+            "x": 1717.5,
+            "y": 465
+          }
+        ]
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CAP_ELEMENT",
+        "points": [
+          {
+            "x": 1093.4,
+            "y": 1408.3
+          },
+          {
+            "x": 1196,
+            "y": 1459.3
+          },
+          {
+            "x": 1374.5,
+            "y": 1459.3
+          },
+          {
+            "x": 1553,
+            "y": 1459.3
+          },
+          {
+            "x": 1728,
+            "y": 2600
+          }
+        ]
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CAP_LIVE_TREE",
+        "points": [
+          {
+            "x": 1114.6,
+            "y": 1408.3
+          },
+          {
+            "x": 1196,
+            "y": 1439.3
+          },
+          {
+            "x": 1374.5,
+            "y": 1439.3
+          },
+          {
+            "x": 1553,
+            "y": 1439.3
+          },
+          {
+            "x": 1727.4,
+            "y": 2429
+          }
+        ]
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CAP_TEXT_NODE",
+        "points": [
+          {
+            "x": 1122.5,
+            "y": 1399.8
+          },
+          {
+            "x": 1196,
+            "y": 1419.3
+          },
+          {
+            "x": 1374.5,
+            "y": 1419.3
+          },
+          {
+            "x": 1553,
+            "y": 1419.3
+          },
+          {
+            "x": 1727.1,
+            "y": 2335
+          }
+        ]
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CAP_UPDATE",
+        "points": [
+          {
+            "x": 1122.5,
+            "y": 1388.4
+          },
+          {
+            "x": 1196,
+            "y": 1399.3
+          },
+          {
+            "x": 1374.5,
+            "y": 1399.3
+          },
+          {
+            "x": 1553,
+            "y": 1399.3
+          },
+          {
+            "x": 1726.9,
+            "y": 2261
+          }
+        ]
+      },
+      {
+        "id": "capabilitiesNeeded→EXO_CONFORMANCE_CAPABILITIES",
+        "points": [
+          {
+            "x": 1122.5,
+            "y": 1352
+          },
+          {
+            "x": 1196,
+            "y": 1335.8
+          },
+          {
+            "x": 1273,
+            "y": 1335.8
+          }
+        ]
+      },
+      {
+        "id": "capabilitiesNeeded→exoEntersForeignContent",
+        "points": [
+          {
+            "x": 1072,
+            "y": 1339.3
+          },
+          {
+            "x": 1196,
+            "y": 1250.3
+          },
+          {
+            "x": 1289,
+            "y": 1250.3
+          }
+        ]
+      },
+      {
+        "id": "capabilitiesNeeded→TExoConformanceRule",
+        "points": [
+          {
+            "x": 1057,
+            "y": 1339.3
+          },
+          {
+            "x": 1196,
+            "y": 1194
+          },
+          {
+            "x": 1359.5,
+            "y": 491.8
+          }
+        ]
+      },
+      {
+        "id": "describeExoConformanceRun→describeVerdict",
+        "points": [
+          {
+            "x": 775,
+            "y": 3534.2
+          },
+          {
+            "x": 852,
+            "y": 3538.8
+          },
+          {
+            "x": 1024,
+            "y": 3538.8
+          },
+          {
+            "x": 1196,
+            "y": 3538.8
+          },
+          {
+            "x": 1335.3,
+            "y": 3416.3
+          }
+        ]
+      },
+      {
+        "id": "describeExoConformanceRun→exoConformanceTrees",
+        "points": [
+          {
+            "x": 775,
+            "y": 3523.3
+          },
+          {
+            "x": 852,
+            "y": 3518.8
+          },
+          {
+            "x": 1020,
+            "y": 2560.5
+          }
+        ]
+      },
+      {
+        "id": "describeExoConformanceRun→TExoConformanceVerdict",
+        "points": [
+          {
+            "x": 775,
+            "y": 3512.4
+          },
+          {
+            "x": 852,
+            "y": 3498.8
+          },
+          {
+            "x": 1024,
+            "y": 3498.8
+          },
+          {
+            "x": 1196,
+            "y": 3498.8
+          },
+          {
+            "x": 1374.5,
+            "y": 3498.8
+          },
+          {
+            "x": 1553,
+            "y": 3498.8
+          },
+          {
+            "x": 1728.1,
+            "y": 1701.5
+          }
+        ]
+      },
+      {
+        "id": "describeExoPartition→canonicalExoPartition",
+        "points": [
+          {
+            "x": 1103,
+            "y": 3440.3
+          },
+          {
+            "x": 1196,
+            "y": 3440.3
+          },
+          {
+            "x": 1348.4,
+            "y": 3239.3
+          }
+        ]
+      },
+      {
+        "id": "describeVerdict→EXO_OUTCOME_CANNOT_EXPRESS",
+        "points": [
+          {
+            "x": 1447.5,
+            "y": 3405.7
+          },
+          {
+            "x": 1553,
+            "y": 3440.3
+          },
+          {
+            "x": 1731.5,
+            "y": 3440.3
+          },
+          {
+            "x": 1910,
+            "y": 3440.3
+          },
+          {
+            "x": 2086.3,
+            "y": 1557.5
+          }
+        ]
+      },
+      {
+        "id": "describeVerdict→EXO_OUTCOME_REFUSED",
+        "points": [
+          {
+            "x": 1447.5,
+            "y": 3381.8
+          },
+          {
+            "x": 1553,
+            "y": 3381.8
+          },
+          {
+            "x": 1731.5,
+            "y": 3381.8
+          },
+          {
+            "x": 1910,
+            "y": 3381.8
+          },
+          {
+            "x": 2086,
+            "y": 1760
+          }
+        ]
+      },
+      {
+        "id": "describeVerdict→TExoConformanceVerdict",
+        "points": [
+          {
+            "x": 1447.5,
+            "y": 3369.8
+          },
+          {
+            "x": 1553,
+            "y": 3352.5
+          },
+          {
+            "x": 1727.8,
+            "y": 1701.5
+          }
+        ]
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES→EXO_CAP_ELEMENT",
+        "points": [
+          {
+            "x": 1476,
+            "y": 1352.8
+          },
+          {
+            "x": 1553,
+            "y": 1365.8
+          },
+          {
+            "x": 1728.2,
+            "y": 2600
+          }
+        ]
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES→EXO_CAP_LIVE_TREE",
+        "points": [
+          {
+            "x": 1476,
+            "y": 1339.9
+          },
+          {
+            "x": 1553,
+            "y": 1343
+          },
+          {
+            "x": 1727.8,
+            "y": 2429
+          }
+        ]
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES→EXO_CAP_TEXT_NODE",
+        "points": [
+          {
+            "x": 1476,
+            "y": 1328.5
+          },
+          {
+            "x": 1553,
+            "y": 1323
+          },
+          {
+            "x": 1727.5,
+            "y": 2335
+          }
+        ]
+      },
+      {
+        "id": "EXO_CONFORMANCE_CAPABILITIES→EXO_CAP_UPDATE",
+        "points": [
+          {
+            "x": 1476,
+            "y": 1317.1
+          },
+          {
+            "x": 1553,
+            "y": 1303
+          },
+          {
+            "x": 1727.3,
+            "y": 2261
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceClassOf→EXO_OUTCOME_CANNOT_EXPRESS",
+        "points": [
+          {
+            "x": 1469.5,
+            "y": 1549.1
+          },
+          {
+            "x": 1553,
+            "y": 1558.5
+          },
+          {
+            "x": 1731.5,
+            "y": 1558.5
+          },
+          {
+            "x": 1910,
+            "y": 1558.5
+          },
+          {
+            "x": 1993.5,
+            "y": 1547.3
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceClassOf→EXO_OUTCOME_REFUSED",
+        "points": [
+          {
+            "x": 1469.5,
+            "y": 1538.5
+          },
+          {
+            "x": 1553,
+            "y": 1538.5
+          },
+          {
+            "x": 1731.5,
+            "y": 1538.5
+          },
+          {
+            "x": 1910,
+            "y": 1538.5
+          },
+          {
+            "x": 2067.8,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceClassOf→TExoConformanceVerdict",
+        "points": [
+          {
+            "x": 1469.5,
+            "y": 1527.9
+          },
+          {
+            "x": 1553,
+            "y": 1518.5
+          },
+          {
+            "x": 1690,
+            "y": 1632.5
+          }
+        ]
+      },
+      {
+        "id": "exoConformancePartition→canonicalExoPartition",
+        "points": [
+          {
+            "x": 1088.5,
+            "y": 1586
+          },
+          {
+            "x": 1196,
+            "y": 1643.5
+          },
+          {
+            "x": 1370.6,
+            "y": 3170.3
+          }
+        ]
+      },
+      {
+        "id": "exoConformancePartition→EXO_OUTCOME_RENDERED",
+        "points": [
+          {
+            "x": 1152.3,
+            "y": 1586
+          },
+          {
+            "x": 1196,
+            "y": 1597.8
+          },
+          {
+            "x": 1374.5,
+            "y": 1597.8
+          },
+          {
+            "x": 1553,
+            "y": 1597.8
+          },
+          {
+            "x": 1731.5,
+            "y": 1597.8
+          },
+          {
+            "x": 1910,
+            "y": 1597.8
+          },
+          {
+            "x": 2058.6,
+            "y": 1483.5
+          }
+        ]
+      },
+      {
+        "id": "exoConformancePartition→exoConformanceClassOf",
+        "points": [
+          {
+            "x": 1164,
+            "y": 1540.9
+          },
+          {
+            "x": 1196,
+            "y": 1538.5
+          },
+          {
+            "x": 1279.5,
+            "y": 1538.5
+          }
+        ]
+      },
+      {
+        "id": "exoConformancePartition→TExoConformanceVerdict",
+        "points": [
+          {
+            "x": 1106.1,
+            "y": 1517
+          },
+          {
+            "x": 1196,
+            "y": 1479.3
+          },
+          {
+            "x": 1374.5,
+            "y": 1479.3
+          },
+          {
+            "x": 1553,
+            "y": 1479.3
+          },
+          {
+            "x": 1698.7,
+            "y": 1632.5
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceTreeNames→exoConformanceTrees",
+        "points": [
+          {
+            "x": 768.5,
+            "y": 2227.3
+          },
+          {
+            "x": 852,
+            "y": 2227.3
+          },
+          {
+            "x": 1011.2,
+            "y": 2514.5
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceTrees→exoDomAdapter",
+        "points": [
+          {
+            "x": 1031.4,
+            "y": 2560.5
+          },
+          {
+            "x": 1196,
+            "y": 3069.8
+          },
+          {
+            "x": 1314.5,
+            "y": 3069.8
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceTrees→exoHydrateAdapter",
+        "points": [
+          {
+            "x": 1037.1,
+            "y": 2560.5
+          },
+          {
+            "x": 1196,
+            "y": 2838.5
+          },
+          {
+            "x": 1308,
+            "y": 2838.5
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceTrees→exoStrAdapter",
+        "points": [
+          {
+            "x": 1097,
+            "y": 2535.8
+          },
+          {
+            "x": 1196,
+            "y": 2533.5
+          },
+          {
+            "x": 1314.5,
+            "y": 2533.5
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceTrees→exoTermAdapter",
+        "points": [
+          {
+            "x": 1034.2,
+            "y": 2514.5
+          },
+          {
+            "x": 1196,
+            "y": 2149.3
+          },
+          {
+            "x": 1314.5,
+            "y": 2149.3
+          }
+        ]
+      },
+      {
+        "id": "exoConformanceTrees→TExoConformanceAdapter",
+        "points": [
+          {
+            "x": 1028.5,
+            "y": 2514.5
+          },
+          {
+            "x": 1196,
+            "y": 1663.5
+          },
+          {
+            "x": 1374.5,
+            "y": 1663.5
+          },
+          {
+            "x": 1553,
+            "y": 1663.5
+          },
+          {
+            "x": 1693.9,
+            "y": 1905
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→EXO_CAP_ELEMENT",
+        "points": [
+          {
+            "x": 1401.6,
+            "y": 3092.8
+          },
+          {
+            "x": 1553,
+            "y": 3221.3
+          },
+          {
+            "x": 1724.6,
+            "y": 2646
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→EXO_CAP_LIVE_TREE",
+        "points": [
+          {
+            "x": 1405.7,
+            "y": 3092.8
+          },
+          {
+            "x": 1553,
+            "y": 3201.3
+          },
+          {
+            "x": 1726,
+            "y": 2475
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→EXO_CAP_TEXT_NODE",
+        "points": [
+          {
+            "x": 1411.3,
+            "y": 3092.8
+          },
+          {
+            "x": 1553,
+            "y": 3181.3
+          },
+          {
+            "x": 1726.5,
+            "y": 2381
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→EXO_CAP_UPDATE",
+        "points": [
+          {
+            "x": 1419.4,
+            "y": 3092.8
+          },
+          {
+            "x": 1553,
+            "y": 3161.3
+          },
+          {
+            "x": 1726.8,
+            "y": 2307
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→EXO_DOM",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 3086.4
+          },
+          {
+            "x": 1553,
+            "y": 3119.3
+          },
+          {
+            "x": 1671.5,
+            "y": 3119.3
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→exoSketchOfChildren",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 3070.6
+          },
+          {
+            "x": 1553,
+            "y": 3072.3
+          },
+          {
+            "x": 1731.5,
+            "y": 3072.3
+          },
+          {
+            "x": 1910,
+            "y": 3072.3
+          },
+          {
+            "x": 2073.5,
+            "y": 2696.5
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→TExoConformanceAdapter",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 3063.9
+          },
+          {
+            "x": 1553,
+            "y": 3052.3
+          },
+          {
+            "x": 1720.9,
+            "y": 2034
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→TExoConformanceMachine",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 3057.1
+          },
+          {
+            "x": 1553,
+            "y": 3032.3
+          },
+          {
+            "x": 1731.5,
+            "y": 3032.3
+          },
+          {
+            "x": 1910,
+            "y": 3032.3
+          },
+          {
+            "x": 2082.6,
+            "y": 2024.8
+          }
+        ]
+      },
+      {
+        "id": "exoDomAdapter→translateFirstExoText",
+        "points": [
+          {
+            "x": 1416.3,
+            "y": 3046.8
+          },
+          {
+            "x": 1553,
+            "y": 2971.5
+          },
+          {
+            "x": 1674.6,
+            "y": 2897.8
+          }
+        ]
+      },
+      {
+        "id": "exoEntersForeignContent→ExoForeignProbe",
+        "points": [
+          {
+            "x": 1460,
+            "y": 1250.3
+          },
+          {
+            "x": 1553,
+            "y": 1250.3
+          },
+          {
+            "x": 1614,
+            "y": 1250.3
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_CAP_ELEMENT",
+        "points": [
+          {
+            "x": 1410.8,
+            "y": 2861.5
+          },
+          {
+            "x": 1553,
+            "y": 2951.5
+          },
+          {
+            "x": 1719,
+            "y": 2646
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_CAP_LIVE_TREE",
+        "points": [
+          {
+            "x": 1418.6,
+            "y": 2861.5
+          },
+          {
+            "x": 1553,
+            "y": 2931.5
+          },
+          {
+            "x": 1722.9,
+            "y": 2475
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_CAP_TEXT_NODE",
+        "points": [
+          {
+            "x": 1430.7,
+            "y": 2861.5
+          },
+          {
+            "x": 1553,
+            "y": 2911.5
+          },
+          {
+            "x": 1724.1,
+            "y": 2381
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_CAP_UPDATE",
+        "points": [
+          {
+            "x": 1441,
+            "y": 2858.2
+          },
+          {
+            "x": 1553,
+            "y": 2891.5
+          },
+          {
+            "x": 1724.7,
+            "y": 2307
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_HYDRATE",
+        "points": [
+          {
+            "x": 1441,
+            "y": 2850.8
+          },
+          {
+            "x": 1553,
+            "y": 2871.5
+          },
+          {
+            "x": 1678.4,
+            "y": 2925.8
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→EXO_STR",
+        "points": [
+          {
+            "x": 1441,
+            "y": 2837.6
+          },
+          {
+            "x": 1553,
+            "y": 2836
+          },
+          {
+            "x": 1697,
+            "y": 2740
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→exoSketchOfChildren",
+        "points": [
+          {
+            "x": 1429.6,
+            "y": 2815.5
+          },
+          {
+            "x": 1553,
+            "y": 2764
+          },
+          {
+            "x": 1731.5,
+            "y": 2764
+          },
+          {
+            "x": 1910,
+            "y": 2764
+          },
+          {
+            "x": 2028.1,
+            "y": 2696.5
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→TExoConformanceAdapter",
+        "points": [
+          {
+            "x": 1408.3,
+            "y": 2815.5
+          },
+          {
+            "x": 1553,
+            "y": 2717
+          },
+          {
+            "x": 1716.1,
+            "y": 2034
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→TExoConformanceMachine",
+        "points": [
+          {
+            "x": 1398.9,
+            "y": 2815.5
+          },
+          {
+            "x": 1553,
+            "y": 2670
+          },
+          {
+            "x": 1731.5,
+            "y": 2670
+          },
+          {
+            "x": 1910,
+            "y": 2670
+          },
+          {
+            "x": 2079.4,
+            "y": 2024.8
+          }
+        ]
+      },
+      {
+        "id": "exoHydrateAdapter→translateFirstExoText",
+        "points": [
+          {
+            "x": 1395.9,
+            "y": 2815.5
+          },
+          {
+            "x": 1553,
+            "y": 2646.5
+          },
+          {
+            "x": 1703.1,
+            "y": 2828.8
+          }
+        ]
+      },
+      {
+        "id": "exoSketchOfChildren→sketchNode",
+        "points": [
+          {
+            "x": 2180.5,
+            "y": 2662
+          },
+          {
+            "x": 2267,
+            "y": 2662
+          },
+          {
+            "x": 2321.5,
+            "y": 2662
+          }
+        ]
+      },
+      {
+        "id": "exoSketchOfElement→walk",
+        "points": [
+          {
+            "x": 2524.5,
+            "y": 1281.5
+          },
+          {
+            "x": 2624,
+            "y": 1281.5
+          },
+          {
+            "x": 2768,
+            "y": 2183.5
+          }
+        ]
+      },
+      {
+        "id": "exoSketchOfMarkup→exoSketchOfChildren",
+        "points": [
+          {
+            "x": 1823.5,
+            "y": 2537.5
+          },
+          {
+            "x": 1910,
+            "y": 2537.5
+          },
+          {
+            "x": 2039,
+            "y": 2627.5
+          }
+        ]
+      },
+      {
+        "id": "exoSketchOfTermNode→walk",
+        "points": [
+          {
+            "x": 2518.5,
+            "y": 1783.8
+          },
+          {
+            "x": 2624,
+            "y": 1783.8
+          },
+          {
+            "x": 2761.6,
+            "y": 2183.5
+          }
+        ]
+      },
+      {
+        "id": "exoSketchOfTermRoots→walk",
+        "points": [
+          {
+            "x": 1807.5,
+            "y": 2198.5
+          },
+          {
+            "x": 1910,
+            "y": 2198.5
+          },
+          {
+            "x": 2088.5,
+            "y": 2198.5
+          },
+          {
+            "x": 2267,
+            "y": 2198.5
+          },
+          {
+            "x": 2445.5,
+            "y": 2198.5
+          },
+          {
+            "x": 2624,
+            "y": 2198.5
+          },
+          {
+            "x": 2656,
+            "y": 2202.7
+          }
+        ]
+      },
+      {
+        "id": "exoStrAdapter→EXO_CAP_ELEMENT",
+        "points": [
+          {
+            "x": 1420.4,
+            "y": 2556.5
+          },
+          {
+            "x": 1553,
+            "y": 2623
+          },
+          {
+            "x": 1671.5,
+            "y": 2623
+          }
+        ]
+      },
+      {
+        "id": "exoStrAdapter→EXO_STR",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 2549.2
+          },
+          {
+            "x": 1553,
+            "y": 2580.3
+          },
+          {
+            "x": 1701.5,
+            "y": 2694
+          }
+        ]
+      },
+      {
+        "id": "exoStrAdapter→exoSketchOfMarkup",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 2534.8
+          },
+          {
+            "x": 1553,
+            "y": 2537.5
+          },
+          {
+            "x": 1639.5,
+            "y": 2537.5
+          }
+        ]
+      },
+      {
+        "id": "exoStrAdapter→TExoConformanceAdapter",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 2512.6
+          },
+          {
+            "x": 1553,
+            "y": 2471.3
+          },
+          {
+            "x": 1708.6,
+            "y": 2034
+          }
+        ]
+      },
+      {
+        "id": "exoStrAdapter→TExoConformanceMachine",
+        "points": [
+          {
+            "x": 1406.4,
+            "y": 2510.5
+          },
+          {
+            "x": 1553,
+            "y": 2405
+          },
+          {
+            "x": 1731.5,
+            "y": 2405
+          },
+          {
+            "x": 1910,
+            "y": 2405
+          },
+          {
+            "x": 2073.7,
+            "y": 2024.8
+          }
+        ]
+      },
+      {
+        "id": "exoTermAdapter→EXO_CAP_LIVE_TREE",
+        "points": [
+          {
+            "x": 1395.5,
+            "y": 2172.3
+          },
+          {
+            "x": 1553,
+            "y": 2344.5
+          },
+          {
+            "x": 1693.3,
+            "y": 2429
+          }
+        ]
+      },
+      {
+        "id": "exoTermAdapter→EXO_CAP_UPDATE",
+        "points": [
+          {
+            "x": 1405,
+            "y": 2172.3
+          },
+          {
+            "x": 1553,
+            "y": 2284
+          },
+          {
+            "x": 1671.5,
+            "y": 2284
+          }
+        ]
+      },
+      {
+        "id": "exoTermAdapter→exoSketchOfTermRoots",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 2165.8
+          },
+          {
+            "x": 1553,
+            "y": 2198.5
+          },
+          {
+            "x": 1655.5,
+            "y": 2198.5
+          }
+        ]
+      },
+      {
+        "id": "exoTermAdapter→TERM_BACKEND",
+        "points": [
+          {
+            "x": 1388.3,
+            "y": 2126.3
+          },
+          {
+            "x": 1553,
+            "y": 1851
+          },
+          {
+            "x": 1671.5,
+            "y": 1806
+          }
+        ]
+      },
+      {
+        "id": "exoTermAdapter→TExoConformanceAdapter",
+        "points": [
+          {
+            "x": 1387.4,
+            "y": 2126.3
+          },
+          {
+            "x": 1553,
+            "y": 1831
+          },
+          {
+            "x": 1648.4,
+            "y": 1905
+          }
+        ]
+      },
+      {
+        "id": "exoTermAdapter→TExoConformanceMachine",
+        "points": [
+          {
+            "x": 1384.4,
+            "y": 2126.3
+          },
+          {
+            "x": 1553,
+            "y": 1736.3
+          },
+          {
+            "x": 1731.5,
+            "y": 1736.3
+          },
+          {
+            "x": 1910,
+            "y": 1736.3
+          },
+          {
+            "x": 2064.3,
+            "y": 1955.8
+          }
+        ]
+      },
+      {
+        "id": "refusesAt→EXO_OUTCOME_REFUSED",
+        "points": [
+          {
+            "x": 1517.5,
+            "y": 920.1
+          },
+          {
+            "x": 1553,
+            "y": 927.8
+          },
+          {
+            "x": 1731.5,
+            "y": 927.8
+          },
+          {
+            "x": 1910,
+            "y": 927.8
+          },
+          {
+            "x": 2083.4,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "refusesAt→TExoConformanceExpectation",
+        "points": [
+          {
+            "x": 1517.5,
+            "y": 904.1
+          },
+          {
+            "x": 1553,
+            "y": 907.8
+          },
+          {
+            "x": 1716.4,
+            "y": 534
+          }
+        ]
+      },
+      {
+        "id": "refusesAt→TExoConformanceStage",
+        "points": [
+          {
+            "x": 1499.5,
+            "y": 854.8
+          },
+          {
+            "x": 1553,
+            "y": 840
+          },
+          {
+            "x": 1731.5,
+            "y": 840
+          },
+          {
+            "x": 1910,
+            "y": 840
+          },
+          {
+            "x": 1942,
+            "y": 845.2
+          }
+        ]
+      },
+      {
+        "id": "renders→EXO_OUTCOME_RENDERED",
+        "points": [
+          {
+            "x": 1469.5,
+            "y": 996.5
+          },
+          {
+            "x": 1553,
+            "y": 1005.5
+          },
+          {
+            "x": 1731.5,
+            "y": 1005.5
+          },
+          {
+            "x": 1910,
+            "y": 1005.5
+          },
+          {
+            "x": 2079.5,
+            "y": 1437.5
+          }
+        ]
+      },
+      {
+        "id": "renders→TExoConformanceExpectation",
+        "points": [
+          {
+            "x": 1469.5,
+            "y": 965.8
+          },
+          {
+            "x": 1553,
+            "y": 947.8
+          },
+          {
+            "x": 1717.8,
+            "y": 534
+          }
+        ]
+      },
+      {
+        "id": "runExoConformanceRule→exoConformanceTrees",
+        "points": [
+          {
+            "x": 379,
+            "y": 519
+          },
+          {
+            "x": 514,
+            "y": 1441.5
+          },
+          {
+            "x": 683,
+            "y": 1441.5
+          },
+          {
+            "x": 852,
+            "y": 1441.5
+          },
+          {
+            "x": 1020.4,
+            "y": 2514.5
+          }
+        ]
+      },
+      {
+        "id": "runExoConformanceRule→runOne",
+        "points": [
+          {
+            "x": 398.6,
+            "y": 519
+          },
+          {
+            "x": 514,
+            "y": 680.8
+          },
+          {
+            "x": 546,
+            "y": 680.8
+          }
+        ]
+      },
+      {
+        "id": "runExoConformanceRule→TExoConformanceRule",
+        "points": [
+          {
+            "x": 394.1,
+            "y": 450
+          },
+          {
+            "x": 514,
+            "y": 244
+          },
+          {
+            "x": 683,
+            "y": 244
+          },
+          {
+            "x": 852,
+            "y": 244
+          },
+          {
+            "x": 1024,
+            "y": 244
+          },
+          {
+            "x": 1196,
+            "y": 244
+          },
+          {
+            "x": 1311.7,
+            "y": 362.8
+          }
+        ]
+      },
+      {
+        "id": "runExoConformanceRule→TExoConformanceVerdict",
+        "points": [
+          {
+            "x": 392.5,
+            "y": 450
+          },
+          {
+            "x": 514,
+            "y": 224
+          },
+          {
+            "x": 683,
+            "y": 224
+          },
+          {
+            "x": 852,
+            "y": 224
+          },
+          {
+            "x": 1024,
+            "y": 224
+          },
+          {
+            "x": 1196,
+            "y": 224
+          },
+          {
+            "x": 1374.5,
+            "y": 224
+          },
+          {
+            "x": 1553,
+            "y": 224
+          },
+          {
+            "x": 1727.2,
+            "y": 1632.5
+          }
+        ]
+      },
+      {
+        "id": "runOne→capabilitiesNeeded",
+        "points": [
+          {
+            "x": 691.4,
+            "y": 715.3
+          },
+          {
+            "x": 852,
+            "y": 1373.8
+          },
+          {
+            "x": 925.5,
+            "y": 1373.8
+          }
+        ]
+      },
+      {
+        "id": "runOne→EXO_OUTCOME_CANNOT_EXPRESS",
+        "points": [
+          {
+            "x": 695.8,
+            "y": 715.3
+          },
+          {
+            "x": 852,
+            "y": 1137.8
+          },
+          {
+            "x": 1024,
+            "y": 1137.8
+          },
+          {
+            "x": 1196,
+            "y": 1137.8
+          },
+          {
+            "x": 1374.5,
+            "y": 1137.8
+          },
+          {
+            "x": 1553,
+            "y": 1137.8
+          },
+          {
+            "x": 1731.5,
+            "y": 1137.8
+          },
+          {
+            "x": 1910,
+            "y": 1137.8
+          },
+          {
+            "x": 2078.2,
+            "y": 1511.5
+          }
+        ]
+      },
+      {
+        "id": "runOne→EXO_OUTCOME_REFUSED",
+        "points": [
+          {
+            "x": 696.3,
+            "y": 715.3
+          },
+          {
+            "x": 852,
+            "y": 1117.8
+          },
+          {
+            "x": 1024,
+            "y": 1117.8
+          },
+          {
+            "x": 1196,
+            "y": 1117.8
+          },
+          {
+            "x": 1374.5,
+            "y": 1117.8
+          },
+          {
+            "x": 1553,
+            "y": 1117.8
+          },
+          {
+            "x": 1731.5,
+            "y": 1117.8
+          },
+          {
+            "x": 1910,
+            "y": 1117.8
+          },
+          {
+            "x": 2081.9,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "runOne→EXO_OUTCOME_RENDERED",
+        "points": [
+          {
+            "x": 697,
+            "y": 715.3
+          },
+          {
+            "x": 852,
+            "y": 1097.8
+          },
+          {
+            "x": 1024,
+            "y": 1097.8
+          },
+          {
+            "x": 1196,
+            "y": 1097.8
+          },
+          {
+            "x": 1374.5,
+            "y": 1097.8
+          },
+          {
+            "x": 1553,
+            "y": 1097.8
+          },
+          {
+            "x": 1731.5,
+            "y": 1097.8
+          },
+          {
+            "x": 1910,
+            "y": 1097.8
+          },
+          {
+            "x": 2077.2,
+            "y": 1437.5
+          }
+        ]
+      },
+      {
+        "id": "runOne→EXO_STAGE_SCHEMA_COMPILE",
+        "points": [
+          {
+            "x": 752.4,
+            "y": 715.3
+          },
+          {
+            "x": 852,
+            "y": 764.8
+          },
+          {
+            "x": 1024,
+            "y": 764.8
+          },
+          {
+            "x": 1196,
+            "y": 764.8
+          },
+          {
+            "x": 1374.5,
+            "y": 764.8
+          },
+          {
+            "x": 1553,
+            "y": 764.8
+          },
+          {
+            "x": 1731.5,
+            "y": 764.8
+          },
+          {
+            "x": 1910,
+            "y": 764.8
+          },
+          {
+            "x": 2088.5,
+            "y": 764.8
+          },
+          {
+            "x": 2267,
+            "y": 764.8
+          },
+          {
+            "x": 2390.9,
+            "y": 817
+          }
+        ]
+      },
+      {
+        "id": "runOne→EXO_STAGE_UPDATE",
+        "points": [
+          {
+            "x": 820,
+            "y": 710.7
+          },
+          {
+            "x": 852,
+            "y": 717.8
+          },
+          {
+            "x": 1024,
+            "y": 717.8
+          },
+          {
+            "x": 1196,
+            "y": 717.8
+          },
+          {
+            "x": 1374.5,
+            "y": 717.8
+          },
+          {
+            "x": 1553,
+            "y": 717.8
+          },
+          {
+            "x": 1731.5,
+            "y": 717.8
+          },
+          {
+            "x": 1910,
+            "y": 717.8
+          },
+          {
+            "x": 2088.5,
+            "y": 717.8
+          },
+          {
+            "x": 2267,
+            "y": 717.8
+          },
+          {
+            "x": 2382.5,
+            "y": 749
+          }
+        ]
+      },
+      {
+        "id": "runOne→EXO_STAGE_WIRE",
+        "points": [
+          {
+            "x": 820,
+            "y": 665.6
+          },
+          {
+            "x": 852,
+            "y": 662
+          },
+          {
+            "x": 1024,
+            "y": 662
+          },
+          {
+            "x": 1196,
+            "y": 662
+          },
+          {
+            "x": 1374.5,
+            "y": 662
+          },
+          {
+            "x": 1553,
+            "y": 662
+          },
+          {
+            "x": 1731.5,
+            "y": 662
+          },
+          {
+            "x": 1910,
+            "y": 662
+          },
+          {
+            "x": 2088.5,
+            "y": 662
+          },
+          {
+            "x": 2267,
+            "y": 662
+          },
+          {
+            "x": 2385.5,
+            "y": 681.9
+          }
+        ]
+      },
+      {
+        "id": "runOne→reason",
+        "points": [
+          {
+            "x": 758.5,
+            "y": 646.3
+          },
+          {
+            "x": 852,
+            "y": 603.5
+          },
+          {
+            "x": 957.5,
+            "y": 603.5
+          }
+        ]
+      },
+      {
+        "id": "runOne→TExoConformanceAdapter",
+        "points": [
+          {
+            "x": 726,
+            "y": 646.3
+          },
+          {
+            "x": 852,
+            "y": 545
+          },
+          {
+            "x": 1024,
+            "y": 545
+          },
+          {
+            "x": 1196,
+            "y": 545
+          },
+          {
+            "x": 1374.5,
+            "y": 545
+          },
+          {
+            "x": 1553,
+            "y": 545
+          },
+          {
+            "x": 1723.4,
+            "y": 1905
+          }
+        ]
+      },
+      {
+        "id": "runOne→TExoConformanceRule",
+        "points": [
+          {
+            "x": 706,
+            "y": 646.3
+          },
+          {
+            "x": 852,
+            "y": 427.3
+          },
+          {
+            "x": 1024,
+            "y": 427.3
+          },
+          {
+            "x": 1196,
+            "y": 427.3
+          },
+          {
+            "x": 1228,
+            "y": 427.3
+          }
+        ]
+      },
+      {
+        "id": "runOne→TExoConformanceRun",
+        "points": [
+          {
+            "x": 697.7,
+            "y": 646.3
+          },
+          {
+            "x": 852,
+            "y": 284
+          },
+          {
+            "x": 1024,
+            "y": 284
+          },
+          {
+            "x": 1196,
+            "y": 284
+          },
+          {
+            "x": 1374.5,
+            "y": 284
+          },
+          {
+            "x": 1553,
+            "y": 284
+          },
+          {
+            "x": 1731.5,
+            "y": 284
+          },
+          {
+            "x": 1910,
+            "y": 284
+          },
+          {
+            "x": 2078.3,
+            "y": 1221.5
+          }
+        ]
+      },
+      {
+        "id": "runOne→TExoConformanceVerdict",
+        "points": [
+          {
+            "x": 697,
+            "y": 646.3
+          },
+          {
+            "x": 852,
+            "y": 264
+          },
+          {
+            "x": 1024,
+            "y": 264
+          },
+          {
+            "x": 1196,
+            "y": 264
+          },
+          {
+            "x": 1374.5,
+            "y": 264
+          },
+          {
+            "x": 1553,
+            "y": 264
+          },
+          {
+            "x": 1727.1,
+            "y": 1632.5
+          }
+        ]
+      },
+      {
+        "id": "sketchNode→ELEMENT_NODE",
+        "points": [
+          {
+            "x": 2492.4,
+            "y": 2696.5
+          },
+          {
+            "x": 2624,
+            "y": 2793.3
+          },
+          {
+            "x": 2738.1,
+            "y": 2867.3
+          }
+        ]
+      },
+      {
+        "id": "sketchNode→TEXT_NODE",
+        "points": [
+          {
+            "x": 2518.6,
+            "y": 2696.5
+          },
+          {
+            "x": 2624,
+            "y": 2746.3
+          },
+          {
+            "x": 2724.4,
+            "y": 2793.3
+          }
+        ]
+      },
+      {
+        "id": "sketchNode→walk",
+        "points": [
+          {
+            "x": 2466.4,
+            "y": 2627.5
+          },
+          {
+            "x": 2624,
+            "y": 2368
+          },
+          {
+            "x": 2739.1,
+            "y": 2252.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceAdapter→TExoConformanceMachine",
+        "points": [
+          {
+            "x": 1805.5,
+            "y": 2034
+          },
+          {
+            "x": 1910,
+            "y": 2125
+          },
+          {
+            "x": 2042.8,
+            "y": 2024.8
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceAdapter→TExoConformanceRun",
+        "points": [
+          {
+            "x": 1812.6,
+            "y": 1905
+          },
+          {
+            "x": 1910,
+            "y": 1827.5
+          },
+          {
+            "x": 2070,
+            "y": 1335.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceExpectation→EXO_EXPECT_UNDECLARED",
+        "points": [
+          {
+            "x": 1809.9,
+            "y": 534
+          },
+          {
+            "x": 1910,
+            "y": 578
+          },
+          {
+            "x": 2083.4,
+            "y": 1363.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceExpectation→EXO_OUTCOME_CANNOT_EXPRESS",
+        "points": [
+          {
+            "x": 1836.8,
+            "y": 534
+          },
+          {
+            "x": 1910,
+            "y": 558
+          },
+          {
+            "x": 2084.3,
+            "y": 1511.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceExpectation→EXO_OUTCOME_REFUSED",
+        "points": [
+          {
+            "x": 1878,
+            "y": 499.5
+          },
+          {
+            "x": 1910,
+            "y": 499.5
+          },
+          {
+            "x": 2085.2,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceExpectation→EXO_OUTCOME_RENDERED",
+        "points": [
+          {
+            "x": 1846.6,
+            "y": 465
+          },
+          {
+            "x": 1910,
+            "y": 446
+          },
+          {
+            "x": 2084.5,
+            "y": 1437.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceExpectation→TExoConformanceStage",
+        "points": [
+          {
+            "x": 1815.3,
+            "y": 465
+          },
+          {
+            "x": 1910,
+            "y": 426
+          },
+          {
+            "x": 2074.6,
+            "y": 834.8
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceMachine→TExoConformancePlacement",
+        "points": [
+          {
+            "x": 2235,
+            "y": 1990.3
+          },
+          {
+            "x": 2267,
+            "y": 1990.3
+          },
+          {
+            "x": 2299,
+            "y": 1990.3
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceRule→TExoConformanceExpectation",
+        "points": [
+          {
+            "x": 1521,
+            "y": 486.5
+          },
+          {
+            "x": 1553,
+            "y": 499.5
+          },
+          {
+            "x": 1585,
+            "y": 499.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceRule→TExoConformanceSubject",
+        "points": [
+          {
+            "x": 1521,
+            "y": 382.3
+          },
+          {
+            "x": 1553,
+            "y": 372.5
+          },
+          {
+            "x": 1585,
+            "y": 372.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceStage→EXO_STAGE_SCHEMA_COMPILE",
+        "points": [
+          {
+            "x": 2095.5,
+            "y": 903.8
+          },
+          {
+            "x": 2267,
+            "y": 1749.8
+          },
+          {
+            "x": 2441,
+            "y": 863
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceStage→EXO_STAGE_UPDATE",
+        "points": [
+          {
+            "x": 2110.3,
+            "y": 903.8
+          },
+          {
+            "x": 2267,
+            "y": 1152
+          },
+          {
+            "x": 2434.9,
+            "y": 789
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceStage→EXO_STAGE_WIRE",
+        "points": [
+          {
+            "x": 2170.3,
+            "y": 834.8
+          },
+          {
+            "x": 2267,
+            "y": 794
+          },
+          {
+            "x": 2405.3,
+            "y": 715
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceSubject→TExoConformanceMachine",
+        "points": [
+          {
+            "x": 1878,
+            "y": 372.5
+          },
+          {
+            "x": 1910,
+            "y": 372.5
+          },
+          {
+            "x": 2084.7,
+            "y": 1955.8
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceVerdict→EXO_OUTCOME_CANNOT_EXPRESS",
+        "points": [
+          {
+            "x": 1878,
+            "y": 1691.6
+          },
+          {
+            "x": 1910,
+            "y": 1697
+          },
+          {
+            "x": 2063.2,
+            "y": 1557.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceVerdict→EXO_OUTCOME_REFUSED",
+        "points": [
+          {
+            "x": 1878,
+            "y": 1675.2
+          },
+          {
+            "x": 1910,
+            "y": 1677
+          },
+          {
+            "x": 2020.1,
+            "y": 1714
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceVerdict→EXO_OUTCOME_RENDERED",
+        "points": [
+          {
+            "x": 1878,
+            "y": 1658.8
+          },
+          {
+            "x": 1910,
+            "y": 1657
+          },
+          {
+            "x": 2067.6,
+            "y": 1483.5
+          }
+        ]
+      },
+      {
+        "id": "TExoConformanceVerdict→TExoConformanceStage",
+        "points": [
+          {
+            "x": 1878,
+            "y": 1642.4
+          },
+          {
+            "x": 1910,
+            "y": 1637
+          },
+          {
+            "x": 2080.5,
+            "y": 903.8
+          }
+        ]
+      },
+      {
+        "id": "translateFirstExoText→TEXT_NODE",
+        "points": [
+          {
+            "x": 1810.5,
+            "y": 2863.3
+          },
+          {
+            "x": 1910,
+            "y": 2863.3
+          },
+          {
+            "x": 2088.5,
+            "y": 2863.3
+          },
+          {
+            "x": 2267,
+            "y": 2863.3
+          },
+          {
+            "x": 2445.5,
+            "y": 2863.3
+          },
+          {
+            "x": 2624,
+            "y": 2863.3
+          },
+          {
+            "x": 2713.5,
+            "y": 2835.1
+          }
+        ]
+      },
+      {
+        "id": "undeclared→EXO_EXPECT_UNDECLARED",
+        "points": [
+          {
+            "x": 1479.5,
+            "y": 172.7
+          },
+          {
+            "x": 1553,
+            "y": 184.8
+          },
+          {
+            "x": 1731.5,
+            "y": 184.8
+          },
+          {
+            "x": 1910,
+            "y": 184.8
+          },
+          {
+            "x": 2085.1,
+            "y": 1363.5
+          }
+        ]
+      },
+      {
+        "id": "undeclared→TExoConformanceExpectation",
+        "points": [
+          {
+            "x": 1479.5,
+            "y": 138.7
+          },
+          {
+            "x": 1553,
+            "y": 127
+          },
+          {
+            "x": 1715,
+            "y": 465
+          }
+        ]
+      },
+      {
+        "id": "walk→describeProbe",
+        "points": [
+          {
+            "x": 2891,
+            "y": 2251.6
+          },
+          {
+            "x": 2923,
+            "y": 2260.8
+          },
+          {
+            "x": 2955,
+            "y": 2260.8
+          }
+        ]
+      },
+      {
+        "id": "walk→HTML_NS",
+        "points": [
+          {
+            "x": 2891,
+            "y": 2184.4
+          },
+          {
+            "x": 2923,
+            "y": 2175.3
+          },
+          {
+            "x": 2961.5,
+            "y": 2175.3
+          }
+        ]
+      },
+      {
+        "id": "walk→sketchNode",
+        "points": [
+          {
+            "x": 2761.3,
+            "y": 2252.5
+          },
+          {
+            "x": 2624,
+            "y": 2640.8
+          },
+          {
+            "x": 2569.5,
+            "y": 2647.2
+          }
+        ]
+      }
+    ]
+  }
+}

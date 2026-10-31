@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    // NOT `dist` — see tsconfig.build.json. `dist` is tsup's, and is what gets published.
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
     "rootDir": "./src",
     "lib": ["ES2020", "DOM"],
     "composite": true,
@@ -12,12 +14,12 @@
     "noUnusedParameters": true,
     "baseUrl": ".",
     "paths": {
-      "@exodra/reactivity": ["../reactivity/dist/index.d.ts"]
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["dist", "**/*.test.ts", "**/*.spec.ts"],
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts"],
   "references": [
-    { "path": "../reactivity" }
+    { "path": "../core" }
   ]
 }

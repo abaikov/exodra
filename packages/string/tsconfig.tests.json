@@ -1,0 +1,41 @@
+{
+  // THE TEST FILES OF `@exodra/string`, COMPILED. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // `paths` restated in full (`extends` replaces it, never merges). The first three entries are
+  // the base's; `@exodra/test-utils` is added because the suites reach for `source()` and
+  // `buildRow()`, which are resolved at run time only by the root `vitest.config.ts` alias.
+  //
+  // `@exodra/string` MAPS TO ITS OWN `src/index.ts`, and the reason is written out at length in
+  // `packages/dom/tsconfig.tests.json`: three suites here import this package by NAME rather than
+  // by relative path, and with no mapping node resolution walks to `dist/index.d.ts` — a build
+  // artefact `release:check` does not produce until six steps after this gate. So those three were
+  // typechecked against the last build's exports, which agreed with the sources only by
+  // coincidence, and stopped agreeing the moment the entry point became `ExoStrBackend`. It points
+  // at the SOURCE and not at `.tsbuild` so that a suite mixing `@exodra/string` with a relative
+  // import of the same file gets one type and not two.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    // `bench/escape/exo-escape-variants.ts` imports `packages/core/src` on purpose — see its
+    // header — so this program's root has to contain both packages, and `replaceAll` is one of the
+    // variants it measures.
+    "rootDir": "../..",
+    "lib": ["ES2021"],
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/list-reconcile": ["../list-reconcile/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"],
+      "@exodra/string": ["./src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "bench/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

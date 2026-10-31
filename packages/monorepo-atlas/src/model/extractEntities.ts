@@ -1,4 +1,12 @@
-import { Project, SyntaxKind, type Node, type SourceFile } from 'ts-morph';
+import {
+    Project,
+    SyntaxKind,
+    type ArrowFunction,
+    type FunctionDeclaration,
+    type FunctionExpression,
+    type Node,
+    type SourceFile,
+} from 'ts-morph';
 import type {
     TExoEdgeEvidence,
     TExoGraphEdge,
@@ -7,36 +15,21 @@ import type {
     TExoMember,
     TExoMemberPart,
     TExoRelation,
+    TExoUnresolvedType,
 } from './types';
 import { EXO_BOX_MEMBERS } from './boxLimits';
 
-/**
- * What is INSIDE a package: its declarations, and how they reach each other.
- *
- * This is the diagram people actually mean by "UML of the library" — classes,
- * functions and types, who calls whom, who extends whom. The package graph
- * answers "what does this package depend on"; this answers "how is it built".
- *
- * The output is the SAME model the package graph produces, so the layout, the
- * view, the theme and the detail panel are all shared — only the extraction
- * differs.
- */
-export type TExoEntityKind =
-    | 'class'
-    | 'function'
-    | 'type'
-    | 'constant';
+// What is INSIDE a package: its declarations, and how they reach each other. The output is the
+// SAME model the package graph produces, so layout, view, theme and detail panel are all shared.
+export type TExoEntityKind = 'class' | 'function' | 'type' | 'constant';
 
 export type TExoExtractOptions = {
-    /** Files to read, e.g. `packages/dom/src/**\/*.ts`. */
+    // Files to read, e.g. `packages/dom/src/**/*.ts`.
     include: readonly string[];
-    /**
-     * Files to leave out. Tests by default: they reference everything, so
-     * including them turns the diagram into a star around the test file and
-     * hides the structure it was drawn to show.
-     */
+    // Files to leave out. Tests by default: they reference everything, so including them turns the
+    // diagram into a star around the test file.
     exclude?: readonly string[];
-    /** Only declarations reachable from the package's entry point(s). */
+    // Only declarations reachable from the package's entry point(s).
     exportedOnly?: boolean;
     tsConfig?: string;
 };
@@ -51,12 +44,7 @@ const RELATION_BY_REFERENCE: Record<TExoReferenceKind, TExoRelation> = {
 };
 
 /** How a reference reaches another declaration. */
-export type TExoReferenceKind =
-    | 'calls'
-    | 'extends'
-    | 'implements'
-    | 'constructs'
-    | 'uses';
+export type TExoReferenceKind = 'calls' | 'extends' | 'implements' | 'constructs' | 'uses';
 
 export function extractEntities(options: TExoExtractOptions): TExoGraphModel {
     const project = new Project({
@@ -68,12 +56,15 @@ export function extractEntities(options: TExoExtractOptions): TExoGraphModel {
     const excluded = options.exclude ?? ['**/*.test.*', '**/*.spec.*', '**/*.d.ts'];
     for (const file of project.getSourceFiles()) {
         const path = file.getFilePath();
-        if (excluded.some(pattern => matches(path, pattern))) {
+        if (excluded.some((pattern) => matches(path, pattern))) {
             project.removeSourceFile(file);
         }
     }
 
-    const declarations = collectDeclarations(project.getSourceFiles());
+    // Filled by the one fenced call in this file; carried out in the model and counted by
+    // the CLI. See `askTheChecker`.
+    const unresolved: TExoUnresolvedType[] = [];
+    const declarations = collectDeclarations(project.getSourceFiles(), unresolved);
     const byNode = new Map<Node, TExoDeclaration>();
     for (const declaration of declarations.values()) {
         byNode.set(declaration.node, declaration);
@@ -116,8 +107,8 @@ export function extractEntities(options: TExoExtractOptions): TExoGraphModel {
     const kept = options.exportedOnly
         ? new Set(
               [...declarations.values()]
-                  .filter(declaration => declaration.exported)
-                  .map(declaration => declaration.id)
+                  .filter((declaration) => declaration.exported)
+                  .map((declaration) => declaration.id)
           )
         : new Set(declarations.keys());
 
@@ -125,18 +116,18 @@ export function extractEntities(options: TExoExtractOptions): TExoGraphModel {
     // link to a box that is not on screen leads nowhere.
     const names = new Set(
         [...declarations.values()]
-            .filter(declaration => kept.has(declaration.id))
-            .map(declaration => declaration.id)
+            .filter((declaration) => kept.has(declaration.id))
+            .map((declaration) => declaration.id)
     );
 
     const nodes: TExoGraphNode[] = [...declarations.values()]
-        .filter(declaration => kept.has(declaration.id))
-        .map(declaration => {
+        .filter((declaration) => kept.has(declaration.id))
+        .map((declaration) => {
             // EVERY member is kept, not just the ones that fit. The box draws
             // the first few and says how many it left out; the panel is where
             // the reader goes for the rest, and it cannot show what was thrown
             // away at build time.
-            const members = declaration.members.map(member => ({
+            const members = declaration.members.map((member) => ({
                 ...member,
                 parts: linkParts(member.text, names),
                 // Names cut off by the box are still reachable from the card,
@@ -171,34 +162,54 @@ export function extractEntities(options: TExoExtractOptions): TExoGraphModel {
         legend: { runtime: 'Class', tooling: 'Function', app: 'Type & constant' },
         nodes,
         edges: [...edges.values()]
-            .filter(edge => kept.has(edge.from) && kept.has(edge.to))
+            .filter((edge) => kept.has(edge.from) && kept.has(edge.to))
             .map(({ kindSet: _kindSet, ...edge }) => ({
                 ...edge,
-                kinds: [...new Set(edge.evidence.map(item => item.kind))].sort(),
+                kinds: [...new Set(edge.evidence.map((item) => item.kind))].sort(),
                 // The reference kinds, kept where the detail panel can show them.
                 evidence: edge.evidence,
             }))
             .sort((a, b) => a.id.localeCompare(b.id)),
         rules: {},
+        // Omitted when nothing was lost, so the key's presence is the signal.
+        ...(unresolved.length > 0 ? { unresolved } : {}),
     };
 }
 
-/**
- * Entity kinds reuse the graph's three colour slots. Three is the cap for any
- * node-link diagram (all-pairs separation), so `constant` shares the type slot
- * rather than inventing a fourth hue nobody can distinguish anyway.
- */
-/**
- * Split a member's text so the entity names inside it can be followed.
- *
- * Matching is by identifier, the same way the reference edges are found — the
- * name in the signature IS what the reader sees, and resolving it through the
- * checker would disagree with the label on the box next to it.
- */
-export function linkParts(
-    text: string,
-    known: ReadonlySet<string>
-): TExoMemberPart[] {
+/** The mark that goes where a type would have been. Deliberately not spellable as a type. */
+export const EXO_UNRESOLVED_TYPE = '«type unresolved»';
+
+// THE ONLY PLACE THIS EXTRACTOR HANDS ANYTHING TO THE TYPE CHECKER, and it is FENCED. Asking is
+// not a lookup: it runs assignability, which has no fixed point on an interface whose method
+// parameters mention the interface again — `@exodra/core`'s `TExoChildrenWiring`, six times
+// over. A seen-set would guard nothing: the recursion is entirely inside the checker, below any
+// frame this package owns. README, "The one call to the type checker, and why it is fenced".
+export function askTheChecker(
+    read: () => string,
+    owner: string,
+    member: string,
+    into: TExoUnresolvedType[]
+): string {
+    try {
+        return read();
+    } catch (error) {
+        // `String(error)` rather than a blind `.message`: a stack overflow is a real
+        // `RangeError`, but a report that reads `undefined` for anything else is the
+        // silence this whole guard exists to prevent.
+        into.push({
+            owner,
+            member,
+            reason: error instanceof Error ? error.message : String(error),
+        });
+        return EXO_UNRESOLVED_TYPE;
+    }
+}
+
+// Entity kinds reuse the graph's three colour slots. Three is the cap for any node-link diagram
+// (all-pairs separation), so `constant` shares the type slot rather than inventing a fourth hue.
+// Splitting a member's text matches BY IDENTIFIER, the same way reference edges are found: the
+// name in the signature IS what the reader sees, where the checker's expansion would disagree.
+export function linkParts(text: string, known: ReadonlySet<string>): TExoMemberPart[] {
     const parts: TExoMemberPart[] = [];
     let plain = '';
     // Identifiers only; punctuation and generics fall through as plain text.
@@ -233,10 +244,7 @@ function boxSize(
     const lines = shown.length + (hasMore ? 1 : 0);
     return {
         width: Math.max(120, Math.round(longest * CHAR) + 24),
-        height:
-            (stereotype ? HEADER + 12 : HEADER) +
-            lines * LINE +
-            (lines > 0 ? 8 : 0),
+        height: (stereotype ? HEADER + 12 : HEADER) + lines * LINE + (lines > 0 ? 8 : 0),
     };
 }
 
@@ -280,11 +288,8 @@ function shortType(text: string | undefined, limit = 28): string {
     return flat.length > limit ? `${flat.slice(0, limit - 1)}…` : flat;
 }
 
-/**
- * A member's source text without its comment. `getText()` on a documented field
- * hands back the JSDoc as well, which would put a paragraph inside a one-line
- * box — the prose is carried separately, as `doc`.
- */
+// A member's source text without its comment: `getText()` on a documented field hands back the
+// JSDoc too, which would put a paragraph inside a one-line box. The prose travels as `doc`.
 function withoutComments(text: string): string {
     return text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 }
@@ -294,17 +299,9 @@ function fullType(text: string | undefined): string {
     return (text ?? '').replace(/\s+/g, ' ').trim();
 }
 
-/**
- * The author's own summary of a declaration.
- *
- * Only the first sentence: a box's tooltip and a side panel are not the place
- * to re-print a page of prose, and the first sentence is where JSDoc convention
- * already puts the answer to "what is this".
- *
- * A `const` carries its JSDoc on the surrounding statement, not on the
- * declaration — that is where the comment is written, so that is where it is
- * looked for.
- */
+// The author's own summary of a declaration, first sentence only — where JSDoc convention already
+// puts the answer to "what is this". A `const` carries its JSDoc on the surrounding STATEMENT,
+// not on the declaration, so that is where this looks.
 function docOf(node: Node): string | undefined {
     const docs =
         readDocs(node) ??
@@ -328,24 +325,18 @@ function docOf(node: Node): string | undefined {
 }
 
 function readDocs(node: Node | undefined): string | undefined {
-    const jsDocable = node as
-        | { getJsDocs?: () => { getDescription: () => string }[] }
-        | undefined;
+    const jsDocable = node as { getJsDocs?: () => { getDescription: () => string }[] } | undefined;
     if (!jsDocable?.getJsDocs) return undefined;
     const docs = jsDocable
         .getJsDocs()
-        .map(doc => doc.getDescription())
+        .map((doc) => doc.getDescription())
         .join(' ');
     return docs || undefined;
 }
 
-/**
- * The run of `//` lines immediately above a declaration, as one paragraph.
- *
- * Only the LAST contiguous run, and only when it is touching the declaration:
- * a comment separated by a blank line is commentary on the file or on the code
- * before it, not documentation of what follows.
- */
+// The run of `//` lines immediately above a declaration, as one paragraph. Only the LAST
+// contiguous run, and only when TOUCHING the declaration: a comment separated by a blank line is
+// commentary on the code before it, not documentation of what follows.
 function leadingLineComment(node: Node | undefined): string | undefined {
     const ranges = node?.getLeadingCommentRanges() ?? [];
     const lines: string[] = [];
@@ -378,50 +369,63 @@ const VISIBILITY: Record<string, TExoMember['visibility']> = {
     public: '+',
 };
 
-/** A class's own methods and properties, in UML's order: fields, then methods. */
-function classMembers(declaration: Node): TExoMember[] {
+// A class's own methods and properties, in UML's order: fields, then methods. THE TYPE IS THE ONE
+// THE AUTHOR WROTE wherever there is one, the checker being asked only where none was — the same
+// rule `referencesFrom` and `typeMembers` follow, and what keeps this out of assignability.
+function classMembers(declaration: Node, into: TExoUnresolvedType[]): TExoMember[] {
     if (!declaration.isKind(SyntaxKind.ClassDeclaration)) return [];
+    const owner = declaration.getName() ?? '(anonymous class)';
     const fields: TExoMember[] = [];
     const methods: TExoMember[] = [];
 
     for (const property of declaration.getProperties()) {
+        const name = property.getName();
+        const type =
+            written(property.getTypeNode()) ??
+            askTheChecker(() => property.getType().getText(property), owner, name, into);
         fields.push({
             visibility: VISIBILITY[property.getScope()] ?? '+',
             modifier: property.isStatic() ? ('static' as const) : undefined,
             doc: docOf(property),
-            text: `${property.getName()}: ${shortType(property.getType().getText(property))}`,
-            full: `${property.getName()}: ${fullType(property.getType().getText(property))}`,
+            text: `${name}: ${shortType(type)}`,
+            full: `${name}: ${fullType(type)}`,
         });
     }
     for (const method of declaration.getMethods()) {
+        const name = method.getName();
         const parameters = method
             .getParameters()
-            .map(parameter => parameter.getName())
+            .map((parameter) => parameter.getName())
             .join(', ');
+        const returns =
+            written(method.getReturnTypeNode()) ??
+            askTheChecker(() => method.getReturnType().getText(method), owner, name, into);
         methods.push({
             visibility: VISIBILITY[method.getScope()] ?? '+',
             modifier: method.isStatic()
                 ? ('static' as const)
                 : method.isAbstract()
-                  ? ('abstract' as const)
-                  : undefined,
+                ? ('abstract' as const)
+                : undefined,
             doc: docOf(method),
-            text: `${method.getName()}(${parameters}): ${shortType(
-                method.getReturnType().getText(method),
-                18
-            )}`,
-            full: `${method.getName()}(${parameters}): ${fullType(
-                method.getReturnType().getText(method)
-            )}`,
+            text: `${name}(${parameters}): ${shortType(returns, 18)}`,
+            full: `${name}(${parameters}): ${fullType(returns)}`,
         });
     }
     return [...fields, ...methods];
 }
 
+/** A type annotation as the author spelled it, or nothing when they left it to inference. */
+function written(typeNode: Node | undefined): string | undefined {
+    if (!typeNode) return undefined;
+    const text = withoutComments(typeNode.getText()).trim();
+    return text || undefined;
+}
+
 /** An interface or object type alias, as its fields. */
 function typeMembers(declaration: Node): TExoMember[] {
     if (declaration.isKind(SyntaxKind.InterfaceDeclaration)) {
-        return declaration.getMembers().map(member => ({
+        return declaration.getMembers().map((member) => ({
             visibility: '+' as const,
             text: shortType(withoutComments(member.getText()), 40),
             full: fullType(withoutComments(member.getText())),
@@ -431,7 +435,7 @@ function typeMembers(declaration: Node): TExoMember[] {
     if (declaration.isKind(SyntaxKind.TypeAliasDeclaration)) {
         const literal = declaration.getTypeNode();
         if (literal?.isKind(SyntaxKind.TypeLiteral)) {
-            return literal.getMembers().map(member => ({
+            return literal.getMembers().map((member) => ({
                 visibility: '+' as const,
                 text: shortType(withoutComments(member.getText()), 40),
                 full: fullType(withoutComments(member.getText())),
@@ -448,21 +452,24 @@ function typeMembers(declaration: Node): TExoMember[] {
     return [];
 }
 
-/** A function, as its signature — the only member it has. */
-function functionMember(declaration: Node): TExoMember[] {
-    if (
-        !declaration.isKind(SyntaxKind.FunctionDeclaration) &&
-        !declaration.isKind(SyntaxKind.VariableDeclaration)
-    ) {
-        return [];
-    }
-    const signature = declaration.getType().getCallSignatures()[0];
+/** Whatever a reader would call a function: the declaration, or the arrow behind a `const`. */
+type TExoFunctionNode = ArrowFunction | FunctionDeclaration | FunctionExpression;
+
+// A function, as its signature. Read off the SIGNATURE NODE rather than
+// `getType().getCallSignatures()`, for `classMembers`' reason: the declared return type is the
+// answer whenever there is one. An unannotated function is still inferred, and that call is fenced.
+function functionMember(declaration: Node, into: TExoUnresolvedType[]): TExoMember[] {
+    const signature = signatureNodeOf(declaration);
     if (!signature) return [];
+
+    const owner = ownerNameOf(declaration);
     const parameters = signature
         .getParameters()
-        .map(parameter => parameter.getName())
+        .map((parameter) => parameter.getName())
         .join(', ');
-    const returns = signature.getReturnType().getText(declaration);
+    const returns =
+        written(signature.getReturnTypeNode()) ??
+        askTheChecker(() => signature.getReturnType().getText(signature), owner, owner, into);
     return [
         {
             text: `(${parameters}): ${shortType(returns, 20)}`,
@@ -471,8 +478,28 @@ function functionMember(declaration: Node): TExoMember[] {
     ];
 }
 
+/** What to call the thing in a report about it — the name the reader would use. */
+function ownerNameOf(declaration: Node): string {
+    if (declaration.isKind(SyntaxKind.VariableDeclaration)) return declaration.getName();
+    if (declaration.isKind(SyntaxKind.FunctionDeclaration)) {
+        return declaration.getName() ?? '(anonymous function)';
+    }
+    return '(anonymous function)';
+}
+
+/** The node that actually carries the parameters and the return type. */
+function signatureNodeOf(declaration: Node): TExoFunctionNode | undefined {
+    if (declaration.isKind(SyntaxKind.FunctionDeclaration)) return declaration;
+    if (!declaration.isKind(SyntaxKind.VariableDeclaration)) return undefined;
+    const initialiser = declaration.getInitializer();
+    if (initialiser?.isKind(SyntaxKind.ArrowFunction)) return initialiser;
+    if (initialiser?.isKind(SyntaxKind.FunctionExpression)) return initialiser;
+    return undefined;
+}
+
 function collectDeclarations(
-    files: readonly SourceFile[]
+    files: readonly SourceFile[],
+    into: TExoUnresolvedType[]
 ): Map<string, TExoDeclaration> {
     const found = new Map<string, TExoDeclaration>();
 
@@ -490,12 +517,12 @@ function collectDeclarations(
             if (!found.has(name)) {
                 const members =
                     kind === 'class'
-                        ? classMembers(node)
+                        ? classMembers(node, into)
                         : kind === 'type'
-                          ? typeMembers(node)
-                          : kind === 'function'
-                            ? functionMember(node)
-                            : [];
+                        ? typeMembers(node)
+                        : kind === 'function'
+                        ? functionMember(node, into)
+                        : [];
                 found.set(name, {
                     id: name,
                     name,
@@ -509,12 +536,12 @@ function collectDeclarations(
                         kind === 'class'
                             ? undefined
                             : kind === 'function'
-                              ? 'function'
-                              : kind === 'constant'
-                                ? 'const'
-                                : node.isKind(SyntaxKind.InterfaceDeclaration)
-                                  ? 'interface'
-                                  : 'type',
+                            ? 'function'
+                            : kind === 'constant'
+                            ? 'const'
+                            : node.isKind(SyntaxKind.InterfaceDeclaration)
+                            ? 'interface'
+                            : 'type',
                 });
             }
         };
@@ -523,12 +550,7 @@ function collectDeclarations(
             add(declaration.getName(), 'class', declaration, declaration.isExported());
         }
         for (const declaration of file.getFunctions()) {
-            add(
-                declaration.getName(),
-                'function',
-                declaration,
-                declaration.isExported()
-            );
+            add(declaration.getName(), 'function', declaration, declaration.isExported());
         }
         for (const declaration of file.getInterfaces()) {
             add(declaration.getName(), 'type', declaration, declaration.isExported());
@@ -557,13 +579,8 @@ function collectDeclarations(
     return found;
 }
 
-/**
- * Every declaration this one reaches.
- *
- * Resolved by IDENTIFIER, not by the type checker: a full checker pass over a
- * whole package is slow, and for "who calls whom" the identifier is the honest
- * answer — it is what a reader sees.
- */
+// Every declaration this one reaches, resolved by IDENTIFIER and not by the type checker: for
+// "who calls whom" the identifier is the honest answer, being what a reader sees.
 function referencesFrom(
     declaration: TExoDeclaration,
     byName: ReadonlyMap<Node, TExoDeclaration>
@@ -592,9 +609,7 @@ function referencesFrom(
         }
     }
 
-    for (const identifier of declaration.node.getDescendantsOfKind(
-        SyntaxKind.Identifier
-    )) {
+    for (const identifier of declaration.node.getDescendantsOfKind(SyntaxKind.Identifier)) {
         const name = identifier.getText();
         if (!byId.has(name)) continue;
 
@@ -603,10 +618,7 @@ function referencesFrom(
         // WHICH position the identifier sits in decides the relationship. An
         // identifier that is merely an ARGUMENT is not the thing being called:
         // `new Error(MESSAGE)` constructs Error, it does not construct MESSAGE.
-        if (
-            parent?.isKind(SyntaxKind.CallExpression) &&
-            parent.getExpression() === identifier
-        ) {
+        if (parent?.isKind(SyntaxKind.CallExpression) && parent.getExpression() === identifier) {
             push(name, 'calls');
         } else if (
             parent?.isKind(SyntaxKind.NewExpression) &&

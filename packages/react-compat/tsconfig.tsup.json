@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "incremental": false,
+    "outDir": "./dist",
+    "paths": {
+      "@exodra/core": ["../core/dist/index.d.ts"],
+      "@exodra/dom": ["../dom/dist/index.d.ts"],
+      "@exodra/list-reconcile": ["../list-reconcile/dist/index.d.ts"]
+    }
+  },
+  "exclude": ["**/*.test.ts", "**/*.spec.ts"]
+}

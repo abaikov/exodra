@@ -8,22 +8,51 @@
     },
     "nodes": [
       {
+        "id": "emptyExoContainer",
+        "label": "emptyExoContainer",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(element): void",
+            "full": "(element): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "EXO_UNCOMPOSED",
+        "label": "EXO_UNCOMPOSED",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Module level, not per effect: a schema is cached per backend BY POINTER, so a backend built per mount recompiles every schema in the island on every mount.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
         "id": "ExoMount",
         "label": "ExoMount",
         "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(props): ReactElement<any, s…",
-            "full": "(props): ReactElement<any, string | import(\"/Users/abaikov/work/exodra/node_modules/@types/react/index\").JSXElementConstructor<any>>",
-            "parts": [],
-            "fullParts": []
+            "text": "(props): ReactElement",
+            "full": "(props): ReactElement",
+            "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "The component form of {@link useExoMount}: a container element that React renders and Exodra fills.",
-        "width": 222,
+        "width": 171,
         "height": 69,
         "violations": []
       },
@@ -40,6 +69,89 @@
         "violations": []
       },
       {
+        "id": "sameParams",
+        "label": "sameParams",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(a, b): boolean",
+            "full": "(a, b): boolean",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoMounted",
+        "label": "TExoMounted",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly machine: TExoMachine<TExoDomNo…",
+            "full": "readonly machine: TExoMachine<TExoDomNode, unknown, TParams>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly root: TExoNode<TExoDomMark>;",
+            "full": "readonly root: TExoNode<TExoDomMark>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly dispose: () => void;",
+            "full": "readonly dispose: () => void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "params: TParams | undefined;",
+            "full": "params: TParams | undefined;",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "type",
+        "width": 293,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "TExoMountHandle",
+        "label": "TExoMountHandle",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly ref: RefObject<TElement | null…",
+            "full": "readonly ref: RefObject<TElement | null>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly node: RefObject<TExoNode<TExoD…",
+            "full": "readonly node: RefObject<TExoNode<TExoDomMark> | null>;",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "width": 293,
+        "height": 84,
+        "violations": []
+      },
+      {
         "id": "TExoMountOptions",
         "label": "TExoMountOptions",
         "kind": "app",
@@ -49,21 +161,33 @@
             "visibility": "+",
             "text": "hydrate?: boolean;",
             "full": "hydrate?: boolean;",
-            "doc": "Adopt server-rendered markup already inside the container instead of building the DOM from scratch.",
             "parts": []
           },
           {
             "visibility": "+",
             "text": "deps?: readonly unknown[];",
             "full": "deps?: readonly unknown[];",
-            "doc": "Re-mount when one of these changes, like a `useEffect` dependency array.",
             "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "params?: TParams;",
+            "full": "params?: TParams;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "backend?: TExoDomBackend & TExoCompiler…",
+            "full": "backend?: TExoDomBackend & TExoCompilerApi & Partial<Pick<TExoHydrationApi, 'adoptRoot'>>;",
+            "doc": "THE COMPILER PACK IS REQUIRED and hydration is not, and the difference is what each one is for: this hook is handed a COMPONENT, which carries a declaration, so the backend it renders through has to be able to compile one — a bare `new Exo…",
+            "parts": [],
+            "fullParts": []
           }
         ],
-        "memberCount": 2,
+        "memberCount": 4,
         "stereotype": "type",
-        "width": 203,
-        "height": 84,
+        "width": 293,
+        "height": 114,
         "violations": []
       },
       {
@@ -73,15 +197,15 @@
         "layer": 0,
         "members": [
           {
-            "text": "TExoMountOptions & { /** The Exodra tre…",
-            "full": "TExoMountOptions & { /** The Exodra tree to mount into this element. */ schema: TExoMountSource; /** * Server-rendered HTML for the subtree (from `renderToString`). Rendered into * the container by React on the server AND in the initial client HTML, then * adopted by Exodra on mount — so the first paint is the finished UI and * hydration only attaches behaviour. Implies `hydrate`. */ html?: string; className?: string; id?: string; style?: Record<string, string | number>; }",
+            "text": "TExoMountOptions<TParams> & { component…",
+            "full": "TExoMountOptions<TParams> & { component: TExoMountSource<TParams>; html?: string; className?: string; id?: string; style?: Record<string, string | number>; }",
             "parts": [
               {
                 "text": "TExoMountOptions",
                 "link": "TExoMountOptions"
               },
               {
-                "text": " & { /** The Exodra tre…"
+                "text": "<TParams> & { component…"
               }
             ],
             "fullParts": [
@@ -90,14 +214,14 @@
                 "link": "TExoMountOptions"
               },
               {
-                "text": " & { /** The Exodra tree to mount into this element. */ schema: "
+                "text": "<TParams> & { component: "
               },
               {
                 "text": "TExoMountSource",
                 "link": "TExoMountSource"
               },
               {
-                "text": "; /** * Server-rendered HTML for the subtree (from `renderToString`). Rendered into * the container by React on the server AND in the initial client HTML, then * adopted by Exodra on mount — so the first paint is the finished UI and * hydration only attaches behaviour. Implies `hydrate`. */ html?: string; className?: string; id?: string; style?: Record<string, string | number>; }"
+                "text": "<TParams>; html?: string; className?: string; id?: string; style?: Record<string, string | number>; }"
               }
             ]
           }
@@ -115,15 +239,15 @@
         "layer": 0,
         "members": [
           {
-            "text": "TExoSchema | (() => TExoSchema)",
-            "full": "TExoSchema | (() => TExoSchema)",
-            "parts": []
+            "text": "| TExoMachine<TExoDomNode, unknown, TPa…",
+            "full": "| TExoMachine<TExoDomNode, unknown, TParams> | (() => TExoMachine<TExoDomNode, unknown, TParams>)",
+            "parts": [],
+            "fullParts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "type",
-        "doc": "What to mount.",
-        "width": 235,
+        "width": 293,
         "height": 69,
         "violations": []
       },
@@ -134,15 +258,37 @@
         "layer": 0,
         "members": [
           {
-            "text": "(source, options): RefObject<TElement>",
-            "full": "(source, options): RefObject<TElement>",
-            "parts": []
+            "text": "(source, options): TExoMountHandle<TEl…",
+            "full": "(source, options): TExoMountHandle<TElement>",
+            "parts": [
+              {
+                "text": "(source, options): "
+              },
+              {
+                "text": "TExoMountHandle",
+                "link": "TExoMountHandle"
+              },
+              {
+                "text": "<TEl…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(source, options): "
+              },
+              {
+                "text": "TExoMountHandle",
+                "link": "TExoMountHandle"
+              },
+              {
+                "text": "<TElement>"
+              }
+            ]
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "Own a piece of the DOM inside a React tree and let Exodra render it.",
-        "width": 280,
+        "width": 286,
         "height": 69,
         "violations": []
       }
@@ -160,7 +306,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/react-mount/src/ExoMount.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/TExoMountProps.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -172,18 +318,11 @@
         "from": "ExoMount",
         "to": "useExoMount",
         "kinds": [
-          "type-only",
           "value"
         ],
-        "weight": 2,
-        "relation": "dependency",
+        "weight": 1,
+        "relation": "association",
         "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/ExoMount.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          },
           {
             "from": "/Users/abaikov/work/exodra/packages/react-mount/src/ExoMount.ts",
             "to": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
@@ -204,8 +343,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/index.ts",
+            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/types/TExoMountProps.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/TExoMountOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -223,8 +362,46 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/index.ts",
+            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/types/TExoMountProps.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/TExoMountSource.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "useExoMount→emptyExoContainer",
+        "from": "useExoMount",
+        "to": "emptyExoContainer",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "useExoMount→EXO_UNCOMPOSED",
+        "from": "useExoMount",
+        "to": "EXO_UNCOMPOSED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -251,6 +428,63 @@
         "violations": []
       },
       {
+        "id": "useExoMount→sameParams",
+        "from": "useExoMount",
+        "to": "sameParams",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "useExoMount→TExoMounted",
+        "from": "useExoMount",
+        "to": "TExoMounted",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "useExoMount→TExoMountHandle",
+        "from": "useExoMount",
+        "to": "TExoMountHandle",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/TExoMountHandle.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "useExoMount→TExoMountOptions",
         "from": "useExoMount",
         "to": "TExoMountOptions",
@@ -262,7 +496,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/TExoMountOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -281,7 +515,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/react-mount/src/useExoMount.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-mount/src/types/TExoMountSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -292,49 +526,84 @@
     "rules": {}
   },
   "layout": {
-    "width": 926,
-    "height": 327,
+    "width": 933,
+    "height": 855,
     "nodes": [
       {
-        "id": "ExoMount",
-        "x": 24,
-        "y": 168,
-        "width": 222,
+        "id": "emptyExoContainer",
+        "x": 696,
+        "y": 263,
+        "width": 133,
         "height": 69
       },
       {
-        "id": "MOUNT_ONCE",
-        "x": 724.5,
-        "y": 131,
+        "id": "EXO_UNCOMPOSED",
+        "x": 702.5,
+        "y": 360,
         "width": 120,
         "height": 46
       },
       {
-        "id": "TExoMountOptions",
-        "x": 683,
-        "y": 219,
-        "width": 203,
+        "id": "ExoMount",
+        "x": 24,
+        "y": 274.3,
+        "width": 171,
+        "height": 69
+      },
+      {
+        "id": "MOUNT_ONCE",
+        "x": 702.5,
+        "y": 434,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "sameParams",
+        "x": 696,
+        "y": 508,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "TExoMounted",
+        "x": 616,
+        "y": 605,
+        "width": 293,
+        "height": 114
+      },
+      {
+        "id": "TExoMountHandle",
+        "x": 616,
+        "y": 747,
+        "width": 293,
         "height": 84
       },
       {
+        "id": "TExoMountOptions",
+        "x": 616,
+        "y": 24,
+        "width": 293,
+        "height": 114
+      },
+      {
         "id": "TExoMountProps",
-        "x": 310,
-        "y": 224.5,
+        "x": 259,
+        "y": 146,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoMountSource",
-        "x": 667,
-        "y": 24,
-        "width": 235,
+        "x": 616,
+        "y": 166,
+        "width": 293,
         "height": 69
       },
       {
         "id": "useExoMount",
-        "x": 316.5,
-        "y": 119.5,
-        "width": 280,
+        "x": 262.5,
+        "y": 375.5,
+        "width": 286,
         "height": 69
       }
     ],
@@ -343,16 +612,16 @@
         "id": "ExoMount→TExoMountProps",
         "points": [
           {
-            "x": 222.3,
-            "y": 237
+            "x": 141.1,
+            "y": 274.3
           },
           {
-            "x": 278,
-            "y": 259
+            "x": 227,
+            "y": 180.5
           },
           {
-            "x": 310,
-            "y": 259
+            "x": 259,
+            "y": 180.5
           }
         ]
       },
@@ -360,16 +629,16 @@
         "id": "ExoMount→useExoMount",
         "points": [
           {
-            "x": 236.7,
-            "y": 168
+            "x": 149.5,
+            "y": 343.3
           },
           {
-            "x": 278,
-            "y": 154
+            "x": 227,
+            "y": 410
           },
           {
-            "x": 316.5,
-            "y": 154
+            "x": 262.5,
+            "y": 410
           }
         ]
       },
@@ -377,16 +646,16 @@
         "id": "TExoMountProps→TExoMountOptions",
         "points": [
           {
-            "x": 603,
-            "y": 260.6
+            "x": 508.6,
+            "y": 146
           },
           {
-            "x": 635,
-            "y": 261
+            "x": 584,
+            "y": 120.8
           },
           {
-            "x": 683,
-            "y": 261
+            "x": 616,
+            "y": 113.6
           }
         ]
       },
@@ -394,16 +663,50 @@
         "id": "TExoMountProps→TExoMountSource",
         "points": [
           {
-            "x": 495.5,
-            "y": 224.5
+            "x": 532.5,
+            "y": 215
           },
           {
-            "x": 635,
-            "y": 101.3
+            "x": 584,
+            "y": 229
           },
           {
-            "x": 667,
-            "y": 92.1
+            "x": 616,
+            "y": 223.9
+          }
+        ]
+      },
+      {
+        "id": "useExoMount→emptyExoContainer",
+        "points": [
+          {
+            "x": 460.2,
+            "y": 375.5
+          },
+          {
+            "x": 584,
+            "y": 297.5
+          },
+          {
+            "x": 696,
+            "y": 297.5
+          }
+        ]
+      },
+      {
+        "id": "useExoMount→EXO_UNCOMPOSED",
+        "points": [
+          {
+            "x": 548.5,
+            "y": 388.4
+          },
+          {
+            "x": 584,
+            "y": 383
+          },
+          {
+            "x": 702.5,
+            "y": 383
           }
         ]
       },
@@ -411,16 +714,67 @@
         "id": "useExoMount→MOUNT_ONCE",
         "points": [
           {
-            "x": 596.5,
-            "y": 154
+            "x": 536.5,
+            "y": 444.5
           },
           {
-            "x": 635,
-            "y": 154
+            "x": 584,
+            "y": 457
           },
           {
-            "x": 724.5,
-            "y": 154
+            "x": 702.5,
+            "y": 457
+          }
+        ]
+      },
+      {
+        "id": "useExoMount→sameParams",
+        "points": [
+          {
+            "x": 452,
+            "y": 444.5
+          },
+          {
+            "x": 584,
+            "y": 542.5
+          },
+          {
+            "x": 696,
+            "y": 542.5
+          }
+        ]
+      },
+      {
+        "id": "useExoMount→TExoMounted",
+        "points": [
+          {
+            "x": 429.9,
+            "y": 444.5
+          },
+          {
+            "x": 584,
+            "y": 662
+          },
+          {
+            "x": 616,
+            "y": 662
+          }
+        ]
+      },
+      {
+        "id": "useExoMount→TExoMountHandle",
+        "points": [
+          {
+            "x": 421.7,
+            "y": 444.5
+          },
+          {
+            "x": 584,
+            "y": 789
+          },
+          {
+            "x": 616,
+            "y": 789
           }
         ]
       },
@@ -428,16 +782,16 @@
         "id": "useExoMount→TExoMountOptions",
         "points": [
           {
-            "x": 565.5,
-            "y": 188.5
+            "x": 423.1,
+            "y": 375.5
           },
           {
-            "x": 635,
-            "y": 210.5
+            "x": 584,
+            "y": 61
           },
           {
-            "x": 683,
-            "y": 226.7
+            "x": 616,
+            "y": 64.6
           }
         ]
       },
@@ -445,16 +799,16 @@
         "id": "useExoMount→TExoMountSource",
         "points": [
           {
-            "x": 521,
-            "y": 119.5
+            "x": 428.4,
+            "y": 375.5
           },
           {
-            "x": 635,
-            "y": 58.5
+            "x": 584,
+            "y": 140.8
           },
           {
-            "x": 667,
-            "y": 58.5
+            "x": 659.4,
+            "y": 166
           }
         ]
       }

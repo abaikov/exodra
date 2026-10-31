@@ -1,153 +1,106 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #1e293b;
-  --ifm-color-primary-dark: #0f172a;
-  --ifm-color-primary-darker: #020617;
-  --ifm-color-primary-darkest: #000000;
-  --ifm-color-primary-light: #334155;
-  --ifm-color-primary-lighter: #475569;
-  --ifm-color-primary-lightest: #64748b;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-  --ifm-background-color: #ffffff;
-  --ifm-font-family-base: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Ubuntu', 'Cantarell', 'Noto Sans', sans-serif;
+  --exo-blood: #c8102e;
+  --exo-blood-bright: #ff3b4e;
+  --exo-blood-deep: #7a0c1c;
+  --exo-flesh: #e0567f;
+  --exo-flesh-bright: #ff86a8;
+  --exo-slime: #6cc11c;
+  --exo-slime-bright: #b6f23a;
+  --exo-slime-soft: rgba(108, 193, 28, 0.14);
+  --exo-sky: #3d7be0;
+  --exo-bone: #efe3cf;
+
+  --exo-surface: #ffffff;
+  --exo-surface-raised: #fff6f6;
+  --exo-hairline: rgba(122, 12, 28, 0.12);
+  --exo-hairline-slime: rgba(108, 193, 28, 0.4);
+  --exo-glow: 0 10px 40px -12px rgba(200, 16, 46, 0.35);
+  --exo-gradient-slime: linear-gradient(90deg, var(--exo-slime) 0%, var(--exo-slime-bright) 50%, var(--exo-slime) 100%);
+  --exo-gradient-heading: linear-gradient(100deg, var(--exo-blood-deep) 0%, var(--exo-blood) 55%, var(--exo-flesh) 100%);
+
+  --ifm-font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
   --ifm-heading-font-family: var(--ifm-font-family-base);
-  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', 'Consolas', 'Courier New', monospace;
-  --ifm-hero-background-color: #0f172a;
-  --ifm-hero-text-color: #ffffff;
-  --ifm-color-success: #ec4899;
-  --ifm-color-success-light: #f472b6;
-  --ifm-color-success-lighter: #f9a8d4;
-  --ifm-link-color: #ec4899;
-  --ifm-link-hover-color: #f472b6;
+  --ifm-heading-font-weight: 800;
+  --ifm-line-height-base: 1.7;
+  --ifm-global-radius: 10px;
+  --ifm-code-border-radius: 6px;
+  --ifm-code-font-size: 92%;
+
+  --ifm-color-primary: var(--exo-blood);
+  --ifm-color-primary-dark: #b40e29;
+  --ifm-color-primary-darker: #a90d27;
+  --ifm-color-primary-darkest: var(--exo-blood-deep);
+  --ifm-color-primary-light: #dc1a3a;
+  --ifm-color-primary-lighter: #e5304d;
+  --ifm-color-primary-lightest: #ec6278;
+  --ifm-color-success: var(--exo-slime);
+  --ifm-color-info: var(--exo-sky);
+
+  --ifm-background-color: var(--exo-surface);
+  --ifm-background-surface-color: var(--exo-surface-raised);
+  --ifm-font-color-base: #1c1214;
+  --ifm-link-color: var(--exo-blood);
+  --ifm-link-hover-color: var(--exo-blood-deep);
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.82);
+  --ifm-navbar-shadow: none;
+  --ifm-footer-background-color: #110809;
+  --ifm-footer-color: rgba(255, 255, 255, 0.72);
+  --ifm-footer-link-color: rgba(255, 255, 255, 0.82);
+  --ifm-footer-link-hover-color: var(--exo-slime-bright);
+  --ifm-footer-title-color: var(--exo-slime-bright);
+  --ifm-menu-color-background-active: rgba(200, 16, 46, 0.08);
+  --ifm-table-border-color: var(--exo-hairline);
+  --docusaurus-highlighted-code-line-bg: rgba(108, 193, 28, 0.14);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #ec4899;
-  --ifm-color-primary-dark: #db2777;
-  --ifm-color-primary-darker: #be185d;
-  --ifm-color-primary-darkest: #9f1239;
-  --ifm-color-primary-light: #f472b6;
-  --ifm-color-primary-lighter: #f9a8d4;
-  --ifm-color-primary-lightest: #fbcfe8;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
-  --ifm-background-color: #0f0f23;
-  --ifm-background-surface-color: #1a1a2e;
+  --exo-surface: #0c0809;
+  --exo-surface-raised: #160d10;
+  --exo-hairline: rgba(255, 255, 255, 0.07);
+  --exo-hairline-slime: rgba(182, 242, 58, 0.28);
+  --exo-glow: 0 18px 60px -20px rgba(255, 59, 78, 0.45);
+  --exo-gradient-heading: linear-gradient(100deg, #ffffff 0%, #ffdbe4 45%, var(--exo-slime-bright) 100%);
+
+  --ifm-color-primary: var(--exo-flesh-bright);
+  --ifm-color-primary-dark: #ff6d95;
+  --ifm-color-primary-darker: #ff5f8b;
+  --ifm-color-primary-darkest: var(--exo-flesh);
+  --ifm-color-primary-light: #ff9fba;
+  --ifm-color-primary-lighter: #ffabc3;
+  --ifm-color-primary-lightest: #ffcedc;
+  --ifm-color-success: var(--exo-slime-bright);
+
+  --ifm-background-color: var(--exo-surface);
+  --ifm-background-surface-color: var(--exo-surface-raised);
+  --ifm-font-color-base: #efe6e7;
+  --ifm-link-color: var(--exo-flesh-bright);
+  --ifm-link-hover-color: var(--exo-slime-bright);
+  --ifm-navbar-background-color: rgba(12, 8, 9, 0.72);
+  --ifm-footer-background-color: #070405;
+  --ifm-menu-color-background-active: rgba(255, 59, 78, 0.1);
+  --ifm-code-background: rgba(255, 255, 255, 0.05);
+  --docusaurus-highlighted-code-line-bg: rgba(182, 242, 58, 0.1);
 }
 
-/* Custom hero styles */
-.hero--primary {
-  background: 
-    linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)),
-    url('../../static/img/exodra.png') center center / cover no-repeat;
-  position: relative;
-  overflow: hidden;
-  min-height: 60vh;
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.hero--primary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(236, 72, 153, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 80% 50%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
-  pointer-events: none;
+.navbar {
+  backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--exo-hairline);
 }
 
-/* Hide the inline image since we're using it as background */
-.hero--primary img[alt="Exodra"] {
-  display: none;
-}
-
-.hero--primary .hero__title {
-  color: #ffffff;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-  font-size: 3.5rem;
-  font-weight: 800;
-}
-
-.hero--primary .hero__subtitle {
-  font-family: 'Press Start 2P', monospace !important;
-  color: #e2e8f0;
-  font-size: 0.9rem;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-  margin-bottom: 2rem;
-  line-height: 1.6;
-  letter-spacing: 0.01em;
-}
-
-.hero--primary .button--secondary {
-  background: #ec4899;
-  border-color: #ec4899;
-  color: white;
-  font-weight: 600;
-}
-
-.hero--primary .button--secondary:hover {
-  background: #f472b6;
-  border-color: #f472b6;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
-}
-
-/* Import pixel font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
-/* Apply pixel font ONLY to homepage hero title */
-.hero--primary .hero__title {
-  font-family: 'Press Start 2P', monospace !important;
-  font-size: 2.5rem;
-  line-height: 1.4;
-  letter-spacing: 0.02em;
-  text-shadow: 
-    -2px -2px 0 #0f172a,
-    2px -2px 0 #0f172a,
-    -2px 2px 0 #0f172a,
-    2px 2px 0 #0f172a,
-    0 0 10px rgba(15, 23, 42, 0.5);
-}
-
-.hero--primary .hero__subtitle {
-  font-family: 'Press Start 2P', monospace !important;
-  color: #e2e8f0;
-  font-size: 0.9rem;
-  text-shadow: 
-    -1px -1px 0 #0f172a,
-    1px -1px 0 #0f172a,
-    -1px 1px 0 #0f172a,
-    1px 1px 0 #0f172a,
-    0 0 8px rgba(15, 23, 42, 0.5);
-  margin-bottom: 2rem;
-  line-height: 1.6;
-  letter-spacing: 0.01em;
-}
-
-/* Ensure docs pages use normal font */
 .markdown h1:first-child {
   font-family: var(--ifm-heading-font-family) !important;
 }
 
-/* Only use pixel font for blog post titles, not regular docs */
 article header h1 {
   font-family: 'Press Start 2P', monospace;
   font-size: 1.8rem;
   line-height: 1.4;
-}
-
-/* Make pixel font pink for extra style */
-.navbar__title {
-  font-family: 'Press Start 2P', monospace;
-  color: #ec4899;
-  font-size: 1.2rem;
 }

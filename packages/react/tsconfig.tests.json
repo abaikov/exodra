@@ -1,0 +1,22 @@
+{
+  // THE TEST FILES OF `@exodra/react`, COMPILED. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // `paths` is NOT restated: the base already maps every sibling the suites reach for. Nothing here
+  // needs an entry the sources do not already have.
+  //
+  // `react` and `react-dom/test-utils` resolve through `@types/react` / `@types/react-dom` in the
+  // root `devDependencies`. No `types` array is set anywhere in this chain, so those are picked up
+  // automatically; narrowing `types` here would remove them.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

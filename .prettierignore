@@ -1,0 +1,17 @@
+# WHAT PRETTIER MUST NOT TOUCH, AND THE ONE REASON ANYTHING IS HERE.
+#
+# `packages/term/src/doc/` holds two components copied CHARACTER FOR CHARACTER out of the
+# repository's own `README.md`, so that a rendering backend written from outside can be shown
+# running the project's published documentation rather than a component written to suit it.
+# `packages/term/src/readme-verbatim.test.ts` compares the two files byte for byte and fails if
+# they diverge.
+#
+# The README's code is not prettier-clean under this repository's own config — `exoDerive(count,
+# c => …)` would gain parentheses under `arrowParens: "always"` — so formatting the copy would
+# make it stop matching the original, and the test would fail on a `npm run format`. Formatting
+# the README instead would change what every reader of this project sees first, for the
+# convenience of one private package.
+#
+# Nothing else belongs in this file. If a second entry ever appears, the question to ask is
+# whether it has the same shape of reason: a file whose exact bytes are asserted somewhere else.
+packages/term/src/doc/

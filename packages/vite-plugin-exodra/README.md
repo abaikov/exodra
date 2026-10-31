@@ -1,22 +1,24 @@
 # @exodra/vite-plugin
 
-Vite plugin for Exodra applications with file-based routing and HMR.
+Vite plugin for Exodra applications. It:
+
+- compiles `.tsx` / `.jsx` through [`babel-preset-exodra`](../babel-preset-exodra):
+  each `exoJsx(...)` schema declaration becomes a module-level
+  `createExoNamedSchema()` call;
+- generates the route table for `@exodra/router` from `src/pages`;
+- serves file-based API endpoints from `src/api` in the dev server;
+- falls back to `/index.html` for dev-server requests without a file extension.
+
+A project that writes schemas with `createExoSchema` needs no JSX transform, and
+can still use the plugin for routing and API endpoints.
+
+Full documentation: [exodra.org/docs/tooling/vite-plugin](https://exodra.org/docs/tooling/vite-plugin)
 
 ## Installation
 
 ```bash
 npm install --save-dev @exodra/vite-plugin
 ```
-
-## Overview
-
-This plugin provides:
-
-- **File-based Routing** - Automatic route generation from pages/
-- **Hot Module Replacement** - Fast refresh during development
-- **JSX Configuration** - Automatic JSX setup
-- **API Routes** - File-based API endpoints
-- **SSR Support** - Server-side rendering integration
 
 ## Configuration
 
@@ -26,271 +28,154 @@ import { defineConfig } from 'vite';
 import exodra from '@exodra/vite-plugin';
 
 export default defineConfig({
-  plugins: [
-    exodra({
-      pagesDir: 'src/pages',  // Default: src/pages
-      apiDir: 'src/api',      // Default: src/api
-      ssr: false,             // Default: false
-      alias: '@'              // Default: @
-    })
-  ]
+    plugins: [
+        exodra({
+            pagesDir: 'src/pages',
+            apiDir: 'src/api',
+        }),
+    ],
 });
 ```
 
-## File-based Routing
+| Option | Default | What it does |
+| --- | --- | --- |
+| `pagesDir` | `'src/pages'` | directory scanned for page files |
+| `apiDir` | `'src/api'` | directory for API endpoints |
+| `schemaSource` | `'@exodra/core'` | where the compiled JSX imports `createExoNamedSchema` from; forwarded to `babel-preset-exodra` |
 
-The plugin automatically generates routes from your file structure:
+## File-based routing
 
 ```
 src/pages/
 ├── index.tsx             → /
 ├── about.tsx             → /about
-├── _layout.tsx           → Layout wrapper
-├── _error.tsx            → Error boundary
+├── _shared.tsx           → ignored (starts with `_`)
 ├── blog/
 │   ├── index.tsx         → /blog
 │   ├── [id].tsx          → /blog/:id
-│   ├── [...slug].tsx     → /blog/* (catch-all)
-│   └── _layout.tsx       → Blog layout
-├── shop/
-│   ├── [[...path]].tsx   → /shop (optional catch-all)
-│   └── checkout.tsx      → /shop/checkout
-└── admin/
-    ├── _layout.tsx       → Admin layout
-    └── dashboard.tsx     → /admin/dashboard
+│   └── [...slug].tsx     → /blog/* (catch-all, at least one segment)
+└── shop/
+    ├── [[...path]].tsx   → /shop (optional catch-all)
+    └── checkout.tsx      → /shop/checkout
 ```
 
-### Special Files
+The table is exposed as the virtual module `virtual:exodra-routes`. Each entry is
+`{ path, component: exoLazy(() => import(file)) }` (plus `catchAll` /
+`optionalCatchAll`), and a page file's **default export** is its machine. A page
+receives its match as the params of its wire:
+`createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(SCHEMA)` and
+`mPage.wire((c, match) => ...)`.
 
-- `_layout.tsx` - Wraps all pages in the directory
-- `_error.tsx` - Error boundary for the directory
-- `index.tsx` - Default route for directory
-
-### Dynamic Routes
-
-- `[param].tsx` - Single dynamic segment
-- `[...params].tsx` - Catch-all route (required)
-- `[[...params]].tsx` - Optional catch-all route
-
-## Using Generated Routes
-
-```tsx
-// main.tsx
-import { mount } from '@exodra/dom';
-import {
-  createRouter,
-  createBrowserHistory,
-  RouterProvider,
-  Outlet,
-} from '@exodra/router';
-
-// Import auto-generated routes
+```ts no-check
+// main.ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoChildrenPort } from '@exodra/core';
+import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+import { createExoBrowserHistory, createExoRouter, exoOutlet, provideExoRouter } from '@exodra/router';
 import { routes } from 'virtual:exodra-routes';
 
-const router = createRouter(routes, { history: createBrowserHistory() });
+const router = createExoRouter(routes, { history: createExoBrowserHistory() });
+const ROUTED = exoOutlet('main');
 
-mount(
-  <RouterProvider static={{ router }}>
-    <Outlet />
-  </RouterProvider>,
-  document.getElementById('app')!
-);
+const APP_SCHEMA = createExoSchema((b) => {
+    let body!: TExoChildrenPort;
+    b.el('div', { class: 'app' }, (d) => {
+        body = d.childrenPort();
+    });
+    return { body };
+});
+const mApp = createExoMachineBuilder<TExoDomNode>(APP_SCHEMA);
+mApp.createInitialState((c) => {
+    provideExoRouter(c, router);
+    c.one(APP_SCHEMA.ports.body, ROUTED);
+});
+const APP = mApp.done();
+
+const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+backend.render(APP, document.getElementById('app') as HTMLElement);
 ```
 
-## Layout Files
+Declare the virtual module for TypeScript:
 
-Create `_layout.tsx` to wrap pages:
-
-JSX props go in typed buckets — static attributes (including `class` and
-`children`) in `static`, never as flat React-style attributes.
-
-```tsx
-// pages/_layout.tsx
-import { Link, Outlet } from '@exodra/router';
-
-export default function RootLayout() {
-  return (
-    <div static={{ class: 'app' }}>
-      <header>
-        <nav>
-          <Link static={{ to: '/', children: 'Home' }} />
-          <Link static={{ to: '/about', children: 'About' }} />
-          <Link static={{ to: '/blog', children: 'Blog' }} />
-        </nav>
-      </header>
-      <main>
-        <Outlet />
-      </main>
-      <footer static={{ children: '© 2024' }} />
-    </div>
-  );
-}
-```
-
-## Error Boundaries
-
-Handle errors with `_error.tsx`:
-
-```tsx
-// pages/_error.tsx
-import { Link } from '@exodra/router';
-
-export default function ErrorPage({ error }: { error: Error }) {
-  return (
-    <div static={{ class: 'error' }}>
-      <h1 static={{ children: 'Error' }} />
-      <p static={{ children: error.message }} />
-      <Link static={{ to: '/', children: 'Go Home' }} />
-    </div>
-  );
-}
-```
-
-## API Routes
-
-Create API endpoints in the `api/` directory:
-
-```typescript
-// src/api/users.ts
-export async function GET(request: Request) {
-  const users = await fetchUsers();
-  return new Response(JSON.stringify(users), {
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
-
-export async function POST(request: Request) {
-  const data = await request.json();
-  const user = await createUser(data);
-  return new Response(JSON.stringify(user), {
-    status: 201,
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
-```
-
-Access at `/api/users` with appropriate HTTP methods.
-
-## Hot Module Replacement
-
-The plugin provides HMR for Exodra components:
-
-```tsx
-// Automatically added to components
-if (import.meta.hot) {
-  import.meta.hot.accept((newModule) => {
-    // Component updates without losing state
-  });
-}
-```
-
-## TypeScript Support
-
-Add type definitions for virtual modules:
-
-```typescript
+```typescript no-check
 // env.d.ts
 /// <reference types="vite/client" />
 
 declare module 'virtual:exodra-routes' {
-  import type { TExoRoute } from '@exodra/router';
-  export const routes: TExoRoute[];
+    export const routes: import('@exodra/router').TExoRoute[];
 }
 ```
 
-## SSR Configuration
+Limits:
 
-Enable SSR support:
+- **The table is flat**: one entry per page file and no `children`. A layout is a
+  route with `children` whose page places an `ExoOutlet`; write that table by hand
+  (see [`@exodra/router`](../router)).
+- **The table is built once, when the dev server starts.** Restart the dev server
+  after adding, removing or renaming a page file.
+- `_`-prefixed files (including `_layout.tsx`) produce no route and are not
+  treated as layouts or error boundaries.
+
+## API routes
+
+A request to `/api/<name>` loads `<apiDir>/<name>.ts` through Vite's SSR loader
+and calls the export named after the HTTP method (`GET`, `POST`, ...), falling back
+to the default export; with neither, it answers `405`.
+
+```typescript
+// src/api/users.ts
+declare function fetchUsers(): Promise<unknown[]>;
+
+export async function GET(request: Request): Promise<Response> {
+    const users = await fetchUsers();
+    return new Response(JSON.stringify(users), {
+        headers: { 'Content-Type': 'application/json' },
+    });
+}
+```
+
+Limits:
+
+- **The request body is not forwarded.** The `Request` is built from the URL,
+  method and headers only, so `await request.json()` has nothing to read.
+- **An error thrown by a handler is not a 500**: the request falls through to the
+  next middleware, the same as a missing file.
+- API routes exist only in the dev server.
+
+## Hot module replacement
+
+The plugin adds no HMR handling, so a changed component triggers Vite's full page
+reload.
+
+## SSR
+
+The plugin has no SSR option. Server rendering lives in `@exodra/string` and
+`@exodra/ssr`; what Vite needs is its own setting:
 
 ```typescript
 // vite.config.ts
+import { defineConfig } from 'vite';
+import exodra from '@exodra/vite-plugin';
+
 export default defineConfig({
-  plugins: [
-    exodra({
-      ssr: true
-    })
-  ],
-  ssr: {
-    noExternal: ['@exodra/core', '@exodra/ssr']
-  }
+    plugins: [exodra()],
+    ssr: {
+        noExternal: ['@exodra/core', '@exodra/string'],
+    },
 });
 ```
 
-## Development Server
+## The `./client` subpath
 
-```bash
-# Start dev server
-npm run dev
+`@exodra/vite-plugin/client` exports `transformExodraJsx`, the JSX transform without
+the plugin, for a build script, a test transformer or another bundler. It wraps
+`babel-preset-exodra`'s runner and adapts the source map to Rollup's type.
 
-# Routes are available at:
-# http://localhost:5173/
-# http://localhost:5173/about
-# http://localhost:5173/blog/my-post
-# etc.
+```javascript
+import { transformExodraJsx } from '@exodra/vite-plugin/client';
 ```
-
-## Build
-
-```bash
-# Production build
-npm run build
-
-# Preview production build
-npm run preview
-```
-
-## Advanced Configuration
-
-### Custom Pages Directory
-
-```typescript
-exodra({
-  pagesDir: 'src/routes',
-})
-```
-
-## Troubleshooting
-
-### Routes Not Updating
-
-- Restart the dev server after adding new route files
-- Check that files have `.tsx` or `.jsx` extension
-- Verify file names follow conventions
-
-### HMR Not Working
-
-- Ensure components are default exports
-- Check that Vite HMR is enabled
-- Verify no syntax errors in components
-
-### TypeScript Errors
-
-- Add `env.d.ts` with virtual module declarations
-- Update `tsconfig.json` to include type files
-
-## API Reference
-
-### Plugin Options
-
-- `pagesDir` - Directory for page components (default: `'src/pages'`)
-- `apiDir` - Directory for API routes (default: `'src/api'`)
-- `ssr` - Enable SSR support (default: `false`)
-- `alias` - Import alias (default: `'@'`)
-
-### Virtual Modules
-
-- `virtual:exodra-routes` - Generated routes array
-
-### Events
-
-The plugin sends custom HMR events:
-
-- `exodra:component-update` - Component updated
-- `exodra:route-update` - Routes changed
 
 ## License
 
 MIT
----
-
-📖 Full documentation: **[exodra.org](https://exodra.org)**

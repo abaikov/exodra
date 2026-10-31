@@ -1,0 +1,15 @@
+export const EXO_REACT_VOID_TAGS: ReadonlySet<string> = new Set([
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'source',
+    'track',
+    'wbr',
+]);

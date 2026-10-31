@@ -1,0 +1,206 @@
+{
+  "axis": "hydrate-floor",
+  "label": "published",
+  "quantum": 0.1,
+  "batch": 2,
+  "rows": [
+    {
+      "name": "APP/mount",
+      "reps": 40,
+      "min": 0.275,
+      "p25": 0.2925,
+      "median": 0.2975,
+      "p75": 0.3025,
+      "max": 0.32,
+      "perElement": 464.1,
+      "section": "APP"
+    },
+    {
+      "name": "APP/mount·twin",
+      "reps": 40,
+      "min": 0.275,
+      "p25": 0.2925,
+      "median": 0.2975,
+      "p75": 0.3025,
+      "max": 0.33,
+      "perElement": 464.1,
+      "section": "APP"
+    },
+    {
+      "name": "APP/parse",
+      "reps": 40,
+      "min": 0.255,
+      "p25": 0.26,
+      "median": 0.265,
+      "p75": 0.2725,
+      "max": 0.3525,
+      "perElement": 413.4,
+      "section": "APP"
+    },
+    {
+      "name": "APP/hydrate",
+      "reps": 40,
+      "min": 0.105,
+      "p25": 0.11,
+      "median": 0.1125,
+      "p75": 0.115,
+      "max": 0.1275,
+      "perElement": 175.5,
+      "section": "APP"
+    },
+    {
+      "name": "APP/hydrate·twin",
+      "reps": 40,
+      "min": 0.1075,
+      "p25": 0.1125,
+      "median": 0.115,
+      "p75": 0.12,
+      "max": 0.125,
+      "perElement": 179.4,
+      "section": "APP"
+    },
+    {
+      "name": "APP/parse+hydrate",
+      "reps": 40,
+      "min": 0.3625,
+      "p25": 0.3775,
+      "median": 0.3825,
+      "p75": 0.3925,
+      "max": 0.4325,
+      "perElement": 596.7,
+      "section": "APP"
+    },
+    {
+      "name": "ROWS·80/mount",
+      "reps": 40,
+      "min": 0.27,
+      "p25": 0.2875,
+      "median": 0.2925,
+      "p75": 0.3,
+      "max": 0.34,
+      "perElement": 457,
+      "section": "ROWS·80"
+    },
+    {
+      "name": "ROWS·80/mount·twin",
+      "reps": 40,
+      "min": 0.2725,
+      "p25": 0.29,
+      "median": 0.2925,
+      "p75": 0.3025,
+      "max": 0.35,
+      "perElement": 457,
+      "section": "ROWS·80"
+    },
+    {
+      "name": "ROWS·80/parse",
+      "reps": 40,
+      "min": 0.2575,
+      "p25": 0.2625,
+      "median": 0.265,
+      "p75": 0.275,
+      "max": 0.2875,
+      "perElement": 414.1,
+      "section": "ROWS·80"
+    },
+    {
+      "name": "ROWS·80/hydrate",
+      "reps": 40,
+      "min": 0.1075,
+      "p25": 0.1125,
+      "median": 0.1175,
+      "p75": 0.1175,
+      "max": 0.13,
+      "perElement": 183.6,
+      "section": "ROWS·80"
+    },
+    {
+      "name": "ROWS·80/hydrate·twin",
+      "reps": 40,
+      "min": 0.1075,
+      "p25": 0.115,
+      "median": 0.1175,
+      "p75": 0.12,
+      "max": 0.1325,
+      "perElement": 183.6,
+      "section": "ROWS·80"
+    },
+    {
+      "name": "ROWS·80/parse+hydrate",
+      "reps": 40,
+      "min": 0.3675,
+      "p25": 0.375,
+      "median": 0.38,
+      "p75": 0.395,
+      "max": 0.4375,
+      "perElement": 593.8,
+      "section": "ROWS·80"
+    },
+    {
+      "name": "ROWS·640/mount",
+      "reps": 6,
+      "min": 2.2,
+      "p25": 2.3333,
+      "median": 2.3667,
+      "p75": 2.4667,
+      "max": 2.6833,
+      "perElement": 462.2,
+      "section": "ROWS·640"
+    },
+    {
+      "name": "ROWS·640/mount·twin",
+      "reps": 6,
+      "min": 2.2333,
+      "p25": 2.3333,
+      "median": 2.3833,
+      "p75": 2.4667,
+      "max": 2.85,
+      "perElement": 465.5,
+      "section": "ROWS·640"
+    },
+    {
+      "name": "ROWS·640/parse",
+      "reps": 6,
+      "min": 2.0667,
+      "p25": 2.1333,
+      "median": 2.1833,
+      "p75": 2.2833,
+      "max": 2.7167,
+      "perElement": 426.4,
+      "section": "ROWS·640"
+    },
+    {
+      "name": "ROWS·640/hydrate",
+      "reps": 6,
+      "min": 0.8667,
+      "p25": 0.9167,
+      "median": 0.9333,
+      "p75": 0.95,
+      "max": 1.1833,
+      "perElement": 182.3,
+      "section": "ROWS·640"
+    },
+    {
+      "name": "ROWS·640/hydrate·twin",
+      "reps": 6,
+      "min": 0.8667,
+      "p25": 0.9167,
+      "median": 0.95,
+      "p75": 0.9667,
+      "max": 1.3833,
+      "perElement": 185.5,
+      "section": "ROWS·640"
+    },
+    {
+      "name": "ROWS·640/parse+hydrate",
+      "reps": 6,
+      "min": 2.9667,
+      "p25": 3.0833,
+      "median": 3.1333,
+      "p75": 3.3,
+      "max": 3.4833,
+      "perElement": 612,
+      "section": "ROWS·640"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  // THE TEST FILES OF `@exodra/router`, COMPILED — 21 suites. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // `paths` restated in full (`extends` replaces it, never merges). The first two entries are the
+  // base's; four are added. The router is renderer-agnostic by design — its sources name neither
+  // backend — so every one of these is a TEST-only edge: the suites mount routes through
+  // `@exodra/dom`, render them through `@exodra/string`, and use `@exodra/test-utils` for hosts.
+  // `@exodra/reactivity-types` is here because both backends' declarations name it, and one
+  // mapping is what keeps one `TExoBindable` in the program.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"],
+      "@exodra/reactivity-types": ["../reactivity-types/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

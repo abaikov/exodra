@@ -82,8 +82,8 @@ export function workspaceGlobs(root: string): string[] {
             const workspaces = Array.isArray(manifest.workspaces)
                 ? manifest.workspaces
                 : Array.isArray(manifest.workspaces?.packages)
-                  ? manifest.workspaces.packages
-                  : [];
+                ? manifest.workspaces.packages
+                : [];
             if (workspaces.length > 0) return workspaces as string[];
         } catch {
             /* fall through to pnpm / single package */
@@ -97,7 +97,7 @@ export function workspaceGlobs(root: string): string[] {
         // would be heavier than the feature.
         const globs = readFileSync(pnpm, 'utf8')
             .split('\n')
-            .map(line => /^\s*-\s*["']?([^"'#]+?)["']?\s*$/.exec(line)?.[1])
+            .map((line) => /^\s*-\s*["']?([^"'#]+?)["']?\s*$/.exec(line)?.[1])
             .filter((glob): glob is string => Boolean(glob));
         if (globs.length > 0) return globs;
     }

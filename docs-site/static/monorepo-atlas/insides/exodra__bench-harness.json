@@ -1,0 +1,2645 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "createExoBenchRunner",
+        "label": "createExoBenchRunner",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(table): TExoBenchRunner",
+            "full": "(table): TExoBenchRunner",
+            "parts": [
+              {
+                "text": "(table): "
+              },
+              {
+                "text": "TExoBenchRunner",
+                "link": "TExoBenchRunner"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "EXO_BENCH_SINK",
+        "label": "EXO_BENCH_SINK",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exoBenchClockGrainMs",
+        "label": "exoBenchClockGrainMs",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): number",
+            "full": "(): number",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The smallest non-zero step this process's `performance.now()` was seen to take.",
+        "width": 152,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoBenchForceGc",
+        "label": "exoBenchForceGc",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): (() => void) | unde…",
+            "full": "(): (() => void) | undefined",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoBenchLine",
+        "label": "exoBenchLine",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(text): void",
+            "full": "(text): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A result line.",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoBenchRefuse",
+        "label": "exoBenchRefuse",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(text): void",
+            "full": "(text): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A REFUSAL: a gate that failed, a region under the clock's grain, or a verdict against adopting whatever the table just ranked.",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoBenchSinkValue",
+        "label": "exoBenchSinkValue",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): number",
+            "full": "(): number",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "median",
+        "label": "median",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(values): number",
+            "full": "(values): number",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "readExoBenchArgs",
+        "label": "readExoBenchArgs",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(rounds, calls): TExoBenchArgs | null",
+            "full": "(rounds, calls): TExoBenchArgs | null",
+            "parts": [
+              {
+                "text": "(rounds, calls): "
+              },
+              {
+                "text": "TExoBenchArgs",
+                "link": "TExoBenchArgs"
+              },
+              {
+                "text": " | null"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "`<rounds> <calls-per-sample>`, both optional.",
+        "width": 274,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "reportResolution",
+        "label": "reportResolution",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(table, input, samples, rows, grainMs): void",
+            "full": "(table, input, samples, rows, grainMs): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "WHAT THIS RUN CANNOT SEE.",
+        "width": 318,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "runExoBench",
+        "label": "runExoBench",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(suite): void",
+            "full": "(suite): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "runExoBenchField",
+        "label": "runExoBenchField",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(field, rounds, calls, grainMs): void",
+            "full": "(field, rounds, calls, grainMs): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 274,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "runInput",
+        "label": "runInput",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(table, input, rounds, calls, grainMs, forceGc): void",
+            "full": "(table, input, rounds, calls, grainMs, forceGc): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 376,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "sampleOnce",
+        "label": "sampleOnce",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(variant, shape, calls): number",
+            "full": "(variant, shape, calls): number",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 235,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "sink",
+        "label": "sink",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Consumed by the drivers and printed at the end, so no accumulator can be optimised away.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "stat",
+        "label": "stat",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(values): TExoBenchStat",
+            "full": "(values): TExoBenchStat",
+            "parts": [
+              {
+                "text": "(values): "
+              },
+              {
+                "text": "TExoBenchStat",
+                "link": "TExoBenchStat"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 184,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchArgs",
+        "label": "TExoBenchArgs",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly rounds: number;",
+            "full": "readonly rounds: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly calls: number;",
+            "full": "readonly calls: number;",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "width": 190,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchField",
+        "label": "TExoBenchField",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly title: string;",
+            "full": "readonly title: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly variants: readonly TExoBenchVa…",
+            "full": "readonly variants: readonly TExoBenchVariant<TStream>[];",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly variants: readonly "
+              },
+              {
+                "text": "TExoBenchVariant",
+                "link": "TExoBenchVariant"
+              },
+              {
+                "text": "<TStream>[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly inputs: readonly TExoBenchInpu…",
+            "full": "readonly inputs: readonly TExoBenchInput<TStream>[];",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly inputs: readonly "
+              },
+              {
+                "text": "TExoBenchInput",
+                "link": "TExoBenchInput"
+              },
+              {
+                "text": "<TStream>[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly nullPair: readonly [string, st…",
+            "full": "readonly nullPair: readonly [string, string];",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly floorName: string | null;",
+            "full": "readonly floorName: string | null;",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "doc": "A FIELD is one subject's candidates against one set of inputs.",
+        "width": 293,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchHolder",
+        "label": "TExoBenchHolder",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly value: string | undefined;",
+            "full": "readonly value: string | undefined;",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The value a `floor·field` call site was handed.",
+        "width": 261,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchInput",
+        "label": "TExoBenchInput",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly name: string;",
+            "full": "readonly name: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly why: string;",
+            "full": "readonly why: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly build: (calls: number) => TStr…",
+            "full": "readonly build: (calls: number) => TStream;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly size: (stream: TStream) => num…",
+            "full": "readonly size: (stream: TStream) => number;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly bounds?: readonly string[];",
+            "full": "readonly bounds?: readonly string[];",
+            "doc": "Rows doing a DIFFERENT job: timed and printed as bounds, never ranked.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly boundsWhy?: string;",
+            "full": "readonly boundsWhy?: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 6,
+        "stereotype": "type",
+        "doc": "One INPUT SHAPE.",
+        "width": 293,
+        "height": 144,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchProtoFrame",
+        "label": "TExoBenchProtoFrame",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "[key: symbol]: unknown;",
+            "full": "[key: symbol]: unknown;",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The frame the `flat·proto` design uses: one object per provide, its OUTER frame as its prototype, the value stored under the token's own symbol.",
+        "width": 184,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchProtoToken",
+        "label": "TExoBenchProtoToken",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly at: symbol;",
+            "full": "readonly at: symbol;",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "A context token for the `flat·proto` design: the symbol IS the key a frame is indexed by.",
+        "width": 165,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchRow",
+        "label": "TExoBenchRow",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "name: string;",
+            "full": "name: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "stat: TExoBenchStat;",
+            "full": "stat: TExoBenchStat;",
+            "parts": [
+              {
+                "text": "stat",
+                "link": "stat"
+              },
+              {
+                "text": ": "
+              },
+              {
+                "text": "TExoBenchStat",
+                "link": "TExoBenchStat"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "bound: boolean;",
+            "full": "bound: boolean;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 165,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchRunner",
+        "label": "TExoBenchRunner",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(rounds: number, calls: number, grainMs…",
+            "full": "(rounds: number, calls: number, grainMs: number) => void",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "A table bound to its variants, waiting only for the run's settings.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchStat",
+        "label": "TExoBenchStat",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "min: number;",
+            "full": "min: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "p25: number;",
+            "full": "p25: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "median: number;",
+            "full": "median: number;",
+            "parts": [
+              {
+                "text": "median",
+                "link": "median"
+              },
+              {
+                "text": ": number;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "p75: number;",
+            "full": "p75: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "max: number;",
+            "full": "max: number;",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "width": 133,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchSuite",
+        "label": "TExoBenchSuite",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly title: string;",
+            "full": "readonly title: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly subtitle: string;",
+            "full": "readonly subtitle: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly gate: () => boolean;",
+            "full": "readonly gate: () => boolean;",
+            "doc": "Runs BEFORE anything is timed.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly tables: readonly TExoBenchRunn…",
+            "full": "readonly tables: readonly TExoBenchRunner[];",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly tables: readonly "
+              },
+              {
+                "text": "TExoBenchRunner",
+                "link": "TExoBenchRunner"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly epilogue: () => void;",
+            "full": "readonly epilogue: () => void;",
+            "doc": "What a win here buys, with call sites by file and line.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly defaultRounds: number;",
+            "full": "readonly defaultRounds: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly defaultCalls: number;",
+            "full": "readonly defaultCalls: number;",
+            "parts": []
+          }
+        ],
+        "memberCount": 7,
+        "stereotype": "type",
+        "width": 293,
+        "height": 159,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchTable",
+        "label": "TExoBenchTable",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly title: string;",
+            "full": "readonly title: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly floorName: string;",
+            "full": "readonly floorName: string;",
+            "doc": "The row the ratio column divides by, and the word printed as that column's header.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly floorLabel: string;",
+            "full": "readonly floorLabel: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly nullPair: readonly [string, st…",
+            "full": "readonly nullPair: readonly [string, string];",
+            "doc": "The two rows whose true difference is ZERO by construction — the instrument, not a candidate.",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly variants: readonly TExoBenchVa…",
+            "full": "readonly variants: readonly TExoBenchVariant<TShape>[];",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly variants: readonly "
+              },
+              {
+                "text": "TExoBenchVariant",
+                "link": "TExoBenchVariant"
+              },
+              {
+                "text": "<TShape>[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly inputs: readonly TExoBenchInpu…",
+            "full": "readonly inputs: readonly TExoBenchInput<TShape>[];",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly inputs: readonly "
+              },
+              {
+                "text": "TExoBenchInput",
+                "link": "TExoBenchInput"
+              },
+              {
+                "text": "<TShape>[];"
+              }
+            ]
+          }
+        ],
+        "memberCount": 6,
+        "stereotype": "type",
+        "width": 293,
+        "height": 144,
+        "violations": []
+      },
+      {
+        "id": "TExoBenchVariant",
+        "label": "TExoBenchVariant",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly name: string;",
+            "full": "readonly name: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly drive: (stream: TStream) => nu…",
+            "full": "readonly drive: (stream: TStream) => number;",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "doc": "One CANDIDATE, with the loop that drives it.",
+        "width": 293,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "TSpread",
+        "label": "TSpread",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "min: number;",
+            "full": "min: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "p25: number;",
+            "full": "p25: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "median: number;",
+            "full": "median: number;",
+            "parts": [
+              {
+                "text": "median",
+                "link": "median"
+              },
+              {
+                "text": ": number;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "p75: number;",
+            "full": "p75: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "max: number;",
+            "full": "max: number;",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "width": 133,
+        "height": 129,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "createExoBenchRunner→runInput",
+        "from": "createExoBenchRunner",
+        "to": "runInput",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoBenchRunner→sink",
+        "from": "createExoBenchRunner",
+        "to": "sink",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoBenchRunner→TExoBenchRunner",
+        "from": "createExoBenchRunner",
+        "to": "TExoBenchRunner",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoBenchRunner→TExoBenchTable",
+        "from": "createExoBenchRunner",
+        "to": "TExoBenchTable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchTable.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoBenchSinkValue→EXO_BENCH_SINK",
+        "from": "exoBenchSinkValue",
+        "to": "EXO_BENCH_SINK",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/exoBenchSinkValue.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/constants/EXO_BENCH_SINK.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "median→stat",
+        "from": "median",
+        "to": "stat",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readExoBenchArgs→exoBenchRefuse",
+        "from": "readExoBenchArgs",
+        "to": "exoBenchRefuse",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/readExoBenchArgs.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/exoBenchRefuse.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readExoBenchArgs→TExoBenchArgs",
+        "from": "readExoBenchArgs",
+        "to": "TExoBenchArgs",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/readExoBenchArgs.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchArgs.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reportResolution→median",
+        "from": "reportResolution",
+        "to": "median",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "calls",
+            "kind": "value"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reportResolution→stat",
+        "from": "reportResolution",
+        "to": "stat",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reportResolution→TExoBenchInput",
+        "from": "reportResolution",
+        "to": "TExoBenchInput",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchInput.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reportResolution→TExoBenchRow",
+        "from": "reportResolution",
+        "to": "TExoBenchRow",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reportResolution→TExoBenchTable",
+        "from": "reportResolution",
+        "to": "TExoBenchTable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchTable.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoBench→exoBenchClockGrainMs",
+        "from": "runExoBench",
+        "to": "exoBenchClockGrainMs",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/runExoBench.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/exoBenchClockGrainMs.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoBench→TExoBenchSuite",
+        "from": "runExoBench",
+        "to": "TExoBenchSuite",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/runExoBench.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchSuite.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoBenchField→exoBenchForceGc",
+        "from": "runExoBenchField",
+        "to": "exoBenchForceGc",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/runExoBenchField.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/exoBenchForceGc.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoBenchField→exoBenchLine",
+        "from": "runExoBenchField",
+        "to": "exoBenchLine",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/runExoBenchField.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/exoBenchLine.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoBenchField→runInput",
+        "from": "runExoBenchField",
+        "to": "runInput",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/runExoBenchField.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runExoBenchField→TExoBenchField",
+        "from": "runExoBenchField",
+        "to": "TExoBenchField",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/runExoBenchField.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchField.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runInput→median",
+        "from": "runInput",
+        "to": "median",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runInput→reportResolution",
+        "from": "runInput",
+        "to": "reportResolution",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runInput→sampleOnce",
+        "from": "runInput",
+        "to": "sampleOnce",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runInput→stat",
+        "from": "runInput",
+        "to": "stat",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runInput→TExoBenchInput",
+        "from": "runInput",
+        "to": "TExoBenchInput",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchInput.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runInput→TExoBenchRow",
+        "from": "runInput",
+        "to": "TExoBenchRow",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runInput→TExoBenchTable",
+        "from": "runInput",
+        "to": "TExoBenchTable",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchTable.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sampleOnce→sink",
+        "from": "sampleOnce",
+        "to": "sink",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sampleOnce→TExoBenchVariant",
+        "from": "sampleOnce",
+        "to": "TExoBenchVariant",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchVariant.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "stat→median",
+        "from": "stat",
+        "to": "median",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "stat→TExoBenchStat",
+        "from": "stat",
+        "to": "TExoBenchStat",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBenchField→TExoBenchInput",
+        "from": "TExoBenchField",
+        "to": "TExoBenchInput",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchField.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchInput.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBenchField→TExoBenchVariant",
+        "from": "TExoBenchField",
+        "to": "TExoBenchVariant",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchField.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchVariant.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBenchRow→stat",
+        "from": "TExoBenchRow",
+        "to": "stat",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBenchRow→TExoBenchStat",
+        "from": "TExoBenchRow",
+        "to": "TExoBenchStat",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBenchStat→median",
+        "from": "TExoBenchStat",
+        "to": "median",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBenchSuite→TExoBenchRunner",
+        "from": "TExoBenchSuite",
+        "to": "TExoBenchRunner",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchSuite.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBenchTable→TExoBenchInput",
+        "from": "TExoBenchTable",
+        "to": "TExoBenchInput",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchTable.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchInput.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBenchTable→TExoBenchVariant",
+        "from": "TExoBenchTable",
+        "to": "TExoBenchVariant",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchTable.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/types/TExoBenchVariant.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TSpread→median",
+        "from": "TSpread",
+        "to": "median",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bench-harness/src/runExoBenchField.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bench-harness/src/createExoBenchRunner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 2412,
+    "height": 1145.8,
+    "nodes": [
+      {
+        "id": "createExoBenchRunner",
+        "x": 413.5,
+        "y": 750,
+        "width": 190,
+        "height": 69
+      },
+      {
+        "id": "EXO_BENCH_SINK",
+        "x": 448.5,
+        "y": 230,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "exoBenchClockGrainMs",
+        "x": 432.5,
+        "y": 304,
+        "width": 152,
+        "height": 69
+      },
+      {
+        "id": "exoBenchForceGc",
+        "x": 812,
+        "y": 24,
+        "width": 190,
+        "height": 69
+      },
+      {
+        "id": "exoBenchLine",
+        "x": 847,
+        "y": 121,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "exoBenchRefuse",
+        "x": 448.5,
+        "y": 401,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "exoBenchSinkValue",
+        "x": 94.5,
+        "y": 261.5,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "median",
+        "x": 1618,
+        "y": 788,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "readExoBenchArgs",
+        "x": 24,
+        "y": 444,
+        "width": 274,
+        "height": 69
+      },
+      {
+        "id": "reportResolution",
+        "x": 1159,
+        "y": 822.3,
+        "width": 318,
+        "height": 69
+      },
+      {
+        "id": "runExoBench",
+        "x": 101,
+        "y": 131,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "runExoBenchField",
+        "x": 371.5,
+        "y": 498,
+        "width": 274,
+        "height": 69
+      },
+      {
+        "id": "runInput",
+        "x": 719,
+        "y": 944.3,
+        "width": 376,
+        "height": 69
+      },
+      {
+        "id": "sampleOnce",
+        "x": 1200.5,
+        "y": 369.5,
+        "width": 235,
+        "height": 69
+      },
+      {
+        "id": "sink",
+        "x": 1627.5,
+        "y": 181,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "stat",
+        "x": 1952.5,
+        "y": 1052.8,
+        "width": 184,
+        "height": 69
+      },
+      {
+        "id": "TExoBenchArgs",
+        "x": 413.5,
+        "y": 595,
+        "width": 190,
+        "height": 84
+      },
+      {
+        "id": "TExoBenchField",
+        "x": 1541,
+        "y": 537.5,
+        "width": 293,
+        "height": 129
+      },
+      {
+        "id": "TExoBenchHolder",
+        "x": 30.5,
+        "y": 541,
+        "width": 261,
+        "height": 69
+      },
+      {
+        "id": "TExoBenchInput",
+        "x": 1898,
+        "y": 194.3,
+        "width": 293,
+        "height": 144
+      },
+      {
+        "id": "TExoBenchProtoFrame",
+        "x": 69,
+        "y": 638,
+        "width": 184,
+        "height": 69
+      },
+      {
+        "id": "TExoBenchProtoToken",
+        "x": 78.5,
+        "y": 735,
+        "width": 165,
+        "height": 69
+      },
+      {
+        "id": "TExoBenchRow",
+        "x": 1605,
+        "y": 941.8,
+        "width": 165,
+        "height": 99
+      },
+      {
+        "id": "TExoBenchRunner",
+        "x": 760.5,
+        "y": 238,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoBenchStat",
+        "x": 2255,
+        "y": 757.3,
+        "width": 133,
+        "height": 129
+      },
+      {
+        "id": "TExoBenchSuite",
+        "x": 362,
+        "y": 43,
+        "width": 293,
+        "height": 159
+      },
+      {
+        "id": "TExoBenchTable",
+        "x": 1541,
+        "y": 325,
+        "width": 293,
+        "height": 144
+      },
+      {
+        "id": "TExoBenchVariant",
+        "x": 1898,
+        "y": 584.3,
+        "width": 293,
+        "height": 84
+      },
+      {
+        "id": "TSpread",
+        "x": 1251.5,
+        "y": 665.3,
+        "width": 133,
+        "height": 129
+      }
+    ],
+    "edges": [
+      {
+        "id": "createExoBenchRunner→runInput",
+        "points": [
+          {
+            "x": 538.7,
+            "y": 819
+          },
+          {
+            "x": 687,
+            "y": 988.8
+          },
+          {
+            "x": 719,
+            "y": 987.3
+          }
+        ]
+      },
+      {
+        "id": "createExoBenchRunner→sink",
+        "points": [
+          {
+            "x": 519.3,
+            "y": 750
+          },
+          {
+            "x": 687,
+            "y": 214
+          },
+          {
+            "x": 907,
+            "y": 214
+          },
+          {
+            "x": 1127,
+            "y": 214
+          },
+          {
+            "x": 1318,
+            "y": 214
+          },
+          {
+            "x": 1509,
+            "y": 214
+          },
+          {
+            "x": 1627.5,
+            "y": 207.4
+          }
+        ]
+      },
+      {
+        "id": "createExoBenchRunner→TExoBenchRunner",
+        "points": [
+          {
+            "x": 525.1,
+            "y": 750
+          },
+          {
+            "x": 687,
+            "y": 413.3
+          },
+          {
+            "x": 853.1,
+            "y": 307
+          }
+        ]
+      },
+      {
+        "id": "createExoBenchRunner→TExoBenchTable",
+        "points": [
+          {
+            "x": 527.8,
+            "y": 750
+          },
+          {
+            "x": 687,
+            "y": 465.5
+          },
+          {
+            "x": 907,
+            "y": 465.5
+          },
+          {
+            "x": 1127,
+            "y": 465.5
+          },
+          {
+            "x": 1318,
+            "y": 465.5
+          },
+          {
+            "x": 1509,
+            "y": 465.5
+          },
+          {
+            "x": 1541,
+            "y": 453.2
+          }
+        ]
+      },
+      {
+        "id": "exoBenchSinkValue→EXO_BENCH_SINK",
+        "points": [
+          {
+            "x": 227.5,
+            "y": 279.1
+          },
+          {
+            "x": 330,
+            "y": 253
+          },
+          {
+            "x": 448.5,
+            "y": 253
+          }
+        ]
+      },
+      {
+        "id": "median→stat",
+        "points": [
+          {
+            "x": 1709.1,
+            "y": 857
+          },
+          {
+            "x": 1866,
+            "y": 1107.3
+          },
+          {
+            "x": 1952.5,
+            "y": 1097.6
+          }
+        ]
+      },
+      {
+        "id": "readExoBenchArgs→exoBenchRefuse",
+        "points": [
+          {
+            "x": 296.6,
+            "y": 444
+          },
+          {
+            "x": 330,
+            "y": 435.5
+          },
+          {
+            "x": 448.5,
+            "y": 435.5
+          }
+        ]
+      },
+      {
+        "id": "readExoBenchArgs→TExoBenchArgs",
+        "points": [
+          {
+            "x": 197.8,
+            "y": 513
+          },
+          {
+            "x": 330,
+            "y": 637
+          },
+          {
+            "x": 413.5,
+            "y": 637
+          }
+        ]
+      },
+      {
+        "id": "reportResolution→median",
+        "points": [
+          {
+            "x": 1401.9,
+            "y": 891.3
+          },
+          {
+            "x": 1509,
+            "y": 935.3
+          },
+          {
+            "x": 1632.9,
+            "y": 857
+          }
+        ]
+      },
+      {
+        "id": "reportResolution→stat",
+        "points": [
+          {
+            "x": 1346.6,
+            "y": 891.3
+          },
+          {
+            "x": 1509,
+            "y": 1087.3
+          },
+          {
+            "x": 1687.5,
+            "y": 1087.3
+          },
+          {
+            "x": 1866,
+            "y": 1087.3
+          },
+          {
+            "x": 1952.5,
+            "y": 1087.3
+          }
+        ]
+      },
+      {
+        "id": "reportResolution→TExoBenchInput",
+        "points": [
+          {
+            "x": 1337.2,
+            "y": 822.3
+          },
+          {
+            "x": 1509,
+            "y": 513.5
+          },
+          {
+            "x": 1687.5,
+            "y": 513.5
+          },
+          {
+            "x": 1866,
+            "y": 513.5
+          },
+          {
+            "x": 1992.5,
+            "y": 338.3
+          }
+        ]
+      },
+      {
+        "id": "reportResolution→TExoBenchRow",
+        "points": [
+          {
+            "x": 1358.2,
+            "y": 891.3
+          },
+          {
+            "x": 1509,
+            "y": 1020.5
+          },
+          {
+            "x": 1605,
+            "y": 1004.8
+          }
+        ]
+      },
+      {
+        "id": "reportResolution→TExoBenchTable",
+        "points": [
+          {
+            "x": 1334,
+            "y": 822.3
+          },
+          {
+            "x": 1509,
+            "y": 445.5
+          },
+          {
+            "x": 1541,
+            "y": 436.8
+          }
+        ]
+      },
+      {
+        "id": "runExoBench→exoBenchClockGrainMs",
+        "points": [
+          {
+            "x": 194.7,
+            "y": 200
+          },
+          {
+            "x": 330,
+            "y": 338.5
+          },
+          {
+            "x": 432.5,
+            "y": 338.5
+          }
+        ]
+      },
+      {
+        "id": "runExoBench→TExoBenchSuite",
+        "points": [
+          {
+            "x": 221,
+            "y": 150.2
+          },
+          {
+            "x": 330,
+            "y": 122.5
+          },
+          {
+            "x": 362,
+            "y": 122.5
+          }
+        ]
+      },
+      {
+        "id": "runExoBenchField→exoBenchForceGc",
+        "points": [
+          {
+            "x": 521.5,
+            "y": 498
+          },
+          {
+            "x": 687,
+            "y": 58.5
+          },
+          {
+            "x": 812,
+            "y": 58.5
+          }
+        ]
+      },
+      {
+        "id": "runExoBenchField→exoBenchLine",
+        "points": [
+          {
+            "x": 524.8,
+            "y": 498
+          },
+          {
+            "x": 687,
+            "y": 155.5
+          },
+          {
+            "x": 847,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "runExoBenchField→runInput",
+        "points": [
+          {
+            "x": 531.5,
+            "y": 567
+          },
+          {
+            "x": 687,
+            "y": 800.3
+          },
+          {
+            "x": 864.5,
+            "y": 944.3
+          }
+        ]
+      },
+      {
+        "id": "runExoBenchField→TExoBenchField",
+        "points": [
+          {
+            "x": 597.1,
+            "y": 567
+          },
+          {
+            "x": 687,
+            "y": 602
+          },
+          {
+            "x": 907,
+            "y": 602
+          },
+          {
+            "x": 1127,
+            "y": 602
+          },
+          {
+            "x": 1318,
+            "y": 602
+          },
+          {
+            "x": 1509,
+            "y": 602
+          },
+          {
+            "x": 1541,
+            "y": 602
+          }
+        ]
+      },
+      {
+        "id": "runInput→median",
+        "points": [
+          {
+            "x": 1026.5,
+            "y": 944.3
+          },
+          {
+            "x": 1127,
+            "y": 915.3
+          },
+          {
+            "x": 1318,
+            "y": 915.3
+          },
+          {
+            "x": 1509,
+            "y": 915.3
+          },
+          {
+            "x": 1621.1,
+            "y": 857
+          }
+        ]
+      },
+      {
+        "id": "runInput→reportResolution",
+        "points": [
+          {
+            "x": 969.2,
+            "y": 944.3
+          },
+          {
+            "x": 1127,
+            "y": 856.8
+          },
+          {
+            "x": 1159,
+            "y": 856.8
+          }
+        ]
+      },
+      {
+        "id": "runInput→sampleOnce",
+        "points": [
+          {
+            "x": 920.2,
+            "y": 944.3
+          },
+          {
+            "x": 1127,
+            "y": 404
+          },
+          {
+            "x": 1200.5,
+            "y": 404
+          }
+        ]
+      },
+      {
+        "id": "runInput→stat",
+        "points": [
+          {
+            "x": 992.8,
+            "y": 1013.3
+          },
+          {
+            "x": 1127,
+            "y": 1067.3
+          },
+          {
+            "x": 1318,
+            "y": 1067.3
+          },
+          {
+            "x": 1509,
+            "y": 1067.3
+          },
+          {
+            "x": 1687.5,
+            "y": 1067.3
+          },
+          {
+            "x": 1866,
+            "y": 1067.3
+          },
+          {
+            "x": 1952.5,
+            "y": 1076.9
+          }
+        ]
+      },
+      {
+        "id": "runInput→TExoBenchInput",
+        "points": [
+          {
+            "x": 916.2,
+            "y": 944.3
+          },
+          {
+            "x": 1127,
+            "y": 157
+          },
+          {
+            "x": 1318,
+            "y": 157
+          },
+          {
+            "x": 1509,
+            "y": 157
+          },
+          {
+            "x": 1687.5,
+            "y": 157
+          },
+          {
+            "x": 1866,
+            "y": 157
+          },
+          {
+            "x": 1926.9,
+            "y": 194.3
+          }
+        ]
+      },
+      {
+        "id": "runInput→TExoBenchRow",
+        "points": [
+          {
+            "x": 1095,
+            "y": 958.7
+          },
+          {
+            "x": 1127,
+            "y": 955.3
+          },
+          {
+            "x": 1318,
+            "y": 955.3
+          },
+          {
+            "x": 1509,
+            "y": 955.3
+          },
+          {
+            "x": 1605,
+            "y": 974.6
+          }
+        ]
+      },
+      {
+        "id": "runInput→TExoBenchTable",
+        "points": [
+          {
+            "x": 919,
+            "y": 944.3
+          },
+          {
+            "x": 1127,
+            "y": 345.5
+          },
+          {
+            "x": 1318,
+            "y": 345.5
+          },
+          {
+            "x": 1509,
+            "y": 345.5
+          },
+          {
+            "x": 1541,
+            "y": 354.7
+          }
+        ]
+      },
+      {
+        "id": "sampleOnce→sink",
+        "points": [
+          {
+            "x": 1348.9,
+            "y": 369.5
+          },
+          {
+            "x": 1509,
+            "y": 190.5
+          },
+          {
+            "x": 1627.5,
+            "y": 199.5
+          }
+        ]
+      },
+      {
+        "id": "sampleOnce→TExoBenchVariant",
+        "points": [
+          {
+            "x": 1341,
+            "y": 438.5
+          },
+          {
+            "x": 1509,
+            "y": 690.5
+          },
+          {
+            "x": 1687.5,
+            "y": 690.5
+          },
+          {
+            "x": 1866,
+            "y": 690.5
+          },
+          {
+            "x": 1927.8,
+            "y": 668.3
+          }
+        ]
+      },
+      {
+        "id": "stat→median",
+        "points": [
+          {
+            "x": 1952.5,
+            "y": 1107.9
+          },
+          {
+            "x": 1866,
+            "y": 1127.3
+          },
+          {
+            "x": 1707.7,
+            "y": 857
+          }
+        ]
+      },
+      {
+        "id": "stat→TExoBenchStat",
+        "points": [
+          {
+            "x": 2136.5,
+            "y": 1087.3
+          },
+          {
+            "x": 2223,
+            "y": 1087.3
+          },
+          {
+            "x": 2297.6,
+            "y": 886.3
+          }
+        ]
+      },
+      {
+        "id": "TExoBenchField→TExoBenchInput",
+        "points": [
+          {
+            "x": 1711.4,
+            "y": 537.5
+          },
+          {
+            "x": 1866,
+            "y": 120
+          },
+          {
+            "x": 1956.6,
+            "y": 194.3
+          }
+        ]
+      },
+      {
+        "id": "TExoBenchField→TExoBenchVariant",
+        "points": [
+          {
+            "x": 1834,
+            "y": 602
+          },
+          {
+            "x": 1866,
+            "y": 602
+          },
+          {
+            "x": 1898,
+            "y": 606.3
+          }
+        ]
+      },
+      {
+        "id": "TExoBenchRow→stat",
+        "points": [
+          {
+            "x": 1770,
+            "y": 1004.8
+          },
+          {
+            "x": 1866,
+            "y": 1020.5
+          },
+          {
+            "x": 1952.5,
+            "y": 1052.8
+          }
+        ]
+      },
+      {
+        "id": "TExoBenchRow→TExoBenchStat",
+        "points": [
+          {
+            "x": 1752.6,
+            "y": 941.8
+          },
+          {
+            "x": 1866,
+            "y": 855.5
+          },
+          {
+            "x": 2044.5,
+            "y": 855.5
+          },
+          {
+            "x": 2223,
+            "y": 855.5
+          },
+          {
+            "x": 2255,
+            "y": 844.5
+          }
+        ]
+      },
+      {
+        "id": "TExoBenchStat→median",
+        "points": [
+          {
+            "x": 2313.3,
+            "y": 757.3
+          },
+          {
+            "x": 2223,
+            "y": 48.3
+          },
+          {
+            "x": 2044.5,
+            "y": 48.3
+          },
+          {
+            "x": 1866,
+            "y": 48.3
+          },
+          {
+            "x": 1695.5,
+            "y": 788
+          }
+        ]
+      },
+      {
+        "id": "TExoBenchSuite→TExoBenchRunner",
+        "points": [
+          {
+            "x": 617,
+            "y": 202
+          },
+          {
+            "x": 687,
+            "y": 253.3
+          },
+          {
+            "x": 760.5,
+            "y": 259.7
+          }
+        ]
+      },
+      {
+        "id": "TExoBenchTable→TExoBenchInput",
+        "points": [
+          {
+            "x": 1730.8,
+            "y": 325
+          },
+          {
+            "x": 1866,
+            "y": 100
+          },
+          {
+            "x": 1967.2,
+            "y": 194.3
+          }
+        ]
+      },
+      {
+        "id": "TExoBenchTable→TExoBenchVariant",
+        "points": [
+          {
+            "x": 1767.5,
+            "y": 469
+          },
+          {
+            "x": 1866,
+            "y": 557.8
+          },
+          {
+            "x": 1935.1,
+            "y": 584.3
+          }
+        ]
+      },
+      {
+        "id": "TSpread→median",
+        "points": [
+          {
+            "x": 1384.5,
+            "y": 729.8
+          },
+          {
+            "x": 1509,
+            "y": 729.8
+          },
+          {
+            "x": 1621.1,
+            "y": 788
+          }
+        ]
+      }
+    ]
+  }
+}

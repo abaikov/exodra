@@ -1,0 +1,31 @@
+{
+  // THE TEST FILES OF `esbuild-plugin-exodra`, COMPILED. Same shape as
+  // `packages/bun-plugin-exodra/tsconfig.tests.json` — tests under `tests/`, `rootDir` widened,
+  // `@exodra/test-utils` added for `describeIfPresetBuilt` — and the reasoning for each line is
+  // written out there and, for the scheme as a whole, in `packages/core/tsconfig.tests.json`.
+  //
+  // `module` is overridden for the same reason and to the same value: it inherited
+  // `"module": "commonjs"` from this package's BUILD config (what the published `dist/index.cjs`
+  // is), and `tests/plugin.test.ts:16` uses `import.meta.url`, which TS1343 refuses outside the
+  // es2020/es2022/esnext/system/node16+ set. `moduleResolution` stays `"node"`; the argument for
+  // not disturbing it is written out in `packages/bun-plugin-exodra/tsconfig.tests.json`.
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "esnext",
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "babel-preset-exodra": ["../babel-preset-exodra/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

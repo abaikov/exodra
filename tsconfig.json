@@ -14,26 +14,36 @@
     "declarationMap": true,
     "sourceMap": true,
     "paths": {
+      "@exodra/context": ["./packages/context/src/index.ts"],
       "@exodra/core": ["./packages/core/src/index.ts"],
+      "@exodra/forms": ["./packages/forms/src/index.ts"],
+      "@exodra/computed": ["./packages/computed/src/index.ts"],
+      "@exodra/list-reconcile": ["./packages/list-reconcile/src/index.ts"],
       "@exodra/reactivity": ["./packages/reactivity/src/index.ts"],
       "@exodra/router": ["./packages/router/src/index.ts"],
       "@exodra/dom": ["./packages/dom/src/index.ts"],
       "@exodra/string": ["./packages/string/src/index.ts"],
       "@exodra/ssr": ["./packages/ssr/src/index.ts"],
-      "@exodra/jsx": ["./packages/jsx/src/index.ts"],
-      "@exodra/jsx/jsx-runtime": ["./packages/jsx/src/jsx-runtime.ts"],
-      "@exodra/jsx/jsx-dev-runtime": ["./packages/jsx/src/jsx-dev-runtime.ts"]
+      // A mapping whose target does not exist resolves to nothing, and the import falls through to
+      // `node_modules/@exodra/jsx/dist` — to whatever was last BUILT — with no error anywhere.
+      "@exodra/jsx": ["./packages/jsx/src/schema/index.ts"],
+      "@exodra/jsx/schema": ["./packages/jsx/src/schema/index.ts"],
+      "@exodra/jsx/schema/jsx-runtime": ["./packages/jsx/src/schema/jsx-runtime.ts"],
+      "@exodra/jsx/schema/jsx-dev-runtime": [
+        "./packages/jsx/src/schema/jsx-dev-runtime.ts"
+      ],
+      "@exodra/test-utils": ["./packages/test-utils/src/index.ts"],
+      // Private, unbuilt, and with no `node_modules/@exodra/*` symlink, so a bare specifier for
+      // either resolves ONLY through a mapping. These two lines are the compiler's; `vitest.config.ts`
+      // carries the matching pair for the run, and one without the other type-checks and then fails
+      // at import.
+      "@exodra/term": ["./packages/term/src/index.ts"],
+      "@exodra/conformance": ["./packages/conformance/src/index.ts"]
     }
   },
   "files": [],
-  "references": [
-    { "path": "./packages/core" },
-    { "path": "./packages/reactivity" },
-    { "path": "./packages/router" },
-    { "path": "./packages/dom" },
-    { "path": "./packages/string" },
-    { "path": "./packages/ssr" },
-    { "path": "./packages/jsx" }
-  ]
+  // ONE ENTRY, so `tsc -b` by hand and `npm run typecheck` cannot disagree about what this
+  // repository contains: docs-site/docs/architecture/gates-and-root-configs.md
+  "references": [{ "path": "./tsconfig.build.json" }]
 }
 

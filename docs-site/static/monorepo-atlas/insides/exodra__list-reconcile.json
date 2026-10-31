@@ -1,0 +1,786 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "createExoKeyedList",
+        "label": "createExoKeyedList",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(kids, keyOf, build, update): TExoKeyedList<TItem>",
+            "full": "(kids, keyOf, build, update): TExoKeyedList<TItem>",
+            "parts": [
+              {
+                "text": "(kids, keyOf, build, update): "
+              },
+              {
+                "text": "TExoKeyedList",
+                "link": "TExoKeyedList"
+              },
+              {
+                "text": "<TItem>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A surviving key keeps its row; `update` runs on it only when the object under the key changed.",
+        "width": 357,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "EXO_KEYED_LIST_VOCABULARY",
+        "label": "EXO_KEYED_LIST_VOCABULARY",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 184,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "getExoSequence",
+        "label": "getExoSequence",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(arr): number[]",
+            "full": "(arr): number[]",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "EVERY BACKEND THAT MOVES DOM NODES USES THIS ONE: two placement passes are interchangeable only if they keep the same set of rows in place, so an approximation shows up as a hydrated page whose DOM differs from a rendered one after a shuff…",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "reconcileExoMiddle",
+        "label": "reconcileExoMiddle",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(kids, shown, start, shownEnd, keys, want, wantEnd, build): void",
+            "full": "(kids, shown, start, shownEnd, keys, want, wantEnd, build): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A REPEATED ITEM IS ONE ROW PER OCCURRENCE: each position claims the next unclaimed one.",
+        "width": 446,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "reconcileExoOrder",
+        "label": "reconcileExoOrder",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(kids, shown, keys, want, build): TKey[]",
+            "full": "(kids, shown, keys, want, build): TKey[]",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "One pass over an order of keys: the identity list hands the items themselves, the keyed list `keyOf(item)`.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoKeyedList",
+        "label": "TExoKeyedList",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "reconcile(items: readonly TItem[]): voi…",
+            "full": "reconcile(items: readonly TItem[]): void;",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoKeyedListApi",
+        "label": "TExoKeyedListApi",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "keyedList< TSelf extends { childList(po…",
+            "full": "keyedList< TSelf extends { childList(port: TPort): TExoPlacedChildren<unknown> }, TPort, TItem, TKey >( this: TSelf, port: TPort, keyOf: (item: TItem) => TKey, build: (item: TItem, index: number) => TSelf, update: (node: TSelf, item: TItem) => void ): TExoKeyedList<TItem>;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "keyedList< TSelf extends { childList(port: TPort): "
+              },
+              {
+                "text": "TExoPlacedChildren",
+                "link": "TExoPlacedChildren"
+              },
+              {
+                "text": "<unknown> }, TPort, TItem, TKey >( this: TSelf, port: TPort, keyOf: (item: TItem) => TKey, build: (item: TItem, index: number) => TSelf, update: (node: TSelf, item: TItem) => void ): "
+              },
+              {
+                "text": "TExoKeyedList",
+                "link": "TExoKeyedList"
+              },
+              {
+                "text": "<TItem>;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "interface",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoPlacedChildren",
+        "label": "TExoPlacedChildren",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly size: number;",
+            "full": "readonly size: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "at(i: number): TNode | undefined;",
+            "full": "at(i: number): TNode | undefined;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "insert(child: TNode, i?: number): void;",
+            "full": "insert(child: TNode, i?: number): void;",
+            "doc": "Places the child AND mounts it.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "move(from: number, to: number): void;",
+            "full": "move(from: number, to: number): void;",
+            "doc": "Keeps the instance: nothing is mounted or unmounted, because it never left the tree.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "remove(i: number): void;",
+            "full": "remove(i: number): void;",
+            "doc": "DISPOSES the child it takes out — subscriptions end, effects stop, hooks run.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "removeAll(): void;",
+            "full": "removeAll(): void;",
+            "doc": "Every child told while the list is still whole, then all of them out.",
+            "parts": []
+          }
+        ],
+        "memberCount": 6,
+        "stereotype": "type",
+        "doc": "THE PLACEMENT DOOR, AND NOTHING ELSE.",
+        "width": 286,
+        "height": 144,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "createExoKeyedList→reconcileExoOrder",
+        "from": "createExoKeyedList",
+        "to": "reconcileExoOrder",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/createExoKeyedList.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/reconcileExoOrder.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoKeyedList→TExoKeyedList",
+        "from": "createExoKeyedList",
+        "to": "TExoKeyedList",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/createExoKeyedList.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoKeyedList.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoKeyedList→TExoPlacedChildren",
+        "from": "createExoKeyedList",
+        "to": "TExoPlacedChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/createExoKeyedList.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoPlacedChildren.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_KEYED_LIST_VOCABULARY→createExoKeyedList",
+        "from": "EXO_KEYED_LIST_VOCABULARY",
+        "to": "createExoKeyedList",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/constants/EXO_KEYED_LIST_VOCABULARY.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/createExoKeyedList.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_KEYED_LIST_VOCABULARY→TExoKeyedListApi",
+        "from": "EXO_KEYED_LIST_VOCABULARY",
+        "to": "TExoKeyedListApi",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/constants/EXO_KEYED_LIST_VOCABULARY.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoKeyedListApi.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_KEYED_LIST_VOCABULARY→TExoPlacedChildren",
+        "from": "EXO_KEYED_LIST_VOCABULARY",
+        "to": "TExoPlacedChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/constants/EXO_KEYED_LIST_VOCABULARY.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoPlacedChildren.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reconcileExoMiddle→getExoSequence",
+        "from": "reconcileExoMiddle",
+        "to": "getExoSequence",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/reconcileExoOrder.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/getExoSequence.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reconcileExoMiddle→TExoPlacedChildren",
+        "from": "reconcileExoMiddle",
+        "to": "TExoPlacedChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/reconcileExoOrder.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoPlacedChildren.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reconcileExoOrder→reconcileExoMiddle",
+        "from": "reconcileExoOrder",
+        "to": "reconcileExoMiddle",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/reconcileExoOrder.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/reconcileExoOrder.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reconcileExoOrder→TExoPlacedChildren",
+        "from": "reconcileExoOrder",
+        "to": "TExoPlacedChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/reconcileExoOrder.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoPlacedChildren.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoKeyedListApi→TExoKeyedList",
+        "from": "TExoKeyedListApi",
+        "to": "TExoKeyedList",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoKeyedListApi.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoKeyedList.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoKeyedListApi→TExoPlacedChildren",
+        "from": "TExoKeyedListApi",
+        "to": "TExoPlacedChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoKeyedListApi.ts",
+            "to": "/Users/abaikov/work/exodra/packages/list-reconcile/src/types/TExoPlacedChildren.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1870,
+    "height": 348.8,
+    "nodes": [
+      {
+        "id": "createExoKeyedList",
+        "x": 272,
+        "y": 128.8,
+        "width": 357,
+        "height": 69
+      },
+      {
+        "id": "EXO_KEYED_LIST_VOCABULARY",
+        "x": 24,
+        "y": 33,
+        "width": 184,
+        "height": 46
+      },
+      {
+        "id": "getExoSequence",
+        "x": 1636.5,
+        "y": 255.8,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "reconcileExoMiddle",
+        "x": 1050,
+        "y": 245.8,
+        "width": 446,
+        "height": 69
+      },
+      {
+        "id": "reconcileExoOrder",
+        "x": 693,
+        "y": 216.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoKeyedList",
+        "x": 693,
+        "y": 119.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoKeyedListApi",
+        "x": 304,
+        "y": 31,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoPlacedChildren",
+        "x": 1560,
+        "y": 24,
+        "width": 286,
+        "height": 144
+      }
+    ],
+    "edges": [
+      {
+        "id": "createExoKeyedList→reconcileExoOrder",
+        "points": [
+          {
+            "x": 533.3,
+            "y": 197.8
+          },
+          {
+            "x": 661,
+            "y": 251
+          },
+          {
+            "x": 693,
+            "y": 251
+          }
+        ]
+      },
+      {
+        "id": "createExoKeyedList→TExoKeyedList",
+        "points": [
+          {
+            "x": 629,
+            "y": 155.4
+          },
+          {
+            "x": 661,
+            "y": 154
+          },
+          {
+            "x": 693,
+            "y": 154
+          }
+        ]
+      },
+      {
+        "id": "createExoKeyedList→TExoPlacedChildren",
+        "points": [
+          {
+            "x": 557.7,
+            "y": 128.8
+          },
+          {
+            "x": 661,
+            "y": 95.5
+          },
+          {
+            "x": 839.5,
+            "y": 95.5
+          },
+          {
+            "x": 1018,
+            "y": 95.5
+          },
+          {
+            "x": 1273,
+            "y": 95.5
+          },
+          {
+            "x": 1528,
+            "y": 95.5
+          },
+          {
+            "x": 1560,
+            "y": 95.6
+          }
+        ]
+      },
+      {
+        "id": "EXO_KEYED_LIST_VOCABULARY→createExoKeyedList",
+        "points": [
+          {
+            "x": 142.6,
+            "y": 79
+          },
+          {
+            "x": 240,
+            "y": 163.3
+          },
+          {
+            "x": 272,
+            "y": 163.3
+          }
+        ]
+      },
+      {
+        "id": "EXO_KEYED_LIST_VOCABULARY→TExoKeyedListApi",
+        "points": [
+          {
+            "x": 208,
+            "y": 63
+          },
+          {
+            "x": 240,
+            "y": 65.5
+          },
+          {
+            "x": 304,
+            "y": 65.5
+          }
+        ]
+      },
+      {
+        "id": "EXO_KEYED_LIST_VOCABULARY→TExoPlacedChildren",
+        "points": [
+          {
+            "x": 174.2,
+            "y": 33
+          },
+          {
+            "x": 240,
+            "y": 7
+          },
+          {
+            "x": 450.5,
+            "y": 7
+          },
+          {
+            "x": 661,
+            "y": 7
+          },
+          {
+            "x": 839.5,
+            "y": 7
+          },
+          {
+            "x": 1018,
+            "y": 7
+          },
+          {
+            "x": 1273,
+            "y": 7
+          },
+          {
+            "x": 1528,
+            "y": 7
+          },
+          {
+            "x": 1561.4,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "id": "reconcileExoMiddle→getExoSequence",
+        "points": [
+          {
+            "x": 1496,
+            "y": 289
+          },
+          {
+            "x": 1528,
+            "y": 290.3
+          },
+          {
+            "x": 1636.5,
+            "y": 290.3
+          }
+        ]
+      },
+      {
+        "id": "reconcileExoMiddle→TExoPlacedChildren",
+        "points": [
+          {
+            "x": 1425.3,
+            "y": 245.8
+          },
+          {
+            "x": 1528,
+            "y": 222.5
+          },
+          {
+            "x": 1603.4,
+            "y": 168
+          }
+        ]
+      },
+      {
+        "id": "reconcileExoOrder→reconcileExoMiddle",
+        "points": [
+          {
+            "x": 986,
+            "y": 275
+          },
+          {
+            "x": 1018,
+            "y": 280.3
+          },
+          {
+            "x": 1050,
+            "y": 280.3
+          }
+        ]
+      },
+      {
+        "id": "reconcileExoOrder→TExoPlacedChildren",
+        "points": [
+          {
+            "x": 930.4,
+            "y": 216.5
+          },
+          {
+            "x": 1018,
+            "y": 183.3
+          },
+          {
+            "x": 1273,
+            "y": 183.3
+          },
+          {
+            "x": 1528,
+            "y": 183.3
+          },
+          {
+            "x": 1560,
+            "y": 167.3
+          }
+        ]
+      },
+      {
+        "id": "TExoKeyedListApi→TExoKeyedList",
+        "points": [
+          {
+            "x": 597,
+            "y": 72.5
+          },
+          {
+            "x": 661,
+            "y": 75.5
+          },
+          {
+            "x": 761.1,
+            "y": 119.5
+          }
+        ]
+      },
+      {
+        "id": "TExoKeyedListApi→TExoPlacedChildren",
+        "points": [
+          {
+            "x": 597,
+            "y": 52.1
+          },
+          {
+            "x": 661,
+            "y": 46.3
+          },
+          {
+            "x": 839.5,
+            "y": 46.3
+          },
+          {
+            "x": 1018,
+            "y": 46.3
+          },
+          {
+            "x": 1273,
+            "y": 46.3
+          },
+          {
+            "x": 1528,
+            "y": 46.3
+          },
+          {
+            "x": 1560,
+            "y": 55.3
+          }
+        ]
+      }
+    ]
+  }
+}

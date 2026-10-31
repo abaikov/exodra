@@ -1,0 +1,23 @@
+// AXIS `reactive-update` — Marko's 1000 spans, the counterpart of `SvReactive.svelte`.
+//
+// MARKO IS ON THE COARSE SIDE OF THAT AXIS, with Svelte and React rather than with Exodra,
+// Solid and the schema core, and again that is what the framework is rather than a choice
+// made about it. The fine-grained participants hold a thousand SEPARATE sources and write
+// them one at a time; Marko has no such thing to hold. Its reactivity is compiled per
+// template: `<let>` declares state INSIDE a template instance, and the only reactive value a
+// mounted template exposes outward is the single `value` accessor of `Marko.MountedTemplate`.
+// There is no `signal()` a caller can create in plain JS, keep a thousand of, and write. So
+// the idiomatic way to change a thousand rendered values from outside is the way Svelte and
+// React do it: hand the template one new array and let its list reconciler push the changes
+// down — which is `update({ values })` on the mounted template.
+//
+// NO `by=` ON PURPOSE, and it is the same key the others use. `<for of=…>` defaults to keying
+// by INDEX (`bySecondArg` in marko/dist/dom.mjs), which is exactly `SvReactive.svelte`'s
+// `{#each values as v, i (i)}` and React's `key={i}` here. With every index matching, the
+// reconciler's fast path returns without touching a single node (marko/dist/dom.mjs `loop()`:
+// the common-prefix scan consumes the whole array and it returns before the move phase), and
+// the only work left is one text write per row — the coarse framework's version of what the
+// fine-grained ones do directly.
+//
+// One line on purpose — see `MkList.marko`; this axis diffs markup byte for byte.
+<div><for|v| of=input.values><span>${v}</span></for></div>

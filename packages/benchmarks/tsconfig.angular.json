@@ -1,0 +1,30 @@
+{
+  // The TypeScript program the Angular compiler (ngtsc) builds, and NOTHING else in this
+  // package compiles through it. It is read by `bench/build/build-angular.mjs` — a build that
+  // runs on its own, separately from the dev server every other participant is compiled by —
+  // and by nothing else. No other benchmark source has ever gone through ngtsc and none does
+  // now.
+  //
+  // `include` names the participant and nothing more. `bench/apps/angular/app.ts` imports only
+  // `src/benchmarks/todo-spec.ts`, which is framework-free by construction, so this program no
+  // longer reaches `todo-app.tsx` and its dynamic `.svelte` / `.marko` imports at all. Type
+  // checking is still off in the plugin: ngtsc's job here is to emit Ivy definitions, and the
+  // repository's own `tsc -b` owns the type story for these files.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Angular's decorators are legacy TypeScript decorators; ngtsc reads them off the AST.
+    "experimentalDecorators": true,
+    // Class FIELDS must be assigned in the constructor, not defined with `Object.defineProperty`,
+    // or a decorated class's field initializers run at the wrong time. The Angular CLI's own
+    // generated tsconfig sets this for the same reason. (`target: ES2020` from the extended
+    // config already implies it; it is written down because the implication is not obvious.)
+    "useDefineForClassFields": false,
+    // THE ONE PROGRAM IN THIS PACKAGE THAT MUST EMIT, so it says so instead of inheriting it. The
+    // config above now sets `noEmit: true` — see its header for the 650 files that bought that
+    // line — and `extends` would hand that down to ngtsc, whose job here, as the paragraph above
+    // says, is precisely to emit Ivy definitions. This restores what this program had for its
+    // whole life and changes nothing else.
+    "noEmit": false
+  },
+  "include": ["bench/apps/angular/app.ts", "src/benchmarks/shared/todo-spec.ts"]
+}

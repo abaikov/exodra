@@ -1,0 +1,859 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "EXO_ID_COUNTER",
+        "label": "EXO_ID_COUNTER",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exoContextFrame",
+        "label": "exoContextFrame",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(outer, key, value): TExoContextFrame",
+            "full": "(outer, key, value): TExoContextFrame",
+            "parts": [
+              {
+                "text": "(outer, key, value): "
+              },
+              {
+                "text": "TExoContextFrame",
+                "link": "TExoContextFrame"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "ONE function for the three backends, so the link they build is ONE hidden class.",
+        "width": 274,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoContextToken",
+        "label": "exoContextToken",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name): TExoContextToken<TV…",
+            "full": "(name): TExoContextToken<TValue>",
+            "parts": [
+              {
+                "text": "(name): "
+              },
+              {
+                "text": "TExoContextToken",
+                "link": "TExoContextToken"
+              },
+              {
+                "text": "<TV…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(name): "
+              },
+              {
+                "text": "TExoContextToken",
+                "link": "TExoContextToken"
+              },
+              {
+                "text": "<TValue>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "There is NO DEFAULT: one would make \"nobody provided this\" indistinguishable from \"somebody provided exactly the default\".",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "nextExoId",
+        "label": "nextExoId",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(c): string",
+            "full": "(c): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 120,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "provideExoIds",
+        "label": "provideExoIds",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(c, prefix): TExoIdCounter",
+            "full": "(c, prefix): TExoIdCounter",
+            "parts": [
+              {
+                "text": "(c, prefix): "
+              },
+              {
+                "text": "TExoIdCounter",
+                "link": "TExoIdCounter"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 203,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "readExoContext",
+        "label": "readExoContext",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(frame, key): TValue | undefined",
+            "full": "(frame, key): TValue | undefined",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A `provide` of literal `undefined` is indistinguishable from no provide at all: a sentinel per link to tell the two apart would cost every lookup in the process.",
+        "width": 242,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoContextFrame",
+        "label": "TExoContextFrame",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly key: TExoContextToken<unknown>;",
+            "full": "readonly key: TExoContextToken<unknown>;",
+            "parts": [
+              {
+                "text": "readonly key: "
+              },
+              {
+                "text": "TExoContextToken",
+                "link": "TExoContextToken"
+              },
+              {
+                "text": "<unknown>;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly value: unknown;",
+            "full": "readonly value: unknown;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly outer: TExoContextFrame | null;",
+            "full": "readonly outer: TExoContextFrame | null;",
+            "parts": [
+              {
+                "text": "readonly outer: "
+              },
+              {
+                "text": "TExoContextFrame",
+                "link": "TExoContextFrame"
+              },
+              {
+                "text": " | null;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "doc": "IMMUTABLE AND SHARED: `outer` is the chain in force where this value was provided, so shadowing is a new cell in front of an untouched chain and restoring is letting go of the cell.",
+        "width": 293,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoContextToken",
+        "label": "TExoContextToken",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly name: string;",
+            "full": "readonly name: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly value: TValue;",
+            "full": "readonly value: TValue;",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "doc": "`value` is a PHANTOM, never present at runtime, and `readonly` keeps the token covariant so a frame can hold `TExoContextToken<unknown>`.",
+        "width": 184,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "TExoIdCounter",
+        "label": "TExoIdCounter",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly prefix: string;",
+            "full": "readonly prefix: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "next: number;",
+            "full": "next: number;",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "width": 190,
+        "height": 84,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "EXO_ID_COUNTER→exoContextToken",
+        "from": "EXO_ID_COUNTER",
+        "to": "exoContextToken",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/constants/EXO_ID_COUNTER.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/exoContextToken.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_ID_COUNTER→TExoIdCounter",
+        "from": "EXO_ID_COUNTER",
+        "to": "TExoIdCounter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/constants/EXO_ID_COUNTER.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoIdCounter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoContextFrame→TExoContextFrame",
+        "from": "exoContextFrame",
+        "to": "TExoContextFrame",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/exoContextFrame.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextFrame.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoContextFrame→TExoContextToken",
+        "from": "exoContextFrame",
+        "to": "TExoContextToken",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/exoContextFrame.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoContextToken→TExoContextToken",
+        "from": "exoContextToken",
+        "to": "TExoContextToken",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/exoContextToken.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "nextExoId→EXO_ID_COUNTER",
+        "from": "nextExoId",
+        "to": "EXO_ID_COUNTER",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/nextExoId.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/constants/EXO_ID_COUNTER.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "nextExoId→TExoContextToken",
+        "from": "nextExoId",
+        "to": "TExoContextToken",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/nextExoId.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "provideExoIds→EXO_ID_COUNTER",
+        "from": "provideExoIds",
+        "to": "EXO_ID_COUNTER",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/provideExoIds.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/constants/EXO_ID_COUNTER.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "provideExoIds→TExoContextToken",
+        "from": "provideExoIds",
+        "to": "TExoContextToken",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/provideExoIds.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "provideExoIds→TExoIdCounter",
+        "from": "provideExoIds",
+        "to": "TExoIdCounter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/provideExoIds.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoIdCounter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readExoContext→TExoContextFrame",
+        "from": "readExoContext",
+        "to": "TExoContextFrame",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/readExoContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextFrame.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readExoContext→TExoContextToken",
+        "from": "readExoContext",
+        "to": "TExoContextToken",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/readExoContext.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoContextFrame→TExoContextToken",
+        "from": "TExoContextFrame",
+        "to": "TExoContextToken",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextFrame.ts",
+            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 1194,
+    "height": 548.3,
+    "nodes": [
+      {
+        "id": "EXO_ID_COUNTER",
+        "x": 368,
+        "y": 388.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "exoContextFrame",
+        "x": 291,
+        "y": 24,
+        "width": 274,
+        "height": 69
+      },
+      {
+        "id": "exoContextToken",
+        "x": 667.5,
+        "y": 386.8,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "nextExoId",
+        "x": 65.5,
+        "y": 455.3,
+        "width": 120,
+        "height": 69
+      },
+      {
+        "id": "provideExoIds",
+        "x": 24,
+        "y": 324,
+        "width": 203,
+        "height": 69
+      },
+      {
+        "id": "readExoContext",
+        "x": 307,
+        "y": 265.5,
+        "width": 242,
+        "height": 69
+      },
+      {
+        "id": "TExoContextFrame",
+        "x": 629,
+        "y": 55,
+        "width": 293,
+        "height": 99
+      },
+      {
+        "id": "TExoContextToken",
+        "x": 986,
+        "y": 278,
+        "width": 184,
+        "height": 84
+      },
+      {
+        "id": "TExoIdCounter",
+        "x": 680.5,
+        "y": 182,
+        "width": 190,
+        "height": 84
+      }
+    ],
+    "edges": [
+      {
+        "id": "EXO_ID_COUNTER→exoContextToken",
+        "points": [
+          {
+            "x": 488,
+            "y": 414.8
+          },
+          {
+            "x": 597,
+            "y": 421.3
+          },
+          {
+            "x": 667.5,
+            "y": 421.3
+          }
+        ]
+      },
+      {
+        "id": "EXO_ID_COUNTER→TExoIdCounter",
+        "points": [
+          {
+            "x": 488,
+            "y": 404.4
+          },
+          {
+            "x": 597,
+            "y": 392
+          },
+          {
+            "x": 730.9,
+            "y": 266
+          }
+        ]
+      },
+      {
+        "id": "exoContextFrame→TExoContextFrame",
+        "points": [
+          {
+            "x": 554.8,
+            "y": 93
+          },
+          {
+            "x": 597,
+            "y": 104.5
+          },
+          {
+            "x": 629,
+            "y": 104.5
+          }
+        ]
+      },
+      {
+        "id": "exoContextFrame→TExoContextToken",
+        "points": [
+          {
+            "x": 565,
+            "y": 36.2
+          },
+          {
+            "x": 597,
+            "y": 31
+          },
+          {
+            "x": 775.5,
+            "y": 31
+          },
+          {
+            "x": 954,
+            "y": 31
+          },
+          {
+            "x": 1060,
+            "y": 278
+          }
+        ]
+      },
+      {
+        "id": "exoContextToken→TExoContextToken",
+        "points": [
+          {
+            "x": 883.5,
+            "y": 421.3
+          },
+          {
+            "x": 954,
+            "y": 421.3
+          },
+          {
+            "x": 1026.6,
+            "y": 362
+          }
+        ]
+      },
+      {
+        "id": "nextExoId→EXO_ID_COUNTER",
+        "points": [
+          {
+            "x": 185.5,
+            "y": 494.2
+          },
+          {
+            "x": 259,
+            "y": 499.8
+          },
+          {
+            "x": 384.1,
+            "y": 434.3
+          }
+        ]
+      },
+      {
+        "id": "nextExoId→TExoContextToken",
+        "points": [
+          {
+            "x": 185.5,
+            "y": 485.3
+          },
+          {
+            "x": 259,
+            "y": 479.8
+          },
+          {
+            "x": 428,
+            "y": 479.8
+          },
+          {
+            "x": 597,
+            "y": 479.8
+          },
+          {
+            "x": 775.5,
+            "y": 479.8
+          },
+          {
+            "x": 954,
+            "y": 479.8
+          },
+          {
+            "x": 1045.4,
+            "y": 362
+          }
+        ]
+      },
+      {
+        "id": "provideExoIds→EXO_ID_COUNTER",
+        "points": [
+          {
+            "x": 212.8,
+            "y": 393
+          },
+          {
+            "x": 259,
+            "y": 411.3
+          },
+          {
+            "x": 368,
+            "y": 411.3
+          }
+        ]
+      },
+      {
+        "id": "provideExoIds→TExoContextToken",
+        "points": [
+          {
+            "x": 227,
+            "y": 358.5
+          },
+          {
+            "x": 259,
+            "y": 358.5
+          },
+          {
+            "x": 428,
+            "y": 358.5
+          },
+          {
+            "x": 597,
+            "y": 358.5
+          },
+          {
+            "x": 775.5,
+            "y": 358.5
+          },
+          {
+            "x": 954,
+            "y": 358.5
+          },
+          {
+            "x": 986,
+            "y": 348.6
+          }
+        ]
+      },
+      {
+        "id": "provideExoIds→TExoIdCounter",
+        "points": [
+          {
+            "x": 138.1,
+            "y": 324
+          },
+          {
+            "x": 259,
+            "y": -8.2
+          },
+          {
+            "x": 428,
+            "y": -8.2
+          },
+          {
+            "x": 597,
+            "y": -8.2
+          },
+          {
+            "x": 743.2,
+            "y": 182
+          }
+        ]
+      },
+      {
+        "id": "readExoContext→TExoContextFrame",
+        "points": [
+          {
+            "x": 549,
+            "y": 313.8
+          },
+          {
+            "x": 597,
+            "y": 319.3
+          },
+          {
+            "x": 734.4,
+            "y": 154
+          }
+        ]
+      },
+      {
+        "id": "readExoContext→TExoContextToken",
+        "points": [
+          {
+            "x": 549,
+            "y": 292.8
+          },
+          {
+            "x": 597,
+            "y": 290
+          },
+          {
+            "x": 775.5,
+            "y": 290
+          },
+          {
+            "x": 954,
+            "y": 290
+          },
+          {
+            "x": 986,
+            "y": 297.7
+          }
+        ]
+      },
+      {
+        "id": "TExoContextFrame→TExoContextToken",
+        "points": [
+          {
+            "x": 922,
+            "y": 104.5
+          },
+          {
+            "x": 954,
+            "y": 104.5
+          },
+          {
+            "x": 1053.8,
+            "y": 278
+          }
+        ]
+      }
+    ]
+  }
+}

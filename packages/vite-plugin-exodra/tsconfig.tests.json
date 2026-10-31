@@ -1,0 +1,27 @@
+{
+  // THE TEST FILES OF `@exodra/vite-plugin`, COMPILED. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // Extends `tsconfig.typecheck.json`: `tsconfig.json` is what tsup reads here and it sets
+  // `composite: false` outright, while the typecheck config carries the `paths` that keep
+  // `@exodra/router` and `babel-preset-exodra` off their published `dist`. Neither is restated —
+  // the one suite lives under `src/` and imports only `vitest` and its own module.
+  //
+  // `types` stays as inherited (`["vite/client", "node"]`). That array does NOT include
+  // `vitest/globals`, and it does not need to: every test file in this repository imports
+  // `describe` / `it` / `expect` from `'vitest'` explicitly — 166 of 166 — so no
+  // config in this set declares the globals. `vitest.config.ts` sets `globals: true` anyway, which
+  // is what makes the two facts easy to confuse: the RUNNER provides them, and every file declines
+  // to rely on it.
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

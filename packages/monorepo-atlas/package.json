@@ -6,14 +6,10 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "build": "tsup"
+    "build": "tsup && tsc -p tsconfig.dts.json"
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.1.0",
-    "@exodra/core": "^0.3.0",
-    "@exodra/dom": "^0.3.0",
-    "@exodra/reactivity": "^0.3.0",
-    "@exodra/string": "^0.4.1",
     "dependency-cruiser": "^18.1.1",
     "ts-morph": "^21.0.1"
   },
@@ -22,7 +18,7 @@
     "vitest": "^4.0.16",
     "tsup": "^8.0.0"
   },
-  "description": "Architecture atlas for a TypeScript repository: a monorepo dependency graph with rule violations, and a UML diagram of what is inside each package \u2014 built with Exodra",
+  "description": "Architecture atlas for a TypeScript monorepo: the package dependency graph with rule violations and an entity model of what is inside each package, emitted as JSON data plus a stylesheet, and a --check mode that fails when the committed data is stale",
   "bin": {
     "exo-atlas": "./dist/bin.js"
   },
@@ -37,8 +33,7 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./graph.js": "./dist/graph.js"
+    }
   },
   "license": "MIT",
   "author": "Andrei Baikov",
@@ -47,6 +42,9 @@
     "type": "git",
     "url": "git+https://github.com/abaikov/exodra.git",
     "directory": "packages/monorepo-atlas"
+  },
+  "bugs": {
+    "url": "https://github.com/abaikov/exodra/issues"
   },
   "keywords": [
     "architecture",

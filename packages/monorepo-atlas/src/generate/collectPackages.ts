@@ -15,8 +15,7 @@ export function collectPackages(root: string): TExoPackageMeta[] {
 
         for (const entry of readdirSync(groupPath, { withFileTypes: true })) {
             if (!entry.isDirectory() || entry.name === 'examples') continue;
-            const dir =
-                group === 'packages' ? entry.name : `examples/${entry.name}`;
+            const dir = group === 'packages' ? entry.name : `examples/${entry.name}`;
             const manifest = join(root, 'packages', dir, 'package.json');
             if (!existsSync(manifest)) continue;
 
@@ -56,11 +55,7 @@ export function collectPackages(root: string): TExoPackageMeta[] {
  * stale: an app is private and lives with the examples, tooling is a compiler /
  * plugin / scaffold, and whatever is published to npm for consumers is runtime.
  */
-export function classify(
-    name: string,
-    isPrivate: boolean,
-    dir: string
-): TExoNodeKind {
+export function classify(name: string, isPrivate: boolean, dir: string): TExoNodeKind {
     if (isPrivate && (dir.startsWith('examples/') || dir === 'benchmarks')) {
         return 'app';
     }

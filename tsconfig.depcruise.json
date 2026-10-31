@@ -1,41 +1,39 @@
 {
-  // Resolution map for the ARCHITECTURE CRAWL only (`npm run graph*`), never for
-  // a build.
-  //
-  // dependency-cruiser can only see a type-only package import when the specifier
-  // resolves through tsconfig `paths` — otherwise it lands on a `.d.ts` inside
-  // node_modules and is dropped, and the edge silently disappears from both the
-  // rules and the diagram (this is how every `@exodra/reactivity-types` edge went
-  // missing).
-  //
-  // The root tsconfig cannot carry these mappings: each package builds with its
-  // siblings resolved to their published `dist/*.d.ts`, and pointing them at
-  // source instead puts files outside the package's own `rootDir` (TS6059).
-  // So the crawl gets its own map, and the build keeps its.
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@exodra/core": ["./packages/core/src/index.ts"],
-      "@exodra/reactivity-types": ["./packages/reactivity-types/src/index.ts"],
-      "@exodra/reactivity": ["./packages/reactivity/src/index.ts"],
-      "@exodra/router": ["./packages/router/src/index.ts"],
-      "@exodra/dom": ["./packages/dom/src/index.ts"],
-      "@exodra/string": ["./packages/string/src/index.ts"],
-      "@exodra/ssr": ["./packages/ssr/src/index.ts"],
-      "@exodra/jsx": ["./packages/jsx/src/index.ts"],
-      "@exodra/jsx/jsx-runtime": ["./packages/jsx/src/jsx-runtime.ts"],
-      "@exodra/jsx/jsx-dev-runtime": ["./packages/jsx/src/jsx-dev-runtime.ts"],
-      "@exodra/attrs": ["./packages/attrs/src/index.ts"],
-      "@exodra/forms": ["./packages/forms/src/index.ts"],
-      "@exodra/style": ["./packages/style/src/index.ts"],
-      "@exodra/react": ["./packages/react/src/index.ts"],
-      "@exodra/react-mount": ["./packages/react-mount/src/index.ts"],
-      "@exodra/babel-plugin-jsx": ["./packages/babel-plugin-jsx/src/index.ts"],
-      "@exodra/vite-plugin": ["./packages/vite-plugin-exodra/src/index.ts"],
-      "@exodra/introspect": ["./packages/introspect/src/index.ts"],
-      "@exodra/profiler": ["./packages/profiler/src/index.ts"],
-      "@exodra/dom-profiler": ["./packages/dom-profiler/src/index.ts"]
+    // Resolution map for the ARCHITECTURE CRAWL only (`npm run graph*`), never for a build. A
+    // specifier that does not resolve through `paths` lands in node_modules and its edge silently
+    // vanishes from rules and diagram alike — so each key must be a spelling the package really
+    // exports, and `extends` REPLACES `paths` whole rather than merging key by key. The root config
+    // cannot hold them: it resolves siblings to `dist/*.d.ts`; aiming those at source breaks TS6059.
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@exodra/context": ["./packages/context/src/index.ts"],
+            "@exodra/core": ["./packages/core/src/index.ts"],
+            "@exodra/computed": ["./packages/computed/src/index.ts"],
+            "@exodra/list-reconcile": ["./packages/list-reconcile/src/index.ts"],
+            "@exodra/router": ["./packages/router/src/index.ts"],
+            "@exodra/dom": ["./packages/dom/src/index.ts"],
+            "@exodra/string": ["./packages/string/src/index.ts"],
+            "@exodra/ssr": ["./packages/ssr/src/index.ts"],
+            "@exodra/jsx": ["./packages/jsx/src/schema/index.ts"],
+            "@exodra/jsx/schema": ["./packages/jsx/src/schema/index.ts"],
+            "@exodra/jsx/schema/jsx-runtime": ["./packages/jsx/src/schema/jsx-runtime.ts"],
+            "@exodra/jsx/schema/jsx-dev-runtime": ["./packages/jsx/src/schema/jsx-dev-runtime.ts"],
+            "@exodra/forms": ["./packages/forms/src/index.ts"],
+            "@exodra/react": ["./packages/react/src/index.ts"],
+            "@exodra/react-mount": ["./packages/react-mount/src/index.ts"],
+            "@exodra/babel-plugin-schema": ["./packages/babel-plugin-exodra-schema/src/index.ts"],
+            "@exodra/vite-plugin": ["./packages/vite-plugin-exodra/src/index.ts"],
+            "@exodra/introspect": ["./packages/introspect/src/index.ts"],
+            "@exodra/dom-profiler": ["./packages/dom-profiler/src/index.ts"],
+            // A MAPPING, NOT A package.json ENTRY, for the three private packages below: reached through
+            // a Vite/vitest alias, so a declared dependency would assert an install relationship that
+            // does not exist. Mapped, the edge is typed `local`; unmapped, it is `not-to-unresolvable`.
+            "@exodra/term": ["./packages/term/src/index.ts"],
+            "@exodra/conformance": ["./packages/conformance/src/index.ts"],
+            "@exodra/test-utils": ["./packages/test-utils/src/index.ts"],
+            "@exodra/bench-harness": ["./packages/bench-harness/src/index.ts"]
+        }
     }
-  }
 }

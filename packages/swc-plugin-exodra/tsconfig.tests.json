@@ -1,0 +1,54 @@
+{
+  // THE TEST FILES OF `swc-plugin-exodra`, COMPILED. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // ── THE ONE PACKAGE HERE THAT IS NOT TYPESCRIPT ─────────────────────────────────────────────
+  //
+  // `src/` is Rust; the deliverable is `swc_plugin_exodra.wasm`. `tsconfig.build.json` names this
+  // package on its list of deliberate absences, and the reason it gives is exactly the hole this
+  // set of files closes: "There is no TypeScript source to check; its only `.ts` file is
+  // `tests/plugin.test.ts`, and tests are excluded here." There are two such files now
+  // (`plugin.test.ts` and `parity.test.ts`), the sentence is still true, and the package still has
+  // no tsconfig of its own — so this one extends the ROOT `tsconfig.json` and includes `tests/`
+  // alone. `src/` is not in `include`, because there is nothing there a compiler could read.
+  //
+  // ── NO `rootDir`, AND THAT IS DELIBERATE ────────────────────────────────────────────────────
+  //
+  // `parity.test.ts` and `plugin.test.ts` both open with
+  // `import babelPlugin from '../../babel-plugin-exodra-schema/src/index'` — a RELATIVE path into
+  // another package's source. That is the point of the suite: the babel plugin is the SPECIFICATION
+  // and the Rust port is checked against it transform for transform, so the two must be the same
+  // program rather than two builds that agree by luck. A `rootDir` would make every file it drags
+  // in a TS6059, so none is set and none is inherited.
+  //
+  // That relative import is also why there are no `paths` overrides: `src/index.ts` reaches only
+  // `@babel/core` and `@babel/types` (both typed by `@types/babel__*`) and its own siblings.
+  //
+  // ── `files` REACHES INTO THE OTHER PACKAGE FOR ONE DECLARATION ───────────────────────────────
+  //
+  // `parity.test.ts` also opens `import syntaxJsx from '@babel/plugin-syntax-jsx'`, and that
+  // package ships no `types` field and has no `@types/…` counterpart published, so the import
+  // answers TS7016 and — the half that matters — is given an implicit `any`. The ambient
+  // declaration for it lives at `packages/babel-plugin-exodra-schema/types/`, beside the four
+  // suites that import the same plugin, and is named here so that ONE declaration serves both
+  // programs. A second copy under this package would be two descriptions of one third-party
+  // module, free to disagree.
+  //
+  // `files` and not `include`: this is a single known file outside the project's own directory,
+  // not a pattern, and `files` says exactly that. The root config's `files: []` is inherited and
+  // replaced by this line, and the two lists union — `files` names the declaration, `include`
+  // still globs `tests/`. The `rootDir` note above is why a path with `..` in it is not a problem
+  // here; a declaration file is exempt from the TS6059 check in any case.
+  "extends": "../../tsconfig.json",
+  "files": ["../babel-plugin-exodra-schema/types/babel-plugin-syntax-jsx.d.ts"],
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false
+  },
+  "include": ["tests/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules", "target"]
+}

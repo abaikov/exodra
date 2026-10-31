@@ -1,0 +1,35 @@
+{
+  // THE TEST FILES OF `create-exodra`, COMPILED. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // Extends `tsconfig.typecheck.json` rather than `tsconfig.json` for that file's stated reason:
+  // this package's build is `rm -rf dist && tsc`, which clears the output but not a `.tsbuildinfo`,
+  // so the build config may not be made incremental.
+  //
+  // `baseUrl` AND `paths` ARE NEW HERE, not restated — neither the build config nor the typecheck
+  // config has ever carried any, because `src/` imports no sibling at all. The scaffolder's whole
+  // job is EMITTING source text, and `generators.test.ts` is what checks that the text it emits
+  // compiles and runs: it transpiles the generated module and executes it against the real
+  // `@exodra/core`, `@exodra/dom` and `@exodra/router`. Those three are the imports; the many other
+  // `from '@exodra/…'` occurrences under `src/` are inside the template literals `index.ts` and
+  // `generators.ts` emit, and are not imports of anything.
+
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/router": ["../router/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

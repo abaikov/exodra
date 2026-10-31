@@ -1,0 +1,118 @@
+{
+  "axis": "toggle",
+  "label": "base2",
+  "rows": [
+    {
+      "name": "exodraKept",
+      "min": 2.6,
+      "p25": 2.9,
+      "median": 3,
+      "p75": 3.2,
+      "max": 4.1
+    },
+    {
+      "name": "mikadoPooled",
+      "min": 2.6,
+      "p25": 3,
+      "median": 3.1,
+      "p75": 3.2,
+      "max": 4
+    },
+    {
+      "name": "mikado",
+      "min": 5.7,
+      "p25": 6.5,
+      "median": 6.6,
+      "p75": 6.7,
+      "max": 8.7
+    },
+    {
+      "name": "stage0",
+      "min": 6.9,
+      "p25": 7.8,
+      "median": 7.9,
+      "p75": 8.4,
+      "max": 9.7
+    },
+    {
+      "name": "solid",
+      "min": 7.4,
+      "p25": 8.1,
+      "median": 8.3,
+      "p75": 8.7,
+      "max": 10
+    },
+    {
+      "name": "exodraDelegated",
+      "min": 7.5,
+      "p25": 8.3,
+      "median": 8.5,
+      "p75": 8.8,
+      "max": 10
+    },
+    {
+      "name": "exodra",
+      "min": 8.1,
+      "p25": 8.9,
+      "median": 9.1,
+      "p75": 9.5,
+      "max": 10.5
+    },
+    {
+      "name": "marko",
+      "min": 10.6,
+      "p25": 11.5,
+      "median": 12.2,
+      "p75": 12.6,
+      "max": 15
+    },
+    {
+      "name": "svelte",
+      "min": 11.4,
+      "p25": 12.8,
+      "median": 13.4,
+      "p75": 13.9,
+      "max": 15.9
+    },
+    {
+      "name": "uhtml",
+      "min": 15.2,
+      "p25": 16.9,
+      "median": 17.5,
+      "p75": 18.5,
+      "max": 20.3
+    },
+    {
+      "name": "lit",
+      "min": 17.1,
+      "p25": 18.2,
+      "median": 18.7,
+      "p75": 19.8,
+      "max": 23.2
+    },
+    {
+      "name": "sinuous",
+      "min": 17.2,
+      "p25": 19.1,
+      "median": 19.6,
+      "p75": 20.6,
+      "max": 23.2
+    },
+    {
+      "name": "react",
+      "min": 23.2,
+      "p25": 26.5,
+      "median": 27.7,
+      "p75": 29.3,
+      "max": 32.4
+    },
+    {
+      "name": "voby",
+      "min": 25.9,
+      "p25": 29.5,
+      "median": 31.4,
+      "p75": 33.4,
+      "max": 37.7
+    }
+  ]
+}

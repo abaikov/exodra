@@ -1,0 +1,45 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    // NOT `dist` — see tsconfig.build.json. Nothing publishes this package, but it is in the
+    // typecheck graph, and a composite project must emit somewhere that is not published.
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    // ═══ A SEAM, RECORDED IN THE CONFIG THAT PAYS FOR IT ═══
+    //
+    // This backend renders TEXT. It never touches a document, a node or a listener, and it
+    // could run in a process with no DOM at all. It still has to compile with the DOM lib,
+    // for TWO names it cannot avoid naming:
+    //
+    //   `Event`   — `TExoEventHandler`'s closure form is `(event: Event) => void`, so `on()`
+    //               cannot state its own parameter type without it. `@exodra/string` already
+    //               documents this one in its own tsconfig.
+    //   `Element` — `applyExoEventAction(action, subject, event, node: Element)`, the shared
+    //               interpreter of a declarative handler. A text tree has no Element, so
+    //               dispatching a descriptor costs a cast (see `exoTermFire`).
+    //
+    // A THIRD NAME USED TO BE HERE AND IS GONE: `Node`, reachable from `@exodra/core`'s entry
+    // through `placeExoChildren(parent: Node, …)` and `TExoPlacedChild.node`. Those are
+    // `@exodra/list-reconcile` now, which this backend does not import — it reconciles an ARRAY
+    // instead (see `reconcile-exo-term-rows`). The seam narrowed by one name.
+    "lib": ["ES2020", "DOM"],
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts"],
+  "references": [
+    { "path": "../context" },
+    { "path": "../core" }
+  ]
+}

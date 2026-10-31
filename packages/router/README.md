@@ -1,454 +1,504 @@
 # @exodra/router
 
-Routing for Exodra applications, with optional Next.js-style file-based routing via `@exodra/vite-plugin`.
+Routing for Exodra. The router is a plain service: it matches URLs against a
+route table, runs guards, navigates, and calls `onChange` subscribers after every
+commit. A page is a machine, and a route boundary (`ExoOutlet`) is a machine whose
+one child is the page the URL selects.
+
+Full documentation: [exodra.org/docs/api/router](https://exodra.org/docs/api/router)
 
 ## Installation
 
 ```bash
-npm install @exodra/router @exodra/core @exodra/reactivity
+npm install @exodra/router @exodra/core @exodra/context
 ```
 
-## Overview
+## A routed page, end to end
 
-`@exodra/router` provides a routing system with:
-
-- **File-based Routing** - Generated from your file structure (via `@exodra/vite-plugin`)
-- **Dynamic Routes** - Parameters, catch-all, optional catch-all
-- **Route Guards** - `beforeEach` / `beforeEnter` / `beforeLeave`
-- **Lazy Loading** - Code splitting with `lazy()`
-- **Reactive Location** - `router.location` is a bindable you can `derive()` from
-- **Query Helpers** - Parse / stringify / validate query strings
-
-## Quick Start
-
-`createRouter(routes, options?)` takes the routes array as the first positional
-argument. Pass a history implementation in `options.history` (browser or memory).
-
-```typescript
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoChildrenPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
 import {
-  createRouter,
-  createBrowserHistory,
-  RouterProvider,
-  Outlet,
+    ExoLink,
+    ExoOutlet,
+    createExoBrowserHistory,
+    createExoRouter,
+    provideExoRouter,
 } from '@exodra/router';
-import { h } from '@exodra/core';
-import { mount } from '@exodra/dom';
+import type { TExoRoute, TExoRouteMatch } from '@exodra/router';
 
-const router = createRouter(
-  [
-    { path: '/', component: HomePage },
-    { path: '/about', component: AboutPage },
-    { path: '/blog/:id', component: BlogPost },
-  ],
-  { history: createBrowserHistory() }
-);
-
-mount(
-  h(RouterProvider, {
-    static: {
-      router,
-      children: h(Outlet),
-    },
-  }),
-  document.getElementById('root')!
-);
-```
-
-For tests or non-browser environments, use `createMemoryHistory()`:
-
-```typescript
-import { createRouter, createMemoryHistory } from '@exodra/router';
-
-const router = createRouter(routes, {
-  history: createMemoryHistory('/about'),
+const USER_PAGE_SCHEMA = createExoSchema((b) => {
+    let name!: TExoTextPort;
+    b.el('h1', null, (h) => {
+        name = h.textPort();
+    });
+    return { name };
 });
-```
-
-## File-based Routing
-
-With `@exodra/vite-plugin`, routes are generated from your file structure:
-
-```
-src/pages/
-├── index.tsx          → /
-├── about.tsx          → /about
-├── _layout.tsx        → Shared layout
-├── _error.tsx         → Error boundary
-├── blog/
-│   ├── index.tsx      → /blog
-│   ├── [id].tsx       → /blog/:id
-│   └── [...slug].tsx  → /blog/* (catch-all)
-└── docs/
-    └── [[...path]].tsx → /docs (optional catch-all)
-```
-
-### Special Files
-
-- `_layout.tsx` - Wraps all pages in directory
-- `_error.tsx` - Error boundary for pages
-- `index.tsx` - Directory index route
-
-### Dynamic Routes
-
-- `[param].tsx` - Single parameter `/blog/123`
-- `[...params].tsx` - Catch-all `/blog/2024/12/post`
-- `[[...params]].tsx` - Optional catch-all (matches `/docs` and `/docs/intro`)
-
-## Components
-
-> Exodra components take typed prop buckets, not flat React-style props.
-> Static props (including `children`) go in `static`, event handlers go in
-> `handlers`, reactive values go in `bindables`. There are no flat attributes.
-
-### RouterProvider
-
-Provides routing context to your app. The router and children both live in `static`:
-
-```typescript
-h(RouterProvider, {
-  static: {
-    router,
-    children: h(Outlet), // Renders matched route
-  },
+const mUserPage = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(USER_PAGE_SCHEMA);
+mUserPage.wire((c, match) => {
+    c.text(USER_PAGE_SCHEMA.ports.name, match.params.id);
 });
-```
+const USER_PAGE = mUserPage.done();
 
-`RouterProvider` can also create its own router from `routes` (and optional
-`history`) if you don't pass one:
+const ROUTES: readonly TExoRoute[] = [{ path: '/users/:id', component: USER_PAGE }];
 
-```typescript
-h(RouterProvider, {
-  static: {
-    routes,
-    history: createBrowserHistory(),
-    children: h(Outlet),
-  },
+const router = createExoRouter(ROUTES, { history: createExoBrowserHistory() });
+
+const APP_SCHEMA = createExoSchema((b) => {
+    let nav!: TExoChildrenPort;
+    let page!: TExoChildrenPort;
+    b.el('div', { class: 'app' }, (d) => {
+        d.el('nav', null, (n) => {
+            nav = n.childrenPort();
+        });
+        d.el('main', null, (m) => {
+            page = m.childrenPort();
+        });
+    });
+    return { nav, page };
 });
-```
-
-### Outlet
-
-Renders the matched route component:
-
-```typescript
-function Layout() {
-  return h('div', {
-    static: {
-      children: [
-        h('nav', { static: { children: '...' } }),
-        h(Outlet), // Child routes render here
-        h('footer', { static: { children: '...' } }),
-      ],
-    },
-  });
-}
-```
-
-### Link
-
-Navigation component. The destination prop is `to` (not `href`), and lives in
-`static` along with `children`. There is no `activeClass` prop — derive active
-state yourself from `router.location` (see below).
-
-```typescript
-h(Link, {
-  static: {
-    to: '/about',
-    children: 'About',
-  },
+const mApp = createExoMachineBuilder<TExoDomNode>(APP_SCHEMA);
+mApp.createInitialState((c) => {
+    provideExoRouter(c, router);
+    c.one(APP_SCHEMA.ports.nav, ExoLink, { to: '/users/1', label: 'First user' });
+    c.one(APP_SCHEMA.ports.page, ExoOutlet);
 });
+const APP = mApp.done();
+
+const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+backend.render(APP, document.getElementById('root') as HTMLElement);
 ```
 
-### Routes / Route
+- The page receives the match that selected it as the **params of its wire**.
+- `provideExoRouter(c, router)` puts the router in the context; outlets and links
+  find it there.
+- A boundary opens a child list for its page, so the DOM backend is composed with
+  `withExoChildList`; without it the first outlet throws `EXO0109`.
+- The same tree renders on the server with `ExoStrBackend` (nested layouts
+  included) and hydrates with `withExoHydration`.
 
-`Routes` provides a router and renders an `Outlet`; `Route` is a declarative
-config marker consumed by `createRoutesFromChildren`. Route props go in `static`:
+## Routes
 
-```typescript
-h(Routes, {
-  static: {
-    children: [
-      h(Route, { static: { path: '/', component: HomePage } }),
-      h(Route, { static: { path: '/about', component: AboutPage } }),
-    ],
-  },
-});
-```
+The route table is a plain array:
 
-## Hooks
-
-### useRouter
-
-`useRouter(context)` is the only router hook. It returns the router instance,
-from which you read the current match, location, and query.
-
-```typescript
-function Component(context) {
-  const router = useRouter(context);
-
-  return h('button', {
-    static: { children: 'Go' },
-    handlers: {
-      onClick: () => {
-        router.navigate('/dashboard');
-      },
-    },
-  });
-}
-```
-
-### Reading the current match / params
-
-There is no `useParams`. Read the current match via the router instance:
-
-```typescript
-function BlogPost(context) {
-  const router = useRouter(context);
-  const match = router.getMatch(); // TExoRouteMatch | undefined
-  const id = match?.params.id;
-  return h('div', { static: { children: `Post ID: ${id}` } });
-}
-```
-
-A route renderer also receives the match directly:
-
-```typescript
-const route = {
-  path: '/blog/:id',
-  component: (match) =>
-    h('div', { static: { children: `Post ID: ${match.params.id}` } }),
+```ts no-check
+type TExoRoute = {
+    id?: string;               // carried, not read by the router
+    path: string;              // '/users/:id', '' for an index child
+    component: TExoRouteMachine; // a page machine, or an exoLazy() loader
+    children?: readonly TExoRoute[];
+    beforeEnter?: TExoRouteGuard;
+    beforeLeave?: TExoRouteGuard;
+    catchAll?: string;         // parameter name for a required catch-all
+    optionalCatchAll?: string; // parameter name for an optional catch-all
+    handle?: unknown;          // metadata, surfaced on every entry of the matched branch
 };
 ```
 
-### Reading the location reactively
+**Which route wins.** Position by position, a static segment beats a `:param`, a
+`:param` beats a pattern that has ended there, and an ended pattern beats a
+catch-all. Between equal patterns the deeper route wins (so an index child
+`path: ''` is reached inside its layout), then declaration order. `/users/new`
+beats `/users/:id` whichever is declared first.
 
-There is no `useLocation`. `router.location` is a bindable — read it once with
-`router.getLocation()`, or `derive()` from it for reactive updates (including
-browser back/forward):
+**Params.** Each entry of `router.getMatches()` carries the params of its own path
+(root through itself); the leaf carries all of them. A required catch-all must
+consume at least one segment: `/files/*` does not match `/files`. A `:param` is
+percent-decoded; a catch-all value is not (`my%20report.pdf`), so an encoded `/`
+inside one segment stays distinguishable.
 
-```typescript
-import { derive } from '@exodra/reactivity';
+## Reading the match, the location and the query
 
-const activeClass = derive(router.location, (loc) =>
-  loc.pathname === '/about' ? 'nav__link--active' : 'nav__link'
-);
-```
+There are no hooks. A page reads its match from its wire params; anything else
+asks the exonode for the router with `injectExoRouter(c)`, which throws when
+nothing above provided one.
 
-### Reading the query
+A wire may only write ports. Placing children (`childList`, `one`, `list`) in a
+wire throws `EXO0103` when the wire is re-run, so children go in
+`createInitialState`, which reads its match as
+`injectExoRouter(c).getMatches()[index]` (`index` is the boundary depth):
 
-There is no `useQuery`. Use `router.getQuery(options?)`, or the standalone
-`parseSearch` / `readSearch` helpers:
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoChildrenPort } from '@exodra/core';
+import type { TExoDomNode } from '@exodra/dom';
+import { ExoLink, injectExoRouter } from '@exodra/router';
 
-```typescript
-import { parseSearch } from '@exodra/router';
-
-const query = router.getQuery(); // parsed from the current location
-const q = parseSearch(router.getLocation().search).q;
-```
-
-## Route Guards
-
-Guards run as `beforeEach` (createRouter option), or per-route `beforeEnter` /
-`beforeLeave`. Returning a string redirects; returning `false` blocks; `true`
-allows.
-
-```typescript
-const router = createRouter(
-  [
-    {
-      path: '/admin',
-      component: AdminPanel,
-      beforeEnter: async (match) => {
-        const user = await getUser();
-        if (!user.isAdmin) {
-          return '/login'; // Redirect
-        }
-        return true; // Allow
-      },
-    },
-  ],
-  {
-    history: createBrowserHistory(),
-    beforeEach: (to, from) => true, // global guard
-    afterEach: (to, from) => {
-      /* analytics, etc. */
-    },
-  }
-);
-```
-
-## Programmatic Navigation
-
-```typescript
-const router = useRouter(context);
-
-// Navigate to a path (returns a Promise that resolves with the new location)
-router.navigate('/products');
-
-// Replace the current entry
-router.navigate('/login', { replace: true });
-
-// Update only the pathname
-router.setPathname('/new-path');
-
-// Replace the search string / query object
-router.setSearch({ page: 2 });
-router.setSearch('?page=2');
-
-// Merge a patch into the existing query
-router.patchQuery({ page: 2 });
-```
-
-## Lazy Loading
-
-Wrap a dynamic import with `lazy()`; the router resolves it on match. Use
-`preloadRoute(component)` to warm a chunk ahead of time.
-
-```typescript
-import { lazy, preloadRoute } from '@exodra/router';
-
-const dashboard = lazy(() => import('./Dashboard'));
-
-const router = createRouter(
-  [{ path: '/dashboard', component: dashboard }],
-  { history: createBrowserHistory() }
-);
-
-// Optionally preload the chunk before navigating
-void preloadRoute(dashboard);
-```
-
-## Query Helpers
-
-```typescript
-import {
-  query,
-  parseSearch,
-  stringifySearch,
-  readSearch,
-  createSearch,
-  mergeQuery,
-} from '@exodra/router';
-
-// Validate/coerce with a schema
-const parsed = parseSearch('?page=2&active=true', {
-  schema: {
-    page: query.number({ default: 1 }),
-    active: query.boolean({ default: false }),
-  },
+const ORG_SCHEMA = createExoSchema((b) => {
+    let tabs!: TExoChildrenPort;
+    b.el('section', null, (s) => {
+        s.el('nav', null, (n) => {
+            tabs = n.childrenPort();
+        });
+    });
+    return { tabs };
 });
-
-const search = stringifySearch({ page: 2, tags: ['a', 'b'] }); // '?page=2&tags=a&tags=b'
-const merged = mergeQuery({ page: '1' }, { sort: 'asc' });
+const mOrg = createExoMachineBuilder<TExoDomNode>(ORG_SCHEMA);
+mOrg.createInitialState((c, index) => {
+    const match = injectExoRouter(c).getMatches()[index];
+    const tabs = c.childList(ORG_SCHEMA.ports.tabs);
+    tabs.insert(c.build(ExoLink, 0, { to: match.pathname + '/repos', label: 'Repositories' }));
+    tabs.insert(c.build(ExoLink, 1, { to: match.pathname + '/people', label: 'People' }));
+});
+export const ORG_PAGE = mOrg.done();
 ```
 
-## TypeScript Support
+A component that follows the URL subscribes from an **effect**; `onChange` returns
+the unsubscribe, which is what an effect returns:
 
-```typescript
-import type { TExoRoute, TExoRouter } from '@exodra/router';
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { injectExoRouter } from '@exodra/router';
 
-const routes: TExoRoute[] = [
-  { path: '/', component: Home },
-  { path: '/about', component: About },
+const WHERE_SCHEMA = createExoSchema((b) => {
+    let path!: TExoTextPort;
+    b.el('p', null, (p) => {
+        path = p.textPort();
+    });
+    return { path };
+});
+const mWhere = createExoMachineBuilder<TExoMachineNode>(WHERE_SCHEMA);
+const showPath = mWhere.transition((c) => {
+    c.text(WHERE_SCHEMA.ports.path, injectExoRouter(c).getLocation().pathname);
+});
+mWhere.wire((c) => showPath(c));
+mWhere.effect((c) => {
+    showPath(c);
+    return injectExoRouter(c).onChange(() => showPath(c));
+});
+export const WHERE = mWhere.done();
+```
+
+`onChange` runs after every commit and every navigation-state change, after every
+route boundary has redrawn. A subscriber added during a notification is first
+called on the next one.
+
+## Route boundaries
+
+| Form | Use it when |
+| --- | --- |
+| `c.one(port, ExoOutlet)` | a boundary in a `<div>` |
+| `c.one(port, ROUTED)` with `const ROUTED = exoOutlet('main')` | the boundary should be your own tag; call `exoOutlet(tag, attrs?)` at module level |
+| `c.childList(port).insert(c.build(ExoOutlet))` | the boundary goes into a child list you manage |
+
+A layout is a route with `children` whose page places its own outlet. Depth is
+found through the context, so the nested outlet draws the next entry of the
+matched branch:
+
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { ExoOutlet } from '@exodra/router';
+import type { TExoRoute, TExoRouteMatch } from '@exodra/router';
+
+interface TNestingNode extends TExoMachineNode {
+    one(port: TExoChildrenPort, machine: TExoMachine<never>): void;
+}
+
+const USERS_LAYOUT_SCHEMA = createExoSchema((b) => {
+    let page!: TExoChildrenPort;
+    b.el('section', { class: 'users' }, (s) => {
+        s.el('h2', null, (h) => h.text('Users'));
+        page = s.childrenPort();
+    });
+    return { page };
+});
+const mUsersLayout = createExoMachineBuilder<TNestingNode>(USERS_LAYOUT_SCHEMA);
+mUsersLayout.createInitialState((c) => {
+    c.one(USERS_LAYOUT_SCHEMA.ports.page, ExoOutlet);
+});
+const USERS_LAYOUT = mUsersLayout.done();
+
+const USER_SCHEMA = createExoSchema((b) => {
+    let name!: TExoTextPort;
+    b.el('h1', null, (h) => {
+        name = h.textPort();
+    });
+    return { name };
+});
+const mUser = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(USER_SCHEMA);
+mUser.wire((c, match) => {
+    c.text(USER_SCHEMA.ports.name, match.params.id);
+});
+const USER = mUser.done();
+
+const USER_LIST_SCHEMA = createExoSchema((b) => {
+    b.el('p', null, (p) => p.text('Pick a user'));
+    return {};
+});
+const USER_LIST = createExoMachineBuilder<TExoMachineNode>(USER_LIST_SCHEMA).done();
+
+export const ROUTES: readonly TExoRoute[] = [
+    {
+        path: '/users',
+        component: USERS_LAYOUT,
+        children: [
+            { path: '', component: USER_LIST },
+            { path: ':id', component: USER },
+        ],
+    },
 ];
 ```
 
-## With Vite Plugin
+`TNestingNode` names only what the layout calls, so the same machine runs on the
+DOM and the server backends.
 
-Use `@exodra/vite-plugin` for automatic route generation:
+On a navigation, each level is compared with what the URL now selects:
 
-```typescript
-// vite.config.ts
-import exodra from '@exodra/vite-plugin';
+- **a different route component**: the old page is removed (its teardown runs)
+  and the new one is built;
+- **the same component, a different match** (`/users/1` to `/users/2`): a page
+  with a wire is re-wired in place, keeping its nodes, listeners and focus; a page
+  without a wire is rebuilt;
+- **the same match**: the level is kept. Entries a navigation did not change are
+  the same objects in `getMatches()`, so a query-only change keeps every page.
 
-export default {
-  plugins: [
-    exodra({
-      pagesDir: 'src/pages',
-    }),
-  ],
+Only the outermost boundary subscribes to the router; nested ones are updated
+from their parent, so an arriving page is built once, inside the arriving layout.
+
+## Links
+
+`ExoLink` is a real `<a href>` that the router takes over on a plain left click.
+Its params are `TExoLinkParams`:
+
+```ts no-check
+type TExoLinkParams = {
+    readonly to: string;                             // resolved through router.createHref
+    readonly label?: string;                         // the anchor's text
+    readonly replace?: boolean;                      // replace the history entry
+    readonly state?: unknown;                        // history entry state
+    readonly target?: string;                        // anything but _self is left to the browser
+    readonly download?: string;
+    readonly onClick?: (event: MouseEvent) => void;  // runs first; preventDefault() cancels
+    readonly currentWhen?: 'exact' | 'prefix';       // writes aria-current="page"
 };
-
-// main.tsx
-import { createRouter, createBrowserHistory } from '@exodra/router';
-import { routes } from 'virtual:exodra-routes';
-
-const router = createRouter(routes, { history: createBrowserHistory() });
 ```
 
-## API Reference
+Place one with `c.one(port, ExoLink, params)` or `c.build(ExoLink, i, params)`.
+`currentWhen` writes `aria-current="page"` while the pathname equals `to`
+(`'exact'`) or is below it (`'prefix'`); only such a link subscribes to the router.
+Style it with `a[aria-current="page"]`.
 
-### Router & History
+The router leaves these clicks to the browser: one already `defaultPrevented`, a
+non-primary button, a modifier key (Cmd/Ctrl/Shift/Alt), a `download`, a `target`
+other than `_self`, and another origin. The same policy is exported as
+`shouldIgnoreExoLinkClick(event, href, target?, download?)` for hand-written
+anchors. A destination with its own scheme or authority (`https://...`,
+`mailto:...`, `//host/x`) is used as the href verbatim; everything else goes through
+`router.createHref`, which applies the history's base path.
 
-- `createRouter(routes, options?)` - Create a router; `options = { history?, beforeEach?, afterEach? }`
-- `createBrowserHistory(options?)` - Browser history (uses the History API)
-- `createMemoryHistory(initialPathOrOptions?)` - In-memory history (tests / SSR)
+## Guards
 
-### Components
+`beforeEach` (router option), `beforeLeave` and `beforeEnter` (per route) return
+`true` to allow, `false` to block, or a path string to redirect, or a promise of
+one of those.
 
-- `RouterProvider` - Provides routing context
-- `Outlet` - Renders the matched route
-- `Routes` - Provides a router and renders an `Outlet`
-- `Route` - Declarative route config marker
-- `Link` - Navigation anchor (prop `to`, children in `static.children`)
-- `createRoutesFromChildren` - Build a routes array from `Route` children
+```ts
+import { createExoBrowserHistory, createExoRouter } from '@exodra/router';
+import type { TExoPageMachine } from '@exodra/router';
 
-### Hook & Context
+declare const ADMIN_PAGE: TExoPageMachine;
+declare function getUser(): Promise<{ isAdmin: boolean }>;
 
-- `useRouter(context)` - Returns the router instance
-- `routerContextKey` - Context key the router is provided under
+const router = createExoRouter(
+    [
+        {
+            path: '/admin',
+            component: ADMIN_PAGE,
+            beforeEnter: async () => ((await getUser()).isAdmin ? true : '/login'),
+        },
+    ],
+    {
+        history: createExoBrowserHistory(),
+        beforeEach: () => true,
+        afterEach: (to, from) => {},
+    }
+);
+```
 
-### Router Instance
+- **Order:** `beforeEach`, then `beforeLeave` across the branch being left (leaf
+  to root), then `beforeEnter` across the branch being entered (root to leaf).
+  The first result that is not `true` stops the chain.
+- **A refused navigation writes nothing.** `navigate()` runs guards before it
+  writes history and does not fire `afterEach`. A back/forward change that is
+  refused is put back with `history.replace`, without running guards again.
+- **A guard that throws or rejects counts as `false`** and is logged with
+  `console.error`; `navigate()` resolves with the location still shown.
+- **Only the latest navigation commits.** A branch with no guards or only
+  synchronous ones commits synchronously inside `navigate()`. A redirect is a
+  navigation of its own; the promise resolves where the chain landed.
+- **A path that matches no route commits without running any guard**, including
+  the `beforeLeave` of the page being left. `afterEach` still fires, with `to`
+  undefined.
+- `getNavigationState()` is `'loading'` only while an asynchronous guard decides.
 
-- `router.location` - Bindable of the current location (`derive()` from it)
-- `router.match` / `router.getMatch()` - Current route match
-- `router.navigationState` / `router.getNavigationState()`
-- `router.getLocation()` - Current location snapshot
-- `router.getQuery(options?)` - Parsed query
-- `router.navigate(to, { replace? })`
-- `router.setPathname(pathname, options?)`
-- `router.setSearch(search, options?)` / `router.setQuery(query, options?)` / `router.patchQuery(query, options?)`
-- `router.bindQuery(key, options?)` - Two-way bindable for one query parameter
-- `router.createHref(to)` / `router.dispose()`
+## Navigation
 
-### Lazy Loading
+```ts
+import type { TExoRouter } from '@exodra/router';
 
-- `lazy(loader)` - Wrap a dynamic import as a route loader
-- `preloadRoute(component)` - Preload a lazy route's chunk
-- `isLazyLoader`, `loadLazyComponent`, `resolveRouteComponent`
+declare const router: TExoRouter;
 
-### Matching & Paths
+void router.navigate('/products');
+void router.navigate('/login', { replace: true });
+void router.navigate('/checkout', { state: { from: 'cart' } });
+void router.setPathname('/new-path');
+void router.setSearch('?page=2');
+void router.setQuery({ page: 2 });
+void router.patchQuery({ page: 3, sort: undefined });
+```
 
-- `matchRoutes(routes, pathname)` - Match a pathname against routes
-- `parsePath(path)` - Parse a path into `{ pathname, search, hash, href }`
+Every method returns `Promise<TExoLocation>`. History entry `state` survives
+back/forward but is not in the URL, so a shared link arrives without it.
 
-### Query Helpers
+**Lifetime.** `provideExoRouter` neither creates nor disposes a router: create it
+beside the mount that owns it and call `router.dispose()` with that mount's
+teardown. `dispose()` disposes the history too, so a history must not serve two
+routers.
 
-- `query` - Field builders (`query.string`, `query.number`, `query.boolean`, `query.array`, `query.optional`)
-- `parseSearch`, `readSearch`, `stringifySearch`, `createSearch`, `mergeQuery`
-- `ExoQueryValidationError`
+## Lazy pages
 
-### Guards
+```ts no-check
+import { createExoBrowserHistory, createExoRouter, exoLazy, preloadExoPage } from '@exodra/router';
 
-- `collectRouteGuards`, `executeGuard`, `executeGuards`
+const DASHBOARD = exoLazy(() => import('./pages/dashboard'));
 
-### Route Configuration (`TExoRoute`)
+const router = createExoRouter([{ path: '/dashboard', component: DASHBOARD }], {
+    history: createExoBrowserHistory(),
+});
 
-- `path` - Route path pattern
-- `component` - Schema, renderer `(match) => schema`, or `lazy()` loader
-- `children` - Nested routes
-- `beforeEnter` / `beforeLeave` - Route guards
-- `layout` / `error` - Layout and error components
-- `catchAll` / `optionalCatchAll` - Catch-all parameter names
+await preloadExoPage(DASHBOARD);
+```
 
-### Types
+A render is synchronous, so a boundary that meets an unresolved loader starts the
+load, shows an empty slot, and draws the page when it lands.
+`preloadExoPage(loader)` fetches the chunk, checks it is a page, and remembers the
+component, so the next render (for example a server render) prints it.
+`fetchExoRouteChunk(component)` only makes the chunk arrive and stores nothing a
+render can read. A failed load is logged with `console.error`; the boundary does
+not retry on its own and starts a fresh load the next time it redraws.
 
-- `TExoRouter`, `TExoRoute`, `TExoRouteMatch`, `TExoLocation`, `TExoRouterOptions`, and more
+## Query helpers
+
+A **query** is the parsed record; **search** is the raw `?page=2` string. None of
+the helpers read the URL themselves: use `router.getQuery()` or pass
+`router.getLocation().search`.
+
+```ts
+import { exoQuery, mergeExoQuery, parseExoQuery, stringifyExoQuery } from '@exodra/router';
+
+const parsed = parseExoQuery('?page=2&active=true', {
+    schema: {
+        page: exoQuery.number({ default: 1 }),
+        active: exoQuery.boolean({ default: false }),
+    },
+});
+
+const search = stringifyExoQuery({ page: 2, tags: ['a', 'b'] });
+const merged = mergeExoQuery({ page: '1' }, { sort: 'asc' });
+const present = 'page' in parseExoQuery('?page=2');
+```
+
+- The leading `?` is optional and a repeated key becomes an array. Without a
+  schema, values stay strings unless `parseNumbers`, `parseBooleans` or
+  `parseValue` say otherwise; with one, a bad value throws `ExoQueryValidationError`.
+- `stringifyExoQuery` returns `''` (not `'?'`) for an empty record, repeats the key
+  for an array, and drops `undefined` and `null`, which is how `patchQuery` clears
+  a key.
+- **The parsed record has a null prototype**, so URL keys such as `__proto__` or
+  `constructor` are ordinary keys. Use `key in query` or
+  `Object.prototype.hasOwnProperty.call(query, key)`, not `query.hasOwnProperty`.
+  `match.params` is an ordinary object.
+
+## TypeScript
+
+`TExoPageMachine` is `TExoMachine<never>`, which every machine satisfies, so a
+route table needs no backend type. To require every page to speak one surface,
+annotate the table with `TExoPageRoute<TWiring>` instead of `TExoRoute`.
+
+## With @exodra/vite-plugin
+
+The plugin generates a flat table from `src/pages` (`index.tsx`, `[id].tsx`,
+`[...slug].tsx`, `[[...path]].tsx`; files starting with `_` are skipped) as the
+virtual module `virtual:exodra-routes`, each entry an `exoLazy` loader of the
+file's default export:
+
+```ts no-check
+import { createExoBrowserHistory, createExoRouter } from '@exodra/router';
+import { routes } from 'virtual:exodra-routes';
+
+const router = createExoRouter(routes, { history: createExoBrowserHistory() });
+```
+
+The generated table has no `children`; a layout is written by hand as a route with
+`children`, as above.
+
+## API reference
+
+Router and history:
+
+- `createExoRouter(routes, options?): TExoRouter` — `options`: `{ history?, beforeEach?, afterEach? }`; without `history` it uses a memory history
+- `createExoBrowserHistory(options?: { window?, basePath? }): TExoHistory`
+- `createExoMemoryHistory(initialPathOrOptions?: string | { initialPath?, basePath? }): TExoHistory`
+
+`TExoRouter` members: `routes`, `getLocation()`, `getMatch()`, `getMatches()`,
+`getNavigationState()`, `getQuery(options?)`, `navigate(to, { replace?, state? })`,
+`setPathname(pathname, options?)`, `setSearch(search | query, options?)`,
+`setQuery(query, options?)`, `patchQuery(query, options?)`, `onChange(update): off`,
+`createHref(to)`, `dispose()`.
+
+Components:
+
+- `ExoOutlet` — the route boundary machine, in a `<div>`
+- `exoOutlet(tag?, attrs?)` — the boundary around another tag; call at module level
+- `ExoLink` — the anchor machine; wire params `TExoLinkParams`
+- `shouldIgnoreExoLinkClick(event, href, target?, download?): boolean`
+- `provideExoRouter(c, router): void`, `injectExoRouter(c): TExoRouter` (throws when none was provided), `EXO_ROUTER` (the context token)
+- `preloadExoPage(loader): Promise<void>`, `isExoPageMachine(component): boolean`
+
+Lazy loading:
+
+- `exoLazy(loader): TExoLazyRouteLoader` — wrap `() => import('./page')`; the page is the module's default export, or the resolved value itself
+- `fetchExoRouteChunk(component): Promise<void>`
+- `isExoLazyLoader(component): component is TExoLazyRouteLoader`
+- `loadExoLazyMachine(loader): Promise<TExoRouteMachine>`, `resolveExoRouteMachine(component): Promise<TExoRouteMachine>`
+
+Matching and paths:
+
+- `matchExoRoutes(routes, pathname): TExoRouteMatch | undefined`
+- `matchExoRouteChain(routes, pathname): readonly TExoRouteMatch[]`
+- `parseExoPath(path): TExoLocation`
+
+Guards:
+
+- `collectExoRouteGuards(route, 'beforeEnter' | 'beforeLeave'): TExoRouteGuard[]`
+- `executeExoGuards(guards, to, from?): TExoRouteGuardResult` — synchronous until a guard returns a promise
+
+Query:
+
+- `parseExoQuery(search, options?)`, `stringifyExoQuery(query)`, `mergeExoQuery(current, patch)`, `exoQuery` (`string`, `number`, `boolean`, `array`, `optional`), `ExoQueryValidationError`
+
+Types: `TExoRouter`, `TExoRoute`, `TExoPageRoute`, `TExoPageMachine`,
+`TExoRouteMachine`, `TExoLazyRouteLoader`, `TExoRouteMatch`, `TExoRouteParams`,
+`TExoLocation`, `TExoHistory`, `TExoBrowserHistoryOptions`,
+`TExoMemoryHistoryOptions`, `TExoRouterOptions`, `TExoNavigateOptions`,
+`TExoNavigationState`, `TExoRouteGuard`, `TExoRouteGuardResult`, `TExoLinkParams`,
+`TExoLinkState`, `TExoOutletWiring`, `TExoOutletChildList`, `TExoOutletState`,
+`TExoProvideWiring`, `TExoInjectWiring`, and the query types `TExoQueryPrimitive`,
+`TExoQueryValue`, `TExoQueryInput`, `TExoQueryRecord`, `TExoParsedQueryPrimitive`,
+`TExoParsedQueryValue`, `TExoParsedQueryRecord`, `TExoRawQueryValue`,
+`TExoQueryValidationIssue`, `TExoQueryField`, `TExoQuerySchema`, `TExoInferredQuery`,
+`TExoQueryValueParser`, `TExoQueryParseOptions`.
+
+## Further reading
+
+- [Router API](https://exodra.org/docs/api/router)
+- [SSR & hydration](https://exodra.org/docs/guides/ssr)
+- [Vite plugin](https://exodra.org/docs/tooling/vite-plugin)
 
 ## License
 
 MIT
-
----
-
-📖 Full documentation: **[exodra.org](https://exodra.org)**

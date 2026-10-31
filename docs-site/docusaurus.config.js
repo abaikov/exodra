@@ -11,8 +11,12 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Exodra',
-  tagline: 'High-performance reactive framework for modern web',
+  tagline: 'An imperative template engine for plain TypeScript, at near hand-written speed',
   favicon: 'img/favicon.svg',
+
+  markdown: {
+    format: 'detect',
+  },
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {

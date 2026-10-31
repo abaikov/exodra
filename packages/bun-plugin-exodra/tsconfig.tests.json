@@ -1,0 +1,61 @@
+{
+  // THE TEST FILES OF `bun-plugin-exodra`, COMPILED. Tests live under `tests/`, so `include` names
+  // that directory, `exclude` stops naming it, and `rootDir` widens to `"."` — see
+  // `packages/babel-plugin-exodra-schema/tsconfig.tests.json` for why each is needed. The scheme
+  // itself is written out once in `packages/core/tsconfig.tests.json`.
+  //
+  // `paths` restated in full (`extends` replaces it, never merges). `babel-preset-exodra` is the
+  // base's; two are added for `describeIfPresetBuilt`, which the suite takes from
+  // `@exodra/test-utils` — a private package resolved at run time by the root `vitest.config.ts`
+  // alias and by nothing else, so `@exodra/core` comes with it as the one specifier its
+  // declarations name.
+  //
+  // ONE THING LEFT ALONE ON PURPOSE: the inherited `lib` is `["ES2020"]` with no DOM, and
+  // `@exodra/test-utils`'s barrel declares `host()` and `detachedHost()` in terms of `Element`.
+  // The base sets `skipLibCheck: true`, so the unresolved names inside that `.d.ts` are not
+  // checked, and the suite itself names no DOM type. If that ever stops holding, the fix is a DOM
+  // `lib` here — not a narrower import in the test.
+  //
+  // ── `module` IS OVERRIDDEN HERE, AND ONLY HERE ──────────────────────────────────────────────
+  //
+  // WHAT IT INHERITED: `"module": "commonjs"`, from this package's `tsconfig.json` — the BUILD
+  // config, which is what `tsconfig.typecheck.json` extends. That value is a fact about the
+  // SHIPPED artifact: `build` is `tsc && mv dist/index.js dist/index.cjs`, and the `.cjs` this
+  // package publishes is CommonJS because Bun's plugin API is loaded as such. Nothing about that
+  // is in question and it is not touched.
+  //
+  // WHY THE TEST PROGRAM NEEDS ANOTHER ONE: `tests/plugin.test.ts:15` is
+  // `describeIfPresetBuilt(import.meta.url)`, and TypeScript answers TS1343 for `import.meta`
+  // under any `module` outside es2020/es2022/esnext/system/node16/node18/node20/nodenext. The
+  // suite is right to use it — it resolves the preset from THIS package rather than from wherever
+  // the process happened to start, which is the whole point of the probe — and it is right about
+  // its own module format: these files are run by vitest, which loads them as ES modules through
+  // Vite. `commonjs` describes what `dist` is, never what `tests/` is.
+  //
+  // `esnext` AND NOT `node16`/`nodenext`, and `moduleResolution` LEFT ALONE. The node16 family
+  // forces `moduleResolution` to match, which would swap this program's resolver — `"node"`, i.e.
+  // node10 — for one that reads `exports` maps and cares about a package's `type` field, and that
+  // is a change to how every specifier in the suite resolves, made in order to fix a meta-property.
+  // `esnext` with node10 resolution is a coherent pair (TypeScript constrains the pair only in the
+  // other direction: `bundler` and the node16 family each require a particular `module`), and it
+  // changes resolution for nothing. There is no emit here, so `module` reaches nothing else.
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "esnext",
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "babel-preset-exodra": ["../babel-preset-exodra/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

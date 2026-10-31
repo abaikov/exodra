@@ -1,0 +1,532 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "buildRow",
+        "label": "buildRow",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(b): TExoTestRowPorts",
+            "full": "(b): TExoTestRowPorts",
+            "parts": [
+              {
+                "text": "(b): "
+              },
+              {
+                "text": "TExoTestRowPorts",
+                "link": "TExoTestRowPorts"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The shape the published benchmark numbers were measured on, SHARED so the DOM and the string backend are compared on the same bytes rather than on two drifting copies.",
+        "width": 171,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createExoNamedTestMachine",
+        "label": "createExoNamedTestMachine",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(build, makeInitialState, decorate): TExoMachine<TWiring…",
+            "full": "(build, makeInitialState, decorate): TExoMachine<TWiring, TPorts>",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 402,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createExoTestMachine",
+        "label": "createExoTestMachine",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(build, makeInitialState, decorate): TExoMachine<TWiring…",
+            "full": "(build, makeInitialState, decorate): TExoMachine<TWiring, TPorts>",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 402,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "describeIfPresetBuilt",
+        "label": "describeIfPresetBuilt",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(fromUrl): TExoDescribeLike",
+            "full": "(fromUrl): TExoDescribeLike",
+            "parts": [
+              {
+                "text": "(fromUrl): "
+              },
+              {
+                "text": "TExoDescribeLike",
+                "link": "TExoDescribeLike"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "`fromUrl` must be the CALLER's `import.meta.url` — `require()` resolves relative to its owner.",
+        "width": 210,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "detachedHost",
+        "label": "detachedHost",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): HTMLElement",
+            "full": "(): HTMLElement",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "It does NOT silence jsdom's \"Not implemented: navigation\" notice — jsdom gates that on `localName !== \"a\" && !isConnected`, so an anchor activates detached or not.",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "host",
+        "label": "host",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): HTMLElement",
+            "full": "(): HTMLElement",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "It never removes anything, and must not: an `afterEach` that empties `document.body` would fail any case asserting on a rendered node it still holds after a later render.",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "PRESET_ENTRY",
+        "label": "PRESET_ENTRY",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The exact specifier the three bundler plugins `require()` at runtime; the package root or the source would answer a different question from the one the plugin asks.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "source",
+        "label": "source",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(initial): TExoTestSource<TVal…",
+            "full": "(initial): TExoTestSource<TValue>",
+            "parts": [
+              {
+                "text": "(initial): "
+              },
+              {
+                "text": "TExoTestSource",
+                "link": "TExoTestSource"
+              },
+              {
+                "text": "<TVal…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(initial): "
+              },
+              {
+                "text": "TExoTestSource",
+                "link": "TExoTestSource"
+              },
+              {
+                "text": "<TValue>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Synchronous, unconditional (no equality check) and notified over a COPY of the set — suites depend on all three, and README says which cases would break without each.",
+        "width": 235,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoDescribeLike",
+        "label": "TExoDescribeLike",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(name: string, fn: () => void) => void",
+            "full": "(name: string, fn: () => void) => void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Neither this alias nor the return type below may become `typeof describe` or be left to inference: reducing that union has no fixed point, and `npm run atlas` died in it.",
+        "width": 280,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoTestRowPorts",
+        "label": "TExoTestRowPorts",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "id: TExoAttrPort;",
+            "full": "id: TExoAttrPort;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "label: TExoTextPort;",
+            "full": "label: TExoTextPort;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "mark: TExoAttrPort;",
+            "full": "mark: TExoAttrPort;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "click: TExoEventPort;",
+            "full": "click: TExoEventPort;",
+            "doc": "An EVENT port: it takes a slot while emitting no markup, so it is the one that catches a backend numbering its ports differently from its counterpart's.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "count: TExoTextPort;",
+            "full": "count: TExoTextPort;",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "width": 171,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TExoTestSource",
+        "label": "TExoTestSource",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "getValue(): TValue;",
+            "full": "getValue(): TValue;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "setValue(next: TValue): void;",
+            "full": "setValue(next: TValue): void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "onChange(cb: (...event: never[]) => voi…",
+            "full": "onChange(cb: (...event: never[]) => void): () => void;",
+            "doc": "`(...event: never[])` and not `()`: a listener declaring an event parameter is still accepted.",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "subscribers(): number;",
+            "full": "subscribers(): number;",
+            "doc": "Zero after a correct teardown: this count IS the leak assertion, no shipped source has it.",
+            "parts": []
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "type",
+        "width": 293,
+        "height": 114,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "buildRow→TExoTestRowPorts",
+        "from": "buildRow",
+        "to": "TExoTestRowPorts",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/buildRow.ts",
+            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/types/TExoTestRowPorts.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeIfPresetBuilt→PRESET_ENTRY",
+        "from": "describeIfPresetBuilt",
+        "to": "PRESET_ENTRY",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/describeIfPresetBuilt.ts",
+            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/describeIfPresetBuilt.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "describeIfPresetBuilt→TExoDescribeLike",
+        "from": "describeIfPresetBuilt",
+        "to": "TExoDescribeLike",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/describeIfPresetBuilt.ts",
+            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/describeIfPresetBuilt.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "source→TExoTestSource",
+        "from": "source",
+        "to": "TExoTestSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/source.ts",
+            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/types/TExoTestSource.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 807,
+    "height": 751.5,
+    "nodes": [
+      {
+        "id": "buildRow",
+        "x": 139.5,
+        "y": 54,
+        "width": 171,
+        "height": 69
+      },
+      {
+        "id": "createExoNamedTestMachine",
+        "x": 24,
+        "y": 151,
+        "width": 402,
+        "height": 69
+      },
+      {
+        "id": "createExoTestMachine",
+        "x": 24,
+        "y": 248,
+        "width": 402,
+        "height": 69
+      },
+      {
+        "id": "describeIfPresetBuilt",
+        "x": 120,
+        "y": 345,
+        "width": 210,
+        "height": 69
+      },
+      {
+        "id": "detachedHost",
+        "x": 158.5,
+        "y": 442,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "host",
+        "x": 158.5,
+        "y": 539,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "PRESET_ENTRY",
+        "x": 576.5,
+        "y": 448,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "source",
+        "x": 107.5,
+        "y": 636,
+        "width": 235,
+        "height": 69
+      },
+      {
+        "id": "TExoDescribeLike",
+        "x": 496.5,
+        "y": 263,
+        "width": 280,
+        "height": 69
+      },
+      {
+        "id": "TExoTestRowPorts",
+        "x": 551,
+        "y": 24,
+        "width": 171,
+        "height": 129
+      },
+      {
+        "id": "TExoTestSource",
+        "x": 490,
+        "y": 613.5,
+        "width": 293,
+        "height": 114
+      }
+    ],
+    "edges": [
+      {
+        "id": "buildRow→TExoTestRowPorts",
+        "points": [
+          {
+            "x": 310.5,
+            "y": 88.5
+          },
+          {
+            "x": 458,
+            "y": 88.5
+          },
+          {
+            "x": 551,
+            "y": 88.5
+          }
+        ]
+      },
+      {
+        "id": "describeIfPresetBuilt→PRESET_ENTRY",
+        "points": [
+          {
+            "x": 312.9,
+            "y": 414
+          },
+          {
+            "x": 458,
+            "y": 471
+          },
+          {
+            "x": 576.5,
+            "y": 471
+          }
+        ]
+      },
+      {
+        "id": "describeIfPresetBuilt→TExoDescribeLike",
+        "points": [
+          {
+            "x": 323,
+            "y": 345
+          },
+          {
+            "x": 458,
+            "y": 297.5
+          },
+          {
+            "x": 496.5,
+            "y": 297.5
+          }
+        ]
+      },
+      {
+        "id": "source→TExoTestSource",
+        "points": [
+          {
+            "x": 342.5,
+            "y": 670.5
+          },
+          {
+            "x": 458,
+            "y": 670.5
+          },
+          {
+            "x": 490,
+            "y": 670.5
+          }
+        ]
+      }
+    ]
+  }
+}

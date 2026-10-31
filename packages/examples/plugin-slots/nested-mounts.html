@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exodra — a second mount inherits nothing</title>
+<link rel="stylesheet" href="./style.css">
+<style>
+    /* The only thing on this page that is CSS rather than context: what a theme LOOKS like.
+       WHICH theme each element is in is decided by `data-theme`, and every `data-theme` here was
+       written by a machine that called `c.inject(THEME)`. Read the attribute in the readouts — the
+       colour is a convenience, the attribute is the evidence. */
+    [data-theme="dusk"] { background: #1e1b4b; color: #e0e7ff; border-color: #4338ca; }
+    [data-theme="sunrise"] { background: #fff7ed; color: #7c2d12; border-color: #fdba74; }
+    [data-theme="none"] { background: transparent; color: var(--warn); border-color: var(--warn); border-style: dashed; }
+
+    .host { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+    .host-chrome { margin: 0 0 8px; font-size: 13px; }
+    .host-body { display: block; }
+    .host-slot { min-height: 24px; }
+
+    /* THE WHOLE COST OF THE EXPLICIT CHANNEL, and it is one element: the island's own root, whose
+       createInitialState provides the value its mounting script handed over. `display: contents` keeps it out of
+       the layout so the three panels are the same shape and only the readouts differ. */
+    .given { display: contents; }
+
+    .w { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+    .w-head { margin: 0 0 8px; font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .w-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+    .w-row {
+        display: flex; justify-content: space-between; gap: 10px;
+        border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font-size: 13px;
+    }
+    .w-chip { font: 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .85; }
+</style>
+</head>
+<body>
+
+<header class="page-head">
+    <h1 class="page-title">A context travels down a render, and stops at its edge</h1>
+    <p class="page-sub">
+        All three panels put the <strong>same widget component</strong> in the <strong>same place in
+        the document</strong> — inside a <code>&lt;div class="host-slot"&gt;</code> that a host drew
+        — and the host's <code>createInitialState</code> calls <code>c.provide(THEME, source)</code> in every one of them. The
+        widget calls <code>c.inject(THEME)</code> and never mentions the host. What differs between
+        the panels is only <strong>who mounted the widget</strong>, and that is what decides the
+        answer.
+        <br>
+        Panel 1 mounts it <strong>inside the host's render</strong>, with <code>c.one</code>: the
+        chain the host extended is threaded down to it and it comes up in the host's theme.
+        <br>
+        Panel 2 mounts it with a <strong>second, independent <code>backend.render</code></strong>
+        into the empty div the host drew. It lands in the identical DOM position and reads
+        <strong><code>undefined</code></strong>. <strong>A render inherits nothing from the document
+        around it.</strong> Nothing walks up from where a mount landed, no element carries a mark,
+        and there is no observer that would notice one appearing later — so this is not a race and
+        no ordering fixes it.
+        <br>
+        Panel 3 is the answer to panel 2: the value is <strong>passed</strong>. The page's own
+        script owns the source, so it mounts a one-element root of its own whose <code>createInitialState</code> does
+        <code>c.provide(THEME, source)</code> and then <code>c.one</code>s the very same widget. Two
+        independent mounts again, the same position again, and the theme arrives — as data, through
+        a call, never through the tree.
+        <br>
+        <span class="slot">the token: exoContextToken('exodra-example-theme') · the seam: c.provide / c.inject, both methods on the exonode, both reaching only what the render that called them built · one backend for all five mounts: withExoChildList(withExoCompiler(new ExoDomBackend())), which swaps nothing and only adds render and c.childList · following the theme is an effect that draws first and then subscribes, the row list is reconcileExoOrder from @exodra/list-reconcile inside a transition</span>
+    </p>
+</header>
+
+<div class="panels">
+    <section class="panel">
+        <h2 class="panel-title">One render — nested with <code>c.one</code></h2>
+        <p class="panel-note">backend.render(HOST_NESTED, here) — its createInitialState provides, then c.one(P.slot, WIDGET)</p>
+        <div id="nested"></div>
+        <p class="readout" id="nested-out"></p>
+    </section>
+
+    <section class="panel">
+        <h2 class="panel-title">Two renders — the island, and the negative</h2>
+        <p class="panel-note">backend.render(HOST_HOLE, here) → backend.render(WIDGET, here.querySelector('.host-slot'))</p>
+        <div id="island"></div>
+        <p class="readout" id="island-out"></p>
+    </section>
+
+    <section class="panel">
+        <h2 class="panel-title">Two renders — the value passed explicitly</h2>
+        <p class="panel-note">…→ backend.render(given(hostTheme), here.querySelector('.host-slot'))</p>
+        <div id="passed"></div>
+        <p class="readout" id="passed-out"></p>
+    </section>
+</div>
+
+<div class="controls">
+    <!-- CONTROL 1 acts AFTER every mount has finished: the host changes its own source and the two
+         widgets that were handed that source follow it, while the island cannot. CONTROL 2 is the
+         other half — a row that did not exist when anything was wired. -->
+    <button class="btn" id="theme" type="button">1 · Change the HOST's theme (after every mount)</button>
+    <button class="btn" id="addrow" type="button">2 · Add a row to the widget's list</button>
+    <button class="btn" id="reload" type="button">Reload</button>
+</div>
+
+<p id="boot" class="boot">Loading three packages from this repository's own <code>dist/</code>…</p>
+
+<p class="boot">
+    <strong>Status: written against the source of <code>@exodra/core</code>, <code>@exodra/dom</code>
+    and <code>@exodra/list-reconcile</code>; not yet opened in a browser.</strong>
+    The one backend is an <code>ExoDomBackend</code> wrapped in <code>withExoCompiler</code>, which
+    puts <code>render</code> on it, and in <code>withExoChildList</code>, which puts
+    <code>c.childList</code> on it; <code>c.provide</code>, <code>c.inject</code>, <code>c.one</code>,
+    <code>c.attr</code>, <code>c.text</code> and <code>c.build</code> stand on the bare one. The theme is a small store the page writes itself (<code>getValue</code> /
+    <code>setValue</code> / <code>onChange</code>); each machine follows it with an effect that
+    draws first and then subscribes, and the row list is <code>reconcileExoOrder</code> called from
+    a transition.
+</p>
+
+<!--
+    THE THREE PACKAGES ARRIVE BY BARE NAME through an IMPORT MAP, pointing at THIS REPOSITORY'S
+    OWN `dist/`. Every bare specifier any of them imports is in the map, or the page dies with a
+    blank screen. The paths are ABSOLUTE, so the server must be started at the REPOSITORY ROOT. See README.md.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "@exodra/core": "/packages/core/dist/index.js",
+    "@exodra/context": "/packages/context/dist/index.js",
+    "@exodra/dom": "/packages/dom/dist/index.js",
+    "@exodra/list-reconcile": "/packages/list-reconcile/dist/index.js"
+  }
+}
+</script>
+<script type="module">
+    import { reconcileExoOrder } from '@exodra/list-reconcile';
+    // NAMESPACE IMPORTS: `dist/` is compiled output and is older than `src/` whenever nobody
+    // rebuilt it, and a named import against a build that lacks the export is a LINK error — a
+    // blank page and one console line. The guard below names what is missing instead.
+    import * as exoCore from '@exodra/core';
+    import * as exoContext from '@exodra/context';
+    import * as exoDom from '@exodra/dom';
+
+    const { createExoMachineBuilder, createExoSchema } = exoCore;
+    const { exoContextToken } = exoContext;
+    const { ExoDomBackend, withExoChildList, withExoCompiler } = exoDom;
+
+    const boot = document.getElementById('boot');
+    if (
+        createExoMachineBuilder === undefined ||
+        createExoSchema === undefined ||
+        exoContextToken === undefined ||
+        ExoDomBackend === undefined ||
+        withExoChildList === undefined ||
+        withExoCompiler === undefined
+    ) {
+        boot.className = 'boot boot-error';
+        boot.textContent =
+            'This build does not export createExoMachineBuilder / createExoSchema (@exodra/core), ' +
+            'exoContextToken (@exodra/context) or ' +
+            'ExoDomBackend / withExoChildList / withExoCompiler (@exodra/dom). Rebuild them: ' +
+            'npm run build --workspace=@exodra/core && npm run build --workspace=@exodra/context && ' +
+            'npm run build --workspace=@exodra/dom';
+        throw new Error('plugin-slots: dist predates the exports this page reads');
+    }
+    // ONE BACKEND, AT MODULE LEVEL — a backend is the schema cache key (`exoDomSchemaOf(machine,
+    // backend)` keeps one compiled schema per backend on the machine, keyed by its `backendType`),
+    // so one built per panel would recompile every schema, markup parse included, per panel. All
+    // five mounts below render from this one, which is also what makes the three panels' widgets
+    // one compiled plan and therefore genuinely the same widget.
+    //
+    // IT SWAPS NO SEAM, and the two decorators on it are not an exception to that. `withExoCompiler`
+    // adds `render` and `schema`, `withExoChildList` adds `c.childList`, and neither replaces
+    // anything: `c.provide`, `c.inject`, `c.one`, `c.attr`, `c.text` and `c.build` are merged by
+    // the constructor itself.
+    const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // THE ONE OBJECT EVERY HALF OF THIS PAGE SHARES, AND THE ONLY ONE.
+    //
+    // A context key IS an identity — `exoContextToken()` hands back a fresh token every call and there
+    // is no other way to obtain one, so the string is a label for a human and nothing else. Two
+    // calls to `exoContextToken('exodra-example-theme')` produce two tokens that will never match
+    // (`packages/core/src/context/read-exo-context.test.ts`, "a token is an identity"). That is
+    // why this line stands ABOVE every component below and is read by all of them: it MUST be the
+    // shared object, because sharing the NAME would share nothing at all.
+    // ─────────────────────────────────────────────────────────────────────────
+
+    const THEME = exoContextToken('exodra-example-theme');
+
+    // ── THE HOST'S STATE ─────────────────────────────────────────────────────
+    //
+    // A STORE, not a string, and that is the rule to read twice: a context is NOT reactive.
+    // Whatever is handed to `provide` is what a consumer holds forever — nothing re-runs
+    // `createInitialState` when a value changes. Holding a store makes "forever" enough: the value
+    // that travelled never changes, and each consumer's effect is what keeps up with it.
+
+    function store(value) {
+        const listeners = new Set();
+        return {
+            getValue: () => value,
+            setValue(next) {
+                value = next;
+                for (const listener of listeners) listener();
+            },
+            onChange(listener) {
+                listeners.add(listener);
+                return () => listeners.delete(listener);
+            },
+        };
+    }
+
+    const hostTheme = store('dusk');
+
+    // ── THE WIDGET, WHICH KNOWS NOTHING ABOUT ANY HOST ───────────────────────
+    //
+    // It mentions THEME and nothing else declared above — and THEME is a key, not a value: holding
+    // it lets the widget ASK, it does not tell the widget what the answer is. ONE machine stands in
+    // all three panels, because "the same widget in three places" is the claim being tested.
+
+    const widgetRows = store([{ label: 'row a' }, { label: 'row b' }]);
+
+    const WIDGET_ROW_SCHEMA = createExoSchema(
+        b => {
+            let theme;
+            let label;
+            let chip;
+            b.el('li', { class: 'w-row' }, li => {
+                theme = li.port('data-theme');
+                li.el('span', { class: 'w-label' }, s => { label = s.textPort(); });
+                li.el('span', { class: 'w-chip' }, s => { chip = s.textPort(); });
+            });
+            return { theme, label, chip };
+        }
+    );
+    const mWidgetRow = createExoMachineBuilder(WIDGET_ROW_SCHEMA);
+    // A ROW BUILT LATER ASKS THE SAME QUESTION AND GETS THE SAME ANSWER: `c.build` hands every row
+    // the widget's own chain, so the row control 2 adds — built inside a subscriber, with no render
+    // on the stack — resolves off it without looking at the document.
+    mWidgetRow.createInitialState(c => ({ theme: c.inject(THEME) }));
+    mWidgetRow.wire((c, item) => {
+        c.text(WIDGET_ROW_SCHEMA.ports.label, item.label);
+    });
+    const showRowTheme = mWidgetRow.transition(c => {
+        const theme = c.state.theme;
+        const value = theme === undefined ? 'none' : theme.getValue();
+        c.attr(WIDGET_ROW_SCHEMA.ports.theme, value);
+        c.text(WIDGET_ROW_SCHEMA.ports.chip, theme === undefined ? 'inject → undefined' : value);
+    });
+    mWidgetRow.effect(c => {
+        showRowTheme(c);
+        return c.state.theme === undefined ? null : c.state.theme.onChange(() => showRowTheme(c));
+    });
+    const WIDGET_ROW = mWidgetRow.done();
+
+    const WIDGET_SCHEMA = createExoSchema(
+        b => {
+            let theme;
+            let head;
+            let rows;
+            b.el('div', { class: 'w' }, w => {
+                theme = w.port('data-theme');
+                w.el('p', { class: 'w-head' }, p => {
+                    p.text('widget · c.inject(THEME) → ');
+                    p.el('strong', null, s => { head = s.textPort(); });
+                });
+                w.el('ul', { class: 'w-rows' }, ul => { rows = ul.childrenPort(); });
+            });
+            return { theme, head, rows };
+        }
+    );
+    const mWidget = createExoMachineBuilder(WIDGET_SCHEMA);
+    // `undefined` when nobody above provided — not a throw. The fallback is a real render and not
+    // an error state: a widget that can only run inside its host is not a widget.
+    mWidget.createInitialState(c => ({
+        theme: c.inject(THEME),
+        rows: c.childList(WIDGET_SCHEMA.ports.rows),
+        shown: []
+    }));
+    const showWidgetTheme = mWidget.transition(c => {
+        const theme = c.state.theme;
+        c.attr(WIDGET_SCHEMA.ports.theme, theme === undefined ? 'none' : theme.getValue());
+        c.text(WIDGET_SCHEMA.ports.head, theme === undefined ? 'undefined — fallback' : theme.getValue());
+    });
+    const showWidgetRows = mWidget.transition(c => {
+        const want = widgetRows.getValue();
+        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, at) =>
+            c.build(WIDGET_ROW, at, item)
+        );
+    });
+    mWidget.effect(c => {
+        showWidgetTheme(c);
+        return c.state.theme === undefined ? null : c.state.theme.onChange(() => showWidgetTheme(c));
+    });
+    mWidget.effect(c => {
+        showWidgetRows(c);
+        return widgetRows.onChange(() => showWidgetRows(c));
+    });
+    const WIDGET = mWidget.done();
+
+    // ── THE TWO HOSTS, WHICH DIFFER IN ONE THING ─────────────────────────────
+    //
+    // Both draw the same chrome and both `provide`. The only difference is whether the slot they
+    // draw is a CHILDREN PORT — a hole this render will fill — or an ordinary empty element, a
+    // hole in somebody else's page that this render neither knows nor can know will be filled.
+    // That single difference is the whole of what panels 1 and 2 are comparing.
+
+    const hostMachine = nested => {
+        const schema = createExoSchema(b => {
+            let theme;
+            let themeText;
+            let slot;
+            b.el('div', { class: 'host' }, host => {
+                theme = host.port('data-theme');
+                host.el('p', { class: 'host-chrome' }, p => {
+                    p.text('host chrome · c.provide(THEME, source) · value = ');
+                    p.el('strong', null, s => { themeText = s.textPort(); });
+                });
+                host.el('section', { class: 'host-body' }, body => {
+                    body.el('div', { class: 'host-slot' }, box => {
+                        if (nested) slot = box.childrenPort();
+                    });
+                });
+            });
+            return { theme, themeText, slot };
+        });
+        const m = createExoMachineBuilder(schema);
+        m.createInitialState(c => {
+            // IT PROVIDES INTO ITS OWN RENDER AND NOTHING ELSE. `c.one` mounts the widget with THIS
+            // exonode's chain — passed as an argument, not looked up — which is the only line that
+            // differs between the two hosts.
+            c.provide(THEME, hostTheme);
+            if (nested) c.one(schema.ports.slot, WIDGET);
+            return null;
+        });
+        const showHostTheme = m.transition(c => {
+            c.attr(schema.ports.theme, hostTheme.getValue());
+            c.text(schema.ports.themeText, hostTheme.getValue());
+        });
+        m.effect(c => {
+            showHostTheme(c);
+            return hostTheme.onChange(() => showHostTheme(c));
+        });
+        return m.done();
+    };
+
+    const HOST_NESTED = hostMachine(true);
+    const HOST_HOLE = hostMachine(false);
+
+    /**
+     * THE ISLAND'S OWN ROOT — the explicit channel, as one machine factory.
+     *
+     * The mounting script owns `hostTheme`, so it hands it over HERE, and `createInitialState`
+     * puts it in the token before mounting the widget. The widget is not changed and not told
+     * where the value came from: what changed is what was wired above it.
+     *
+     * WHAT IT COSTS: one element, one schema, one instance, per island. Nothing per row and
+     * nothing per update.
+     */
+    const given = themeSource => {
+        const GIVEN_SCHEMA = createExoSchema(b => {
+            let slot;
+            b.el('div', { class: 'given' }, d => { slot = d.childrenPort(); });
+            return { slot };
+        });
+        const mGiven = createExoMachineBuilder(GIVEN_SCHEMA);
+        mGiven.createInitialState(c => {
+            c.provide(THEME, themeSource);
+            c.one(GIVEN_SCHEMA.ports.slot, WIDGET);
+            return null;
+        });
+        return mGiven.done();
+    };
+
+    // ── THE THREE PLACEMENTS ─────────────────────────────────────────────────
+
+    // PANEL 1 — ONE RENDER. The host provides and mounts the widget itself.
+    const nestedPanel = document.getElementById('nested');
+    backend.render(HOST_NESTED, nestedPanel);
+
+    // PANEL 2 — TWO RENDERS, NOTHING PASSED. The second call lands the widget in the very div the
+    // first call drew, and the second call starts from `null`: `render` resolves no context from
+    // its parent, and no element in this document carries anything to resolve. The widget's element
+    // ends up in the identical position as panel 1's and reads `undefined`.
+    //
+    // THE ORDER DOES NOT MATTER. Mounting the host first, the widget first, or moving the widget in
+    // afterwards all give this same answer — there is no mark to find late and no observer that
+    // would re-run `createInitialState` if one appeared.
+    const islandPanel = document.getElementById('island');
+    backend.render(HOST_HOLE, islandPanel);
+    backend.render(WIDGET, islandPanel.querySelector('.host-slot'));
+
+    // PANEL 3 — TWO RENDERS, THE VALUE PASSED. Identical to panel 2 except for what is handed to
+    // the second call: a root of the island's own, holding the source, providing it, and nesting
+    // the same widget object underneath.
+    const passedPanel = document.getElementById('passed');
+    backend.render(HOST_HOLE, passedPanel);
+    backend.render(given(hostTheme), passedPanel.querySelector('.host-slot'));
+
+    // ── THE READOUT, COMPUTED FROM THE LIVE DOCUMENT ─────────────────────────
+    //
+    // No element carries a context mark, so there is nothing in the document to interrogate about
+    // context itself. What CAN be read is what each machine wrote — the `data-theme` the
+    // widget put on its own element and on every row, and the text it printed for what `inject`
+    // answered. Every line below is read out of the page when the button is pressed.
+
+    const rendered = panelId => {
+        const panel = document.getElementById(panelId);
+        const w = panel.querySelector('.w');
+        if (w === null) return 'no widget element';
+        const rows = Array.from(w.querySelectorAll('.w-row'));
+        const chips = rows.map(r => r.getAttribute('data-theme')).join(',') || '(none)';
+        const hostAttr = panel.querySelector('.host').getAttribute('data-theme');
+        return 'host element carries data-theme="' + hostAttr + '"' +
+            '\nwidget element carries data-theme="' + w.getAttribute('data-theme') + '"' +
+            '\nwidget printed: ' + w.querySelector('.w-head strong').textContent +
+            '\n' + rows.length + ' row(s), each carrying: ' + chips +
+            '\nthe widget stands inside: <' +
+            w.parentNode.tagName.toLowerCase() +
+            (w.parentNode.className ? ' class="' + w.parentNode.className + '"' : '') + '>';
+    };
+
+    const report = note => {
+        document.getElementById('nested-out').textContent =
+            note +
+            '\nmounted by: the HOST\'s own createInitialState, c.one(P.slot, WIDGET) — ONE render.' +
+            '\n' + rendered('nested');
+
+        document.getElementById('island-out').textContent =
+            note +
+            '\nmounted by: a SECOND backend.render into the div the host drew. Nothing passed.' +
+            '\n' + rendered('island');
+
+        document.getElementById('passed-out').textContent =
+            note +
+            '\nmounted by: a SECOND backend.render of given(hostTheme), which provides then nests.' +
+            '\n' + rendered('passed');
+    };
+
+    // ── THE TWO CONTROLS, BOTH ACTING AFTER EVERY MOUNT HAS FINISHED ─────────
+
+    document.getElementById('theme').addEventListener('click', () => {
+        // CONTROL 1: THE HOST CHANGES ITS OWN SOURCE, and touches nothing else. No widget is
+        // called, re-wired or told. Panels 1 and 3 follow because their widgets are HOLDING that
+        // very store — a context handed it over at build time and their effects did the rest. Panel 2
+        // cannot follow, and not because it missed an update: it never received the source, so
+        // there is nothing for an update to arrive on.
+        hostTheme.setValue(hostTheme.getValue() === 'dusk' ? 'sunrise' : 'dusk');
+        report('after the HOST changed its theme (control 1)');
+    });
+
+    let added = 0;
+    document.getElementById('addrow').addEventListener('click', () => {
+        // CONTROL 2: A ROW THAT DID NOT EXIST WHEN ANYTHING WAS WIRED. It is built inside a
+        // subscriber and asks `c.inject(THEME)` from there, with no render on the stack — and it
+        // gets its own panel's answer, because `c.build` hands each row its own widget's chain. The three widgets share ONE list source, which is a convenience of the exhibit
+        // (one press adds a row to all three) and not something the mechanism requires.
+        added += 1;
+        widgetRows.setValue(widgetRows.getValue().concat([{ label: 'row added ' + added }]));
+        report('after a new row was added to the widget (control 2)');
+    });
+
+    document.getElementById('reload').addEventListener('click', () => { location.reload(); });
+
+    report('as rendered');
+    boot.remove();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+ "axis": "toggle",
+ "label": "no-cap",
+ "quantum": null,
+ "batch": 1,
+ "partial": true,
+ "only": [
+  "exodra",
+  "exodraBanked",
+  "exodraBank0",
+  "exodraBank32",
+  "floor·rebuild·owned"
+ ],
+ "rows": [
+  {
+   "name": "TOGGLE/floor·rebuild·owned",
+   "min": 4.7,
+   "p25": 5,
+   "median": 5.1,
+   "p75": 5.2,
+   "max": 5.6,
+   "section": "TOGGLE"
+  },
+  {
+   "name": "TOGGLE/exodraBanked",
+   "min": 5.2,
+   "p25": 5.3,
+   "median": 5.4,
+   "p75": 5.4,
+   "max": 5.7,
+   "section": "TOGGLE"
+  },
+  {
+   "name": "TOGGLE/exodra",
+   "min": 5.6,
+   "p25": 5.8,
+   "median": 5.8,
+   "p75": 6,
+   "max": 6.3,
+   "section": "TOGGLE"
+  },
+  {
+   "name": "TOGGLE/exodraBank0",
+   "min": 5.6,
+   "p25": 5.8,
+   "median": 5.8,
+   "p75": 5.9,
+   "max": 6.1,
+   "section": "TOGGLE"
+  },
+  {
+   "name": "TOGGLE/exodraBank32",
+   "min": 5.6,
+   "p25": 5.7,
+   "median": 5.8,
+   "p75": 5.9,
+   "max": 6.1,
+   "section": "TOGGLE"
+  }
+ ]
+}

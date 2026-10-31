@@ -1,0 +1,86 @@
+{
+  // ═══ THE TEST FILES, COMPILED. THIS IS THE FIRST CONFIG IN THE REPOSITORY THAT LOOKS AT ONE. ═══
+  //
+  // Read this header once; the twenty-four sibling `tsconfig.tests.json` files point back at it
+  // rather than repeating it.
+  //
+  // ── THE HOLE ────────────────────────────────────────────────────────────────────────────────
+  //
+  // Every typecheck project in this tree ends with `"exclude": [… "**/*.test.ts", "**/*.spec.ts"]`.
+  // `tsconfig.build.json` does it for the whole graph; each package config does it again for
+  // itself. That exclusion is NOT a mistake and is not removed by this file: those projects are
+  // `composite`, a composite project must emit, and a test file compiled into `.tsbuild` (or worse,
+  // `dist`) is output nobody wants published. See `tsconfig.build.json`'s header.
+  //
+  // The consequence was that NO configuration in this repository ever handed a test file to the
+  // compiler. A field on `TExoCursorDeclaration` was renamed `exoStrPlan` → `strSchema`,
+  // `tsc -b --force` exited 0, and three suites were left red reading a field that no longer
+  // existed (`exo-schema.test.ts`, `exo-static.test.ts`, `packages/dom/src/tests/exo-component.test.ts`).
+  // A `TS2339` would have named all three in under a second. Nothing was in a position to emit one.
+  //
+  // ── WHY ONE FILE PER PACKAGE, AND NOT ONE AT THE ROOT ────────────────────────────────────────
+  //
+  // The obvious shape is a single root project with a wildcard `"@exodra/*":
+  // ["packages/*/.tsbuild/index.d.ts"]`. It was tried, and it produces TYPE DOPPELGANGERS: ~25
+  // errors reading `TExoTestSource<string> is not assignable to TExoBindable<unknown, unknown>` —
+  // the signature of ONE nominal type reached through TWO different files, because a wildcard
+  // cannot agree with the twenty-odd hand-written `paths` maps the packages already carry.
+  //
+  // Extending the package's OWN typecheck config removes that by construction. Each of these files
+  // inherits that package's `lib`, its strictness, its `types`, and above all its `paths` — so a
+  // test resolves `@exodra/core` to the identical `.d.ts` the package's own sources resolve it to,
+  // and there is exactly one `TExoCursorDeclaration` in the program.
+  //
+  // ── THE FOUR THINGS EVERY ONE OF THESE FILES OVERRIDES, AND WHY ─────────────────────────────
+  //
+  //   `noEmit` + `composite: false`  — this project CHECKS and writes nothing. It is not in
+  //       `tsconfig.build.json`'s graph, nothing references it, and it must never race the real
+  //       project for `.tsbuild`. TypeScript rejects `noEmit` on a composite project outright
+  //       (TS6304), so the two go together.
+  //   `declaration` / `declarationMap` / `sourceMap` / `incremental: false` — all four exist to
+  //       shape emit, and there is no emit. `declarationMap` without `declaration` is TS5069, so
+  //       it has to be turned off explicitly rather than left inherited.
+  //   `include` / `exclude`          — the whole point: the same sources as the real project, plus
+  //       the `*.test.ts` files sitting beside them. `exclude` drops the two test patterns and
+  //       keeps everything else the real project excludes.
+  //   `paths`, where the tests reach further than the sources do  — a suite legitimately imports
+  //       packages the implementation does not (`@exodra/test-utils` everywhere, `@exodra/dom`
+  //       from `@exodra/string`'s parity suites, and so on). Where that happens the file restates
+  //       the base map IN FULL and adds the missing entries, because `extends` REPLACES `paths`
+  //       wholesale and never merges key by key — the trap `tsconfig.depcruise.json` documents
+  //       from the other side. Every added entry points at `../<pkg>/.tsbuild/index.d.ts`, tsc's
+  //       own fresh output, exactly as every other `paths` entry in this repository does; pointing
+  //       one at `../<pkg>/src` instead would put files outside this project's `rootDir` (TS6059).
+  //
+  //   `references` needs no handling: `extends` copies `compilerOptions`, `include`, `exclude` and
+  //   `files`, and NEVER `references`. The root `tsconfig.json` states this in its own header.
+  //
+  // ── AUTHORED, NOT ARMED ─────────────────────────────────────────────────────────────────────
+  //
+  // `npm run typecheck:tests` runs all of these and is in NO gate and NO workflow. That is
+  // deliberate and it is temporary: how many of the errors it surfaces are real is not yet known,
+  // and a gate switched on before its output has been read is a gate that gets switched off again.
+  // The sequence is: author the configs, run them once, fix what is real, THEN put the script in
+  // `release:check`. `scripts/typecheck-tests.mjs` says the same thing at the top.
+  //
+  // Note that `check-gates.mjs` will not force the issue on its own — it decides "gate-shaped" by
+  // NAME (`check:*`, `*:check`, `*:verify`), and `typecheck:tests` matches none of those. Arming
+  // it is a human decision, taken once the errors have been read.
+  //
+  // ── THIS PACKAGE ────────────────────────────────────────────────────────────────────────────
+  //
+  // `@exodra/core`'s suites reach ONE sibling package, `@exodra/context` — `exo-machine.test.ts`
+  // builds a frame to drive `inject` — and `src/` reaches the same one and nothing else. The
+  // inherited `paths` is therefore already complete and there is none to add.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

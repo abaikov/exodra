@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "strict": true,
+        "noEmit": true,
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "baseUrl": ".",
+        "paths": {
+            "@exodra/context": ["../../context/src/index.ts"],
+            "@exodra/core": ["../../core/src/index.ts"],
+            "@exodra/computed": ["../../computed/src/index.ts"],
+            "@exodra/list-reconcile": ["../../list-reconcile/src/index.ts"],
+            "@exodra/dom": ["../../dom/src/index.ts"],
+            "@exodra/forms": ["../../forms/src/index.ts"],
+            "@oimdb/core": ["../../../../oimdb/packages/core/src/index.ts"],
+            "@cnstra/core": ["../../../../cnstra/packages/core/src/index.ts"],
+            "@cnstra/types": ["../../../../cnstra/packages/types/src/index.ts"]
+        }
+    },
+    "include": ["src"]
+}

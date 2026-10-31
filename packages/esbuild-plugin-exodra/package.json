@@ -18,7 +18,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc && mv dist/index.js dist/index.cjs",
+    "build": "rm -rf dist && tsc && mv dist/index.js dist/index.cjs",
     "prepublishOnly": "npm run build",
     "test": "vitest run"
   },

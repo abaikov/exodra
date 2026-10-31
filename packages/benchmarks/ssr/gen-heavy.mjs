@@ -1,4 +1,4 @@
-// Generate Qwik's BEST-CASE app for all three frameworks: M widgets, each with a
+// Generate Qwik's BEST-CASE app for Solid and Qwik: M widgets, each with a
 // UNIQUE, heavy click handler (a distinct inlined data table + computation) so
 // the total interactive JS is large and cannot be deduped. The measured click
 // touches ONE widget. This is where resumability should win: a hydration
@@ -23,12 +23,6 @@ const body = (i) => {
     return `{const T=${T};let s=0;for(let k=0;k<T.length;k++)s=(s+T[k]*${i + 1})>>>0;return (s%97)+1;}`;
 };
 
-// ---- Exodra (raw h) --------------------------------------------------------
-let exo = `import { h } from '@exodra/core';\nimport { bindable } from '@exodra/reactivity';\nexport const M=${M};\n`;
-for (let i = 0; i < M; i++) exo += `function w${i}()${body(i)}\n`;
-exo += `export function makeApp(){\n const rows=new Array(M);\n const W=[${Array.from({length:M},(_,i)=>'w'+i).join(',')}];\n for(let i=0;i<M;i++){const count=bindable(0);rows[i]=h('li',{static:{class:'row','data-id':String(i),children:[h('span',{static:{class:'row__label',children:'Widget '+i}}),h('button',{static:{class:'row__btn','data-b':String(i)},bindables:{textContent:count},handlers:{onClick:(function(fn){return ()=>count.setValue(fn());})(W[i])}})]}});}\n return h('ul',{static:{class:'list',children:rows}});\n}\n`;
-writeFileSync('ssr/apps/exodra/app-heavy.mjs', exo);
-
 // ---- Solid -----------------------------------------------------------------
 let solid = `import { createSignal, For } from 'solid-js';\nexport const M=${M};\n`;
 for (let i = 0; i < M; i++) solid += `function w${i}()${body(i)}\n`;
@@ -45,4 +39,4 @@ for (let i = 0; i < M; i++) {
 qwik += `export const App=component$(()=>{return <ul class="list">${Array.from({length:M},(_,i)=>`<W${i} key={${i}}/>`).join('')}</ul>;});\n`;
 writeFileSync('ssr/apps/qwik/app-heavy.jsx', qwik);
 
-console.log(`generated heavy apps: M=${M} widgets, K=${K} nums/handler`);
+console.log(`generated heavy apps (solid, qwik): M=${M} widgets, K=${K} nums/handler`);

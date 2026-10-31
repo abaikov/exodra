@@ -1,5 +1,5 @@
 // N-sweep: same 3 SSR apps, N rows swept, throttled Chromium. Finds the crossover
-// where Qwik's resumability (flat client JS, fat HTML) overtakes Solid/Exodra's
+// where Qwik's resumability (flat client JS, fat HTML) overtakes Solid's and Exodra's
 // hydration (small JS, HTML+CPU that grow with N). Client bundles are built once
 // (N-agnostic via globalThis.__N__); only the SSR HTML is re-rendered per N.
 import { chromium } from 'playwright';
@@ -8,7 +8,6 @@ import { readFileSync, existsSync, statSync, writeFileSync } from 'fs';
 import { join, extname, resolve } from 'path';
 import { pathToFileURL } from 'url';
 import { gzipSync } from 'zlib';
-import { ExoNodeSsr } from '@exodra/ssr';
 import { solidPlugin, bundle } from './build/lib.mjs';
 
 const DIST = resolve(process.cwd(), 'ssr/dist');
@@ -20,15 +19,16 @@ const gz = (b) => gzipSync(Buffer.from(b)).length;
 await bundle({ entryPoints: ['ssr/apps/solid/server.jsx'], outfile: 'ssr/dist/solid/_server.mjs',
     platform: 'node', plugins: [solidPlugin('ssr')], minify: false, external: ['solid-js', 'solid-js/web'] });
 
-const exo = await import(pathToFileURL(join(DIST, '../apps/exodra/app.mjs')).href);
+// Exodra's participant is the schema core, built by `node ssr/build/build-exodra.mjs`.
+const exo = await import(pathToFileURL(join(DIST, 'exodra/_server.mjs')).href);
 const solid = await import(pathToFileURL(join(DIST, 'solid/_server.mjs')).href);
 const qwikMod = await import(pathToFileURL(join(DIST, 'qwik/server/entry.ssr.js')).href);
 const qwikManifest = JSON.parse(readFileSync(join(DIST, 'qwik/manifest.json'), 'utf8'));
 
 function renderAll(N) {
     globalThis.__N__ = N;
-    // Exodra
-    const exoBody = new ExoNodeSsr(exo.makeApp()).renderBody();
+    // Exodra (schema core)
+    const exoBody = exo.renderBody();
     const exoHtml = `<!doctype html><html><head><meta charset="utf-8"><script>window.__N__=${N}</script></head><body><div id="app">${exoBody}</div><script type="module" src="./client.js"></script></body></html>`;
     writeFileSync(join(DIST, 'exodra/index.html'), exoHtml);
     // Solid

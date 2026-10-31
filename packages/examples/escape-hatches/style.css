@@ -1,0 +1,278 @@
+/*
+ * Plain CSS for the escape-hatches page. It is a stylesheet and nothing else — no
+ * preprocessor, no build, no CDN font. The palette is the one `../no-build/style.css`
+ * uses, so the two examples read as siblings.
+ */
+
+:root {
+    --bg: #f7f7f8;
+    --fg: #16171a;
+    --muted: #6b7078;
+    --card: #ffffff;
+    --line: #e2e4e8;
+    --accent: #2f6df6;
+    --accent-fg: #ffffff;
+    --foreign: #b45309;
+    --foreign-soft: #fdf3e7;
+    --danger: #b91c1c;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f1113;
+        --fg: #e8eaed;
+        --muted: #9aa1ab;
+        --card: #17191d;
+        --line: #2a2e34;
+        --accent: #6b96ff;
+        --accent-fg: #0f1113;
+        --foreign: #fbbf24;
+        --foreign-soft: #2a2113;
+        --danger: #f87171;
+    }
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 2rem 1.25rem 4rem;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+}
+
+.page-head,
+.page-foot,
+main {
+    max-width: 58rem;
+    margin: 0 auto;
+}
+
+.page-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+}
+
+.page-sub,
+.page-foot p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.page-foot {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+}
+
+.boot {
+    max-width: 58rem;
+    margin: 1rem auto 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.boot-error {
+    color: var(--danger);
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+}
+
+/* ── the application's own markup, produced by the schemas in the page ────── */
+
+.app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.panel {
+    padding: 1.1rem 1.25rem 1.25rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    min-width: 0;
+}
+
+.panel-wide { grid-column: 1 / -1; }
+
+@media (max-width: 52rem) {
+    .app { grid-template-columns: 1fr; }
+}
+
+.panel-title {
+    margin: 0 0 0.25rem;
+    font-size: 1.05rem;
+}
+
+.panel-note {
+    margin: 0 0 0.9rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+/* rows — the vanilla hot spot lives among these */
+
+.rows {
+    list-style: none;
+    margin: 0 0 0.9rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.row-badge {
+    flex: none;
+    min-width: 2.2rem;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+}
+
+.row-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.92rem;
+}
+
+.row-kind,
+.card-kind {
+    flex: none;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+}
+
+.row-vanilla,
+.card-foreign {
+    border-color: var(--foreign);
+    background: var(--foreign-soft);
+}
+
+.row-vanilla .row-kind,
+.card-foreign .card-kind {
+    color: var(--foreign);
+    border-color: var(--foreign);
+}
+
+.row-tally {
+    flex: none;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+    color: var(--foreign);
+}
+
+/* cards — the foreign renderer lives among these */
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.card-title { font-size: 0.92rem; font-weight: 600; }
+
+.card-foreign canvas {
+    display: block;
+    width: 220px;
+    height: 64px;
+    max-width: 100%;
+}
+
+.readout {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 0.9rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+}
+
+.readout-label { color: var(--muted); }
+
+.readout-value {
+    font-variant-numeric: tabular-nums;
+}
+
+/* controls and log */
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.btn {
+    font: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: var(--accent);
+    color: var(--accent-fg);
+    padding: 0.4rem 0.85rem;
+}
+
+.btn-quiet {
+    background: transparent;
+    color: var(--fg);
+    border-color: var(--line);
+    font-size: 0.85rem;
+    padding: 0.25rem 0.6rem;
+}
+
+.btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.log {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    min-height: 6.5rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    color: var(--muted);
+}
+
+.log-row { padding: 0.1rem 0; }

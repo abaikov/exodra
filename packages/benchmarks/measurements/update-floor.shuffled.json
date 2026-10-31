@@ -1,0 +1,366 @@
+{
+  "axis": "update-floor",
+  "label": "shuffled",
+  "quantum": 0.1,
+  "batch": 16,
+  "rows": [
+    {
+      "name": "TEXT-ONE/exodra",
+      "min": 0.0787,
+      "p25": 0.08,
+      "median": 0.0806,
+      "p75": 0.0819,
+      "max": 0.0869,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/floor",
+      "min": 0.0431,
+      "p25": 0.0441,
+      "median": 0.0516,
+      "p75": 0.0522,
+      "max": 0.0559,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/floor·twin",
+      "min": 0.0431,
+      "p25": 0.0437,
+      "median": 0.0516,
+      "p75": 0.0522,
+      "max": 0.0553,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/floor·guard",
+      "min": 0.0531,
+      "p25": 0.0541,
+      "median": 0.075,
+      "p75": 0.0759,
+      "max": 0.08,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/floor·bound",
+      "min": 0.0628,
+      "p25": 0.0637,
+      "median": 0.0647,
+      "p75": 0.0656,
+      "max": 0.0694,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-ONE/loop",
+      "min": 0.0047,
+      "p25": 0.005,
+      "median": 0.0153,
+      "p75": 0.0159,
+      "max": 0.0169,
+      "section": "TEXT-ONE"
+    },
+    {
+      "name": "TEXT-SWEEP/exodra",
+      "min": 73.75,
+      "p25": 75.625,
+      "median": 76.5625,
+      "p75": 78.4375,
+      "max": 85.3125,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "TEXT-SWEEP/floor",
+      "min": 44.0625,
+      "p25": 45,
+      "median": 50.3125,
+      "p75": 51.5625,
+      "max": 54.6875,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "TEXT-SWEEP/floor·twin",
+      "min": 44.0625,
+      "p25": 45.3125,
+      "median": 50.625,
+      "p75": 51.5625,
+      "max": 55.3125,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "TEXT-SWEEP/floor·bound",
+      "min": 58.4375,
+      "p25": 60.9375,
+      "median": 62.5,
+      "p75": 63.4375,
+      "max": 68.4375,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "TEXT-SWEEP/loop",
+      "min": 4.0625,
+      "p25": 4.6875,
+      "median": 10.3125,
+      "p75": 10.9375,
+      "max": 11.875,
+      "section": "TEXT-SWEEP"
+    },
+    {
+      "name": "REORDER/exodra",
+      "min": 25,
+      "p25": 29.4271,
+      "median": 33.8542,
+      "p75": 37.2396,
+      "max": 41.4062,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·told",
+      "min": 17.9687,
+      "p25": 18.4896,
+      "median": 18.4896,
+      "p75": 19.0104,
+      "max": 20.3125,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·twin",
+      "min": 17.9687,
+      "p25": 18.4896,
+      "median": 18.4896,
+      "p75": 19.0104,
+      "max": 20.0521,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·diff",
+      "min": 21.0937,
+      "p25": 21.6146,
+      "median": 21.6146,
+      "p75": 22.1354,
+      "max": 23.1771,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·record",
+      "min": 21.0938,
+      "p25": 21.6146,
+      "median": 21.875,
+      "p75": 22.1354,
+      "max": 23.4375,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·seq",
+      "min": 21.0937,
+      "p25": 21.6146,
+      "median": 21.875,
+      "p75": 22.1354,
+      "max": 30.7292,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·place",
+      "min": 27.3438,
+      "p25": 27.8646,
+      "median": 28.3854,
+      "p75": 29.4271,
+      "max": 30.9896,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/floor·registry",
+      "min": 30.4687,
+      "p25": 31.25,
+      "median": 31.7708,
+      "p75": 32.8125,
+      "max": 34.6354,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/exodra·children",
+      "min": 22.1354,
+      "p25": 26.3021,
+      "median": 29.6875,
+      "p75": 33.0729,
+      "max": 36.1979,
+      "section": "REORDER"
+    },
+    {
+      "name": "REORDER/exodra·twin",
+      "min": 25,
+      "p25": 30.4687,
+      "median": 34.8958,
+      "p75": 37.5,
+      "max": 41.4062,
+      "section": "REORDER"
+    },
+    {
+      "name": "GROW-SHRINK/exodra",
+      "min": 5.0938,
+      "p25": 5.7656,
+      "median": 6.0938,
+      "p75": 6.4063,
+      "max": 6.9219,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "GROW-SHRINK/exodraOps",
+      "min": 1.1875,
+      "p25": 1.25,
+      "median": 1.2656,
+      "p75": 1.2969,
+      "max": 1.375,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "GROW-SHRINK/floor·told",
+      "min": 0.375,
+      "p25": 0.3906,
+      "median": 0.3906,
+      "p75": 0.4062,
+      "max": 0.4219,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "GROW-SHRINK/floor·twin",
+      "min": 0.3594,
+      "p25": 0.3906,
+      "median": 0.3906,
+      "p75": 0.3906,
+      "max": 0.4375,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "GROW-SHRINK/floor·diff",
+      "min": 5.9531,
+      "p25": 6.0156,
+      "median": 6.0938,
+      "p75": 6.2031,
+      "max": 6.5469,
+      "section": "GROW-SHRINK"
+    },
+    {
+      "name": "WIDE/exodra",
+      "min": 100.7812,
+      "p25": 111.7188,
+      "median": 115.625,
+      "p75": 119.5312,
+      "max": 128.125,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/exodra·twin·near",
+      "min": 99.2187,
+      "p25": 108.5937,
+      "median": 114.8437,
+      "p75": 121.0938,
+      "max": 130.4687,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor",
+      "min": 49.2188,
+      "p25": 50.7813,
+      "median": 51.5625,
+      "p75": 52.3438,
+      "max": 56.25,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·twin",
+      "min": 50,
+      "p25": 50.7813,
+      "median": 51.5625,
+      "p75": 52.3438,
+      "max": 54.6875,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·bound",
+      "min": 59.375,
+      "p25": 60.9375,
+      "median": 61.7187,
+      "p75": 63.2812,
+      "max": 69.5312,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·record",
+      "min": 58.5938,
+      "p25": 63.2813,
+      "median": 67.9687,
+      "p75": 71.0938,
+      "max": 75.7812,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·wire",
+      "min": 67.9687,
+      "p25": 71.875,
+      "median": 75,
+      "p75": 78.9063,
+      "max": 84.375,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·registry",
+      "min": 64.0625,
+      "p25": 65.625,
+      "median": 67.1875,
+      "p75": 68.75,
+      "max": 71.875,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/exodra·children",
+      "min": 82.8125,
+      "p25": 89.8438,
+      "median": 93.75,
+      "p75": 98.4375,
+      "max": 109.375,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/exodra·kept",
+      "min": 46.0937,
+      "p25": 50,
+      "median": 56.25,
+      "p75": 58.5938,
+      "max": 63.2812,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/exodra·twin",
+      "min": 98.4375,
+      "p25": 112.5,
+      "median": 117.1875,
+      "p75": 119.5312,
+      "max": 128.9063,
+      "section": "WIDE"
+    },
+    {
+      "name": "WIDE/floor·twin·far",
+      "min": 49.2188,
+      "p25": 50.7813,
+      "median": 51.5625,
+      "p75": 52.3437,
+      "max": 56.25,
+      "section": "WIDE"
+    }
+  ],
+  "refusals": [
+    "THE RECORDING PREDATES THIS ORDERING. Every median in measurements/update-floor.published.json was taken under the OLD order — a rigid rotation, `phases[(k + shift) % length]`, which never changed the cyclic order and so gave every phase one fixed predecessor for a whole run. That is what made an ADJACENT null read 0.0001 µs and a FAR null with the same true value of ZERO read 9.3750 µs. Numbers from that file and numbers from this run MAY NOT BE QUOTED SIDE BY SIDE — not in a table, not in a ratio, not in a sentence. Quoting across a changed instrument is the error this repository has already made twice. Re-record before comparing, and rewrite the banner below from the new file in the same change.",
+    "READ BEFORE THE TABLES: the state of this axis's own predictions as at the last recorded run (measurements/update-floor.published.json, batch 16). It is here because the verdicts that judge THIS run print AFTER the numbers they judge, and nobody reads a table backwards:",
+    "FIRST PREDICTION — 4 of its 7 falsifiers FIRED: (c) wide 2.2836× against a committed 1.10-1.45 · (d) discovery 14.1% against a committed 25% · (f) grow-shrink/exodra 0.7786×, which the run ALSO refuses as a bound · (g) text-one vs floor·bound 1.2680× against a committed 1.6. (a) stayed silent at 1.6047× BUT (P1) had committed to 2.0, so the falsifier was looser than the claim. Only (P3) held on the number it named.",
+    "SECOND PREDICTION — (Q1) FAILED (record 17.9687 µs against a committed 4-16) and (Q6) FAILED (exodra·kept 12.5000 µs BELOW floor·bound where it predicted above). (Q4), the cross-check this file most wanted tested, printed a verdict on a difference the SAME run refused as under its own resolution bar — the renderer-scale null was 9.3750 µs, 7.8% of its own row. Q2, Q3, Q5 held.",
+    "THIRD PREDICTION (R1-R6) — NEVER RUN. The recording carries reorder with four rows. No reading of R1-R6 exists anywhere; what to distrust in their first run is written above their falsifiers in this file, under WHAT TO DISTRUST IN THE FIRST RUN.",
+    "FOURTH PREDICTION (Q7-Q11) — NEVER RUN either, and it is the one that judges the INSTRUMENT rather than a number: the recording carries wide with NINE rows and this file declares ELEVEN. On that recording TWO of wide's five attributions were refused by a bar that a null with a true value of ZERO put at 37.5 µs, and RAISING THE BATCH CANNOT MOVE A BIAS — every number here is µs PER TRANSITION, so multiplying reps divides the region by the same factor it multiplies it. (Q7) is what asks whether that null is measuring the instrument or measuring where a row was declared.",
+    "AND THE UNIT: MICROSECONDS PER TRANSITION. mount-floor, ssr-floor and hydrate-floor all report MILLISECONDS PER REP. Published pages have already taken the wrong one from this file and been out by 1000× with both documentation gates green, because neither gate checks a unit; how far that ran is recorded in docs-site/docs/decisions/upd-07-the-general-path-and-its-subsequence.md.",
+    "update-floor/reorder: \"floor·record − floor·diff\" is +0.2604 µs against a floor-scale null of 0.260417 µs — under 4× the null, so R1, the position and survival tables moved off two Int32Arrays and onto 200 records, validation included is a RANGE and not a number and the ladder line above must not be quoted. Re-run at batch 257 or raise `rounds` (the batch assumes this null falls as 1/√batch, which was not measured).",
+    "update-floor/reorder: \"floor·seq − floor·record\" is +0.0000 µs against a floor-scale null of 0.260417 µs — under 4× the null, so R2, the shipped getExoSequence over a number[] instead of the floor's markKeepers over Int32Arrays, allocations included is a RANGE and not a number and the ladder line above must not be quoted. Re-run at batch 17361119389534822000 or raise `rounds` (the batch assumes this null falls as 1/√batch, which was not measured).",
+    "update-floor/reorder: \"exodra − floor·registry\" is +2.0833 µs against a renderer-scale null of 5.729167 µs — under 4× the null, so R5, THE RESIDUAL — everything the framework adds that is not the algorithm is a RANGE and not a number and the ladder line above must not be quoted. Re-run at batch 1937 or raise `rounds` (the batch assumes this null falls as 1/√batch, which was not measured).",
+    "update-floor/reorder: \"exodra − exodra·children\" is +4.1667 µs against a renderer-scale null of 5.729167 µs — under 4× the null, so R6, the bindList façade measured on the real renderer is a RANGE and not a number and the ladder line above must not be quoted. Re-run at batch 485 or raise `rounds` (the batch assumes this null falls as 1/√batch, which was not measured).",
+    "NO BOUND FROM THIS ROW — @exodra/dom (6.0938 µs) measured AT OR BELOW the \"derive\" floor \"floor·diff\" (6.0938 µs) at \"grow-shrink\". A floor a framework can beat is not a floor. Read it as a finding about the FLOOR — most likely that this file's general reconciler has no fast path where the renderer does — and not as a bound. The wider bound below, if one is printed, still stands.",
+    "update-floor/wide: \"exodra − exodra·children\" is +21.8750 µs against a renderer-scale null of 6.250000 µs — under 4× the null, so E3, the bindList façade on the real app is a RANGE and not a number and the ladder line above must not be quoted. Re-run at batch 21 or raise `rounds` (the batch assumes this null falls as 1/√batch, which was not measured).",
+    "update-floor/wide: \"exodra·kept − floor·bound\" is -5.4687 µs against a renderer-scale null of 6.250000 µs — under 4× the null, so E4, what is left once nothing is built or dropped is a RANGE and not a number and the ladder line above must not be quoted. Re-run at batch 335 or raise `rounds` (the batch assumes this null falls as 1/√batch, which was not measured)."
+  ]
+}

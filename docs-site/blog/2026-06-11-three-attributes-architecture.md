@@ -7,6 +7,27 @@ tags: [architecture, performance, design-decisions]
 
 # Why We Split Attributes Into Three Categories
 
+:::note This post describes a renderer that has been deleted
+
+Everything below is written about the `ExoNodeDom` three-props runtime — `h(type,
+attrs)`, `static` / `bindables` / `bindableLists`, `defineComponent`, and the
+`@exodra/babel-plugin-jsx` compiler. **None of that exists any more.** `@exodra/core`
+states the deletion in its own barrel (`packages/core/src/index.ts:10-12`), as does
+`@exodra/dom` (`packages/dom/src/index.ts:9-10`), and the babel plugin has been
+replaced by `@exodra/babel-plugin-schema`. Do not write code from this post, and do
+not hand it to an assistant as a description of Exodra.
+
+**What survived is the argument, not the API.** A component is now one value
+carrying two halves — a *schema* built once at module load, and a *wiring function*
+run per instance (`exoComponent(build, P => wire)`). The schema declares **ports**;
+the wiring fills them with a verb that says *how*: `c.set` once, `c.bind` kept in
+step, `c.on` a listener, `c.bindList` a reconciled children port. The bucket is gone;
+"the renderer never has to ask what kind of value this is" is exactly why. See
+[Core Concepts](/docs/core/concepts) and [Getting Started](/docs/getting-started).
+
+It is kept because a post is a record of what was believed when it was written.
+:::
+
 Every reactive framework faces the same dilemma: how to handle different types of properties efficiently. Most frameworks choose developer convenience over performance. We chose performance.
 
 {/* truncate */}
@@ -79,11 +100,16 @@ We don't ship a "runtime-type-checking" variant of Exodra to A/B against, so we 
 
 In the project's benchmark suite (`npm run bench`), rendering a large tree — the
 case that actually does work at a measurable scale — Exodra lands in the **top
-tier**: as fast as the fastest (neck‑and‑neck with Solid, well ahead of React and
-Svelte) **without** a memory premium. Full numbers, including retained heap and
-honest caveats, live on the dedicated [Benchmarks](/docs/benchmarks) page — with
-the fair print that Solid's memory footprint is actually a touch smaller than
-ours. We're not claiming a permanent "fastest" crown from our own harness.
+tier**: close to Solid and well ahead of React and Svelte. Full numbers, including
+retained heap and honest caveats, live on the dedicated
+[Benchmarks](/docs/benchmarks) page — with the fair print that Solid is still
+faster on first mount. We're not claiming a permanent "fastest" crown from our own
+harness.
+
+*Updated August 2026: this post originally said Solid's memory footprint was
+smaller than ours. Later measurement on the corrected harness reversed that —
+Exodra retains the least of the five. The mount-speed ordering was, and remains,
+in Solid's favour.*
 
 Fine-grained updates (a single signal or list op) complete in **sub-millisecond**
 time for both Exodra and Solid — below the timer's resolution — so we treat those

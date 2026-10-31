@@ -21,6 +21,12 @@ compiles identically.
 | Parcel | `.babelrc` + preset | *(no package — see below)* |
 | SWC / Next.js | native Wasm plugin | [`swc-plugin-exodra`](./swc-plugin.md) |
 
+Every one of these plugins intercepts `.jsx` / `.tsx` **before** the bundler's own
+JSX handling. That is not a preference: esbuild, Bun and friends lower JSX to a
+call per element at runtime, where the point of this dialect is that the shape is
+built once at module load — and they throw on the namespaced `on:` listeners
+outright.
+
 ## Vite
 
 See [Vite Plugin](./vite-plugin.md). It also adds HMR and file-based routing.
@@ -77,8 +83,17 @@ await Bun.build({
 });
 ```
 
-Each plugin accepts `{ filter?, importSource? }` (`include` instead of `filter`
-for Rollup).
+## Options
+
+Each plugin accepts two:
+
+| option | default | what it is |
+| --- | --- | --- |
+| `filter` (`include` for Rollup) | `/\.[jt]sx$/` | which files to compile |
+| `schemaSource` | `'@exodra/core'` | where the compiled output imports `createExoSchema` from |
+
+Both are forwarded to `babel-preset-exodra`'s runner unchanged — there is no
+per-bundler behaviour to configure, because there is no per-bundler pipeline.
 
 ## webpack
 
@@ -110,4 +125,5 @@ Parcel reads Babel config automatically:
 
 ## SWC / Next.js
 
-SWC does not run Babel plugins. Use the native [SWC plugin](./swc-plugin.md).
+SWC does not run Babel plugins. Use the native [SWC plugin](./swc-plugin.md),
+configured with `{ "mode": "schema" }`.

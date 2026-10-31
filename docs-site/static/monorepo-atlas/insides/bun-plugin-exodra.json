@@ -22,6 +22,7 @@
         ],
         "memberCount": 1,
         "stereotype": "interface",
+        "doc": "Local types for the slice of Bun's plugin API used here: the package must not depend on `bun-types`.",
         "width": 120,
         "height": 69,
         "violations": []
@@ -108,18 +109,18 @@
           {
             "visibility": "+",
             "text": "onLoad( constraints: { filter: RegExp; …",
-            "full": "onLoad( constraints: { filter: RegExp; namespace?: string }, callback: ( args: BunOnLoadArgs ) => Promise<BunOnLoadResult | undefined> ): void;",
+            "full": "onLoad( constraints: { filter: RegExp; namespace?: string }, callback: (args: BunOnLoadArgs) => Promise<BunOnLoadResult | undefined> ): void;",
             "parts": [],
             "fullParts": [
               {
-                "text": "onLoad( constraints: { filter: RegExp; namespace?: string }, callback: ( args: "
+                "text": "onLoad( constraints: { filter: RegExp; namespace?: string }, callback: (args: "
               },
               {
                 "text": "BunOnLoadArgs",
                 "link": "BunOnLoadArgs"
               },
               {
-                "text": " ) => Promise<"
+                "text": ") => Promise<"
               },
               {
                 "text": "BunOnLoadResult",
@@ -170,24 +171,28 @@
         "layer": 0,
         "members": [
           {
-            "visibility": "+",
-            "text": "filter?: RegExp;",
-            "full": "filter?: RegExp;",
-            "doc": "Which files to compile.",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "importSource?: string;",
-            "full": "importSource?: string;",
-            "doc": "Module the auto-imported `h`/`text` come from.",
+            "text": "ExodraBundlerOptions",
+            "full": "ExodraBundlerOptions",
             "parts": []
           }
         ],
-        "memberCount": 2,
-        "stereotype": "interface",
-        "width": 178,
-        "height": 84,
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 165,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "MAP_COMMENT",
+        "label": "MAP_COMMENT",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "SPLIT SO THIS FILE DOES NOT CONTAIN THE MARKER IT EMITS — see the twin note in `packages/esbuild-plugin-exodra/src/index.ts`.",
+        "width": 120,
+        "height": 46,
         "violations": []
       }
     ],
@@ -286,55 +291,81 @@
           }
         ],
         "violations": []
+      },
+      {
+        "id": "exodra→MAP_COMMENT",
+        "from": "exodra",
+        "to": "MAP_COMMENT",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
+            "to": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
       }
     ],
     "rules": {}
   },
   "layout": {
     "width": 1258,
-    "height": 288.8,
+    "height": 347.8,
     "nodes": [
       {
         "id": "BunOnLoadArgs",
         "x": 1040.5,
-        "y": 195.8,
+        "y": 254.8,
         "width": 120,
         "height": 69
       },
       {
         "id": "BunOnLoadResult",
         "x": 967,
-        "y": 83.8,
+        "y": 142.8,
         "width": 267,
         "height": 84
       },
       {
         "id": "BunPlugin",
         "x": 253,
-        "y": 136,
+        "y": 195,
         "width": 293,
         "height": 84
       },
       {
         "id": "BunPluginBuilder",
         "x": 610,
-        "y": 143.5,
+        "y": 202.5,
         "width": 293,
         "height": 69
       },
       {
         "id": "exodra",
         "x": 24,
-        "y": 87.5,
+        "y": 98,
         "width": 165,
         "height": 69
       },
       {
         "id": "ExodraBunOptions",
-        "x": 310.5,
+        "x": 317,
+        "y": 98,
+        "width": 165,
+        "height": 69
+      },
+      {
+        "id": "MAP_COMMENT",
+        "x": 339.5,
         "y": 24,
-        "width": 178,
-        "height": 84
+        "width": 120,
+        "height": 46
       }
     ],
     "edges": [
@@ -343,15 +374,15 @@
         "points": [
           {
             "x": 546,
-            "y": 178
+            "y": 237
           },
           {
             "x": 578,
-            "y": 178
+            "y": 237
           },
           {
             "x": 610,
-            "y": 178
+            "y": 237
           }
         ]
       },
@@ -360,15 +391,15 @@
         "points": [
           {
             "x": 874.4,
-            "y": 212.5
+            "y": 271.5
           },
           {
             "x": 935,
-            "y": 230.3
+            "y": 289.3
           },
           {
             "x": 1040.5,
-            "y": 230.3
+            "y": 289.3
           }
         ]
       },
@@ -377,15 +408,15 @@
         "points": [
           {
             "x": 874.4,
-            "y": 143.5
+            "y": 202.5
           },
           {
             "x": 935,
-            "y": 125.8
+            "y": 184.8
           },
           {
             "x": 967,
-            "y": 125.8
+            "y": 184.8
           }
         ]
       },
@@ -393,16 +424,16 @@
         "id": "exodra→BunPlugin",
         "points": [
           {
-            "x": 177,
-            "y": 156.5
+            "x": 144.3,
+            "y": 167
           },
           {
             "x": 221,
-            "y": 178
+            "y": 237
           },
           {
             "x": 253,
-            "y": 178
+            "y": 237
           }
         ]
       },
@@ -410,16 +441,33 @@
         "id": "exodra→ExodraBunOptions",
         "points": [
           {
-            "x": 177,
-            "y": 87.5
+            "x": 189,
+            "y": 132.5
           },
           {
             "x": 221,
-            "y": 66
+            "y": 132.5
           },
           {
-            "x": 310.5,
-            "y": 66
+            "x": 317,
+            "y": 132.5
+          }
+        ]
+      },
+      {
+        "id": "exodra→MAP_COMMENT",
+        "points": [
+          {
+            "x": 152.7,
+            "y": 98
+          },
+          {
+            "x": 221,
+            "y": 47
+          },
+          {
+            "x": 339.5,
+            "y": 47
           }
         ]
       }

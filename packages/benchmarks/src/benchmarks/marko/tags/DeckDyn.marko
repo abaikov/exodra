@@ -1,0 +1,24 @@
+// A Marko template has no module scope, so `<const>` is the only way to name a value here at all —
+// `author`, `authorName`, `when` and `own` are constants of `input.d`, not derived values.
+// Marko DROPS a whitespace-only run that is a newline plus indentation, so this file may stay
+// indented and still emit no text node between two tags — but never a bare space between tags.
+import { cardsOfDeck, deckUserOf, deckDateOf, deckNameOf, startDeckName, nextDeckName, dateTextOf, userNameOf, startsOpen, startCount } from "../../shared/todo-spec";
+
+<let/name = startDeckName(input.d) />
+<const/chars = input.chars />
+<const/author = deckUserOf(input.d) />
+<const/authorName = userNameOf(author) />
+<const/when = deckDateOf(input.d) />
+<const/own = cardsOfDeck(input.d) />
+<const/heading = deckNameOf(input.d, name) />
+<const/date = dateTextOf(when, chars[author]) />
+
+<div class="deck">
+  <h2>${heading}</h2>
+  <span class="author">${authorName}</span>
+  <time class="date">${date}</time>
+  <button class="ren" onClick() { name = nextDeckName(name) }>rename</button>
+  <div class="cards">
+    <for|i| of=own by=(i => i)><CardDyn i=i chars=chars open=startsOpen(i) count=startCount(i) /></for>
+  </div>
+</div>

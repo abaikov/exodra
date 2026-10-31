@@ -1,7 +1,11 @@
 {
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    // NOT `dist` — see tsconfig.build.json. `dist` is tsup's, and is what gets published.
+    // This file is the TYPECHECK project; `tsconfig.tsup.json` is what the build uses and
+    // keeps its `paths` pointing at the dependencies' published `dist`.
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
     "rootDir": "./src",
     "lib": ["ES2020", "DOM"],
     "composite": true,
@@ -11,13 +15,18 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "baseUrl": ".",
+    // tsc's own fresh output, not `dist` — the typecheck runs before anything is built.
     "paths": {
-      "@exodra/core": ["../core/dist/index.d.ts"]
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["dist", "**/*.test.ts", "**/*.spec.ts"],
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts"],
   "references": [
-    { "path": "../core" }
+    { "path": "../core" },
+    { "path": "../dom" },
+    { "path": "../string" }
   ]
 }

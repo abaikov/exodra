@@ -1,8 +1,16 @@
 {
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    // NOT `dist` — see tsconfig.build.json. `dist` is tsup's, and is what gets published.
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
     "rootDir": "./src",
+    // DOM is here for exactly ONE module and nothing else: `read-state-script`, the client end
+    // of the state protocol this package DEFINES. The id, the script's type and the escaping
+    // are decided here, so the reader lives here too rather than in a second place that has to
+    // agree — and it needs to name `Document`. Nothing else in this package touches a document,
+    // it is `sideEffects: false`, and a server bundle drops the module.
+    "lib": ["ES2020", "DOM"],
     "composite": true,
     "declaration": true,
     "declarationMap": true,
@@ -11,13 +19,15 @@
     "noUnusedParameters": true,
     "baseUrl": ".",
     "paths": {
-      "@exodra/core": ["../core/dist/index.d.ts"],
-      "@exodra/string": ["../string/dist/index.d.ts"]
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["dist", "**/*.test.ts", "**/*.spec.ts"],
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts"],
   "references": [
+    { "path": "../context" },
     { "path": "../core" },
     { "path": "../string" }
   ]

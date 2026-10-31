@@ -1,0 +1,3414 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "{ addTodo, toggleTodo, removeTodo, editTodoTitle, clearCompletedTodos, showTodoFilter }",
+        "label": "{ addTodo, toggleTodo, removeTodo, editTodoTitle, clearCompletedTodos, showTodoFilter }",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 581,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "{ neuron }",
+        "label": "{ neuron }",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "{ todoOrderService, allTodos, todoStatusService, activeTodos, doneTodos, filter }",
+        "label": "{ todoOrderService, allTodos, todoStatusService, activeTodos, doneTodos, filter }",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 542,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "backend",
+        "label": "backend",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "clearDraft",
+        "label": "clearDraft",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "commitEditing",
+        "label": "commitEditing",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(c, title): void",
+            "full": "(c, title): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 139,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createTodoDb",
+        "label": "createTodoDb",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(): { db: any; todoServ…",
+            "full": "(): { db: any; todoService: any; todos: any; todoOrderService: any; allTodos: any; todoStatusService: any; activeTodos: any; doneTodos: any; filterService: any; filter: any; nextTodoId: () => string; }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "mTodoApp",
+        "label": "mTodoApp",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "mTodoRow",
+        "label": "mTodoRow",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "P",
+        "label": "P",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "removeTodoById",
+        "label": "removeTodoById",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(db, id): void",
+            "full": "(db, id): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 126,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "rowClassOf",
+        "label": "rowClassOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(done, editing): string | undefined",
+            "full": "(done, editing): string | undefined",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 261,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "runTodoCommand",
+        "label": "runTodoCommand",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(command): void",
+            "full": "(command): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "showCounts",
+        "label": "showCounts",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "showFilter",
+        "label": "showFilter",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "showRows",
+        "label": "showRows",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "startEditing",
+        "label": "startEditing",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "stopEditing",
+        "label": "stopEditing",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_APP",
+        "label": "TODO_APP",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_APP_SCHEMA",
+        "label": "TODO_APP_SCHEMA",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_FILTER_LABELS",
+        "label": "TODO_FILTER_LABELS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 139,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_FILTERS",
+        "label": "TODO_FILTERS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_NEURONS",
+        "label": "TODO_NEURONS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_READS",
+        "label": "TODO_READS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_ROW",
+        "label": "TODO_ROW",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_ROW_SCHEMA",
+        "label": "TODO_ROW_SCHEMA",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TODO_SIGNALS",
+        "label": "TODO_SIGNALS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "todoCns",
+        "label": "todoCns",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "todoDb",
+        "label": "todoDb",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "todoIdOf",
+        "label": "todoIdOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(target): string | null",
+            "full": "(target): string | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 184,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "todoNeuron",
+        "label": "todoNeuron",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TTodo",
+        "label": "TTodo",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "id: string;",
+            "full": "id: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "title: string;",
+            "full": "title: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "done: boolean;",
+            "full": "done: boolean;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 126,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TTodoAppNode",
+        "label": "TTodoAppNode",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoDomNode & { state: TTodoAppState }",
+            "full": "TExoDomNode & { state: TTodoAppState }",
+            "parts": [
+              {
+                "text": "TExoDomNode & { state: "
+              },
+              {
+                "text": "TTodoAppState",
+                "link": "TTodoAppState"
+              },
+              {
+                "text": " }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 280,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TTodoAppState",
+        "label": "TTodoAppState",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "rows: TExoChildList;",
+            "full": "rows: TExoChildList;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "rowsBySlot: WeakMap<TTodoSlot, TExoNode…",
+            "full": "rowsBySlot: WeakMap<TTodoSlot, TExoNode>;",
+            "parts": [
+              {
+                "text": "rowsBySlot: WeakMap<"
+              },
+              {
+                "text": "TTodoSlot",
+                "link": "TTodoSlot"
+              },
+              {
+                "text": ", TExoNode…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "rowsBySlot: WeakMap<"
+              },
+              {
+                "text": "TTodoSlot",
+                "link": "TTodoSlot"
+              },
+              {
+                "text": ", TExoNode>;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "shown: TTodoSlot[];",
+            "full": "shown: TTodoSlot[];",
+            "parts": [
+              {
+                "text": "shown: "
+              },
+              {
+                "text": "TTodoSlot",
+                "link": "TTodoSlot"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "editing: TTodoSlot | null;",
+            "full": "editing: TTodoSlot | null;",
+            "parts": [
+              {
+                "text": "editing: "
+              },
+              {
+                "text": "TTodoSlot",
+                "link": "TTodoSlot"
+              },
+              {
+                "text": " | null;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "type",
+        "width": 293,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "TTodoCommand",
+        "label": "TTodoCommand",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "Parameters<typeof todoCns.stimulate>[0]",
+            "full": "Parameters<typeof todoCns.stimulate>[0]",
+            "parts": [
+              {
+                "text": "Parameters<typeof "
+              },
+              {
+                "text": "todoCns",
+                "link": "todoCns"
+              },
+              {
+                "text": ".stimulate>[0]"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 286,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TTodoDb",
+        "label": "TTodoDb",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "ReturnType<typeof createTodoDb>",
+            "full": "ReturnType<typeof createTodoDb>",
+            "parts": [
+              {
+                "text": "ReturnType<typeof "
+              },
+              {
+                "text": "createTodoDb",
+                "link": "createTodoDb"
+              },
+              {
+                "text": ">"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 235,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TTodoFilter",
+        "label": "TTodoFilter",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "'all' | 'active' | 'completed'",
+            "full": "'all' | 'active' | 'completed'",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TTodoRowParams",
+        "label": "TTodoRowParams",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly slot: TTodoSlot;",
+            "full": "readonly slot: TTodoSlot;",
+            "parts": [
+              {
+                "text": "readonly slot: "
+              },
+              {
+                "text": "TTodoSlot",
+                "link": "TTodoSlot"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly editing: boolean;",
+            "full": "readonly editing: boolean;",
+            "parts": []
+          }
+        ],
+        "memberCount": 2,
+        "stereotype": "type",
+        "width": 203,
+        "height": 84,
+        "violations": []
+      },
+      {
+        "id": "TTodoRowState",
+        "label": "TTodoRowState",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "id: string | null;",
+            "full": "id: string | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "title: string | null;",
+            "full": "title: string | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "done: boolean | null;",
+            "full": "done: boolean | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "editing: boolean;",
+            "full": "editing: boolean;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "className: string | undefined;",
+            "full": "className: string | undefined;",
+            "parts": []
+          }
+        ],
+        "memberCount": 5,
+        "stereotype": "type",
+        "width": 229,
+        "height": 129,
+        "violations": []
+      },
+      {
+        "id": "TTodoSlot",
+        "label": "TTodoSlot",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TOIMEntitySlot<TTodo, string>",
+            "full": "TOIMEntitySlot<TTodo, string>",
+            "parts": [
+              {
+                "text": "TOIMEntitySlot<"
+              },
+              {
+                "text": "TTodo",
+                "link": "TTodo"
+              },
+              {
+                "text": ", string>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 222,
+        "height": 69,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "{ addTodo, toggleTodo, removeTodo, editTodoTitle, clearCompletedTodos, showTodoFilter }→TODO_SIGNALS",
+        "from": "{ addTodo, toggleTodo, removeTodo, editTodoTitle, clearCompletedTodos, showTodoFilter }",
+        "to": "TODO_SIGNALS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_NEURONS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_SIGNALS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "{ neuron }→TTodoDb",
+        "from": "{ neuron }",
+        "to": "TTodoDb",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_NEURONS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "{ todoOrderService, allTodos, todoStatusService, activeTodos, doneTodos, filter }→todoDb",
+        "from": "{ todoOrderService, allTodos, todoStatusService, activeTodos, doneTodos, filter }",
+        "to": "todoDb",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_READS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoDb.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "clearDraft→mTodoApp",
+        "from": "clearDraft",
+        "to": "mTodoApp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "clearDraft→P",
+        "from": "clearDraft",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "commitEditing→runTodoCommand",
+        "from": "commitEditing",
+        "to": "runTodoCommand",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/runTodoCommand.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "commitEditing→stopEditing",
+        "from": "commitEditing",
+        "to": "stopEditing",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "commitEditing→TODO_SIGNALS",
+        "from": "commitEditing",
+        "to": "TODO_SIGNALS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_SIGNALS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "commitEditing→TTodoAppNode",
+        "from": "commitEditing",
+        "to": "TTodoAppNode",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createTodoDb→TTodo",
+        "from": "createTodoDb",
+        "to": "TTodo",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoDb.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodo.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createTodoDb→TTodoFilter",
+        "from": "createTodoDb",
+        "to": "TTodoFilter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoDb.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createTodoDb→TTodoSlot",
+        "from": "createTodoDb",
+        "to": "TTodoSlot",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoDb.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mTodoApp→TODO_APP_SCHEMA",
+        "from": "mTodoApp",
+        "to": "TODO_APP_SCHEMA",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mTodoApp→TTodoAppState",
+        "from": "mTodoApp",
+        "to": "TTodoAppState",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoAppState.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mTodoRow→TODO_ROW_SCHEMA",
+        "from": "mTodoRow",
+        "to": "TODO_ROW_SCHEMA",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mTodoRow→TTodoRowParams",
+        "from": "mTodoRow",
+        "to": "TTodoRowParams",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoRowParams.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mTodoRow→TTodoRowState",
+        "from": "mTodoRow",
+        "to": "TTodoRowState",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoRowState.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "P→TODO_APP_SCHEMA",
+        "from": "P",
+        "to": "TODO_APP_SCHEMA",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "removeTodoById→TTodoDb",
+        "from": "removeTodoById",
+        "to": "TTodoDb",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_NEURONS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runTodoCommand→todoCns",
+        "from": "runTodoCommand",
+        "to": "todoCns",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/runTodoCommand.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoCns.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runTodoCommand→todoDb",
+        "from": "runTodoCommand",
+        "to": "todoDb",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/runTodoCommand.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoDb.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "runTodoCommand→TTodoCommand",
+        "from": "runTodoCommand",
+        "to": "TTodoCommand",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/runTodoCommand.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/runTodoCommand.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showCounts→mTodoApp",
+        "from": "showCounts",
+        "to": "mTodoApp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showCounts→P",
+        "from": "showCounts",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showCounts→TODO_READS",
+        "from": "showCounts",
+        "to": "TODO_READS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_READS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showFilter→mTodoApp",
+        "from": "showFilter",
+        "to": "mTodoApp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showFilter→P",
+        "from": "showFilter",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showFilter→TODO_FILTERS",
+        "from": "showFilter",
+        "to": "TODO_FILTERS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showFilter→TODO_READS",
+        "from": "showFilter",
+        "to": "TODO_READS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_READS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showRows→mTodoApp",
+        "from": "showRows",
+        "to": "mTodoApp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showRows→TODO_READS",
+        "from": "showRows",
+        "to": "TODO_READS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_READS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "showRows→TODO_ROW",
+        "from": "showRows",
+        "to": "TODO_ROW",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "startEditing→mTodoApp",
+        "from": "startEditing",
+        "to": "mTodoApp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "startEditing→stopEditing",
+        "from": "startEditing",
+        "to": "stopEditing",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "startEditing→TODO_ROW",
+        "from": "startEditing",
+        "to": "TODO_ROW",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "startEditing→TTodoSlot",
+        "from": "startEditing",
+        "to": "TTodoSlot",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "stopEditing→mTodoApp",
+        "from": "stopEditing",
+        "to": "mTodoApp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "stopEditing→TODO_ROW",
+        "from": "stopEditing",
+        "to": "TODO_ROW",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_APP_SCHEMA→TODO_FILTER_LABELS",
+        "from": "TODO_APP_SCHEMA",
+        "to": "TODO_FILTER_LABELS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_APP_SCHEMA→TODO_FILTERS",
+        "from": "TODO_APP_SCHEMA",
+        "to": "TODO_FILTERS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_APP→mTodoApp",
+        "from": "TODO_APP",
+        "to": "mTodoApp",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_FILTER_LABELS→TTodoFilter",
+        "from": "TODO_FILTER_LABELS",
+        "to": "TTodoFilter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_FILTERS→TTodoFilter",
+        "from": "TODO_FILTERS",
+        "to": "TTodoFilter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_NEURONS→todoNeuron",
+        "from": "TODO_NEURONS",
+        "to": "todoNeuron",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_NEURONS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_NEURONS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_READS→TTodoFilter",
+        "from": "TODO_READS",
+        "to": "TTodoFilter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_READS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_READS→TTodoSlot",
+        "from": "TODO_READS",
+        "to": "TTodoSlot",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_READS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_ROW→mTodoRow",
+        "from": "TODO_ROW",
+        "to": "mTodoRow",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TODO_SIGNALS→TTodoFilter",
+        "from": "TODO_SIGNALS",
+        "to": "TTodoFilter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_SIGNALS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "todoCns→TODO_NEURONS",
+        "from": "todoCns",
+        "to": "TODO_NEURONS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoCns.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_NEURONS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "todoCns→todoDb",
+        "from": "todoCns",
+        "to": "todoDb",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoCns.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoDb.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "todoDb→createTodoDb",
+        "from": "todoDb",
+        "to": "createTodoDb",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoDb.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoDb.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "todoNeuron→removeTodoById",
+        "from": "todoNeuron",
+        "to": "removeTodoById",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_NEURONS.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_NEURONS.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TTodoAppNode→TTodoAppState",
+        "from": "TTodoAppNode",
+        "to": "TTodoAppState",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoAppState.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TTodoAppState→TTodoSlot",
+        "from": "TTodoAppState",
+        "to": "TTodoSlot",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoAppState.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TTodoCommand→todoCns",
+        "from": "TTodoCommand",
+        "to": "todoCns",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/runTodoCommand.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoCns.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TTodoDb→createTodoDb",
+        "from": "TTodoDb",
+        "to": "createTodoDb",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoDb.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TTodoRowParams→TTodoSlot",
+        "from": "TTodoRowParams",
+        "to": "TTodoSlot",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoRowParams.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TTodoSlot→TTodo",
+        "from": "TTodoSlot",
+        "to": "TTodo",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodo.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 3595,
+    "height": 1374.5,
+    "nodes": [
+      {
+        "id": "{ addTodo, toggleTodo, removeTodo, editTodoTitle, clearCompletedTodos, showTodoFilter }",
+        "x": 2214,
+        "y": 24,
+        "width": 581,
+        "height": 46
+      },
+      {
+        "id": "{ neuron }",
+        "x": 1950,
+        "y": 1290.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "{ todoOrderService, allTodos, todoStatusService, activeTodos, doneTodos, filter }",
+        "x": 896,
+        "y": 1060,
+        "width": 542,
+        "height": 46
+      },
+      {
+        "id": "backend",
+        "x": 94.5,
+        "y": 820.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "clearDraft",
+        "x": 1686,
+        "y": 368.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "commitEditing",
+        "x": 85,
+        "y": 894.5,
+        "width": 139,
+        "height": 69
+      },
+      {
+        "id": "createTodoDb",
+        "x": 2878.5,
+        "y": 1193.3,
+        "width": 190,
+        "height": 69
+      },
+      {
+        "id": "mTodoApp",
+        "x": 1950,
+        "y": 690.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "mTodoRow",
+        "x": 2444.5,
+        "y": 536.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "P",
+        "x": 1950,
+        "y": 212,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "removeTodoById",
+        "x": 1947,
+        "y": 1193.3,
+        "width": 126,
+        "height": 69
+      },
+      {
+        "id": "rowClassOf",
+        "x": 24,
+        "y": 991.5,
+        "width": 261,
+        "height": 69
+      },
+      {
+        "id": "runTodoCommand",
+        "x": 349,
+        "y": 1166.8,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "showCounts",
+        "x": 1686,
+        "y": 442.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "showFilter",
+        "x": 1686,
+        "y": 294.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "showRows",
+        "x": 1686,
+        "y": 613.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "startEditing",
+        "x": 1502,
+        "y": 909,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "stopEditing",
+        "x": 1686,
+        "y": 687.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TODO_APP",
+        "x": 1686,
+        "y": 956,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TODO_APP_SCHEMA",
+        "x": 2444.5,
+        "y": 258.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TODO_FILTER_LABELS",
+        "x": 2904,
+        "y": 450,
+        "width": 139,
+        "height": 46
+      },
+      {
+        "id": "TODO_FILTERS",
+        "x": 2913.5,
+        "y": 151.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TODO_NEURONS",
+        "x": 1502,
+        "y": 1204.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TODO_READS",
+        "x": 1950,
+        "y": 405.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TODO_ROW",
+        "x": 1950,
+        "y": 540,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TODO_ROW_SCHEMA",
+        "x": 2913.5,
+        "y": 225.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TODO_SIGNALS",
+        "x": 2913.5,
+        "y": 43.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "todoCns",
+        "x": 1107,
+        "y": 1194.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "todoDb",
+        "x": 1502,
+        "y": 1090.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "todoIdOf",
+        "x": 62.5,
+        "y": 1088.5,
+        "width": 184,
+        "height": 69
+      },
+      {
+        "id": "todoNeuron",
+        "x": 1686,
+        "y": 1204.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TTodo",
+        "x": 3445,
+        "y": 1214.5,
+        "width": 126,
+        "height": 99
+      },
+      {
+        "id": "TTodoAppNode",
+        "x": 1870,
+        "y": 991.5,
+        "width": 280,
+        "height": 69
+      },
+      {
+        "id": "TTodoAppState",
+        "x": 2358,
+        "y": 732,
+        "width": 293,
+        "height": 114
+      },
+      {
+        "id": "TTodoCommand",
+        "x": 546,
+        "y": 1154,
+        "width": 286,
+        "height": 69
+      },
+      {
+        "id": "TTodoDb",
+        "x": 2387,
+        "y": 1236,
+        "width": 235,
+        "height": 69
+      },
+      {
+        "id": "TTodoFilter",
+        "x": 3152,
+        "y": 88.8,
+        "width": 229,
+        "height": 69
+      },
+      {
+        "id": "TTodoRowParams",
+        "x": 2872,
+        "y": 524,
+        "width": 203,
+        "height": 84
+      },
+      {
+        "id": "TTodoRowState",
+        "x": 2859,
+        "y": 636,
+        "width": 229,
+        "height": 129
+      },
+      {
+        "id": "TTodoSlot",
+        "x": 3155.5,
+        "y": 777,
+        "width": 222,
+        "height": 69
+      }
+    ],
+    "edges": [
+      {
+        "id": "{ addTodo, toggleTodo, removeTodo, editTodoTitle, clearCompletedTodos, showTodoFilter }→TODO_SIGNALS",
+        "points": [
+          {
+            "x": 2795,
+            "y": 47
+          },
+          {
+            "x": 2827,
+            "y": 47
+          },
+          {
+            "x": 2913.5,
+            "y": 58.4
+          }
+        ]
+      },
+      {
+        "id": "{ neuron }→TTodoDb",
+        "points": [
+          {
+            "x": 2070,
+            "y": 1313.3
+          },
+          {
+            "x": 2182,
+            "y": 1313.3
+          },
+          {
+            "x": 2387,
+            "y": 1286.1
+          }
+        ]
+      },
+      {
+        "id": "{ todoOrderService, allTodos, todoStatusService, activeTodos, doneTodos, filter }→todoDb",
+        "points": [
+          {
+            "x": 1438,
+            "y": 1083
+          },
+          {
+            "x": 1470,
+            "y": 1083
+          },
+          {
+            "x": 1502,
+            "y": 1093.7
+          }
+        ]
+      },
+      {
+        "id": "clearDraft→mTodoApp",
+        "points": [
+          {
+            "x": 1754.1,
+            "y": 414.5
+          },
+          {
+            "x": 1838,
+            "y": 653.5
+          },
+          {
+            "x": 1950,
+            "y": 692.6
+          }
+        ]
+      },
+      {
+        "id": "clearDraft→P",
+        "points": [
+          {
+            "x": 1758,
+            "y": 368.5
+          },
+          {
+            "x": 1838,
+            "y": 215
+          },
+          {
+            "x": 1950,
+            "y": 228
+          }
+        ]
+      },
+      {
+        "id": "commitEditing→runTodoCommand",
+        "points": [
+          {
+            "x": 175.1,
+            "y": 963.5
+          },
+          {
+            "x": 317,
+            "y": 1201.3
+          },
+          {
+            "x": 349,
+            "y": 1201.3
+          }
+        ]
+      },
+      {
+        "id": "commitEditing→stopEditing",
+        "points": [
+          {
+            "x": 224,
+            "y": 904.9
+          },
+          {
+            "x": 317,
+            "y": 872.8
+          },
+          {
+            "x": 415.5,
+            "y": 872.8
+          },
+          {
+            "x": 514,
+            "y": 872.8
+          },
+          {
+            "x": 689,
+            "y": 872.8
+          },
+          {
+            "x": 864,
+            "y": 872.8
+          },
+          {
+            "x": 1167,
+            "y": 872.8
+          },
+          {
+            "x": 1470,
+            "y": 872.8
+          },
+          {
+            "x": 1562,
+            "y": 872.8
+          },
+          {
+            "x": 1654,
+            "y": 872.8
+          },
+          {
+            "x": 1733,
+            "y": 733.5
+          }
+        ]
+      },
+      {
+        "id": "commitEditing→TODO_SIGNALS",
+        "points": [
+          {
+            "x": 161.2,
+            "y": 894.5
+          },
+          {
+            "x": 317,
+            "y": 94
+          },
+          {
+            "x": 415.5,
+            "y": 94
+          },
+          {
+            "x": 514,
+            "y": 94
+          },
+          {
+            "x": 689,
+            "y": 94
+          },
+          {
+            "x": 864,
+            "y": 94
+          },
+          {
+            "x": 1167,
+            "y": 94
+          },
+          {
+            "x": 1470,
+            "y": 94
+          },
+          {
+            "x": 1562,
+            "y": 94
+          },
+          {
+            "x": 1654,
+            "y": 94
+          },
+          {
+            "x": 1746,
+            "y": 94
+          },
+          {
+            "x": 1838,
+            "y": 94
+          },
+          {
+            "x": 2010,
+            "y": 94
+          },
+          {
+            "x": 2182,
+            "y": 94
+          },
+          {
+            "x": 2504.5,
+            "y": 94
+          },
+          {
+            "x": 2827,
+            "y": 94
+          },
+          {
+            "x": 2913.5,
+            "y": 77.6
+          }
+        ]
+      },
+      {
+        "id": "commitEditing→TTodoAppNode",
+        "points": [
+          {
+            "x": 212.3,
+            "y": 963.5
+          },
+          {
+            "x": 317,
+            "y": 1026
+          },
+          {
+            "x": 415.5,
+            "y": 1026
+          },
+          {
+            "x": 514,
+            "y": 1026
+          },
+          {
+            "x": 689,
+            "y": 1026
+          },
+          {
+            "x": 864,
+            "y": 1026
+          },
+          {
+            "x": 1167,
+            "y": 1026
+          },
+          {
+            "x": 1470,
+            "y": 1026
+          },
+          {
+            "x": 1562,
+            "y": 1026
+          },
+          {
+            "x": 1654,
+            "y": 1026
+          },
+          {
+            "x": 1746,
+            "y": 1026
+          },
+          {
+            "x": 1838,
+            "y": 1026
+          },
+          {
+            "x": 1870,
+            "y": 1026
+          }
+        ]
+      },
+      {
+        "id": "createTodoDb→TTodo",
+        "points": [
+          {
+            "x": 3001.1,
+            "y": 1262.3
+          },
+          {
+            "x": 3120,
+            "y": 1411
+          },
+          {
+            "x": 3266.5,
+            "y": 1411
+          },
+          {
+            "x": 3413,
+            "y": 1411
+          },
+          {
+            "x": 3476,
+            "y": 1313.5
+          }
+        ]
+      },
+      {
+        "id": "createTodoDb→TTodoFilter",
+        "points": [
+          {
+            "x": 2980.6,
+            "y": 1193.3
+          },
+          {
+            "x": 3120,
+            "y": 519.5
+          },
+          {
+            "x": 3253.7,
+            "y": 157.8
+          }
+        ]
+      },
+      {
+        "id": "createTodoDb→TTodoSlot",
+        "points": [
+          {
+            "x": 3005.4,
+            "y": 1262.3
+          },
+          {
+            "x": 3120,
+            "y": 1386
+          },
+          {
+            "x": 3257.7,
+            "y": 846
+          }
+        ]
+      },
+      {
+        "id": "mTodoApp→TODO_APP_SCHEMA",
+        "points": [
+          {
+            "x": 2029.4,
+            "y": 690.5
+          },
+          {
+            "x": 2182,
+            "y": 509.5
+          },
+          {
+            "x": 2472,
+            "y": 304.3
+          }
+        ]
+      },
+      {
+        "id": "mTodoApp→TTodoAppState",
+        "points": [
+          {
+            "x": 2047.3,
+            "y": 736.5
+          },
+          {
+            "x": 2182,
+            "y": 819.5
+          },
+          {
+            "x": 2358,
+            "y": 802.9
+          }
+        ]
+      },
+      {
+        "id": "mTodoRow→TODO_ROW_SCHEMA",
+        "points": [
+          {
+            "x": 2528.4,
+            "y": 536.3
+          },
+          {
+            "x": 2827,
+            "y": 248.5
+          },
+          {
+            "x": 2913.5,
+            "y": 248.5
+          }
+        ]
+      },
+      {
+        "id": "mTodoRow→TTodoRowParams",
+        "points": [
+          {
+            "x": 2564.5,
+            "y": 560.5
+          },
+          {
+            "x": 2827,
+            "y": 566
+          },
+          {
+            "x": 2872,
+            "y": 566
+          }
+        ]
+      },
+      {
+        "id": "mTodoRow→TTodoRowState",
+        "points": [
+          {
+            "x": 2557,
+            "y": 582.3
+          },
+          {
+            "x": 2827,
+            "y": 700.5
+          },
+          {
+            "x": 2859,
+            "y": 700.5
+          }
+        ]
+      },
+      {
+        "id": "P→TODO_APP_SCHEMA",
+        "points": [
+          {
+            "x": 2070,
+            "y": 235
+          },
+          {
+            "x": 2182,
+            "y": 235
+          },
+          {
+            "x": 2444.5,
+            "y": 272.6
+          }
+        ]
+      },
+      {
+        "id": "removeTodoById→TTodoDb",
+        "points": [
+          {
+            "x": 2073,
+            "y": 1227.8
+          },
+          {
+            "x": 2182,
+            "y": 1227.8
+          },
+          {
+            "x": 2387,
+            "y": 1254.9
+          }
+        ]
+      },
+      {
+        "id": "runTodoCommand→todoCns",
+        "points": [
+          {
+            "x": 482,
+            "y": 1232.1
+          },
+          {
+            "x": 514,
+            "y": 1247
+          },
+          {
+            "x": 689,
+            "y": 1247
+          },
+          {
+            "x": 864,
+            "y": 1247
+          },
+          {
+            "x": 1107,
+            "y": 1223.5
+          }
+        ]
+      },
+      {
+        "id": "runTodoCommand→todoDb",
+        "points": [
+          {
+            "x": 463.2,
+            "y": 1166.8
+          },
+          {
+            "x": 514,
+            "y": 1130
+          },
+          {
+            "x": 689,
+            "y": 1130
+          },
+          {
+            "x": 864,
+            "y": 1130
+          },
+          {
+            "x": 1167,
+            "y": 1130
+          },
+          {
+            "x": 1470,
+            "y": 1130
+          },
+          {
+            "x": 1502,
+            "y": 1124.3
+          }
+        ]
+      },
+      {
+        "id": "runTodoCommand→TTodoCommand",
+        "points": [
+          {
+            "x": 482,
+            "y": 1192.6
+          },
+          {
+            "x": 514,
+            "y": 1188.5
+          },
+          {
+            "x": 546,
+            "y": 1188.5
+          }
+        ]
+      },
+      {
+        "id": "showCounts→mTodoApp",
+        "points": [
+          {
+            "x": 1756.2,
+            "y": 488.5
+          },
+          {
+            "x": 1838,
+            "y": 673.5
+          },
+          {
+            "x": 1950,
+            "y": 699.5
+          }
+        ]
+      },
+      {
+        "id": "showCounts→P",
+        "points": [
+          {
+            "x": 1758.1,
+            "y": 442.5
+          },
+          {
+            "x": 1838,
+            "y": 291.3
+          },
+          {
+            "x": 1950,
+            "y": 254.6
+          }
+        ]
+      },
+      {
+        "id": "showCounts→TODO_READS",
+        "points": [
+          {
+            "x": 1763.6,
+            "y": 442.5
+          },
+          {
+            "x": 1838,
+            "y": 345.3
+          },
+          {
+            "x": 1962.5,
+            "y": 405.5
+          }
+        ]
+      },
+      {
+        "id": "showFilter→mTodoApp",
+        "points": [
+          {
+            "x": 1751.6,
+            "y": 340.5
+          },
+          {
+            "x": 1838,
+            "y": 693.5
+          },
+          {
+            "x": 1950,
+            "y": 706.5
+          }
+        ]
+      },
+      {
+        "id": "showFilter→P",
+        "points": [
+          {
+            "x": 1806,
+            "y": 318
+          },
+          {
+            "x": 1838,
+            "y": 318.3
+          },
+          {
+            "x": 1962.5,
+            "y": 258
+          }
+        ]
+      },
+      {
+        "id": "showFilter→TODO_FILTERS",
+        "points": [
+          {
+            "x": 1759.5,
+            "y": 294.5
+          },
+          {
+            "x": 1838,
+            "y": 161
+          },
+          {
+            "x": 2010,
+            "y": 161
+          },
+          {
+            "x": 2182,
+            "y": 161
+          },
+          {
+            "x": 2504.5,
+            "y": 161
+          },
+          {
+            "x": 2827,
+            "y": 161
+          },
+          {
+            "x": 2913.5,
+            "y": 169
+          }
+        ]
+      },
+      {
+        "id": "showFilter→TODO_READS",
+        "points": [
+          {
+            "x": 1765.1,
+            "y": 340.5
+          },
+          {
+            "x": 1838,
+            "y": 428.5
+          },
+          {
+            "x": 1950,
+            "y": 428.5
+          }
+        ]
+      },
+      {
+        "id": "showRows→mTodoApp",
+        "points": [
+          {
+            "x": 1773.5,
+            "y": 659.5
+          },
+          {
+            "x": 1838,
+            "y": 713.5
+          },
+          {
+            "x": 1950,
+            "y": 713.5
+          }
+        ]
+      },
+      {
+        "id": "showRows→TODO_READS",
+        "points": [
+          {
+            "x": 1757.7,
+            "y": 613.5
+          },
+          {
+            "x": 1838,
+            "y": 455.5
+          },
+          {
+            "x": 1950,
+            "y": 437.9
+          }
+        ]
+      },
+      {
+        "id": "showRows→TODO_ROW",
+        "points": [
+          {
+            "x": 1759.1,
+            "y": 613.5
+          },
+          {
+            "x": 1838,
+            "y": 475.5
+          },
+          {
+            "x": 1964.8,
+            "y": 540
+          }
+        ]
+      },
+      {
+        "id": "startEditing→mTodoApp",
+        "points": [
+          {
+            "x": 1622,
+            "y": 932
+          },
+          {
+            "x": 1654,
+            "y": 932
+          },
+          {
+            "x": 1746,
+            "y": 932
+          },
+          {
+            "x": 1838,
+            "y": 932
+          },
+          {
+            "x": 1991.9,
+            "y": 736.5
+          }
+        ]
+      },
+      {
+        "id": "startEditing→stopEditing",
+        "points": [
+          {
+            "x": 1569.1,
+            "y": 909
+          },
+          {
+            "x": 1654,
+            "y": 633.5
+          },
+          {
+            "x": 1718.5,
+            "y": 687.5
+          }
+        ]
+      },
+      {
+        "id": "startEditing→TODO_ROW",
+        "points": [
+          {
+            "x": 1567.7,
+            "y": 909
+          },
+          {
+            "x": 1654,
+            "y": 563
+          },
+          {
+            "x": 1746,
+            "y": 563
+          },
+          {
+            "x": 1838,
+            "y": 563
+          },
+          {
+            "x": 1950,
+            "y": 563
+          }
+        ]
+      },
+      {
+        "id": "startEditing→TTodoSlot",
+        "points": [
+          {
+            "x": 1566.9,
+            "y": 955
+          },
+          {
+            "x": 1654,
+            "y": 1366
+          },
+          {
+            "x": 1746,
+            "y": 1366
+          },
+          {
+            "x": 1838,
+            "y": 1366
+          },
+          {
+            "x": 2010,
+            "y": 1366
+          },
+          {
+            "x": 2182,
+            "y": 1366
+          },
+          {
+            "x": 2504.5,
+            "y": 1366
+          },
+          {
+            "x": 2827,
+            "y": 1366
+          },
+          {
+            "x": 2973.5,
+            "y": 1366
+          },
+          {
+            "x": 3120,
+            "y": 1366
+          },
+          {
+            "x": 3257.4,
+            "y": 846
+          }
+        ]
+      },
+      {
+        "id": "stopEditing→mTodoApp",
+        "points": [
+          {
+            "x": 1754.6,
+            "y": 733.5
+          },
+          {
+            "x": 1838,
+            "y": 955.5
+          },
+          {
+            "x": 1993.7,
+            "y": 736.5
+          }
+        ]
+      },
+      {
+        "id": "stopEditing→TODO_ROW",
+        "points": [
+          {
+            "x": 1773.5,
+            "y": 687.5
+          },
+          {
+            "x": 1838,
+            "y": 633.5
+          },
+          {
+            "x": 1953.9,
+            "y": 586
+          }
+        ]
+      },
+      {
+        "id": "TODO_APP_SCHEMA→TODO_FILTER_LABELS",
+        "points": [
+          {
+            "x": 2543.2,
+            "y": 304.3
+          },
+          {
+            "x": 2827,
+            "y": 473
+          },
+          {
+            "x": 2904,
+            "y": 473
+          }
+        ]
+      },
+      {
+        "id": "TODO_APP_SCHEMA→TODO_FILTERS",
+        "points": [
+          {
+            "x": 2564.5,
+            "y": 266.4
+          },
+          {
+            "x": 2827,
+            "y": 201.5
+          },
+          {
+            "x": 2913.5,
+            "y": 185.6
+          }
+        ]
+      },
+      {
+        "id": "TODO_APP→mTodoApp",
+        "points": [
+          {
+            "x": 1806,
+            "y": 979
+          },
+          {
+            "x": 1838,
+            "y": 979
+          },
+          {
+            "x": 1995.1,
+            "y": 736.5
+          }
+        ]
+      },
+      {
+        "id": "TODO_FILTER_LABELS→TTodoFilter",
+        "points": [
+          {
+            "x": 3043,
+            "y": 473
+          },
+          {
+            "x": 3120,
+            "y": 473
+          },
+          {
+            "x": 3252,
+            "y": 157.8
+          }
+        ]
+      },
+      {
+        "id": "TODO_FILTERS→TTodoFilter",
+        "points": [
+          {
+            "x": 3033.5,
+            "y": 174.5
+          },
+          {
+            "x": 3120,
+            "y": 174.5
+          },
+          {
+            "x": 3167.9,
+            "y": 157.8
+          }
+        ]
+      },
+      {
+        "id": "TODO_NEURONS→todoNeuron",
+        "points": [
+          {
+            "x": 1622,
+            "y": 1227.8
+          },
+          {
+            "x": 1654,
+            "y": 1227.8
+          },
+          {
+            "x": 1686,
+            "y": 1227.8
+          }
+        ]
+      },
+      {
+        "id": "TODO_READS→TTodoFilter",
+        "points": [
+          {
+            "x": 2023.1,
+            "y": 405.5
+          },
+          {
+            "x": 2182,
+            "y": 127.5
+          },
+          {
+            "x": 2504.5,
+            "y": 127.5
+          },
+          {
+            "x": 2827,
+            "y": 127.5
+          },
+          {
+            "x": 2973.5,
+            "y": 127.5
+          },
+          {
+            "x": 3120,
+            "y": 127.5
+          },
+          {
+            "x": 3152,
+            "y": 126.6
+          }
+        ]
+      },
+      {
+        "id": "TODO_READS→TTodoSlot",
+        "points": [
+          {
+            "x": 2019,
+            "y": 451.5
+          },
+          {
+            "x": 2182,
+            "y": 870
+          },
+          {
+            "x": 2504.5,
+            "y": 870
+          },
+          {
+            "x": 2827,
+            "y": 870
+          },
+          {
+            "x": 2973.5,
+            "y": 870
+          },
+          {
+            "x": 3120,
+            "y": 870
+          },
+          {
+            "x": 3180.1,
+            "y": 846
+          }
+        ]
+      },
+      {
+        "id": "TODO_ROW→mTodoRow",
+        "points": [
+          {
+            "x": 2070,
+            "y": 561.7
+          },
+          {
+            "x": 2182,
+            "y": 559.3
+          },
+          {
+            "x": 2444.5,
+            "y": 559.3
+          }
+        ]
+      },
+      {
+        "id": "TODO_SIGNALS→TTodoFilter",
+        "points": [
+          {
+            "x": 3033.5,
+            "y": 66.3
+          },
+          {
+            "x": 3120,
+            "y": 66.3
+          },
+          {
+            "x": 3177.8,
+            "y": 88.8
+          }
+        ]
+      },
+      {
+        "id": "todoCns→TODO_NEURONS",
+        "points": [
+          {
+            "x": 1227,
+            "y": 1219.7
+          },
+          {
+            "x": 1470,
+            "y": 1227.8
+          },
+          {
+            "x": 1502,
+            "y": 1227.8
+          }
+        ]
+      },
+      {
+        "id": "todoCns→todoDb",
+        "points": [
+          {
+            "x": 1227,
+            "y": 1208.1
+          },
+          {
+            "x": 1470,
+            "y": 1169.3
+          },
+          {
+            "x": 1523.9,
+            "y": 1136.8
+          }
+        ]
+      },
+      {
+        "id": "todoDb→createTodoDb",
+        "points": [
+          {
+            "x": 1622,
+            "y": 1113.8
+          },
+          {
+            "x": 1654,
+            "y": 1113.8
+          },
+          {
+            "x": 1746,
+            "y": 1113.8
+          },
+          {
+            "x": 1838,
+            "y": 1113.8
+          },
+          {
+            "x": 2010,
+            "y": 1113.8
+          },
+          {
+            "x": 2182,
+            "y": 1113.8
+          },
+          {
+            "x": 2504.5,
+            "y": 1113.8
+          },
+          {
+            "x": 2827,
+            "y": 1113.8
+          },
+          {
+            "x": 2929.2,
+            "y": 1193.3
+          }
+        ]
+      },
+      {
+        "id": "todoNeuron→removeTodoById",
+        "points": [
+          {
+            "x": 1806,
+            "y": 1227.8
+          },
+          {
+            "x": 1838,
+            "y": 1227.8
+          },
+          {
+            "x": 1947,
+            "y": 1227.8
+          }
+        ]
+      },
+      {
+        "id": "TTodoAppNode→TTodoAppState",
+        "points": [
+          {
+            "x": 2033.3,
+            "y": 991.5
+          },
+          {
+            "x": 2182,
+            "y": 771
+          },
+          {
+            "x": 2358,
+            "y": 780.8
+          }
+        ]
+      },
+      {
+        "id": "TTodoAppState→TTodoSlot",
+        "points": [
+          {
+            "x": 2651,
+            "y": 789
+          },
+          {
+            "x": 2827,
+            "y": 789
+          },
+          {
+            "x": 2973.5,
+            "y": 789
+          },
+          {
+            "x": 3120,
+            "y": 789
+          },
+          {
+            "x": 3155.5,
+            "y": 794.5
+          }
+        ]
+      },
+      {
+        "id": "TTodoCommand→todoCns",
+        "points": [
+          {
+            "x": 832,
+            "y": 1188.5
+          },
+          {
+            "x": 864,
+            "y": 1188.5
+          },
+          {
+            "x": 1107,
+            "y": 1212
+          }
+        ]
+      },
+      {
+        "id": "TTodoDb→createTodoDb",
+        "points": [
+          {
+            "x": 2622,
+            "y": 1270.5
+          },
+          {
+            "x": 2827,
+            "y": 1270.5
+          },
+          {
+            "x": 2878.5,
+            "y": 1255.5
+          }
+        ]
+      },
+      {
+        "id": "TTodoRowParams→TTodoSlot",
+        "points": [
+          {
+            "x": 3075,
+            "y": 566
+          },
+          {
+            "x": 3120,
+            "y": 566
+          },
+          {
+            "x": 3245.9,
+            "y": 777
+          }
+        ]
+      },
+      {
+        "id": "TTodoSlot→TTodo",
+        "points": [
+          {
+            "x": 3377.5,
+            "y": 811.5
+          },
+          {
+            "x": 3413,
+            "y": 811.5
+          },
+          {
+            "x": 3497.6,
+            "y": 1214.5
+          }
+        ]
+      }
+    ]
+  }
+}

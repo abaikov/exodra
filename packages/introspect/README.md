@@ -1,6 +1,7 @@
 # @exodra/introspect
 
-AI-powered introspection, code analysis, and developer tooling for Exodra applications.
+Static analysis for Exodra projects: an ESLint plugin, and a ts-morph engine that
+reads a project's TypeScript source and reports what is in it.
 
 ## Installation
 
@@ -8,97 +9,78 @@ AI-powered introspection, code analysis, and developer tooling for Exodra applic
 npm install --save-dev @exodra/introspect
 ```
 
-The package ships a CLI exposed as `exo-introspect`.
+## What is actually measured
 
-## Overview
+**Versions 0.1.0, 0.1.1 and 0.2.0 on npm invented findings about your code.**
+`CodeAnalyzer.analyzeCode` returned the same three "vulnerabilities" for every
+project it was pointed at — a `CWE-79` at `src/components/UserContent.tsx:25`, a
+high-severity `CWE-521` "No password complexity requirements enforced" at
+`src/auth/validation.ts:10`, a `CWE-200` at `src/utils/logger.ts:8` — plus
+quality scores, 30-day "trends", a maintainability index and four design
+patterns, all at fixed lines in files that need not exist. If you acted on output
+from those versions, none of it was about your code. All of it is removed, along
+with the CLI, the AI-provider registry, the plugin system, the Cursor
+integration, the browser explorer and the analyzers that had no discovery pass.
 
-`@exodra/introspect` analyzes Exodra projects and surfaces insights:
+What remains reads your source and nothing else.
 
-- **Code & component analysis** - structure, patterns, complexity
-- **Performance analysis** - hotspots and optimization opportunities
-- **Schema & route analysis** - schema relationships, route structure
-- **Optional AI enhancement** - insights via configured AI providers
-- **Editor integration** - Cursor / Claude setup
-
-## CLI Usage
-
-Run via `npx exo-introspect <command>` (the bin is `exo-introspect`):
-
-```bash
-# Quick health check of the project
-npx exo-introspect quick-check --path src/
-
-# Full project analysis
-npx exo-introspect analyze
-
-# Full analysis with AI enhancement, written to a file
-npx exo-introspect analyze --ai --provider anthropic --format markdown -o report.md
-```
-
-### Commands
-
-- `quick-check` - fast project health check (`-p, --path`)
-- `analyze` - comprehensive analysis (`-p, --path`, `--ai`, `--provider`, `--model`, `--api-key`, `-f, --format`, `-o, --output`, `-v, --verbose`)
-- `components` - analyze components for patterns and optimization (`-p, --path`, `-f, --format`)
-- `performance` - analyze performance hotspots and bottlenecks (`-p, --path`)
-- `schemas` - analyze schema definitions and relationships (`-p, --path`)
-- `routes` - analyze routes and navigation structure (`-p, --path`)
-- `explain <file>` - AI explanation of a code file (`--provider`, `--api-key`)
-- `check-thresholds <file>` - check a saved analysis JSON against quality gates (`--max-errors`, `--max-warnings`, `--min-score`)
-- `explore` - launch and explore the app in a real browser with optional AI analysis (`--headless`, `--scenarios`, `--url`, `--ai`)
-
-  Requires **Playwright**, declared as an optional peer dependency so the rest of
-  the CLI installs without downloading a browser:
-
-  ```bash
-  npm i -D playwright && npx playwright install chromium
-  ```
-
-  Without it `explore` fails with a clear message — it never reports success it did
-  not achieve. It attaches to an already-running server at `--url`, or starts
-  `npm run dev` and polls until that URL answers. What it reports is measured:
-  navigation timing, First Contentful Paint, JS heap, transferred script bytes, the
-  rendered element tree with layout boxes, screenshots, the result of each
-  `--scenarios` click, and accessibility findings derived from the page itself.
-- `setup` - automatic AI ecosystem setup (`--interactive`, `--silent`, `--project-root`)
-- `setup-cursor` - generate Cursor (Claude Code) integration (`-p, --path`)
-- `ai providers` - list configured AI providers
-- `ai test` - test the AI provider connection (`--provider`)
-- `plugins list` - list installed introspect plugins
-
-> There is no `report` command. To produce a report file, use
-> `analyze -o <file>` (with `-f json|markdown|html`).
-
-## Programmatic API
-
-The main entry points are `introspect` and `quickIntrospect`, plus `formatResults`:
+## `ExoIntrospectionEngine`
 
 ```typescript
-import { introspect, quickIntrospect, formatResults } from '@exodra/introspect';
+import { ExoIntrospectionEngine } from '@exodra/introspect';
 
-// Quick health check — takes a project root path
-const health = await quickIntrospect('./');
-console.log(health.health, health.summary, health.topIssues);
-
-// Full analysis — takes an options object
-const result = await introspect({
-  projectRoot: './src',
-  scope: 'project',          // 'file' | 'project' | 'workspace'
-  enableAI: false,
-  verbose: false,
+const engine = new ExoIntrospectionEngine({
+  projectRoot: './',
+  analysis: { schema: true, performance: true },
 });
 
-// Format a result as json | markdown | html (default: json)
-const markdown = formatResults(result, 'markdown');
-console.log(markdown);
+const result = await engine.analyze();
+// result.diagnostics, result.suggestions, result.metrics, result.summary
 ```
 
-Other exports include analyzer classes (`SchemaAnalyzer`, `ComponentAnalyzer`,
-`PerformanceAnalyzer`, `CodeAnalyzer`, `ExoRouterAnalyzer`), the `IntrospectionEngine`,
-the plugin system (`ExoPluginManager`, `ExoPluginDiscovery`), the universal AI system
-(`universalAI`, `ExoUniversalAI`), and an ESLint plugin (`eslintPlugin`).
+Per file it reports:
 
-> There is no `analyze()` export. Use `introspect(...)` / `quickIntrospect(...)`.
+- **TypeScript diagnostics** — every error and warning the compiler produces.
+- **`schema-built-per-call`** (`analysis.schema`) — a suggestion wherever
+  `createExoSchema`, `createExoNamedSchema` or `createExoStatic` is called inside
+  a function instead of at module scope. A schema numbers its ports when it is
+  closed, so one built per call is a different program, not a slower one. `exoJsx`
+  is exempt: the Babel plugin hoists it to module scope.
+- **Counts** (`analysis.performance`):
+  - `components` — calls to `createExoMachineBuilder` and `createExoStatic`.
+  - `complexity` — `if` / `while` / `for` / `switch` count plus one, with a
+    `high-complexity` warning above 20.
+
+Per project it adds `total_files` and `total_lines`.
+
+`analyzeFilePath(path)` runs the same pass over one file; `analyzeProject(root)`
+re-points the engine at another directory. A folder without a `tsconfig.json` is
+analysed as plain TypeScript.
+
+Callees are matched by their text, not by resolving imports, so an aliased
+import (`createExoSchema as build`) is not recognised. That direction reports
+nothing rather than something wrong.
+
+## `eslintPlugin`
+
+```js
+import { eslintPlugin } from '@exodra/introspect';
+
+export default [
+  {
+    plugins: { exodra: eslintPlugin },
+    rules: eslintPlugin.configs.recommended.rules,
+  },
+];
+```
+
+Rules (`recommended` warns or errors as listed; `strict` makes all of them errors):
+
+| rule | recommended | what it reports |
+|---|---|---|
+| `exodra/no-schema-in-function` | warn | a schema builder called inside a function (`exoJsx` exempt) |
+| `exodra/schema-validation` | error | `exoJsx()` given anything but a function literal |
+| `exodra/no-inline-objects` | warn | an object literal inside a JSX expression or a schema builder call |
 
 ## License
 

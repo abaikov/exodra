@@ -7,12 +7,18 @@ tags: [performance, architecture, benchmarks]
 
 # WeakMap Core vs Legacy: A Design Deep Dive
 
-:::note This post has been superseded
+:::note This post has been superseded, and the renderer it argues about is deleted
 
-Exodra no longer uses a WeakMap for per-node bookkeeping — the record now lives in a
-slot on the schema itself. The *design* argument below still holds; it just lost to
-a measurement. See
-[WeakMaps Are the Cleaner Separation — Patching Is Faster](/blog/weakmap-vs-patching).
+Exodra no longer uses a WeakMap for per-node bookkeeping. It first moved to a slot on
+the schema — see
+[WeakMaps Are the Cleaner Separation — Patching Is Faster](/blog/weakmap-vs-patching)
+— and then the whole `ExoNodeDom` three-props renderer was **removed**
+(`packages/core/src/index.ts:10-12`, `packages/dom/src/index.ts:9-10`). Today the
+record is a `TExoNodeDom` and the CHILD holds the element, not the other way round
+(`packages/dom/src/dom/types/TExoNodeDom.ts`). For a while the element also pointed
+back, under `Symbol.for('exo.child')`; that mark was removed on 2026-08-30.
+
+The *design* argument below still holds; it just lost to a measurement, twice.
 :::
 
 Exodra moved from a legacy per-node bookkeeping model to a WeakMap-based core. This post is about *why that's a better design* — less work per node, GC-driven cleanup, and cache-friendly lookups. It is deliberately light on "X% faster" numbers, because the honest, reproducible timings come from `npm run bench`, not prose.

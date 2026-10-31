@@ -1,23 +1,19 @@
 # @exodra/monorepo-atlas
 
-An architecture atlas for a TypeScript repository, generated from the code.
+An architecture atlas for a TypeScript repository, generated from the code. It
+answers two questions:
 
-Two levels of one question — *how is this thing put together?*
+1. **How do the packages depend on each other?** Which edges reach runtime and
+   which are `import type` only, how many imports stand behind each edge, whether
+   `package.json` declares the dependency, and which architecture rules are broken.
+2. **What is inside a package?** Its classes, functions and types: members,
+   visibility, statics, and who calls, constructs, extends or implements whom, with
+   the descriptions the author wrote.
 
-1. **The packages** and how they depend on each other: which edges survive to
-   runtime and which are erased `import type`, how many imports stand behind
-   each one, whether `package.json` admits to the dependency, and which
-   architecture rules are broken.
-2. **What is inside a package**: its classes, functions and types as a UML class
-   diagram — members, visibility, statics, and who calls, constructs, extends or
-   implements whom, with the descriptions the author already wrote.
+It works on npm, yarn and pnpm workspaces and on single-package repositories.
 
-Nothing is drawn by hand and nothing is maintained separately from the code, so
-the picture cannot quietly go out of date — and `--check` fails a build when it
-has.
-
-It works on a monorepo (npm, yarn or pnpm workspaces) and on a repository with a
-single package.
+This version writes the data and the stylesheet only; it does not ship a drawn
+picture or a browser viewer.
 
 ## Use it
 
@@ -26,84 +22,63 @@ npm i -D @exodra/monorepo-atlas
 npx exo-atlas --out public/atlas
 ```
 
-That writes everything the page needs. Point a page at it:
+That writes:
 
-```html
-<link rel="stylesheet" href="/atlas/graph.css" />
-<div id="exo-graph"></div>
-<script type="module" src="/atlas/graph.js"></script>
+```
+public/atlas/graph.json           model + layout
+public/atlas/graph.css            theme variables + structural rules
+public/atlas/insides/index.json   which packages have an inside to open
+public/atlas/insides/<pkg>.json   one per package
 ```
 
-The script finds `#exo-graph`, renders the drawing, and fetches a package's
-insides only when a reader opens one.
+Stale `insides/*.json` files from an earlier run are removed.
 
 ### Options
 
 | Flag | What it does |
 | --- | --- |
 | `--root <dir>` | The repository to read. Defaults to the working directory. |
-| `--out <dir>` | Where to write the artefacts. Defaults to `<root>/public/graph`. |
-| `--check` | Write nothing; exit non-zero when the artefacts are out of date. For CI. |
-| `--modules` | Draw modules instead of packages — the useful level in a single-package repository. |
+| `--out <dir>` | Where to write. Defaults to `<root>/public/graph`. |
+| `--check` | Write nothing; exit `1` when the files in `--out` are out of date. For CI. |
+| `--modules` | Model modules instead of packages, useful in a single-package repository. |
 | `--include-external` | Include the npm packages the workspace depends on. |
-| `--ts-config <path>` | The tsconfig to resolve imports with (this is where path aliases live). |
+| `--ts-config <path>` | The tsconfig used to resolve imports (path aliases). |
+| `--help`, `-h` | Print the options. |
 
-Architecture rules come from the repository's **own**
-[dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
-configuration — `.dependency-cruiser.cjs` and friends. A repository without one
-still gets its graph; it simply has no rules to report, which is the honest
-result. A repository with one gets every violation marked on the drawing, with
-the rule's own comment quoted in the panel.
+Exit codes: `0` success, `1` out of date (with `--check`) or no packages found, `2`
+an unknown or incomplete option.
 
-## Reading it
+When the extractor cannot resolve a member's type, it still writes the model,
+marks those members as unresolved, and reports the count on stderr.
 
-- **Left to right** is dependency order.
-- **Dashed** edges are `import type`, **dotted** are dynamic `import()`,
-  thickness is how many imports stand behind the edge.
-- **A red dashed ring** is a broken rule.
-- Inside a package the notation is UML: a hollow triangle is *extends*, the same
-  triangle on a dashed line is *implements*, a filled diamond is *constructs*, an
-  open arrow is *calls*, and an open arrow on a dashed line is *names in a type*.
-  A legend next to the drawing says so too.
-- A box shows the first few members and counts the rest; selecting it opens a
-  card with all of them, in full, with their documentation. Type names in a
-  signature are links to their own boxes.
+Architecture rules come from the repository's own
+[dependency-cruiser](https://github.com/sverweij/dependency-cruiser) configuration
+(`.dependency-cruiser.cjs` and friends). A repository without one gets a model
+with no rule violations.
 
-Type a name to find it. Enter goes to the first match.
+## The data
 
-| Key | |
-| --- | --- |
-| arrows | pan (with <kbd>Shift</kbd>, further) |
-| <kbd>+</kbd> / <kbd>-</kbd> | zoom |
-| <kbd>0</kbd> | fit the whole drawing |
-| <kbd>Enter</kbd> | open the selected package |
-| <kbd>Esc</kbd> | clear the selection and the search |
+Each node carries its kind, its module count, the declarations it exports and the
+rules it breaks; each edge carries its weight, its kinds (`value`, `type-only`,
+`dynamic`), the evidence behind it and its violations. The layout gives every node
+a box and every edge a routed polyline, so a consumer can draw it without a layout
+engine.
 
-The address bar follows the reader — `#atlas=@scope/pkg:Declaration` — so a
-diagram somebody is looking at can be sent to somebody else.
-
-## Embedding it yourself
-
-For a framework page, mount it by hand instead of using the script tag:
+The same steps are available programmatically:
 
 ```js
-import { mountFromUrl } from '@exodra/monorepo-atlas';
-
-const atlas = await mountFromUrl(element, '/atlas/graph.json');
-// atlas.dispose() when the component goes away.
+import { buildArtifacts, buildModel, layoutModel, extractEntities } from '@exodra/monorepo-atlas';
 ```
 
-React, Vue and Svelte all work the same way — this is a plain element, not a
-component; in React, call it from an effect and return `dispose`.
-
-If you already have the data, `mountExplorer(element, { model, layout })` skips
-the fetching entirely, and `buildArtifacts`, `buildModel`, `extractEntities` and
-`layoutModel` are exported for anything more unusual.
+The package also exports `serialiseData`, `collectPackages`, `classify`,
+`fileNameFor`, `filterNodes`, `withoutExternal`, `EXO_UNRESOLVED_TYPE`,
+`renderGraphCss`, `colorReport`, `renderThemeCss`, `applyColors`, `resolveMode`,
+`defaultPalette`, `EXO_GRAPH_KINDS`, and the model, layout and palette types.
 
 ## Colours
 
-The graph paints every mark from CSS custom properties and ships defaults, so a
-host restyles it in its own stylesheet and nothing needs to be passed anywhere:
+`renderGraphCss()` emits every mark's rules against CSS custom properties with
+defaults, so a host restyles the atlas from its own stylesheet:
 
 ```css
 .exo-graph {
@@ -115,22 +90,16 @@ host restyles it in its own stylesheet and nothing needs to be passed anywhere:
 }
 ```
 
-That is the whole theming API, and it follows a site's own light/dark switch for
-free. Defaults are declared at zero specificity, so a plain selector always wins
-without `!important`.
+Defaults are declared at zero specificity, so a plain selector wins without
+`!important`. `colorReport` flags two node kinds that cannot be told apart
+(including under common forms of colour blindness) and colours lost against the
+background.
 
-Colours can also be passed to `mountExplorer({ colors })`, which additionally
-checks them: two node kinds nobody can tell apart — including under the common
-forms of colour blindness — or a colour lost against the background is reported
-in the console during development.
-
-## What it does not do
+## Limits
 
 - It reads **static imports**, not runtime behaviour.
 - Declarations are matched **by name**: two same-named declarations in different
   files of one package collapse into one box.
-- A type from another package is shown in full but is not a link — its box is not
-  on that diagram.
 - TypeScript and JavaScript only.
 
 ## Licence

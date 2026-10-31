@@ -1,0 +1,35 @@
+// The realistic-todo app — MARKO 6 flavour. Same spec as `apps/exodra/todo.mjs`,
+// `apps/solid/Todo.jsx`, `apps/qwik/todo.jsx` and `apps/cursor/todo.mjs`: N cards,
+// each with a title, three tags, a counter button and three nested comments with
+// authors. Same strings, same classes, same attributes, same single interactive
+// element per card.
+//
+// `<const>` rather than module-scope constants because a Marko template has no
+// module scope of its own — the same thing `tags/CardDyn.marko` in the client
+// suite does with its tag pool. It costs two array literals per render, which is
+// noise beside N cards.
+//
+// The tag and comment loops carry no state and nothing reactive, so Marko
+// serialises no resume data for them — they are static HTML, exactly like the
+// `<For each={[0,1,2]}>` blocks in the Solid app and the repeated template regions
+// in the cursor one. See `apps/marko/app.marko` for why N arrives as input.
+<const/TAGS = ['ui', 'api', 'bug', 'perf', 'docs'] />
+<const/AUTHORS = ['Ada', 'Lin', 'Rex', 'Mia', 'Sol'] />
+<const/cards = Array.from({ length: input.n }, (_, i) => i) />
+<div class="todo">
+  <for|i| of=cards>
+    <let/count = 0 />
+    <article class="card" data-id=i>
+      <h3 class="card__title">Task ${i}</h3>
+      <div class="card__tags">
+        <for|k| of=[0, 1, 2]><span class="tag">${TAGS[(i + k) % 5]}</span></for>
+      </div>
+      <button class="card__btn" data-b=i onClick() { count++ }>${count}</button>
+      <ul class="card__comments">
+        <for|k| of=[0, 1, 2]>
+          <li class="cmt"><b class="author">${AUTHORS[(i + k) % 5]}</b><span class="body">note ${k} on task ${i}</span></li>
+        </for>
+      </ul>
+    </article>
+  </for>
+</div>

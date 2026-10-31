@@ -7,6 +7,25 @@ tags: [performance, architecture, design-decisions, benchmarks]
 
 # WeakMaps Are the Cleaner Separation — Patching Is Faster
 
+:::note This post measures a renderer that has been deleted
+
+The `WeakMap<schema, record>` measured below, the `{type, attrs}` schema objects it
+was keyed by, and the `ExoNodeDom` renderer around them are **gone**
+(`packages/core/src/index.ts:10-12`, `packages/dom/src/index.ts:9-10`). The
+measurement stands as a measurement; the code it was taken on does not exist.
+
+**And the conclusion moved on three times.** This post's fix was "put the record in a slot
+on the schema object". After that the record became a `TExoNodeDom` that the CHILD owns
+(`packages/dom/src/dom/types/TExoNodeDom.ts`), with the element pointing back under
+`Symbol.for('exo.child')` — and on 2026-08-30 that back-pointer was removed outright, so an
+element carries nothing at all. The "16% of an initial mount / 2.4–2.8× faster" figure that
+used to be quoted for it is **withdrawn**: it was measured for a schema→record table, never
+for an element-keyed one. What replaced it is the axis `child-mark` / `pool`, which prices
+an element expando against a `WeakMap` entry directly.
+
+It is kept because a post is a record of what was believed when it was written.
+:::
+
 A while back I wrote about [why Exodra's WeakMap core beats the legacy one](/blog/weakmap-core-design). Everything in that post is still true about *design*. This one is about what happened when I finally measured it: the renderer's `WeakMap<schema, record>` was costing about **11% of every mount**, and moving the record onto a slot on the schema object got it back.
 
 {/* truncate */}
@@ -98,7 +117,7 @@ schema slot          1.520      1.466       1.280 ms
                   →  10–14% faster, reproduced across two runs
 ```
 
-On the public initial-render axis — mounting an 80-card app, all frameworks interleaved in one process — the two build-path changes together moved Exodra from **~1.29× behind Solid to roughly level with it**, with identical best cases. Retained heap went *down* too, from ~0.23 MB to ~0.21 MB: one pointer per schema is cheaper than a hash table plus an entry per node.
+On the public initial-render axis — mounting an 80-card app, all frameworks interleaved in one process — the two build-path changes together moved Exodra from **~1.29× behind Solid to ~1.06× behind**. Worth being precise about what that does *not* mean: Solid still wins the axis, and it wins it consistently rather than on average — on a re-measurement it led at every percentile (min 0.54 vs 0.60 ms, median 0.60 vs 0.64), with the two spreads barely overlapping. The gap narrowed; it did not close. Retained heap went *down* too, from ~0.23 MB to ~0.22 MB: one pointer per schema is cheaper than a hash table plus an entry per node.
 
 ## What it cost
 

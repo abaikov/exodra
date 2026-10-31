@@ -55,21 +55,17 @@ export type TExoBuildOptions = {
 
 const DEFAULT_PLUMBING = /(^|\/)[^/]*\.config\.[cm]?[jt]sx?$/;
 
-export function buildModel(
-    cruise: TExoCruiseInput,
-    options: TExoBuildOptions
-): TExoGraphModel {
+export function buildModel(cruise: TExoCruiseInput, options: TExoBuildOptions): TExoGraphModel {
     const rules = collectRules(cruise);
-    const byDir = new Map(options.packages.map(meta => [meta.dir, meta]));
-    const isPlumbing =
-        options.isPlumbing ?? ((source: string) => DEFAULT_PLUMBING.test(source));
-    const modules = cruise.modules.filter(module => !isPlumbing(module.source));
+    const byDir = new Map(options.packages.map((meta) => [meta.dir, meta]));
+    const isPlumbing = options.isPlumbing ?? ((source: string) => DEFAULT_PLUMBING.test(source));
+    const modules = cruise.modules.filter((module) => !isPlumbing(module.source));
     const kept: TExoCruiseInput = {
         ...cruise,
-        modules: modules.map(module => ({
+        modules: modules.map((module) => ({
             ...module,
             dependencies: (module.dependencies ?? []).filter(
-                dependency => !isPlumbing(dependency.resolved)
+                (dependency) => !isPlumbing(dependency.resolved)
             ),
         })),
     };
@@ -88,8 +84,7 @@ export function buildModel(
 function collectRules(
     cruise: TExoCruiseInput
 ): Record<string, { severity: TExoRuleSeverity; comment?: string }> {
-    const rules: Record<string, { severity: TExoRuleSeverity; comment?: string }> =
-        {};
+    const rules: Record<string, { severity: TExoRuleSeverity; comment?: string }> = {};
     for (const rule of cruise.summary?.ruleSetUsed?.forbidden ?? []) {
         rules[rule.name] = {
             severity: asSeverity(rule.severity),
@@ -111,20 +106,14 @@ const asSeverity = (value: string | undefined): TExoRuleSeverity =>
  * right one — `packages/group/inner/x.ts` belongs to `packages/group/inner`, not
  * to `packages/group`.
  */
-export function packageDirOf(
-    path: string,
-    dirs: readonly string[]
-): string | undefined {
+export function packageDirOf(path: string, dirs: readonly string[]): string | undefined {
     let best: string | undefined;
     for (const dir of dirs) {
         if (dir === '.') {
             if (best === undefined) best = dir;
             continue;
         }
-        if (
-            path.startsWith(`${dir}/`) &&
-            (best === undefined || dir.length > best.length)
-        ) {
+        if (path.startsWith(`${dir}/`) && (best === undefined || dir.length > best.length)) {
             best = dir;
         }
     }
@@ -156,7 +145,7 @@ function violationsOf(
     rules: Record<string, { severity: TExoRuleSeverity; comment?: string }>,
     broken: ReadonlyArray<{ name: string; severity: string }> | undefined
 ): TExoViolation[] {
-    return (broken ?? []).map(rule => ({
+    return (broken ?? []).map((rule) => ({
         rule: rule.name,
         severity: asSeverity(rule.severity),
         comment: rules[rule.name]?.comment,
@@ -180,9 +169,7 @@ export function computeLayers(
 
     for (const start of ids) {
         if (state.get(start) === 'done') continue;
-        const stack: Array<{ id: string; expanded: boolean }> = [
-            { id: start, expanded: false },
-        ];
+        const stack: Array<{ id: string; expanded: boolean }> = [{ id: start, expanded: false }];
 
         while (stack.length > 0) {
             const frame = stack[stack.length - 1];
@@ -249,9 +236,7 @@ function buildPackageModel(
 
         for (const dependency of module.dependencies ?? []) {
             const toDir = packageDirOf(dependency.resolved, dirs);
-            const toId = toDir
-                ? byDir.get(toDir)?.name
-                : externalNameOf(dependency.resolved);
+            const toId = toDir ? byDir.get(toDir)?.name : externalNameOf(dependency.resolved);
             // Node built-ins and unresolvable specifiers are not architecture.
             if (!toId || toId === fromId) continue;
 
@@ -302,10 +287,8 @@ function buildPackageModel(
     }
     const layers = computeLayers([...ids], outgoing);
 
-    const metaByName = new Map(
-        [...byDir.values()].map(meta => [meta.name, meta] as const)
-    );
-    const nodes: TExoGraphNode[] = [...ids].sort().map(id => {
+    const metaByName = new Map([...byDir.values()].map((meta) => [meta.name, meta] as const));
+    const nodes: TExoGraphNode[] = [...ids].sort().map((id) => {
         const meta = metaByName.get(id);
         const dir = meta?.dir;
         return {
@@ -348,7 +331,7 @@ function buildModuleModel(
 ): TExoGraphModel {
     const edges: TExoGraphEdge[] = [];
     const outgoing = new Map<string, string[]>();
-    const sources = new Set(cruise.modules.map(module => module.source));
+    const sources = new Set(cruise.modules.map((module) => module.source));
 
     for (const module of cruise.modules) {
         for (const dependency of module.dependencies ?? []) {
@@ -377,15 +360,13 @@ function buildModuleModel(
     }
 
     const layers = computeLayers([...sources], outgoing);
-    const nodes: TExoGraphNode[] = [...sources].sort().map(source => {
+    const nodes: TExoGraphNode[] = [...sources].sort().map((source) => {
         const dir = packageDirOf(source, dirs);
         const meta = dir ? byDir.get(dir) : undefined;
-        const found = cruise.modules.find(module => module.source === source);
+        const found = cruise.modules.find((module) => module.source === source);
         return {
             id: source,
-            label: dir
-                ? source.slice(dir.length + 1).replace(/^src\//, '')
-                : source,
+            label: dir ? source.slice(dir.length + 1).replace(/^src\//, '') : source,
             kind: meta?.kind ?? 'other',
             layer: layers.get(source) ?? 0,
             violations: violationsOf(rules, found?.rules),
@@ -405,11 +386,7 @@ function buildModuleModel(
     };
 }
 
-function push<TValue>(
-    map: Map<string, TValue[]>,
-    key: string,
-    value: TValue
-): void {
+function push<TValue>(map: Map<string, TValue[]>, key: string, value: TValue): void {
     const list = map.get(key);
     if (list) list.push(value);
     else map.set(key, [value]);
@@ -428,17 +405,15 @@ export function filterNodes(
     model: TExoGraphModel,
     keep: (node: TExoGraphNode) => boolean
 ): TExoGraphModel {
-    const kept = new Set(model.nodes.filter(keep).map(node => node.id));
+    const kept = new Set(model.nodes.filter(keep).map((node) => node.id));
     return {
         ...model,
-        nodes: model.nodes.filter(node => kept.has(node.id)),
-        edges: model.edges.filter(
-            edge => kept.has(edge.from) && kept.has(edge.to)
-        ),
+        nodes: model.nodes.filter((node) => kept.has(node.id)),
+        edges: model.edges.filter((edge) => kept.has(edge.from) && kept.has(edge.to)),
     };
 }
 
 /** The workspace's own packages, without what it pulls from npm. */
 export function withoutExternal(model: TExoGraphModel): TExoGraphModel {
-    return filterNodes(model, node => node.kind !== 'other');
+    return filterNodes(model, (node) => node.kind !== 'other');
 }

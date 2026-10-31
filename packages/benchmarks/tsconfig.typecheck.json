@@ -1,0 +1,62 @@
+{
+  // TYPECHECK FOR THE EXODRA HALF OF THE BENCHMARKS — the gap `tsconfig.build.json` names in its
+  // own header ("the ONE remaining `packages/*` entry that no typecheck of any kind covers ...
+  // the fix is a `tsconfig.typecheck.json` of its own plus a script, not a line here").
+  //
+  // WHY THIS PACKAGE COULD NOT JOIN THE BUILD GRAPH. It compiles competitors: Solid wants its own
+  // `jsxImportSource`, there is an Angular app and a Marko one, and each wants compiler options
+  // that contradict the graph's. So the split is not Exodra-code-versus-test-code, it is
+  // OURS versus THEIRS, and only ours is checked here.
+  //
+  // WHAT THIS ALREADY COST US, which is why it is worth a file. The reference app's wires were
+  // typed `TExoDomWire` — browser-only — so no foreign backend could take those components without
+  // a cast. That was found by a person, months after it landed, because nothing in this repository
+  // reads these files with a type checker. Every axis written since is a program that decides what
+  // gets published as a number.
+  //
+  // HOW IT STAYS HONEST AS PARTICIPANTS ARE ADDED, and this is the part that matters: the list
+  // below is an EXCLUDE, so a new file is checked BY DEFAULT. A new Exodra axis is covered the
+  // moment it exists. A new competitor participant that nobody classified fails this gate loudly —
+  // it will not resolve its framework's types — which forces the classification instead of
+  // silently dropping the file. The failure mode points the right way; an include list would rot
+  // in the direction of checking less and saying nothing.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "incremental": false,
+    // `rootDir` is dropped, not overridden to something else: this config emits nothing, and the
+    // package's own `rootDir: ./src` makes every `@exodra/*` import an error here because the
+    // workspace resolves those to the packages' SOURCE, which is the whole point — the axes are
+    // checked against the code they measure and not against a stale `dist`.
+    "rootDir": null,
+    // `jsx` / `jsxImportSource` are deliberately INHERITED. `component-split.tsx` holds Solid
+    // participants beside ours in one file, so this graph has to speak Solid's JSX even though
+    // every Exodra axis in it builds its trees through `ExoSchemaBuilder` and uses no JSX at all.
+    "types": ["node"]
+  },
+  // `types/` holds hand-written ambient declarations. It is OUTSIDE `src/` because the
+  // root `prebuild` sweeps every `*/src/*` of `.d.ts` files — see that file's header.
+  "include": ["src/**/*", "types/**/*"],
+  "exclude": [
+    "src/benchmarks/participants/angular/**",
+    "src/benchmarks/participants/lit/**",
+    "src/benchmarks/marko/**",
+    "src/benchmarks/participants/mikado/**",
+    "src/benchmarks/participants/sinuous/**",
+    "src/benchmarks/participants/stage0/**",
+    "src/benchmarks/svelte/**",
+    "src/benchmarks/participants/uhtml/**",
+    // THE APP HALVES OF THE SAME FIVE PARTICIPANTS. `src/benchmarks/apps/` holds one directory per
+    // participant with that participant's app in it and nothing else — what the line-count column
+    // counts — so a competitor excluded above by its participant module has to be excluded here by
+    // its app directory too, or the classification the header calls OURS versus THEIRS holds for
+    // half a participant. Ours (`apps/exodra/`, `apps/solid/`, `apps/react/`, `apps/voby/`,
+    // `apps/scene/`) are checked by default, exactly as their participant modules are.
+    "src/benchmarks/apps/lit/**",
+    "src/benchmarks/apps/mikado/**",
+    "src/benchmarks/apps/sinuous/**",
+    "src/benchmarks/apps/stage0/**",
+    "src/benchmarks/apps/uhtml/**"
+  ]
+}

@@ -1,0 +1,30 @@
+// THE SETTINGS ARRIVE AS INPUT AND ARE NOT MARKO'S TO HOLD — a mounted template's whole surface is
+// `{ value, update(input), destroy() }` — so `chars` changes identity and every tag reclips.
+// `pool` is built once: `<for by>` matches the row it is given, and four fresh objects per click
+// would be rows it has never seen.
+// Marko DROPS a whitespace-only run that is a newline plus indentation, so this file may stay
+// indented — but a bare space between two tags survives, so break lines, never insert one.
+import { titleOf, headlineOf, tagsLabel, expandedOf, nextCount, tagsOfCard, tagTextOf, userNameOf, cardUserOf } from "../../shared/todo-spec";
+
+<let/open = input.open />
+<let/count = input.count />
+<const/chars = input.chars />
+<const/title = titleOf(input.i) />
+<const/userName = userNameOf(cardUserOf(input.i)) />
+<const/pool = tagsOfCard(input.i) />
+<const/tags = pool.slice(0, count) />
+<const/headline = headlineOf(title, open) />
+<const/expanded = expandedOf(open) />
+<const/label = tagsLabel(count) />
+
+<div class="card" data-i=input.i>
+  <h3>${headline}</h3>
+  <span class="user">${userName}</span>
+  <button class="tog" aria-expanded=expanded onClick() { open = !open }>details</button>
+  <if=open><div class="details">details…</div></if>
+  <div class="tags">
+    <for|t| of=tags by=(t => t.label)><span class="tag">${tagTextOf(t.label, chars[t.user])}</span></for>
+  </div>
+  <span class="count">${label}</span>
+  <button class="addtag" onClick() { count = nextCount(count) }>+</button>
+</div>

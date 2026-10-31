@@ -5,6 +5,6 @@
 // "cli" in its name.
 import { run } from './cli';
 
-run(process.argv.slice(2), process.cwd()).then(code => {
+run(process.argv.slice(2), process.cwd()).then((code) => {
     process.exitCode = code;
 });

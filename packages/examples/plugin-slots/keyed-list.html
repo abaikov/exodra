@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exodra — keys are the plugin, identity is the default</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header class="page-head">
+    <h1 class="page-title">"Rows are matched by key, and the key rules are ours"</h1>
+    <p class="page-sub">
+        Both panels render the same rows from the same data. The left one is the core's own list —
+        <code>reconcileExoOrder</code> called from a transition, which reconciles by
+        <strong>object identity</strong>. The right one opens <code>c.keyedList</code> instead and
+        matches rows by <code>item.id</code>.
+        <br>
+        Press <em>Refetch</em>: the data comes back as <strong>freshly parsed objects</strong>, the
+        way a poll returns it. Nothing on the left is the same object any more, so every row is
+        rebuilt. Every row on the right is matched by its key and kept — the build stamps stand
+        still.
+        <br>
+        <span class="slot">
+            A pack, <code>EXO_KEYED_LIST_VOCABULARY</code> from <code>@exodra/list-reconcile</code>,
+            composed with <code>composeExoPlugins</code>: it puts <code>c.keyedList</code> on every
+            exonode the backend builds. A backend without it has no such method. Both panels stand
+            on <code>c.childList</code>, which is the <code>withExoChildList</code> pack from
+            <code>@exodra/dom</code>.
+        </span>
+    </p>
+</header>
+
+<div class="panels">
+    <section class="panel">
+        <h2 class="panel-title">Core — reconciled by identity</h2>
+        <p class="panel-note">reconcileExoOrder(c.state.rows, c.state.shown, want, want, build)</p>
+        <div id="identity"></div>
+        <p class="readout" id="identity-out"></p>
+    </section>
+    <section class="panel">
+        <h2 class="panel-title">Pack — reconciled by key</h2>
+        <p class="panel-note">c.keyedList(P.rows, item =&gt; item.id, build, update).reconcile(want)</p>
+        <div id="keyed"></div>
+        <p class="readout" id="keyed-out"></p>
+    </section>
+</div>
+
+<div class="controls">
+    <button class="btn" id="refetch" type="button">1 · Refetch (same ids, same labels)</button>
+    <button class="btn" id="relabel" type="button">2 · Refetch with CHANGED labels</button>
+    <button class="btn" id="dupe" type="button">3 · Refetch with a duplicate id</button>
+    <button class="btn" id="reload" type="button">Reload</button>
+</div>
+
+<p id="boot" class="boot">Loading the packages from this repository's own <code>dist/</code>…</p>
+
+<!--
+    THE PACKAGES ARRIVE BY BARE NAME through an IMPORT MAP, pointing at THIS REPOSITORY'S OWN
+    `dist/`. Every bare specifier any of them imports is in the map, or the page dies with a blank
+    screen. The paths are ABSOLUTE, so the server must be started at the REPOSITORY ROOT.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "@exodra/context": "/packages/context/dist/index.js",
+    "@exodra/core": "/packages/core/dist/index.js",
+    "@exodra/list-reconcile": "/packages/list-reconcile/dist/index.js",
+    "@exodra/dom": "/packages/dom/dist/index.js"
+  }
+}
+</script>
+<script type="module">
+    import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import { EXO_KEYED_LIST_VOCABULARY, reconcileExoOrder } from '@exodra/list-reconcile';
+    import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+
+    const boot = document.getElementById('boot');
+
+    // One backend, at module level: each backend object takes its own backendType, the index its
+    // compiled schemas are cached at, so one built per render would recompile every row.
+    const backend = composeExoPlugins(
+        withExoChildList(withExoCompiler(new ExoDomBackend())),
+        EXO_KEYED_LIST_VOCABULARY
+    );
+
+    // `JSON.parse(JSON.stringify(...))` is what a refetch is: every object is new on every call.
+    const SEED = [
+        { id: 'a', label: 'alpha' },
+        { id: 'b', label: 'bravo' },
+        { id: 'c', label: 'charlie' }
+    ];
+
+    let generation = 0;
+
+    // The data both panels follow: a tiny local store with the getValue/setValue/onChange shape.
+    function store(value) {
+        const listeners = new Set();
+        return {
+            getValue: () => value,
+            setValue(next) {
+                value = next;
+                for (const listener of listeners) listener();
+            },
+            onChange(listener) {
+                listeners.add(listener);
+                return () => listeners.delete(listener);
+            },
+        };
+    }
+
+    const refetch = (mutateLabels, duplicateId) => {
+        generation += 1;
+        const rows = JSON.parse(JSON.stringify(SEED));
+        if (mutateLabels) {
+            for (const row of rows) row.label = row.label + ' · gen ' + generation;
+        }
+        if (duplicateId) rows[2].id = rows[0].id;
+        return rows;
+    };
+
+    const panels = {
+        identity: { built: 0, elements: new Set(), note: 'as rendered' },
+        keyed: { built: 0, elements: new Set(), note: 'as rendered' }
+    };
+
+    // One row machine per panel: the build stamp is the panel's own counter, taken once in
+    // `createInitialState`. A row is built, then `setLabel` — a transition — writes its label.
+    const makeRow = panel => {
+        const schema = createExoSchema(b => {
+            let seq, label;
+            b.el('li', { class: 'row' }, li => {
+                li.el('span', null, s => { seq = s.textPort(); });
+                li.el('span', null, s => { label = s.textPort(); });
+            });
+            return { seq, label };
+        });
+        const m = createExoMachineBuilder(schema);
+        m.createInitialState(() => ({ stamp: ++panel.built }));
+        m.wire(c => {
+            c.text(schema.ports.seq, '#' + c.state.stamp + ' ');
+        });
+        const setLabel = m.transition((row, item) => {
+            row.text(schema.ports.label, item.label);
+        });
+        return { machine: m.done(), setLabel };
+    };
+
+    const IDENTITY_ROW = makeRow(panels.identity);
+    const KEYED_ROW = makeRow(panels.keyed);
+
+    const buildWith = (c, ROW) => (item, i) => {
+        const row = c.build(ROW.machine, i);
+        ROW.setLabel(row, item);
+        return row;
+    };
+
+    const identitySrc = store(refetch(false, false));
+    const keyedSrc = store(JSON.parse(JSON.stringify(identitySrc.getValue())));
+
+    const listSchema = () => createExoSchema(b => {
+        let rows;
+        b.el('ul', { class: 'rows' }, ul => { rows = ul.childrenPort(); });
+        return { rows };
+    });
+
+    // Each list draws FIRST and then subscribes, in an effect; the transition is the one place
+    // that turns the wanted items into rows.
+    const IDENTITY_SCHEMA = listSchema();
+    const mIdentity = createExoMachineBuilder(IDENTITY_SCHEMA);
+    mIdentity.createInitialState(c => ({ rows: c.childList(IDENTITY_SCHEMA.ports.rows), shown: [] }));
+    const showIdentityRows = mIdentity.transition(c => {
+        const want = identitySrc.getValue();
+        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, buildWith(c, IDENTITY_ROW));
+    });
+    mIdentity.effect(c => {
+        showIdentityRows(c);
+        return identitySrc.onChange(() => showIdentityRows(c));
+    });
+    const IDENTITY_APP = mIdentity.done();
+
+    const KEYED_SCHEMA = listSchema();
+    const mKeyed = createExoMachineBuilder(KEYED_SCHEMA);
+    mKeyed.createInitialState(c => ({
+        list: c.keyedList(KEYED_SCHEMA.ports.rows, item => item.id, buildWith(c, KEYED_ROW), KEYED_ROW.setLabel)
+    }));
+    const showKeyedRows = mKeyed.transition(c => {
+        c.state.list.reconcile(keyedSrc.getValue());
+    });
+    mKeyed.effect(c => {
+        showKeyedRows(c);
+        return keyedSrc.onChange(() => showKeyedRows(c));
+    });
+    const KEYED_APP = mKeyed.done();
+
+    backend.render(IDENTITY_APP, document.getElementById('identity'));
+    backend.render(KEYED_APP, document.getElementById('keyed'));
+
+    const report = () => {
+        for (const id of ['identity', 'keyed']) {
+            const panel = panels[id];
+            for (const li of document.querySelectorAll('#' + id + ' li')) panel.elements.add(li);
+            document.getElementById(id + '-out').textContent =
+                panel.note +
+                '\nrows built (build stamps issued): ' + panel.built +
+                '\ndistinct <li> elements ever seen: ' + panel.elements.size +
+                '\n<ul> holds: ' +
+                (Array.from(document.querySelectorAll('#' + id + ' li'))
+                    .map(li => li.textContent)
+                    .join(' | ') || '(empty)');
+        }
+    };
+
+    const push = (note, mutateLabels, duplicateId) => {
+        for (const id of ['identity', 'keyed']) panels[id].note = note;
+        const payload = refetch(mutateLabels, duplicateId);
+        identitySrc.setValue(JSON.parse(JSON.stringify(payload)));
+        keyedSrc.setValue(JSON.parse(JSON.stringify(payload)));
+        report();
+    };
+
+    // Same ids, same labels, all-new objects: the left rebuilds three rows, the right keeps three.
+    document.getElementById('refetch').addEventListener('click', () => {
+        push('after a refetch (same ids, same labels)', false, false);
+    });
+
+    // A kept row is updated through `setLabel`, the `update` argument: the label moves, the stamp
+    // does not.
+    document.getElementById('relabel').addEventListener('click', () => {
+        push('after a refetch with CHANGED labels', true, false);
+    });
+
+    // A repeated key is one row per occurrence, as a repeated item is in an identity list.
+    document.getElementById('dupe').addEventListener('click', () => {
+        push('after a refetch where rows a and c share an id', false, true);
+    });
+
+    document.getElementById('reload').addEventListener('click', () => { location.reload(); });
+
+    report();
+    boot.textContent = 'Client render.';
+</script>
+
+</body>
+</html>

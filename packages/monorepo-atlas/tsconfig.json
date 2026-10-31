@@ -1,21 +1,32 @@
 {
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
-    "noEmit": true,
+    // WAS `noEmit: true`, which is exactly why this project could not be referenced:
+    // TypeScript rejects `noEmit` on a referenced composite project outright. The emit
+    // goes to `.tsbuild` — never `dist`, which belongs to tsup and to the
+    // `tsconfig.dts.json` pass beside it. See tsconfig.build.json's header.
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "composite": true,
     "lib": ["ES2020", "DOM"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "baseUrl": ".",
-    // Siblings resolve to their BUILT types, like every other package here —
-    // pulling their sources into this program makes tsc demand they be listed.
+    // Siblings resolve to tsc's OWN fresh output, not to `dist` — `npm run typecheck`
+    // runs before anything is built. `tsconfig.dts.json` restates them against `dist`,
+    // which is what tsup's declaration pass consumes.
     "paths": {
-      "@exodra/core": ["../core/dist/index.d.ts"],
-      "@exodra/dom": ["../dom/dist/index.d.ts"],
-      "@exodra/string": ["../string/dist/index.d.ts"],
-      "@exodra/reactivity": ["../reactivity/dist/index.d.ts"],
-      "@exodra/reactivity-types": ["../reactivity-types/dist/index.d.ts"]
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["**/*.test.ts"]
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts"],
+  "references": [
+    { "path": "../core" },
+    { "path": "../dom" },
+    { "path": "../string" }
+  ]
 }

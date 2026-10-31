@@ -1,14 +1,24 @@
 name: Release
 
-# One push closes the loop. Changesets works out WHAT to bump from the changeset
-# files in the commit, cascades the bump through every dependent and rewrites the
-# internal ranges; the workflow then publishes whatever ended up with a version
-# npm does not have yet. No manual version editing, no separate release ceremony.
+# ⚠️  THIS PUBLISHES TO npm ON AN ORDINARY PUSH TO master/main. Nobody runs a command and nobody
+#     is asked; merging a changeset IS the release. A publish does not come back — unpublish is a
+#     72-hour window and a used version number is refused for ever.
 #
-# Publishing happens here rather than from a laptop so every tarball carries a
-# provenance attestation — a signed statement binding the published bytes to this
-# repository, workflow and commit. That needs an OIDC token, which exists in
-# Actions and not on a developer machine.
+# THE TWO `if:` CONDITIONS BELOW ARE THE WHOLE MECHANISM, and `inputs` is empty on every event but
+# workflow_dispatch, so an unset `dry_run` reads as FALSE:
+#
+#   push to master/main     dry run skipped, publish runs        → PUBLISHES
+#   push of a v* tag        identical; `tags:` does not narrow `branches:`
+#                           — under `push` they are alternatives → PUBLISHES
+#   workflow_dispatch       `dry_run` defaults to true           → packs only
+#   dispatch, dry_run:false                                      → PUBLISHES
+#
+# The only thing between a push and the registry is the `npm-publish` environment on the job below.
+# AN ENVIRONMENT WITH NO PROTECTION RULES IS A LABEL, NOT A GATE — a required reviewer is set in
+# repository settings and cannot be seen from this file.
+#
+# Why the shape, and why publishing happens here rather than from a laptop (provenance needs an
+# OIDC token, which exists in Actions): docs-site/docs/architecture/gates-and-root-configs.md
 
 on:
   push:
@@ -44,16 +54,28 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           # Makes npm write an authenticated .npmrc from NODE_AUTH_TOKEN.
           registry-url: https://registry.npmjs.org
 
+      # A RELEASE ONLY, and it is not optional: `swc_plugin_exodra.wasm` is gitignored and is the
+      # whole of `swc-plugin-exodra`'s `files`, and `scripts/publish.sh` refuses to publish ANY
+      # package when a promised file is missing — so a release from a clean checkout without this
+      # dies before publishing even the packages that never heard of the plugin.
+      # Why `build:wasm` is in `release:check` and not `build:all`:
+      # docs-site/docs/architecture/gates-and-root-configs.md
+      - name: Rust toolchain for the SWC plugin
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1
+
       - run: npm ci
 
-      # Apply any pending changesets: bump versions, cascade to dependents,
-      # rewrite internal ranges, write changelogs. A no-op when there are none,
-      # which is what makes an ordinary push safe.
+      # THIS STEP IS THE SWITCH, and nothing here stops a push that carries no changeset: versions
+      # stay put, publish.sh finds them all already published and its "nothing was published"
+      # branch exits 1, so the run goes red rather than shipping. A push WITH one bumps, cascades
+      # to dependents, rewrites internal ranges — and goes all the way, with no second confirmation.
       - name: Apply changesets
         id: version
         run: |
@@ -73,10 +95,13 @@ jobs:
       - name: Packed-artifact integration
         run: npm run test:packed
 
+      # Reached ONLY from workflow_dispatch: on a push `inputs` is empty, so this is false.
       - name: Dry run (pack only, no publish)
         if: inputs.dry_run
         run: npm run publish:dry
 
+      # TRUE ON AN ORDINARY PUSH — `!inputs.dry_run` inverts an unset value; branch and v* tag
+      # pushes both land here.
       - name: Publish to npm
         if: ${{ !inputs.dry_run }}
         run: npm run publish:all
@@ -85,8 +110,10 @@ jobs:
           # publish.sh leaves this unset locally; provenance is rejected outside CI.
           NPM_CONFIG_PROVENANCE: 'true'
 
-      # Commit the bump back so the repo matches what is now on npm. Last, so a
-      # failed publish does not leave a version claiming to be released.
+      # Last, so a failed publish leaves no version claiming to be released. IT WORKS ONLY ON A
+      # BRANCH PUSH: `checkout` of a v* tag leaves a detached HEAD, so there `git push` has no
+      # upstream and fails AFTER the packages are on the registry, leaving the bump only on npm.
+      # Left alone because fixing it changes behaviour.
       - name: Push version bump
         if: ${{ !inputs.dry_run && steps.version.outputs.changed == 'true' }}
         run: |

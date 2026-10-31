@@ -1,7 +1,12 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-    entry: ['src/**/*.ts', '!src/**/*.test.ts', '!src/**/*.spec.ts'],
+    // ONE ENTRY, NOT A GLOB OVER THE SOURCE TREE — see `packages/dom/tsup.config.ts` for the
+    // measurement. With `splitting: false` every entry becomes a SELF-CONTAINED bundle, so a glob
+    // emitted one copy of the whole import graph per source file, none of which any `exports`
+    // subpath could reach. `dist/index.js` is byte-identical either way; that was verified by
+    // building both and comparing, not assumed.
+    entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
     dts: true,
     sourcemap: true,

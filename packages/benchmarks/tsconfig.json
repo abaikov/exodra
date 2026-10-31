@@ -1,6 +1,26 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    // NOTHING COMPILED THROUGH THIS CONFIG MAY BE WRITTEN TO DISK, and the reason is not tidiness.
+    //
+    // This package's JavaScript comes from Vite — `npm run build` is `vite build`, which owns
+    // `dist/` — and the Angular participant's from `bench/build/build-angular.mjs`. tsc's output
+    // here was read by nobody and overlapped Vite's directory.
+    //
+    // What it did instead: `@exodra/*` resolves to the library SOURCES (the root config's
+    // `paths`), so every library file this program pulls in is outside `rootDir` below — that is
+    // the TS6059 flood — and tsc wrote its `.js`, `.js.map`, `.d.ts` and `.d.ts.map` NEXT TO THE
+    // `.ts` IT COMPILED. One `tsc -b packages/benchmarks/tsconfig.json` left 650 files across four
+    // packages: 256 in packages/core/src, 324 in packages/dom/src, 44 in string, 26 in
+    // reactivity. Vite resolves a `.js` before the `.ts` beside it, so vitest then ran the stale
+    // copies and reported failures from code that had already been fixed, with a stack frame
+    // landing inside a JSDoc block. `.gitignore` hid all of it, so `git status` stayed clean.
+    // `scripts/check-src-emit.mjs` is the gate that now catches the files; this line is what stops
+    // them being written.
+    //
+    // `outDir` and `rootDir` stay below. They are inert under `noEmit`, and `tsconfig.typecheck.json`
+    // names `rootDir: ./src` as the thing it deliberately sets to `null` for itself.
+    "noEmit": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "jsx": "preserve",

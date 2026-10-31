@@ -1,16 +1,35 @@
 {
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    // NOT `dist` — see tsconfig.build.json. `dist` is tsup's, and is what gets published.
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
     "rootDir": "./src",
+    // The schema core's shared half reaches DOM types even though it renders nothing:
+    // `applyExoEventAction` takes the `Event` and the `Element` a descriptor fired on, and the
+    // attribute-form tables name element interfaces. They are TYPES only — nothing here touches
+    // `document`, and nothing here CALLS a DOM method. The passes that did — `insertBefore`,
+    // `removeChild` — are `@exodra/list-reconcile` now, because a base every backend shares cannot be
+    // built out of calls that only one of them can make.
+    "lib": ["ES2020", "DOM"],
     "composite": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "baseUrl": ".",
+    "paths": {
+      // The frame, the token and the walk. `exo-base-node-pack.ts` CALLS two of them, so this is
+      // a runtime edge and not a types-only one; `core-is-zero-dep` in `.dependency-cruiser.cjs`
+      // names it as the one package this one may reach. The direction is core -> context and
+      // never back — nothing under `packages/context/src` imports an Exodra package at all.
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
+      "@exodra/bench-harness": ["../bench-harness/.tsbuild/index.d.ts"]
+    }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["dist", "**/*.test.ts", "**/*.spec.ts"]
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts", "**/bench/**"],
+  "references": [{ "path": "../context" }]
 }
 

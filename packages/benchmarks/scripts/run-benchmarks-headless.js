@@ -4,6 +4,7 @@ import { chromium } from 'playwright';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { staleExoDistPackages, printStaleExoDist } from './staleExoDistPackages.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -111,12 +112,12 @@ async function runBenchmarks() {
   // prints its own ✅ lines, forwarded by the console filter above.
   await page.evaluate(async () => {
     const axes = [
-      ['./src/benchmarks/initial-render.tsx', 'benchmarkInitialRender'],
-      ['./src/benchmarks/app-update.tsx', 'benchmarkAppUpdate'],
-      ['./src/benchmarks/list-reconcile.tsx', 'benchmarkListReconcile'],
-      ['./src/benchmarks/reconcile.tsx', 'benchmarkReconcile'],
-      ['./src/benchmarks/reactive-update.tsx', 'benchmarkReactiveUpdate'],
-      ['./src/benchmarks/toggle.tsx', 'benchmarkToggle'],
+      ['./src/benchmarks/axes/app/initial-render.tsx', 'benchmarkInitialRender'],
+      ['./src/benchmarks/axes/app/app-update.tsx', 'benchmarkAppUpdate'],
+      ['./src/benchmarks/axes/list/list-reconcile.tsx', 'benchmarkListReconcile'],
+      ['./src/benchmarks/axes/list/reconcile.tsx', 'benchmarkReconcile'],
+      ['./src/benchmarks/axes/list/reactive-update.tsx', 'benchmarkReactiveUpdate'],
+      ['./src/benchmarks/axes/list/toggle.tsx', 'benchmarkToggle'],
     ];
     for (const [path, fn] of axes) {
       try {
@@ -132,7 +133,21 @@ async function runBenchmarks() {
   console.log('\n✅ Benchmarks completed!\n');
 }
 
+// IT RECORDS NOTHING AND IT STILL REFUSES. A figure read off this console is quoted exactly as
+// easily as one read out of `.gate/`, and the six axes below print theirs by the hundred. The
+// bypass has to be typed, as it does on the recording path.
+const proceedStale = process.argv.includes('--stale');
+
 async function main() {
+  const stale = staleExoDistPackages(rootDir);
+  if (stale.length > 0 && !proceedStale) {
+    printStaleExoDist(stale, 'PRINT');
+    console.error(
+      '\n  Run `npm run build:all` at the repository root and run again. To print a reading\n' +
+        '  against the build as it stands, pass `--stale`.\n'
+    );
+    process.exit(3);
+  }
   try {
     await startViteServer();
     await runBenchmarks();

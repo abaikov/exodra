@@ -1,6 +1,6 @@
 ---
 title: Dependency graph
-description: The architecture of this repository, generated from the code and checked in CI.
+description: The architecture of this repository, generated from the code.
 ---
 
 import DependencyGraph from '@site/src/components/DependencyGraph';
@@ -11,9 +11,42 @@ Two levels, both read out of the source. The **packages** and how they depend on
 each other; and, when you open one, **what is inside it** — its classes,
 functions and types, and how they reach each other.
 
-Nothing here is drawn by hand: `npm run atlas` regenerates it and
-`npm run atlas:verify` fails the build when it no longer matches the
-code.
+Nothing here is drawn by hand: `npm run atlas` regenerates the model, the layout
+and the stylesheet from the sources, and `npm run atlas:verify` re-runs the crawl
+and fails if what is committed no longer matches the code.
+
+:::caution `atlas:verify` runs — but only as part of `release:check`
+This page has been wrong about this gate twice. It first said `atlas:verify`
+"fails the build", which it did not, because nothing ran it. It then said it "is
+in no workflow, in no `release:check`, and in no other script", and that has
+stopped being true: `atlas:verify` is now the sixth step of `release:check` in the
+root `package.json`, and `release:check` is exactly what
+`.github/workflows/ci.yml` and `.github/workflows/release.yml` run. So a
+committed model that no longer matches the code **does** fail CI.
+
+What is still true is that nothing narrower runs it. `npm test`, a lint pass or a
+docs build will not notice a stale crawl, so between full `release:check` runs the
+picture below is regenerated when someone last remembered to.
+
+This was the sixth gate found written-but-uninvoked here, and the root
+`package.json` keeps the tally of the other five beside `release:check`, with the
+reason it keeps happening: *"a gate that is written but never invoked looks
+identical, in a diff, to one that runs."* `graph:check` and `graph:verify` were
+two of them and were wired into `release:check` on 2026-08-20 — but `graph:verify`
+regenerates `package-graph.md`, a different artefact, and does not touch this one.
+:::
+
+:::caution The interactive view is not currently rebuildable
+`@exodra/monorepo-atlas` still produces all of the **data** — the crawl, the
+model, the geometry, the palette and `graph.css`. What it no longer produces is
+the **browser half**: `createExplorer`, `createGraphView`, `mountExplorer` and
+`mountFromUrl` built their trees on the renderer that has been deleted, and they
+went with it (`packages/monorepo-atlas/src/index.ts`). The bundle this page loads
+is the last one that was built, kept because a picture nobody can redraw is still
+better than no picture — but it will drift from the data until the view is
+re-authored on the schema core. The package's README states the shape of that
+job.
+:::
 
 <DependencyGraph />
 
@@ -55,17 +88,29 @@ layout from `package.json` or `pnpm-workspace.yaml`, and picks up your
 dependency-cruiser rules if you have them:
 
 ```bash
-npx exo-graph --out static/graph
+npm i -D @exodra/monorepo-atlas
+npx exo-atlas --out public/atlas
 ```
 
-```html
-<link rel="stylesheet" href="/graph/graph.css" />
-<div id="exo-graph"></div>
-<script type="module" src="/graph/graph.js"></script>
+That writes the artefacts, and nothing else — see the caution above for what is
+missing:
+
+```
+public/atlas/graph.json           model + layout
+public/atlas/graph.css            theme variables + structural rules
+public/atlas/insides/index.json   which packages have an inside worth opening
+public/atlas/insides/<pkg>.json   one per package
 ```
 
-Colours are yours: every mark paints from a CSS custom property, so a stylesheet
-of your own is enough to make it look like your site.
+Every node carries its kind, its module count, the declarations it exports and
+the rules it breaks; every edge carries its weight, its kinds (`value`,
+`type-only`, `dynamic`), the evidence behind it and its violations. The layout
+gives each node a box and each edge a routed polyline, so a consumer can draw it
+without running a layout engine of its own.
+
+Colours are yours: `renderGraphCss()` emits every mark's rules against CSS custom
+properties and ships defaults, so a stylesheet of your own is enough to make it
+look like your site.
 
 ```css
 .exo-graph {

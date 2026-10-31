@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsup';
-import { browserGlobal } from '../browser-tsup.mjs';
+import { browserGlobal, browserModule } from '../browser-tsup.mjs';
 
 export default defineConfig([
     {
@@ -11,9 +11,14 @@ export default defineConfig([
         outDir: 'dist',
         splitting: false,
         treeshake: false,
-        keepNames: true,
+        // No minification here, so function names survive anyway — `keepNames` only adds esbuild
+        // `__name` wrappers, emitted as bare unannotated top-level calls that a bundler is
+        // entitled to read as a side effect and keep alive against tree-shaking.
+        keepNames: false,
         tsconfig: 'tsconfig.tsup.json',
     },
-    // CDN <script> global: window.Exodra.forms (self-contained, no runtime deps)
+    // CDN <script> global: window.Exodra.forms. Nothing here imports anything at runtime, so both
+    // browser builds are self-contained.
     browserGlobal({ globalName: 'Exodra.forms' }),
+    browserModule(),
 ]);

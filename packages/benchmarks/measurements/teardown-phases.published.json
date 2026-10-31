@@ -1,0 +1,101 @@
+{
+  "axis": "teardown-phases",
+  "label": "published",
+  "quantum": 0.1,
+  "batch": 20,
+  "rows": [
+    {
+      "name": "hide",
+      "reps": 400,
+      "min": 0.0535,
+      "p25": 0.0545,
+      "median": 0.056,
+      "p75": 0.0582,
+      "max": 0.068,
+      "perElement": 280
+    },
+    {
+      "name": "clear region",
+      "reps": 400,
+      "min": 0.0535,
+      "p25": 0.0545,
+      "median": 0.0563,
+      "p75": 0.0583,
+      "max": 0.064,
+      "perElement": 281.3
+    },
+    {
+      "name": "unmount loop",
+      "reps": 400,
+      "min": 0.0098,
+      "p25": 0.0103,
+      "median": 0.0105,
+      "p75": 0.011,
+      "max": 0.012,
+      "perElement": 52.5
+    },
+    {
+      "name": "dispatch only",
+      "reps": 400,
+      "min": 0.0047,
+      "p25": 0.005,
+      "median": 0.005,
+      "p75": 0.0053,
+      "max": 0.008,
+      "perElement": 25
+    },
+    {
+      "name": "unmount loop bnd",
+      "reps": 400,
+      "min": 0.0143,
+      "p25": 0.015,
+      "median": 0.0157,
+      "p75": 0.0163,
+      "max": 0.02,
+      "perElement": 78.7
+    },
+    {
+      "name": "textContent",
+      "reps": 400,
+      "min": 0.043,
+      "p25": 0.0437,
+      "median": 0.0452,
+      "p75": 0.047,
+      "max": 0.0525,
+      "perElement": 226.2
+    },
+    {
+      "name": "drop per child",
+      "reps": 400,
+      "min": 0.069,
+      "p25": 0.07,
+      "median": 0.0712,
+      "p75": 0.073,
+      "max": 0.0772,
+      "perElement": 356.3
+    },
+    {
+      "name": "registry evict",
+      "reps": 3000,
+      "min": 0.0028,
+      "p25": 0.003,
+      "median": 0.0031,
+      "p75": 0.0031,
+      "max": 0.0033,
+      "perElement": 15.3
+    },
+    {
+      "name": "run disposers",
+      "reps": 3000,
+      "min": 0.0052,
+      "p25": 0.0053,
+      "median": 0.0054,
+      "p75": 0.0054,
+      "max": 0.0069,
+      "perElement": 26.8
+    }
+  ],
+  "refusals": [
+    "teardown-phases: the ladder did not nest (hide 0.0560, clear 0.0563, unmount 0.0105, dispatch 0.0050 ms) — a stage measured cheaper than the stage it contains, so every ladder subtraction above is noise and only the isolated rows mean anything. Raise `rounds`, or read the isolated rows alone."
+  ]
+}

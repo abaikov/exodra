@@ -1,0 +1,177 @@
+{
+  "axis": "keystroke-floor",
+  "label": "published",
+  "quantum": 0.1,
+  "batch": 1,
+  "rows": [
+    {
+      "name": "KEYSTROKE/driver",
+      "reps": 1,
+      "min": 0.9259,
+      "p25": 1.0185,
+      "median": 1.0185,
+      "p75": 1.1111,
+      "max": 1.2037,
+      "section": "KEYSTROKE"
+    },
+    {
+      "name": "KEYSTROKE/floor·per-el",
+      "reps": 1,
+      "min": 1.2963,
+      "p25": 1.3889,
+      "median": 1.3889,
+      "p75": 1.4815,
+      "max": 1.5741,
+      "section": "KEYSTROKE"
+    },
+    {
+      "name": "KEYSTROKE/floor·per-el·twin",
+      "reps": 1,
+      "min": 1.2963,
+      "p25": 1.3889,
+      "median": 1.3889,
+      "p75": 1.4815,
+      "max": 1.5741,
+      "section": "KEYSTROKE"
+    },
+    {
+      "name": "KEYSTROKE/floor·root",
+      "reps": 1,
+      "min": 1.2963,
+      "p25": 1.3889,
+      "median": 1.3889,
+      "p75": 1.4815,
+      "max": 1.5741,
+      "section": "KEYSTROKE"
+    },
+    {
+      "name": "KEYSTROKE/exodra",
+      "reps": 1,
+      "min": 1.4815,
+      "p25": 1.5741,
+      "median": 1.6667,
+      "p75": 1.6667,
+      "max": 1.8519,
+      "section": "KEYSTROKE"
+    },
+    {
+      "name": "KEYSTROKE/exodra·deleg",
+      "reps": 1,
+      "min": 2.2222,
+      "p25": 2.3148,
+      "median": 2.4074,
+      "p75": 2.4074,
+      "max": 2.5926,
+      "section": "KEYSTROKE"
+    },
+    {
+      "name": "KEYSTROKE/exodra·free",
+      "reps": 1,
+      "min": 1.3889,
+      "p25": 1.4815,
+      "median": 1.5741,
+      "p75": 1.5741,
+      "max": 1.7593,
+      "section": "KEYSTROKE"
+    },
+    {
+      "name": "MOUNT/driver",
+      "reps": 40,
+      "min": 0.035,
+      "p25": 0.0375,
+      "median": 0.0375,
+      "p75": 0.04,
+      "max": 0.0425,
+      "section": "MOUNT"
+    },
+    {
+      "name": "MOUNT/floor·per-el",
+      "reps": 40,
+      "min": 0.0425,
+      "p25": 0.045,
+      "median": 0.045,
+      "p75": 0.0475,
+      "max": 0.05,
+      "section": "MOUNT"
+    },
+    {
+      "name": "MOUNT/floor·per-el·twin",
+      "reps": 40,
+      "min": 0.0425,
+      "p25": 0.045,
+      "median": 0.045,
+      "p75": 0.0475,
+      "max": 0.055,
+      "section": "MOUNT"
+    },
+    {
+      "name": "MOUNT/floor·root",
+      "reps": 40,
+      "min": 0.035,
+      "p25": 0.0375,
+      "median": 0.0375,
+      "p75": 0.04,
+      "max": 0.0425,
+      "section": "MOUNT"
+    },
+    {
+      "name": "MOUNT/exodra",
+      "reps": 40,
+      "min": 0.0475,
+      "p25": 0.05,
+      "median": 0.0525,
+      "p75": 0.0525,
+      "max": 0.0575,
+      "section": "MOUNT"
+    },
+    {
+      "name": "MOUNT/exodra·deleg",
+      "reps": 40,
+      "min": 0.04,
+      "p25": 0.0425,
+      "median": 0.045,
+      "p75": 0.045,
+      "max": 0.05,
+      "section": "MOUNT"
+    },
+    {
+      "name": "MOUNT/exodra·free",
+      "reps": 40,
+      "min": 0.0475,
+      "p25": 0.05,
+      "median": 0.05,
+      "p75": 0.0525,
+      "max": 0.0575,
+      "section": "MOUNT"
+    }
+  ],
+  "nulls": [
+    {
+      "section": "MOUNT",
+      "unit": "µs",
+      "resolution": 0.092593,
+      "pairs": [
+        {
+          "name": "keystroke",
+          "bias": 0,
+          "noise": 0.092593,
+          "noiseP75": 0.092593,
+          "worst": 0.277778,
+          "what": "|floor·per-el − its twin| per keystroke, true Δ = 0 (µs)"
+        },
+        {
+          "name": "mount",
+          "bias": 0,
+          "noise": 0.0025,
+          "noiseP75": 0.0025,
+          "worst": 0.01,
+          "what": "|floor·per-el − its twin| per mount, true Δ = 0 (ms)"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    "keystroke-floor: \"exodra·free\" is faster BECAUSE IT DOES LESS, and what it stopped doing has a name — writing the field FROM the model. A page that takes this strategy gives up the programmatic clear, the trim, the rejected character and the restored draft. Quote it as a TRADE, never as a free win.",
+    "keystroke-floor: the keystroke null resolved 0.092593 µs where the smallest difference this table is asked for is 0.0926 µs — this run cannot separate the strategies from each other, so the rows above are an ordering and not a set of sizes. Raise `rounds`, or raise the batch."
+  ]
+}

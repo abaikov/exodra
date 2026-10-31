@@ -1,0 +1,28 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        // NOT `dist` — see tsconfig.build.json. `dist` is tsup's, and is what gets published.
+        "outDir": "./.tsbuild",
+        "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+        "rootDir": "./src",
+        // NO `DOM`, and that is the point of the package rather than an omission. Nothing here
+        // touches a node: a field is a bit in a word, a derivation is a function of fields, and the
+        // one thing written at the end is handed to `connector.set(port, value)` — a method every
+        // backend answers, including the server renderer and `@exodra/term`, where `Node` and
+        // `Element` do not exist.
+        "lib": ["ES2020"],
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "baseUrl": ".",
+        "paths": {
+            "@exodra/core": ["../core/.tsbuild/index.d.ts"]
+        }
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts"],
+    "references": [{ "path": "../core" }]
+}

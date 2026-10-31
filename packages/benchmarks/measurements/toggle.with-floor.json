@@ -1,0 +1,188 @@
+{
+  "axis": "toggle",
+  "label": "with-floor",
+  "quantum": 0.1,
+  "batch": 1,
+  "rows": [
+    {
+      "name": "TOGGLE/floor·kept·owned:",
+      "min": 1.4,
+      "p25": 1.5,
+      "median": 1.6,
+      "p75": 1.6,
+      "max": 4.7,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/floor·kept:",
+      "min": 1.8,
+      "p25": 2,
+      "median": 2.1,
+      "p75": 2.1,
+      "max": 6.4,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/exodraKept",
+      "min": 1.9,
+      "p25": 2.1,
+      "median": 2.2,
+      "p75": 2.3,
+      "max": 5.5,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/mikadoPooled",
+      "min": 2.1,
+      "p25": 2.3,
+      "median": 2.4,
+      "p75": 2.4,
+      "max": 4,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/mikado",
+      "min": 4.5,
+      "p25": 4.8,
+      "median": 4.9,
+      "p75": 5,
+      "max": 6.9,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/floor·rebuild·owned:",
+      "min": 4.7,
+      "p25": 5.1,
+      "median": 5.3,
+      "p75": 5.4,
+      "max": 7.2,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/exodraDelegated",
+      "min": 5,
+      "p25": 5.4,
+      "median": 5.5,
+      "p75": 5.6,
+      "max": 16.3,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/floor·rebuild·twin:",
+      "min": 5,
+      "p25": 5.5,
+      "median": 5.7,
+      "p75": 5.9,
+      "max": 9.5,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/floor·rebuild:",
+      "min": 5.1,
+      "p25": 5.6,
+      "median": 5.7,
+      "p75": 5.9,
+      "max": 8,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/stage0",
+      "min": 5.3,
+      "p25": 5.6,
+      "median": 5.8,
+      "p75": 6,
+      "max": 7.9,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/solid",
+      "min": 5.4,
+      "p25": 5.7,
+      "median": 5.9,
+      "p75": 6.1,
+      "max": 6.5,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/floor·rebuild·frag:",
+      "min": 5.5,
+      "p25": 5.7,
+      "median": 5.9,
+      "p75": 6.1,
+      "max": 8.6,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/exodra",
+      "min": 5.7,
+      "p25": 5.9,
+      "median": 6.2,
+      "p75": 6.3,
+      "max": 12.9,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/marko",
+      "min": 7.6,
+      "p25": 8.3,
+      "median": 8.7,
+      "p75": 9.2,
+      "max": 11.2,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/svelte",
+      "min": 8.5,
+      "p25": 9,
+      "median": 9.7,
+      "p75": 10.1,
+      "max": 17.9,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/uhtml",
+      "min": 11.1,
+      "p25": 12,
+      "median": 12.4,
+      "p75": 12.8,
+      "max": 16.6,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/lit",
+      "min": 12.3,
+      "p25": 13.2,
+      "median": 13.6,
+      "p75": 14,
+      "max": 16.1,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/sinuous",
+      "min": 13.3,
+      "p25": 14,
+      "median": 14.6,
+      "p75": 14.9,
+      "max": 18.9,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/react",
+      "min": 17.5,
+      "p25": 19.1,
+      "median": 19.7,
+      "p75": 20.6,
+      "max": 31.1,
+      "section": "TOGGLE"
+    },
+    {
+      "name": "TOGGLE/voby",
+      "min": 18.3,
+      "p25": 21.2,
+      "median": 22.5,
+      "p75": 23.5,
+      "max": 36.1,
+      "section": "TOGGLE"
+    }
+  ]
+}

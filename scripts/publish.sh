@@ -60,53 +60,90 @@ for package in "${PACKAGES[@]}"; do
     done < <(node -p "(require('./$package/package.json').files || []).join('\n')")
 done
 
+# WHAT ACTUALLY WENT UP, and what did not. These two lists are the report at the end, and the
+# reason they exist is that this script used to print "🎉 All packages published successfully!"
+# and exit 0 after publishing NOTHING AT ALL: every package whose version was already on the
+# registry was skipped with a warning nobody reads in a CI log, and a release that shipped zero
+# bytes was indistinguishable from one that shipped everything.
+PUBLISHED=()
+SKIPPED=()
+
 for package in "${PACKAGES[@]}"; do
     echo "📤 Publishing $package..."
-    
+
     cd "$package"
-    
+
     # Check if package.json exists
     if [[ ! -f "package.json" ]]; then
         echo "⚠️  Skipping $package - no package.json found"
+        SKIPPED+=("$package (no package.json)")
         cd - > /dev/null
         continue
     fi
-    
+
     # Get package name and version
     PACKAGE_NAME=$(node -p "require('./package.json').name")
     PACKAGE_VERSION=$(node -p "require('./package.json').version")
-    
+
     echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION"
-    
-    # Check if this version already published
+
+    # Check if this version already published.
+    #
+    # A SKIP IS NOT A FAILURE and must not become one: a package nobody touched this cycle
+    # legitimately keeps its version, and refusing to release because one of nineteen packages
+    # is unchanged would make every partial release impossible. What it must not be either is
+    # SILENT — so it is recorded, named at the end, and the run fails if it turns out that
+    # EVERY package took this branch (see the summary below).
     if npm view "$PACKAGE_NAME@$PACKAGE_VERSION" > /dev/null 2>&1; then
-        echo "⚠️  $PACKAGE_NAME@$PACKAGE_VERSION already published, skipping"
+        echo "⏭️  SKIPPED — $PACKAGE_NAME@$PACKAGE_VERSION is already on the registry."
+        echo "    Nothing was published for this package. Bump its version to ship a change."
+        SKIPPED+=("$PACKAGE_NAME@$PACKAGE_VERSION")
     else
         # Publish with public access for scoped packages
         npm publish --access public
         echo "✅ Published $PACKAGE_NAME@$PACKAGE_VERSION"
+        PUBLISHED+=("$PACKAGE_NAME@$PACKAGE_VERSION")
     fi
-    
+
     cd - > /dev/null
     echo ""
 done
 
-echo "🎉 All packages published successfully!"
+echo "════════════════════════════════════════════════════════════"
+echo "📋 Release summary: ${#PUBLISHED[@]} published, ${#SKIPPED[@]} skipped"
+echo "════════════════════════════════════════════════════════════"
 echo ""
-echo "📋 Published packages:"
-for package in "${PACKAGES[@]}"; do
-    if [[ -f "$package/package.json" ]]; then
-        PACKAGE_NAME=$(cd "$package" && node -p "require('./package.json').name")
-        PACKAGE_VERSION=$(cd "$package" && node -p "require('./package.json').version") 
-        echo "  ✅ $PACKAGE_NAME@$PACKAGE_VERSION"
-    fi
-done
 
+if [ ${#PUBLISHED[@]} -gt 0 ]; then
+    echo "✅ PUBLISHED (${#PUBLISHED[@]}):"
+    for entry in "${PUBLISHED[@]}"; do
+        echo "  ✅ $entry"
+    done
+    echo ""
+fi
+
+if [ ${#SKIPPED[@]} -gt 0 ]; then
+    echo "⏭️  SKIPPED — already on the registry, nothing shipped (${#SKIPPED[@]}):"
+    for entry in "${SKIPPED[@]}"; do
+        echo "  ⏭️  $entry"
+    done
+    echo ""
+fi
+
+# THE RELEASE THAT SHIPPED NOTHING. Every package was already published, which means this run
+# changed nothing on the registry — and the only way that is not a mistake is if somebody
+# deliberately re-ran a finished release. Either way it is not a success, and reporting it as
+# one is how a version bump that never got committed reaches production as "released".
+if [ ${#PUBLISHED[@]} -eq 0 ]; then
+    echo "❌ NOTHING WAS PUBLISHED. All ${#SKIPPED[@]} packages were already on the registry."
+    echo "   Either the versions were never bumped (run: npm run version:apply), or this"
+    echo "   release has already been shipped. Failing rather than reporting success."
+    exit 1
+fi
+
+echo "🎉 Release complete: ${#PUBLISHED[@]} package(s) published."
 echo ""
 echo "🔗 NPM Links:"
-for package in "${PACKAGES[@]}"; do
-    if [[ -f "$package/package.json" ]]; then
-        PACKAGE_NAME=$(cd "$package" && node -p "require('./package.json').name")
-        echo "  https://www.npmjs.com/package/$PACKAGE_NAME"
-    fi
+for entry in "${PUBLISHED[@]}"; do
+    echo "  https://www.npmjs.com/package/${entry%@*}"
 done

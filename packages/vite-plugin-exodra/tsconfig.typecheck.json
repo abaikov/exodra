@@ -1,0 +1,30 @@
+{
+  // THE TYPECHECK PROJECT. Separate from `tsconfig.json` because that file is what tsup
+  // reads (no `tsconfig.tsup.json` here) and because it sets `composite: false` outright,
+  // which a referenced project may not do.
+  //
+  // Emit goes to `.tsbuild`, never `dist` — see tsconfig.build.json's header.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "baseUrl": ".",
+    // `@exodra/router` is a peer dependency and `babel-preset-exodra` a real one; both are
+    // workspace packages, and both would otherwise resolve through node_modules to a
+    // published `dist` that does not exist yet when the typecheck runs.
+    "paths": {
+      "@exodra/router": ["../router/.tsbuild/index.d.ts"],
+      "babel-preset-exodra": ["../babel-preset-exodra/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules", "**/*.test.ts", "**/*.spec.ts"],
+  "references": [
+    { "path": "../router" },
+    { "path": "../babel-preset-exodra/tsconfig.typecheck.json" }
+  ]
+}

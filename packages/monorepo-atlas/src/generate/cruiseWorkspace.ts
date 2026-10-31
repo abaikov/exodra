@@ -63,26 +63,17 @@ export async function cruiseWorkspace(
         // disappeared from this repository's own graph.)
         tsPreCompilationDeps: true,
         validate: hasRules,
-        ...(hasRules
-            ? { ruleSet: { forbidden: config.forbidden, allowed: config.allowed } }
-            : {}),
+        ...(hasRules ? { ruleSet: { forbidden: config.forbidden, allowed: config.allowed } } : {}),
     };
     if (options.tsConfig) {
         cruiseOptions.tsConfig = { fileName: options.tsConfig };
     }
 
     const entries = options.entries ?? defaultEntries(root);
-    const result = await cruise(
-        entries as string[],
-        cruiseOptions as never,
-        undefined,
-        undefined
-    );
+    const result = await cruise(entries as string[], cruiseOptions as never, undefined, undefined);
 
     return (
-        typeof result.output === 'string'
-            ? JSON.parse(result.output)
-            : result.output
+        typeof result.output === 'string' ? JSON.parse(result.output) : result.output
     ) as TExoCruiseInput;
 }
 
@@ -99,7 +90,7 @@ function findConfig(root: string): string | undefined {
  * and pnpm workspaces actually use; `src` covers a single-package repository.
  */
 function defaultEntries(root: string): string[] {
-    const candidates = ['packages', 'apps', 'libs', 'src'].filter(dir =>
+    const candidates = ['packages', 'apps', 'libs', 'src'].filter((dir) =>
         existsSync(join(root, dir))
     );
     return candidates.length > 0 ? candidates : ['.'];

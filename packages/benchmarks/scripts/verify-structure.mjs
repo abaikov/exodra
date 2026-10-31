@@ -1,7 +1,21 @@
 // Honesty gate for the benchmark: every framework must render the SAME DOM as the
 // canonical app, else its speed/heap numbers are meaningless. Mounts each fw once
-// and counts the structural nodes. Expected (from todo-app.tsx): 80 cards, 80 tog,
-// 80 addtag, 40 details (even i), 200 tags (sum of startCount over 80 cards).
+// and counts the structural nodes. Expected (from todo-spec.ts): 10 decks, 10 author
+// spans, 10 dates, 10 rename buttons, 10 `.cards` containers, 80 cards, 80 tog,
+// 80 addtag, 40 details (even i), 200 tags (sum of startCount over 80 cards),
+// 80 count spans (one per card, the `.count` label beside the tag list).
+//
+// The selectors here did not change when the card gained its three derived values —
+// two of the three are a TEXT and an ATTRIBUTE inside elements this already counts,
+// and only `.count` is a new element. They DID change when the app gained its third
+// level, because a deck is five new elements plus the container its cards live in,
+// and a participant that dropped the deck level entirely would otherwise pass this
+// gate on an app one level shallower than the reference. It is counted for the same
+// reason every other kind is: this gate cannot see a wrong value, but it must not be
+// able to miss a missing element.
+// `exodra` is Exodra's own implementation (src/benchmarks/apps/exodra/exodra.tsx), mounted through
+// `participants/exodra/app.tsx`, and is also the
+// suite's markup reference; the rest come from `loadMounts()`.
 import { chromium } from 'playwright';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -27,9 +41,10 @@ try {
   await page.waitForSelector('#runAll', { timeout: 10000 });
 
   const rows = await page.evaluate(async () => {
-    const { loadMounts } = await import('/src/benchmarks/todo-app.tsx');
-    const mounts = await loadMounts();
-    const names = ['exodra', 'solid', 'svelte', 'react', 'voby'];
+    const { loadMounts } = await import('/src/benchmarks/participants/bundled/todo-app.tsx');
+    const { mountExodraApp } = await import('/src/benchmarks/participants/exodra/app.tsx');
+    const mounts = { exodra: mountExodraApp, ...(await loadMounts()) };
+    const names = ['exodra', 'solid', 'svelte', 'react', 'voby', 'marko'];
     const out = [];
     for (const name of names) {
       const d = document.createElement('div');
@@ -38,7 +53,7 @@ try {
       try {
         const app = mounts[name](d);
         const q = s => d.querySelectorAll(s).length;
-        counts = { card: q('.card'), tog: q('.tog'), addtag: q('.addtag'), details: q('.details'), tag: q('.tag'), h3: q('h3') };
+        counts = { deck: q('.deck'), h2: q('.deck > h2'), author: q('.author'), date: q('.date'), ren: q('.ren'), cards: q('.cards'), card: q('.card'), tog: q('.tog'), addtag: q('.addtag'), details: q('.details'), tag: q('.tag'), h3: q('h3'), count: q('.count') };
         app.teardown();
       } catch (e) { counts = { error: String(e && e.message || e) }; }
       d.remove();
@@ -47,7 +62,7 @@ try {
     return out;
   });
 
-  const expected = { card: 80, tog: 80, addtag: 80, details: 40, tag: 200, h3: 80 };
+  const expected = { deck: 10, h2: 10, author: 10, date: 10, ren: 10, cards: 10, card: 80, tog: 80, addtag: 80, details: 40, tag: 200, h3: 80, count: 80 };
   console.log('\nexpected:', JSON.stringify(expected));
   let allOk = true;
   for (const [name, c] of rows) {

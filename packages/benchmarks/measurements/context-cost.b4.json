@@ -1,0 +1,281 @@
+{
+  "axis": "context-cost",
+  "label": "b4",
+  "quantum": null,
+  "batch": 4,
+  "rows": [
+    {
+      "name": "climb·d4",
+      "reps": 100000,
+      "min": 106,
+      "p25": 109,
+      "median": 109,
+      "p75": 111,
+      "max": 115
+    },
+    {
+      "name": "local·d4",
+      "reps": 100000,
+      "min": 107,
+      "p25": 108,
+      "median": 109,
+      "p75": 110,
+      "max": 118
+    },
+    {
+      "name": "parent·d4",
+      "reps": 100000,
+      "min": 85,
+      "p25": 88,
+      "median": 88,
+      "p75": 90,
+      "max": 95
+    },
+    {
+      "name": "parent·d4·twin",
+      "reps": 100000,
+      "min": 86,
+      "p25": 88,
+      "median": 89,
+      "p75": 90,
+      "max": 95
+    },
+    {
+      "name": "climb·d16",
+      "reps": 40000,
+      "min": 297.5,
+      "p25": 302.5,
+      "median": 305,
+      "p75": 307.5,
+      "max": 335
+    },
+    {
+      "name": "local·d16",
+      "reps": 40000,
+      "min": 297.5,
+      "p25": 302.5,
+      "median": 302.5,
+      "p75": 307.5,
+      "max": 317.5
+    },
+    {
+      "name": "parent·d16",
+      "reps": 40000,
+      "min": 230,
+      "p25": 235,
+      "median": 237.5,
+      "p75": 240,
+      "max": 255
+    },
+    {
+      "name": "parent·d16·twin",
+      "reps": 40000,
+      "min": 227.5,
+      "p25": 235,
+      "median": 237.5,
+      "p75": 240,
+      "max": 252.5
+    },
+    {
+      "name": "climb·d64",
+      "reps": 11768,
+      "min": 994.2216,
+      "p25": 1011.2169,
+      "median": 1019.7145,
+      "p75": 1036.7097,
+      "max": 1079.1978
+    },
+    {
+      "name": "local·d64",
+      "reps": 11768,
+      "min": 977.2264,
+      "p25": 994.2216,
+      "median": 1011.2169,
+      "p75": 1019.7145,
+      "max": 1070.7002
+    },
+    {
+      "name": "parent·d64",
+      "reps": 11768,
+      "min": 832.7668,
+      "p25": 858.2597,
+      "median": 866.7573,
+      "p75": 875.2549,
+      "max": 917.743
+    },
+    {
+      "name": "parent·d64·twin",
+      "reps": 11768,
+      "min": 841.2644,
+      "p25": 858.2597,
+      "median": 866.7573,
+      "p75": 875.2549,
+      "max": 934.7383
+    },
+    {
+      "name": "push",
+      "reps": 128000,
+      "min": 0,
+      "p25": 0.7813,
+      "median": 1.5625,
+      "p75": 1.5625,
+      "max": 2.3438
+    },
+    {
+      "name": "provide·marked",
+      "reps": 128000,
+      "min": 4.6875,
+      "p25": 5.4687,
+      "median": 5.4687,
+      "p75": 6.25,
+      "max": 8.5938
+    },
+    {
+      "name": "provide·nomark",
+      "reps": 128000,
+      "min": 6.25,
+      "p25": 7.0313,
+      "median": 7.8125,
+      "p75": 7.8125,
+      "max": 10.9375
+    },
+    {
+      "name": "inject·1",
+      "reps": 600000,
+      "min": 1.3333,
+      "p25": 1.5,
+      "median": 1.6667,
+      "p75": 1.6667,
+      "max": 1.8333
+    },
+    {
+      "name": "inject·2",
+      "reps": 600000,
+      "min": 2.3333,
+      "p25": 2.5,
+      "median": 2.6667,
+      "p75": 2.6667,
+      "max": 2.8333
+    },
+    {
+      "name": "inject·8",
+      "reps": 600000,
+      "min": 7.5,
+      "p25": 7.5,
+      "median": 7.6667,
+      "p75": 7.8333,
+      "max": 8.1667
+    },
+    {
+      "name": "inject·miss8",
+      "reps": 600000,
+      "min": 7.3333,
+      "p25": 7.6667,
+      "median": 7.6667,
+      "p75": 7.8333,
+      "max": 8.1667
+    },
+    {
+      "name": "inject·1·twin",
+      "reps": 600000,
+      "min": 1.3333,
+      "p25": 1.6667,
+      "median": 1.6667,
+      "p75": 1.6667,
+      "max": 1.8333
+    },
+    {
+      "name": "mount·inherit",
+      "reps": 800,
+      "min": 625,
+      "p25": 750,
+      "median": 750,
+      "p75": 875,
+      "max": 1000
+    },
+    {
+      "name": "mount·bare",
+      "reps": 800,
+      "min": 750,
+      "p25": 875,
+      "median": 875,
+      "p75": 875.0001,
+      "max": 1125
+    },
+    {
+      "name": "mount·bare·twin",
+      "reps": 800,
+      "min": 750,
+      "p25": 875,
+      "median": 875,
+      "p75": 1000,
+      "max": 1125
+    }
+  ],
+  "nulls": [
+    {
+      "section": null,
+      "unit": "µs",
+      "resolution": 0.008498,
+      "pairs": [
+        {
+          "name": "parent·d4",
+          "bias": 0.001,
+          "noise": 0.001,
+          "noiseP75": 0.001,
+          "worst": 0.004,
+          "what": "|parent·d4 − its twin|, true Δ = 0"
+        },
+        {
+          "name": "parent·d16",
+          "bias": 0,
+          "noise": 0.0025,
+          "noiseP75": 0.0025,
+          "worst": 0.0125,
+          "what": "|parent·d16 − its twin|, true Δ = 0"
+        },
+        {
+          "name": "parent·d64",
+          "bias": 0,
+          "noise": 0.008498,
+          "noiseP75": 0.008498,
+          "worst": 0.050986,
+          "what": "|parent·d64 − its twin|, true Δ = 0"
+        }
+      ]
+    },
+    {
+      "section": null,
+      "unit": "µs",
+      "resolution": 0.000167,
+      "pairs": [
+        {
+          "name": "inject·1",
+          "bias": 0,
+          "noise": 0.000167,
+          "noiseP75": 0.000167,
+          "worst": 0.000333,
+          "what": "|inject·1 − its twin|, true Δ = 0"
+        }
+      ]
+    },
+    {
+      "section": null,
+      "unit": "µs",
+      "resolution": 0.125,
+      "pairs": [
+        {
+          "name": "mount·bare",
+          "bias": 0,
+          "noise": 0.125,
+          "noiseP75": 0.125,
+          "worst": 0.25,
+          "what": "|mount·bare − its twin|, true Δ = 0, WEAK (shared entry point)"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    "context-cost: \"push\" timed a region of 0.2000 ms against an observed clock of 0.1000 ms — under three ticks, so its median can move by a third of itself for no reason. Rerun with a larger batch: npm run axis --workspace=@exodra/benchmarks -- context-cost 100 16"
+  ]
+}

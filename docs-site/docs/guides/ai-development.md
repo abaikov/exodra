@@ -14,17 +14,27 @@ A React component's behavior lives inside a function body that runs at runtime �
 what's reactive, what re-renders, and why is opaque until it executes. Exodra is
 the opposite:
 
-- **The UI is plain data.** Every node is `{ type, attrs, cacheKey? }`. A tree is
-  a value you can read, walk, and reason about without running it.
-- **Reactivity is explicit and bucketed.** `static` vs `bindable` vs
-  `bindableList` vs `handlers` is declared, not inferred. A tool can see exactly
-  what can change and what can't — no dataflow guessing.
-- **No virtual DOM, no hidden magic.** There's no diffing black box to model; the
-  renderer touches only the reactive buckets.
+- **The shape is separate from the behaviour.** A component is a **schema** built
+  once and a **wiring function** run per instance. The schema is a straight-line
+  builder — `el`, `text`, `port`, `eventPort`, `textPort`, `childrenPort` — so
+  what markup a component produces is readable without running it.
+- **How a value is filled is written, never inferred.** `c.attr` / `c.text` is a
+  value written by the wire or a transition, an effect that runs a transition and
+  then subscribes is one that keeps up with a source, `c.list` is a fixed run and
+  `reconcileExoOrder` over `c.childList`, called from a transition, is a reconciled
+  one. [JSX](./jsx.md) declares the schema only: a literal attribute is
+  markup, and every port is named where it stands (`data-id={$.id}`, `{$.label}`,
+  `onClick={$.toggle}`, `<$.rows />`) for the machine to fill. A tool sees exactly what can change and what can't — no dataflow
+  guessing.
+- **No virtual DOM, no hidden magic.** There's no diffing black box to model: a
+  render is a clone, a walk plan and one call per port.
 
 The practical upshot: static analysis (and an LLM) can answer "what does this
 component render, what's reactive, where are the perf risks?" from the source
-alone. That's what the tooling below is built on.
+alone. That's what the tooling below is built on — `createExoSchema`,
+`createExoNamedSchema`, `createExoStatic` and `exoJsx` are the schema calls its
+analysis looks for, and `createExoMachineBuilder` / `createExoStatic` are what it
+counts as components.
 
 ## `@exodra/introspect` — analyze the tree
 
@@ -32,77 +42,60 @@ alone. That's what the tooling below is built on.
 npm install --save-dev @exodra/introspect
 ```
 
-The CLI is `exo-introspect`. Point it at a project and it produces **structured**
-analysis (schemas, components, routes, performance) — the kind of report you can
-hand straight to an LLM.
-
-```bash
-npx exo-introspect quick-check              # fast health check
-npx exo-introspect analyze                  # full project analysis
-npx exo-introspect components               # component patterns & complexity
-npx exo-introspect schemas                  # schema definitions & relationships
-npx exo-introspect routes                   # route / navigation structure
-npx exo-introspect performance              # hotspots & bottlenecks
-npx exo-introspect explain <file>           # AI explanation of one file
-npx exo-introspect check-thresholds <file>  # gate analysis against quality thresholds
-npx exo-introspect explore                  # launch the app + AI analysis
-```
-
-### Programmatic API
-
-Everything the CLI does is available as a function returning structured data —
-ideal for feeding an agent or a CI gate:
+The package has no CLI. It exports two things, both reading only your source:
 
 ```ts
-import { introspect, quickIntrospect, formatResults } from '@exodra/introspect';
+import { ExoIntrospectionEngine, eslintPlugin } from '@exodra/introspect';
 
-const result = await introspect({ projectRoot: '.', analysis: {
-  schema: true, components: true, performance: true, ai: false,
-} });
+const result = await new ExoIntrospectionEngine({
+  projectRoot: '.',
+  analysis: { schema: true, performance: true },
+}).analyze();
 
-// result carries: schemas, metrics, diagnostics, suggestions, summary
-console.log(formatResults(result, 'markdown'));
+// result carries: metrics, diagnostics, suggestions, summary
+console.log(JSON.stringify(result, null, 2));
 ```
 
-There are also composable analyzers — `SchemaAnalyzer`, `ComponentAnalyzer`,
-`PerformanceAnalyzer`, `ExoRouterAnalyzer`, `CodeAnalyzer` — if you want one
-dimension.
-
-## Editor / agent integration
-
-```bash
-npx exo-introspect setup           # zero-config: detects AI providers, writes integration files
-npx exo-introspect setup-cursor    # Cursor (Claude Code) integration
-npx exo-introspect ai providers    # list detected AI providers
-npx exo-introspect ai test         # test a provider connection
-```
-
-`setup` auto-detects providers from your environment (OpenAI, Anthropic, GitHub
-Copilot) and drops integration files so an assistant can call the analysis tools
-against your project. `ai:false` in the programmatic API keeps everything local
-and deterministic; flip it on to enrich reports with provider insights.
+`ExoIntrospectionEngine` reports TypeScript diagnostics, schemas built inside a
+function instead of at module scope, and per-file counts of components,
+reactive sources and control-flow complexity. `eslintPlugin` reports the same
+schema-scope mistake in the editor. The JSON result is structured enough to hand
+to an assistant or gate in CI. See the [Introspect page](../tooling/introspect.md)
+for the full list, and for what earlier versions invented and why it was removed.
 
 ## The canonical LLM reference
 
 The single most useful thing to give any coding assistant is Exodra's LLM
-reference — a compact, correct description of the buckets, reactivity, list
-reconciliation, and the gotchas that trip up React-trained models:
+reference — a compact, correct description of the schema/wiring split, the
+JSX dialect, transitions and effects, list reconciliation, and the gotchas that trip up
+React-trained models:
 
 **[exodra.org/llms.txt](https://exodra.org/llms.txt)**
 
 Paste it into your assistant's context (or your `.cursorrules` / project rules)
 before asking it to write Exodra code. Most AI mistakes come from assuming React
-semantics — flat props, `.value` signals, vDOM keys — and this file corrects all
-of them up front.
+semantics — flat props, `.value` signals, a virtual DOM keyed by `key` — and this
+file corrects all of them up front.
+
+There is a second failure mode, and the file ends with a section for it: **a model
+whose training data contains an older Exodra.** The three-props renderer
+(`h(type, attrs)`, the `static` / `bindable` / `bindableList` buckets,
+`defineComponent`, `mount`/`hydrate`, `subscribe`, `@exodra/babel-plugin-jsx`) has
+been **deleted** — `@exodra/core` and `@exodra/dom` both say so in their own
+barrels. An assistant that produces any of it is not guessing at React, it is
+recalling a program that no longer exists. The "What does NOT exist" section at the
+bottom of `llms.txt` is written to be pasted for exactly that.
 
 ## A typical loop
 
 1. Scaffold with `npm create exodra`.
-2. Give the assistant **exodra.org/llms.txt** so it writes idiomatic Exodra (typed
-   buckets, `getValue`/`setValue`, identity-stable lists).
-3. Run `exo-introspect analyze` (or the programmatic API) to get a structured
-   report of components, schemas, routes, and perf hotspots.
+2. Give the assistant **exodra.org/llms.txt** so it writes idiomatic Exodra
+   (a schema plus a wiring function, `getValue`/`setValue`, identity-stable
+   lists).
+3. Run `ExoIntrospectionEngine` to get a structured report of TypeScript
+   diagnostics, schemas built per call, and component / reactive-source counts.
 4. Feed that report back to the assistant to review, refactor, or gate in CI.
 
-Because the tree is data and the reactivity is explicit, every step is something a
-tool can read precisely — not something it has to guess by running your app.
+Because the shape is declared once and every fill says how it fills, every step is
+something a tool can read precisely — not something it has to guess by running
+your app.

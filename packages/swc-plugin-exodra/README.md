@@ -1,39 +1,103 @@
 # swc-plugin-exodra
 
-A Rust/Wasm SWC plugin that compiles Exodra JSX into `h()` / `text()` calls — a
-port of [`@exodra/babel-plugin-jsx`](../babel-plugin-jsx) for SWC-based toolchains
-(Next.js's default compiler, `@swc/jest`, `swc-loader`) which cannot run Babel
-plugins.
+A Rust/Wasm SWC plugin that compiles Exodra JSX, for the toolchains that cannot run
+a Babel plugin (Next.js's default compiler, `@swc/jest`, `swc-loader`).
 
-## Status
+It mirrors [`@exodra/babel-plugin-schema`](../babel-plugin-exodra-schema): the same
+dialect, `exoJsx<TPorts>(($) => <markup/>)` from `@exodra/jsx`, compiled to a
+module-level `createExoNamedSchema()` declaration. The output imports nothing but
+`@exodra/core`.
 
-Full parity with [`@exodra/babel-plugin-jsx`](../babel-plugin-jsx), verified by
-compiling the same inputs through both and comparing output:
+`"schema"` is the only dialect, and an omitted `"mode"` selects it. Any other value —
+`"legacy"` included — is a compile error.
 
-- intrinsic + component elements → `h("tag" | Comp, { ...buckets })`
-- the five typed buckets — `static` / `bindable`(s) / `bindableList`(s) /
-  `handlers` / `bindableHandlers` — and `props={...}` spreads
-- children (nested elements, text → `text("…")`, `{expr}`) into `static.children`
-- `bind:value` / `bind:checked` → `mergeAttrs(base, bindText|bindNumber|bindChecked|bindSelect(…))`
-- `cacheKey` / `cache:key` → the 3rd arg of `h()`
-- fragments: static `<>…</>` → array; `<>{items}</>` → `h(Fragment, { bindableLists })`
-- compile-time static hoisting: a fully-static element inside a loop / `.map()`
-  gets a shared `Symbol()` cacheKey
-- shadow-safe auto-imports: a local `text`/`h`/… falls back to a `_text` uid
-- STRICT: a flat attribute (`class`, `onClick`, …) is a hard compile error with a
-  code frame
+## What it emits
 
-> The emitted code is identical to the Babel plugin's up to SWC's own codegen
-> formatting (arrow spacing, quote style).
+A schema declaration in, a module-level schema out, built ONCE for the process, with
+every port created under the name written after `$.`. The machine that fills the ports
+is written in TypeScript around the declaration and is not touched.
+
+```tsx no-check
+import { exoJsx } from '@exodra/jsx';
+
+const ROW_SCHEMA = exoJsx<TRowPorts>(($) => (
+    <li class="row" data-id={$.id}>
+        <span class="row__label">{$.label}</span>
+        <button class="row__btn" onClick={$.toggle} />
+    </li>
+));
+```
+
+```js no-check
+import { createExoNamedSchema } from "@exodra/core";
+const _s0 = createExoNamedSchema(_b0 => {
+    _b0.el("li", { class: "row" }, _b1 => {
+        _b1.port("data-id", "id");
+        _b1.el("span", { class: "row__label" }, _b2 => { _b2.textPort("label"); });
+        _b1.el("button", { class: "row__btn" }, _b2 => { _b2.eventPort("click", "toggle"); });
+    });
+});
+const ROW_SCHEMA = _s0;
+```
+
+HOISTING IS NOT AN OPTIMISATION HERE, so there is no switch for it: every backend
+indexes its prepared plan by the schema's ports, so a declaration rebuilt per render is
+a different program, not a slower one.
+
+### The dialect
+
+| written | schema call | filled by the machine with |
+|---|---|---|
+| `class="row"`, `tabindex={0}`, `disabled` | folded into the markup | — |
+| `data-id={$.id}` | `port("data-id", "id")` | `c.attr(P.id, value)` |
+| `<span>{$.label}</span>` | `textPort("label")` | `c.text(P.label, value)` |
+| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `m.on(P.toggle, handler)` |
+| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `m.on(P.edit, handler)` |
+| `ref={$.box}` | `refPort("box")` | — |
+| `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(P.body, markup)` |
+| `<$.rows />` | `childrenPort("rows")` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
+
+Any other expression (a closure, `item.id`, a conditional), a component tag (`<Row />`),
+a fragment, a spread, a lowercase inline handler (`onclick="…"`), a namespace other than
+`on:`, a text port beside other children, `unsafeHtml` beside children and a port name
+used twice are each a compile error with a sentence naming the spelling that would have
+worked — there is no runtime under this JSX to defer a decision to.
+
+### Options
+
+```jsonc
+{
+  "mode": "schema",                        // the default and the only value
+  "schemaSource": "@exodra/core",          // where the schema factory is imported from
+  "schemaImport": "createExoNamedSchema",  // its exported name
+  "markerName": "exoJsx"                   // the marker call this plugin compiles away
+}
+```
+
+Every key is optional, so `[["swc-plugin-exodra", {}]]` is the schema compiler with its
+defaults.
+
+### Parity with the Babel plugin
+
+The emitted code is identical to the Babel plugin's up to SWC's own codegen formatting
+(arrow spacing, quote style). `tests/parity.test.ts` hands one source to both compilers
+and compares the two answers: every refusal must be a refusal on both sides and name the
+same reason, and every accepted source must produce the same program once arrow
+parentheses and whitespace are normalised away.
 
 ## Building
 
-Requires the Rust toolchain and the `wasm32-wasip1` target:
+The `.wasm` is a build artifact and is not checked in. It needs the Rust toolchain and
+the `wasm32-wasip1` target:
 
 ```bash
 rustup target add wasm32-wasip1
 npm run build   # cargo build --release --target wasm32-wasip1 → swc_plugin_exodra.wasm
+npm test        # runs the real @swc/core against the wasm just built
 ```
+
+`npm test` fails if the `.wasm` is missing or older than `src/` — every assertion
+would otherwise be testing a previous build.
 
 The published package ships the prebuilt `swc_plugin_exodra.wasm`.
 
@@ -46,7 +110,7 @@ The published package ships the prebuilt `swc_plugin_exodra.wasm`.
   "jsc": {
     "parser": { "syntax": "typescript", "tsx": true },
     "experimental": {
-      "plugins": [["swc-plugin-exodra", {}]]
+      "plugins": [["swc-plugin-exodra", { "mode": "schema" }]]
     }
   }
 }
@@ -58,7 +122,7 @@ The published package ships the prebuilt `swc_plugin_exodra.wasm`.
 // next.config.js
 module.exports = {
   experimental: {
-    swcPlugins: [['swc-plugin-exodra', {}]],
+    swcPlugins: [['swc-plugin-exodra', { mode: 'schema' }]],
   },
 };
 ```

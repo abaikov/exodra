@@ -5,9 +5,30 @@ title: Introspect
 # Introspect
 
 [`@exodra/introspect`](https://www.npmjs.com/package/@exodra/introspect) is
-dev/analysis tooling for Exodra applications. It analyzes a project and surfaces
-insights about components, schemas, routes, and performance — with optional
-AI enhancement — and ships a CLI exposed as `exo-introspect`.
+static analysis for Exodra projects: an ESLint plugin, and a ts-morph engine
+(`ExoIntrospectionEngine`) that reads a project's TypeScript source and reports what
+is in it. There is no CLI.
+
+:::danger Versions 0.1.0, 0.1.1 and 0.2.0 reported findings that were not about
+your code
+
+`CodeAnalyzer.analyzeCode` returned the same three "security vulnerabilities" for
+every project: a `CWE-79` at `src/components/UserContent.tsx:25`, a
+high-severity `CWE-521` "No password complexity requirements enforced" at
+`src/auth/validation.ts:10`, and a `CWE-200` at `src/utils/logger.ts:8` — files
+that need not exist in the project being analysed. Quality scores, a
+maintainability index, 30-day "trends", design-pattern locations, component
+lists, performance hotspots and route analytics (`frequency: 1500`,
+`bounceRate: 25`) were fixed values too, and the `ai.ts` providers returned
+canned strings such as `'Code explanation from Claude'` without contacting a
+model.
+
+Nothing from those versions was a measurement. If you acted on a finding from
+them, discard it. All of it has been removed — and so have the
+`exo-introspect` CLI, the AI-provider registry, the plugin system, the Cursor
+integration, the browser explorer and the four analyzers that had no discovery
+pass behind them.
+:::
 
 ## Installation
 
@@ -15,87 +36,62 @@ AI enhancement — and ships a CLI exposed as `exo-introspect`.
 npm install --save-dev @exodra/introspect
 ```
 
-## What it analyzes
-
-- **Code & component analysis** — structure, patterns, complexity.
-- **Performance analysis** — hotspots and optimization opportunities.
-- **Schema & route analysis** — schema relationships and route structure.
-- **Optional AI enhancement** — insights via configured AI providers.
-- **Editor integration** — Cursor / Claude setup.
-
-## CLI Usage
-
-Run via `npx exo-introspect <command>` (the bin is `exo-introspect`):
-
-```bash
-# Quick health check of the project
-npx exo-introspect quick-check --path src/
-
-# Full project analysis
-npx exo-introspect analyze
-
-# Full analysis with AI enhancement, written to a file
-npx exo-introspect analyze --ai --provider anthropic --format markdown -o report.md
-```
-
-### Commands
-
-- `quick-check` — fast project health check (`-p, --path`).
-- `analyze` — comprehensive analysis (`-p, --path`, `--ai`, `--provider`, `--model`, `--api-key`, `-f, --format`, `-o, --output`, `-v, --verbose`).
-- `components` — analyze components for patterns and optimization (`-p, --path`, `-f, --format`).
-- `performance` — analyze performance hotspots and bottlenecks (`-p, --path`).
-- `schemas` — analyze schema definitions and relationships (`-p, --path`).
-- `routes` — analyze routes and navigation structure (`-p, --path`).
-- `explain <file>` — AI explanation of a code file (`--provider`, `--api-key`).
-- `check-thresholds <file>` — check a saved analysis JSON against quality gates (`--max-errors`, `--max-warnings`, `--min-score`).
-- `explore` — launch and explore the app in a browser with optional AI analysis (`--headless`, `--scenarios`, `--url`, `--ai`).
-- `setup` — automatic AI ecosystem setup (`--interactive`, `--silent`, `--project-root`).
-- `setup-cursor` — generate Cursor (Claude Code) integration (`-p, --path`).
-- `ai providers` — list configured AI providers.
-- `ai test` — test the AI provider connection (`--provider`).
-- `plugins list` — list installed introspect plugins.
-
-> There is no `report` command. To produce a report file, use `analyze -o <file>`
-> (with `-f json|markdown|html`).
-
-## Programmatic API
-
-The main entry points are `introspect` and `quickIntrospect`, plus `formatResults`:
+## `ExoIntrospectionEngine`
 
 ```typescript
-import { introspect, quickIntrospect, formatResults } from '@exodra/introspect';
+import { ExoIntrospectionEngine } from '@exodra/introspect';
 
-// Quick health check — takes a project root path
-const health = await quickIntrospect('./');
-console.log(health.health, health.summary, health.topIssues);
-
-// Full analysis — takes an options object
-const result = await introspect({
-  projectRoot: './src',
-  scope: 'project', // 'file' | 'project' | 'workspace'
-  enableAI: false,
-  verbose: false,
+const engine = new ExoIntrospectionEngine({
+  projectRoot: './',
+  analysis: { schema: true, performance: true },
 });
 
-// Format a result as json | markdown | html (default: json)
-const markdown = formatResults(result, 'markdown');
-console.log(markdown);
+const result = await engine.analyze();
+// result.diagnostics, result.suggestions, result.metrics, result.summary
 ```
 
-> There is no `analyze()` export. Use `introspect(...)` / `quickIntrospect(...)`.
+What it reports, per file:
 
-## Other exports
+- **TypeScript diagnostics** — every error and warning the compiler produces.
+- **Schema scope** (`analysis.schema`) — a `schema-built-per-call` suggestion
+  wherever `createExoSchema`, `createExoNamedSchema` or `createExoStatic` is
+  called inside a function. A schema numbers its ports when it is closed and
+  every backend indexes its prepared plan by those numbers, so a schema built
+  inside a function is not a slower program but a different one. `exoJsx` is
+  exempt, because the compiler hoists it to module scope wherever it was written.
+- **Counts** (`analysis.performance`):
+  - `components` — calls to `createExoMachineBuilder` and `createExoStatic`;
+  - `complexity` — control-flow statements plus one, with a `high-complexity`
+    warning above 20.
 
-Beyond the main API, the package exports:
+Per project it adds `total_files` and `total_lines`. `analyzeFilePath(path)`
+runs the same pass over a single file, and a folder without a `tsconfig.json`
+is analysed as plain TypeScript.
 
-- **Analyzer classes** — `SchemaAnalyzer`, `ComponentAnalyzer`,
-  `PerformanceAnalyzer`, `CodeAnalyzer`, `ExoRouterAnalyzer`.
-- **Engine** — `IntrospectionEngine`, plus the extensible
-  `ExoExtensibleIntrospectionEngine`.
-- **Plugin system** — `ExoPluginManager`, `ExoPluginDiscovery`, `exoRouterPlugin`.
-- **Universal AI system** — `universalAI`, `ExoUniversalAI`,
-  `ExoAIProviderRegistry`, `githubCopilotProvider`, `customAIProvider`.
-- **ESLint plugin** — `eslintPlugin`.
+Callees are matched by their text rather than by resolving the import, so an
+aliased import (`createExoSchema as build`) is missed — the direction that
+reports nothing rather than something wrong.
+
+## `eslintPlugin`
+
+```js
+import { eslintPlugin } from '@exodra/introspect';
+
+export default [
+  {
+    plugins: { exodra: eslintPlugin },
+    rules: eslintPlugin.configs.recommended.rules,
+  },
+];
+```
+
+| rule | recommended | what it reports |
+|---|---|---|
+| `exodra/no-schema-in-function` | warn | a schema builder called inside a function (`exoJsx` exempt) |
+| `exodra/schema-validation` | error | `exoJsx()` given anything but a function literal |
+| `exodra/no-inline-objects` | warn | an object literal inside a JSX expression or a schema builder call |
+
+`configs.strict` makes every rule an error.
 
 ## Links
 

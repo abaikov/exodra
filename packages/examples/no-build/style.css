@@ -1,0 +1,184 @@
+/*
+ * Plain CSS for the two no-build pages. It is a stylesheet and nothing else — no
+ * preprocessor, no build, no CDN font. Both pages link it, so the only difference
+ * between them stays the three lines that fetch the framework.
+ */
+
+:root {
+    --bg: #f7f7f8;
+    --fg: #16171a;
+    --muted: #6b7078;
+    --card: #ffffff;
+    --line: #e2e4e8;
+    --accent: #2f6df6;
+    --accent-fg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f1113;
+        --fg: #e8eaed;
+        --muted: #9aa1ab;
+        --card: #17191d;
+        --line: #2a2e34;
+        --accent: #6b96ff;
+        --accent-fg: #0f1113;
+    }
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 2rem 1.25rem 4rem;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+}
+
+.page-head,
+.page-foot,
+main {
+    max-width: 44rem;
+    margin: 0 auto;
+}
+
+.page-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+}
+
+.page-sub,
+.page-foot p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.page-foot {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+}
+
+.boot {
+    max-width: 44rem;
+    margin: 1rem auto 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+/* ── the application's own markup, produced by the schemas in the page ────── */
+
+.board {
+    margin: 1.5rem 0 0;
+    padding: 1.25rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+.board-title {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+}
+
+.stats {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.stat-slot { flex: 1; }
+
+.stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.stat-value {
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.tasks {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.task-seq {
+    flex: none;
+    min-width: 2.5rem;
+    color: var(--muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+}
+
+.task-title { flex: 1; }
+
+.controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn,
+.task-clear {
+    font: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--fg);
+    padding: 0.35rem 0.7rem;
+}
+
+.btn {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border-color: transparent;
+    padding: 0.45rem 0.9rem;
+}
+
+.task-clear {
+    flex: none;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.hint {
+    margin: 1rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}

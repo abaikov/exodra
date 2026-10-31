@@ -1,0 +1,34 @@
+{
+  // THE TYPECHECK PROJECT, and it is a separate file on purpose.
+  //
+  // `tsconfig.json` beside it is what TSUP reads (this package has no `tsconfig.tsup.json`,
+  // so tsup falls back to the default name). Putting `composite: true` there would reach
+  // tsup's declaration pass, which is handed an entry list rather than the config's
+  // `include` and answers with TS6307 "not listed within the file list of project" — the
+  // same collision `monorepo-atlas/tsconfig.dts.json` documents from the other side.
+  //
+  // So the build config stays untouched and the workspace graph references THIS file.
+  // Emit goes to `.tsbuild` (gitignored, published by nothing), never `dist`, which is
+  // tsup's. See tsconfig.build.json's header.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    // tsc's own fresh output — `npm run typecheck` runs before anything is built, so it
+    // cannot resolve a sibling through its published `dist`.
+    "paths": {
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules", "**/*.test.ts", "**/*.spec.ts"],
+  "references": [
+    { "path": "../core" },
+    { "path": "../dom" }
+  ]
+}

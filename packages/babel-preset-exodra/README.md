@@ -1,8 +1,9 @@
 # babel-preset-exodra
 
-Babel preset that compiles Exodra JSX in one line — JSX syntax (with namespaced
-`bind:` / `cache:` directives), the [`@exodra/babel-plugin-jsx`](../babel-plugin-jsx)
-transform, and `@babel/preset-typescript` for `.ts`/`.tsx`.
+Babel preset that compiles Exodra JSX in one line — JSX syntax with namespaced
+`on:event` listeners left intact by the parser,
+the [`@exodra/babel-plugin-schema`](../babel-plugin-exodra-schema) transform, and
+`@babel/preset-typescript` for `.ts`/`.tsx`.
 
 ## Installation
 
@@ -26,13 +27,29 @@ module.exports = {
 module.exports = {
   presets: [
     ['exodra', {
-      importSource: '@exodra/core', // where auto-imported h/text come from
-      hoistStatic: true,            // compile-time clone-cache for static subtrees
-      typescript: true,             // include preset-typescript (turn off if TS is handled elsewhere)
+      schemaSource: '@exodra/core',  // where the schema factory is imported from
+      schemaImport: 'createExoNamedSchema', // its exported name
+      markerName: 'exoJsx',          // the marker call that is compiled away
+      typescript: true,              // include preset-typescript (turn off if TS is handled elsewhere)
     }],
   ],
 };
 ```
+
+### One compiler
+
+There is **one** Exodra JSX compiler,
+[`@exodra/babel-plugin-schema`](../babel-plugin-exodra-schema). A literal
+attribute is markup and every port is named where it stands — `data-id={$.id}`,
+`{$.label}`, `onClick={$.toggle}`, `ref={$.box}`, `unsafeHtml={$.body}`,
+`<$.rows />`. Each `exoJsx(…)` declaration compiles to a module-level
+`createExoNamedSchema()` call whose ports the machine fills by name; the output
+imports nothing but `@exodra/core`.
+
+The preset forwards `schemaSource`, `schemaImport` and `markerName` to the
+compiler. For TypeScript, the
+dialect also has its own types — point JSX at them with
+`"jsxImportSource": "@exodra/jsx/schema"`.
 
 ## Testing with Jest
 
@@ -50,7 +67,7 @@ That is all Jest needs — component tests then compile the same way Vite compil
 them.
 
 > If Jest reports an unexpected token on `<`, or "namespace tags are not
-> supported" on `bind:value`, you are almost certainly on `ts-jest` / `@swc/jest`.
+> supported" on `on:click`, you are almost certainly on `ts-jest` / `@swc/jest`.
 > Switch the transform to `babel-jest` and add the preset above.
 
 ## Other bundlers & runners
@@ -103,9 +120,7 @@ Parcel reads Babel config automatically:
 ### SWC / Next.js (default), `@swc/jest`
 
 SWC does not run Babel plugins, so this preset cannot drive it. Use the native
-Wasm plugin [`swc-plugin-exodra`](../swc-plugin-exodra) instead — a full-parity
-port (buckets, children, `bind:`/`cache:` directives, fragments, static hoisting,
-shadow-safe imports, strict errors).
+Wasm plugin [`swc-plugin-exodra`](../swc-plugin-exodra) instead.
 
 ## Programmatic runner
 
@@ -118,3 +133,22 @@ import { transformExodraJsx } from 'babel-preset-exodra';
 const result = await transformExodraJsx(sourceCode, '/abs/path/File.tsx');
 // -> { code, map } | null   (typescript defaults on for .tsx, off otherwise)
 ```
+
+`map` is Babel's raw source map object — cast it to your bundler's map input type.
+
+### Option types for plugin authors
+
+- `ExodraCompileOptions` — `{ schemaSource }`, the slice every bundler plugin
+  forwards. A plugin's options should extend this and nothing wider: a field a
+  plugin accepts but does not forward is taken with no error and no effect.
+- `ExodraBundlerOptions` — that plus `filter`, for hosts whose own convention
+  names the file filter `filter` (esbuild, Bun). Rollup's plugin spells the same
+  field `include`, after Rollup's convention, so it extends
+  `ExodraCompileOptions` directly; Vite's plugin has no filter at all.
+- `ExodraPresetOptions` / `ExodraTransformOptions` — the full preset options; the
+  second is an alias of the first, differing only in how `typescript` is
+  defaulted (see above).
+
+`@exodra/babel-plugin-schema` declares its own `schemaSource` in
+`TExoSchemaPluginOptions` and does not reuse these: it is upstream of this
+package, so the import would run against the dependency arrow.

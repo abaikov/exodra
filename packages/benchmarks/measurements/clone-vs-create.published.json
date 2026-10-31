@@ -1,0 +1,428 @@
+{
+  "axis": "clone-vs-create",
+  "label": "latest",
+  "quantum": null,
+  "batch": 1,
+  "rows": [
+    {
+      "name": "CLONE-VS-CREATE/sparse1:clone",
+      "reps": 64,
+      "min": 0.0437,
+      "p25": 0.0453,
+      "median": 0.0469,
+      "p75": 0.0484,
+      "max": 0.05,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse1:cloneB",
+      "reps": 64,
+      "min": 0.0437,
+      "p25": 0.0453,
+      "median": 0.0469,
+      "p75": 0.0484,
+      "max": 0.0516,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse1:create",
+      "reps": 64,
+      "min": 0.0578,
+      "p25": 0.0609,
+      "median": 0.0625,
+      "p75": 0.0641,
+      "max": 0.0672,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense1:clone",
+      "reps": 64,
+      "min": 0.0437,
+      "p25": 0.0453,
+      "median": 0.0469,
+      "p75": 0.0484,
+      "max": 0.05,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense1:cloneB",
+      "reps": 64,
+      "min": 0.0437,
+      "p25": 0.0453,
+      "median": 0.0469,
+      "p75": 0.0484,
+      "max": 0.0516,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense1:create",
+      "reps": 64,
+      "min": 0.0578,
+      "p25": 0.0609,
+      "median": 0.0625,
+      "p75": 0.0641,
+      "max": 0.0672,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse2:clone",
+      "reps": 62,
+      "min": 0.0952,
+      "p25": 0.0984,
+      "median": 0.1,
+      "p75": 0.1,
+      "max": 0.1065,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse2:cloneB",
+      "reps": 62,
+      "min": 0.0935,
+      "p25": 0.0968,
+      "median": 0.0984,
+      "p75": 0.1,
+      "max": 0.1081,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse2:create",
+      "reps": 62,
+      "min": 0.1419,
+      "p25": 0.1452,
+      "median": 0.1468,
+      "p75": 0.1484,
+      "max": 0.1597,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense2:clone",
+      "reps": 62,
+      "min": 0.0968,
+      "p25": 0.1,
+      "median": 0.1016,
+      "p75": 0.1032,
+      "max": 0.1081,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense2:cloneB",
+      "reps": 62,
+      "min": 0.0968,
+      "p25": 0.1,
+      "median": 0.1016,
+      "p75": 0.1032,
+      "max": 0.1097,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense2:create",
+      "reps": 62,
+      "min": 0.1419,
+      "p25": 0.1452,
+      "median": 0.1468,
+      "p75": 0.1484,
+      "max": 0.1548,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse4:clone",
+      "reps": 31,
+      "min": 0.1677,
+      "p25": 0.171,
+      "median": 0.1742,
+      "p75": 0.1742,
+      "max": 0.1871,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse4:cloneB",
+      "reps": 31,
+      "min": 0.1677,
+      "p25": 0.171,
+      "median": 0.1742,
+      "p75": 0.1742,
+      "max": 0.1871,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse4:create",
+      "reps": 31,
+      "min": 0.3,
+      "p25": 0.3065,
+      "median": 0.3065,
+      "p75": 0.3097,
+      "max": 0.3355,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense4:clone",
+      "reps": 31,
+      "min": 0.2,
+      "p25": 0.2032,
+      "median": 0.2065,
+      "p75": 0.2097,
+      "max": 0.2226,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense4:cloneB",
+      "reps": 31,
+      "min": 0.1968,
+      "p25": 0.2032,
+      "median": 0.2065,
+      "p75": 0.2097,
+      "max": 0.2258,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense4:create",
+      "reps": 31,
+      "min": 0.3,
+      "p25": 0.3065,
+      "median": 0.3097,
+      "p75": 0.3129,
+      "max": 0.3419,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse8:clone",
+      "reps": 16,
+      "min": 0.3,
+      "p25": 0.3125,
+      "median": 0.3125,
+      "p75": 0.3187,
+      "max": 0.7125,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse8:cloneB",
+      "reps": 16,
+      "min": 0.3,
+      "p25": 0.3125,
+      "median": 0.3125,
+      "p75": 0.3187,
+      "max": 0.3375,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse8:create",
+      "reps": 16,
+      "min": 0.6125,
+      "p25": 0.6188,
+      "median": 0.625,
+      "p75": 0.6312,
+      "max": 0.6813,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense8:clone",
+      "reps": 16,
+      "min": 0.4,
+      "p25": 0.4125,
+      "median": 0.4125,
+      "p75": 0.4187,
+      "max": 0.45,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense8:cloneB",
+      "reps": 16,
+      "min": 0.4,
+      "p25": 0.4125,
+      "median": 0.4125,
+      "p75": 0.4188,
+      "max": 0.45,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense8:create",
+      "reps": 16,
+      "min": 0.6062,
+      "p25": 0.6188,
+      "median": 0.625,
+      "p75": 0.6312,
+      "max": 0.6937,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse16:clone",
+      "reps": 8,
+      "min": 0.575,
+      "p25": 0.5875,
+      "median": 0.6,
+      "p75": 0.6,
+      "max": 0.6375,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse16:cloneB",
+      "reps": 8,
+      "min": 0.5625,
+      "p25": 0.5875,
+      "median": 0.6,
+      "p75": 0.6,
+      "max": 0.65,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse16:create",
+      "reps": 8,
+      "min": 1.225,
+      "p25": 1.2375,
+      "median": 1.25,
+      "p75": 1.2625,
+      "max": 1.35,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense16:clone",
+      "reps": 8,
+      "min": 0.7875,
+      "p25": 0.8,
+      "median": 0.8125,
+      "p75": 0.8125,
+      "max": 0.9,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense16:cloneB",
+      "reps": 8,
+      "min": 0.775,
+      "p25": 0.8,
+      "median": 0.8125,
+      "p75": 0.825,
+      "max": 0.8625,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense16:create",
+      "reps": 8,
+      "min": 1.225,
+      "p25": 1.25,
+      "median": 1.2625,
+      "p75": 1.275,
+      "max": 1.3125,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse32:clone",
+      "reps": 4,
+      "min": 1.125,
+      "p25": 1.15,
+      "median": 1.15,
+      "p75": 1.175,
+      "max": 1.225,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse32:cloneB",
+      "reps": 4,
+      "min": 1.1,
+      "p25": 1.15,
+      "median": 1.15,
+      "p75": 1.175,
+      "max": 1.3,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse32:create",
+      "reps": 4,
+      "min": 2.45,
+      "p25": 2.475,
+      "median": 2.5,
+      "p75": 2.525,
+      "max": 2.775,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense32:clone",
+      "reps": 4,
+      "min": 1.575,
+      "p25": 1.6,
+      "median": 1.6,
+      "p75": 1.65,
+      "max": 1.75,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense32:cloneB",
+      "reps": 4,
+      "min": 1.575,
+      "p25": 1.6,
+      "median": 1.6,
+      "p75": 1.625,
+      "max": 1.775,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense32:create",
+      "reps": 4,
+      "min": 2.45,
+      "p25": 2.5,
+      "median": 2.525,
+      "p75": 2.55,
+      "max": 2.75,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse64:clone",
+      "reps": 2,
+      "min": 2.2,
+      "p25": 2.25,
+      "median": 2.25,
+      "p75": 2.3,
+      "max": 2.5,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse64:cloneB",
+      "reps": 2,
+      "min": 2.15,
+      "p25": 2.25,
+      "median": 2.25,
+      "p75": 2.3,
+      "max": 2.5,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/sparse64:create",
+      "reps": 2,
+      "min": 4.9,
+      "p25": 4.95,
+      "median": 5,
+      "p75": 5.05,
+      "max": 5.55,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense64:clone",
+      "reps": 2,
+      "min": 3.15,
+      "p25": 3.2,
+      "median": 3.25,
+      "p75": 3.3,
+      "max": 3.4,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense64:cloneB",
+      "reps": 2,
+      "min": 3.15,
+      "p25": 3.2,
+      "median": 3.2,
+      "p75": 3.25,
+      "max": 3.5,
+      "section": "CLONE-VS-CREATE"
+    },
+    {
+      "name": "CLONE-VS-CREATE/dense64:create",
+      "reps": 2,
+      "min": 4.95,
+      "p25": 5.05,
+      "median": 5.1,
+      "p75": 5.15,
+      "max": 5.6,
+      "section": "CLONE-VS-CREATE"
+    }
+  ]
+}

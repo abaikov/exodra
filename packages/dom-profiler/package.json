@@ -27,11 +27,10 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@exodra/core": "^0.3.0",
     "@exodra/dom": "^0.3.0"
   },
   "devDependencies": {
-    "@exodra/core": "^0.3.0",
-    "@exodra/reactivity": "^0.3.0",
     "jsdom": "^24.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.3.3",

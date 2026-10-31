@@ -14,14 +14,14 @@
         "layer": 0,
         "members": [
           {
-            "text": "(options): Plugin<any>",
-            "full": "(options): Plugin<any>",
+            "text": "(options): Plugin",
+            "full": "(options): Plugin",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "width": 178,
+        "width": 146,
         "height": 69,
         "violations": []
       },
@@ -35,21 +35,14 @@
             "visibility": "+",
             "text": "include?: RegExp;",
             "full": "include?: RegExp;",
-            "doc": "Which files to compile.",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "importSource?: string;",
-            "full": "importSource?: string;",
-            "doc": "Module the auto-imported `h`/`text` come from.",
             "parts": []
           }
         ],
-        "memberCount": 2,
+        "memberCount": 1,
         "stereotype": "interface",
-        "width": 178,
-        "height": 84,
+        "doc": "Not `ExodraBundlerOptions`: that names the field `filter`, after the esbuild and Bun host APIs.",
+        "width": 146,
+        "height": 69,
         "violations": []
       }
     ],
@@ -77,22 +70,22 @@
     "rules": {}
   },
   "layout": {
-    "width": 468,
-    "height": 132,
+    "width": 404,
+    "height": 117,
     "nodes": [
       {
         "id": "exodra",
         "x": 24,
-        "y": 31.5,
-        "width": 178,
+        "y": 24,
+        "width": 146,
         "height": 69
       },
       {
         "id": "ExodraRollupOptions",
-        "x": 266,
+        "x": 234,
         "y": 24,
-        "width": 178,
-        "height": 84
+        "width": 146,
+        "height": 69
       }
     ],
     "edges": [
@@ -100,16 +93,16 @@
         "id": "exodra→ExodraRollupOptions",
         "points": [
           {
+            "x": 170,
+            "y": 58.5
+          },
+          {
             "x": 202,
-            "y": 66
+            "y": 58.5
           },
           {
             "x": 234,
-            "y": 66
-          },
-          {
-            "x": 266,
-            "y": 66
+            "y": 58.5
           }
         ]
       }

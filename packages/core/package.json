@@ -12,6 +12,15 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./style": {
+      "types": "./dist/style/index.d.ts",
+      "import": "./dist/style/index.js",
+      "require": "./dist/style/index.cjs"
+    },
+    "./browser": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/exodra.esm.js"
     }
   },
   "files": [
@@ -25,11 +34,12 @@
     "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
     "build": "tsup",
     "prepublishOnly": "npm run build",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "clean": "rm -rf dist .tsbuild tsconfig.tsbuildinfo",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "bench:property-kind": "tsx bench/attr/exoPropertyKindBench.ts"
   },
-  "description": "Core component system for Exodra - modern web framework with fine-grained reactivity and three-props architecture",
+  "description": "Core component system for Exodra - the backend-agnostic schema, ports and wiring of a fine-grained reactive renderer",
   "keywords": [
     "exodra",
     "web-framework",
@@ -41,8 +51,6 @@
     "fine-grained",
     "performance",
     "typescript",
-    "weakmap",
-    "three-props",
     "vdom-alternative"
   ],
   "author": "Andrei Baikov",
@@ -56,7 +64,11 @@
   "bugs": {
     "url": "https://github.com/abaikov/exodra/issues"
   },
+  "peerDependencies": {
+    "@exodra/context": "^0.3.0"
+  },
   "devDependencies": {
+    "@exodra/bench-harness": "*",
     "vitest": "^4.0.16"
   }
 }

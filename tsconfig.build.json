@@ -1,25 +1,61 @@
 {
   "extends": "./tsconfig.json",
+  // A composite project MUST emit, so each emits to its own `.tsbuild` — never `dist/`, which is
+  // tsup's and is what `files: ["dist"]` publishes; the two pipelines overwrite each other there.
+  // `introspect` is the one exception, because tsc IS its publisher.
   "compilerOptions": {
     "composite": true,
     "incremental": true
   },
   "files": [],
+  // A package referenced by `tsconfig.typecheck.json` rather than by directory has a
+  // `tsconfig.json` that is its BUILD config, where `composite` would emit a second time after
+  // that build's `mv`, or answer TS6307 in tsup's declaration pass.
+  // ABSENT BY DECISION, each checked by a different command: `swc-plugin-exodra` (Rust),
+  // `type-tests` (`test:types`), `benchmarks` (competitors want options contradicting this
+  // graph's — `typecheck:benchmarks`), `packages/examples/*` (app code, not packages), and
+  // `conformance`, which emits and publishes nothing and whose whole `src/` — sources and suites
+  // alike — is compiled by its own `tsconfig.tests.json` under `typecheck:tests`.
   "references": [
+    // Before `core`, which CALLS `exoContextFrame` and `readExoContext` in its base node pack.
+    // It names no Exodra package itself, which is what keeps the direction core -> context.
+    { "path": "./packages/context" },
     { "path": "./packages/core" },
-    { "path": "./packages/reactivity-types" },
-    { "path": "./packages/reactivity" },
+    // After `core` and before every backend. It is the DECLARATIVE half of a machine — fields,
+    // derivations, transitions — and it names `core` in one direction only, which is what let it
+    // leave: nothing in `core` names anything of its.
+    { "path": "./packages/computed" },
+    // Before `dom`, which is its only consumer. It names no Exodra package itself.
+    { "path": "./packages/list-reconcile" },
     { "path": "./packages/router" },
     { "path": "./packages/dom" },
     { "path": "./packages/string" },
     { "path": "./packages/ssr" },
-    { "path": "./packages/jsx" }
+    { "path": "./packages/jsx" },
+    { "path": "./packages/forms" },
+    // Private fourth backend: the alarm for a core surface growing a shipped-backend-only member.
+    { "path": "./packages/term" },
+    { "path": "./packages/react" },
+    { "path": "./packages/react-mount" },
+    { "path": "./packages/react-compat" },
+    { "path": "./packages/babel-plugin-exodra-schema/tsconfig.typecheck.json" },
+    { "path": "./packages/babel-preset-exodra/tsconfig.typecheck.json" },
+    { "path": "./packages/vite-plugin-exodra/tsconfig.typecheck.json" },
+    { "path": "./packages/esbuild-plugin-exodra/tsconfig.typecheck.json" },
+    { "path": "./packages/rollup-plugin-exodra/tsconfig.typecheck.json" },
+    { "path": "./packages/bun-plugin-exodra/tsconfig.typecheck.json" },
+    { "path": "./packages/dom-profiler/tsconfig.typecheck.json" },
+    { "path": "./packages/create-exodra/tsconfig.typecheck.json" },
+    { "path": "./packages/introspect" },
+    { "path": "./packages/monorepo-atlas" },
+    { "path": "./packages/test-utils" },
+    { "path": "./packages/bench-harness" }
   ],
   "exclude": [
     "**/node_modules",
     "**/dist",
+    "**/.tsbuild",
     "**/*.test.ts",
     "**/*.spec.ts"
   ]
 }
-

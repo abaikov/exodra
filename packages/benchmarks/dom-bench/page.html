@@ -1,0 +1,176 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>schema dom bench</title>
+<pre id="out"></pre>
+<script type="module">
+// FIRST RENDER OF 1000 ROWS, in a real browser: the schema+wiring renderer against the
+// floor and against the same row written by hand.
+//
+// Every variant must end with byte-identical markup AND holding a reference to each of the
+// row's ports, because a wired app needs them — a variant that skips collecting them is not
+// doing the same job. The floor without references is measured too, and labelled, so it is
+// clear it is a floor and not a rival.
+//
+// The page times itself in BATCHES: Chromium coarsens performance.now() to 100 microseconds,
+// which is the size of the whole answer for one render of this page.
+import { createExoWiredMachine, ExoDomBackend, exoDomPlanOf, mountExoInstance } from './bundle.js';
+
+const N = 1000;
+const ids = new Array(N);
+const labels = new Array(N);
+for (let i = 0; i < N; i++) { ids[i] = String(i); labels[i] = 'Item ' + i; }
+
+const escText = (v) => (/[&<> ]/.test(v)
+    ? v.replace(/&/g, '&amp;').replace(/ /g, '&nbsp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    : v);
+const escAttr = (v) => (/[&"<> ]/.test(v)
+    ? v.replace(/&/g, '&amp;').replace(/ /g, '&nbsp;').replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    : v);
+
+// ------------------------------------------------------------------ the renderer
+// ONE COMPONENT: the shape, and the wiring built from its ports. Both halves are settled
+// when this module loads, so the timed function below does nothing but render.
+const ROW = createExoWiredMachine(
+    (b) => {
+        let id, label, mark, count;
+        b.el('li', { class: 'row' }, (li) => {
+            id = li.port('data-id');
+            li.el('span', { class: 'row__label' }, (s) => { label = s.textPort(); });
+            li.el('button', { class: 'row__btn' }, (btn) => {
+                mark = btn.port('data-b');
+                count = btn.textPort();
+            });
+        });
+        return { id, label, mark, count };
+    },
+    (P) => (c, i) => {
+        c.set(P.count, 0);
+        c.set(P.id, ids[i]);
+        c.set(P.mark, ids[i]);
+        c.set(P.label, labels[i]);
+    }
+);
+
+// THE BACKEND AND THE PLAN, BUILT ONCE — never inside `schemaRender`. A DOM plan is cached per
+// schema PER BACKEND and compared by POINTER, so one built per render would re-parse this row's
+// markup on every sample and the page would be timing the compiler.
+const BACKEND = new ExoDomBackend();
+const PLAN = exoDomPlanOf(ROW.schema, BACKEND);
+const WIRE = ROW.wire;
+
+// THIS WAS `renderRowsDom(ROW, N, ul)` AND THAT ENTRY POINT IS DELETED. What replaces it is the
+// loop it was: one `mountExoInstance` per row, each handed its own index. It is NOT
+// `BACKEND.render(ROW, ul)` in a loop — that mounts one instance with props `0` and index `0`, and
+// this row's wire reads its index for `data-id`, `data-b` and its label, so a loop over `render`
+// would build N copies of row 0 against a floor that builds N different ones. NOTHING ELSE ABOUT
+// THE TIMED REGION MOVED: the same plan, the same wire, the same N insertions into the same `ul`.
+function schemaRender() {
+    const c = document.createElement('div');
+    const ul = document.createElement('ul');
+    ul.className = 'list';
+    for (let i = 0; i < N; i++) mountExoInstance(PLAN, WIRE, i, i, ul, null, null);
+    c.appendChild(ul);
+    return { c, refs: null };
+}
+
+// -------------------------------------------------------------------- the floor
+function floorHtml() {
+    const c = document.createElement('div');
+    let html = '<ul class="list">';
+    for (let i = 0; i < N; i++) {
+        html += '<li class="row" data-id="' + escAttr(ids[i]) + '"><span class="row__label">' +
+                escText(labels[i]) + '</span><button class="row__btn" data-b="' + escAttr(ids[i]) +
+                '">0</button></li>';
+    }
+    c.innerHTML = html + '</ul>';
+    return { c, refs: null };
+}
+function floorRefs() {
+    const { c } = floorHtml();
+    const refs = new Array(N * 4);
+    let li = c.firstChild.firstChild, k = 0;
+    while (li !== null) {
+        const span = li.firstChild, button = span.nextSibling;
+        refs[k++] = li; refs[k++] = span.firstChild;
+        refs[k++] = button; refs[k++] = button.firstChild;
+        li = li.nextSibling;
+    }
+    return { c, refs };
+}
+
+// --------------------------------------------------- the same row, written by hand
+const PROTO = (() => {
+    const t = document.createElement('template');
+    t.innerHTML = '<li class="row" data-id=""><span class="row__label"> </span>' +
+                  '<button class="row__btn" data-b=""> </button></li>';
+    return t.content.firstChild;
+})();
+function handWritten() {
+    const c = document.createElement('div');
+    const ul = document.createElement('ul');
+    ul.className = 'list';
+    const refs = new Array(N * 4);
+    let k = 0;
+    for (let i = 0; i < N; i++) {
+        const li = PROTO.cloneNode(true);
+        const span = li.firstChild, spanText = span.firstChild;
+        const button = span.nextSibling, buttonText = button.firstChild;
+        li.setAttribute('data-id', ids[i]);
+        spanText.data = labels[i];
+        button.setAttribute('data-b', ids[i]);
+        buttonText.data = '0';
+        refs[k++] = li; refs[k++] = spanText; refs[k++] = button; refs[k++] = buttonText;
+        ul.appendChild(li);
+    }
+    c.appendChild(ul);
+    return { c, refs };
+}
+
+const VARIANTS = [
+    ['floor: innerHTML in one string (no refs)', floorHtml],
+    ['floor + collecting refs', floorRefs],
+    ['the same row by hand (clone + walk)', handWritten],
+    ['exodra', schemaRender],
+];
+
+// --------------------------------------------------------------------- the gate
+const reference = floorHtml().c.innerHTML;
+const problems = [];
+for (const [name, fn] of VARIANTS) {
+    const { c } = fn();
+    if (c.innerHTML !== reference) {
+        problems.push(`${name} — MARKUP DIFFERS\n  expected: ${reference.slice(0, 150)}\n  got: ${c.innerHTML.slice(0, 150)}`);
+    }
+}
+
+let text = problems.length ? 'PROBLEMS:\n' + problems.join('\n') + '\n\n' : 'markup check passed\n\n';
+
+if (!problems.length) {
+    const ROUNDS = 25, WARM = 5, BATCH = 20;
+    const times = new Map(VARIANTS.map(([n]) => [n, []]));
+    for (const [, fn] of VARIANTS) for (let w = 0; w < WARM; w++) fn();
+    let sink = null;
+    for (let r = 0; r < ROUNDS; r++) {
+        for (const [name, fn] of VARIANTS) {
+            const t0 = performance.now();
+            for (let b = 0; b < BATCH; b++) sink = fn();
+            times.get(name).push((performance.now() - t0) / BATCH);
+            if (sink.c === null) throw new Error('unreachable');
+        }
+    }
+    const rows = VARIANTS.map(([name]) => {
+        const t = times.get(name).slice().sort((a, b) => a - b);
+        return { name, min: t[0], med: t[t.length >> 1] };
+    });
+    const best = Math.min(...rows.map((r) => r.min));
+    text += `=== ${N} rows, ${ROUNDS} rounds ===\n\n`;
+    text += 'variant                                     min     median   vs best\n';
+    for (const r of rows) {
+        text += r.name.padEnd(43) + r.min.toFixed(3).padStart(7) +
+                r.med.toFixed(3).padStart(9) + ('×' + (r.min / best).toFixed(2)).padStart(10) + '\n';
+    }
+}
+document.getElementById('out').textContent = text;
+window.__RESULT__ = text;
+</script>

@@ -9,38 +9,65 @@
     },
     "nodes": [
       {
-        "id": "@exodra/attrs",
-        "label": "attrs",
-        "kind": "runtime",
+        "id": "@exodra/babel-plugin-schema",
+        "label": "babel-plugin-schema",
+        "kind": "tooling",
         "layer": 1,
-        "moduleCount": 2,
+        "moduleCount": 24,
         "published": true,
         "violations": []
       },
       {
-        "id": "@exodra/babel-plugin-jsx",
-        "label": "babel-plugin-jsx",
-        "kind": "tooling",
-        "layer": 1,
-        "moduleCount": 7,
-        "published": true,
+        "id": "@exodra/bench-harness",
+        "label": "bench-harness",
+        "kind": "app",
+        "layer": 0,
+        "moduleCount": 21,
+        "published": false,
         "violations": []
       },
       {
         "id": "@exodra/benchmarks",
         "label": "benchmarks",
         "kind": "app",
-        "layer": 3,
-        "moduleCount": 68,
+        "layer": 4,
+        "moduleCount": 169,
         "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/computed",
+        "label": "computed",
+        "kind": "runtime",
+        "layer": 3,
+        "moduleCount": 45,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/conformance",
+        "label": "conformance",
+        "kind": "tooling",
+        "layer": 4,
+        "moduleCount": 32,
+        "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/context",
+        "label": "context",
+        "kind": "runtime",
+        "layer": 1,
+        "moduleCount": 21,
+        "published": true,
         "violations": []
       },
       {
         "id": "@exodra/core",
         "label": "core",
         "kind": "runtime",
-        "layer": 0,
-        "moduleCount": 19,
+        "layer": 2,
+        "moduleCount": 152,
         "published": true,
         "violations": []
       },
@@ -48,8 +75,8 @@
         "id": "@exodra/dom",
         "label": "dom",
         "kind": "runtime",
-        "layer": 1,
-        "moduleCount": 7,
+        "layer": 3,
+        "moduleCount": 165,
         "published": true,
         "violations": []
       },
@@ -57,17 +84,17 @@
         "id": "@exodra/dom-profiler",
         "label": "dom-profiler",
         "kind": "runtime",
-        "layer": 2,
-        "moduleCount": 3,
+        "layer": 4,
+        "moduleCount": 6,
         "published": true,
         "violations": []
       },
       {
-        "id": "@exodra/examples-cnstra-oimdb",
-        "label": "examples-cnstra-oimdb",
+        "id": "@exodra/examples-react-compat-todo",
+        "label": "examples-react-compat-todo",
         "kind": "app",
-        "layer": 3,
-        "moduleCount": 41,
+        "layer": 1,
+        "moduleCount": 2,
         "published": false,
         "violations": []
       },
@@ -75,8 +102,17 @@
         "id": "@exodra/examples-ssr-test",
         "label": "examples-ssr-test",
         "kind": "app",
-        "layer": 3,
+        "layer": 5,
         "moduleCount": 4,
+        "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-todo-cnstra-oimdb",
+        "label": "examples-todo-cnstra-oimdb",
+        "kind": "app",
+        "layer": 4,
+        "moduleCount": 17,
         "published": false,
         "violations": []
       },
@@ -84,17 +120,17 @@
         "id": "@exodra/forms",
         "label": "forms",
         "kind": "runtime",
-        "layer": 2,
-        "moduleCount": 1,
+        "layer": 3,
+        "moduleCount": 8,
         "published": true,
         "violations": []
       },
       {
         "id": "@exodra/introspect",
         "label": "introspect",
-        "kind": "tooling",
+        "kind": "runtime",
         "layer": 1,
-        "moduleCount": 20,
+        "moduleCount": 16,
         "published": true,
         "violations": []
       },
@@ -102,8 +138,17 @@
         "id": "@exodra/jsx",
         "label": "jsx",
         "kind": "runtime",
-        "layer": 1,
-        "moduleCount": 4,
+        "layer": 3,
+        "moduleCount": 5,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/list-reconcile",
+        "label": "list-reconcile",
+        "kind": "runtime",
+        "layer": 0,
+        "moduleCount": 16,
         "published": true,
         "violations": []
       },
@@ -111,17 +156,8 @@
         "id": "@exodra/monorepo-atlas",
         "label": "monorepo-atlas",
         "kind": "tooling",
-        "layer": 2,
-        "moduleCount": 30,
-        "published": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/profiler",
-        "label": "profiler",
-        "kind": "runtime",
-        "layer": 0,
-        "moduleCount": 2,
+        "layer": 1,
+        "moduleCount": 20,
         "published": true,
         "violations": []
       },
@@ -129,35 +165,35 @@
         "id": "@exodra/react",
         "label": "react",
         "kind": "runtime",
-        "layer": 1,
-        "moduleCount": 2,
+        "layer": 3,
+        "moduleCount": 4,
         "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/react-compat",
+        "label": "react-compat",
+        "kind": "runtime",
+        "layer": 4,
+        "moduleCount": 92,
+        "published": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/react-compat-libraries",
+        "label": "react-compat-libraries",
+        "kind": "tooling",
+        "layer": 0,
+        "moduleCount": 1,
+        "published": false,
         "violations": []
       },
       {
         "id": "@exodra/react-mount",
         "label": "react-mount",
         "kind": "runtime",
-        "layer": 2,
-        "moduleCount": 4,
-        "published": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/reactivity",
-        "label": "reactivity",
-        "kind": "runtime",
-        "layer": 1,
-        "moduleCount": 11,
-        "published": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/reactivity-types",
-        "label": "reactivity-types",
-        "kind": "runtime",
-        "layer": 0,
-        "moduleCount": 11,
+        "layer": 4,
+        "moduleCount": 7,
         "published": true,
         "violations": []
       },
@@ -165,8 +201,8 @@
         "id": "@exodra/router",
         "label": "router",
         "kind": "runtime",
-        "layer": 2,
-        "moduleCount": 10,
+        "layer": 3,
+        "moduleCount": 33,
         "published": true,
         "violations": []
       },
@@ -174,8 +210,8 @@
         "id": "@exodra/ssr",
         "label": "ssr",
         "kind": "runtime",
-        "layer": 2,
-        "moduleCount": 11,
+        "layer": 4,
+        "moduleCount": 15,
         "published": true,
         "violations": []
       },
@@ -183,17 +219,35 @@
         "id": "@exodra/string",
         "label": "string",
         "kind": "runtime",
-        "layer": 1,
-        "moduleCount": 7,
+        "layer": 3,
+        "moduleCount": 39,
         "published": true,
         "violations": []
       },
       {
-        "id": "@exodra/style",
-        "label": "style",
+        "id": "@exodra/term",
+        "label": "term",
+        "kind": "tooling",
+        "layer": 3,
+        "moduleCount": 33,
+        "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/test-utils",
+        "label": "test-utils",
+        "kind": "app",
+        "layer": 3,
+        "moduleCount": 10,
+        "published": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/to-react",
+        "label": "to-react",
         "kind": "runtime",
-        "layer": 0,
-        "moduleCount": 2,
+        "layer": 1,
+        "moduleCount": 12,
         "published": true,
         "violations": []
       },
@@ -201,8 +255,8 @@
         "id": "@exodra/type-tests",
         "label": "type-tests",
         "kind": "app",
-        "layer": 2,
-        "moduleCount": 2,
+        "layer": 4,
+        "moduleCount": 9,
         "published": false,
         "violations": []
       },
@@ -210,7 +264,7 @@
         "id": "@exodra/vite-plugin",
         "label": "vite-plugin",
         "kind": "tooling",
-        "layer": 2,
+        "layer": 1,
         "moduleCount": 3,
         "published": true,
         "violations": []
@@ -238,7 +292,7 @@
         "label": "create-exodra",
         "kind": "tooling",
         "layer": 1,
-        "moduleCount": 3,
+        "moduleCount": 4,
         "published": true,
         "violations": []
       },
@@ -263,37 +317,49 @@
     ],
     "edges": [
       {
-        "id": "@exodra/attrs→@exodra/core",
-        "from": "@exodra/attrs",
-        "to": "@exodra/core",
+        "id": "@exodra/benchmarks→@exodra/computed",
+        "from": "@exodra/benchmarks",
+        "to": "@exodra/computed",
         "kinds": [
-          "type-only"
+          "value"
         ],
-        "weight": 1,
+        "weight": 3,
         "evidence": [
           {
-            "from": "packages/attrs/src/mergeAttrs.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/machine-vs-cells.ts",
+            "to": "packages/computed/src/index.ts",
+            "specifier": "@exodra/computed",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/shared/machine-state-shapes.ts",
+            "to": "packages/computed/src/index.ts",
+            "specifier": "@exodra/computed",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/shared/exo-inline-computed.ts",
+            "to": "packages/computed/src/index.ts",
+            "specifier": "@exodra/computed",
+            "kind": "value"
           }
         ],
         "declared": true,
         "violations": []
       },
       {
-        "id": "@exodra/babel-plugin-jsx→@exodra/core",
-        "from": "@exodra/babel-plugin-jsx",
-        "to": "@exodra/core",
+        "id": "@exodra/benchmarks→@exodra/context",
+        "from": "@exodra/benchmarks",
+        "to": "@exodra/context",
         "kinds": [
           "value"
         ],
         "weight": 1,
         "evidence": [
           {
-            "from": "packages/babel-plugin-jsx/src/ssr-emit.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/context-cost.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
             "kind": "value"
           }
         ],
@@ -308,25 +374,343 @@
           "type-only",
           "value"
         ],
-        "weight": 6,
+        "weight": 58,
         "evidence": [
           {
-            "from": "packages/benchmarks/src/exodra/schema.ts",
+            "from": "packages/benchmarks/dom-bench/entry.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/src/exodra/schema.ts",
+            "from": "packages/benchmarks/src/benchmarks/apps/exodra/exodra-shared.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/apps/exodra/exodra-shared.tsx",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/benchmarks/ssr/apps/exodra/app-heavy.mjs",
+            "from": "packages/benchmarks/src/benchmarks/apps/exodra/exodra.tsx",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/apps/exodra/exodra.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/app/component-split.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/app/component-split.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/attr-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/hydrate-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/keystroke-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/keystroke-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/op-click-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/op-click-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/ssr-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/ssr-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/teardown-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/update-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/update-floor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-reconcile.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-reconcile.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-replace.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-replace.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/reactive-update.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/reactive-update.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/reconcile.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/reconcile.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/toggle.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/toggle.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/virtual-list.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/virtual-list.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/door-count.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/door-count.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/door-shape.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/door-shape.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/handler-count.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/handler-count.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/machine-vs-cells.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/shared/exo-machine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/shared/machine-state-shapes.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/shared/machine-state-shapes.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/one-and-static.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/plugin-compose.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/plugin-price.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/plugin-price.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/port-write-doors.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/port-write-doors.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/child-mark.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/clone-threshold.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/clone-threshold.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/teardown-phases.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/teardown-phases.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/template-build.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/template-build.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/profilers/profile-list-ops.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/profilers/profile-list-ops.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/shared/exo-inline-computed.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
           },
           {
             "from": "packages/benchmarks/ssr/apps/exodra/app.mjs",
@@ -335,13 +719,7 @@
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/apps/exodra/land.mjs",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
-            "from": "packages/benchmarks/ssr/apps/exodra/todo.mjs",
+            "from": "packages/benchmarks/ssr/exodra-measure.mts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
@@ -355,61 +733,241 @@
         "from": "@exodra/benchmarks",
         "to": "@exodra/dom",
         "kinds": [
-          "dynamic",
+          "type-only",
           "value"
         ],
-        "weight": 10,
+        "weight": 40,
         "evidence": [
           {
-            "from": "packages/benchmarks/src/benchmarks/todo-app.tsx",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/list-reconcile.tsx",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/reactive-update.tsx",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/reconcile.tsx",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/toggle.tsx",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/exodra/mount.ts",
+            "from": "packages/benchmarks/dom-bench/entry.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/apps/exodra/client-heavy.mjs",
+            "from": "packages/benchmarks/src/benchmarks/apps/exodra/exodra.tsx",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/apps/exodra/client-land.mjs",
+            "from": "packages/benchmarks/src/benchmarks/axes/app/component-split.tsx",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/apps/exodra/client-todo.mjs",
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/attr-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/attr-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/hydrate-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/keystroke-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/keystroke-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/mount-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/op-click-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/op-click-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/teardown-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/teardown-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/update-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/update-floor.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-reconcile.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-replace.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/reactive-update.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/reconcile.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/toggle.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/virtual-list.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/handler-count.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/handler-count.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/machine-vs-cells.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/shared/machine-state-shapes.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/one-and-static.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/plugin-price.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/port-write-doors.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/port-write-doors.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/child-mark.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/child-mark.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/clone-threshold.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/context-cost.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/mount-phases.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/teardown-phases.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/teardown-phases.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/template-build.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/template-build.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/profilers/profile-list-ops.tsx",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
@@ -425,74 +983,18 @@
         "violations": []
       },
       {
-        "id": "@exodra/benchmarks→@exodra/reactivity",
+        "id": "@exodra/benchmarks→@exodra/forms",
         "from": "@exodra/benchmarks",
-        "to": "@exodra/reactivity",
+        "to": "@exodra/forms",
         "kinds": [
-          "dynamic",
-          "type-only",
           "value"
         ],
-        "weight": 10,
+        "weight": 1,
         "evidence": [
           {
-            "from": "packages/benchmarks/src/benchmarks/todo-app.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/exodra/schema.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/list-reconcile.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/reactive-update.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/reconcile.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/toggle.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "dynamic"
-          },
-          {
-            "from": "packages/benchmarks/ssr/apps/exodra/app-heavy.mjs",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/benchmarks/ssr/apps/exodra/app.mjs",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/benchmarks/ssr/apps/exodra/land.mjs",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/benchmarks/ssr/apps/exodra/todo.mjs",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/keystroke-floor.ts",
+            "to": "packages/forms/src/index.ts",
+            "specifier": "@exodra/forms",
             "kind": "value"
           }
         ],
@@ -500,55 +1002,579 @@
         "violations": []
       },
       {
-        "id": "@exodra/benchmarks→@exodra/ssr",
+        "id": "@exodra/benchmarks→@exodra/list-reconcile",
         "from": "@exodra/benchmarks",
-        "to": "@exodra/ssr",
+        "to": "@exodra/list-reconcile",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 11,
+        "evidence": [
+          {
+            "from": "packages/benchmarks/src/benchmarks/apps/exodra/exodra-shared.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/app/component-split.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/update-floor.ts",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-reconcile.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-replace.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/reconcile.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/toggle.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/virtual-list.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/plugin-price.ts",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/teardown-phases.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/profilers/profile-list-ops.tsx",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/string",
+        "from": "@exodra/benchmarks",
+        "to": "@exodra/string",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 13,
+        "evidence": [
+          {
+            "from": "packages/benchmarks/dom-bench/entry.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/hydrate-floor.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/ssr-floor.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/floors/ssr-floor.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/door-count.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/door-count.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/door-shape.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/door-shape.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/template-build.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/phases/template-build.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/ssr/apps/exodra/server.mjs",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/exodra-measure.mts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/ssr/exodra-measure.mts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/computed→@exodra/bench-harness",
+        "from": "@exodra/computed",
+        "to": "@exodra/bench-harness",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 3,
+        "evidence": [
+          {
+            "from": "packages/computed/bench/machine/EXO_MACHINE_COMMIT_VARIANTS.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/bench/machine/exo-machine-commit-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "value"
+          },
+          {
+            "from": "packages/computed/bench/machine/exo-machine-commit-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/computed→@exodra/core",
+        "from": "@exodra/computed",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 17,
+        "evidence": [
+          {
+            "from": "packages/computed/src/machine/types/TExoMachineTarget.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/computed/types/TExoCommitNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/computed/types/TExoComputedBuilder.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/computed/types/TExoComputedMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/computed/types/TExoComputedLive.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/computed/types/TExoComputedMachineNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/computed/src/wiring/exoWiring.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/bench/machine/types/TExoCommitScene.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/computed/bench/machine/constants/EXO_MACHINE_COMMIT_SCENES.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/computed/bench/machine/constants/EXO_MACHINE_COMMIT_SCENES.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/conformance→@exodra/core",
+        "from": "@exodra/conformance",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/conformance/src/types/TExoConformanceAdapter.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/conformance/src/exoEntersForeignContent.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/conformance→@exodra/dom",
+        "from": "@exodra/conformance",
+        "to": "@exodra/dom",
         "kinds": [
           "value"
         ],
-        "weight": 7,
+        "weight": 2,
         "evidence": [
           {
-            "from": "packages/benchmarks/ssr/fastnet.mjs",
-            "to": "packages/ssr/src/index.ts",
-            "specifier": "@exodra/ssr",
+            "from": "packages/conformance/src/adapters/exoDomAdapter.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/heavy-measure.mjs",
-            "to": "packages/ssr/src/index.ts",
-            "specifier": "@exodra/ssr",
+            "from": "packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/conformance→@exodra/string",
+        "from": "@exodra/conformance",
+        "to": "@exodra/string",
+        "kinds": [
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/conformance/src/adapters/exoHydrateAdapter.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/hyd.mjs",
-            "to": "packages/ssr/src/index.ts",
-            "specifier": "@exodra/ssr",
+            "from": "packages/conformance/src/adapters/exoStrAdapter.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/conformance→@exodra/term",
+        "from": "@exodra/conformance",
+        "to": "@exodra/term",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/conformance/src/adapters/exoTermAdapter.ts",
+            "to": "packages/term/src/index.ts",
+            "specifier": "@exodra/term",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/land-measure.mjs",
-            "to": "packages/ssr/src/index.ts",
-            "specifier": "@exodra/ssr",
+            "from": "packages/conformance/src/exoSketchOfTermNode.ts",
+            "to": "packages/term/src/index.ts",
+            "specifier": "@exodra/term",
+            "kind": "type-only"
+          }
+        ],
+        "declared": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/context→@exodra/bench-harness",
+        "from": "@exodra/context",
+        "to": "@exodra/bench-harness",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 9,
+        "evidence": [
+          {
+            "from": "packages/context/bench/EXO_CONTEXT_PUSH_VARIANTS.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/context/bench/types/TExoContextPushStream.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/context/bench/types/TExoContextReadStream.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/context/bench/constants/EXO_CONTEXT_PUSH_INPUTS.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/context/bench/exoContextPushStream.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/context/bench/constants/EXO_CONTEXT_READ_INPUTS.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/context/bench/exoContextReadStream.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/context/bench/exo-context-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/measure.mjs",
-            "to": "packages/ssr/src/index.ts",
-            "specifier": "@exodra/ssr",
+            "from": "packages/context/bench/exo-context-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/core→@exodra/bench-harness",
+        "from": "@exodra/core",
+        "to": "@exodra/bench-harness",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/core/bench/attr/exoPropertyKindBench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/sweep.mjs",
-            "to": "packages/ssr/src/index.ts",
-            "specifier": "@exodra/ssr",
+            "from": "packages/core/bench/attr/exoPropertyKindBench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/core→@exodra/context",
+        "from": "@exodra/core",
+        "to": "@exodra/context",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 4,
+        "evidence": [
+          {
+            "from": "packages/core/src/wiring/types/TExoBaseNodeFields.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/core/src/wiring/types/TExoBaseNodeMethods.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/core/src/plugins/constants/EXO_BASE_NODE_VOCABULARY.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
             "kind": "value"
           },
           {
-            "from": "packages/benchmarks/ssr/todo-measure.mjs",
-            "to": "packages/ssr/src/index.ts",
-            "specifier": "@exodra/ssr",
+            "from": "packages/core/src/plugins/constants/EXO_BASE_NODE_VOCABULARY.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/dom-profiler→@exodra/core",
+        "from": "@exodra/dom-profiler",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "evidence": [
+          {
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "value"
+          },
+          {
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -559,15 +1585,102 @@
         "from": "@exodra/dom-profiler",
         "to": "@exodra/dom",
         "kinds": [
+          "type-only",
           "value"
         ],
-        "weight": 1,
+        "weight": 4,
         "evidence": [
           {
-            "from": "packages/dom-profiler/src/dom-profiler.ts",
+            "from": "packages/dom-profiler/src/profileDom.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
+          },
+          {
+            "from": "packages/dom-profiler/src/profileDom.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/dom→@exodra/context",
+        "from": "@exodra/dom",
+        "to": "@exodra/context",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 9,
+        "evidence": [
+          {
+            "from": "packages/dom/src/dom/types/TExoDomInstanceRecord.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/buildLiveExoChild.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/factories/createExoNode.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/mountExoInstance.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/provideExoContext.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/provideExoContext.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/buildAdoptedExoChild.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/hydrateExoInstance.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -581,341 +1694,427 @@
           "type-only",
           "value"
         ],
-        "weight": 3,
+        "weight": 70,
         "evidence": [
           {
-            "from": "packages/dom/src/ExoNodeDom.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
-            "from": "packages/dom/src/hydrate.ts",
+            "from": "packages/dom/src/dom/types/TExoDomSchema.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/dom/src/mount.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/dom→@exodra/reactivity-types",
-        "from": "@exodra/dom",
-        "to": "@exodra/reactivity-types",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "evidence": [
-          {
-            "from": "packages/dom/src/ExoNodeDom.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
-            "kind": "type-only"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/core",
-        "from": "@exodra/examples-cnstra-oimdb",
-        "to": "@exodra/core",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 12,
-        "evidence": [
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/board.tsx",
+            "from": "packages/dom/src/backend/types/TExoWritersApi.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/people.tsx",
+            "from": "packages/dom/src/events/types/TExoEventAttacher.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/mount-app.ts",
+            "from": "packages/dom/src/dom/types/TExoDomInstanceRecord.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/routes.ts",
+            "from": "packages/dom/src/dom/types/TExoForeignNamespaces.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/activity.tsx",
+            "from": "packages/dom/src/dom/factories/createExoAttrWrite.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/factories/createExoAttrWrite.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/projects.tsx",
+            "from": "packages/dom/src/dom/markupCarriesExoValue.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/compileExoDomSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/compileExoDomSchema.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/tasks.tsx",
+            "from": "packages/dom/src/dom/factories/createExoDomChildFactory.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/createExoDomSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/createExoDomSchema.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/taxonomy.tsx",
+            "from": "packages/dom/src/dom/types/TExoDomJsonDeclaration.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual.tsx",
+            "from": "packages/dom/src/dom/EXO_DOM_NODE_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/EXO_DOM_NODE_VOCABULARY.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual-row.tsx",
+            "from": "packages/dom/src/dom/types/TExoDomMachine.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/shell.tsx",
+            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/entry-server.ts",
+            "from": "packages/dom/src/dom/exoDomSchemaForChild.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/dom",
-        "from": "@exodra/examples-cnstra-oimdb",
-        "to": "@exodra/dom",
-        "kinds": [
-          "dynamic",
-          "value"
-        ],
-        "weight": 3,
-        "evidence": [
-          {
-            "from": "packages/examples/05-cnstra-oimdb/scripts/smoke-flagship.ts",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
-            "kind": "dynamic"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/mount-app.ts",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
+            "from": "packages/dom/src/dom/mountExoInstance.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/scripts/smoke-virtual.ts",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
-            "kind": "dynamic"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/jsx",
-        "from": "@exodra/examples-cnstra-oimdb",
-        "to": "@exodra/jsx",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "evidence": [
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual.tsx",
-            "to": "packages/jsx/src/index.ts",
-            "specifier": "@exodra/jsx",
-            "kind": "type-only"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/reactivity",
-        "from": "@exodra/examples-cnstra-oimdb",
-        "to": "@exodra/reactivity",
-        "kinds": [
-          "type-only",
-          "value"
-        ],
-        "weight": 14,
-        "evidence": [
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/runtime.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/runtime.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/dom/src/dom/types/TExoChildList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/board.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/dom/src/dom/ExoDomBackend.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/people.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/mount-app.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/activity.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/projects.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/tasks.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/taxonomy.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/pages/virtual-row.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/shell.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/shell.tsx",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/dom/src/events/exoDirectListenerFor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/entry-server.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/router",
-        "from": "@exodra/examples-cnstra-oimdb",
-        "to": "@exodra/router",
-        "kinds": [
-          "type-only",
-          "value"
-        ],
-        "weight": 5,
-        "evidence": [
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/mount-app.ts",
-            "to": "packages/router/src/index.ts",
-            "specifier": "@exodra/router",
+            "from": "packages/dom/src/dom/factories/createExoDomInstanceFactory.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/routes.ts",
-            "to": "packages/router/src/index.ts",
-            "specifier": "@exodra/router",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/routes.ts",
-            "to": "packages/router/src/index.ts",
-            "specifier": "@exodra/router",
+            "from": "packages/dom/src/dom/exoDomJsonDeclaration.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/app/shell.tsx",
-            "to": "packages/router/src/index.ts",
-            "specifier": "@exodra/router",
+            "from": "packages/dom/src/dom/exoDomSchemaOf.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/exoDomSchemaOf.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/entry-server.ts",
-            "to": "packages/router/src/index.ts",
-            "specifier": "@exodra/router",
-            "kind": "value"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/ssr",
-        "from": "@exodra/examples-cnstra-oimdb",
-        "to": "@exodra/ssr",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "evidence": [
+            "from": "packages/dom/src/dom/exoNodeDom.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
           {
-            "from": "packages/examples/05-cnstra-oimdb/src/entry-server.ts",
-            "to": "packages/ssr/src/index.ts",
-            "specifier": "@exodra/ssr",
+            "from": "packages/dom/src/dom/factories/createExoChildList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/mountExoSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/buildExoDomRoot.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/mountExoDomNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/withExoChildList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/constants/EXO_DOM_CHILD_LIST_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/constants/EXO_DOM_CHILD_LIST_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/withExoCompiler.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/withExoCompiler.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/withExoForeignNamespaces.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/constants/EXO_FOREIGN_NAMESPACES.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/exoAttrIdentity.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/constants/EXO_FOREIGN_ATTR_NS.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/exoSvgRootedSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/exoSvgRootedSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/events/factories/createExoDelegatedListener.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/foreign/constants/EXO_DOM_FOREIGN_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/foreign/constants/EXO_DOM_FOREIGN_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/foreign/types/TExoDomForeignApi.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/foreign/exoForeignNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/EXO_HYDRATE_NODE_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate/EXO_HYDRATE_NODE_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/hydrateExoInstance.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate/types/TExoHydrateSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/exoHydrateSchemaOf.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/compileExoHydrateSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate/compileExoHydrateSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/asserts/assertReachableExoPorts.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate/asserts/assertReachableExoPorts.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/factories/createExoRepairingFill.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate/factories/createExoRepairingFill.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/repairExoAttribute.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate/repairExoAttribute.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/findExoRowDisagreement.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/withExoHydration.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate/withExoHydration.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/constants/EXO_PARSER_STABILITY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/plugins/exo-reclaiming-text/withExoReclaimingText.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/plugins/exo-property-writers/withExoPropertyWriters.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/bench/EXO_ATTR_SETTER_CASES.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/hydrate/dropUnadoptedExoRows.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -926,15 +2125,22 @@
         "from": "@exodra/examples-ssr-test",
         "to": "@exodra/core",
         "kinds": [
+          "type-only",
           "value"
         ],
-        "weight": 1,
+        "weight": 2,
         "evidence": [
           {
             "from": "packages/examples/ssr-test/src/app.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
+          },
+          {
+            "from": "packages/examples/ssr-test/src/app.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -953,25 +2159,6 @@
             "from": "packages/examples/ssr-test/src/entry-client.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
-            "kind": "value"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/examples-ssr-test→@exodra/reactivity",
-        "from": "@exodra/examples-ssr-test",
-        "to": "@exodra/reactivity",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "evidence": [
-          {
-            "from": "packages/examples/ssr-test/src/app.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
             "kind": "value"
           }
         ],
@@ -998,25 +2185,144 @@
         "violations": []
       },
       {
-        "id": "@exodra/forms→@exodra/reactivity",
-        "from": "@exodra/forms",
-        "to": "@exodra/reactivity",
+        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/core",
+        "from": "@exodra/examples-todo-cnstra-oimdb",
+        "to": "@exodra/core",
         "kinds": [
           "type-only",
           "value"
         ],
-        "weight": 2,
+        "weight": 5,
         "evidence": [
           {
-            "from": "packages/forms/src/index.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/forms/src/index.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/TODO_ROW.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoAppState.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/dom",
+        "from": "@exodra/examples-todo-cnstra-oimdb",
+        "to": "@exodra/dom",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 3,
+        "evidence": [
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoAppState.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/forms",
+        "from": "@exodra/examples-todo-cnstra-oimdb",
+        "to": "@exodra/forms",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "packages/forms/src/index.ts",
+            "specifier": "@exodra/forms",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/list-reconcile",
+        "from": "@exodra/examples-todo-cnstra-oimdb",
+        "to": "@exodra/list-reconcile",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "evidence": [
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/TODO_APP.ts",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
+            "kind": "value"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/forms→@exodra/core",
+        "from": "@exodra/forms",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 3,
+        "evidence": [
+          {
+            "from": "packages/forms/src/controls/readExoControlValues.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/forms/src/controls/setExoControlErrors.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/forms/src/controls/writeExoChoice.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "type-only"
           }
         ],
@@ -1030,10 +2336,16 @@
         "kinds": [
           "type-only"
         ],
-        "weight": 1,
+        "weight": 2,
         "evidence": [
           {
-            "from": "packages/jsx/src/jsx-runtime.ts",
+            "from": "packages/jsx/src/schema/TExoJsxPorts.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/jsx/src/schema/exoJsx.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1043,18 +2355,43 @@
         "violations": []
       },
       {
-        "id": "@exodra/jsx→@exodra/reactivity-types",
-        "from": "@exodra/jsx",
-        "to": "@exodra/reactivity-types",
+        "id": "@exodra/react-compat→@exodra/context",
+        "from": "@exodra/react-compat",
+        "to": "@exodra/context",
         "kinds": [
-          "type-only"
+          "type-only",
+          "value"
         ],
-        "weight": 1,
+        "weight": 5,
         "evidence": [
           {
-            "from": "packages/jsx/src/jsx-runtime.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
+            "from": "packages/react-compat/src/types/TExoReactIdOwner.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/createRoot.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react-compat/src/useId.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react-compat/src/renderToString.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react-compat/src/renderToString.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
             "kind": "type-only"
           }
         ],
@@ -1062,59 +2399,89 @@
         "violations": []
       },
       {
-        "id": "@exodra/monorepo-atlas→@exodra/core",
-        "from": "@exodra/monorepo-atlas",
+        "id": "@exodra/react-compat→@exodra/core",
+        "from": "@exodra/react-compat",
         "to": "@exodra/core",
         "kinds": [
           "type-only",
           "value"
         ],
-        "weight": 8,
+        "weight": 13,
         "evidence": [
           {
-            "from": "packages/monorepo-atlas/src/view/explorer.ts",
+            "from": "packages/react-compat/src/render/exoReactTagMachine.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/monorepo-atlas/src/view/explorer.ts",
+            "from": "packages/react-compat/src/render/exoReactTagMachine.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/monorepo-atlas/src/view/controls.ts",
+            "from": "packages/react-compat/src/render/createExoReactHost.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/monorepo-atlas/src/view/controls.ts",
+            "from": "packages/react-compat/src/render/createExoReactHost.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/monorepo-atlas/src/view/details.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
-            "from": "packages/monorepo-atlas/src/view/details.ts",
+            "from": "packages/react-compat/src/types/TExoReactSlot.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/monorepo-atlas/src/view/graphView.ts",
+            "from": "packages/react-compat/src/render/EXO_REACT_RECONCILER.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/monorepo-atlas/src/view/graphView.ts",
+            "from": "packages/react-compat/src/render/EXO_REACT_RECONCILER.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/render/placeExoReactRange.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/createRoot.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react-compat/src/types/TExoReactHostTemplate.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/render/compileExoReactHostTemplate.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react-compat/src/render/compileExoReactHostTemplate.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/types/TExoReactHostTemplateOp.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1124,94 +2491,112 @@
         "violations": []
       },
       {
-        "id": "@exodra/monorepo-atlas→@exodra/dom",
-        "from": "@exodra/monorepo-atlas",
+        "id": "@exodra/react-compat→@exodra/dom",
+        "from": "@exodra/react-compat",
         "to": "@exodra/dom",
         "kinds": [
+          "type-only",
           "value"
         ],
-        "weight": 1,
+        "weight": 12,
         "evidence": [
           {
-            "from": "packages/monorepo-atlas/src/client/mountExplorer.ts",
+            "from": "packages/react-compat/src/render/exoReactTagMachine.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/render/createExoReactHost.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/types/TExoReactSlot.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/types/TExoReactRange.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/render/EXO_REACT_RECONCILER.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
+          },
+          {
+            "from": "packages/react-compat/src/render/EXO_REACT_RECONCILER.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/render/placeExoReactRange.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/createRoot.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react-compat/src/createRoot.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/constants/EXO_REACT_BACKEND.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react-compat/src/types/TExoReactHostTemplate.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-compat/src/render/compileExoReactHostTemplate.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
           }
         ],
         "declared": true,
         "violations": []
       },
       {
-        "id": "@exodra/monorepo-atlas→@exodra/reactivity",
-        "from": "@exodra/monorepo-atlas",
-        "to": "@exodra/reactivity",
+        "id": "@exodra/react-compat→@exodra/list-reconcile",
+        "from": "@exodra/react-compat",
+        "to": "@exodra/list-reconcile",
         "kinds": [
+          "type-only",
           "value"
         ],
         "weight": 2,
         "evidence": [
           {
-            "from": "packages/monorepo-atlas/src/view/viewState.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/react-compat/src/render/placeExoReactRange.ts",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
             "kind": "value"
           },
           {
-            "from": "packages/monorepo-atlas/src/view/details.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "value"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/monorepo-atlas→@exodra/reactivity-types",
-        "from": "@exodra/monorepo-atlas",
-        "to": "@exodra/reactivity-types",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 3,
-        "evidence": [
-          {
-            "from": "packages/monorepo-atlas/src/view/controls.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
+            "from": "packages/react-compat/src/render/placeExoReactRange.ts",
+            "to": "packages/list-reconcile/src/index.ts",
+            "specifier": "@exodra/list-reconcile",
             "kind": "type-only"
-          },
-          {
-            "from": "packages/monorepo-atlas/src/view/viewState.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/monorepo-atlas/src/view/details.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
-            "kind": "type-only"
-          }
-        ],
-        "declared": false,
-        "violations": []
-      },
-      {
-        "id": "@exodra/monorepo-atlas→@exodra/string",
-        "from": "@exodra/monorepo-atlas",
-        "to": "@exodra/string",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "evidence": [
-          {
-            "from": "packages/monorepo-atlas/src/generate/buildArtifacts.ts",
-            "to": "packages/string/src/index.ts",
-            "specifier": "@exodra/string",
-            "kind": "value"
           }
         ],
         "declared": true,
@@ -1222,18 +2607,31 @@
         "from": "@exodra/react-mount",
         "to": "@exodra/core",
         "kinds": [
-          "type-only"
+          "type-only",
+          "value"
         ],
-        "weight": 2,
+        "weight": 4,
         "evidence": [
           {
-            "from": "packages/react-mount/src/types/index.ts",
+            "from": "packages/react-mount/src/types/TExoMountSource.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
             "from": "packages/react-mount/src/useExoMount.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/react-mount/src/useExoMount.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-mount/src/types/TExoMountHandle.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1247,15 +2645,40 @@
         "from": "@exodra/react-mount",
         "to": "@exodra/dom",
         "kinds": [
+          "type-only",
           "value"
         ],
-        "weight": 1,
+        "weight": 5,
         "evidence": [
+          {
+            "from": "packages/react-mount/src/types/TExoMountOptions.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-mount/src/types/TExoMountSource.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
           {
             "from": "packages/react-mount/src/useExoMount.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
+          },
+          {
+            "from": "packages/react-mount/src/useExoMount.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/react-mount/src/types/TExoMountHandle.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -1266,8 +2689,7 @@
         "from": "@exodra/react",
         "to": "@exodra/core",
         "kinds": [
-          "type-only",
-          "value"
+          "type-only"
         ],
         "weight": 2,
         "evidence": [
@@ -1275,10 +2697,10 @@
             "from": "packages/react/src/reactIsland.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
-            "kind": "value"
+            "kind": "type-only"
           },
           {
-            "from": "packages/react/src/reactIsland.ts",
+            "from": "packages/react/src/types/TExoReactWiring.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1288,49 +2710,38 @@
         "violations": []
       },
       {
-        "id": "@exodra/reactivity→@exodra/reactivity-types",
-        "from": "@exodra/reactivity",
-        "to": "@exodra/reactivity-types",
+        "id": "@exodra/router→@exodra/context",
+        "from": "@exodra/router",
+        "to": "@exodra/context",
         "kinds": [
-          "type-only"
+          "type-only",
+          "value"
         ],
-        "weight": 6,
+        "weight": 4,
         "evidence": [
           {
-            "from": "packages/reactivity/src/index.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
             "kind": "type-only"
           },
           {
-            "from": "packages/reactivity/src/createExoBindable.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
-            "kind": "type-only"
+            "from": "packages/router/src/setup/constants/EXO_ROUTER.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "value"
           },
           {
-            "from": "packages/reactivity/src/createExoCombined.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
-            "kind": "type-only"
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "value"
           },
           {
-            "from": "packages/reactivity/src/createExoBindableList.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/reactivity/src/createExoDerived.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/reactivity/src/persistor.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
-            "kind": "type-only"
+            "from": "packages/router/src/setup/constants/EXO_OUTLET_STATE.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "value"
           }
         ],
         "declared": true,
@@ -1344,63 +2755,75 @@
           "type-only",
           "value"
         ],
-        "weight": 3,
+        "weight": 6,
         "evidence": [
           {
-            "from": "packages/router/src/components.ts",
+            "from": "packages/router/src/components/exoLink.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/router/src/context.ts",
+            "from": "packages/router/src/components/exoLink.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
-            "kind": "value"
+            "kind": "type-only"
           },
           {
             "from": "packages/router/src/types/index.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
+          },
+          {
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
           }
         ],
         "declared": true,
         "violations": []
       },
       {
-        "id": "@exodra/router→@exodra/reactivity",
-        "from": "@exodra/router",
-        "to": "@exodra/reactivity",
+        "id": "@exodra/ssr→@exodra/context",
+        "from": "@exodra/ssr",
+        "to": "@exodra/context",
         "kinds": [
           "type-only",
           "value"
         ],
-        "weight": 4,
+        "weight": 3,
         "evidence": [
           {
-            "from": "packages/router/src/components.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/ssr/src/constants/EXO_SSR_RESPONSE.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
             "kind": "value"
           },
           {
-            "from": "packages/router/src/types/index.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/ssr/src/types/TExoSsrPageOptions.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
             "kind": "type-only"
           },
           {
-            "from": "packages/router/src/createRouter.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/ssr/src/page/renderExoPage.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
             "kind": "value"
-          },
-          {
-            "from": "packages/router/src/createRouter.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -1411,71 +2834,21 @@
         "from": "@exodra/ssr",
         "to": "@exodra/core",
         "kinds": [
-          "type-only",
           "value"
         ],
-        "weight": 7,
+        "weight": 2,
         "evidence": [
           {
-            "from": "packages/ssr/src/components.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/ssr/src/context.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/ssr/src/types.ts",
+            "from": "packages/ssr/src/scripts/renderExoJsonScript.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/ssr/src/normalizeSchemas.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/ssr/src/ExoNodeSsr.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/ssr/src/renderSchemas.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/ssr→@exodra/reactivity",
-        "from": "@exodra/ssr",
-        "to": "@exodra/reactivity",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "evidence": [
-          {
-            "from": "packages/ssr/src/renderPersistorScript.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "type-only"
+            "kind": "value"
           }
         ],
         "declared": true,
@@ -1486,45 +2859,139 @@
         "from": "@exodra/ssr",
         "to": "@exodra/string",
         "kinds": [
+          "type-only",
           "value"
         ],
-        "weight": 6,
+        "weight": 3,
         "evidence": [
           {
-            "from": "packages/ssr/src/ExoNodeSsr.ts",
+            "from": "packages/ssr/src/types/TExoSsrPageOptions.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/ssr/src/page/renderExoPage.ts",
             "to": "packages/string/src/index.ts",
             "specifier": "@exodra/string",
             "kind": "value"
           },
           {
-            "from": "packages/ssr/src/ExoSsrContextBase.ts",
+            "from": "packages/ssr/src/page/renderExoPage.ts",
             "to": "packages/string/src/index.ts",
             "specifier": "@exodra/string",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/string→@exodra/bench-harness",
+        "from": "@exodra/string",
+        "to": "@exodra/bench-harness",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 9,
+        "evidence": [
+          {
+            "from": "packages/string/bench/constants/exo-escape-inputs.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/bench/escape/exo-escape-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
             "kind": "value"
           },
           {
-            "from": "packages/ssr/src/renderJsonScript.ts",
-            "to": "packages/string/src/index.ts",
-            "specifier": "@exodra/string",
+            "from": "packages/string/bench/escape/exo-escape-variants.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/bench/markup/EXO_FILL_MARKUP_VARIANTS.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/bench/markup/exo-fill-markup-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
             "kind": "value"
           },
           {
-            "from": "packages/ssr/src/renderSchemas.ts",
-            "to": "packages/string/src/index.ts",
-            "specifier": "@exodra/string",
+            "from": "packages/string/bench/markup/exo-fill-markup-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/bench/node/EXO_STR_SET_VARIANTS.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/bench/node/exo-str-set-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
             "kind": "value"
           },
           {
-            "from": "packages/ssr/src/renderPersistorScript.ts",
-            "to": "packages/string/src/index.ts",
-            "specifier": "@exodra/string",
-            "kind": "value"
+            "from": "packages/string/bench/node/exo-str-set-bench.ts",
+            "to": "packages/bench-harness/src/index.ts",
+            "specifier": "@exodra/bench-harness",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/string→@exodra/context",
+        "from": "@exodra/string",
+        "to": "@exodra/context",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 5,
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/types/TExoStrSchema.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
           },
           {
-            "from": "packages/ssr/src/renderToStringCompiled.ts",
-            "to": "packages/string/src/index.ts",
-            "specifier": "@exodra/string",
-            "kind": "value"
+            "from": "packages/string/src/node/buildExoStrInstance.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/node/renderExoStrInstance.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/node/ExoStrBackend.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/node/factories/createExoStrInstanceFactory.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -1538,49 +3005,449 @@
           "type-only",
           "value"
         ],
-        "weight": 4,
+        "weight": 28,
         "evidence": [
           {
-            "from": "packages/string/src/createStringNode.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/string/src/ExoNodeString.ts",
+            "from": "packages/string/src/foreign/constants/EXO_STR_FOREIGN_VOCABULARY.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/string/src/renderToString.ts",
+            "from": "packages/string/src/foreign/constants/EXO_STR_FOREIGN_VOCABULARY.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           },
           {
-            "from": "packages/string/src/ssr-context.ts",
+            "from": "packages/string/src/foreign/types/TExoStrForeignApi.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/markup/exoForeignMarkup.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/node/EXO_STR_NODE_VOCABULARY.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
+          },
+          {
+            "from": "packages/string/src/node/EXO_STR_NODE_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/schema/exoStrSchemaOf.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/src/schema/exoStrSchemaOf.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/schema/types/TExoStrSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/schema/compileExoStrSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/src/schema/compileExoStrSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/writers/EXO_STR_WRITERS.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/src/node/buildExoStrInstance.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/src/node/disposeExoStrInstance.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/src/node/types/TExoStrMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/node/factories/createExoStrChildList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/node/types/TExoStrChildList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/node/renderExoStrInstance.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/src/node/ExoStrBackend.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/src/node/ExoStrBackend.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/src/node/factories/createExoStrInstanceFactory.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/bench/constants/EXO_STR_SET_SCENES.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/bench/constants/EXO_STR_SET_SCENES.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/bench/types/TExoStrSetScene.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/bench/escape/exo-escape-variants.ts",
+            "to": "packages/core/src/escape/escapeExoAttributeValue.ts",
+            "specifier": "../../../core/src/escape/escapeExoAttributeValue",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/bench/escape/exo-escape-variants.ts",
+            "to": "packages/core/src/escape/escapeExoText.ts",
+            "specifier": "../../../core/src/escape/escapeExoText",
+            "kind": "value"
+          },
+          {
+            "from": "packages/string/bench/node/EXO_STR_SET_VARIANTS.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/string/bench/node/exo-str-set-bench.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
           }
         ],
         "declared": true,
         "violations": []
       },
       {
-        "id": "@exodra/string→@exodra/reactivity-types",
-        "from": "@exodra/string",
-        "to": "@exodra/reactivity-types",
+        "id": "@exodra/term→@exodra/context",
+        "from": "@exodra/term",
+        "to": "@exodra/context",
         "kinds": [
           "type-only"
         ],
-        "weight": 1,
+        "weight": 4,
         "evidence": [
           {
-            "from": "packages/string/src/ExoNodeString.ts",
-            "to": "packages/reactivity-types/src/index.ts",
-            "specifier": "@exodra/reactivity-types",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/schema/types/TExoTermSchema.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/rendering/renderExoTermInstance.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/utilities/exoTermContextSlot.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/term→@exodra/core",
+        "from": "@exodra/term",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 29,
+        "evidence": [
+          {
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/schema/types/TExoTermSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/rendering/renderExoTermInstance.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/instance/disposeExoTermChild.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/instance/types/TExoTermChild.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/instance/types/TExoTermElement.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/instance/types/TExoTermMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/schema/exoTermSchemaOf.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/schema/exoTermSchemaOf.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/utilities/types/TExoTermWriterFactories.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/instance/factories/createExoTermChildList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/instance/types/TExoTermChildList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/foreign/types/TExoTermForeignApi.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/instance/exoForeignTermNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/instance/exoForeignTermNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/doc/readme-counter.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/doc/readme-counter.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          }
+        ],
+        "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/test-utils→@exodra/core",
+        "from": "@exodra/test-utils",
+        "to": "@exodra/core",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 6,
+        "evidence": [
+          {
+            "from": "packages/test-utils/src/buildRow.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/test-utils/src/types/TExoTestRowPorts.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/test-utils/src/createExoNamedTestMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/test-utils/src/createExoNamedTestMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/test-utils/src/createExoTestMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/test-utils/src/createExoTestMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
             "kind": "type-only"
           }
         ],
@@ -1595,22 +3462,156 @@
           "type-only",
           "value"
         ],
-        "weight": 2,
+        "weight": 16,
         "evidence": [
           {
-            "from": "packages/type-tests/src/typed-components.ts",
+            "from": "packages/type-tests/src/CARD.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/type-tests/src/typed-components.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/backend-compatible.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/box.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/box.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/named-ports.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/named-ports.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/port-name-check.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/port-name-check.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/schema-dialect.tsx",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
           }
         ],
         "declared": true,
+        "violations": []
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/dom",
+        "from": "@exodra/type-tests",
+        "to": "@exodra/dom",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 6,
+        "evidence": [
+          {
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/backend-compatible.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          }
+        ],
+        "declared": false,
         "violations": []
       },
       {
@@ -1618,94 +3619,74 @@
         "from": "@exodra/type-tests",
         "to": "@exodra/jsx",
         "kinds": [
-          "type-only"
+          "value"
         ],
-        "weight": 2,
+        "weight": 1,
         "evidence": [
           {
-            "from": "packages/type-tests/src/jsx-inference.tsx",
-            "to": "packages/jsx/src/index.ts",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/jsx/src/schema/index.ts",
             "specifier": "@exodra/jsx",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/type-tests/src/typed-components.ts",
-            "to": "packages/jsx/src/index.ts",
-            "specifier": "@exodra/jsx",
-            "kind": "type-only"
+            "kind": "value"
           }
         ],
         "declared": true,
         "violations": []
       },
       {
-        "id": "@exodra/type-tests→@exodra/reactivity",
+        "id": "@exodra/type-tests→@exodra/string",
         "from": "@exodra/type-tests",
-        "to": "@exodra/reactivity",
+        "to": "@exodra/string",
         "kinds": [
-          "type-only",
           "value"
         ],
-        "weight": 2,
+        "weight": 1,
         "evidence": [
           {
-            "from": "packages/type-tests/src/typed-components.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
+            "from": "packages/type-tests/src/backend-compatible.ts",
+            "to": "packages/string/src/index.ts",
+            "specifier": "@exodra/string",
+            "kind": "value"
+          }
+        ],
+        "declared": false,
+        "violations": []
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/test-utils",
+        "from": "@exodra/type-tests",
+        "to": "@exodra/test-utils",
+        "kinds": [
+          "value"
+        ],
+        "weight": 3,
+        "evidence": [
+          {
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/test-utils/src/index.ts",
+            "specifier": "@exodra/test-utils",
             "kind": "value"
           },
           {
-            "from": "packages/type-tests/src/typed-components.ts",
-            "to": "packages/reactivity/src/index.ts",
-            "specifier": "@exodra/reactivity",
-            "kind": "type-only"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/vite-plugin→@exodra/core",
-        "from": "@exodra/vite-plugin",
-        "to": "@exodra/core",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "evidence": [
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/test-utils/src/index.ts",
+            "specifier": "@exodra/test-utils",
+            "kind": "value"
+          },
           {
-            "from": "packages/vite-plugin-exodra/src/client.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
+            "from": "packages/type-tests/src/port-name-check.ts",
+            "to": "packages/test-utils/src/index.ts",
+            "specifier": "@exodra/test-utils",
+            "kind": "value"
           }
         ],
-        "declared": true,
+        "declared": false,
         "violations": []
       },
       {
-        "id": "@exodra/vite-plugin→@exodra/dom",
-        "from": "@exodra/vite-plugin",
-        "to": "@exodra/dom",
-        "kinds": [
-          "dynamic"
-        ],
-        "weight": 1,
-        "evidence": [
-          {
-            "from": "packages/vite-plugin-exodra/src/client.ts",
-            "to": "packages/dom/src/index.ts",
-            "specifier": "@exodra/dom",
-            "kind": "dynamic"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "babel-preset-exodra→@exodra/babel-plugin-jsx",
+        "id": "babel-preset-exodra→@exodra/babel-plugin-schema",
         "from": "babel-preset-exodra",
-        "to": "@exodra/babel-plugin-jsx",
+        "to": "@exodra/babel-plugin-schema",
         "kinds": [
           "value"
         ],
@@ -1713,8 +3694,8 @@
         "evidence": [
           {
             "from": "packages/babel-preset-exodra/src/index.ts",
-            "to": "packages/babel-plugin-jsx/src/index.ts",
-            "specifier": "@exodra/babel-plugin-jsx",
+            "to": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "specifier": "@exodra/babel-plugin-schema",
             "kind": "value"
           }
         ],
@@ -1725,23 +3706,47 @@
     "rules": {
       "no-circular": {
         "severity": "error",
-        "comment": "A cycle between modules makes initialisation order load-order dependent."
+        "comment": "A cycle whose edges survive type erasure makes initialisation order load-order dependent."
+      },
+      "backend-recursion-circular": {
+        "severity": "info",
+        "comment": "A backend's exonode and its instance renderer naming each other. Inert: no ring member reads a ring binding at module evaluation. See BACKEND_RECURSION."
+      },
+      "type-only-circular": {
+        "severity": "info",
+        "comment": "A cycle that exists only in types. Erased at build; reported, not fatal."
       },
       "not-to-unresolvable": {
         "severity": "error",
-        "comment": "An import that does not resolve is a broken build waiting to happen."
+        "comment": "An import that does not resolve is a broken build waiting to happen. EXCEPT a Vite virtual module: `virtual:app-sloc` is produced by the plugin at packages/benchmarks/vite.config.ts:31 and exists only inside a Vite build, so a crawler that reads the filesystem cannot resolve it and never will. The exemption is that ONE specifier and not the `virtual:` scheme, so a second virtual module has to be added here deliberately."
       },
       "no-undeclared-dep": {
         "severity": "error",
         "comment": "Imported but NOT in this package.json. It works in the monorepo (hoisted node_modules) and breaks for whoever installs the published package."
       },
-      "core-is-zero-dep": {
+      "core-names-only-context": {
         "severity": "error",
-        "comment": "@exodra/core is the renderer-agnostic base: it must not depend on any other Exodra package, so any reactivity system can drive it."
+        "comment": "@exodra/core names ONE Exodra package, @exodra/context, and no other — not even a types-only one. THE ONE NAME IT MAY SPEAK is the context chain, which core CALLS in exo-base-node-pack.ts; context-is-zero-dep below is the other half of that statement, and it is what keeps the pair acyclic. THE WORD \"RENDERER-AGNOSTIC\" STOOD HERE AND WAS FALSE TWICE: this rule reads the IMPORT GRAPH, and a module knows the DOM without importing anything. src/list/ called insertBefore under it for months (now @exodra/list-reconcile), and events/ typed a handler Event and Element, which made @exodra/term cast a fabricated object through a type it could not satisfy. What core actually is: the SCHEMA VOCABULARY, plus the HTML facts every backend re-derives otherwise — void elements, raw-text elements, escaping, and which attributes have a property form. Those are markup knowledge and they stay; @exodra/term ignores the last one by name (exoTermWriterForPort.ts). The gate for what this one cannot see is packages/core/src/tests/coreNamesNoDom.test.ts."
       },
-      "contract-package-is-zero-dep": {
+      "bench-harness-is-bench-only": {
         "severity": "error",
-        "comment": "@exodra/reactivity-types is the shared CONTRACT: types only, no deps, so both renderers and every adapter can depend on it without pulling anything."
+        "comment": "@exodra/bench-harness is a private, never-published measuring instrument — the interleaved runner, the clock-grain probe and the null-pair resolution report the package benches share. core-names-only-context, computed-names-only-core and context-is-zero-dep each exempt it by name, which would be a hole in each if anything but a bench could name it. This rule is what closes that: the ONLY files allowed to import it are the ones under a `bench/` directory, so a shipped module borrowing the harness fails here rather than sliding through an exemption written for something else."
+      },
+      "context-is-zero-dep": {
+        "severity": "error",
+        "comment": "@exodra/context is a frame of three fields, a token of one, and the walk that reads a chain. @exodra/core imports it, so an import in the other direction would close a cycle through the package every backend links first. It names no Exodra package and no DOM name either, which is what lets @exodra/term and the server renderer link the whole of it. THE ONE EXEMPTION is @exodra/bench-harness, which src/bench/ names and nothing published does: it is private, it is excluded from this package's emit by tsconfig.json, and bench-harness-is-bench-only above is what holds it to bench files."
+      },
+      "computed-names-only-core": {
+        "severity": "error",
+        "comment": "@exodra/computed is the DECLARATIVE half of a machine — fields, derivations, transitions, the pending word. It sits on top of the imperative builder that stays in @exodra/core, so the direction is computed -> core and never back; core-names-only-context above is the other half of the same statement. It names no backend either: a field is a bit and a derivation is a function, and the one thing written at the end goes through connector.set, which every backend answers."
+      },
+      "list-reconcile-is-zero-dep": {
+        "severity": "error",
+        "comment": "@exodra/list-reconcile holds the passes that CALL DOM APIs — insertBefore, removeChild — which is exactly why they are not in @exodra/core. It names no Exodra package in return, so the direction is dom -> reconcile -> nothing and a backend with no document links none of it."
+      },
+      "backends-do-not-know-the-reconciler": {
+        "severity": "error",
+        "comment": "THE OTHER DIRECTION, and the one that was never checked. `list-reconcile-is-zero-dep` above proves reconcile -> nothing; this proves backend -> nothing-reconcile. Reconciling is a layer over two doors a backend already has — `build` to make a row and the child list to place one — so a backend that imported it would be a backend with one list strategy welded in, and a second strategy could no longer be a second FUNCTION. Tests reach it freely — `options.exclude` drops them from the crawl — and they are where the composition a user would write is driven. The older comment above says \"the direction is dom -> reconcile\"; no runtime file in any backend has named it for some time, and this rule is what keeps that true. BOTH SPELLINGS, per the header: the alias resolves to packages/list-reconcile/src, and with no alias the import lands on the node_modules symlink."
       },
       "renderers-do-not-know-each-other": {
         "severity": "error",
@@ -1751,9 +3756,17 @@
         "severity": "error",
         "comment": "The other direction of the same rule."
       },
+      "hydration-is-a-leaf": {
+        "severity": "error",
+        "comment": "Nothing outside @exodra/dom hydrate/ may import from it except the package barrel — one value import from an always-retained module welds hydration into every client-only bundle."
+      },
       "runtime-does-not-import-build-tooling": {
         "severity": "error",
         "comment": "Compilers, plugins and scaffolding run at BUILD time. A runtime package importing one would ship it to the browser."
+      },
+      "error-registry-does-not-ship": {
+        "severity": "error",
+        "comment": "Nothing a package publishes may import from scripts/ — the error-code registry there holds exactly the explanations a production build strips."
       },
       "no-deprecated-core": {
         "severity": "error",
@@ -1762,238 +3775,296 @@
     }
   },
   "layout": {
-    "width": 884,
-    "height": 1340,
+    "width": 1256,
+    "height": 1492,
     "nodes": [
       {
-        "id": "@exodra/attrs",
-        "x": 529,
-        "y": 1126,
-        "width": 96,
+        "id": "@exodra/babel-plugin-schema",
+        "x": 333.5,
+        "y": 92,
+        "width": 169,
         "height": 40
       },
       {
-        "id": "@exodra/babel-plugin-jsx",
-        "x": 504,
-        "y": 1058,
-        "width": 146,
+        "id": "@exodra/bench-harness",
+        "x": 1108,
+        "y": 698,
+        "width": 124,
         "height": 40
       },
       {
         "id": "@exodra/benchmarks",
-        "x": 64.5,
-        "y": 800,
+        "x": 367,
+        "y": 160,
         "width": 102,
         "height": 40
       },
       {
+        "id": "@exodra/computed",
+        "x": 610,
+        "y": 74,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/conformance",
+        "x": 363.5,
+        "y": 376,
+        "width": 109,
+        "height": 40
+      },
+      {
+        "id": "@exodra/context",
+        "x": 948,
+        "y": 622,
+        "width": 96,
+        "height": 40
+      },
+      {
         "id": "@exodra/core",
-        "x": 739,
-        "y": 844,
+        "x": 788,
+        "y": 768,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/dom",
-        "x": 529,
-        "y": 744,
+        "x": 610,
+        "y": 746,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/dom-profiler",
-        "x": 297,
-        "y": 818,
+        "x": 359.5,
+        "y": 540,
         "width": 117,
         "height": 40
       },
       {
-        "id": "@exodra/examples-cnstra-oimdb",
+        "id": "@exodra/examples-react-compat-todo",
         "x": 24,
-        "y": 438,
-        "width": 183,
+        "y": 24,
+        "width": 220,
         "height": 40
       },
       {
         "id": "@exodra/examples-ssr-test",
-        "x": 38.5,
-        "y": 178,
+        "x": 57,
+        "y": 1156,
         "width": 154,
         "height": 40
       },
       {
+        "id": "@exodra/examples-todo-cnstra-oimdb",
+        "x": 308,
+        "y": 608,
+        "width": 220,
+        "height": 40
+      },
+      {
         "id": "@exodra/forms",
-        "x": 307.5,
-        "y": 24,
+        "x": 610,
+        "y": 282,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/introspect",
-        "x": 64.5,
-        "y": 868,
+        "x": 83,
+        "y": 464,
         "width": 102,
         "height": 40
       },
       {
         "id": "@exodra/jsx",
-        "x": 529,
-        "y": 516,
+        "x": 610,
+        "y": 1108,
         "width": 96,
         "height": 40
       },
       {
-        "id": "@exodra/monorepo-atlas",
-        "x": 289.5,
-        "y": 386,
+        "id": "@exodra/list-reconcile",
+        "x": 592,
+        "y": 638,
         "width": 132,
         "height": 40
       },
       {
-        "id": "@exodra/profiler",
-        "x": 67.5,
-        "y": 936,
-        "width": 96,
+        "id": "@exodra/monorepo-atlas",
+        "x": 68,
+        "y": 532,
+        "width": 132,
         "height": 40
       },
       {
         "id": "@exodra/react",
-        "x": 529,
-        "y": 604,
+        "x": 610,
+        "y": 350,
         "width": 96,
         "height": 40
       },
       {
+        "id": "@exodra/react-compat",
+        "x": 359.5,
+        "y": 842,
+        "width": 117,
+        "height": 40
+      },
+      {
+        "id": "@exodra/react-compat-libraries",
+        "x": 38.5,
+        "y": 600,
+        "width": 191,
+        "height": 40
+      },
+      {
         "id": "@exodra/react-mount",
-        "x": 301,
-        "y": 750,
+        "x": 363.5,
+        "y": 956,
         "width": 109,
         "height": 40
       },
       {
-        "id": "@exodra/reactivity",
-        "x": 526,
-        "y": 32,
-        "width": 102,
-        "height": 40
-      },
-      {
-        "id": "@exodra/reactivity-types",
-        "x": 714,
-        "y": 68,
-        "width": 146,
-        "height": 40
-      },
-      {
         "id": "@exodra/router",
-        "x": 307.5,
-        "y": 318,
+        "x": 610,
+        "y": 418,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/ssr",
-        "x": 307.5,
-        "y": 182,
+        "x": 370,
+        "y": 1024,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/string",
-        "x": 529,
-        "y": 284,
+        "x": 610,
+        "y": 834,
         "width": 96,
         "height": 40
       },
       {
-        "id": "@exodra/style",
-        "x": 67.5,
-        "y": 1004,
+        "id": "@exodra/term",
+        "x": 610,
+        "y": 486,
+        "width": 96,
+        "height": 40
+      },
+      {
+        "id": "@exodra/test-utils",
+        "x": 607,
+        "y": 1176,
+        "width": 102,
+        "height": 40
+      },
+      {
+        "id": "@exodra/to-react",
+        "x": 86,
+        "y": 668,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/type-tests",
-        "x": 304.5,
-        "y": 250,
+        "x": 367,
+        "y": 1120,
         "width": 102,
         "height": 40
       },
       {
         "id": "@exodra/vite-plugin",
-        "x": 301,
-        "y": 454,
+        "x": 79.5,
+        "y": 736,
         "width": 109,
         "height": 40
       },
       {
         "id": "babel-preset-exodra",
-        "x": 271,
-        "y": 1058,
+        "x": 49.5,
+        "y": 92,
         "width": 169,
         "height": 40
       },
       {
         "id": "bun-plugin-exodra",
-        "x": 38.5,
-        "y": 1072,
+        "x": 57,
+        "y": 1224,
         "width": 154,
         "height": 40
       },
       {
         "id": "create-exodra",
-        "x": 53.5,
-        "y": 1140,
+        "x": 72,
+        "y": 1292,
         "width": 124,
         "height": 40
       },
       {
         "id": "esbuild-plugin-exodra",
-        "x": 24,
-        "y": 1208,
+        "x": 42.5,
+        "y": 1360,
         "width": 183,
         "height": 40
       },
       {
         "id": "rollup-plugin-exodra",
-        "x": 27.5,
-        "y": 1276,
+        "x": 46,
+        "y": 1428,
         "width": 176,
         "height": 40
       }
     ],
     "edges": [
       {
-        "id": "@exodra/attrs→@exodra/core",
+        "id": "@exodra/benchmarks→@exodra/computed",
         "points": [
           {
-            "x": 625,
-            "y": 1146
+            "x": 451,
+            "y": 160
           },
           {
-            "x": 682,
-            "y": 1146
+            "x": 560,
+            "y": 94
           },
           {
-            "x": 779.6,
-            "y": 884
+            "x": 610,
+            "y": 94
           }
         ]
       },
       {
-        "id": "@exodra/babel-plugin-jsx→@exodra/core",
+        "id": "@exodra/benchmarks→@exodra/context",
         "points": [
           {
-            "x": 650,
-            "y": 1078
+            "x": 469,
+            "y": 164.9
           },
           {
-            "x": 682,
-            "y": 1078
+            "x": 560,
+            "y": 138
           },
           {
-            "x": 777.2,
-            "y": 884
+            "x": 658,
+            "y": 138
+          },
+          {
+            "x": 756,
+            "y": 138
+          },
+          {
+            "x": 836,
+            "y": 138
+          },
+          {
+            "x": 916,
+            "y": 138
+          },
+          {
+            "x": 992.8,
+            "y": 622
           }
         ]
       },
@@ -2001,32 +4072,24 @@
         "id": "@exodra/benchmarks→@exodra/core",
         "points": [
           {
-            "x": 127,
-            "y": 840
+            "x": 469,
+            "y": 172.1
           },
           {
-            "x": 239,
-            "y": 1034
+            "x": 560,
+            "y": 158
           },
           {
-            "x": 355.5,
-            "y": 1034
+            "x": 658,
+            "y": 158
           },
           {
-            "x": 472,
-            "y": 1034
+            "x": 756,
+            "y": 158
           },
           {
-            "x": 577,
-            "y": 1034
-          },
-          {
-            "x": 682,
-            "y": 1034
-          },
-          {
-            "x": 774.6,
-            "y": 884
+            "x": 833.5,
+            "y": 768
           }
         ]
       },
@@ -2034,66 +4097,277 @@
         "id": "@exodra/benchmarks→@exodra/dom",
         "points": [
           {
-            "x": 155.3,
-            "y": 840
+            "x": 469,
+            "y": 179.3
           },
           {
-            "x": 239,
-            "y": 882
+            "x": 560,
+            "y": 178
           },
           {
-            "x": 355.5,
-            "y": 882
-          },
-          {
-            "x": 472,
-            "y": 882
-          },
-          {
-            "x": 559.2,
-            "y": 784
+            "x": 654.7,
+            "y": 746
           }
         ]
       },
       {
-        "id": "@exodra/benchmarks→@exodra/reactivity",
+        "id": "@exodra/benchmarks→@exodra/forms",
         "points": [
           {
-            "x": 119.1,
-            "y": 800
+            "x": 469,
+            "y": 186.5
           },
           {
-            "x": 239,
-            "y": 138
+            "x": 560,
+            "y": 198
           },
           {
-            "x": 355.5,
-            "y": 138
-          },
-          {
-            "x": 472,
-            "y": 138
-          },
-          {
-            "x": 552.6,
-            "y": 72
+            "x": 639.2,
+            "y": 282
           }
         ]
       },
       {
-        "id": "@exodra/benchmarks→@exodra/ssr",
+        "id": "@exodra/benchmarks→@exodra/list-reconcile",
         "points": [
           {
-            "x": 119.9,
+            "x": 469,
+            "y": 193.6
+          },
+          {
+            "x": 560,
+            "y": 218
+          },
+          {
+            "x": 653.5,
+            "y": 638
+          }
+        ]
+      },
+      {
+        "id": "@exodra/benchmarks→@exodra/string",
+        "points": [
+          {
+            "x": 467,
+            "y": 200
+          },
+          {
+            "x": 560,
+            "y": 238
+          },
+          {
+            "x": 654.8,
+            "y": 834
+          }
+        ]
+      },
+      {
+        "id": "@exodra/computed→@exodra/bench-harness",
+        "points": [
+          {
+            "x": 706,
+            "y": 89.1
+          },
+          {
+            "x": 756,
+            "y": 84
+          },
+          {
+            "x": 836,
+            "y": 84
+          },
+          {
+            "x": 916,
+            "y": 84
+          },
+          {
+            "x": 996,
+            "y": 84
+          },
+          {
+            "x": 1076,
+            "y": 84
+          },
+          {
+            "x": 1167,
+            "y": 698
+          }
+        ]
+      },
+      {
+        "id": "@exodra/computed→@exodra/core",
+        "points": [
+          {
+            "x": 706,
+            "y": 99.9
+          },
+          {
+            "x": 756,
+            "y": 106
+          },
+          {
+            "x": 833.7,
+            "y": 768
+          }
+        ]
+      },
+      {
+        "id": "@exodra/conformance→@exodra/core",
+        "points": [
+          {
+            "x": 438.6,
+            "y": 376
+          },
+          {
+            "x": 560,
+            "y": 258
+          },
+          {
+            "x": 658,
+            "y": 258
+          },
+          {
+            "x": 756,
+            "y": 258
+          },
+          {
+            "x": 833,
+            "y": 768
+          }
+        ]
+      },
+      {
+        "id": "@exodra/conformance→@exodra/dom",
+        "points": [
+          {
+            "x": 472.5,
+            "y": 386.8
+          },
+          {
+            "x": 560,
+            "y": 372
+          },
+          {
+            "x": 653,
+            "y": 746
+          }
+        ]
+      },
+      {
+        "id": "@exodra/conformance→@exodra/string",
+        "points": [
+          {
+            "x": 472.5,
+            "y": 394.5
+          },
+          {
+            "x": 560,
+            "y": 392
+          },
+          {
+            "x": 653.8,
+            "y": 834
+          }
+        ]
+      },
+      {
+        "id": "@exodra/conformance→@exodra/term",
+        "points": [
+          {
+            "x": 443.8,
+            "y": 416
+          },
+          {
+            "x": 560,
+            "y": 506
+          },
+          {
+            "x": 610,
+            "y": 506
+          }
+        ]
+      },
+      {
+        "id": "@exodra/context→@exodra/bench-harness",
+        "points": [
+          {
+            "x": 1044,
+            "y": 642
+          },
+          {
+            "x": 1076,
+            "y": 642
+          },
+          {
+            "x": 1145.3,
+            "y": 698
+          }
+        ]
+      },
+      {
+        "id": "@exodra/core→@exodra/bench-harness",
+        "points": [
+          {
+            "x": 884,
+            "y": 782
+          },
+          {
+            "x": 916,
+            "y": 778
+          },
+          {
+            "x": 996,
+            "y": 778
+          },
+          {
+            "x": 1076,
+            "y": 778
+          },
+          {
+            "x": 1138.7,
+            "y": 738
+          }
+        ]
+      },
+      {
+        "id": "@exodra/core→@exodra/context",
+        "points": [
+          {
+            "x": 884,
+            "y": 795.2
+          },
+          {
+            "x": 916,
             "y": 800
           },
           {
-            "x": 239,
-            "y": 260
+            "x": 985.9,
+            "y": 662
+          }
+        ]
+      },
+      {
+        "id": "@exodra/dom-profiler→@exodra/core",
+        "points": [
+          {
+            "x": 476.5,
+            "y": 555.9
           },
           {
-            "x": 315.3,
-            "y": 222
+            "x": 560,
+            "y": 550
+          },
+          {
+            "x": 658,
+            "y": 550
+          },
+          {
+            "x": 756,
+            "y": 550
+          },
+          {
+            "x": 829.3,
+            "y": 768
           }
         ]
       },
@@ -2101,16 +4375,41 @@
         "id": "@exodra/dom-profiler→@exodra/dom",
         "points": [
           {
-            "x": 414,
-            "y": 838
+            "x": 476.5,
+            "y": 565.8
           },
           {
-            "x": 472,
-            "y": 838
+            "x": 560,
+            "y": 574
           },
           {
-            "x": 548.6,
-            "y": 784
+            "x": 647.8,
+            "y": 746
+          }
+        ]
+      },
+      {
+        "id": "@exodra/dom→@exodra/context",
+        "points": [
+          {
+            "x": 706,
+            "y": 750.3
+          },
+          {
+            "x": 756,
+            "y": 734
+          },
+          {
+            "x": 836,
+            "y": 734
+          },
+          {
+            "x": 916,
+            "y": 734
+          },
+          {
+            "x": 978.6,
+            "y": 662
           }
         ]
       },
@@ -2118,175 +4417,16 @@
         "id": "@exodra/dom→@exodra/core",
         "points": [
           {
-            "x": 585.4,
-            "y": 784
+            "x": 706,
+            "y": 776.8
           },
           {
-            "x": 682,
-            "y": 1014
+            "x": 756,
+            "y": 788
           },
           {
-            "x": 773,
-            "y": 884
-          }
-        ]
-      },
-      {
-        "id": "@exodra/dom→@exodra/reactivity-types",
-        "points": [
-          {
-            "x": 580.9,
-            "y": 744
-          },
-          {
-            "x": 682,
-            "y": 226
-          },
-          {
-            "x": 771.8,
-            "y": 108
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/core",
-        "points": [
-          {
-            "x": 120.1,
-            "y": 478
-          },
-          {
-            "x": 239,
-            "y": 994
-          },
-          {
-            "x": 355.5,
-            "y": 994
-          },
-          {
-            "x": 472,
-            "y": 994
-          },
-          {
-            "x": 577,
-            "y": 994
-          },
-          {
-            "x": 682,
-            "y": 994
-          },
-          {
-            "x": 770.8,
-            "y": 884
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/dom",
-        "points": [
-          {
-            "x": 124.7,
-            "y": 478
-          },
-          {
-            "x": 239,
-            "y": 726
-          },
-          {
-            "x": 355.5,
-            "y": 726
-          },
-          {
-            "x": 472,
-            "y": 726
-          },
-          {
-            "x": 529,
-            "y": 746.6
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/jsx",
-        "points": [
-          {
-            "x": 142.9,
-            "y": 478
-          },
-          {
-            "x": 239,
-            "y": 548
-          },
-          {
-            "x": 355.5,
-            "y": 548
-          },
-          {
-            "x": 472,
-            "y": 548
-          },
-          {
-            "x": 529,
-            "y": 541.5
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/reactivity",
-        "points": [
-          {
-            "x": 122.8,
-            "y": 438
-          },
-          {
-            "x": 239,
-            "y": 118
-          },
-          {
-            "x": 355.5,
-            "y": 118
-          },
-          {
-            "x": 472,
-            "y": 118
-          },
-          {
-            "x": 545.2,
-            "y": 72
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/router",
-        "points": [
-          {
-            "x": 136.1,
-            "y": 438
-          },
-          {
-            "x": 239,
-            "y": 338
-          },
-          {
-            "x": 307.5,
-            "y": 338
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-cnstra-oimdb→@exodra/ssr",
-        "points": [
-          {
-            "x": 125.8,
-            "y": 438
-          },
-          {
-            "x": 239,
-            "y": 218
-          },
-          {
-            "x": 307.5,
-            "y": 208.6
+            "x": 788,
+            "y": 788
           }
         ]
       },
@@ -2294,32 +4434,32 @@
         "id": "@exodra/examples-ssr-test→@exodra/core",
         "points": [
           {
-            "x": 118.7,
-            "y": 218
+            "x": 178.4,
+            "y": 1196
           },
           {
-            "x": 239,
-            "y": 974
+            "x": 276,
+            "y": 1240
           },
           {
-            "x": 355.5,
-            "y": 974
+            "x": 418,
+            "y": 1240
           },
           {
-            "x": 472,
-            "y": 974
+            "x": 560,
+            "y": 1240
           },
           {
-            "x": 577,
-            "y": 974
+            "x": 658,
+            "y": 1240
           },
           {
-            "x": 682,
-            "y": 974
+            "x": 756,
+            "y": 1240
           },
           {
-            "x": 767.9,
-            "y": 884
+            "x": 832.5,
+            "y": 808
           }
         ]
       },
@@ -2327,49 +4467,24 @@
         "id": "@exodra/examples-ssr-test→@exodra/dom",
         "points": [
           {
-            "x": 120.4,
-            "y": 218
+            "x": 205,
+            "y": 1196
           },
           {
-            "x": 239,
-            "y": 706
+            "x": 276,
+            "y": 1216
           },
           {
-            "x": 355.5,
-            "y": 706
+            "x": 418,
+            "y": 1216
           },
           {
-            "x": 472,
-            "y": 706
+            "x": 560,
+            "y": 1216
           },
           {
-            "x": 540.8,
-            "y": 744
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-ssr-test→@exodra/reactivity",
-        "points": [
-          {
-            "x": 138,
-            "y": 178
-          },
-          {
-            "x": 239,
-            "y": 88
-          },
-          {
-            "x": 355.5,
-            "y": 88
-          },
-          {
-            "x": 472,
-            "y": 88
-          },
-          {
-            "x": 526,
-            "y": 69.5
+            "x": 653.6,
+            "y": 786
           }
         ]
       },
@@ -2377,33 +4492,109 @@
         "id": "@exodra/examples-ssr-test→@exodra/ssr",
         "points": [
           {
-            "x": 192.5,
-            "y": 186.8
+            "x": 155.5,
+            "y": 1156
           },
           {
-            "x": 239,
-            "y": 180
+            "x": 276,
+            "y": 1044
           },
           {
-            "x": 307.5,
-            "y": 192.9
+            "x": 370,
+            "y": 1044
           }
         ]
       },
       {
-        "id": "@exodra/forms→@exodra/reactivity",
+        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/core",
         "points": [
           {
-            "x": 403.5,
-            "y": 44
+            "x": 501.5,
+            "y": 608
           },
           {
-            "x": 472,
-            "y": 44
+            "x": 560,
+            "y": 594
           },
           {
-            "x": 526,
-            "y": 48.1
+            "x": 658,
+            "y": 594
+          },
+          {
+            "x": 756,
+            "y": 594
+          },
+          {
+            "x": 827.8,
+            "y": 768
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/dom",
+        "points": [
+          {
+            "x": 528,
+            "y": 617.2
+          },
+          {
+            "x": 560,
+            "y": 614
+          },
+          {
+            "x": 645.1,
+            "y": 746
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/forms",
+        "points": [
+          {
+            "x": 528,
+            "y": 635.7
+          },
+          {
+            "x": 560,
+            "y": 638
+          },
+          {
+            "x": 652.2,
+            "y": 322
+          }
+        ]
+      },
+      {
+        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/list-reconcile",
+        "points": [
+          {
+            "x": 512.7,
+            "y": 648
+          },
+          {
+            "x": 560,
+            "y": 658
+          },
+          {
+            "x": 592,
+            "y": 658
+          }
+        ]
+      },
+      {
+        "id": "@exodra/forms→@exodra/core",
+        "points": [
+          {
+            "x": 706,
+            "y": 302
+          },
+          {
+            "x": 756,
+            "y": 302
+          },
+          {
+            "x": 832.7,
+            "y": 768
           }
         ]
       },
@@ -2411,134 +4602,108 @@
         "id": "@exodra/jsx→@exodra/core",
         "points": [
           {
-            "x": 582,
-            "y": 556
+            "x": 706,
+            "y": 1128
           },
           {
-            "x": 682,
-            "y": 954
+            "x": 756,
+            "y": 1128
           },
           {
-            "x": 763.7,
-            "y": 884
+            "x": 831.3,
+            "y": 808
           }
         ]
       },
       {
-        "id": "@exodra/jsx→@exodra/reactivity-types",
+        "id": "@exodra/react-compat→@exodra/context",
         "points": [
           {
-            "x": 583.4,
-            "y": 516
+            "x": 435.8,
+            "y": 842
           },
           {
-            "x": 682,
-            "y": 206
+            "x": 560,
+            "y": 702
           },
           {
-            "x": 769.2,
-            "y": 108
+            "x": 658,
+            "y": 702
+          },
+          {
+            "x": 756,
+            "y": 702
+          },
+          {
+            "x": 836,
+            "y": 702
+          },
+          {
+            "x": 916,
+            "y": 702
+          },
+          {
+            "x": 969.3,
+            "y": 662
           }
         ]
       },
       {
-        "id": "@exodra/monorepo-atlas→@exodra/core",
+        "id": "@exodra/react-compat→@exodra/core",
         "points": [
           {
-            "x": 359.9,
-            "y": 426
+            "x": 476.5,
+            "y": 876.8
           },
           {
-            "x": 472,
-            "y": 934
+            "x": 560,
+            "y": 898
           },
           {
-            "x": 577,
-            "y": 934
+            "x": 658,
+            "y": 898
           },
           {
-            "x": 682,
-            "y": 934
+            "x": 756,
+            "y": 898
           },
           {
-            "x": 757,
-            "y": 884
+            "x": 821.5,
+            "y": 808
           }
         ]
       },
       {
-        "id": "@exodra/monorepo-atlas→@exodra/dom",
+        "id": "@exodra/react-compat→@exodra/dom",
         "points": [
           {
-            "x": 363.8,
-            "y": 426
+            "x": 465.3,
+            "y": 882
           },
           {
-            "x": 472,
-            "y": 686
+            "x": 560,
+            "y": 922
           },
           {
-            "x": 550.1,
-            "y": 744
+            "x": 645.4,
+            "y": 786
           }
         ]
       },
       {
-        "id": "@exodra/monorepo-atlas→@exodra/reactivity",
+        "id": "@exodra/react-compat→@exodra/list-reconcile",
         "points": [
           {
-            "x": 361.6,
-            "y": 386
+            "x": 453.5,
+            "y": 882
           },
           {
-            "x": 472,
-            "y": 24
+            "x": 560,
+            "y": 942
           },
           {
-            "x": 526,
-            "y": 38.4
-          }
-        ]
-      },
-      {
-        "id": "@exodra/monorepo-atlas→@exodra/reactivity-types",
-        "points": [
-          {
-            "x": 365.4,
-            "y": 386
-          },
-          {
-            "x": 472,
-            "y": 170
-          },
-          {
-            "x": 577,
-            "y": 170
-          },
-          {
-            "x": 682,
-            "y": 170
-          },
-          {
-            "x": 761.4,
-            "y": 108
-          }
-        ]
-      },
-      {
-        "id": "@exodra/monorepo-atlas→@exodra/string",
-        "points": [
-          {
-            "x": 382,
-            "y": 386
-          },
-          {
-            "x": 472,
-            "y": 318
-          },
-          {
-            "x": 529,
-            "y": 310.4
+            "x": 651.1,
+            "y": 678
           }
         ]
       },
@@ -2546,24 +4711,24 @@
         "id": "@exodra/react-mount→@exodra/core",
         "points": [
           {
-            "x": 371.7,
-            "y": 790
+            "x": 472.5,
+            "y": 970.6
           },
           {
-            "x": 472,
-            "y": 914
+            "x": 560,
+            "y": 962
           },
           {
-            "x": 577,
-            "y": 914
+            "x": 658,
+            "y": 962
           },
           {
-            "x": 682,
-            "y": 914
+            "x": 756,
+            "y": 962
           },
           {
-            "x": 745,
-            "y": 884
+            "x": 826.8,
+            "y": 808
           }
         ]
       },
@@ -2571,16 +4736,16 @@
         "id": "@exodra/react-mount→@exodra/dom",
         "points": [
           {
-            "x": 377.9,
-            "y": 750
+            "x": 472.5,
+            "y": 981.4
           },
           {
-            "x": 472,
-            "y": 666
+            "x": 560,
+            "y": 990
           },
           {
-            "x": 555.6,
-            "y": 744
+            "x": 649.3,
+            "y": 786
           }
         ]
       },
@@ -2588,33 +4753,41 @@
         "id": "@exodra/react→@exodra/core",
         "points": [
           {
-            "x": 625,
-            "y": 624
+            "x": 706,
+            "y": 370
           },
           {
-            "x": 682,
-            "y": 624
+            "x": 756,
+            "y": 370
           },
           {
-            "x": 778.3,
-            "y": 844
+            "x": 832.2,
+            "y": 768
           }
         ]
       },
       {
-        "id": "@exodra/reactivity→@exodra/reactivity-types",
+        "id": "@exodra/router→@exodra/context",
         "points": [
           {
-            "x": 628,
-            "y": 52
+            "x": 706,
+            "y": 426.2
           },
           {
-            "x": 682,
-            "y": 52
+            "x": 756,
+            "y": 414
           },
           {
-            "x": 728.7,
-            "y": 68
+            "x": 836,
+            "y": 414
+          },
+          {
+            "x": 916,
+            "y": 414
+          },
+          {
+            "x": 989,
+            "y": 622
           }
         ]
       },
@@ -2622,41 +4795,49 @@
         "id": "@exodra/router→@exodra/core",
         "points": [
           {
-            "x": 365.1,
-            "y": 358
+            "x": 706,
+            "y": 449.8
           },
           {
-            "x": 472,
-            "y": 580
+            "x": 756,
+            "y": 462
           },
           {
-            "x": 577,
-            "y": 580
-          },
-          {
-            "x": 682,
-            "y": 580
-          },
-          {
-            "x": 779.6,
-            "y": 844
+            "x": 831.1,
+            "y": 768
           }
         ]
       },
       {
-        "id": "@exodra/router→@exodra/reactivity",
+        "id": "@exodra/ssr→@exodra/context",
         "points": [
           {
-            "x": 362.5,
-            "y": 318
+            "x": 466,
+            "y": 1032.5
           },
           {
-            "x": 472,
-            "y": 4
+            "x": 560,
+            "y": 1010
           },
           {
-            "x": 533.3,
-            "y": 32
+            "x": 658,
+            "y": 1010
+          },
+          {
+            "x": 756,
+            "y": 1010
+          },
+          {
+            "x": 836,
+            "y": 1010
+          },
+          {
+            "x": 916,
+            "y": 1010
+          },
+          {
+            "x": 991.7,
+            "y": 662
           }
         ]
       },
@@ -2664,41 +4845,24 @@
         "id": "@exodra/ssr→@exodra/core",
         "points": [
           {
-            "x": 363.5,
-            "y": 222
+            "x": 466,
+            "y": 1044
           },
           {
-            "x": 472,
-            "y": 492
+            "x": 560,
+            "y": 1044
           },
           {
-            "x": 577,
-            "y": 492
+            "x": 658,
+            "y": 1044
           },
           {
-            "x": 682,
-            "y": 492
+            "x": 756,
+            "y": 1044
           },
           {
-            "x": 781.4,
-            "y": 844
-          }
-        ]
-      },
-      {
-        "id": "@exodra/ssr→@exodra/reactivity",
-        "points": [
-          {
-            "x": 366.2,
-            "y": 182
-          },
-          {
-            "x": 472,
-            "y": -16
-          },
-          {
-            "x": 546.1,
-            "y": 32
+            "x": 829.8,
+            "y": 808
           }
         ]
       },
@@ -2706,16 +4870,74 @@
         "id": "@exodra/ssr→@exodra/string",
         "points": [
           {
-            "x": 403.5,
-            "y": 202
+            "x": 466,
+            "y": 1050.8
           },
           {
-            "x": 472,
-            "y": 202
+            "x": 560,
+            "y": 1064
           },
           {
-            "x": 556.4,
-            "y": 284
+            "x": 648.7,
+            "y": 874
+          }
+        ]
+      },
+      {
+        "id": "@exodra/string→@exodra/bench-harness",
+        "points": [
+          {
+            "x": 706,
+            "y": 843.2
+          },
+          {
+            "x": 756,
+            "y": 832
+          },
+          {
+            "x": 836,
+            "y": 832
+          },
+          {
+            "x": 916,
+            "y": 832
+          },
+          {
+            "x": 996,
+            "y": 832
+          },
+          {
+            "x": 1076,
+            "y": 832
+          },
+          {
+            "x": 1153.5,
+            "y": 738
+          }
+        ]
+      },
+      {
+        "id": "@exodra/string→@exodra/context",
+        "points": [
+          {
+            "x": 706,
+            "y": 854
+          },
+          {
+            "x": 756,
+            "y": 854
+          },
+          {
+            "x": 836,
+            "y": 854
+          },
+          {
+            "x": 916,
+            "y": 854
+          },
+          {
+            "x": 988.5,
+            "y": 662
           }
         ]
       },
@@ -2723,33 +4945,75 @@
         "id": "@exodra/string→@exodra/core",
         "points": [
           {
-            "x": 589.5,
-            "y": 324
+            "x": 706,
+            "y": 864.8
           },
           {
-            "x": 682,
-            "y": 472
+            "x": 756,
+            "y": 876
           },
           {
-            "x": 781.6,
-            "y": 844
+            "x": 817.8,
+            "y": 808
           }
         ]
       },
       {
-        "id": "@exodra/string→@exodra/reactivity-types",
+        "id": "@exodra/term→@exodra/context",
         "points": [
           {
-            "x": 584.7,
-            "y": 284
+            "x": 706,
+            "y": 494.2
           },
           {
-            "x": 682,
-            "y": 32
+            "x": 756,
+            "y": 482
           },
           {
-            "x": 749.5,
-            "y": 68
+            "x": 836,
+            "y": 482
+          },
+          {
+            "x": 916,
+            "y": 482
+          },
+          {
+            "x": 986,
+            "y": 622
+          }
+        ]
+      },
+      {
+        "id": "@exodra/term→@exodra/core",
+        "points": [
+          {
+            "x": 706,
+            "y": 511.9
+          },
+          {
+            "x": 756,
+            "y": 518
+          },
+          {
+            "x": 830.1,
+            "y": 768
+          }
+        ]
+      },
+      {
+        "id": "@exodra/test-utils→@exodra/core",
+        "points": [
+          {
+            "x": 709,
+            "y": 1196
+          },
+          {
+            "x": 756,
+            "y": 1196
+          },
+          {
+            "x": 832.1,
+            "y": 808
           }
         ]
       },
@@ -2757,24 +5021,41 @@
         "id": "@exodra/type-tests→@exodra/core",
         "points": [
           {
-            "x": 376.3,
-            "y": 290
+            "x": 468.7,
+            "y": 1120
           },
           {
-            "x": 472,
-            "y": 382
+            "x": 560,
+            "y": 1084
           },
           {
-            "x": 577,
-            "y": 382
+            "x": 658,
+            "y": 1084
           },
           {
-            "x": 682,
-            "y": 382
+            "x": 756,
+            "y": 1084
           },
           {
-            "x": 782.6,
-            "y": 844
+            "x": 830.6,
+            "y": 808
+          }
+        ]
+      },
+      {
+        "id": "@exodra/type-tests→@exodra/dom",
+        "points": [
+          {
+            "x": 469,
+            "y": 1127.8
+          },
+          {
+            "x": 560,
+            "y": 1106
+          },
+          {
+            "x": 652.2,
+            "y": 786
           }
         ]
       },
@@ -2782,92 +5063,67 @@
         "id": "@exodra/type-tests→@exodra/jsx",
         "points": [
           {
-            "x": 364.7,
-            "y": 290
+            "x": 469,
+            "y": 1135.7
           },
           {
-            "x": 472,
-            "y": 524
+            "x": 560,
+            "y": 1128
           },
           {
-            "x": 529,
-            "y": 530.5
+            "x": 610,
+            "y": 1128
           }
         ]
       },
       {
-        "id": "@exodra/type-tests→@exodra/reactivity",
+        "id": "@exodra/type-tests→@exodra/string",
         "points": [
           {
-            "x": 363.1,
-            "y": 250
+            "x": 469,
+            "y": 1147.9
           },
           {
-            "x": 472,
-            "y": -36
+            "x": 560,
+            "y": 1162
           },
           {
-            "x": 553.1,
-            "y": 32
+            "x": 651.6,
+            "y": 874
           }
         ]
       },
       {
-        "id": "@exodra/vite-plugin→@exodra/core",
+        "id": "@exodra/type-tests→@exodra/test-utils",
         "points": [
           {
-            "x": 376.3,
-            "y": 454
+            "x": 468.7,
+            "y": 1160
           },
           {
-            "x": 472,
-            "y": 362
+            "x": 560,
+            "y": 1196
           },
           {
-            "x": 577,
-            "y": 362
-          },
-          {
-            "x": 682,
-            "y": 362
-          },
-          {
-            "x": 782.8,
-            "y": 844
+            "x": 607,
+            "y": 1196
           }
         ]
       },
       {
-        "id": "@exodra/vite-plugin→@exodra/dom",
+        "id": "babel-preset-exodra→@exodra/babel-plugin-schema",
         "points": [
           {
-            "x": 369,
-            "y": 494
+            "x": 218.5,
+            "y": 112
           },
           {
-            "x": 472,
-            "y": 646
+            "x": 276,
+            "y": 112
           },
           {
-            "x": 559.2,
-            "y": 744
-          }
-        ]
-      },
-      {
-        "id": "babel-preset-exodra→@exodra/babel-plugin-jsx",
-        "points": [
-          {
-            "x": 440,
-            "y": 1078
-          },
-          {
-            "x": 472,
-            "y": 1078
-          },
-          {
-            "x": 504,
-            "y": 1078
+            "x": 333.5,
+            "y": 112
           }
         ]
       }

@@ -1,0 +1,35 @@
+// Shared SSR-bench app — MARKO 6 flavour. The SAME spec the Exodra, Solid, Qwik
+// and cursor apps in this directory implement: a list of N interactive rows, each
+// a counter button whose click increments its own number. Non-trivial on purpose
+// so hydration/resume cost is visible (N rows to wire vs. wire-on-demand).
+//
+// The markup is meant to be identical to the others', modulo Marko's own resume
+// comments and its inline runtime script — `ssr/gate.mjs` compares every
+// participant's app subtree with JavaScript disabled and fails if they diverge,
+// because a participant that renders less is a free win no timing harness detects.
+//
+// WHY N IS INPUT AND NOT `globalThis.__N__` like everyone else: the client never
+// runs this file's render. Marko serialises each row's scope into the page and the
+// client resumes from that, so there is no second construction of the app that
+// would have to agree about N — `server.mjs` is the only place that reads the
+// global. That is a property of Marko's model, not a shortcut: the client does
+// strictly less than the other hydrating participants and pays for it in HTML.
+//
+// `<let>` inside the `<for>` body is what gives each row its OWN reactive counter
+// — the same role the row machine's `count` state plays for Exodra, and
+// `createSignal(0)` for Solid. No `by=` key: this list is built once and never
+// reorders, and a key would only add serialised bytes Marko does not need here.
+//
+// Whitespace: Marko's parser drops newline-and-indent text between tags, so
+// indenting this file costs the page nothing. The other four participants emit no
+// whitespace between tags either.
+<const/rows = Array.from({ length: input.n }, (_, i) => i) />
+<ul class="list">
+  <for|i| of=rows>
+    <let/count = 0 />
+    <li class="row" data-id=i>
+      <span class="row__label">Item ${i}</span>
+      <button class="row__btn" data-b=i onClick() { count++ }>${count}</button>
+    </li>
+  </for>
+</ul>

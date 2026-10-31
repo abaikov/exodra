@@ -1,23 +1,283 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
+.hero {
   position: relative;
   overflow: hidden;
+  padding: 6rem 0 4.5rem;
+  background: #0c0809;
+  color: #efe6e7;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+.backdrop {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 900px;
+  background-size: cover;
+  background-position: center 20%;
+  image-rendering: pixelated;
+  opacity: 0.42;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 45%, transparent 90%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 45%, transparent 90%);
+  pointer-events: none;
+}
+
+.glow {
+  position: absolute;
+  inset: -40% -10% auto -10%;
+  height: 120%;
+  background:
+    radial-gradient(40% 50% at 25% 40%, rgba(200, 16, 46, 0.32), transparent 70%),
+    radial-gradient(35% 45% at 75% 35%, rgba(108, 193, 28, 0.2), transparent 70%),
+    radial-gradient(30% 40% at 55% 75%, rgba(61, 123, 224, 0.1), transparent 70%);
+  filter: blur(30px);
+  animation: drift 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes drift {
+  0% { transform: translate3d(-2%, 0, 0) scale(1); }
+  100% { transform: translate3d(2%, 3%, 0) scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    animation: none;
   }
+}
+
+.heroInner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 3rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 2rem;
+  padding: 12px 26px 12px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(182, 242, 58, 0.3);
+  background: linear-gradient(180deg, rgba(12, 8, 9, 0.7), rgba(12, 8, 9, 0.45));
+  box-shadow: 0 20px 60px -24px rgba(255, 59, 78, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  backdrop-filter: blur(12px);
+}
+
+.brandLogo {
+  height: 40px;
+  width: auto;
+}
+
+.brandName {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.3rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow: 3px 3px 0 var(--exo-blood);
+}
+
+.kicker {
+  display: inline-block;
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(182, 242, 58, 0.35);
+  background: rgba(12, 8, 9, 0.55);
+  color: var(--exo-slime-bright);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 1.6rem 0;
+  font-size: clamp(2.8rem, 7.4vw, 6.2rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.055em;
+  padding-bottom: 0.08em;
+  color: #fff;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+.accent {
+  background: linear-gradient(100deg, var(--exo-flesh-bright) 0%, var(--exo-blood-bright) 45%, var(--exo-slime-bright) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 720px;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.6;
+  color: rgba(255, 245, 246, 0.85);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
 .buttons {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  margin-top: 2.6rem;
+}
+
+.buttons :global(.button--primary) {
+  color: #fff;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.85rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(135deg, var(--exo-blood-deep) 0%, var(--exo-blood) 60%, var(--exo-blood-bright) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    0 12px 32px -10px rgba(255, 59, 78, 0.65),
+    0 0 0 6px rgba(255, 59, 78, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.buttons :global(.button--primary)::after {
+  content: '→';
+  display: inline-block;
+  margin-left: 0.6rem;
+  transition: transform 0.18s ease;
+}
+
+.buttons :global(.button--primary):hover {
+  color: #fff;
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.3) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    0 18px 40px -12px rgba(255, 59, 78, 0.8),
+    0 0 0 6px rgba(182, 242, 58, 0.16);
+}
+
+.buttons :global(.button--primary):hover::after {
+  transform: translateX(3px);
+}
+
+.ghost {
+  font-weight: 700;
+  color: inherit;
+  border-bottom: 1px solid var(--exo-hairline-slime);
+  padding-bottom: 2px;
+}
+
+.ghost:hover {
+  color: var(--exo-slime);
+  text-decoration: none;
+  border-color: var(--exo-slime);
+}
+
+.hero .ghost {
+  color: #fff;
+  border-color: rgba(182, 242, 58, 0.45);
+}
+
+.hero .ghost:hover {
+  color: var(--exo-slime-bright);
+}
+
+.windowWrap {
+  width: 100%;
+  max-width: 860px;
+  margin-top: 5rem;
+  text-align: left;
+}
+
+.window {
+  border-radius: 16px;
+  border: 1px solid rgba(182, 242, 58, 0.25);
+  background: rgba(12, 8, 9, 0.88);
+  box-shadow: 0 30px 80px -30px rgba(255, 59, 78, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+}
+
+.windowBar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.windowBar span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.windowBar span:nth-child(1) { background: var(--exo-blood-bright); }
+.windowBar span:nth-child(2) { background: var(--exo-flesh-bright); }
+.windowBar span:nth-child(3) { background: var(--exo-slime-bright); }
+
+.windowBar em {
+  margin-left: 10px;
+  font-style: normal;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.windowTabs {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.windowTab,
+.windowTabActive {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.windowTab:hover {
+  color: #fff;
+}
+
+.windowTabActive {
+  color: var(--exo-slime-bright);
+  border-color: rgba(182, 242, 58, 0.35);
+  background: rgba(182, 242, 58, 0.08);
+}
+
+.window pre {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 996px) {
+  .hero {
+    padding: 2.5rem 0 3rem;
+  }
+  .heroInner {
+    padding-top: 1rem;
+  }
+  .windowWrap {
+    margin-top: 3rem;
+  }
 }

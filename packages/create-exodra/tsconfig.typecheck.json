@@ -1,0 +1,19 @@
+{
+  // THE TYPECHECK PROJECT. Separate from `tsconfig.json` because this package's build is
+  // `rm -rf dist && tsc`: it clears the output but NOT a `.tsbuildinfo`, so making the
+  // build config `composite` (which implies `incremental`) would let a second build skip
+  // its emit against a `dist` that had just been deleted, and publish nothing.
+  //
+  // Emit goes to `.tsbuild` — gitignored, in no `files` array, published by nothing.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules", "**/*.test.ts", "**/*.spec.ts"]
+}

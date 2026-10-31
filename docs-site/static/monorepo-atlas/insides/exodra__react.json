@@ -8,20 +8,49 @@
     },
     "nodes": [
       {
-        "id": "isReadableBindable",
-        "label": "isReadableBindable",
+        "id": "hostElement",
+        "label": "hostElement",
         "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(value): boolean",
-            "full": "(value): boolean",
+            "text": "(c, port): Element",
+            "full": "(c, port): Element",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "width": 139,
+        "doc": "`liveElem` FIRST: an adopting schema's `elem` leaves children-port entries at slot 0 — the instance ROOT, not the island host — so hydration hands React the wrong element, nothing thrown.",
+        "width": 152,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "isExoDomWiring",
+        "label": "isExoDomWiring",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(c): c is TExoReactDomWi…",
+            "full": "(c): c is TExoReactDomWiring",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(c): c is "
+              },
+              {
+                "text": "TExoReactDomWiring",
+                "link": "TExoReactDomWiring"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "Asked of the CONNECTOR, never the environment: `typeof document === 'undefined'` is wrong under jsdom and in a browser bundle that pre-renders.",
+        "width": 197,
         "height": 69,
         "violations": []
       },
@@ -32,79 +61,141 @@
         "layer": 0,
         "members": [
           {
-            "text": "(component, props, options): TExoSchema",
-            "full": "(component, props, options): TExoSchema",
-            "parts": []
+            "text": "(c, port, component, props, options): TExoReactIsland<TPr…",
+            "full": "(c, port, component, props, options): TExoReactIsland<TProps>",
+            "parts": [
+              {
+                "text": "(c, port, component, props, options): "
+              },
+              {
+                "text": "TExoReactIsland",
+                "link": "TExoReactIsland"
+              },
+              {
+                "text": "<TPr…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(c, port, component, props, options): "
+              },
+              {
+                "text": "TExoReactIsland",
+                "link": "TExoReactIsland"
+              },
+              {
+                "text": "<TProps>"
+              }
+            ]
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "Render a React component as an island inside an Exodra tree — now SSR-capable.",
-        "width": 286,
+        "doc": "The port must be its element's ONLY child — the DOM backend writes raw markup only where nothing else would be deleted by it.",
+        "width": 408,
         "height": 69,
         "violations": []
       },
       {
-        "id": "ReactIslandOptions",
-        "label": "ReactIslandOptions",
+        "id": "TExoReactDomWiring",
+        "label": "TExoReactDomWiring",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoReactWiring & { readonly nodes: rea…",
+            "full": "TExoReactWiring & { readonly nodes: readonly Node[]; // Port index -> slot in `nodes`. An adopting schema carries both: `elem` is the silenced // adoption table (children ports all at slot 0); `liveElem` addresses the page. readonly schema: { readonly elem: Int32Array; readonly liveElem?: Int32Array; }; }",
+            "parts": [
+              {
+                "text": "TExoReactWiring",
+                "link": "TExoReactWiring"
+              },
+              {
+                "text": " & { readonly nodes: rea…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "TExoReactWiring",
+                "link": "TExoReactWiring"
+              },
+              {
+                "text": " & { readonly nodes: readonly Node[]; // Port index -> slot in `nodes`. An adopting schema carries both: `elem` is the silenced // adoption table (children ports all at slot 0); `liveElem` addresses the page. readonly schema: { readonly elem: Int32Array; readonly liveElem?: Int32Array; }; }"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Exactly the fields `reactIsland.ts` loads off the backend's instance record, and no other: a field named here but never read would not signal when the record reshapes it.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoReactIsland",
+        "label": "TExoReactIsland",
         "kind": "app",
         "layer": 0,
         "members": [
           {
             "visibility": "+",
-            "text": "tag?: string;",
-            "full": "tag?: string;",
-            "doc": "Tag name for the host element React mounts into.",
+            "text": "render(props: TProps): void;",
+            "full": "render(props: TProps): void;",
             "parts": []
-          },
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoReactIslandOptions",
+        "label": "TExoReactIslandOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
           {
             "visibility": "+",
             "text": "ssr?: boolean;",
             "full": "ssr?: boolean;",
-            "doc": "Server-render the island's markup into the initial HTML (default `true`).",
             "parts": []
           }
         ],
-        "memberCount": 2,
-        "stereotype": "interface",
-        "width": 139,
-        "height": 84,
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 165,
+        "height": 69,
         "violations": []
       },
       {
-        "id": "ReadableBindable",
-        "label": "ReadableBindable",
+        "id": "TExoReactWiring",
+        "label": "TExoReactWiring",
         "kind": "app",
         "layer": 0,
         "members": [
           {
-            "visibility": "+",
-            "text": "getValue(): T;",
-            "full": "getValue(): T;",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "onChange(listener: () => void): () => v…",
-            "full": "onChange(listener: () => void): () => void;",
-            "doc": "No-arg listener: the island re-reads getValue() on notify, so it never uses the event payload.",
+            "text": "Pick<TExoWiring, 'unsafeHtml' | 'onTear…",
+            "full": "Pick<TExoWiring, 'unsafeHtml' | 'onTeardown'>",
             "parts": [],
             "fullParts": []
           }
         ],
-        "memberCount": 2,
-        "stereotype": "interface",
-        "doc": "Minimal structural shape of an Exodra bindable's read side.",
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "`Pick` makes these PROPERTIES — contravariant under `strictFunctionTypes`, where a method's params stay bivariant.",
         "width": 293,
-        "height": 84,
+        "height": 69,
         "violations": []
       }
     ],
     "edges": [
       {
-        "id": "isReadableBindable→ReadableBindable",
-        "from": "isReadableBindable",
-        "to": "ReadableBindable",
+        "id": "hostElement→TExoReactDomWiring",
+        "from": "hostElement",
+        "to": "TExoReactDomWiring",
         "kinds": [
           "type-only"
         ],
@@ -113,7 +204,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -121,9 +212,47 @@
         "violations": []
       },
       {
-        "id": "reactIsland→isReadableBindable",
+        "id": "isExoDomWiring→TExoReactDomWiring",
+        "from": "isExoDomWiring",
+        "to": "TExoReactDomWiring",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "isExoDomWiring→TExoReactWiring",
+        "from": "isExoDomWiring",
+        "to": "TExoReactWiring",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reactIsland→hostElement",
         "from": "reactIsland",
-        "to": "isReadableBindable",
+        "to": "hostElement",
         "kinds": [
           "value"
         ],
@@ -140,9 +269,47 @@
         "violations": []
       },
       {
-        "id": "reactIsland→ReactIslandOptions",
+        "id": "reactIsland→isExoDomWiring",
         "from": "reactIsland",
-        "to": "ReactIslandOptions",
+        "to": "isExoDomWiring",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reactIsland→TExoReactIsland",
+        "from": "reactIsland",
+        "to": "TExoReactIsland",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactIsland.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "reactIsland→TExoReactIslandOptions",
+        "from": "reactIsland",
+        "to": "TExoReactIslandOptions",
         "kinds": [
           "type-only"
         ],
@@ -159,9 +326,9 @@
         "violations": []
       },
       {
-        "id": "reactIsland→ReadableBindable",
+        "id": "reactIsland→TExoReactWiring",
         "from": "reactIsland",
-        "to": "ReadableBindable",
+        "to": "TExoReactWiring",
         "kinds": [
           "type-only"
         ],
@@ -170,7 +337,26 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoReactDomWiring→TExoReactWiring",
+        "from": "TExoReactDomWiring",
+        "to": "TExoReactWiring",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -181,112 +367,234 @@
     "rules": {}
   },
   "layout": {
-    "width": 894,
-    "height": 229,
+    "width": 1450,
+    "height": 408,
     "nodes": [
       {
-        "id": "isReadableBindable",
-        "x": 374,
-        "y": 136,
-        "width": 139,
+        "id": "hostElement",
+        "x": 528,
+        "y": 315,
+        "width": 152,
+        "height": 69
+      },
+      {
+        "id": "isExoDomWiring",
+        "x": 505.5,
+        "y": 218,
+        "width": 197,
         "height": 69
       },
       {
         "id": "reactIsland",
         "x": 24,
-        "y": 31.5,
-        "width": 286,
+        "y": 121,
+        "width": 408,
         "height": 69
       },
       {
-        "id": "ReactIslandOptions",
-        "x": 374,
-        "y": 24,
-        "width": 139,
-        "height": 84
+        "id": "TExoReactDomWiring",
+        "x": 776,
+        "y": 305,
+        "width": 293,
+        "height": 69
       },
       {
-        "id": "ReadableBindable",
-        "x": 577,
-        "y": 43.3,
+        "id": "TExoReactIsland",
+        "x": 496,
+        "y": 121,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "TExoReactIslandOptions",
+        "x": 521.5,
+        "y": 24,
+        "width": 165,
+        "height": 69
+      },
+      {
+        "id": "TExoReactWiring",
+        "x": 1133,
+        "y": 101.8,
         "width": 293,
-        "height": 84
+        "height": 69
       }
     ],
     "edges": [
       {
-        "id": "isReadableBindable→ReadableBindable",
+        "id": "hostElement→TExoReactDomWiring",
         "points": [
           {
-            "x": 513,
-            "y": 170.5
+            "x": 680,
+            "y": 349.5
           },
           {
-            "x": 545,
-            "y": 170.5
+            "x": 744,
+            "y": 349.5
           },
           {
-            "x": 635.6,
-            "y": 127.3
+            "x": 776,
+            "y": 347.7
           }
         ]
       },
       {
-        "id": "reactIsland→isReadableBindable",
+        "id": "isExoDomWiring→TExoReactDomWiring",
         "points": [
           {
-            "x": 224.8,
-            "y": 100.5
+            "x": 702.5,
+            "y": 279.6
           },
           {
-            "x": 342,
-            "y": 170.5
+            "x": 744,
+            "y": 291
           },
           {
-            "x": 374,
-            "y": 170.5
+            "x": 795.5,
+            "y": 305
           }
         ]
       },
       {
-        "id": "reactIsland→ReactIslandOptions",
+        "id": "isExoDomWiring→TExoReactWiring",
         "points": [
           {
-            "x": 310,
-            "y": 66
+            "x": 645.5,
+            "y": 218
           },
           {
-            "x": 342,
-            "y": 66
+            "x": 744,
+            "y": 136.3
           },
           {
-            "x": 374,
-            "y": 66
+            "x": 922.5,
+            "y": 136.3
+          },
+          {
+            "x": 1101,
+            "y": 136.3
+          },
+          {
+            "x": 1133,
+            "y": 136.3
           }
         ]
       },
       {
-        "id": "reactIsland→ReadableBindable",
+        "id": "reactIsland→hostElement",
         "points": [
           {
-            "x": 258.5,
-            "y": 31.5
+            "x": 270,
+            "y": 190
           },
           {
-            "x": 342,
+            "x": 464,
+            "y": 349.5
+          },
+          {
+            "x": 528,
+            "y": 349.5
+          }
+        ]
+      },
+      {
+        "id": "reactIsland→isExoDomWiring",
+        "points": [
+          {
+            "x": 311.9,
+            "y": 190
+          },
+          {
+            "x": 464,
+            "y": 252.5
+          },
+          {
+            "x": 505.5,
+            "y": 252.5
+          }
+        ]
+      },
+      {
+        "id": "reactIsland→TExoReactIsland",
+        "points": [
+          {
+            "x": 432,
+            "y": 155.5
+          },
+          {
+            "x": 464,
+            "y": 155.5
+          },
+          {
+            "x": 496,
+            "y": 155.5
+          }
+        ]
+      },
+      {
+        "id": "reactIsland→TExoReactIslandOptions",
+        "points": [
+          {
+            "x": 311.9,
+            "y": 121
+          },
+          {
+            "x": 464,
+            "y": 58.5
+          },
+          {
+            "x": 521.5,
+            "y": 58.5
+          }
+        ]
+      },
+      {
+        "id": "reactIsland→TExoReactWiring",
+        "points": [
+          {
+            "x": 280.4,
+            "y": 121
+          },
+          {
+            "x": 464,
             "y": 0
           },
           {
-            "x": 443.5,
+            "x": 604,
             "y": 0
           },
           {
-            "x": 545,
+            "x": 744,
             "y": 0
           },
           {
-            "x": 635.6,
-            "y": 43.3
+            "x": 922.5,
+            "y": 0
+          },
+          {
+            "x": 1101,
+            "y": 0
+          },
+          {
+            "x": 1234.3,
+            "y": 101.8
+          }
+        ]
+      },
+      {
+        "id": "TExoReactDomWiring→TExoReactWiring",
+        "points": [
+          {
+            "x": 1069,
+            "y": 339.5
+          },
+          {
+            "x": 1101,
+            "y": 339.5
+          },
+          {
+            "x": 1249.2,
+            "y": 170.8
           }
         ]
       }

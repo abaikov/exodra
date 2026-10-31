@@ -14,6 +14,10 @@ swc_core = { version = "74", features = [
     "ecma_visit",
     "ecma_utils",
 ] }
+# The host hands a plugin its config as a JSON STRING, so reading `mode` /
+# `schemaSource` / `markerName` needs a parser. Already in the lock file as one of
+# swc_core's own dependencies, so this adds an edge and not a crate.
+serde_json = "1"
 
 [profile.release]
 lto = true

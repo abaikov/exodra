@@ -7,7 +7,9 @@ const MIME={'.js':'text/javascript','.html':'text/html','.json':'application/jso
 const server=createServer((req,res)=>{let p=join(DIST,decodeURIComponent(req.url.split('?')[0]));if(existsSync(p)&&statSync(p).isDirectory())p=join(p,'index.html');if(!existsSync(p)){res.writeHead(404);return res.end('404 '+req.url);}res.writeHead(200,{'content-type':MIME[extname(p)]||'application/octet-stream'});res.end(readFileSync(p));});
 await new Promise(r=>server.listen(4189,r));
 const browser=await chromium.launch({headless:true});
-for (const [name,path] of [['Exodra','/exodra/'],['Solid','/solid/'],['Qwik','/qwik/']]){
+// A smoke test, not a gate: it clicks row 0 only. `ssr/gate.mjs` is the one that
+// proves a participant rendered the same app and wired every row.
+for (const [name,path] of [['Exodra','/exodra/'],['Solid','/solid/'],['Qwik','/qwik/'],['Marko','/marko/'],['Mikado','/mikado/']]){
   const ctx=await browser.newContext(); const page=await ctx.newPage();
   const errs=[], fails=[];
   page.on('console',m=>{if(m.type()==='error')errs.push(m.text());});

@@ -3,310 +3,204 @@
  * Provides rules specific to Exodra best practices
  */
 
+import { EXO_HOISTED_BUILDERS } from './constants/EXO_HOISTED_BUILDERS.js';
+import { EXO_SCHEMA_BUILDERS } from './constants/EXO_SCHEMA_BUILDERS.js';
+
 /**
  * Minimal AST node shape shared by every ESTree node this plugin inspects.
  * The plugin only ever reads a handful of properties, so this loose-but-typed
  * model avoids taking a hard dependency on ESLint's own type packages.
  */
 interface ExoAstNode {
-  type: string;
-  parent: ExoAstNode;
-  name: string;
-  callee: ExoAstNode;
-  property: ExoAstNode;
-  object: ExoAstNode;
-  left: ExoAstNode;
-  key: ExoAstNode;
-  id: ExoAstNode;
-  body: ExoAstNode;
-  arguments: ExoAstNode[];
-  properties: ExoAstNode[];
-  [key: string]: unknown;
-}
-
-interface ExoRuleFixer {
-  insertTextAfter(node: ExoAstNode, text: string): unknown;
+    type: string;
+    parent: ExoAstNode;
+    name: string;
+    callee: ExoAstNode;
+    property: ExoAstNode;
+    object: ExoAstNode;
+    left: ExoAstNode;
+    id: ExoAstNode;
+    body: ExoAstNode;
+    arguments: ExoAstNode[];
+    [key: string]: unknown;
 }
 
 interface ExoReportDescriptor {
-  node: ExoAstNode;
-  messageId: string;
-  fix?: (fixer: ExoRuleFixer) => unknown;
+    node: ExoAstNode;
+    messageId: string;
 }
 
 interface ExoSourceCode {
-  ast: ExoAstNode;
-  getText(node?: ExoAstNode): string;
+    ast: ExoAstNode;
+    getText(node?: ExoAstNode): string;
 }
 
 interface ExoRuleContext {
-  report(descriptor: ExoReportDescriptor): void;
-  getSourceCode(): ExoSourceCode;
+    report(descriptor: ExoReportDescriptor): void;
+    getSourceCode(): ExoSourceCode;
 }
 
 export const rules = {
-  /**
-   * Rule: no-inline-objects
-   * Prevents inline object creation in render methods
-   */
-  'no-inline-objects': {
-    meta: {
-      type: 'suggestion',
-      docs: {
-        description: 'Disallow inline object creation in render methods to prevent unnecessary re-renders',
-        recommended: true
-      },
-      messages: {
-        avoidInlineObject: 'Avoid creating objects inline. Move to constants or useMemo.'
-      }
-    },
-    create(context: ExoRuleContext) {
-      return {
-        ObjectExpression(node: ExoAstNode) {
-          // Check if we're inside a component render
-          let parent = node.parent;
-          while (parent) {
-            if (parent.type === 'JSXExpressionContainer' || 
-                (parent.type === 'CallExpression' && parent.callee.name === 'h')) {
-              context.report({
-                node,
-                messageId: 'avoidInlineObject'
-              });
-              break;
-            }
-            parent = parent.parent;
-          }
-        }
-      };
-    }
-  },
-
-  /**
-   * Rule: prefer-derived-signals
-   * Suggests using derived signals instead of manual subscriptions
-   */
-  'prefer-derived-signals': {
-    meta: {
-      type: 'suggestion',
-      docs: {
-        description: 'Prefer derived signals over manual subscriptions for computed values',
-        recommended: true
-      },
-      messages: {
-        preferDerived: 'Consider using a derived signal instead of manual subscription'
-      }
-    },
-    create(context: ExoRuleContext) {
-      return {
-        CallExpression(node: ExoAstNode) {
-          if (node.callee.type === 'MemberExpression' &&
-              node.callee.property.name === 'subscribe' &&
-              node.parent.type === 'VariableDeclarator') {
-            // Check if this subscription is just computing a value
-            const callback = node.arguments[0];
-            if (callback && callback.type === 'ArrowFunctionExpression') {
-              const body = callback.body;
-              const blockStatements = body.body as unknown as ExoAstNode[];
-              if (body.type === 'CallExpression' ||
-                  (body.type === 'BlockStatement' &&
-                   blockStatements.length === 1 &&
-                   blockStatements[0].type === 'ExpressionStatement')) {
-                context.report({
-                  node,
-                  messageId: 'preferDerived'
-                });
-              }
-            }
-          }
-        }
-      };
-    }
-  },
-
-  /**
-   * Rule: schema-validation
-   * Ensures schemas have proper validation
-   */
-  'schema-validation': {
-    meta: {
-      type: 'problem',
-      docs: {
-        description: 'Ensure Exodra schemas have proper type validation',
-        recommended: true
-      },
-      messages: {
-        missingValidation: 'Schema should have type validation',
-        missingType: 'Schema must specify a type property'
-      },
-      fixable: 'code'
-    },
-    create(context: ExoRuleContext) {
-      return {
-        CallExpression(node: ExoAstNode) {
-          // Check for h() or schema creation
-          if (node.callee.name === 'h' || node.callee.name === 'defineSchema') {
-            const [type, attrs] = node.arguments;
-            
-            if (!type) {
-              context.report({
-                node,
-                messageId: 'missingType'
-              });
-            }
-            
-            // Check for validation in attrs
-            if (attrs && attrs.type === 'ObjectExpression') {
-              const hasValidation = attrs.properties.some((prop: ExoAstNode) =>
-                prop.key && prop.key.name === 'validate'
-              );
-              
-              if (!hasValidation && node.callee.name === 'defineSchema') {
-                context.report({
-                  node: attrs,
-                  messageId: 'missingValidation',
-                  fix(fixer: ExoRuleFixer) {
-                    const lastProp = attrs.properties[attrs.properties.length - 1];
-                    if (lastProp) {
-                      return fixer.insertTextAfter(lastProp, ',\n  validate: true');
-                    }
-                  }
-                });
-              }
-            }
-          }
-        }
-      };
-    }
-  },
-
-  /**
-   * Rule: no-direct-state-mutation
-   * Prevents direct state mutation in Exodra
-   */
-  'no-direct-state-mutation': {
-    meta: {
-      type: 'problem',
-      docs: {
-        description: 'Disallow direct state mutation, use setValue or list operations',
-        recommended: true
-      },
-      messages: {
-        noDirectMutation: 'Do not mutate state directly. Use setValue() or list operations.'
-      }
-    },
-    create(context: ExoRuleContext) {
-      return {
-        AssignmentExpression(node: ExoAstNode) {
-          // Check if we're assigning to a bindable's value
-          if (node.left.type === 'MemberExpression') {
-            const sourceCode = context.getSourceCode();
-            const text = sourceCode.getText(node.left.object);
-            
-            // Simple heuristic: check if variable name suggests it's a bindable
-            if (text.includes('bindable') || text.includes('state') || text.includes('signal')) {
-              context.report({
-                node,
-                messageId: 'noDirectMutation'
-              });
-            }
-          }
-        }
-      };
-    }
-  },
-
-  /**
-   * Rule: proper-cleanup
-   * Ensures proper cleanup in components
-   */
-  'proper-cleanup': {
-    meta: {
-      type: 'problem',
-      docs: {
-        description: 'Ensure proper cleanup of subscriptions and resources',
-        recommended: true
-      },
-      messages: {
-        missingCleanup: 'Subscription should be cleaned up with onDispose'
-      }
-    },
-    create(context: ExoRuleContext) {
-      const subscriptions = new Set<string>();
-      const cleanups = new Set<string>();
-
-      return {
-        CallExpression(node: ExoAstNode) {
-          // Track subscriptions
-          if (node.callee.type === 'MemberExpression' &&
-              node.callee.property.name === 'subscribe') {
-            const parent = node.parent;
-            if (parent.type === 'VariableDeclarator') {
-              subscriptions.add(parent.id.name);
-            }
-          }
-          
-          // Track cleanups
-          if (node.callee.type === 'MemberExpression' &&
-              node.callee.property.name === 'onDispose') {
-            const arg = node.arguments[0];
-            if (arg && arg.type === 'Identifier') {
-              cleanups.add(arg.name);
-            }
-            if (arg && arg.type === 'CallExpression' && 
-                arg.callee.type === 'MemberExpression' &&
-                arg.callee.property.name === 'unsubscribe') {
-              cleanups.add('*'); // Mark that some cleanup exists
-            }
-          }
+    /**
+     * Rule: no-inline-objects
+     * Prevents inline object creation in render methods
+     */
+    'no-inline-objects': {
+        meta: {
+            type: 'suggestion',
+            docs: {
+                description:
+                    'Disallow inline object creation in render methods to prevent unnecessary re-renders',
+                recommended: true,
+            },
+            messages: {
+                avoidInlineObject:
+                    'Avoid creating objects inline. Move the object to a module-level constant.',
+            },
         },
-        'Program:exit'() {
-          // Check for unhandled subscriptions
-          subscriptions.forEach(sub => {
-            if (!cleanups.has(sub) && !cleanups.has('*')) {
-              context.report({
-                node: context.getSourceCode().ast,
-                messageId: 'missingCleanup'
-              });
-            }
-          });
-        }
-      };
-    }
-  }
+        create(context: ExoRuleContext) {
+            return {
+                ObjectExpression(node: ExoAstNode) {
+                    // Check if we're inside a component render — or, in the schema core, inside the
+                    // call that builds a component, whose wiring function runs once per INSTANCE.
+                    let parent = node.parent;
+                    while (parent) {
+                        if (
+                            parent.type === 'JSXExpressionContainer' ||
+                            (parent.type === 'CallExpression' &&
+                                EXO_SCHEMA_BUILDERS.includes(parent.callee.name))
+                        ) {
+                            context.report({
+                                node,
+                                messageId: 'avoidInlineObject',
+                            });
+                            break;
+                        }
+                        parent = parent.parent;
+                    }
+                },
+            };
+        },
+    },
+
+    'schema-validation': {
+        meta: {
+            type: 'problem',
+            docs: {
+                description: 'Ensure Exodra schema declarations are complete',
+                recommended: true,
+            },
+            messages: {
+                declarationNeedsFunction:
+                    'exoJsx() takes one function literal, read at build time — a reference to a ' +
+                    'function declared elsewhere cannot be compiled.',
+            },
+        },
+        create(context: ExoRuleContext) {
+            return {
+                CallExpression(node: ExoAstNode) {
+                    if (node.callee.name === 'exoJsx') {
+                        const [fn] = node.arguments;
+                        if (
+                            !fn ||
+                            (fn.type !== 'ArrowFunctionExpression' &&
+                                fn.type !== 'FunctionExpression')
+                        ) {
+                            context.report({ node, messageId: 'declarationNeedsFunction' });
+                        }
+                    }
+                },
+            };
+        },
+    },
+
+    /**
+     * Rule: no-schema-in-function
+     *
+     * A schema is built ONCE per process, and both backends index their prepared schemas by the
+     * port numbers `createExoSchema` assigned when it was closed. Building one inside a function does
+     * not make the program slower, it makes it a DIFFERENT program: a new declaration per call, a
+     * new schema compiled per call, and the declaration's markup parsed again each time.
+     *
+     * `exoJsx` is hoisted to module scope by `@exodra/babel-plugin-schema` for exactly
+     * this reason, so a hand-written `createExoSchema(...)` is where the mistake is still available.
+     * This is the same fact `ExoIntrospectionEngine` reports as `schema-built-per-call`; the rule
+     * exists because an editor is where it can be seen while it is being written.
+     */
+    'no-schema-in-function': {
+        meta: {
+            type: 'suggestion',
+            docs: {
+                description:
+                    'Build schemas at module scope — a schema built per call is a different program',
+                recommended: true,
+            },
+            messages: {
+                schemaInFunction:
+                    'Unless this function itself runs once at module load, this schema is built again ' +
+                    'on every call, with new port numbers and a freshly compiled schema. Move it ' +
+                    'to module scope, or write the declaration as exoJsx and let the Babel plugin hoist it.',
+            },
+        },
+        create(context: ExoRuleContext) {
+            return {
+                CallExpression(node: ExoAstNode) {
+                    if (!EXO_SCHEMA_BUILDERS.includes(node.callee.name)) return;
+                    // `exoJsx` is the one form a compiler hoists for you, so it is exempt.
+                    if (EXO_HOISTED_BUILDERS.includes(node.callee.name)) return;
+
+                    // THE WALK IS NOT SHARED WITH `ExoIntrospectionEngine.analyzeSchema`, which reports the
+                    // same fact: that one walks ts-morph ancestors and matches `SyntaxKind`, this one
+                    // follows ESTree `parent` links and matches `type` strings. The engine's list has a
+                    // fourth entry, `MethodDeclaration`, which has no ESTree counterpart — here a class
+                    // method's body IS a `FunctionExpression`, so these three cover the same ground.
+                    // The BUILDER NAMES are shared (`constants/EXO_SCHEMA_BUILDERS`); the walks cannot be.
+                    let parent = node.parent;
+                    while (parent) {
+                        if (
+                            parent.type === 'FunctionDeclaration' ||
+                            parent.type === 'FunctionExpression' ||
+                            parent.type === 'ArrowFunctionExpression'
+                        ) {
+                            context.report({ node, messageId: 'schemaInFunction' });
+                            return;
+                        }
+                        parent = parent.parent;
+                    }
+                },
+            };
+        },
+    },
 };
 
 /**
  * ESLint plugin configuration
  */
 export const configs = {
-  recommended: {
-    plugins: ['exodra'],
-    rules: {
-      'exodra/no-inline-objects': 'warn',
-      'exodra/prefer-derived-signals': 'warn',
-      'exodra/schema-validation': 'error',
-      'exodra/no-direct-state-mutation': 'error',
-      'exodra/proper-cleanup': 'warn'
-    }
-  },
-  strict: {
-    plugins: ['exodra'],
-    rules: {
-      'exodra/no-inline-objects': 'error',
-      'exodra/prefer-derived-signals': 'error',
-      'exodra/schema-validation': 'error',
-      'exodra/no-direct-state-mutation': 'error',
-      'exodra/proper-cleanup': 'error'
-    }
-  }
+    recommended: {
+        plugins: ['exodra'],
+        rules: {
+            'exodra/no-inline-objects': 'warn',
+            'exodra/schema-validation': 'error',
+            'exodra/no-schema-in-function': 'warn',
+        },
+    },
+    strict: {
+        plugins: ['exodra'],
+        rules: {
+            'exodra/no-inline-objects': 'error',
+            'exodra/schema-validation': 'error',
+            'exodra/no-schema-in-function': 'error',
+        },
+    },
 };
 
 /**
  * Main ESLint plugin export
  */
 const plugin = {
-  rules,
-  configs
+    rules,
+    configs,
 };
 
 export default plugin;

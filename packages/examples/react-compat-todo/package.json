@@ -1,0 +1,13 @@
+{
+  "name": "@exodra/examples-react-compat-todo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite.config.ts"
+  },
+  "dependencies": {
+    "@exodra/babel-plugin-schema": "^0.1.0",
+    "@exodra/react-compat": "^0.1.0"
+  }
+}

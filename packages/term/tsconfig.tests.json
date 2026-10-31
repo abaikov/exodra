@@ -1,0 +1,35 @@
+{
+  // THE TEST FILES OF `@exodra/term`, COMPILED. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // `paths` restated in full (`extends` replaces it, never merges). The first three entries are
+  // the base's; three are added. `@exodra/computed` is the third: one suite renders a component
+  // whose wiring is `exoWiring`, which is that package's, and a foreign backend taking a
+  // declaratively wired component is the claim the suite exists to check. The other two, and
+  // BOTH ARE THE POINT OF THE PACKAGE RATHER THAN A LEAK: the
+  // backend's claim is that it imports `@exodra/core` and nothing
+  // else — its base config says so and `.dependency-cruiser.cjs` enforces it. Its SUITES compare
+  // its text output against what `@exodra/dom` and `@exodra/string` produce from the identical
+  // schema, which is how "a foreign backend runs the README's components verbatim" is checked
+  // rather than asserted. The crawl excludes `\.test\.`, so these two mappings add no edge to it.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"],
+      "@exodra/computed": ["../computed/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

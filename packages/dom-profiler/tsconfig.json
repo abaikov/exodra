@@ -6,8 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@exodra/dom": ["../dom/dist/index.d.ts"],
-      "@exodra/core": ["../core/dist/index.d.ts"],
-      "@exodra/reactivity": ["../reactivity/dist/index.d.ts"]
+      "@exodra/core": ["../core/dist/index.d.ts"]
     }
   },
   "include": ["src/**/*"],

@@ -1,0 +1,64 @@
+{
+  "axis": "exodra-initial-render",
+  "label": "rec1",
+  "quantum": null,
+  "batch": 20,
+  "rows": [
+    {
+      "name": "mikado",
+      "min": 0.265,
+      "p25": 0.28,
+      "median": 0.285,
+      "p75": 0.29,
+      "max": 0.325
+    },
+    {
+      "name": "exodra",
+      "min": 0.305,
+      "p25": 0.315,
+      "median": 0.32,
+      "p75": 0.325,
+      "max": 0.35
+    },
+    {
+      "name": "mikadoReactive",
+      "min": 0.375,
+      "p25": 0.39,
+      "median": 0.4,
+      "p75": 0.405,
+      "max": 0.425
+    },
+    {
+      "name": "solid",
+      "min": 0.38,
+      "p25": 0.4,
+      "median": 0.405,
+      "p75": 0.41,
+      "max": 0.46
+    },
+    {
+      "name": "marko",
+      "min": 0.395,
+      "p25": 0.41,
+      "median": 0.415,
+      "p75": 0.425,
+      "max": 0.47
+    },
+    {
+      "name": "exodraOimdb",
+      "min": 0.77,
+      "p25": 0.795,
+      "median": 0.815,
+      "p75": 0.835,
+      "max": 0.9
+    },
+    {
+      "name": "lit",
+      "min": 0.965,
+      "p25": 1,
+      "median": 1.01,
+      "p75": 1.025,
+      "max": 1.1
+    }
+  ]
+}

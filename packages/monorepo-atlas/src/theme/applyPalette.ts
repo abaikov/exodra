@@ -1,9 +1,5 @@
-import { checkColors } from './checkColors';
-import {
-    EXO_GRAPH_KINDS,
-    type TExoGraphMode,
-    type TExoGraphPalette,
-} from './palettes';
+import { colorReport } from './colorReport';
+import { EXO_GRAPH_KINDS, type TExoGraphMode, type TExoGraphPalette } from './palettes';
 
 /**
  * The colours a HOST supplies. Everything is optional: whatever is left out
@@ -61,11 +57,7 @@ const VAR_BY_FIELD: Record<string, string> = {
  * stylesheet can skip this function entirely and set the same properties there —
  * which is the better route when the colours are already CSS variables.
  */
-export function applyColors(
-    element: HTMLElement,
-    colors: TExoColors,
-    mode: TExoGraphMode
-): void {
+export function applyColors(element: HTMLElement, colors: TExoColors, mode: TExoGraphMode): void {
     const palette = colors[mode];
     if (!palette) return;
 
@@ -110,7 +102,7 @@ export function warnAboutColors(
 ): void {
     if (!colors[mode]) return;
 
-    const report = checkColors(Object.values(resolved.kind), {
+    const report = colorReport(Object.values(resolved.kind), {
         mode,
         surface: resolved.surface,
     });

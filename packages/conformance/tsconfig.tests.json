@@ -1,0 +1,60 @@
+{
+  // THE CROSS-BACKEND CONFORMANCE SUITE, COMPILED — 14 rule files plus the adapters and sketchers
+  // they run on. The scheme is written out once in `packages/core/tsconfig.tests.json`.
+  //
+  // ── THIS PACKAGE HAS NO tsconfig OF ITS OWN, AND THAT IS THE WHOLE STORY ────────────────────
+  //
+  // `@exodra/conformance` is `private`, is in no `references` list, and every other config in the
+  // repository is one that some project already had. There is nothing here to extend, so this file
+  // extends the ROOT `tsconfig.json` — the shared `compilerOptions` base that
+  // `tsconfig.build.json`, `tsconfig.depcruise.json` and five package configs also extend — and
+  // then states the two things that base cannot supply.
+  //
+  // `tsconfig.build.json` says in its own header why this package is outside the typecheck graph:
+  // "see the header of `packages/conformance/src/index.ts` for why nothing in that package has
+  // ever been executed, and add the project reference once it has been." That is still the right
+  // call for the BUILD graph — nothing here is emitted or published. It is not a reason to leave
+  // 14 suites uncompiled, which is what this file changes.
+  //
+  // ── WHAT IS OVERRIDDEN AND WHY ──────────────────────────────────────────────────────────────
+  //
+  //   `lib` gains DOM. The root base is `["ES2020"]`. `exoSketchOfElement.ts:117` takes an
+  //   `Element`, the walk beside it names `Node` and `DocumentFragment`, and every rule file that
+  //   compares a live tree opens with `// @vitest-environment jsdom`. DOM is this package's
+  //   subject matter, exactly as it is `@exodra/test-utils`'.
+  //
+  //   `baseUrl` + `paths` are replaced wholesale. The root map points every `@exodra/*` specifier
+  //   at `packages/*/src`, which is what the vitest alias does at run time and is right for the
+  //   crawl — but a package project that reaches a sibling's SOURCE puts files outside its own
+  //   `rootDir` (TS6059), which is the reason `tsconfig.depcruise.json` gives for existing at all.
+  //   So the map below names `.tsbuild/index.d.ts` like every other package's does. `baseUrl: "."`
+  //   is what re-anchors those relative paths from the repository root to this directory.
+  //
+  //   Every mapping is a specifier the suite imports directly.
+  //
+  //   `@exodra/term` and `@exodra/test-utils` are private and never published, but both ARE in
+  //   `tsconfig.build.json`'s graph, so `.tsbuild/index.d.ts` exists for each after
+  //   `npm run typecheck`. That ordering is the one precondition this file
+  //   has, and it is the same one every other `paths` entry in the repository has.
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "lib": ["ES2020", "DOM"],
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/list-reconcile": ["../list-reconcile/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"],
+      "@exodra/term": ["../term/.tsbuild/index.d.ts"],
+      "@exodra/test-utils": ["../test-utils/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

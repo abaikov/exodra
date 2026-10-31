@@ -1,0 +1,31 @@
+```tsx
+import { exoJsx } from '@exodra/jsx';
+import { createExoMachineBuilder } from '@exodra/core';
+import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+
+type TCounterPorts = { count: TExoTextPort; increment: TExoEventPort };
+
+const COUNTER_SCHEMA = exoJsx<TCounterPorts>(($) => (
+    <div class="counter">
+        <span>{$.count}</span>
+        <button type="button" onClick={$.increment}>+1</button>
+    </div>
+));
+const P = COUNTER_SCHEMA.ports;
+
+type TCounterState = { count: number };
+
+const mCounter = createExoMachineBuilder<TExoMachineNode, unknown, TCounterState>(COUNTER_SCHEMA);
+mCounter.createInitialState(() => ({ count: 0 }));
+const show = mCounter.transition((c) => {
+    c.text(P.count, String(c.state.count));
+});
+mCounter.wire((c) => show(c));
+mCounter.on(P.increment, (c) => {
+    c.state.count += 1;
+    show(c);
+});
+
+withExoCompiler(new ExoDomBackend()).render(mCounter.done(), document.body);
+```

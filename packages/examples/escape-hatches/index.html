@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exodra — escape hatches</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header class="page-head">
+    <h1 class="page-title">Escape hatches</h1>
+    <p class="page-sub">
+        Two things most frameworks forbid, running at once: a list where ONE child is written in
+        vanilla JS, and a subtree owned by a renderer that is not Exodra at all. Both arrive through
+        <code>exoForeignNode</code>, and Exodra places, moves and disposes them like any other child.
+    </p>
+</header>
+
+<main id="app"></main>
+
+<p id="boot" class="boot">Loading five packages from this repository's own <code>dist/</code>…</p>
+
+<p class="boot">
+    <strong>Status: written against the source of <code>@exodra/core</code>, <code>@exodra/dom</code>
+    and <code>@exodra/list-reconcile</code>; not opened in a browser in its current form.</strong>
+    What the page is built to show: every line the log prints is produced by a hook; the first
+    mount reports <code>in the document: false</code> because an instance is armed and inserted
+    afterwards; both unmounts fire while their elements are <em>still attached</em>; a re-mount
+    reports <code>true</code>; and the canvas resumes its frame count instead of restarting it.
+    Moving either foreign thing leaves <code>mounts</code> at 1 — a move is not a remount.
+    <code>exoForeignNode</code> takes the <strong>exonode first</strong> —
+    <code>exoForeignNode(c, element, hooks?)</code> — because it reads the schema off it, which is
+    why the foreign children are built inside <code>createInitialState</code>: there is no exonode
+    at module scope.
+</p>
+
+<footer class="page-foot">
+    <p>
+        View source. Everything below the import map is the application, written by hand — see
+        <code>README.md</code> for what does NOT work through this door.
+    </p>
+</footer>
+
+<!--
+    FOUR ENTRIES, AND THE PAGE ONLY IMPORTS THREE OF THEM. `@exodra/context` is here because
+    `@exodra/core`'s and `@exodra/dom`'s `dist/` name it, and a specifier a browser cannot resolve
+    fails the whole module graph BEFORE one line runs — no exception the page can catch, no boot
+    message, just a blank screen and nothing in the console. An import map covers the transitive
+    names or it covers nothing.
+
+    THE PACKAGES ARRIVE BY BARE NAME, resolved by an IMPORT MAP — a browser feature, not a
+    build step — exactly as in `../no-build/`. They point at THIS REPOSITORY'S OWN `dist/`, and
+    not at a CDN, for the reason that example states: the last PUBLISHED `@exodra/core` is 0.2.0,
+    which is the DELETED three-props renderer, so a CDN URL here would load a different program
+    that happens to share a name. `exoForeignNode` has never been published at all.
+
+    THE PATHS ARE ABSOLUTE, so the server has to be started at the REPOSITORY ROOT — see README.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "@exodra/core": "/packages/core/dist/index.js",
+    "@exodra/context": "/packages/context/dist/index.js",
+    "@exodra/list-reconcile": "/packages/list-reconcile/dist/index.js",
+    "@exodra/dom": "/packages/dom/dist/index.js"
+  }
+}
+</script>
+<script type="module">
+    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import { reconcileExoOrder } from '@exodra/list-reconcile';
+    // A NAMESPACE IMPORT, ON PURPOSE, and the only unusual line in this file. `dist/` is a
+    // COMPILED artifact that is older than the source whenever nobody has rebuilt it, and a
+    // named `import { exoForeignNode }` against a build that lacks the export is a module LINK
+    // error: the page stays blank and the only trace is a line in the console. A namespace
+    // import links regardless, so the check below can say what to do about it on screen.
+    import * as exoDom from '@exodra/dom';
+
+    const { ExoDomBackend, withExoChildList, withExoCompiler, exoForeignNode } = exoDom;
+
+    const boot = document.getElementById('boot');
+    if (typeof withExoCompiler !== 'function') {
+        boot.className = 'boot boot-error';
+        boot.textContent =
+            'This build of @exodra/dom does not export withExoCompiler. `render` is a COMPOSITION ' +
+            'now — a bare backend has no compiler in it and cannot turn a schema declaration into ' +
+            'a prototype. /packages/dom/dist/ is compiled output and is older than the source. ' +
+            'Rebuild it: npm run build --workspace=@exodra/dom';
+        throw new Error('escape-hatches: @exodra/dom/dist predates withExoCompiler');
+    }
+    if (typeof withExoChildList !== 'function') {
+        boot.className = 'boot boot-error';
+        boot.textContent =
+            'This build of @exodra/dom does not export withExoChildList, the pack that puts ' +
+            'c.childList on the backend this page\'s three reconciled regions open. ' +
+            '/packages/dom/dist/ is compiled output and is older than the source. ' +
+            'Rebuild it: npm run build --workspace=@exodra/dom';
+        throw new Error('escape-hatches: @exodra/dom/dist predates withExoChildList');
+    }
+    if (typeof ExoDomBackend !== 'function') {
+        boot.className = 'boot boot-error';
+        boot.textContent =
+            'This build of @exodra/dom does not export ExoDomBackend, which is the entry point ' +
+            'this page mounts through. /packages/dom/dist/ is compiled output and is older than ' +
+            'the source. Rebuild it: npm run build --workspace=@exodra/dom';
+        throw new Error('escape-hatches: @exodra/dom/dist predates ExoDomBackend');
+    }
+    if (typeof exoForeignNode !== 'function') {
+        boot.className = 'boot boot-error';
+        boot.textContent =
+            'This build of @exodra/dom does not export exoForeignNode, so the whole page would ' +
+            'be a demonstration of nothing. /packages/dom/dist/ is compiled output and is older ' +
+            'than the source. Rebuild it: npm run build --workspace=@exodra/dom';
+        throw new Error('escape-hatches: @exodra/dom/dist predates exoForeignNode');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // THE WHOLE PROGRAM. Nothing below this line was produced by a tool.
+    //
+    // EVERY `createExoSchema` CALL IS AT THE TOP LEVEL OF THIS SCRIPT, ON PURPOSE — a schema built
+    // inside a function is a NEW schema on every call, which means a new compile and a new plan.
+    // See "The one trap" in ../no-build/README.md.
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // ── the data this page shows ─────────────────────────────────────────────
+    //
+    // A five-line store: `getValue`, `setValue`, `onChange`. The app machine follows each store
+    // with an EFFECT that draws first and then subscribes.
+
+    function store(value) {
+        const listeners = new Set();
+        return {
+            getValue: () => value,
+            setValue(next) {
+                value = next;
+                for (const listener of listeners) listener();
+            },
+            onChange(listener) {
+                listeners.add(listener);
+                return () => listeners.delete(listener);
+            },
+        };
+    }
+
+    // ── the lifecycle log ────────────────────────────────────────────────────
+    //
+    // The two foreign things write into it from their hooks; a reconciled child list renders it.
+    // The hooks are the ONLY channel a foreign renderer has back into the page, so making them push
+    // into a store the page shows is how their lifecycle becomes visible rather than claimed.
+
+    const logLines = store([]);
+    let logSeq = 0;
+
+    function say(text) {
+        logSeq += 1;
+        const lines = logLines.getValue().concat([{ id: logSeq, text: logSeq + ' · ' + text }]);
+        logLines.setValue(lines.length > 10 ? lines.slice(lines.length - 10) : lines);
+    }
+
+    // A ROW'S DATA ARRIVES AS ITS WIRE'S PARAMS: `c.build(LOG_ROW, at, entry)`.
+    const LOG_ROW_SCHEMA = createExoSchema(
+        b => {
+            let text;
+            b.el('li', { class: 'log-row' }, li => { text = li.textPort(); });
+            return { text };
+        }
+    );
+    const mLogRow = createExoMachineBuilder(LOG_ROW_SCHEMA);
+    mLogRow.wire((c, entry) => { c.text(LOG_ROW_SCHEMA.ports.text, entry.text); });
+    const LOG_ROW = mLogRow.done();
+
+    // ── 1. A VANILLA HOT SPOT ────────────────────────────────────────────────
+
+    /** How many rows this page has BUILT, ever — stamped into every row, by BOTH kinds. */
+    let stamped = 0;
+
+    /** What each ordinary row SHOWS, by position; handed to the row as its wire's params. */
+    const TASK_TITLES = [
+        'An ordinary row, built from a schema',
+        'Another ordinary row',
+        'A third ordinary row'
+    ];
+
+    /** An ordinary schema row. Three of these stand around the hand-built one. */
+    const TASK_SCHEMA = createExoSchema(
+        b => {
+            let seq, title;
+            b.el('li', { class: 'row' }, li => {
+                li.el('span', { class: 'row-badge' }, s => { seq = s.textPort(); });
+                li.el('span', { class: 'row-title' }, s => { title = s.textPort(); });
+                li.el('span', { class: 'row-kind' }, s => { s.text('schema'); });
+            });
+            return { seq, title };
+        }
+    );
+    const mTask = createExoMachineBuilder(TASK_SCHEMA);
+    mTask.createInitialState(() => ({ stamp: ++stamped }));
+    mTask.wire((c, title) => {
+        c.text(TASK_SCHEMA.ports.seq, '#' + c.state.stamp);
+        c.text(TASK_SCHEMA.ports.title, title);
+    });
+    const TASK = mTask.done();
+
+    /**
+     * THE HOT SPOT. No schema, no ports, no machine — `document.createElement`,
+     * `textContent` and `addEventListener`, which is what "drop to vanilla JS in one place" means.
+     * `exoForeignNode` gives the element the half a child needs (`mount`, `unmount`, disposers,
+     * the list's scratch) so that from the list's side nothing foreign is happening at all.
+     */
+    function makeVanillaRow(c) {
+        stamped += 1;
+        const stamp = stamped;
+
+        const li = document.createElement('li');
+        li.className = 'row row-vanilla';
+
+        const badge = document.createElement('span');
+        badge.className = 'row-badge';
+        badge.textContent = '#' + stamp;
+
+        const title = document.createElement('span');
+        title.className = 'row-title';
+        title.textContent = 'createElement · textContent · addEventListener';
+
+        const tally = document.createElement('span');
+        tally.className = 'row-tally';
+
+        let mounts = 0;
+        let pokes = 0;
+        const retally = () => { tally.textContent = 'mounts ' + mounts + ' · pokes ' + pokes; };
+        retally();
+
+        // A listener attached the plain way. Exodra's event strategy is not involved and does not
+        // need to be — this element is not part of any schema.
+        const poke = document.createElement('button');
+        poke.type = 'button';
+        poke.className = 'btn btn-quiet';
+        poke.textContent = 'poke';
+        poke.addEventListener('click', () => { pokes += 1; retally(); });
+
+        const kind = document.createElement('span');
+        kind.className = 'row-kind';
+        kind.textContent = 'vanilla';
+
+        li.append(badge, title, tally, poke, kind);
+
+        return exoForeignNode(c, li, {
+            // `mount` runs AFTER the element has been PUT IN ITS PARENT — every insertion site in
+            // `createExoChildList` calls it on the line after its `appendChild`/`insertBefore`, so
+            // `li.parentNode` is set by the time this runs.
+            //
+            // THAT IS NOT THE SAME AS BEING IN THE DOCUMENT, and the log below says which of the
+            // two it got. `mountExoInstance` ARMS an instance and inserts it afterwards, so at
+            // the FIRST mount this row is inside a `<ul>` that is itself inside a clone nobody has
+            // appended yet: `isConnected` is false. Put the row back later, into a page that is
+            // already on screen, and the same hook reports true. A hook that must measure or focus
+            // therefore has to check, rather than assume.
+            onMount() {
+                mounts += 1;
+                retally();
+                say(
+                    'vanilla row · mount — parent set: ' + (li.parentNode !== null) +
+                    ' · in the document: ' + li.isConnected
+                );
+            },
+            // `unmount` runs WHILE THE ELEMENT IS STILL ATTACHED, so a hook can tear itself down
+            // against a live tree.
+            onUnmount() {
+                say('vanilla row · unmount — still attached: ' + li.isConnected);
+            }
+        });
+    }
+
+    // ── 2. A FOREIGN RENDERER ────────────────────────────────────────────────
+
+    /**
+     * ~20 LINES OF SOMETHING THAT IS NOT EXODRA: a canvas widget with its own state, its own
+     * `requestAnimationFrame` loop and its own teardown. It knows nothing about schemas, ports,
+     * machines or children.
+     *
+     * IT RENDERS INSIDE THE BOX IT HANDS OUT, and never moves or replaces that box. That is THE
+     * SAFE SHAPE, and it is not a style preference: removal climbs `parentNode`, but PLACEMENT
+     * addresses `child.node` directly, so a renderer that wraps its own root gets yanked out of
+     * its wrapper by the first reorder. See README, "The reparenting trap".
+     */
+    function createPulse(onFrame) {
+        const box = document.createElement('div');
+        box.className = 'card card-foreign';
+        const kind = document.createElement('span');
+        kind.className = 'card-kind';
+        kind.textContent = 'foreign renderer';
+        const canvas = document.createElement('canvas');
+        canvas.width = 220;
+        canvas.height = 64;
+        box.append(kind, canvas);
+
+        const ctx = canvas.getContext('2d');
+        let frames = 0;
+        let handle = 0;
+
+        function draw() {
+            frames += 1;
+            ctx.clearRect(0, 0, 220, 64);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#f59e0b';
+            ctx.beginPath();
+            for (let x = 0; x <= 220; x += 2) {
+                const y = 32 + Math.sin((x + frames * 3) / 16) * 22 * Math.sin(frames / 70);
+                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            // Reported out every tenth frame — often enough to be visibly live, rarely enough
+            // that the readout is not rewritten 60 times a second.
+            if (frames % 10 === 0) onFrame(frames);
+            handle = requestAnimationFrame(draw);
+        }
+
+        return {
+            element: box,
+            start() { if (handle === 0) handle = requestAnimationFrame(draw); },
+            stop() { cancelAnimationFrame(handle); handle = 0; onFrame(frames); },
+            frames() { return frames; }
+        };
+    }
+
+    /** What the widget reports, held in a store so the app machine can show it. */
+    const pulseFrames = store(0);
+    /** How many times Exodra has MOUNTED it — the number that must stay 1 across every move. */
+    const pulseMounts = store(0);
+
+    const pulse = createPulse(n => pulseFrames.setValue(n));
+
+    // BUILT INSIDE `createInitialState`, like `vanillaNode`: `exoForeignNode` takes the exonode
+    // first, because it reads the schema off it to mint a child of the right shape. There is no
+    // exonode at module scope, so the handlers below close over this `let`.
+    let pulseNode;
+    const makePulseNode = c => exoForeignNode(c, pulse.element, {
+        onMount() {
+            pulseMounts.setValue(pulseMounts.getValue() + 1);
+            pulse.start();
+            say('pulse · mount — rAF loop started');
+        },
+        onUnmount() {
+            // THE ONLY CHANCE A FOREIGN RENDERER GETS. Nothing else in the page knows that this
+            // loop exists, so if this hook does not stop it, it runs forever against a detached
+            // canvas.
+            pulse.stop();
+            say(
+                'pulse · unmount — rAF cancelled after ' + pulse.frames() +
+                ' frames; still attached: ' + pulse.element.isConnected
+            );
+        }
+    });
+
+    /** What each schema card shows, by position. */
+    const CARD_TITLES = ['a schema card', 'another schema card'];
+
+    /** An ordinary schema card, so the foreign one always has neighbours built the normal way. */
+    const CARD_SCHEMA = createExoSchema(
+        b => {
+            let title;
+            b.el('div', { class: 'card' }, d => {
+                d.el('span', { class: 'card-kind' }, s => { s.text('schema'); });
+                d.el('strong', { class: 'card-title' }, s => { title = s.textPort(); });
+            });
+            return { title };
+        }
+    );
+    const mCard = createExoMachineBuilder(CARD_SCHEMA);
+    mCard.wire((c, title) => { c.text(CARD_SCHEMA.ports.title, title); });
+    const CARD = mCard.done();
+
+    // ── the two children arrays ──────────────────────────────────────────────
+    //
+    // Reconciling over children the CALLER built is the only route a foreign node can travel: it
+    // did not come from a machine, so there is nothing to build it from. Here the items ARE the
+    // nodes and the build step is the identity.
+
+    const rowChildren = store([]);
+    const cardChildren = store([]);
+
+    /** Kept out here so that a removed child can be put BACK — it is not disposed by leaving. */
+    let vanillaNode = null;
+
+    // ── the application ──────────────────────────────────────────────────────
+
+    const APP_SCHEMA = createExoSchema(
+        b => {
+            let rows, cards, frames, mounts, log, rotate, cycle, remove, restore;
+            b.el('div', { class: 'app' }, app => {
+
+                app.el('section', { class: 'panel' }, panel => {
+                    panel.el('h2', { class: 'panel-title' }, h => { h.text('1 · A vanilla hot spot'); });
+                    panel.el('p', { class: 'panel-note' }, p => {
+                        p.text('One row is built by hand and handed in through exoForeignNode; the rest come from a schema. The # is stamped when a row is BUILT. Move the rows: the numbers travel with them, and "mounts" on the hand-built row stays at 1 — a move is not a remount.');
+                    });
+                    panel.el('ul', { class: 'rows' }, ul => { rows = ul.childrenPort(); });
+                    panel.el('div', { class: 'controls' }, controls => {
+                        controls.el('button', { class: 'btn', type: 'button' }, btn => {
+                            rotate = btn.eventPort('click');
+                            btn.text('Move last to first');
+                        });
+                    });
+                });
+
+                app.el('section', { class: 'panel' }, panel => {
+                    panel.el('h2', { class: 'panel-title' }, h => { h.text('2 · A foreign renderer'); });
+                    panel.el('p', { class: 'panel-note' }, p => {
+                        p.text('The canvas is drawn by ~20 lines that have never heard of Exodra, with their own rAF loop. Exodra places it, moves it between the schema cards, and disposes it. Frames keep climbing while it is alive and freeze the moment it leaves.');
+                    });
+                    panel.el('div', { class: 'cards' }, div => { cards = div.childrenPort(); });
+                    panel.el('div', { class: 'readout' }, r => {
+                        r.el('span', { class: 'readout-label' }, s => { s.text('frames drawn'); });
+                        r.el('strong', { class: 'readout-value' }, s => { frames = s.textPort(); });
+                        r.el('span', { class: 'readout-label' }, s => { s.text('mounts'); });
+                        r.el('strong', { class: 'readout-value' }, s => { mounts = s.textPort(); });
+                    });
+                    panel.el('div', { class: 'controls' }, controls => {
+                        controls.el('button', { class: 'btn', type: 'button' }, btn => {
+                            cycle = btn.eventPort('click');
+                            btn.text('Move the pulse');
+                        });
+                    });
+                });
+
+                app.el('section', { class: 'panel panel-wide' }, panel => {
+                    panel.el('h2', { class: 'panel-title' }, h => { h.text('Lifecycle, as it happens'); });
+                    panel.el('p', { class: 'panel-note' }, p => {
+                        p.text('Every line below was written by a mount or unmount hook of one of the two foreign things. Take them out and the hooks fire while their elements are STILL ATTACHED; put them back and both mount again, with their own state intact — the widget resumes its frame count rather than restarting it. Line 1 reports "in the document: false": an instance is wired and inserted afterwards, so the very first mount happens inside a clone that is not on the page yet. Every later mount reports true.');
+                    });
+                    panel.el('div', { class: 'controls' }, controls => {
+                        controls.el('button', { class: 'btn btn-danger', type: 'button' }, btn => {
+                            remove = btn.eventPort('click');
+                            btn.text('Remove both');
+                        });
+                        controls.el('button', { class: 'btn', type: 'button' }, btn => {
+                            restore = btn.eventPort('click');
+                            btn.text('Put both back');
+                        });
+                    });
+                    panel.el('ul', { class: 'log' }, ul => { log = ul.childrenPort(); });
+                });
+
+            });
+            return { rows, cards, frames, mounts, log, rotate, cycle, remove, restore };
+        }
+    );
+    const mApp = createExoMachineBuilder(APP_SCHEMA);
+    mApp.createInitialState(c => {
+        // Panel 1 — three schema rows and one hand-built one, in ONE array of children. THE FIRST
+        // ROW IS BUILT FIRST, on its own line, because the stamp is taken at BUILD and the panel's
+        // note promises the numbers start out ascending.
+        const firstRow = c.build(TASK, 0, TASK_TITLES[0]);
+        vanillaNode = makeVanillaRow(c);
+        rowChildren.setValue([firstRow, vanillaNode, c.build(TASK, 1, TASK_TITLES[1]), c.build(TASK, 2, TASK_TITLES[2])]);
+
+        // Panel 2 — two schema cards with a foreign renderer between them.
+        pulseNode = makePulseNode(c);
+        cardChildren.setValue([c.build(CARD, 0, CARD_TITLES[0]), pulseNode, c.build(CARD, 1, CARD_TITLES[1])]);
+
+        // A list is a COMPOSITION: `c.childList(port)` is the backend's half — it holds whatever is
+        // put in it — and `reconcileExoOrder` is the strategy over it, from a package the backend
+        // does not import. Children ports are opened here, once.
+        return {
+            log: c.childList(APP_SCHEMA.ports.log),
+            logShown: [],
+            rows: c.childList(APP_SCHEMA.ports.rows),
+            rowsShown: [],
+            cards: c.childList(APP_SCHEMA.ports.cards),
+            cardsShown: []
+        };
+    });
+
+    const showLog = mApp.transition(c => {
+        const want = logLines.getValue();
+        c.state.logShown = reconcileExoOrder(c.state.log, c.state.logShown, want, want, (entry, at) =>
+            c.build(LOG_ROW, at, entry)
+        );
+    });
+    // THE ITEMS ARE ALREADY NODES, so the build step is the identity.
+    const showRows = mApp.transition(c => {
+        const want = rowChildren.getValue();
+        c.state.rowsShown = reconcileExoOrder(c.state.rows, c.state.rowsShown, want, want, node => node);
+    });
+    const showCards = mApp.transition(c => {
+        const want = cardChildren.getValue();
+        c.state.cardsShown = reconcileExoOrder(c.state.cards, c.state.cardsShown, want, want, node => node);
+    });
+    const showPulse = mApp.transition(c => {
+        c.text(APP_SCHEMA.ports.frames, pulseFrames.getValue());
+        c.text(APP_SCHEMA.ports.mounts, pulseMounts.getValue());
+    });
+
+    // THE LOG FIRST: effects start in the order they are declared, so the mount hooks that fire
+    // when the two lists below are first placed already have a subscriber to be seen through.
+    mApp.effect(c => {
+        showLog(c);
+        return logLines.onChange(() => showLog(c));
+    });
+    mApp.effect(c => {
+        showRows(c);
+        return rowChildren.onChange(() => showRows(c));
+    });
+    mApp.effect(c => {
+        showCards(c);
+        return cardChildren.onChange(() => showCards(c));
+    });
+    mApp.effect(c => {
+        showPulse(c);
+        const offFrames = pulseFrames.onChange(() => showPulse(c));
+        const offMounts = pulseMounts.onChange(() => showPulse(c));
+        return () => {
+            offFrames();
+            offMounts();
+        };
+    });
+
+    mApp.on(APP_SCHEMA.ports.rotate, rotateRows);
+    mApp.on(APP_SCHEMA.ports.cycle, cyclePulse);
+    mApp.on(APP_SCHEMA.ports.remove, removeBoth);
+    mApp.on(APP_SCHEMA.ports.restore, restoreBoth);
+    const APP = mApp.done();
+
+    // ── the handlers ─────────────────────────────────────────────────────────
+    //
+    // Every one of them writes a NEW ARRAY of the same child VALUES. Identity is what
+    // `reconcileExoOrder` reconciles by, so a child that is still in the array is moved, and a child that
+    // is not is dropped — and neither is rebuilt, which is exactly what the foreign things need.
+
+    function rotateRows() {
+        const kids = rowChildren.getValue();
+        if (kids.length < 2) return;
+        const next = kids.slice();
+        next.unshift(next.pop());
+        rowChildren.setValue(next);
+    }
+
+    function cyclePulse() {
+        const kids = cardChildren.getValue();
+        const at = kids.indexOf(pulseNode);
+        if (at < 0) return;
+        const next = kids.slice();
+        next.splice(at, 1);
+        next.splice((at + 1) % (next.length + 1), 0, pulseNode);
+        cardChildren.setValue(next);
+    }
+
+    function removeBoth() {
+        const rows = rowChildren.getValue();
+        if (rows.indexOf(vanillaNode) >= 0) {
+            rowChildren.setValue(rows.filter(kid => kid !== vanillaNode));
+        }
+        const cards = cardChildren.getValue();
+        if (cards.indexOf(pulseNode) >= 0) {
+            cardChildren.setValue(cards.filter(kid => kid !== pulseNode));
+        }
+    }
+
+    function restoreBoth() {
+        const rows = rowChildren.getValue();
+        if (rows.indexOf(vanillaNode) < 0) {
+            const next = rows.slice();
+            next.splice(1, 0, vanillaNode);
+            rowChildren.setValue(next);
+        }
+        const cards = cardChildren.getValue();
+        if (cards.indexOf(pulseNode) < 0) {
+            const next = cards.slice();
+            next.splice(1, 0, pulseNode);
+            cardChildren.setValue(next);
+        }
+    }
+
+    // ── mount ────────────────────────────────────────────────────────────────
+
+    // ONE BACKEND, AT MODULE LEVEL. A backend is the schema cache key, compared by POINTER, so one built per render would
+    // recompile every schema, markup parse included, every time.
+    //
+    // `withExoCompiler` AND `withExoChildList` ARE THE TWO COMPOSITIONS THIS PAGE MAKES, and neither
+    // is optional decoration: a bare `ExoDomBackend` has no compiler in it and therefore no
+    // `render` — a page that ships build-made schemas leaves the compiler out and gets a smaller
+    // bundle for it — and no `c.childList`, which the three reconciled regions open. Everything
+    // else here is the library exactly as it ships, because the escape hatch under discussion is
+    // a foreign node's hooks and not a composed seam.
+    const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+
+    // ONE INSTANCE, and the return value is the disposer for it. This page never tears down.
+    backend.render(APP, document.getElementById('app'));
+    boot.remove();
+</script>
+
+</body>
+</html>

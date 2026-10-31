@@ -3,9 +3,9 @@
   "compilerOptions": {
     "composite": false,
     "incremental": false,
-    "paths": {
-      "@exodra/core": ["../core/dist/index.d.ts"]
-    }
+    // The bundler's directory, stated here so it does not follow the typecheck's
+    // `.tsbuild` (see tsconfig.build.json).
+    "outDir": "./dist"
   },
   "exclude": ["**/*.test.ts", "**/*.spec.ts"]
 }

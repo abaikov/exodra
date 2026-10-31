@@ -1,0 +1,20 @@
+{
+  // THE TEST FILES OF `@exodra/list-reconcile`. The scheme — why one of these per package, what each
+  // one overrides and why `references` needs no handling — is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // THIS PACKAGE. Its one suite, `src/tests/reconcile-exo-order.test.ts`, imports the modules under
+  // test by RELATIVE path and nothing else but `vitest`, so there is no `paths` to inherit and
+  // none to add.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

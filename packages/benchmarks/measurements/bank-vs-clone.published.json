@@ -1,0 +1,52 @@
+{
+  "axis": "bank-vs-clone",
+  "label": "published",
+  "quantum": null,
+  "batch": 1,
+  "rows": [
+    {
+      "name": "clone",
+      "reps": 40,
+      "min": 0.05,
+      "p25": 0.0525,
+      "median": 0.0525,
+      "p75": 0.055,
+      "max": 0.0575,
+      "trailing1": 656.3,
+      "trailing2": 16
+    },
+    {
+      "name": "bank pop",
+      "reps": 4000,
+      "min": 0.0001,
+      "p25": 0.0001,
+      "median": 0.0002,
+      "p75": 0.0002,
+      "max": 0.0002,
+      "trailing1": 1.9,
+      "trailing2": 0
+    },
+    {
+      "name": "pop + port reset",
+      "reps": 40,
+      "min": 0.0075,
+      "p25": 0.01,
+      "median": 0.01,
+      "p75": 0.0125,
+      "max": 0.0175,
+      "trailing1": 125,
+      "trailing2": 0
+    },
+    {
+      "name": "pop + full reset",
+      "reps": 40,
+      "min": 0.0375,
+      "p25": 0.04,
+      "median": 0.0425,
+      "p75": 0.045,
+      "max": 0.0525,
+      "trailing1": 531.2,
+      "trailing2": 0
+    }
+  ]
+}

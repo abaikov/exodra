@@ -1,0 +1,32 @@
+// AXIS `list-update` — Marko's row list, the counterpart of `SvList.svelte`, holding the
+// same 300 `{ id, text }` rows every other participant on that axis holds.
+//
+// WHY MARKO IS ON THE DECLARATIVE SIDE OF THAT AXIS — the judgement call that file's header
+// asks every participant to justify. `list-update` splits into two comparisons: `exodra`
+// (and `exodraOps`) are told WHAT CHANGED through an imperative list API, everyone else is
+// handed a NEW ARRAY and has to diff it. Marko belongs with the second group, and not as a
+// handicap chosen for it — it has no imperative list API to be put on instead:
+//
+//   * `marko/dom`'s public exports are the signals its compiler emits. The only ones that
+//     touch a collection are `_for_in` / `_for_of` / `_for_to` / `_for_until`, and each takes
+//     the WHOLE iterable and reconciles it (`loop()` in marko/dist/dom.mjs: build a key→scope
+//     Map of the old rows, match, then move the minimum by longest-increasing-subsequence).
+//     There is no move/insert/remove entry point into that list.
+//   * A mounted template's entire outside surface is `update(input)`, `destroy()` and the
+//     `value` accessor (`Marko.MountedTemplate`, marko/index.d.ts). No handle on a rendered
+//     row is exposed at all, so "row 0 moved to 150" is not sayable; only "here is the new
+//     array" is.
+//
+// So the honest placement is beside Solid / Svelte / React / voby: same 300 rows, same four
+// mutations, same "hand it the new array" commit, and its number is read against theirs.
+//
+// `by="id"` IS Marko's documented key and the same row identity everyone else keys by
+// (React `key={r.id}`, Svelte `{#each rows as r (r.id)}`, Solid/voby `<For>` by item
+// identity). Given a string, `_for_of` reads that property off each item — `cb(item[by], …)`
+// — so it is one property read per row rather than a call, which is what the string form is
+// for; the arrow form `by=(r => r.id)` is the same key, spelled with a call.
+//
+// ONE LINE ON PURPOSE. Every axis this participant joins diffs markup byte for byte, and a
+// newline between `<ul>` and `<for>` risks a whitespace text node that no other participant
+// emits. Keeping the template on one line removes the question instead of answering it.
+<ul><for|r| of=input.rows by="id"><li>${r.text}</li></for></ul>

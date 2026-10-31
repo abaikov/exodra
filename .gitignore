@@ -47,14 +47,16 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
-# Build files in src (should never happen)
-**/src/**/*.js
-**/src/**/*.d.ts
-**/src/**/*.js.map
-**/src/**/*.d.ts.map
-# ...but the Docusaurus site's src is genuine source (React homepage/components
-# written in .js), not compiled output — keep it tracked.
-!docs-site/src/**/*.js
+# `tsc -b`'s own output. The typecheck's ten projects are `composite`, so they MUST emit
+# (TypeScript rejects `noEmit` on a referenced project) — but their emit is a per-file
+# barrel with extensionless relative imports that Node's ESM resolver cannot load. It goes
+# here, never into `dist`, which is the bundler's directory and the one that gets published.
+.tsbuild/
+
+# DO NOT IGNORE COMPILED FILES UNDER src. Ignoring a file that should never exist is the one thing
+# that guarantees nobody sees it; `npm run check:src-emit` fails on any that appear, and a stray one
+# belongs in `git status`. What happened when four such rules sat here:
+# docs-site/docs/architecture/gates-and-root-configs.md, "check:src-emit, and the suite that lied".
 
 # Optional npm cache directory
 .npm
@@ -165,3 +167,10 @@ docs-site/build/
 .claude-hooks/
 
 .swc/
+
+# Screenshot the browser smoke test drops next to itself for a human to look at.
+packages/*/smoke.png
+
+# Built benchmark participants. Each is produced by packages/benchmarks/bench/build/build-*.mjs
+# and served verbatim out of `public/`, the same way the SSR half serves `ssr/dist/`. Artifacts.
+packages/benchmarks/public/bench/

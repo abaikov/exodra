@@ -1,0 +1,53 @@
+{
+  "axis": "mount-phases",
+  "label": "published",
+  "quantum": null,
+  "batch": 1,
+  "rows": [
+    {
+      "name": "clone",
+      "reps": 20,
+      "min": 0.08,
+      "p25": 0.08,
+      "median": 0.085,
+      "p75": 0.09,
+      "max": 0.095
+    },
+    {
+      "name": "clone+walk",
+      "reps": 20,
+      "min": 0.095,
+      "p25": 0.105,
+      "median": 0.105,
+      "p75": 0.11,
+      "max": 0.12
+    },
+    {
+      "name": "clone+walk+ins",
+      "reps": 20,
+      "min": 0.145,
+      "p25": 0.155,
+      "median": 0.155,
+      "p75": 0.16,
+      "max": 0.175
+    },
+    {
+      "name": "mount",
+      "reps": 20,
+      "min": 0.285,
+      "p25": 0.295,
+      "median": 0.3,
+      "p75": 0.31,
+      "max": 0.355
+    },
+    {
+      "name": "walk",
+      "reps": 400,
+      "min": 0.0065,
+      "p25": 0.0067,
+      "median": 0.0067,
+      "p75": 0.007,
+      "max": 0.0073
+    }
+  ]
+}

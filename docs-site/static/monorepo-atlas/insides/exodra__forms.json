@@ -8,172 +8,236 @@
     },
     "nodes": [
       {
-        "id": "bindChecked",
-        "label": "bindChecked",
+        "id": "checkExoControlValues",
+        "label": "checkExoControlValues",
         "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(model): TExoBindAttrs",
-            "full": "(model): TExoBindAttrs",
+            "text": "(values, rules): (string | null)[]",
+            "full": "(values, rules): (string | null)[]",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 254,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "readExoControlValue",
+        "label": "readExoControlValue",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(target): TExoControlValue | …",
+            "full": "(target): TExoControlValue | undefined",
             "parts": [
               {
-                "text": "(model): "
+                "text": "(target): "
               },
               {
-                "text": "TExoBindAttrs",
-                "link": "TExoBindAttrs"
+                "text": "TExoControlValue",
+                "link": "TExoControlValue"
+              },
+              {
+                "text": " | …"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(target): "
+              },
+              {
+                "text": "TExoControlValue",
+                "link": "TExoControlValue"
+              },
+              {
+                "text": " | undefined"
               }
             ]
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "<input type=\"checkbox\" bind:checked>: checked <-> boolean bindable.",
-        "width": 178,
+        "doc": "By `localName`, not `instanceof`: a control from another realm (an iframe) fails `instanceof`.",
+        "width": 229,
         "height": 69,
         "violations": []
       },
       {
-        "id": "bindNumber",
-        "label": "bindNumber",
+        "id": "readExoControlValues",
+        "label": "readExoControlValues",
         "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(model): TExoBindAttrs",
-            "full": "(model): TExoBindAttrs",
+            "text": "(c, ports): (TExoControlValue |…",
+            "full": "(c, ports): (TExoControlValue | undefined)[]",
             "parts": [
               {
-                "text": "(model): "
+                "text": "(c, ports): ("
               },
               {
-                "text": "TExoBindAttrs",
-                "link": "TExoBindAttrs"
+                "text": "TExoControlValue",
+                "link": "TExoControlValue"
+              },
+              {
+                "text": " |…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(c, ports): ("
+              },
+              {
+                "text": "TExoControlValue",
+                "link": "TExoControlValue"
+              },
+              {
+                "text": " | undefined)[]"
               }
             ]
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "<input type=\"number|range\" bind:value>: numeric value <-> number bindable.",
-        "width": 178,
+        "doc": "The LIVE controls: what a person typed before the bundle arrived is what comes back.",
+        "width": 242,
         "height": 69,
         "violations": []
       },
       {
-        "id": "bindRadio",
-        "label": "bindRadio",
+        "id": "setExoControlErrors",
+        "label": "setExoControlErrors",
         "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(model, value): TExoBindAttrs",
-            "full": "(model, value): TExoBindAttrs",
+            "text": "(c, ports, errors): void",
+            "full": "(c, ports, errors): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoControlRule",
+        "label": "TExoControlRule",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "( value: TExoControlValue | undefined, …",
+            "full": "( value: TExoControlValue | undefined, values: readonly (TExoControlValue | undefined)[] ) => string | null",
             "parts": [
               {
-                "text": "(model, value): "
+                "text": "( value: "
               },
               {
-                "text": "TExoBindAttrs",
-                "link": "TExoBindAttrs"
+                "text": "TExoControlValue",
+                "link": "TExoControlValue"
+              },
+              {
+                "text": " | undefined, …"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "( value: "
+              },
+              {
+                "text": "TExoControlValue",
+                "link": "TExoControlValue"
+              },
+              {
+                "text": " | undefined, values: readonly ("
+              },
+              {
+                "text": "TExoControlValue",
+                "link": "TExoControlValue"
+              },
+              {
+                "text": " | undefined)[] ) => string | null"
               }
             ]
           }
         ],
         "memberCount": 1,
-        "stereotype": "function",
-        "doc": "<input type=\"radio\" value=\"X\">: a group of radios shares ONE model holding the SELECTED value.",
-        "width": 222,
+        "stereotype": "type",
+        "width": 293,
         "height": 69,
         "violations": []
       },
       {
-        "id": "bindSelect",
-        "label": "bindSelect",
-        "kind": "tooling",
+        "id": "TExoControlValue",
+        "label": "TExoControlValue",
+        "kind": "app",
         "layer": 0,
         "members": [
           {
-            "text": "(model): TExoBindAttrs",
-            "full": "(model): TExoBindAttrs",
-            "parts": [
-              {
-                "text": "(model): "
-              },
-              {
-                "text": "TExoBindAttrs",
-                "link": "TExoBindAttrs"
-              }
-            ]
+            "text": "string | number | boolean | readonly st…",
+            "full": "string | number | boolean | readonly string[] | FileList",
+            "parts": [],
+            "fullParts": []
           }
         ],
         "memberCount": 1,
-        "stereotype": "function",
-        "doc": "<select bind:value>: selection <-> string bindable (fires on change).",
-        "width": 178,
+        "stereotype": "type",
+        "width": 293,
         "height": 69,
         "violations": []
       },
       {
-        "id": "bindText",
-        "label": "bindText",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(model): TExoBindAttrs",
-            "full": "(model): TExoBindAttrs",
-            "parts": [
-              {
-                "text": "(model): "
-              },
-              {
-                "text": "TExoBindAttrs",
-                "link": "TExoBindAttrs"
-              }
-            ]
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "<input bind:value> / <textarea bind:value>: text value <-> string bindable.",
-        "width": 178,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "TExoBindAttrs",
-        "label": "TExoBindAttrs",
+        "id": "TExoValidatedControl",
+        "label": "TExoValidatedControl",
         "kind": "app",
         "layer": 0,
         "members": [
           {
             "visibility": "+",
-            "text": "bindables: Record<string, unknown>;",
-            "full": "bindables: Record<string, unknown>;",
+            "text": "setCustomValidity(message: string): void",
+            "full": "setCustomValidity(message: string): void",
             "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "handlers: Record<string, (event: Event)…",
-            "full": "handlers: Record<string, (event: Event) => void>;",
-            "parts": [],
-            "fullParts": []
           }
         ],
-        "memberCount": 2,
-        "stereotype": "interface",
+        "memberCount": 1,
+        "stereotype": "type",
         "width": 293,
-        "height": 84,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "writeExoChoice",
+        "label": "writeExoChoice",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(c, ports, values, chosen): void",
+            "full": "(c, ports, values, chosen): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "ONE write when a member is chosen: the browser clears the rest of a same-`name` radio group or a single `<select>` itself, so a mark the user moved natively needs no stale \"from\" to undo.",
+        "width": 242,
+        "height": 69,
         "violations": []
       }
     ],
     "edges": [
       {
-        "id": "bindChecked→TExoBindAttrs",
-        "from": "bindChecked",
-        "to": "TExoBindAttrs",
+        "id": "checkExoControlValues→TExoControlRule",
+        "from": "checkExoControlValues",
+        "to": "TExoControlRule",
         "kinds": [
           "type-only"
         ],
@@ -181,8 +245,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/checkExoControlValues.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlRule.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -190,9 +254,9 @@
         "violations": []
       },
       {
-        "id": "bindNumber→TExoBindAttrs",
-        "from": "bindNumber",
-        "to": "TExoBindAttrs",
+        "id": "checkExoControlValues→TExoControlValue",
+        "from": "checkExoControlValues",
+        "to": "TExoControlValue",
         "kinds": [
           "type-only"
         ],
@@ -200,8 +264,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/checkExoControlValues.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlValue.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -209,9 +273,9 @@
         "violations": []
       },
       {
-        "id": "bindRadio→TExoBindAttrs",
-        "from": "bindRadio",
-        "to": "TExoBindAttrs",
+        "id": "readExoControlValue→TExoControlValue",
+        "from": "readExoControlValue",
+        "to": "TExoControlValue",
         "kinds": [
           "type-only"
         ],
@@ -219,8 +283,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/readExoControlValue.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlValue.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -228,9 +292,28 @@
         "violations": []
       },
       {
-        "id": "bindSelect→TExoBindAttrs",
-        "from": "bindSelect",
-        "to": "TExoBindAttrs",
+        "id": "readExoControlValues→readExoControlValue",
+        "from": "readExoControlValues",
+        "to": "readExoControlValue",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/readExoControlValues.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/controls/readExoControlValue.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readExoControlValues→TExoControlValue",
+        "from": "readExoControlValues",
+        "to": "TExoControlValue",
         "kinds": [
           "type-only"
         ],
@@ -238,8 +321,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/readExoControlValues.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlValue.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -247,9 +330,9 @@
         "violations": []
       },
       {
-        "id": "bindText→TExoBindAttrs",
-        "from": "bindText",
-        "to": "TExoBindAttrs",
+        "id": "setExoControlErrors→TExoValidatedControl",
+        "from": "setExoControlErrors",
+        "to": "TExoValidatedControl",
         "kinds": [
           "type-only"
         ],
@@ -257,8 +340,27 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/index.ts",
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/setExoControlErrors.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/controls/setExoControlErrors.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoControlRule→TExoControlValue",
+        "from": "TExoControlRule",
+        "to": "TExoControlValue",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlRule.ts",
+            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlValue.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -269,135 +371,199 @@
     "rules": {}
   },
   "layout": {
-    "width": 627,
-    "height": 505,
+    "width": 1016,
+    "height": 438,
     "nodes": [
       {
-        "id": "bindChecked",
-        "x": 46,
-        "y": 412,
-        "width": 178,
-        "height": 69
-      },
-      {
-        "id": "bindNumber",
-        "x": 46,
-        "y": 315,
-        "width": 178,
-        "height": 69
-      },
-      {
-        "id": "bindRadio",
+        "id": "checkExoControlValues",
         "x": 24,
-        "y": 218,
-        "width": 222,
+        "y": 248,
+        "width": 254,
         "height": 69
       },
       {
-        "id": "bindSelect",
-        "x": 46,
-        "y": 121,
-        "width": 178,
+        "id": "readExoControlValue",
+        "x": 374,
+        "y": 160.3,
+        "width": 229,
         "height": 69
       },
       {
-        "id": "bindText",
-        "x": 46,
+        "id": "readExoControlValues",
+        "x": 30,
+        "y": 131,
+        "width": 242,
+        "height": 69
+      },
+      {
+        "id": "setExoControlErrors",
+        "x": 56,
         "y": 24,
-        "width": 178,
+        "width": 190,
         "height": 69
       },
       {
-        "id": "TExoBindAttrs",
-        "x": 310,
-        "y": 210.5,
+        "id": "TExoControlRule",
+        "x": 342,
+        "y": 277.3,
         "width": 293,
-        "height": 84
+        "height": 69
+      },
+      {
+        "id": "TExoControlValue",
+        "x": 699,
+        "y": 189.5,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoValidatedControl",
+        "x": 342,
+        "y": 24,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "writeExoChoice",
+        "x": 30,
+        "y": 345,
+        "width": 242,
+        "height": 69
       }
     ],
     "edges": [
       {
-        "id": "bindChecked→TExoBindAttrs",
+        "id": "checkExoControlValues→TExoControlRule",
         "points": [
           {
-            "x": 224,
-            "y": 446.5
-          },
-          {
             "x": 278,
-            "y": 446.5
-          },
-          {
-            "x": 417.9,
-            "y": 294.5
-          }
-        ]
-      },
-      {
-        "id": "bindNumber→TExoBindAttrs",
-        "points": [
-          {
-            "x": 224,
-            "y": 349.5
-          },
-          {
-            "x": 278,
-            "y": 349.5
-          },
-          {
-            "x": 379.2,
-            "y": 294.5
-          }
-        ]
-      },
-      {
-        "id": "bindRadio→TExoBindAttrs",
-        "points": [
-          {
-            "x": 246,
-            "y": 252.5
-          },
-          {
-            "x": 278,
-            "y": 252.5
+            "y": 305.9
           },
           {
             "x": 310,
-            "y": 252.5
+            "y": 311.8
+          },
+          {
+            "x": 342,
+            "y": 311.8
           }
         ]
       },
       {
-        "id": "bindSelect→TExoBindAttrs",
+        "id": "checkExoControlValues→TExoControlValue",
         "points": [
           {
-            "x": 224,
-            "y": 155.5
-          },
-          {
             "x": 278,
-            "y": 155.5
+            "y": 259.1
           },
           {
-            "x": 379.2,
-            "y": 210.5
+            "x": 310,
+            "y": 253.3
+          },
+          {
+            "x": 488.5,
+            "y": 253.3
+          },
+          {
+            "x": 667,
+            "y": 253.3
+          },
+          {
+            "x": 699,
+            "y": 248
           }
         ]
       },
       {
-        "id": "bindText→TExoBindAttrs",
+        "id": "readExoControlValue→TExoControlValue",
         "points": [
           {
-            "x": 224,
+            "x": 603,
+            "y": 194.8
+          },
+          {
+            "x": 667,
+            "y": 194.8
+          },
+          {
+            "x": 699,
+            "y": 200
+          }
+        ]
+      },
+      {
+        "id": "readExoControlValues→readExoControlValue",
+        "points": [
+          {
+            "x": 272,
+            "y": 187.8
+          },
+          {
+            "x": 310,
+            "y": 194.8
+          },
+          {
+            "x": 374,
+            "y": 194.8
+          }
+        ]
+      },
+      {
+        "id": "readExoControlValues→TExoControlValue",
+        "points": [
+          {
+            "x": 272,
+            "y": 143.2
+          },
+          {
+            "x": 310,
+            "y": 136.3
+          },
+          {
+            "x": 488.5,
+            "y": 136.3
+          },
+          {
+            "x": 667,
+            "y": 136.3
+          },
+          {
+            "x": 775.3,
+            "y": 189.5
+          }
+        ]
+      },
+      {
+        "id": "setExoControlErrors→TExoValidatedControl",
+        "points": [
+          {
+            "x": 246,
             "y": 58.5
           },
           {
-            "x": 278,
+            "x": 310,
             "y": 58.5
           },
           {
-            "x": 417.9,
-            "y": 210.5
+            "x": 342,
+            "y": 58.5
+          }
+        ]
+      },
+      {
+        "id": "TExoControlRule→TExoControlValue",
+        "points": [
+          {
+            "x": 635,
+            "y": 311.8
+          },
+          {
+            "x": 667,
+            "y": 311.8
+          },
+          {
+            "x": 775.3,
+            "y": 258.5
           }
         ]
       }

@@ -44,13 +44,11 @@ export function renderThemeCss(scope = '.exo-graph'): string {
 
         // Explicit stamps — from the host page, or from the graph's own control.
         rule(
-            `:where(:root[data-theme='dark'] ${scope}), ` +
-                `:where(${scope}[data-mode='dark'])`,
+            `:where(:root[data-theme='dark'] ${scope}), ` + `:where(${scope}[data-mode='dark'])`,
             vars(EXO_GRAPH_DARK, 'dark')
         ),
         rule(
-            `:where(:root[data-theme='light'] ${scope}), ` +
-                `:where(${scope}[data-mode='light'])`,
+            `:where(:root[data-theme='light'] ${scope}), ` + `:where(${scope}[data-mode='light'])`,
             vars(EXO_GRAPH_LIGHT, 'light')
         ),
     ].join('\n');
@@ -84,5 +82,5 @@ function rule(selector: string, body: string, atRule?: string): string {
 const indent = (text: string): string =>
     text
         .split('\n')
-        .map(line => `    ${line}`)
+        .map((line) => `    ${line}`)
         .join('\n');

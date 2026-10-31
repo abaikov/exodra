@@ -1,0 +1,22 @@
+{
+  // THE TEST FILES OF `@exodra/monorepo-atlas`, COMPILED — 8 suites, spread across `src/generate/`,
+  // `src/layout/`, `src/model/` and `src/theme/`. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // No `paths` override: the base maps the five siblings the atlas crawls, and the suites import
+  // only `node:fs` / `node:os` / `node:path` on top of their own modules.
+  //
+  // The base's `exclude` names only `**/*.test.ts` (no `*.spec.ts`); dropping it is all this file
+  // does beyond turning emit off.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

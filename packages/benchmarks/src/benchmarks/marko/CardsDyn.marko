@@ -1,0 +1,10 @@
+// THE FIVE USER SETTINGS ARRIVE AS INPUT: a mounted Marko template exposes only
+// `{ value, update(input), destroy() }`, so there is no `<let>` in here an outsider could write.
+import { CARDS_PER_DECK } from "../shared/todo-spec";
+
+<const/decks = Array.from({ length: input.cards / CARDS_PER_DECK }, (_, d) => d) />
+<div class="app">
+  <for|d| of=decks by=(d => d)>
+    <DeckDyn d=d chars=input.chars />
+  </for>
+</div>

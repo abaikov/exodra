@@ -1,9 +1,14 @@
 import { defineConfig } from 'tsup';
-import { browserGlobal } from '../browser-tsup.mjs';
+import { browserGlobal, browserModule } from '../browser-tsup.mjs';
 
 export default defineConfig([
   {
-    entry: ['src/**/*.ts', '!src/**/*.test.ts', '!src/**/*.spec.ts'],
+    // ONE ENTRY, NOT A GLOB OVER THE SOURCE TREE — see `packages/dom/tsup.config.ts` for the
+    // measurement. With `splitting: false` every entry becomes a SELF-CONTAINED bundle, so a glob
+    // emitted one copy of the whole import graph per source file, none of which any `exports`
+    // subpath could reach. `dist/index.js` is byte-identical either way; that was verified by
+    // building both and comparing, not assumed.
+    entry: { index: 'src/index.ts', 'style/index': 'src/style/index.ts' },
     format: ['esm', 'cjs'],
     dts: true,
     sourcemap: true,
@@ -18,5 +23,8 @@ export default defineConfig([
   },
   // CDN <script> global: window.Exodra.core (self-contained, no deps)
   browserGlobal({ globalName: 'Exodra.core' }),
+  // CDN <script type="module">: dist/exodra.esm.js. Nothing external — this file
+  // loads from a bare URL with no import map.
+  browserModule(),
 ]);
 

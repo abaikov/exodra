@@ -1,10 +1,10 @@
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { buildArtifacts, serialiseData } from './generate/buildArtifacts';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { buildArtifacts, serialiseData, type TExoGraphArtifacts } from './generate/buildArtifacts';
 import { cruiseWorkspace } from './generate/cruiseWorkspace';
 import { discoverWorkspace } from './generate/discoverWorkspace';
-import { fileNameFor } from './client/mountFromUrl';
+import { fileNameFor } from './generate/fileNameFor';
+import type { TExoUnresolvedType } from './model/types';
 
 /**
  * `exo-graph` — turn a repository into an embeddable architecture graph.
@@ -82,7 +82,7 @@ export function parseArgs(argv: readonly string[], cwd: string): TExoCliOptions 
     return options;
 }
 
-export const HELP = `exo-graph — an embeddable architecture graph for a repository
+export const EXO_HELP = `exo-graph — an embeddable architecture graph for a repository
 
   --root <dir>          repository to read (default: cwd)
   --out <dir>           where to write (default: <root>/public/graph)
@@ -99,18 +99,17 @@ export async function run(argv: readonly string[], cwd: string): Promise<number>
     } catch (error) {
         const message = (error as Error).message;
         if (message === 'HELP') {
-            process.stdout.write(HELP);
+            process.stdout.write(EXO_HELP);
             return 0;
         }
-        process.stderr.write(`exo-atlas: ${message}\n\n${HELP}`);
+        process.stderr.write(`exo-atlas: ${message}\n\n${EXO_HELP}`);
         return 2;
     }
 
     const packages = discoverWorkspace(options.root);
     if (packages.length === 0) {
         process.stderr.write(
-            `exo-atlas: no packages found in ${options.root}. ` +
-                'Is this a workspace root?\n'
+            `exo-atlas: no packages found in ${options.root}. ` + 'Is this a workspace root?\n'
         );
         return 1;
     }
@@ -131,10 +130,14 @@ export async function run(argv: readonly string[], cwd: string): Promise<number>
         // clickable before fetching anything.
         [
             'insides/index.json',
-            `${JSON.stringify(artifacts.insides.map(inside => inside.id), null, 2)}\n`,
+            `${JSON.stringify(
+                artifacts.insides.map((inside) => inside.id),
+                null,
+                2
+            )}\n`,
         ],
         ...artifacts.insides.map(
-            inside =>
+            (inside) =>
                 [
                     `insides/${fileNameFor(inside.id)}.json`,
                     `${JSON.stringify(inside.data, null, 2)}\n`,
@@ -142,13 +145,37 @@ export async function run(argv: readonly string[], cwd: string): Promise<number>
         ),
     ];
 
+    // Said BEFORE the result, and on stderr, in both modes: a model with a hole in it is
+    // still written and still passes `--check` once it is committed, so the only thing that
+    // can tell anybody it happened is this line.
+    const holes = unresolvedIn(artifacts);
+    if (holes.length > 0) {
+        const shown = holes.slice(0, 5).map(describeHole).join('\n');
+        const rest = holes.length > 5 ? `      … and ${holes.length - 5} more\n` : '';
+        process.stderr.write(
+            `exo-atlas: ${holes.length} member type(s) could NOT be resolved. Each one is\n` +
+                `  marked «type unresolved» on its box and listed under the model's\n` +
+                `  "unresolved" key — the diagram is INCOMPLETE by exactly this much:\n` +
+                `${shown}\n${rest}`
+        );
+    }
+
+    const insidesDir = join(options.out, 'insides');
+    const written = new Set(files.map(([name]) => name));
+    const leftover = existsSync(insidesDir)
+        ? readdirSync(insidesDir)
+              .map((name) => `insides/${name}`)
+              .filter((name) => name.endsWith('.json') && !written.has(name))
+        : [];
+
     if (options.check) {
         const stale = files
             .filter(([name, content]) => {
                 const path = join(options.out, name);
                 return !existsSync(path) || readFileSync(path, 'utf8') !== content;
             })
-            .map(([name]) => name);
+            .map(([name]) => name)
+            .concat(leftover);
         if (stale.length > 0) {
             process.stderr.write(
                 `exo-atlas: out of date — ${stale.join(', ')}\n` +
@@ -164,37 +191,41 @@ export async function run(argv: readonly string[], cwd: string): Promise<number>
     for (const [name, content] of files) {
         writeFileSync(join(options.out, name), content);
     }
-    copyRuntime(options.out);
+    for (const name of leftover) rmSync(join(options.out, name));
 
     const { model, layout } = artifacts.data;
     process.stdout.write(
         `exo-atlas: wrote ${options.out}\n` +
             `  ${model.nodes.length} ${model.granularity}s, ${model.edges.length} edges` +
             `, canvas ${layout.width}×${layout.height}\n` +
-            `  embed:  <link rel="stylesheet" href="graph.css">\n` +
-            `          <div id="exo-graph"></div>\n` +
-            `          <script type="module" src="graph.js"></script>\n`
+            '  the data and the stylesheet only: this build ships no picture and no\n' +
+            '  browser runtime — see the README.\n'
     );
     return 0;
 }
 
+/** A gap in the model, with the diagram it is a gap in. */
+type TExoHole = { where: string; hole: TExoUnresolvedType };
+
 /**
- * The browser half, copied next to the data.
+ * Every type the extraction gave up on, across the package graph and every package inside.
  *
- * Shipped prebuilt rather than bundled on demand: the point of this tool is that
- * a project drops three files into whatever serves its static assets, without
- * teaching its bundler about any of this.
+ * Gathered into ONE number rather than counted per package because the question whoever ran
+ * the command has is "did this build lose anything", and a per-package line saying nothing
+ * 28 times and something once is a line that gets scrolled past.
  */
-function copyRuntime(out: string): void {
-    const here = dirname(fileURLToPath(import.meta.url));
-    for (const candidate of [join(here, 'graph.js'), join(here, '../dist/graph.js')]) {
-        if (existsSync(candidate)) {
-            cpSync(candidate, join(out, 'graph.js'));
-            return;
-        }
-    }
-    process.stderr.write(
-        'exo-atlas: the browser runtime (graph.js) is missing from this install; ' +
-            'the data and stylesheet were still written.\n'
-    );
+function unresolvedIn(artifacts: TExoGraphArtifacts): readonly TExoHole[] {
+    const graph = artifacts.data.model.unresolved ?? [];
+    return [
+        ...graph.map((hole) => ({ where: 'the package graph', hole })),
+        ...artifacts.insides.flatMap((inside) =>
+            (inside.data.model.unresolved ?? []).map((hole) => ({ where: inside.id, hole }))
+        ),
+    ];
+}
+
+/** One line a reader can act on: which package, which member, and what the checker said. */
+function describeHole({ where, hole }: TExoHole): string {
+    const name = hole.owner === hole.member ? hole.owner : `${hole.owner}.${hole.member}`;
+    return `      ${where} → ${name} — ${hole.reason}`;
 }

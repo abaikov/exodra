@@ -1,0 +1,273 @@
+{
+  "model": {
+    "granularity": "module",
+    "legend": {
+      "runtime": "Class",
+      "tooling": "Function",
+      "app": "Type & constant"
+    },
+    "nodes": [
+      {
+        "id": "COMPAT_ALIASES",
+        "label": "COMPAT_ALIASES",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "ESM_ONLY",
+        "label": "ESM_ONLY",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Pre-bundled, its default export arrives wrapped in the module namespace; it imports react as ESM.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_REACT_LIBRARIES",
+        "label": "EXO_REACT_LIBRARIES",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 146,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "fromPackages",
+        "label": "fromPackages",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(path): string",
+            "full": "(path): string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 126,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "JSX",
+        "label": "JSX",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "LIBRARY_IMPORTS",
+        "label": "LIBRARY_IMPORTS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "packageRoot",
+        "label": "packageRoot",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "REACT_IMPORTS",
+        "label": "REACT_IMPORTS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "SHARED_TEST",
+        "label": "SHARED_TEST",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      }
+    ],
+    "edges": [
+      {
+        "id": "COMPAT_ALIASES→fromPackages",
+        "from": "COMPAT_ALIASES",
+        "to": "fromPackages",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "LIBRARY_IMPORTS→EXO_REACT_LIBRARIES",
+        "from": "LIBRARY_IMPORTS",
+        "to": "EXO_REACT_LIBRARIES",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/EXO_REACT_LIBRARIES.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      }
+    ],
+    "rules": {}
+  },
+  "layout": {
+    "width": 378,
+    "height": 549.5,
+    "nodes": [
+      {
+        "id": "COMPAT_ALIASES",
+        "x": 24,
+        "y": 35.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "ESM_ONLY",
+        "x": 24,
+        "y": 109.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "EXO_REACT_LIBRARIES",
+        "x": 208,
+        "y": 257.5,
+        "width": 146,
+        "height": 46
+      },
+      {
+        "id": "fromPackages",
+        "x": 218,
+        "y": 24,
+        "width": 126,
+        "height": 69
+      },
+      {
+        "id": "JSX",
+        "x": 24,
+        "y": 183.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "LIBRARY_IMPORTS",
+        "x": 24,
+        "y": 257.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "packageRoot",
+        "x": 24,
+        "y": 331.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "REACT_IMPORTS",
+        "x": 24,
+        "y": 405.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "SHARED_TEST",
+        "x": 24,
+        "y": 479.5,
+        "width": 120,
+        "height": 46
+      }
+    ],
+    "edges": [
+      {
+        "id": "COMPAT_ALIASES→fromPackages",
+        "points": [
+          {
+            "x": 144,
+            "y": 58.5
+          },
+          {
+            "x": 176,
+            "y": 58.5
+          },
+          {
+            "x": 218,
+            "y": 58.5
+          }
+        ]
+      },
+      {
+        "id": "LIBRARY_IMPORTS→EXO_REACT_LIBRARIES",
+        "points": [
+          {
+            "x": 144,
+            "y": 280.5
+          },
+          {
+            "x": 176,
+            "y": 280.5
+          },
+          {
+            "x": 208,
+            "y": 280.5
+          }
+        ]
+      }
+    ]
+  }
+}

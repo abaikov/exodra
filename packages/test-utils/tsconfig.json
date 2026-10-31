@@ -1,0 +1,39 @@
+{
+  // IN THE TYPECHECK GRAPH, and it had to be: this package is imported by the
+  // test suites of six packages through the root `vitest.config.ts` alias, and vitest TRANSPILES
+  // without checking types. Its own `typecheck` script (`tsc --noEmit`) existed but no root script
+  // and no CI step has ever invoked it, so eight files that every suite depends on were checked by
+  // nothing at all. `tsconfig.build.json` said so itself — "that is a known gap rather than a
+  // decision".
+  //
+  // Being referenced is what forces the shape below. A referenced project must be `composite`, a
+  // composite project may not set `noEmit` (TS6304/`Referenced project may not disable emit`), and
+  // its emit may not land in `dist` — see the header of `tsconfig.build.json` for why. Hence
+  // `.tsbuild`, gitignored and published by nothing; this package is `private` and has no `files`.
+  //
+  // `paths` names `../core/.tsbuild/index.d.ts` rather than `../core/src/index.ts`, which is what
+  // it said before. A composite project may not reach a file outside its own `rootDir` (TS6059),
+  // so a referenced project consumes its dependency's DECLARATIONS — tsc's own fresh output, built
+  // one step earlier in the same `tsc -b` run, so this still works on a clean checkout with
+  // nothing installed or built.
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    // `host()` returns a container IN the document and `detachedHost()` one that is not, so the
+    // DOM lib is this package's subject matter, not an accident.
+    "lib": ["ES2020", "DOM"],
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts"],
+  "references": [{ "path": "../core" }]
+}

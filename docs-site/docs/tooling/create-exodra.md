@@ -4,7 +4,7 @@ title: create-exodra
 
 # create-exodra
 
-`create-exodra` scaffolds a new Exodra application. The CLI is prompt-driven
+`create-exodra` scaffolds a new Exodra application. The CLI asks at a prompt
 (Next.js style): run it and answer a few questions, or pass flags to skip the
 prompts. It also installs an `exodra` binary for generating components, pages,
 and API routes inside an existing project.
@@ -47,8 +47,7 @@ prompt.
 - `--tailwind` — set up Tailwind CSS
 - `--eslint` — set up ESLint
 - `--src-dir` — use a `src/` directory
-- `--ssr` — scaffold a server-side-rendered app (`@exodra/ssr`)
-- `--no-jsx` — author views with `h()` calls instead of JSX (SSR scaffold)
+- `--ssr` — scaffold a server-side-rendered app
 - `--app` — use the App Router (`@exodra/router`)
 - `--import-alias <alias>` — import alias to use (default `@/*`)
 - `--use-npm` / `--use-yarn` / `--use-pnpm` / `--use-bun` — choose the package
@@ -65,22 +64,36 @@ npx create-exodra simple-app --javascript
 
 # Server-side-rendered app
 npx create-exodra my-ssr-app --ssr
-
-# SSR app authored with h() calls instead of JSX
-npx create-exodra my-ssr-app --ssr --no-jsx
 ```
 
 ## What gets generated
 
-A standard (non-SSR) app uses Vite with the Exodra Babel JSX plugin and depends
-on `@exodra/core`, `@exodra/jsx`, `@exodra/dom`, and `@exodra/reactivity` (plus
-`@exodra/router` when the App Router is enabled). JSX is compiled by
-[`@exodra/babel-plugin-jsx`](./babel-plugin.md) — TypeScript's native JSX
-transform and the React JSX transform are not used.
+**Every scaffold writes plain modules — there is no JSX in any of them.** A
+component is one value: a schema that declares the shape once when the module
+loads, and a machine whose `wire` fills its ports per instance. The generated
+project therefore compiles with nothing but Vite and TypeScript; the
+[Babel preset](./babel-preset.md) is what you add the day you want to write schemas
+as [JSX](../guides/jsx.md) instead.
 
-An SSR app (`--ssr`) instead depends on `@exodra/ssr` and `@exodra/string`,
-with an Express dev/prod server that renders on the server and hydrates on the
-client via `@exodra/dom`'s `hydrate`. See the [SSR guide](../guides/ssr.md).
+A standard (non-SSR) app uses Vite with `@exodra/vite-plugin` and depends on
+`@exodra/core` and `@exodra/dom` — plus `@exodra/router`
+when the App Router is enabled, which also gets `src/pages`, a generated route
+table from `virtual:exodra-routes`, and a `main` that provides the router inside
+a machine (`provideExoRouter(c, router)`), places the boundary with
+`c.one(port, ExoOutlet)` and inserts the nav's `ExoLink`s into `c.childList(port)`. The outlet
+and the nav both open a child list, so that `main` renders through
+`withExoChildList(withExoCompiler(new ExoDomBackend()))`; a backend without
+[`withExoChildList`](../api/dom.md#withexochildlist) refuses with
+[EXO0109](../errors.md#exo0109). Without the App Router, `main` opens no child list and composes
+`withExoCompiler` alone.
+
+An SSR app (`--ssr`) instead depends on `@exodra/string` alongside `@exodra/core`
+and `@exodra/dom`, with an Express dev/prod server. **One** component module is
+shared by both halves: `new ExoStrBackend().render(APP)` prints it on the server,
+and a `@exodra/dom` backend composed with `withExoHydration` adopts exactly
+those nodes on the client through `backend.hydrate(APP, root)`, so only listeners
+and subscriptions are added. See the
+[SSR guide](../guides/ssr.md).
 
 ## The `exodra` CLI
 
@@ -97,41 +110,102 @@ npx exodra config                # create exodra.config.js
 Common options for `component` / `page`: `-d, --dir <path>`,
 `-t, --typescript`, and `--naming <PascalCase|kebab-case|snake_case>`.
 
-## Writing Exodra components
-
-Exodra JSX uses **typed prop buckets**, not flat React-style props. Regular
-attributes go in `static`, reactive values in `bindable`, and event handlers in
-`handlers`. Reactive state comes from `bindable()` in `@exodra/reactivity` and
-is read/written with `getValue()` / `setValue()` (there is no `.value`).
+A page is a machine **default-exported** from its module (the route table
+imports it that way), and it takes no props — the match that selected it is read
+from the router, `router.getMatch()`, whose `params` and `pathname` are what a page
+needs. The outlet mounts a machine and nothing else. A component is a named machine
+export, filled from its parent with `c.one(port, Name)` or repeated with
+`c.list(port, Name, count)`. With `-t` the files carry type annotations; without
+it they are the same code with the types dropped.
 
 ```tsx
-import { mount } from '@exodra/dom';
-import { bindable, derive } from '@exodra/reactivity';
+// src/pages/Home.tsx, from `npx exodra page Home -t`
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
 
-function Counter() {
-  const count = bindable(0);
-  const label = derive(count, (c) => `Count: ${c}`);
-
-  return (
-    <div static={{ class: 'counter' }}>
-      <span bindable={{ textContent: label }} />
-      <button
-        static={{ class: 'btn' }}
-        handlers={{ onClick: () => count.setValue(count.getValue() + 1) }}
-      >
-        +1
-      </button>
-    </div>
-  );
-}
-
-mount(<Counter />, document.getElementById('app')!);
+// A page takes no props — the match that selected it is read from the router the app created,
+// `router.getMatch()`, whose `params` and `pathname` are what a page needs. It is
+// default-exported because the route table imports it that way.
+const PAGE_SCHEMA = createExoSchema(b => {
+  let heading!: TExoTextPort;
+  b.el('div', { class: 'page' }, d => {
+    d.el('h1', null, h => {
+      heading = h.textPort();
+    });
+    d.el('p', null, p => p.text('Welcome to the Home page.'));
+  });
+  return { heading };
+});
+const mPage = createExoMachineBuilder<TExoMachineNode>(PAGE_SCHEMA);
+mPage.wire(c => {
+  c.text(PAGE_SCHEMA.ports.heading, 'Home');
+});
+export default mPage.done();
 ```
 
-Components are plain functions; you can also define them with `defineComponent`
-from `@exodra/core`, and drop down to raw `h()` / `text()` calls (the form used
-by the `--no-jsx` SSR scaffold) when you don't want the JSX transform. See the
-[JSX guide](../guides/jsx.md) for the full bucket rules.
+`api` emits a module with `GET` and `POST` handlers: request/response code that
+touches no renderer.
+
+## Writing Exodra components
+
+State lives in the machine. `createInitialState` runs once per instance and returns
+it; a **transition** is the one place that turns that state into port writes; the
+wire and the handlers call the transition. A port written with `c.text` / `c.attr`
+holds that value until the next write — there is no source attached to it.
+
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import type { TExoEventPort, TExoTextPort } from '@exodra/core';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+
+const backend = withExoCompiler(new ExoDomBackend());
+
+const COUNTER_SCHEMA = createExoSchema(b => {
+  let text!: TExoTextPort;
+  let click!: TExoEventPort;
+  b.el('div', { class: 'counter' }, div => {
+    div.el('span', null, span => {
+      text = span.textPort();
+    });
+    div.el('button', { class: 'btn', type: 'button' }, btn => {
+      click = btn.eventPort('click');
+      btn.text('+1');
+    });
+  });
+  return { text, click };
+});
+const mCounter = createExoMachineBuilder<TExoDomNode, unknown, { count: number }>(COUNTER_SCHEMA);
+mCounter.createInitialState(() => ({ count: 0 }));
+const showCount = mCounter.transition(c => {
+  c.text(COUNTER_SCHEMA.ports.text, `Count: ${c.state.count}`);
+});
+mCounter.wire(c => showCount(c));
+mCounter.on(COUNTER_SCHEMA.ports.click, c => {
+  c.state.count++;
+  showCount(c);
+});
+const COUNTER = mCounter.done();
+
+backend.render(COUNTER, document.getElementById('app') as HTMLElement);
+```
+
+Data that lives **outside** the instance — a store several components follow — is
+read the same way, from an effect that draws first and then subscribes:
+
+```ts no-check
+const showTotal = mCounter.transition(c => {
+  c.text(COUNTER_SCHEMA.ports.text, `Total: ${store.getValue()}`);
+});
+mCounter.effect(c => {
+  showTotal(c);
+  return store.onChange(() => showTotal(c));
+});
+```
+
+The [Components guide](../guides/components.md) covers the builder and the
+connector in full; the [JSX guide](../guides/jsx.md) covers the compiled dialect
+that produces the same pair from markup.
 
 ## Links
 

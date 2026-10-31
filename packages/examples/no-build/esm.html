@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exodra — no build, ES modules</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header class="page-head">
+    <h1 class="page-title">ES modules</h1>
+    <p class="page-sub">
+        Three <code>import</code> statements by bare name, resolved by an <code>importmap</code>,
+        inside one <code>&lt;script type="module"&gt;</code>. No bundler, no plugin, no codegen.
+    </p>
+</header>
+
+<main id="app"></main>
+
+<p id="boot" class="boot">Loading the three packages from this repository's own <code>dist/</code>…</p>
+
+<p class="boot">
+    <strong>Status: written against the source of <code>@exodra/core</code>, <code>@exodra/dom</code> and <code>@exodra/list-reconcile</code>; not yet opened in a browser.</strong>
+    It builds one <code>withExoChildList(withExoCompiler(new ExoDomBackend()))</code> at the top level and calls
+    <code>backend.render(APP, root)</code>; the rows are <code>reconcileExoOrder</code> from
+    <code>@exodra/list-reconcile</code>, called from a transition, and every machine follows the
+    page's own small store with an effect.
+</p>
+
+<footer class="page-foot">
+    <p>View source. Everything below the three imports is the application, written by hand.</p>
+</footer>
+
+<!--
+    THE ONLY PART OF THIS FILE THAT DIFFERS FROM global.html.
+    Everything after the import block is byte-identical in the two pages, which is
+    the point: the same program, reached two ways.
+-->
+<!--
+    THE THREE PACKAGES ARRIVE BY BARE NAME, resolved by an IMPORT MAP — a browser feature, not a
+    build step. This is the whole demonstration: the specifiers below say `@exodra/core`, exactly
+    as they would in a bundled app, and nothing rewrites them.
+
+    THEY POINT AT THIS REPOSITORY'S OWN `dist/`, and not at a CDN, and the reason is worth
+    reading rather than assuming. The published `@exodra/core@0.2.0` exports `h`, `text`,
+    `defineComponent`, `walkSchema` and `createContextKey` — it is the DELETED three-props
+    renderer. Nothing of the current library has ever been published, so a CDN URL here could
+    only ever load a different program that happens to share a name. The moment 0.3.0 is on npm,
+    swap the paths below for `https://cdn.jsdelivr.net/npm/@exodra/core@<version>/browser` and the
+    rest of this file does not change; until then a CDN URL would be a demonstration of nothing.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "@exodra/core": "/packages/core/dist/exodra.esm.js",
+    "@exodra/context": "/packages/context/dist/index.js",
+    "@exodra/dom": "/packages/dom/dist/exodra.esm.js",
+    "@exodra/list-reconcile": "/packages/list-reconcile/dist/exodra.esm.js"
+  }
+}
+</script>
+<script type="module">
+    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+    import { reconcileExoOrder } from '@exodra/list-reconcile';
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // THE WHOLE PROGRAM. Nothing below this line was produced by a tool.
+    //
+    // THERE IS NO JSX HERE, AND NOT BY OMISSION. `@exodra/jsx` ships TYPES; its
+    // `jsx` / `jsxs` / `jsxDEV` exports are all one function that throws —
+    // "Exodra schema JSX reached the runtime, which means this module was never
+    // compiled" (packages/jsx/src/schema/jsx-runtime.ts). A JSX element in that
+    // dialect is compiled away into a `b.el(…)` line inside a schema and machine
+    // code that writes ports; no runtime can interpret one. So a page with no build
+    // step writes those two halves itself, which is exactly what
+    // `createExoSchema(build)` and `createExoMachineBuilder(schema)` take.
+    //
+    // EVERY `createExoSchema` CALL IS AT THE TOP LEVEL OF THIS SCRIPT, ON PURPOSE.
+    // See "The one trap" in README.md: a schema built inside a function is a
+    // different program, not a slower one.
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // ── the data ─────────────────────────────────────────────────────────────
+    //
+    // A five-line store: `getValue`, `setValue`, `onChange`. Every machine below that
+    // shows this data follows it with an EFFECT that draws first and then subscribes.
+
+    function store(value) {
+        const listeners = new Set();
+        return {
+            getValue: () => value,
+            setValue(next) {
+                value = next;
+                for (const listener of listeners) listener();
+            },
+            onChange(listener) {
+                listeners.add(listener);
+                return () => listeners.delete(listener);
+            },
+        };
+    }
+
+    let nextId = 4;
+
+    /** The rows are reconciled by item IDENTITY: an update keeps every surviving object. */
+    const board = store({
+        tasks: [
+            { id: 1, title: 'Serve this folder over http://' },
+            { id: 2, title: 'Open the dev tools network tab' },
+            { id: 3, title: 'Notice that nothing compiled this page' },
+        ],
+        cleared: 0,
+    });
+
+    /** How many rows this page has BUILT, ever — stamped into each row below. */
+    let built = 0;
+
+    // ── a nested component, used twice ───────────────────────────────────────
+
+    const STAT_SCHEMA = createExoSchema(
+        b => {
+            let label, value;
+            b.el('p', { class: 'stat' }, p => {
+                p.el('span', { class: 'stat-label' }, s => { label = s.textPort(); });
+                p.el('strong', { class: 'stat-value' }, s => { value = s.textPort(); });
+            });
+            return { label, value };
+        }
+    );
+    // The wire writes the label once; `showValue` is the one place the value is written, and the
+    // effect runs it now and again on every change.
+    const statMachine = stat => {
+        const mStat = createExoMachineBuilder(STAT_SCHEMA);
+        mStat.wire(c => {
+            c.text(STAT_SCHEMA.ports.label, stat.label);
+        });
+        const showValue = mStat.transition(c => {
+            c.text(STAT_SCHEMA.ports.value, stat.read(board.getValue()));
+        });
+        mStat.effect(c => {
+            showValue(c);
+            return board.onChange(() => showValue(c));
+        });
+        return mStat.done();
+    };
+    const STAT_OPEN = statMachine({ label: 'open', read: data => data.tasks.length });
+    const STAT_CLEARED = statMachine({ label: 'cleared', read: data => data.cleared });
+
+    // ── one row of the list ──────────────────────────────────────────────────
+
+    const TASK_SCHEMA = createExoSchema(
+        b => {
+            let seq, title, clear;
+            b.el('li', { class: 'task' }, li => {
+                li.el('span', { class: 'task-seq' }, s => { seq = s.textPort(); });
+                li.el('span', { class: 'task-title' }, s => { title = s.textPort(); });
+                li.el('button', { class: 'task-clear', type: 'button' }, btn => {
+                    clear = btn.eventPort('click');
+                    btn.text('clear');
+                });
+            });
+            return { seq, title, clear };
+        }
+    );
+    const mTask = createExoMachineBuilder(TASK_SCHEMA);
+    mTask.createInitialState(() => ({ stamp: ++built, item: null }));
+    // The item arrives as the wire's params: `c.build(TASK, at, item)`.
+    mTask.wire((c, item) => {
+        c.state.item = item;
+        c.text(TASK_SCHEMA.ports.seq, '#' + c.state.stamp);
+        c.text(TASK_SCHEMA.ports.title, item.title);
+    });
+    mTask.on(TASK_SCHEMA.ports.clear, c => clearTask(c.state.item));
+    const TASK = mTask.done();
+
+    // ── the application ──────────────────────────────────────────────────────
+
+    const APP_SCHEMA = createExoSchema(
+        b => {
+            let openSlot, clearedSlot, rows, add, rotate;
+            b.el('section', { class: 'board' }, section => {
+                section.el('h2', { class: 'board-title' }, h => { h.text('No-build board'); });
+                section.el('div', { class: 'stats' }, stats => {
+                    // Each children port is the SOLE child of its wrapper.
+                    stats.el('div', { class: 'stat-slot' }, slot => { openSlot = slot.childrenPort(); });
+                    stats.el('div', { class: 'stat-slot' }, slot => { clearedSlot = slot.childrenPort(); });
+                });
+                section.el('ul', { class: 'tasks' }, ul => { rows = ul.childrenPort(); });
+                section.el('div', { class: 'controls' }, controls => {
+                    controls.el('button', { class: 'btn', type: 'button' }, btn => {
+                        add = btn.eventPort('click');
+                        btn.text('Add a task');
+                    });
+                    controls.el('button', { class: 'btn', type: 'button' }, btn => {
+                        rotate = btn.eventPort('click');
+                        btn.text('Move last to first');
+                    });
+                });
+                section.el('p', { class: 'hint' }, p => {
+                    p.text('The # is stamped when a row is BUILT. Move rows around: the numbers travel with them, so the reconciler moved the elements rather than rebuilding them.');
+                });
+            });
+            return { openSlot, clearedSlot, rows, add, rotate };
+        }
+    );
+    const mApp = createExoMachineBuilder(APP_SCHEMA);
+    // Children ports are opened ONCE, here; the returned object is this instance's state.
+    mApp.createInitialState(c => {
+        c.one(APP_SCHEMA.ports.openSlot, STAT_OPEN);
+        c.one(APP_SCHEMA.ports.clearedSlot, STAT_CLEARED);
+        return { rows: c.childList(APP_SCHEMA.ports.rows), shown: [] };
+    });
+    const showRows = mApp.transition(c => {
+        const want = board.getValue().tasks;
+        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, at) =>
+            c.build(TASK, at, item)
+        );
+    });
+    mApp.effect(c => {
+        showRows(c);
+        return board.onChange(() => showRows(c));
+    });
+    mApp.on(APP_SCHEMA.ports.add, addTask);
+    mApp.on(APP_SCHEMA.ports.rotate, rotateTasks);
+    const APP = mApp.done();
+
+    // ── the handlers ─────────────────────────────────────────────────────────
+    //
+    // Each one hands the store a NEW array holding the SAME item objects, so the
+    // reconciler sees which rows survived by identity.
+
+    function addTask() {
+        const data = board.getValue();
+        board.setValue({ ...data, tasks: data.tasks.concat([{ id: nextId, title: 'Task ' + nextId }]) });
+        nextId += 1;
+    }
+
+    function clearTask(item) {
+        const data = board.getValue();
+        if (!data.tasks.includes(item)) return;
+        board.setValue({ tasks: data.tasks.filter(task => task !== item), cleared: data.cleared + 1 });
+    }
+
+    function rotateTasks() {
+        const data = board.getValue();
+        const n = data.tasks.length;
+        if (n < 2) return;
+        board.setValue({ ...data, tasks: [data.tasks[n - 1]].concat(data.tasks.slice(0, n - 1)) });
+    }
+
+    // ── mount ────────────────────────────────────────────────────────────────
+
+    // ONE BACKEND, AT MODULE LEVEL. A backend is the schema cache key, compared by POINTER, so
+    // one built per render would recompile every schema, markup parse included, every time.
+    // `withExoCompiler` puts `render` on it; `withExoChildList` puts `c.childList` on it, which the
+    // reconciled rows open. Those are the two packs this page composes.
+    const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+
+    // ONE INSTANCE, and the return value is the disposer for it. This page never tears down.
+    backend.render(APP, document.getElementById('app'));
+    document.getElementById('boot').remove();
+</script>
+
+</body>
+</html>

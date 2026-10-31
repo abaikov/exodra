@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    // NOT `dist` — see tsconfig.build.json. `dist` is tsup's, and is what gets published.
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "lib": ["ES2020"],
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+    // NO `baseUrl`, NO `paths`, NO `references`: this project resolves nothing outside its own
+    // `src/`. It imports no Exodra package, in a type or at runtime, exactly as `@exodra/core`
+    // does not — which is what keeps the dependency direction `@exodra/dom` → this → nothing.
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts"]
+}

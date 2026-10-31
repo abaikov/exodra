@@ -20,9 +20,10 @@
     "dev": "tsc --watch",
     "test": "vitest"
   },
+  "_comment_chalk": "chalk is pinned to ^4 because this package is COMMONJS (no \"type\" field, and its dist starts with \"use strict\"). chalk@5 is pure ESM, so `require(\"chalk\")` throws ERR_REQUIRE_ESM on any Node before 22.12 \u2014 including the Node 20 all three CI workflows pin, and including whatever a user running `npx create-exodra` happens to have. Only chalk.blue/bold/cyan/dim/gray/green/red are used and all exist in 4.x. Raise this only together with making the package ESM.",
   "dependencies": {
     "commander": "^11.1.0",
-    "chalk": "^5.3.0",
+    "chalk": "^4.1.2",
     "prompts": "^2.4.2",
     "validate-npm-package-name": "^5.0.0",
     "fs-extra": "^11.2.0"

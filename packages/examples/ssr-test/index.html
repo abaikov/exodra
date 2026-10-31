@@ -6,7 +6,10 @@
   <title>_ssr-test</title>
 </head>
 <body>
-  <!--app-html-->
+  <!-- The HYDRATION CONTAINER: `backend.hydrate(APP, root)` is handed THIS element and adopts its
+       first ELEMENT child, which is the instance the server rendered. See src/entry-client.ts —
+       neither that file nor this page has been run since they were rewritten. -->
+  <div id="app"><!--app-html--></div>
   <!--app-state-->
   <script type="module" src="/src/entry-client.ts"></script>
 </body>

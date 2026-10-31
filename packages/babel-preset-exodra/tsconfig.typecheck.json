@@ -1,0 +1,28 @@
+{
+  // THE TYPECHECK PROJECT. Separate from `tsconfig.json` because the build is
+  // `tsc && mv dist/index.js dist/index.cjs` and an incremental `tsc` that skips its emit
+  // leaves the `mv` with nothing to move — see the note in
+  // `packages/babel-plugin-exodra-schema/tsconfig.typecheck.json`.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "baseUrl": ".",
+    // A workspace dependency, required by published name. Without this it resolves through
+    // node_modules to a `dist/index.d.ts` that the typecheck runs before anything creates.
+    "paths": {
+      "@exodra/babel-plugin-schema": [
+        "../babel-plugin-exodra-schema/.tsbuild/index.d.ts"
+      ]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules", "tests", "**/*.test.ts", "**/*.spec.ts"],
+  "references": [
+    { "path": "../babel-plugin-exodra-schema/tsconfig.typecheck.json" }
+  ]
+}

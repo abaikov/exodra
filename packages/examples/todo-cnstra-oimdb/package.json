@@ -1,0 +1,17 @@
+{
+  "name": "@exodra/examples-todo-cnstra-oimdb",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite.config.ts"
+  },
+  "dependencies": {
+    "@cnstra/core": "^2.5.0",
+    "@exodra/core": "^0.3.0",
+    "@exodra/dom": "^0.3.0",
+    "@exodra/forms": "^0.3.0",
+    "@exodra/list-reconcile": "^0.3.0",
+    "@oimdb/core": "^3.12.1"
+  }
+}

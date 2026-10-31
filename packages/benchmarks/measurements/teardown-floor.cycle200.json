@@ -1,0 +1,289 @@
+{
+  "axis": "teardown-floor",
+  "label": "cycle200",
+  "quantum": 0.1,
+  "batch": 2,
+  "rows": [
+    {
+      "name": "SINGLE/dom·text",
+      "reps": 80,
+      "min": 0.0187,
+      "p25": 0.02,
+      "median": 0.02,
+      "p75": 0.0212,
+      "max": 0.0225,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/dom·twin",
+      "reps": 80,
+      "min": 0.0187,
+      "p25": 0.02,
+      "median": 0.02,
+      "p75": 0.02,
+      "max": 0.0225,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/dom·replace",
+      "reps": 80,
+      "min": 0.0187,
+      "p25": 0.02,
+      "median": 0.02,
+      "p75": 0.0212,
+      "max": 0.0237,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/dom·root",
+      "reps": 80,
+      "min": 0.0187,
+      "p25": 0.02,
+      "median": 0.02,
+      "p75": 0.0212,
+      "max": 0.0225,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/dom·cards",
+      "reps": 80,
+      "min": 0.0275,
+      "p25": 0.0288,
+      "median": 0.03,
+      "p75": 0.03,
+      "max": 0.0313,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/dom·nodes",
+      "reps": 80,
+      "min": 0.0587,
+      "p25": 0.06,
+      "median": 0.0612,
+      "p75": 0.0625,
+      "max": 0.065,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/dom·drop",
+      "reps": 80,
+      "min": 0.0187,
+      "p25": 0.02,
+      "median": 0.02,
+      "p75": 0.0212,
+      "max": 0.0225,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/dom·text·exo",
+      "reps": 80,
+      "min": 0.0187,
+      "p25": 0.02,
+      "median": 0.02,
+      "p75": 0.0212,
+      "max": 0.025,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/book·drop",
+      "reps": 80,
+      "min": 0,
+      "p25": 0,
+      "median": 0,
+      "p75": 0,
+      "max": 0.0013,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/book·unsub",
+      "reps": 80,
+      "min": 0,
+      "p25": 0,
+      "median": 0,
+      "p75": 0,
+      "max": 0.0025,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/book·real",
+      "reps": 80,
+      "min": 0,
+      "p25": 0,
+      "median": 0.0012,
+      "p75": 0.0013,
+      "max": 0.0025,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/book·flat",
+      "reps": 80,
+      "min": 0.0112,
+      "p25": 0.0125,
+      "median": 0.0125,
+      "p75": 0.0137,
+      "max": 0.0163,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/book·twin",
+      "reps": 80,
+      "min": 0.01,
+      "p25": 0.0125,
+      "median": 0.0137,
+      "p75": 0.0138,
+      "max": 0.0163,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/book·perkey",
+      "reps": 80,
+      "min": 0.0138,
+      "p25": 0.015,
+      "median": 0.0163,
+      "p75": 0.0175,
+      "max": 0.0187,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/book·closures",
+      "reps": 80,
+      "min": 0.0175,
+      "p25": 0.0187,
+      "median": 0.02,
+      "p75": 0.02,
+      "max": 0.0225,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/book·virtual",
+      "reps": 80,
+      "min": 0.0175,
+      "p25": 0.02,
+      "median": 0.02,
+      "p75": 0.0212,
+      "max": 0.0225,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/exodra",
+      "reps": 80,
+      "min": 0.0262,
+      "p25": 0.0275,
+      "median": 0.0288,
+      "p75": 0.03,
+      "max": 0.0362,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/both·floor",
+      "reps": 80,
+      "min": 0.0337,
+      "p25": 0.0362,
+      "median": 0.0363,
+      "p75": 0.0388,
+      "max": 0.0437,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/both·exodra",
+      "reps": 80,
+      "min": 0.0413,
+      "p25": 0.0475,
+      "median": 0.0487,
+      "p75": 0.05,
+      "max": 0.055,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/scale·subs4",
+      "reps": 80,
+      "min": 0.0112,
+      "p25": 0.0137,
+      "median": 0.0138,
+      "p75": 0.015,
+      "max": 0.0163,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/scale·rows4",
+      "reps": 80,
+      "min": 0.05,
+      "p25": 0.0525,
+      "median": 0.055,
+      "p75": 0.0575,
+      "max": 0.0675,
+      "section": "SINGLE"
+    },
+    {
+      "name": "SINGLE/scale·deep4",
+      "reps": 80,
+      "min": 0.02,
+      "p25": 0.0225,
+      "median": 0.0225,
+      "p75": 0.0237,
+      "max": 0.025,
+      "section": "SINGLE"
+    },
+    {
+      "name": "CYCLE/cycle·drop",
+      "reps": 16000,
+      "min": 0.2542,
+      "p25": 0.2559,
+      "median": 0.2569,
+      "p75": 0.2586,
+      "max": 0.2849,
+      "section": "CYCLE"
+    },
+    {
+      "name": "CYCLE/cycle·floor",
+      "reps": 16000,
+      "min": 0.2654,
+      "p25": 0.2668,
+      "median": 0.2677,
+      "p75": 0.2692,
+      "max": 0.2912,
+      "section": "CYCLE"
+    },
+    {
+      "name": "CYCLE/cycle·exodra",
+      "reps": 16000,
+      "min": 0.3743,
+      "p25": 0.3771,
+      "median": 0.379,
+      "p75": 0.3812,
+      "max": 0.4127,
+      "section": "CYCLE"
+    }
+  ],
+  "nulls": [
+    {
+      "section": "SINGLE",
+      "unit": "ms",
+      "resolution": 0.00125,
+      "pairs": [
+        {
+          "name": "book",
+          "bias": 0.00125,
+          "noise": 0.00125,
+          "noiseP75": 0.00125,
+          "worst": 0.005,
+          "what": "|book·flat − book·twin|, true Δ = 0"
+        },
+        {
+          "name": "dom",
+          "bias": 0,
+          "noise": 0.00125,
+          "noiseP75": 0.00125,
+          "worst": 0.00375,
+          "what": "|dom·text − dom·twin|, true Δ = 0 — THE WEAK ONE"
+        }
+      ]
+    }
+  ],
+  "refusals": [
+    "teardown-floor: the \"book·drop\" timed region is 0.000 ms at 80 reps — 0.0× the observed quantum (0.100 ms), under the 3× floor. Its digits are quantisation, not measurement. IT NEEDS ×100 or more on its repetition factor, which is BATCH 200 (third positional, currently 2) and IS PAID FOR IN MEMORY: at batch 200 a dom·*/both·*/exodra row stands 8000 mounted apps ≈ 5,128,000 elements at once. A teardown consumes its subject, so more repetitions of one REQUIRE more subjects — this row cannot be given ticks for free. Raise it and accept the live set, or read the row as \"at the floor\" — but never quote a number taken at batch 200 beside one taken at batch 2.",
+    "teardown-floor: the \"book·unsub\" timed region is 0.000 ms at 80 reps — 0.0× the observed quantum (0.100 ms), under the 3× floor. Its digits are quantisation, not measurement. IT NEEDS ×100 or more on its repetition factor, which is BATCH 200 (third positional, currently 2) and IS PAID FOR IN MEMORY: at batch 200 a dom·*/both·*/exodra row stands 8000 mounted apps ≈ 5,128,000 elements at once. A teardown consumes its subject, so more repetitions of one REQUIRE more subjects — this row cannot be given ticks for free. Raise it and accept the live set, or read the row as \"at the floor\" — but never quote a number taken at batch 200 beside one taken at batch 2.",
+    "teardown-floor: the \"book·real\" timed region is 0.100 ms at 80 reps — 1.0× the observed quantum (0.100 ms), under the 3× floor. Its digits are quantisation, not measurement. IT NEEDS ×3.0 on its repetition factor, which is BATCH 6 (third positional, currently 2) and IS PAID FOR IN MEMORY: at batch 6 a dom·*/both·*/exodra row stands 240 mounted apps ≈ 153,840 elements at once. A teardown consumes its subject, so more repetitions of one REQUIRE more subjects — this row cannot be given ticks for free. Raise it and accept the live set, or read the row as \"at the floor\" — but never quote a number taken at batch 6 beside one taken at batch 2.",
+    "teardown-floor: ONE RUN, BOTH NUMBERS — Table 1 needs batch 200 (its shortest rows: book·drop, book·unsub, book·real), Table 2 needs cycle factor 200 (unchanged: no cycle row was short). Both in one command, so nothing here is ever compared across two runs: `npm run axis --workspace=@exodra/benchmarks -- teardown-floor 100 200 200` — AND READ THE HEADER ON MEMORY FIRST: batch 200 stands 8000 mounted apps at once."
+  ]
+}

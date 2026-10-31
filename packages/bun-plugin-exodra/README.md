@@ -41,4 +41,9 @@ preload = ["./preload.ts"]
 ### Options
 
 - `filter` — `RegExp` of files to compile. Default `/\.[jt]sx$/`.
-- `importSource` — where the auto-imported `h`/`text` come from. Default `@exodra/core`.
+- `schemaSource` — where the schema factory (`createExoNamedSchema`) is imported from. Default `@exodra/core`.
+
+Bun's own JSX handling is wrong for Exodra — it lowers JSX to a call per element
+at runtime and throws on the namespaced `on:` listeners — which is why `.jsx` / `.tsx` are intercepted and handed to Babel.
+See [`babel-preset-exodra`](../babel-preset-exodra) and
+[`@exodra/babel-plugin-schema`](../babel-plugin-exodra-schema).

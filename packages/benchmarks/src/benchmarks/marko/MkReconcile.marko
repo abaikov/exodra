@@ -1,0 +1,17 @@
+// AXIS `reconcile` — Marko's 200-row keyed list, the counterpart of `SvReconcile.svelte`.
+// The axis replaces the whole list with a shuffled order 30 times: nothing is added, nothing
+// is removed, every row survives and only the ORDER changes. That is the general case of
+// Marko's list reconciler — `loop()` in marko/dist/dom.mjs builds a key→scope Map, deletes
+// the matched keys, then keeps the longest increasing subsequence of old positions in place
+// and moves the rest. The same shape of algorithm the schema core and Solid run, which is
+// what makes this axis a like-for-like comparison rather than a race between strategies.
+//
+// `by=(id => id)` IS THE KEY, AND IT IS NOT OPTIONAL HERE. `<for of=…>` defaults to keying by
+// INDEX (`bySecondArg` in marko/dist/dom.mjs), and index keys turn a shuffle into "200 rows
+// whose text changed" — no moves, no reuse of position, a completely different measurement
+// and a much easier one. The row's identity on this axis is its id: that is what Solid's
+// `<For>` keys by (item identity, and the items ARE the ids), what React's `key={id}` is, and
+// what Svelte's `{#each rows as id (id)}` is. So `by` has to name it, and it does.
+//
+// One line on purpose — see `MkList.marko`; this axis diffs markup byte for byte.
+<ul><for|id| of=input.rows by=(id => id)><li class="row">#${id}</li></for></ul>

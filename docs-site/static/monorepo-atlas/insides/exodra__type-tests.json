@@ -8,8 +8,8 @@
     },
     "nodes": [
       {
-        "id": "_button",
-        "label": "_button",
+        "id": "_attrAsTag",
+        "label": "_attrAsTag",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -20,8 +20,8 @@
         "violations": []
       },
       {
-        "id": "_ct",
-        "label": "_ct",
+        "id": "_childrenOnPort",
+        "label": "_childrenOnPort",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -32,320 +32,1232 @@
         "violations": []
       },
       {
-        "id": "_CurrentTarget",
-        "label": "_CurrentTarget",
+        "id": "_closure",
+        "label": "_closure",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_count",
+        "label": "_count",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_declaration",
+        "label": "_declaration",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_eventAsText",
+        "label": "_eventAsText",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_inlineHandler",
+        "label": "_inlineHandler",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "@ts-expect-error an inline HTML handler is a string of script",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_literals",
+        "label": "_literals",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_missingPort",
+        "label": "_missingPort",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_onColon",
+        "label": "_onColon",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_textAsEvent",
+        "label": "_textAsEvent",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_typoEvent",
+        "label": "_typoEvent",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "@ts-expect-error there is no \"clik\" event",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_unsafeLiteral",
+        "label": "_unsafeLiteral",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "_untyped",
+        "label": "_untyped",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "ABSURD",
+        "label": "ABSURD",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A name NOTHING in this tree provides: if either directive below goes quiet, `this` has degraded to `any` and every other result in this file is vacuous.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "add",
+        "label": "add",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "APP",
+        "label": "APP",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "at",
+        "label": "at",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "BACKENDS",
+        "label": "BACKENDS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "bare",
+        "label": "bare",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A directive over a line with no error is TS2578, which is what makes this file fail loudly when a check is relaxed.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "BARE_SERVER",
+        "label": "BARE_SERVER",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "bareHydrating",
+        "label": "bareHydrating",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "box",
+        "label": "box",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "c",
+        "label": "c",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "CARD",
+        "label": "CARD",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The wire a page annotates, and not the exonode read straight out of the package.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "CHART",
+        "label": "CHART",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "composed",
+        "label": "composed",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "COUNTER",
+        "label": "COUNTER",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "dom",
+        "label": "dom",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Structural rather than imported: this package maps `@exodra/core` and not `@exodra/dom`.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "FILLS_ONE_PORT",
+        "label": "FILLS_ONE_PORT",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "THE CONTROL: without it the directives above pass equally well if `render` refused EVERYTHING.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "handler",
+        "label": "handler",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHT_PACK",
+        "label": "HIGHLIGHT_PACK",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A PACK THE WAY AN APPLICATION WRITES ONE: one name, one factory, and the factory ignores `next` because nothing shipped owns this name.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_CHILD",
+        "label": "HIGHLIGHTING_CHILD",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 139,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT",
+        "label": "HIGHLIGHTING_PARENT",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 146,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTS",
+        "label": "HIGHLIGHTS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Spelled BY HAND: an unannotated `(c) => …` has no inference site and lands on `unknown`, which satisfies every negative directive below while nothing is checked.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "host",
+        "label": "host",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "HOST",
+        "label": "HOST",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "hydrating",
+        "label": "hydrating",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Packs composed the other way round: the name still resolves, the prototype being the backend.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "LEAF",
+        "label": "LEAF",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "loose",
+        "label": "loose",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "mHost",
+        "label": "mHost",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "mRow",
+        "label": "mRow",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "narrowed",
+        "label": "narrowed",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "`TExoPort` is the WIDE type, so it does not go back into a holder declared for one kind.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS",
+        "label": "NESTS_HIGHLIGHTS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "`c.one`, `c.list` and `c.build` take components too, so the refusal must hold from INSIDE one.",
+        "width": 126,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK",
+        "label": "NESTS_HIGHLIGHTS_WITHOUT_PACK",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 210,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "notAny",
+        "label": "notAny",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "notATable",
+        "label": "notATable",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The table is a branded token with a `unique symbol` key: nothing outside a backend produces one.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "notAttr",
+        "label": "notAttr",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "And the four refusals that make the four lines above mean something.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "P",
+        "label": "P",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "PLAIN_PARENT",
+        "label": "PLAIN_PARENT",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "portable",
+        "label": "portable",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The portable surfaces core publishes, which were narrow before this change and stay narrow.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "Q",
+        "label": "Q",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "ROW",
+        "label": "ROW",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "BARE `TExoDomNode`: naming the highlight half would DEMAND the pack, and a row wanting less than the receiver has still goes in.",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "sameMap",
+        "label": "sameMap",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "SCHEMA",
+        "label": "SCHEMA",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "SERVER",
+        "label": "SERVER",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "table",
+        "label": "table",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TCardPorts",
+        "label": "TCardPorts",
         "kind": "app",
         "layer": 0,
         "members": [
           {
-            "text": "ExoEvent<HTMLInputElement>['currentTarg…",
-            "full": "ExoEvent<HTMLInputElement>['currentTarget']",
-            "parts": [],
-            "fullParts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "type",
-        "width": 293,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "_flatClass",
-        "label": "_flatClass",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "--- 3.",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "_flatHandler",
-        "label": "_flatHandler",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "@ts-expect-error `onClick` must live in the `handlers` bucket, not flat",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "_input",
-        "label": "_input",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "--- 1.",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "_OnInputParam",
-        "label": "_OnInputParam",
-        "kind": "app",
-        "layer": 0,
-        "members": [
-          {
-            "text": "NonNullable<ExoEventHandlers<HTMLInputE…",
-            "full": "NonNullable<ExoEventHandlers<HTMLInputElement>['onInput']> extends (e: infer E) => unknown ? E : never",
-            "parts": [],
-            "fullParts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "type",
-        "width": 293,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "_param",
-        "label": "_param",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "_paramValue",
-        "label": "_paramValue",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "_select",
-        "label": "_select",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "badBindable",
-        "label": "badBindable",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "@ts-expect-error count must be a TExoBindable<number>, not a raw number",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "badKey",
-        "label": "badKey",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "@ts-expect-error unknown key in the static bucket is rejected",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "badTitle",
-        "label": "badTitle",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "@ts-expect-error title must be a string, not a number",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "Loose",
-        "label": "Loose",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "A component with NO declared props — bucket-shaped props, loose context.",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "LooseAttrs",
-        "label": "LooseAttrs",
-        "kind": "app",
-        "layer": 0,
-        "members": [
-          {
-            "text": "JSX.LibraryManagedAttributes<typeof Loo…",
-            "full": "JSX.LibraryManagedAttributes<typeof Loose, unknown>",
-            "parts": [],
-            "fullParts": [
+            "text": "TExoPortsOf<typeof CARD>",
+            "full": "TExoPortsOf<typeof CARD>",
+            "parts": [
               {
-                "text": "JSX.LibraryManagedAttributes<typeof "
+                "text": "TExoPortsOf",
+                "link": "TExoPortsOf"
               },
               {
-                "text": "Loose",
-                "link": "Loose"
+                "text": "<typeof "
               },
               {
-                "text": ", unknown>"
+                "text": "CARD",
+                "link": "CARD"
+              },
+              {
+                "text": ">"
               }
             ]
           }
         ],
         "memberCount": 1,
         "stereotype": "type",
+        "width": 190,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TCounterPorts",
+        "label": "TCounterPorts",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "n: TExoAttrPort;",
+            "full": "n: TExoAttrPort;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "count: TExoTextPort;",
+            "full": "count: TExoTextPort;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "increment: TExoEventPort;",
+            "full": "increment: TExoEventPort;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "rows: TExoChildrenPort;",
+            "full": "rows: TExoChildrenPort;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "box: TExoRefPort;",
+            "full": "box: TExoRefPort;",
+            "parts": [
+              {
+                "text": "box",
+                "link": "box"
+              },
+              {
+                "text": ": TExoRefPort;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "html: TExoChildrenPort;",
+            "full": "html: TExoChildrenPort;",
+            "parts": []
+          }
+        ],
+        "memberCount": 6,
+        "stereotype": "interface",
+        "width": 197,
+        "height": 144,
+        "violations": []
+      },
+      {
+        "id": "TExoAllOf",
+        "label": "TExoAllOf",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(TUnion extends unknown ? (held: TUnion…",
+            "full": "(TUnion extends unknown ? (held: TUnion) => void : never) extends ( held: infer TOne ) => void ? TOne : never",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "`{a: A} | {b: B}` → `{a: A} & {b: B}`, so the names collected down the tree land on ONE map rather than on a union nothing can read a single key off.",
         "width": 293,
         "height": 69,
         "violations": []
       },
       {
-        "id": "looseFlat",
-        "label": "looseFlat",
+        "id": "TExoDeclNode",
+        "label": "TExoDeclNode",
         "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "@ts-expect-error flat (non-bucketed) props are not allowed",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "looseOk",
-        "label": "looseOk",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "---- Loose component: bucket-shaped props accepted, flat props rejected ----",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "ok",
-        "label": "ok",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "---- Typed component: strict checking against the declared buckets ----",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "onSearch",
-        "label": "onSearch",
-        "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(e): string",
-            "full": "(e): string",
+            "visibility": "+",
+            "text": "readonly el: string;",
+            "full": "readonly el: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly attrs?: Readonly<Record<string…",
+            "full": "readonly attrs?: Readonly<Record<string, string>>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly ports?: readonly TExoDeclPort[…",
+            "full": "readonly ports?: readonly TExoDeclPort[];",
+            "parts": [
+              {
+                "text": "readonly ports?: readonly "
+              },
+              {
+                "text": "TExoDeclPort",
+                "link": "TExoDeclPort"
+              },
+              {
+                "text": "[…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "readonly ports?: readonly "
+              },
+              {
+                "text": "TExoDeclPort",
+                "link": "TExoDeclPort"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly kids?: readonly TExoDeclNode[];",
+            "full": "readonly kids?: readonly TExoDeclNode[];",
+            "parts": [
+              {
+                "text": "readonly kids?: readonly "
+              },
+              {
+                "text": "TExoDeclNode",
+                "link": "TExoDeclNode"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          }
+        ],
+        "memberCount": 4,
+        "stereotype": "type",
+        "doc": "One element.",
+        "width": 293,
+        "height": 114,
+        "violations": []
+      },
+      {
+        "id": "TExoDeclPort",
+        "label": "TExoDeclPort",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly kind: TExoDeclPortKind;",
+            "full": "readonly kind: TExoDeclPortKind;",
+            "parts": [
+              {
+                "text": "readonly kind: "
+              },
+              {
+                "text": "TExoDeclPortKind",
+                "link": "TExoDeclPortKind"
+              },
+              {
+                "text": ";"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly name?: string;",
+            "full": "readonly name?: string;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly as: string;",
+            "full": "readonly as: string;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "doc": "One port in the data form: its KIND, the markup name where the kind has one, and the name the author wants to fill it by.",
+        "width": 242,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoDeclPortKind",
+        "label": "TExoDeclPortKind",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "'attr' | 'text' | 'children' | 'event' …",
+            "full": "'attr' | 'text' | 'children' | 'event' | 'ref'",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "The five kinds, spelled as the data form would spell them — one word per `*Port` call.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoHighlightApi",
+        "label": "TExoHighlightApi",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "highlight(port: TExoTextPort): void;",
+            "full": "highlight(port: TExoTextPort): void;",
             "parts": []
           }
         ],
         "memberCount": 1,
-        "stereotype": "function",
-        "doc": "--- 2.",
-        "width": 120,
+        "stereotype": "type",
+        "doc": "What the pack below adds to an exonode — one door, named, so a wire can demand it.",
+        "width": 267,
         "height": 69,
         "violations": []
       },
       {
-        "id": "schema",
-        "label": "schema",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "Typed",
-        "label": "Typed",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "doc": "A component that DECLARES its props via the phantom generic.",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "TypedAttrs",
-        "label": "TypedAttrs",
+        "id": "TExoOwnPorts",
+        "label": "TExoOwnPorts",
         "kind": "app",
         "layer": 0,
         "members": [
           {
-            "text": "JSX.LibraryManagedAttributes<typeof Typ…",
-            "full": "JSX.LibraryManagedAttributes<typeof Typed, unknown>",
+            "text": "TNode extends { readonly ports: readonl…",
+            "full": "TNode extends { readonly ports: readonly TExoDeclPort[] } ? { [TPort in TNode['ports'][number] as TPort['as']]: TExoPortOfKind<TPort['kind']>; } : {}",
             "parts": [],
             "fullParts": [
               {
-                "text": "JSX.LibraryManagedAttributes<typeof "
+                "text": "TNode extends { readonly ports: readonly "
               },
               {
-                "text": "Typed",
-                "link": "Typed"
+                "text": "TExoDeclPort",
+                "link": "TExoDeclPort"
               },
               {
-                "text": ", unknown>"
+                "text": "[] } ? { [TPort in TNode['ports'][number] as TPort['as']]: "
+              },
+              {
+                "text": "TExoPortOfKind",
+                "link": "TExoPortOfKind"
+              },
+              {
+                "text": "<TPort['kind']>; } : {}"
               }
             ]
           }
         ],
         "memberCount": 1,
         "stereotype": "type",
-        "doc": "(1) This is EXACTLY the type TS uses to check `<Comp .../>` attributes.",
+        "doc": "Every port this node declares, as a one-key map each.",
         "width": 293,
         "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoPortMaps",
+        "label": "TExoPortMaps",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TNode extends TExoDeclNode ? | TExoOwnP…",
+            "full": "TNode extends TExoDeclNode ? | TExoOwnPorts<TNode> | (TNode extends { readonly kids: readonly TExoDeclNode[] } ? TExoPortMaps<TNode['kids'][number]> : never) : never",
+            "parts": [
+              {
+                "text": "TNode extends "
+              },
+              {
+                "text": "TExoDeclNode",
+                "link": "TExoDeclNode"
+              },
+              {
+                "text": " ? | TExoOwnP…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "TNode extends "
+              },
+              {
+                "text": "TExoDeclNode",
+                "link": "TExoDeclNode"
+              },
+              {
+                "text": " ? | "
+              },
+              {
+                "text": "TExoOwnPorts",
+                "link": "TExoOwnPorts"
+              },
+              {
+                "text": "<TNode> | (TNode extends { readonly kids: readonly "
+              },
+              {
+                "text": "TExoDeclNode",
+                "link": "TExoDeclNode"
+              },
+              {
+                "text": "[] } ? "
+              },
+              {
+                "text": "TExoPortMaps",
+                "link": "TExoPortMaps"
+              },
+              {
+                "text": "<TNode['kids'][number]> : never) : never"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "THE WALK, and it is DISTRIBUTIVE on purpose: `kids` is a tuple of DIFFERENT node types, so `kids[number]` is a union, and a conditional that does not distribute asks its question of the union as one thing — which answers `{}` for the whole…",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoPortOfKind",
+        "label": "TExoPortOfKind",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TKind extends 'attr' ? TExoAttrPort : T…",
+            "full": "TKind extends 'attr' ? TExoAttrPort : TKind extends 'text' ? TExoTextPort : TKind extends 'children' ? TExoChildrenPort : TKind extends 'event' ? TExoEventPort : TExoRefPort",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Kind word → the port type a wire has to be handed.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoPortsOf",
+        "label": "TExoPortsOf",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "TExoAllOf<TExoPortMaps<TNode>>",
+            "full": "TExoAllOf<TExoPortMaps<TNode>>",
+            "parts": [
+              {
+                "text": "TExoAllOf",
+                "link": "TExoAllOf"
+              },
+              {
+                "text": "<"
+              },
+              {
+                "text": "TExoPortMaps",
+                "link": "TExoPortMaps"
+              },
+              {
+                "text": "<TNode>>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Every name the literal declared, at any depth, on one map.",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "title",
+        "label": "title",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TRowParams",
+        "label": "TRowParams",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly title: string",
+            "full": "readonly title: string",
+            "parts": [
+              {
+                "text": "readonly "
+              },
+              {
+                "text": "title",
+                "link": "title"
+              },
+              {
+                "text": ": string"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 178,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TSameType",
+        "label": "TSameType",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "[TLeft] extends [TRight] ? [TRight] ext…",
+            "full": "[TLeft] extends [TRight] ? [TRight] extends [TLeft] ? true : false : false",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "THE MAP IS EXACTLY THESE FIVE KEYS, and this is the assertion the four lines above cannot make: a walk that resolved to `any` would satisfy every one of them and refuse nothing.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TWidePorts",
+        "label": "TWidePorts",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "slot: TExoPort;",
+            "full": "slot: TExoPort;",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "interface",
+        "width": 133,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "widened",
+        "label": "widened",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "withExoHighlight",
+        "label": "withExoHighlight",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(base): TBase & { highlight…",
+            "full": "(base): TBase & { highlight: (this: TExoDomNode, port: TExoTextPort) => void; }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 216,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "write",
+        "label": "write",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
         "violations": []
       }
     ],
     "edges": [
       {
-        "id": "_ct→_CurrentTarget",
-        "from": "_ct",
-        "to": "_CurrentTarget",
+        "id": "_attrAsTag→TCounterPorts",
+        "from": "_attrAsTag",
+        "to": "TCounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -353,8 +1265,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -362,9 +1274,9 @@
         "violations": []
       },
       {
-        "id": "_param→_OnInputParam",
-        "from": "_param",
-        "to": "_OnInputParam",
+        "id": "_childrenOnPort→TCounterPorts",
+        "from": "_childrenOnPort",
+        "to": "TCounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -372,8 +1284,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -381,9 +1293,9 @@
         "violations": []
       },
       {
-        "id": "_paramValue→_param",
-        "from": "_paramValue",
-        "to": "_param",
+        "id": "_closure→TCounterPorts",
+        "from": "_closure",
+        "to": "TCounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -391,8 +1303,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/jsx-inference.tsx",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -400,9 +1312,9 @@
         "violations": []
       },
       {
-        "id": "badBindable→TypedAttrs",
-        "from": "badBindable",
-        "to": "TypedAttrs",
+        "id": "_count→COUNTER",
+        "from": "_count",
+        "to": "COUNTER",
         "kinds": [
           "type-only"
         ],
@@ -410,8 +1322,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -419,9 +1331,9 @@
         "violations": []
       },
       {
-        "id": "badKey→TypedAttrs",
-        "from": "badKey",
-        "to": "TypedAttrs",
+        "id": "_declaration→COUNTER",
+        "from": "_declaration",
+        "to": "COUNTER",
         "kinds": [
           "type-only"
         ],
@@ -429,8 +1341,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -438,9 +1350,9 @@
         "violations": []
       },
       {
-        "id": "badTitle→TypedAttrs",
-        "from": "badTitle",
-        "to": "TypedAttrs",
+        "id": "_declaration→TCounterPorts",
+        "from": "_declaration",
+        "to": "TCounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -448,8 +1360,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -457,9 +1369,9 @@
         "violations": []
       },
       {
-        "id": "Loose→schema",
-        "from": "Loose",
-        "to": "schema",
+        "id": "_eventAsText→TCounterPorts",
+        "from": "_eventAsText",
+        "to": "TCounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -467,8 +1379,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -476,9 +1388,9 @@
         "violations": []
       },
       {
-        "id": "LooseAttrs→Loose",
-        "from": "LooseAttrs",
-        "to": "Loose",
+        "id": "_missingPort→TCounterPorts",
+        "from": "_missingPort",
+        "to": "TCounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -486,8 +1398,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -495,9 +1407,9 @@
         "violations": []
       },
       {
-        "id": "looseFlat→LooseAttrs",
-        "from": "looseFlat",
-        "to": "LooseAttrs",
+        "id": "_missingPort→title",
+        "from": "_missingPort",
+        "to": "title",
         "kinds": [
           "type-only"
         ],
@@ -505,8 +1417,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -514,9 +1426,9 @@
         "violations": []
       },
       {
-        "id": "looseOk→LooseAttrs",
-        "from": "looseOk",
-        "to": "LooseAttrs",
+        "id": "_textAsEvent→TCounterPorts",
+        "from": "_textAsEvent",
+        "to": "TCounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -524,8 +1436,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -533,9 +1445,9 @@
         "violations": []
       },
       {
-        "id": "ok→TypedAttrs",
-        "from": "ok",
-        "to": "TypedAttrs",
+        "id": "_typoEvent→TCounterPorts",
+        "from": "_typoEvent",
+        "to": "TCounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -543,8 +1455,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -552,9 +1464,9 @@
         "violations": []
       },
       {
-        "id": "Typed→schema",
-        "from": "Typed",
-        "to": "schema",
+        "id": "_untyped→c",
+        "from": "_untyped",
+        "to": "c",
         "kinds": [
           "type-only"
         ],
@@ -562,8 +1474,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -571,9 +1483,9 @@
         "violations": []
       },
       {
-        "id": "TypedAttrs→Typed",
-        "from": "TypedAttrs",
-        "to": "Typed",
+        "id": "_untyped→title",
+        "from": "_untyped",
+        "to": "title",
         "kinds": [
           "type-only"
         ],
@@ -581,8 +1493,1642 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ABSURD→c",
+        "from": "ABSURD",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ABSURD→P",
+        "from": "ABSURD",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ABSURD→TExoHighlightApi",
+        "from": "ABSURD",
+        "to": "TExoHighlightApi",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ABSURD→title",
+        "from": "ABSURD",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "add→c",
+        "from": "add",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "add→mRow",
+        "from": "add",
+        "to": "mRow",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "at→dom",
+        "from": "at",
+        "to": "dom",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "BACKENDS→APP",
+        "from": "BACKENDS",
+        "to": "APP",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "BACKENDS→SERVER",
+        "from": "BACKENDS",
+        "to": "SERVER",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "box→at",
+        "from": "box",
+        "to": "at",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "box→dom",
+        "from": "box",
+        "to": "dom",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "box→P",
+        "from": "box",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "CARD→c",
+        "from": "CARD",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "CARD→handler",
+        "from": "CARD",
+        "to": "handler",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "CARD→LEAF",
+        "from": "CARD",
+        "to": "LEAF",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "CARD→P",
+        "from": "CARD",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "CARD→Q",
+        "from": "CARD",
+        "to": "Q",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/port-name-check.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "CARD→title",
+        "from": "CARD",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "CHART→BACKENDS",
+        "from": "CHART",
+        "to": "BACKENDS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "CHART→c",
+        "from": "CHART",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "composed→withExoHighlight",
+        "from": "composed",
+        "to": "withExoHighlight",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "COUNTER→box",
+        "from": "COUNTER",
+        "to": "box",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "COUNTER→TCounterPorts",
+        "from": "COUNTER",
+        "to": "TCounterPorts",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "FILLS_ONE_PORT→c",
+        "from": "FILLS_ONE_PORT",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "FILLS_ONE_PORT→P",
+        "from": "FILLS_ONE_PORT",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "FILLS_ONE_PORT→title",
+        "from": "FILLS_ONE_PORT",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_CHILD→c",
+        "from": "HIGHLIGHTING_CHILD",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_CHILD→P",
+        "from": "HIGHLIGHTING_CHILD",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_CHILD→TExoHighlightApi",
+        "from": "HIGHLIGHTING_CHILD",
+        "to": "TExoHighlightApi",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT→c",
+        "from": "HIGHLIGHTING_PARENT",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT→HIGHLIGHTING_CHILD",
+        "from": "HIGHLIGHTING_PARENT",
+        "to": "HIGHLIGHTING_CHILD",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT→P",
+        "from": "HIGHLIGHTING_PARENT",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT→TExoHighlightApi",
+        "from": "HIGHLIGHTING_PARENT",
+        "to": "TExoHighlightApi",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTS→c",
+        "from": "HIGHLIGHTS",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTS→P",
+        "from": "HIGHLIGHTS",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTS→ROW",
+        "from": "HIGHLIGHTS",
+        "to": "ROW",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTS→TExoHighlightApi",
+        "from": "HIGHLIGHTS",
+        "to": "TExoHighlightApi",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "HIGHLIGHTS→title",
+        "from": "HIGHLIGHTS",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "hydrating→withExoHighlight",
+        "from": "hydrating",
+        "to": "withExoHighlight",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "LEAF→c",
+        "from": "LEAF",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "LEAF→Q",
+        "from": "LEAF",
+        "to": "Q",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/port-name-check.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mHost→HOST",
+        "from": "mHost",
+        "to": "HOST",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mRow→SCHEMA",
+        "from": "mRow",
+        "to": "SCHEMA",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "mRow→TRowParams",
+        "from": "mRow",
+        "to": "TRowParams",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "narrowed→widened",
+        "from": "narrowed",
+        "to": "widened",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK→c",
+        "from": "NESTS_HIGHLIGHTS_WITHOUT_PACK",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK→HIGHLIGHTS",
+        "from": "NESTS_HIGHLIGHTS_WITHOUT_PACK",
+        "to": "HIGHLIGHTS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK→P",
+        "from": "NESTS_HIGHLIGHTS_WITHOUT_PACK",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS→c",
+        "from": "NESTS_HIGHLIGHTS",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS→HIGHLIGHTS",
+        "from": "NESTS_HIGHLIGHTS",
+        "to": "HIGHLIGHTS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS→P",
+        "from": "NESTS_HIGHLIGHTS",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS→TExoHighlightApi",
+        "from": "NESTS_HIGHLIGHTS",
+        "to": "TExoHighlightApi",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "notAny→TCardPorts",
+        "from": "notAny",
+        "to": "TCardPorts",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "notAny→TSameType",
+        "from": "notAny",
+        "to": "TSameType",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "notAttr→P",
+        "from": "notAttr",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "notAttr→title",
+        "from": "notAttr",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "P→box",
+        "from": "P",
+        "to": "box",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "P→title",
+        "from": "P",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "PLAIN_PARENT→c",
+        "from": "PLAIN_PARENT",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "PLAIN_PARENT→HIGHLIGHTING_CHILD",
+        "from": "PLAIN_PARENT",
+        "to": "HIGHLIGHTING_CHILD",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "PLAIN_PARENT→P",
+        "from": "PLAIN_PARENT",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ROW→c",
+        "from": "ROW",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ROW→P",
+        "from": "ROW",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sameMap→box",
+        "from": "sameMap",
+        "to": "box",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sameMap→TCardPorts",
+        "from": "sameMap",
+        "to": "TCardPorts",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sameMap→title",
+        "from": "sameMap",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "sameMap→TSameType",
+        "from": "sameMap",
+        "to": "TSameType",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TCardPorts→CARD",
+        "from": "TCardPorts",
+        "to": "CARD",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TCardPorts→TExoPortsOf",
+        "from": "TCardPorts",
+        "to": "TExoPortsOf",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TCounterPorts→box",
+        "from": "TCounterPorts",
+        "to": "box",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoDeclNode→TExoDeclPort",
+        "from": "TExoDeclNode",
+        "to": "TExoDeclPort",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoDeclPort→TExoDeclPortKind",
+        "from": "TExoDeclPort",
+        "to": "TExoDeclPortKind",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoOwnPorts→TExoDeclPort",
+        "from": "TExoOwnPorts",
+        "to": "TExoDeclPort",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoOwnPorts→TExoPortOfKind",
+        "from": "TExoOwnPorts",
+        "to": "TExoPortOfKind",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoPortMaps→TExoDeclNode",
+        "from": "TExoPortMaps",
+        "to": "TExoDeclNode",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoPortMaps→TExoOwnPorts",
+        "from": "TExoPortMaps",
+        "to": "TExoOwnPorts",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoPortOfKind→TExoDeclPortKind",
+        "from": "TExoPortOfKind",
+        "to": "TExoDeclPortKind",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoPortsOf→TExoAllOf",
+        "from": "TExoPortsOf",
+        "to": "TExoAllOf",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoPortsOf→TExoDeclNode",
+        "from": "TExoPortsOf",
+        "to": "TExoDeclNode",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoPortsOf→TExoPortMaps",
+        "from": "TExoPortsOf",
+        "to": "TExoPortMaps",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "title→P",
+        "from": "title",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TRowParams→title",
+        "from": "TRowParams",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "widened→P",
+        "from": "widened",
+        "to": "P",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "widened→title",
+        "from": "widened",
+        "to": "title",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "withExoHighlight→HIGHLIGHT_PACK",
+        "from": "withExoHighlight",
+        "to": "HIGHLIGHT_PACK",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "write→c",
+        "from": "write",
+        "to": "c",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -593,383 +3139,2568 @@
     "rules": {}
   },
   "layout": {
-    "width": 1066,
-    "height": 1079,
+    "width": 2259,
+    "height": 2818,
     "nodes": [
       {
-        "id": "_button",
-        "x": 24,
+        "id": "_attrAsTag",
+        "x": 307.5,
+        "y": 219,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_childrenOnPort",
+        "x": 307.5,
+        "y": 293,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_closure",
+        "x": 307.5,
+        "y": 367,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_count",
+        "x": 30.5,
+        "y": 2322,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_declaration",
+        "x": 30.5,
+        "y": 1950.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_eventAsText",
+        "x": 307.5,
+        "y": 441,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_inlineHandler",
+        "x": 30.5,
+        "y": 910.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_literals",
+        "x": 30.5,
+        "y": 984.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_missingPort",
+        "x": 307.5,
+        "y": 536,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_onColon",
+        "x": 30.5,
+        "y": 1058.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_textAsEvent",
+        "x": 307.5,
+        "y": 639.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_typoEvent",
+        "x": 307.5,
+        "y": 713.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_unsafeLiteral",
+        "x": 30.5,
+        "y": 1132.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_untyped",
+        "x": 957.5,
         "y": 24,
         "width": 120,
         "height": 46
       },
       {
-        "id": "_ct",
-        "x": 24,
-        "y": 98,
+        "id": "ABSURD",
+        "x": 957.5,
+        "y": 101,
         "width": 120,
         "height": 46
       },
       {
-        "id": "_CurrentTarget",
-        "x": 208,
-        "y": 86.5,
+        "id": "add",
+        "x": 632.5,
+        "y": 298.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "APP",
+        "x": 1671.5,
+        "y": 229.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "at",
+        "x": 1314.5,
+        "y": 1828.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "BACKENDS",
+        "x": 1314.5,
+        "y": 310.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "bare",
+        "x": 30.5,
+        "y": 1206.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "BARE_SERVER",
+        "x": 30.5,
+        "y": 1280.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "bareHydrating",
+        "x": 30.5,
+        "y": 1354.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "box",
+        "x": 957.5,
+        "y": 1776.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "c",
+        "x": 1314.5,
+        "y": 1363.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "CARD",
+        "x": 632.5,
+        "y": 2409.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "CHART",
+        "x": 957.5,
+        "y": 300.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "composed",
+        "x": 30.5,
+        "y": 836.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "COUNTER",
+        "x": 307.5,
+        "y": 2064,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "dom",
+        "x": 1671.5,
+        "y": 1880,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "FILLS_ONE_PORT",
+        "x": 957.5,
+        "y": 401,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "handler",
+        "x": 957.5,
+        "y": 2507,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "HIGHLIGHT_PACK",
+        "x": 632.5,
+        "y": 799.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "HIGHLIGHTING_CHILD",
+        "x": 948,
+        "y": 1156.3,
+        "width": 139,
+        "height": 46
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT",
+        "x": 619.5,
+        "y": 712.5,
+        "width": 146,
+        "height": 46
+      },
+      {
+        "id": "HIGHLIGHTS",
+        "x": 632.5,
+        "y": 1632.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "host",
+        "x": 30.5,
+        "y": 1692.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "HOST",
+        "x": 307.5,
+        "y": 1428.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "hydrating",
+        "x": 30.5,
+        "y": 762.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "LEAF",
+        "x": 957.5,
+        "y": 2433,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "loose",
+        "x": 30.5,
+        "y": 2024.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "mHost",
+        "x": 30.5,
+        "y": 1428.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "mRow",
+        "x": 957.5,
+        "y": 193.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "narrowed",
+        "x": 632.5,
+        "y": 1037.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS",
+        "x": 304.5,
+        "y": 1502.3,
+        "width": 126,
+        "height": 46
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK",
+        "x": 262.5,
+        "y": 1873.8,
+        "width": 210,
+        "height": 46
+      },
+      {
+        "id": "notAny",
+        "x": 30.5,
+        "y": 2158.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "notATable",
+        "x": 30.5,
+        "y": 2396,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "notAttr",
+        "x": 957.5,
+        "y": 880.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "P",
+        "x": 1314.5,
+        "y": 1437.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "PLAIN_PARENT",
+        "x": 632.5,
+        "y": 1256.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "portable",
+        "x": 30.5,
+        "y": 2470,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "Q",
+        "x": 1314.5,
+        "y": 2386,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "ROW",
+        "x": 957.5,
+        "y": 1640.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "sameMap",
+        "x": 30.5,
+        "y": 2565.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "SCHEMA",
+        "x": 1314.5,
+        "y": 236.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "SERVER",
+        "x": 1671.5,
+        "y": 90.3,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "table",
+        "x": 30.5,
+        "y": 2639.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TCardPorts",
+        "x": 272.5,
+        "y": 2284.5,
+        "width": 190,
+        "height": 69
+      },
+      {
+        "id": "TCounterPorts",
+        "x": 594,
+        "y": 535,
+        "width": 197,
+        "height": 144
+      },
+      {
+        "id": "TExoAllOf",
+        "x": 871,
+        "y": 2262.5,
         "width": 293,
         "height": 69
       },
       {
-        "id": "_flatClass",
-        "x": 24,
-        "y": 172,
-        "width": 120,
-        "height": 46
+        "id": "TExoDeclNode",
+        "x": 1228,
+        "y": 2171.5,
+        "width": 293,
+        "height": 114
       },
       {
-        "id": "_flatHandler",
-        "x": 24,
-        "y": 246,
-        "width": 120,
-        "height": 46
+        "id": "TExoDeclPort",
+        "x": 1610.5,
+        "y": 2265,
+        "width": 242,
+        "height": 99
       },
       {
-        "id": "_input",
-        "x": 24,
-        "y": 320,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "_OnInputParam",
-        "x": 565,
-        "y": 382.5,
+        "id": "TExoDeclPortKind",
+        "x": 1942,
+        "y": 2168,
         "width": 293,
         "height": 69
       },
       {
-        "id": "_param",
-        "x": 294.5,
-        "y": 394,
-        "width": 120,
-        "height": 46
+        "id": "TExoHighlightApi",
+        "x": 1241,
+        "y": 1120.5,
+        "width": 267,
+        "height": 69
       },
       {
-        "id": "_paramValue",
-        "x": 24,
-        "y": 394,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "_select",
-        "x": 24,
-        "y": 468,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "badBindable",
-        "x": 24,
-        "y": 764,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "badKey",
-        "x": 24,
-        "y": 690,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "badTitle",
-        "x": 24,
-        "y": 616,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "Loose",
-        "x": 651.5,
-        "y": 875,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "LooseAttrs",
-        "x": 208,
-        "y": 863.5,
+        "id": "TExoOwnPorts",
+        "x": 1228,
+        "y": 1969.8,
         "width": 293,
         "height": 69
       },
       {
-        "id": "looseFlat",
-        "x": 24,
-        "y": 912,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "looseOk",
-        "x": 24,
-        "y": 838,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "ok",
-        "x": 24,
-        "y": 542,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "onSearch",
-        "x": 24,
-        "y": 986,
-        "width": 120,
-        "height": 69
-      },
-      {
-        "id": "schema",
-        "x": 922,
-        "y": 764,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "Typed",
-        "x": 651.5,
-        "y": 653,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "TypedAttrs",
-        "x": 208,
-        "y": 641.5,
+        "id": "TExoPortMaps",
+        "x": 871,
+        "y": 2098.8,
         "width": 293,
         "height": 69
+      },
+      {
+        "id": "TExoPortOfKind",
+        "x": 1585,
+        "y": 2168,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoPortsOf",
+        "x": 578,
+        "y": 2183,
+        "width": 229,
+        "height": 69
+      },
+      {
+        "id": "title",
+        "x": 1671.5,
+        "y": 958.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TRowParams",
+        "x": 1285.5,
+        "y": 139.5,
+        "width": 178,
+        "height": 69
+      },
+      {
+        "id": "TSameType",
+        "x": 221,
+        "y": 2138,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TWidePorts",
+        "x": 24,
+        "y": 2713.5,
+        "width": 133,
+        "height": 69
+      },
+      {
+        "id": "widened",
+        "x": 957.5,
+        "y": 1037.8,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "withExoHighlight",
+        "x": 259.5,
+        "y": 787.8,
+        "width": 216,
+        "height": 69
+      },
+      {
+        "id": "write",
+        "x": 957.5,
+        "y": 1256.8,
+        "width": 120,
+        "height": 46
       }
     ],
     "edges": [
       {
-        "id": "_ct→_CurrentTarget",
+        "id": "_attrAsTag→TCounterPorts",
         "points": [
           {
-            "x": 144,
-            "y": 121
+            "x": 427.5,
+            "y": 242
           },
           {
-            "x": 176,
-            "y": 121
+            "x": 546,
+            "y": 242
           },
           {
-            "x": 208,
-            "y": 121
+            "x": 663.6,
+            "y": 535
           }
         ]
       },
       {
-        "id": "_param→_OnInputParam",
+        "id": "_childrenOnPort→TCounterPorts",
         "points": [
           {
-            "x": 414.5,
-            "y": 417
+            "x": 427.5,
+            "y": 316
           },
           {
-            "x": 533,
-            "y": 417
+            "x": 546,
+            "y": 316
           },
           {
-            "x": 565,
-            "y": 417
+            "x": 656.3,
+            "y": 535
           }
         ]
       },
       {
-        "id": "_paramValue→_param",
+        "id": "_closure→TCounterPorts",
         "points": [
           {
-            "x": 144,
-            "y": 417
+            "x": 427.5,
+            "y": 390
           },
           {
-            "x": 176,
-            "y": 417
+            "x": 546,
+            "y": 390
           },
           {
-            "x": 294.5,
-            "y": 417
+            "x": 643.9,
+            "y": 535
           }
         ]
       },
       {
-        "id": "badBindable→TypedAttrs",
+        "id": "_count→COUNTER",
         "points": [
           {
-            "x": 144,
-            "y": 787
+            "x": 150.5,
+            "y": 2345
           },
           {
-            "x": 176,
-            "y": 787
+            "x": 189,
+            "y": 2345
           },
           {
-            "x": 299,
-            "y": 710.5
+            "x": 351.6,
+            "y": 2110
           }
         ]
       },
       {
-        "id": "badKey→TypedAttrs",
+        "id": "_declaration→COUNTER",
         "points": [
           {
-            "x": 144,
-            "y": 713
+            "x": 150.5,
+            "y": 1992.8
           },
           {
-            "x": 176,
-            "y": 713
+            "x": 189,
+            "y": 2005
           },
           {
-            "x": 208,
-            "y": 706.4
+            "x": 317.4,
+            "y": 2064
           }
         ]
       },
       {
-        "id": "badTitle→TypedAttrs",
+        "id": "_declaration→TCounterPorts",
         "points": [
           {
-            "x": 144,
-            "y": 639
+            "x": 150.5,
+            "y": 1959.4
           },
           {
-            "x": 176,
-            "y": 639
+            "x": 189,
+            "y": 1950.3
           },
           {
-            "x": 208,
-            "y": 645.6
+            "x": 367.5,
+            "y": 1950.3
+          },
+          {
+            "x": 546,
+            "y": 1950.3
+          },
+          {
+            "x": 684.6,
+            "y": 679
           }
         ]
       },
       {
-        "id": "Loose→schema",
+        "id": "_eventAsText→TCounterPorts",
         "points": [
           {
-            "x": 771.5,
-            "y": 898
+            "x": 427.5,
+            "y": 464
           },
           {
-            "x": 890,
-            "y": 898
+            "x": 546,
+            "y": 464
           },
           {
-            "x": 962.9,
-            "y": 810
+            "x": 618.7,
+            "y": 535
           }
         ]
       },
       {
-        "id": "LooseAttrs→Loose",
+        "id": "_missingPort→TCounterPorts",
         "points": [
           {
-            "x": 501,
-            "y": 898
+            "x": 427.5,
+            "y": 575.1
           },
           {
-            "x": 533,
-            "y": 898
+            "x": 546,
+            "y": 607
           },
           {
-            "x": 651.5,
-            "y": 898
+            "x": 594,
+            "y": 607
           }
         ]
       },
       {
-        "id": "looseFlat→LooseAttrs",
+        "id": "_missingPort→title",
         "points": [
           {
-            "x": 144,
-            "y": 935
+            "x": 427.5,
+            "y": 542.9
           },
           {
-            "x": 176,
-            "y": 935
+            "x": 546,
+            "y": 511
           },
           {
-            "x": 208,
-            "y": 928.4
+            "x": 692.5,
+            "y": 511
+          },
+          {
+            "x": 839,
+            "y": 511
+          },
+          {
+            "x": 1017.5,
+            "y": 511
+          },
+          {
+            "x": 1196,
+            "y": 511
+          },
+          {
+            "x": 1374.5,
+            "y": 511
+          },
+          {
+            "x": 1553,
+            "y": 511
+          },
+          {
+            "x": 1722.8,
+            "y": 958.5
           }
         ]
       },
       {
-        "id": "looseOk→LooseAttrs",
+        "id": "_textAsEvent→TCounterPorts",
         "points": [
           {
-            "x": 144,
-            "y": 861
+            "x": 427.5,
+            "y": 662.8
           },
           {
-            "x": 176,
-            "y": 861
+            "x": 546,
+            "y": 662.8
           },
           {
-            "x": 208,
-            "y": 867.6
+            "x": 594,
+            "y": 644.5
           }
         ]
       },
       {
-        "id": "ok→TypedAttrs",
+        "id": "_typoEvent→TCounterPorts",
         "points": [
           {
-            "x": 144,
-            "y": 565
+            "x": 427.5,
+            "y": 736.8
           },
           {
-            "x": 176,
-            "y": 565
+            "x": 546,
+            "y": 736.8
           },
           {
-            "x": 299,
-            "y": 641.5
+            "x": 611.2,
+            "y": 679
           }
         ]
       },
       {
-        "id": "Typed→schema",
+        "id": "_untyped→c",
         "points": [
           {
-            "x": 771.5,
-            "y": 676
+            "x": 1077.5,
+            "y": 56.1
           },
           {
-            "x": 890,
-            "y": 676
+            "x": 1196,
+            "y": 74
           },
           {
-            "x": 962.9,
-            "y": 764
+            "x": 1371.4,
+            "y": 1363.3
           }
         ]
       },
       {
-        "id": "TypedAttrs→Typed",
+        "id": "_untyped→title",
         "points": [
           {
-            "x": 501,
-            "y": 676
+            "x": 1077.5,
+            "y": 43.6
           },
           {
-            "x": 533,
-            "y": 676
+            "x": 1196,
+            "y": 37
           },
           {
-            "x": 651.5,
-            "y": 676
+            "x": 1374.5,
+            "y": 37
+          },
+          {
+            "x": 1553,
+            "y": 37
+          },
+          {
+            "x": 1727.2,
+            "y": 958.5
+          }
+        ]
+      },
+      {
+        "id": "ABSURD→c",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 134.1
+          },
+          {
+            "x": 1196,
+            "y": 154
+          },
+          {
+            "x": 1371.2,
+            "y": 1363.3
+          }
+        ]
+      },
+      {
+        "id": "ABSURD→P",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 127.4
+          },
+          {
+            "x": 1196,
+            "y": 134
+          },
+          {
+            "x": 1371.4,
+            "y": 1437.3
+          }
+        ]
+      },
+      {
+        "id": "ABSURD→TExoHighlightApi",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 120.6
+          },
+          {
+            "x": 1196,
+            "y": 114
+          },
+          {
+            "x": 1368.6,
+            "y": 1120.5
+          }
+        ]
+      },
+      {
+        "id": "ABSURD→title",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 113.9
+          },
+          {
+            "x": 1196,
+            "y": 94
+          },
+          {
+            "x": 1374.5,
+            "y": 94
+          },
+          {
+            "x": 1553,
+            "y": 94
+          },
+          {
+            "x": 1726.9,
+            "y": 958.5
+          }
+        ]
+      },
+      {
+        "id": "add→c",
+        "points": [
+          {
+            "x": 714.1,
+            "y": 344.5
+          },
+          {
+            "x": 839,
+            "y": 477.5
+          },
+          {
+            "x": 1017.5,
+            "y": 477.5
+          },
+          {
+            "x": 1196,
+            "y": 477.5
+          },
+          {
+            "x": 1370,
+            "y": 1363.3
+          }
+        ]
+      },
+      {
+        "id": "add→mRow",
+        "points": [
+          {
+            "x": 724.7,
+            "y": 298.5
+          },
+          {
+            "x": 839,
+            "y": 216.8
+          },
+          {
+            "x": 957.5,
+            "y": 216.8
+          }
+        ]
+      },
+      {
+        "id": "at→dom",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 1851.3
+          },
+          {
+            "x": 1553,
+            "y": 1851.3
+          },
+          {
+            "x": 1671.5,
+            "y": 1885.6
+          }
+        ]
+      },
+      {
+        "id": "BACKENDS→APP",
+        "points": [
+          {
+            "x": 1434.5,
+            "y": 345.9
+          },
+          {
+            "x": 1553,
+            "y": 370.5
+          },
+          {
+            "x": 1696.6,
+            "y": 275.8
+          }
+        ]
+      },
+      {
+        "id": "BACKENDS→SERVER",
+        "points": [
+          {
+            "x": 1433.4,
+            "y": 310.5
+          },
+          {
+            "x": 1553,
+            "y": 263.8
+          },
+          {
+            "x": 1704.2,
+            "y": 136.3
+          }
+        ]
+      },
+      {
+        "id": "box→at",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 1817.1
+          },
+          {
+            "x": 1196,
+            "y": 1851.3
+          },
+          {
+            "x": 1314.5,
+            "y": 1851.3
+          }
+        ]
+      },
+      {
+        "id": "box→dom",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 1801.3
+          },
+          {
+            "x": 1196,
+            "y": 1804.3
+          },
+          {
+            "x": 1374.5,
+            "y": 1804.3
+          },
+          {
+            "x": 1553,
+            "y": 1804.3
+          },
+          {
+            "x": 1689.9,
+            "y": 1880
+          }
+        ]
+      },
+      {
+        "id": "box→P",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 1787.8
+          },
+          {
+            "x": 1196,
+            "y": 1764.3
+          },
+          {
+            "x": 1361,
+            "y": 1483.3
+          }
+        ]
+      },
+      {
+        "id": "CARD→c",
+        "points": [
+          {
+            "x": 715.8,
+            "y": 2455.5
+          },
+          {
+            "x": 839,
+            "y": 2577
+          },
+          {
+            "x": 1017.5,
+            "y": 2577
+          },
+          {
+            "x": 1196,
+            "y": 2577
+          },
+          {
+            "x": 1371.1,
+            "y": 1409.3
+          }
+        ]
+      },
+      {
+        "id": "CARD→handler",
+        "points": [
+          {
+            "x": 727.1,
+            "y": 2455.5
+          },
+          {
+            "x": 839,
+            "y": 2530
+          },
+          {
+            "x": 957.5,
+            "y": 2530
+          }
+        ]
+      },
+      {
+        "id": "CARD→LEAF",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 2442.1
+          },
+          {
+            "x": 839,
+            "y": 2456
+          },
+          {
+            "x": 957.5,
+            "y": 2456
+          }
+        ]
+      },
+      {
+        "id": "CARD→P",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 2422.9
+          },
+          {
+            "x": 839,
+            "y": 2409
+          },
+          {
+            "x": 1017.5,
+            "y": 2409
+          },
+          {
+            "x": 1196,
+            "y": 2409
+          },
+          {
+            "x": 1370.2,
+            "y": 1483.3
+          }
+        ]
+      },
+      {
+        "id": "CARD→Q",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 2414.7
+          },
+          {
+            "x": 839,
+            "y": 2389
+          },
+          {
+            "x": 1017.5,
+            "y": 2389
+          },
+          {
+            "x": 1196,
+            "y": 2389
+          },
+          {
+            "x": 1314.5,
+            "y": 2402.3
+          }
+        ]
+      },
+      {
+        "id": "CARD→title",
+        "points": [
+          {
+            "x": 736.3,
+            "y": 2409.5
+          },
+          {
+            "x": 839,
+            "y": 2355.5
+          },
+          {
+            "x": 1017.5,
+            "y": 2355.5
+          },
+          {
+            "x": 1196,
+            "y": 2355.5
+          },
+          {
+            "x": 1374.5,
+            "y": 2355.5
+          },
+          {
+            "x": 1553,
+            "y": 2355.5
+          },
+          {
+            "x": 1728.5,
+            "y": 1004.5
+          }
+        ]
+      },
+      {
+        "id": "CHART→BACKENDS",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 326.9
+          },
+          {
+            "x": 1196,
+            "y": 333.5
+          },
+          {
+            "x": 1314.5,
+            "y": 333.5
+          }
+        ]
+      },
+      {
+        "id": "CHART→c",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 314.4
+          },
+          {
+            "x": 1196,
+            "y": 296.5
+          },
+          {
+            "x": 1370.7,
+            "y": 1363.3
+          }
+        ]
+      },
+      {
+        "id": "composed→withExoHighlight",
+        "points": [
+          {
+            "x": 150.5,
+            "y": 859.3
+          },
+          {
+            "x": 189,
+            "y": 859.3
+          },
+          {
+            "x": 259.5,
+            "y": 844.6
+          }
+        ]
+      },
+      {
+        "id": "COUNTER→box",
+        "points": [
+          {
+            "x": 427.5,
+            "y": 2095.8
+          },
+          {
+            "x": 546,
+            "y": 2113.3
+          },
+          {
+            "x": 692.5,
+            "y": 2113.3
+          },
+          {
+            "x": 839,
+            "y": 2113.3
+          },
+          {
+            "x": 1004.4,
+            "y": 1822.8
+          }
+        ]
+      },
+      {
+        "id": "COUNTER→TCounterPorts",
+        "points": [
+          {
+            "x": 410.5,
+            "y": 2064
+          },
+          {
+            "x": 546,
+            "y": 1991.5
+          },
+          {
+            "x": 684.9,
+            "y": 679
+          }
+        ]
+      },
+      {
+        "id": "FILLS_ONE_PORT→c",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 430.7
+          },
+          {
+            "x": 1196,
+            "y": 444
+          },
+          {
+            "x": 1370.1,
+            "y": 1363.3
+          }
+        ]
+      },
+      {
+        "id": "FILLS_ONE_PORT→P",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 424
+          },
+          {
+            "x": 1196,
+            "y": 424
+          },
+          {
+            "x": 1370.5,
+            "y": 1437.3
+          }
+        ]
+      },
+      {
+        "id": "FILLS_ONE_PORT→title",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 417.3
+          },
+          {
+            "x": 1196,
+            "y": 404
+          },
+          {
+            "x": 1374.5,
+            "y": 404
+          },
+          {
+            "x": 1553,
+            "y": 404
+          },
+          {
+            "x": 1724.4,
+            "y": 958.5
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTING_CHILD→c",
+        "points": [
+          {
+            "x": 1087,
+            "y": 1187
+          },
+          {
+            "x": 1196,
+            "y": 1199.3
+          },
+          {
+            "x": 1352.5,
+            "y": 1363.3
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTING_CHILD→P",
+        "points": [
+          {
+            "x": 1087,
+            "y": 1176.5
+          },
+          {
+            "x": 1196,
+            "y": 1172.3
+          },
+          {
+            "x": 1360.2,
+            "y": 1437.3
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTING_CHILD→TExoHighlightApi",
+        "points": [
+          {
+            "x": 1087,
+            "y": 1168.7
+          },
+          {
+            "x": 1196,
+            "y": 1152.3
+          },
+          {
+            "x": 1241,
+            "y": 1152.9
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT→c",
+        "points": [
+          {
+            "x": 708.2,
+            "y": 758.5
+          },
+          {
+            "x": 839,
+            "y": 950.5
+          },
+          {
+            "x": 1017.5,
+            "y": 950.5
+          },
+          {
+            "x": 1196,
+            "y": 950.5
+          },
+          {
+            "x": 1365.1,
+            "y": 1363.3
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT→HIGHLIGHTING_CHILD",
+        "points": [
+          {
+            "x": 712.6,
+            "y": 758.5
+          },
+          {
+            "x": 839,
+            "y": 903.5
+          },
+          {
+            "x": 1002.6,
+            "y": 1156.3
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT→P",
+        "points": [
+          {
+            "x": 765.5,
+            "y": 737.5
+          },
+          {
+            "x": 839,
+            "y": 739.5
+          },
+          {
+            "x": 1017.5,
+            "y": 739.5
+          },
+          {
+            "x": 1196,
+            "y": 739.5
+          },
+          {
+            "x": 1368.8,
+            "y": 1437.3
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTING_PARENT→TExoHighlightApi",
+        "points": [
+          {
+            "x": 751.6,
+            "y": 712.5
+          },
+          {
+            "x": 839,
+            "y": 678.5
+          },
+          {
+            "x": 1017.5,
+            "y": 678.5
+          },
+          {
+            "x": 1196,
+            "y": 678.5
+          },
+          {
+            "x": 1361.6,
+            "y": 1120.5
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTS→c",
+        "points": [
+          {
+            "x": 737.4,
+            "y": 1678.8
+          },
+          {
+            "x": 839,
+            "y": 1730.8
+          },
+          {
+            "x": 1017.5,
+            "y": 1730.8
+          },
+          {
+            "x": 1196,
+            "y": 1730.8
+          },
+          {
+            "x": 1362.6,
+            "y": 1409.3
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTS→P",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 1678.3
+          },
+          {
+            "x": 839,
+            "y": 1710.8
+          },
+          {
+            "x": 1017.5,
+            "y": 1710.8
+          },
+          {
+            "x": 1196,
+            "y": 1710.8
+          },
+          {
+            "x": 1358.1,
+            "y": 1483.3
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTS→ROW",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 1659
+          },
+          {
+            "x": 839,
+            "y": 1663.8
+          },
+          {
+            "x": 957.5,
+            "y": 1663.8
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTS→TExoHighlightApi",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 1639.8
+          },
+          {
+            "x": 839,
+            "y": 1616.8
+          },
+          {
+            "x": 1017.5,
+            "y": 1616.8
+          },
+          {
+            "x": 1196,
+            "y": 1616.8
+          },
+          {
+            "x": 1361.2,
+            "y": 1189.5
+          }
+        ]
+      },
+      {
+        "id": "HIGHLIGHTS→title",
+        "points": [
+          {
+            "x": 749.6,
+            "y": 1632.8
+          },
+          {
+            "x": 839,
+            "y": 1596.8
+          },
+          {
+            "x": 1017.5,
+            "y": 1596.8
+          },
+          {
+            "x": 1196,
+            "y": 1596.8
+          },
+          {
+            "x": 1374.5,
+            "y": 1596.8
+          },
+          {
+            "x": 1553,
+            "y": 1596.8
+          },
+          {
+            "x": 1724.8,
+            "y": 1004.5
+          }
+        ]
+      },
+      {
+        "id": "hydrating→withExoHighlight",
+        "points": [
+          {
+            "x": 150.5,
+            "y": 785.3
+          },
+          {
+            "x": 189,
+            "y": 785.3
+          },
+          {
+            "x": 259.5,
+            "y": 799.9
+          }
+        ]
+      },
+      {
+        "id": "LEAF→c",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 2473
+          },
+          {
+            "x": 1196,
+            "y": 2506.5
+          },
+          {
+            "x": 1370.8,
+            "y": 1409.3
+          }
+        ]
+      },
+      {
+        "id": "LEAF→Q",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 2451.5
+          },
+          {
+            "x": 1196,
+            "y": 2442.5
+          },
+          {
+            "x": 1314.5,
+            "y": 2420.3
+          }
+        ]
+      },
+      {
+        "id": "mHost→HOST",
+        "points": [
+          {
+            "x": 150.5,
+            "y": 1451.3
+          },
+          {
+            "x": 189,
+            "y": 1451.3
+          },
+          {
+            "x": 307.5,
+            "y": 1451.3
+          }
+        ]
+      },
+      {
+        "id": "mRow→SCHEMA",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 231.1
+          },
+          {
+            "x": 1196,
+            "y": 259.5
+          },
+          {
+            "x": 1314.5,
+            "y": 259.5
+          }
+        ]
+      },
+      {
+        "id": "mRow→TRowParams",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 202.4
+          },
+          {
+            "x": 1196,
+            "y": 174
+          },
+          {
+            "x": 1285.5,
+            "y": 174
+          }
+        ]
+      },
+      {
+        "id": "narrowed→widened",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 1060.8
+          },
+          {
+            "x": 839,
+            "y": 1060.8
+          },
+          {
+            "x": 957.5,
+            "y": 1060.8
+          }
+        ]
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK→c",
+        "points": [
+          {
+            "x": 472.5,
+            "y": 1908.5
+          },
+          {
+            "x": 546,
+            "y": 1916.8
+          },
+          {
+            "x": 692.5,
+            "y": 1916.8
+          },
+          {
+            "x": 839,
+            "y": 1916.8
+          },
+          {
+            "x": 1017.5,
+            "y": 1916.8
+          },
+          {
+            "x": 1196,
+            "y": 1916.8
+          },
+          {
+            "x": 1366.8,
+            "y": 1409.3
+          }
+        ]
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK→HIGHLIGHTS",
+        "points": [
+          {
+            "x": 472.5,
+            "y": 1896.8
+          },
+          {
+            "x": 546,
+            "y": 1896.8
+          },
+          {
+            "x": 678.5,
+            "y": 1678.8
+          }
+        ]
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK→P",
+        "points": [
+          {
+            "x": 472.5,
+            "y": 1885
+          },
+          {
+            "x": 546,
+            "y": 1876.8
+          },
+          {
+            "x": 692.5,
+            "y": 1876.8
+          },
+          {
+            "x": 839,
+            "y": 1876.8
+          },
+          {
+            "x": 1017.5,
+            "y": 1876.8
+          },
+          {
+            "x": 1196,
+            "y": 1876.8
+          },
+          {
+            "x": 1364.6,
+            "y": 1483.3
+          }
+        ]
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS→c",
+        "points": [
+          {
+            "x": 430.5,
+            "y": 1535.8
+          },
+          {
+            "x": 546,
+            "y": 1555.3
+          },
+          {
+            "x": 692.5,
+            "y": 1555.3
+          },
+          {
+            "x": 839,
+            "y": 1555.3
+          },
+          {
+            "x": 1017.5,
+            "y": 1555.3
+          },
+          {
+            "x": 1196,
+            "y": 1555.3
+          },
+          {
+            "x": 1350.2,
+            "y": 1409.3
+          }
+        ]
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS→HIGHLIGHTS",
+        "points": [
+          {
+            "x": 430.5,
+            "y": 1513.8
+          },
+          {
+            "x": 546,
+            "y": 1492.8
+          },
+          {
+            "x": 671.8,
+            "y": 1632.8
+          }
+        ]
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS→P",
+        "points": [
+          {
+            "x": 395.8,
+            "y": 1502.3
+          },
+          {
+            "x": 546,
+            "y": 1380.3
+          },
+          {
+            "x": 692.5,
+            "y": 1380.3
+          },
+          {
+            "x": 839,
+            "y": 1380.3
+          },
+          {
+            "x": 1017.5,
+            "y": 1380.3
+          },
+          {
+            "x": 1196,
+            "y": 1380.3
+          },
+          {
+            "x": 1323.2,
+            "y": 1437.3
+          }
+        ]
+      },
+      {
+        "id": "NESTS_HIGHLIGHTS→TExoHighlightApi",
+        "points": [
+          {
+            "x": 392.4,
+            "y": 1502.3
+          },
+          {
+            "x": 546,
+            "y": 1360.3
+          },
+          {
+            "x": 692.5,
+            "y": 1360.3
+          },
+          {
+            "x": 839,
+            "y": 1360.3
+          },
+          {
+            "x": 1017.5,
+            "y": 1360.3
+          },
+          {
+            "x": 1196,
+            "y": 1360.3
+          },
+          {
+            "x": 1344.5,
+            "y": 1189.5
+          }
+        ]
+      },
+      {
+        "id": "notAny→TCardPorts",
+        "points": [
+          {
+            "x": 113.9,
+            "y": 2204.5
+          },
+          {
+            "x": 189,
+            "y": 2278.5
+          },
+          {
+            "x": 272.5,
+            "y": 2297.4
+          }
+        ]
+      },
+      {
+        "id": "notAny→TSameType",
+        "points": [
+          {
+            "x": 115.4,
+            "y": 2158.5
+          },
+          {
+            "x": 189,
+            "y": 2090.5
+          },
+          {
+            "x": 292.4,
+            "y": 2138
+          }
+        ]
+      },
+      {
+        "id": "notAttr→P",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 908
+          },
+          {
+            "x": 1196,
+            "y": 917
+          },
+          {
+            "x": 1366.9,
+            "y": 1437.3
+          }
+        ]
+      },
+      {
+        "id": "notAttr→title",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 899
+          },
+          {
+            "x": 1196,
+            "y": 890
+          },
+          {
+            "x": 1374.5,
+            "y": 890
+          },
+          {
+            "x": 1553,
+            "y": 890
+          },
+          {
+            "x": 1686.6,
+            "y": 958.5
+          }
+        ]
+      },
+      {
+        "id": "P→box",
+        "points": [
+          {
+            "x": 1361.8,
+            "y": 1483.3
+          },
+          {
+            "x": 1196,
+            "y": 1784.3
+          },
+          {
+            "x": 1077.5,
+            "y": 1794.5
+          }
+        ]
+      },
+      {
+        "id": "P→title",
+        "points": [
+          {
+            "x": 1386,
+            "y": 1437.3
+          },
+          {
+            "x": 1553,
+            "y": 1103
+          },
+          {
+            "x": 1697.7,
+            "y": 1004.5
+          }
+        ]
+      },
+      {
+        "id": "PLAIN_PARENT→c",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 1299
+          },
+          {
+            "x": 839,
+            "y": 1326.8
+          },
+          {
+            "x": 1017.5,
+            "y": 1326.8
+          },
+          {
+            "x": 1196,
+            "y": 1326.8
+          },
+          {
+            "x": 1314.5,
+            "y": 1366.3
+          }
+        ]
+      },
+      {
+        "id": "PLAIN_PARENT→HIGHLIGHTING_CHILD",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 1279.8
+          },
+          {
+            "x": 839,
+            "y": 1279.8
+          },
+          {
+            "x": 976.6,
+            "y": 1202.3
+          }
+        ]
+      },
+      {
+        "id": "PLAIN_PARENT→P",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 1260.5
+          },
+          {
+            "x": 839,
+            "y": 1232.8
+          },
+          {
+            "x": 1017.5,
+            "y": 1232.8
+          },
+          {
+            "x": 1196,
+            "y": 1232.8
+          },
+          {
+            "x": 1356.5,
+            "y": 1437.3
+          }
+        ]
+      },
+      {
+        "id": "ROW→c",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 1668.3
+          },
+          {
+            "x": 1196,
+            "y": 1677.3
+          },
+          {
+            "x": 1360.4,
+            "y": 1409.3
+          }
+        ]
+      },
+      {
+        "id": "ROW→P",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 1659.2
+          },
+          {
+            "x": 1196,
+            "y": 1650.3
+          },
+          {
+            "x": 1352.9,
+            "y": 1483.3
+          }
+        ]
+      },
+      {
+        "id": "sameMap→box",
+        "points": [
+          {
+            "x": 117.3,
+            "y": 2611.5
+          },
+          {
+            "x": 189,
+            "y": 2673
+          },
+          {
+            "x": 367.5,
+            "y": 2673
+          },
+          {
+            "x": 546,
+            "y": 2673
+          },
+          {
+            "x": 692.5,
+            "y": 2673
+          },
+          {
+            "x": 839,
+            "y": 2673
+          },
+          {
+            "x": 1012.8,
+            "y": 1822.8
+          }
+        ]
+      },
+      {
+        "id": "sameMap→TCardPorts",
+        "points": [
+          {
+            "x": 150.5,
+            "y": 2605.9
+          },
+          {
+            "x": 189,
+            "y": 2617
+          },
+          {
+            "x": 346.8,
+            "y": 2353.5
+          }
+        ]
+      },
+      {
+        "id": "sameMap→title",
+        "points": [
+          {
+            "x": 150.5,
+            "y": 2593.7
+          },
+          {
+            "x": 189,
+            "y": 2597
+          },
+          {
+            "x": 367.5,
+            "y": 2597
+          },
+          {
+            "x": 546,
+            "y": 2597
+          },
+          {
+            "x": 692.5,
+            "y": 2597
+          },
+          {
+            "x": 839,
+            "y": 2597
+          },
+          {
+            "x": 1017.5,
+            "y": 2597
+          },
+          {
+            "x": 1196,
+            "y": 2597
+          },
+          {
+            "x": 1374.5,
+            "y": 2597
+          },
+          {
+            "x": 1553,
+            "y": 2597
+          },
+          {
+            "x": 1729,
+            "y": 1004.5
+          }
+        ]
+      },
+      {
+        "id": "sameMap→TSameType",
+        "points": [
+          {
+            "x": 109,
+            "y": 2565.5
+          },
+          {
+            "x": 189,
+            "y": 2466
+          },
+          {
+            "x": 346.5,
+            "y": 2207
+          }
+        ]
+      },
+      {
+        "id": "TCardPorts→CARD",
+        "points": [
+          {
+            "x": 421.8,
+            "y": 2353.5
+          },
+          {
+            "x": 546,
+            "y": 2432.5
+          },
+          {
+            "x": 632.5,
+            "y": 2432.5
+          }
+        ]
+      },
+      {
+        "id": "TCardPorts→TExoPortsOf",
+        "points": [
+          {
+            "x": 428.2,
+            "y": 2284.5
+          },
+          {
+            "x": 546,
+            "y": 2217.5
+          },
+          {
+            "x": 578,
+            "y": 2217.5
+          }
+        ]
+      },
+      {
+        "id": "TCounterPorts→box",
+        "points": [
+          {
+            "x": 791,
+            "y": 607
+          },
+          {
+            "x": 839,
+            "y": 607
+          },
+          {
+            "x": 1014.1,
+            "y": 1776.8
+          }
+        ]
+      },
+      {
+        "id": "TExoDeclNode→TExoDeclPort",
+        "points": [
+          {
+            "x": 1521,
+            "y": 2228.5
+          },
+          {
+            "x": 1553,
+            "y": 2228.5
+          },
+          {
+            "x": 1628.8,
+            "y": 2265
+          }
+        ]
+      },
+      {
+        "id": "TExoDeclPort→TExoDeclPortKind",
+        "points": [
+          {
+            "x": 1852.5,
+            "y": 2314.5
+          },
+          {
+            "x": 1910,
+            "y": 2314.5
+          },
+          {
+            "x": 2033.5,
+            "y": 2237
+          }
+        ]
+      },
+      {
+        "id": "TExoOwnPorts→TExoDeclPort",
+        "points": [
+          {
+            "x": 1484.5,
+            "y": 2038.8
+          },
+          {
+            "x": 1553,
+            "y": 2060.3
+          },
+          {
+            "x": 1696.7,
+            "y": 2265
+          }
+        ]
+      },
+      {
+        "id": "TExoOwnPorts→TExoPortOfKind",
+        "points": [
+          {
+            "x": 1521,
+            "y": 1995.4
+          },
+          {
+            "x": 1553,
+            "y": 1993.5
+          },
+          {
+            "x": 1702,
+            "y": 2168
+          }
+        ]
+      },
+      {
+        "id": "TExoPortMaps→TExoDeclNode",
+        "points": [
+          {
+            "x": 1110.8,
+            "y": 2167.8
+          },
+          {
+            "x": 1196,
+            "y": 2199.3
+          },
+          {
+            "x": 1228,
+            "y": 2204.5
+          }
+        ]
+      },
+      {
+        "id": "TExoPortMaps→TExoOwnPorts",
+        "points": [
+          {
+            "x": 1065.2,
+            "y": 2098.8
+          },
+          {
+            "x": 1196,
+            "y": 2004.3
+          },
+          {
+            "x": 1228,
+            "y": 2004.3
+          }
+        ]
+      },
+      {
+        "id": "TExoPortOfKind→TExoDeclPortKind",
+        "points": [
+          {
+            "x": 1878,
+            "y": 2202.5
+          },
+          {
+            "x": 1910,
+            "y": 2202.5
+          },
+          {
+            "x": 1942,
+            "y": 2202.5
+          }
+        ]
+      },
+      {
+        "id": "TExoPortsOf→TExoAllOf",
+        "points": [
+          {
+            "x": 756.1,
+            "y": 2252
+          },
+          {
+            "x": 839,
+            "y": 2297
+          },
+          {
+            "x": 871,
+            "y": 2297
+          }
+        ]
+      },
+      {
+        "id": "TExoPortsOf→TExoDeclNode",
+        "points": [
+          {
+            "x": 807,
+            "y": 2233.9
+          },
+          {
+            "x": 839,
+            "y": 2238.5
+          },
+          {
+            "x": 1017.5,
+            "y": 2238.5
+          },
+          {
+            "x": 1196,
+            "y": 2238.5
+          },
+          {
+            "x": 1228,
+            "y": 2236.7
+          }
+        ]
+      },
+      {
+        "id": "TExoPortsOf→TExoPortMaps",
+        "points": [
+          {
+            "x": 752.5,
+            "y": 2183
+          },
+          {
+            "x": 839,
+            "y": 2133.3
+          },
+          {
+            "x": 871,
+            "y": 2133.3
+          }
+        ]
+      },
+      {
+        "id": "title→P",
+        "points": [
+          {
+            "x": 1724.4,
+            "y": 1004.5
+          },
+          {
+            "x": 1553,
+            "y": 1563.3
+          },
+          {
+            "x": 1414.4,
+            "y": 1483.3
+          }
+        ]
+      },
+      {
+        "id": "TRowParams→title",
+        "points": [
+          {
+            "x": 1463.5,
+            "y": 174
+          },
+          {
+            "x": 1553,
+            "y": 174
+          },
+          {
+            "x": 1726.4,
+            "y": 958.5
+          }
+        ]
+      },
+      {
+        "id": "widened→P",
+        "points": [
+          {
+            "x": 1074.9,
+            "y": 1083.8
+          },
+          {
+            "x": 1196,
+            "y": 1132.3
+          },
+          {
+            "x": 1362,
+            "y": 1437.3
+          }
+        ]
+      },
+      {
+        "id": "widened→title",
+        "points": [
+          {
+            "x": 1071,
+            "y": 1037.8
+          },
+          {
+            "x": 1196,
+            "y": 984
+          },
+          {
+            "x": 1374.5,
+            "y": 984
+          },
+          {
+            "x": 1553,
+            "y": 984
+          },
+          {
+            "x": 1671.5,
+            "y": 982.3
+          }
+        ]
+      },
+      {
+        "id": "withExoHighlight→HIGHLIGHT_PACK",
+        "points": [
+          {
+            "x": 475.5,
+            "y": 822.3
+          },
+          {
+            "x": 546,
+            "y": 822.3
+          },
+          {
+            "x": 632.5,
+            "y": 822.3
+          }
+        ]
+      },
+      {
+        "id": "write→c",
+        "points": [
+          {
+            "x": 1077.5,
+            "y": 1279.8
+          },
+          {
+            "x": 1196,
+            "y": 1279.8
+          },
+          {
+            "x": 1336,
+            "y": 1363.3
           }
         ]
       }

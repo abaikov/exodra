@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    // `dist` is tsup's and is what gets published — see tsconfig.build.json.
+    "outDir": "./.tsbuild",
+    "tsBuildInfoFile": "./.tsbuild/tsconfig.tsbuildinfo",
+    "rootDir": "./src",
+    "lib": ["ES2020"],
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "baseUrl": ".",
+    "paths": {
+      "@exodra/bench-harness": ["../bench-harness/.tsbuild/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "**/*.test.ts", "**/*.spec.ts", "**/bench/**"]
+}

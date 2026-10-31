@@ -1,14 +1,10 @@
-// Rollup plugin that compiles Exodra JSX/TSX via `babel-preset-exodra`'s shared
-// runner — the same pipeline Vite/esbuild/Jest use, so there is nothing to drift.
-
 import type { Plugin, SourceMapInput } from 'rollup';
-import { transformExodraJsx } from 'babel-preset-exodra';
+import { transformExodraJsx, type ExodraCompileOptions } from 'babel-preset-exodra';
 
-export interface ExodraRollupOptions {
-    /** Which files to compile. Default: `.jsx` and `.tsx`. */
+// Not `ExodraBundlerOptions`: that names the field `filter`, after the esbuild and Bun
+// host APIs. Rollup's convention for it is `include`.
+export interface ExodraRollupOptions extends ExodraCompileOptions {
     include?: RegExp;
-    /** Module the auto-imported `h`/`text` come from. Default `@exodra/core`. */
-    importSource?: string;
 }
 
 export function exodra(options: ExodraRollupOptions = {}): Plugin {
@@ -18,7 +14,7 @@ export function exodra(options: ExodraRollupOptions = {}): Plugin {
         async transform(code, id) {
             if (!include.test(id)) return null;
             const result = await transformExodraJsx(code, id, {
-                importSource: options.importSource,
+                schemaSource: options.schemaSource,
             });
             if (!result) return null;
             return {

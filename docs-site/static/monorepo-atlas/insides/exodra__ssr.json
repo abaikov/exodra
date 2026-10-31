@@ -8,58 +8,26 @@
     },
     "nodes": [
       {
-        "id": "CompiledSsrContext",
-        "label": "CompiledSsrContext",
-        "kind": "runtime",
+        "id": "attribute",
+        "label": "attribute",
+        "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "visibility": "-",
-            "text": "headHtml: string[]",
-            "full": "headHtml: string[]",
-            "parts": []
-          },
-          {
-            "visibility": "-",
-            "text": "body: string",
-            "full": "body: string",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "doc": "Compiled children arrive as SafeHtml (already-rendered HTML), not schemas.",
-            "text": "addHead(value): void",
-            "full": "addHead(value): void",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderHead(): string",
-            "full": "renderHead(): string",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "setBody(html): void",
-            "full": "setBody(html): void",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderBody(): string",
-            "full": "renderBody(): string",
+            "text": "(name, value): string",
+            "full": "(name, value): string",
             "parts": []
           }
         ],
-        "memberCount": 6,
-        "doc": "Status/headers/state/document assembly all live in the shared base; compile mode only differs in <head> storage and where the body comes from.",
-        "width": 165,
-        "height": 132,
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 171,
+        "height": 69,
         "violations": []
       },
       {
-        "id": "escapeJsonForScript",
-        "label": "escapeJsonForScript",
+        "id": "escapeExoJsonForScript",
+        "label": "escapeExoJsonForScript",
         "kind": "tooling",
         "layer": 0,
         "members": [
@@ -71,151 +39,53 @@
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "Make a JSON payload safe to sit inside a `<script>` element.",
-        "width": 146,
+        "doc": "`<`/`>` cover the only thing an HTML parser looks for inside a script — the closing `</script`.",
+        "width": 165,
         "height": 69,
         "violations": []
       },
       {
-        "id": "ExoNodeSsr",
-        "label": "ExoNodeSsr",
-        "kind": "runtime",
+        "id": "EXO_SSR_RESPONSE",
+        "label": "EXO_SSR_RESPONSE",
+        "kind": "app",
         "layer": 0,
-        "members": [
-          {
-            "visibility": "-",
-            "text": "ssr: ExoSsrWalkerContext",
-            "full": "ssr: ExoSsrWalkerContext",
-            "parts": [
-              {
-                "text": "ssr: "
-              },
-              {
-                "text": "ExoSsrWalkerContext",
-                "link": "ExoSsrWalkerContext"
-              }
-            ]
-          },
-          {
-            "visibility": "+",
-            "text": "setStatus(status): void",
-            "full": "setStatus(status): void",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getStatus(): number",
-            "full": "getStatus(): number",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "setHeader(name, value): void",
-            "full": "setHeader(name, value): void",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "appendHeader(name, value): void",
-            "full": "appendHeader(name, value): void",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getHeader(name): string",
-            "full": "getHeader(name): string",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getHeaderValues(name): readonly string[]",
-            "full": "getHeaderValues(name): readonly string[]",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getHeaders(): readonly TExoSsrH…",
-            "full": "getHeaders(): readonly TExoSsrHeader[]",
-            "parts": [],
-            "fullParts": [
-              {
-                "text": "getHeaders(): readonly "
-              },
-              {
-                "text": "TExoSsrHeader",
-                "link": "TExoSsrHeader"
-              },
-              {
-                "text": "[]"
-              }
-            ]
-          },
-          {
-            "visibility": "+",
-            "text": "addHead(schema): void",
-            "full": "addHead(schema): void",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderHead(): string",
-            "full": "renderHead(): string",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "setState(key, value): void",
-            "full": "setState(key, value): void",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getState(key): TValue",
-            "full": "getState(key): TValue",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getStateSnapshot(): Record<string, un…",
-            "full": "getStateSnapshot(): Record<string, unknown>",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderStateScript(options): string",
-            "full": "renderStateScript(options): string",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderBody(): string",
-            "full": "renderBody(): string",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderDocument(options): string",
-            "full": "renderDocument(options): string",
-            "parts": []
-          },
-          {
-            "visibility": "#",
-            "text": "createContext(schema, scope): TExoContext<{ typ…",
-            "full": "createContext(schema, scope): TExoContext<{ type: string | ((context: TExoContext) => TExoSchema | readonly TExoSchema[]); attrs: import(\"/Users/abaikov/work/exodra/packages/reactivity-types/dist/TExoNodeAttributes\").TExoNodeAttributes<import(\"/Users/abaikov/work/exodra/packages/core/dist/types/TExoNodeSchema\").TExoNodeSchema, unknown, unknown, Record<string, unknown>, Record<string, unknown>>; cacheKey?: string | symbol; exoRecord?: unknown; }>",
-            "parts": [],
-            "fullParts": []
-          }
-        ],
-        "memberCount": 17,
-        "doc": "The snapshot walker with a per-request SSR context attached: components reach status / headers / head / state through inject(ssrContextKey).",
-        "width": 293,
-        "height": 177,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "The token a page reads the request through: `c.inject(EXO_SSR_RESPONSE)!` in any wiring function.",
+        "width": 126,
+        "height": 46,
         "violations": []
       },
       {
-        "id": "ExoSsrContextBase",
-        "label": "ExoSsrContextBase",
+        "id": "EXO_STATE_SCRIPT_ID",
+        "label": "EXO_STATE_SCRIPT_ID",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "A constant because the protocol has two ends in different files — `renderStateScript` writes it, `readExoStateScript` looks it up — and two literals disagreeing fails SILENTLY: a reader finding no element cannot tell that from a page that …",
+        "width": 146,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXO_UNCOMPOSED_STR_BACKEND",
+        "label": "EXO_UNCOMPOSED_STR_BACKEND",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "doc": "Composed once: a backend built per request keys a fresh schema cache and recompiles every schema, markup parse included, on every request.",
+        "width": 190,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "ExoSsrResponse",
+        "label": "ExoSsrResponse",
         "kind": "runtime",
         "layer": 0,
         "members": [
@@ -249,6 +119,18 @@
             "parts": []
           },
           {
+            "visibility": "-",
+            "text": "headHtml: string[]",
+            "full": "headHtml: string[]",
+            "parts": []
+          },
+          {
+            "visibility": "-",
+            "text": "body: string",
+            "full": "body: string",
+            "parts": []
+          },
+          {
             "visibility": "+",
             "text": "setStatus(status): void",
             "full": "setStatus(status): void",
@@ -262,7 +144,6 @@
           },
           {
             "visibility": "+",
-            "doc": "Replace every header with this name (case-insensitive), then append it.",
             "text": "setHeader(name, value): void",
             "full": "setHeader(name, value): void",
             "parts": []
@@ -275,8 +156,8 @@
           },
           {
             "visibility": "+",
-            "text": "getHeader(name): string",
-            "full": "getHeader(name): string",
+            "text": "getHeader(name): string | undefined",
+            "full": "getHeader(name): string | undefined",
             "parts": []
           },
           {
@@ -287,7 +168,7 @@
           },
           {
             "visibility": "+",
-            "doc": "Copies — mutating the result must not reach the request state.",
+            "doc": "COPIES: mutating the result must not reach the request state.",
             "text": "getHeaders(): readonly TExoSsrH…",
             "full": "getHeaders(): readonly TExoSsrHeader[]",
             "parts": [],
@@ -312,8 +193,8 @@
           },
           {
             "visibility": "+",
-            "text": "getState(key): TValue",
-            "full": "getState(key): TValue",
+            "text": "getState(key): TValue | undefined",
+            "full": "getState(key): TValue | undefined",
             "parts": []
           },
           {
@@ -331,58 +212,21 @@
           },
           {
             "visibility": "+",
-            "doc": "Assemble the full HTML document around the rendered body.",
             "text": "renderDocument(options): string",
             "full": "renderDocument(options): string",
             "parts": []
           },
           {
-            "visibility": "+",
-            "modifier": "abstract",
-            "doc": "Collect a `<head>` entry.",
-            "text": "addHead(schema): void",
-            "full": "addHead(schema): void",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "modifier": "abstract",
-            "doc": "The collected `<head>` as HTML.",
-            "text": "renderHead(): string",
-            "full": "renderHead(): string",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "modifier": "abstract",
-            "doc": "The rendered body HTML.",
-            "text": "renderBody(): string",
-            "full": "renderBody(): string",
-            "parts": []
-          }
-        ],
-        "memberCount": 18,
-        "doc": "The per-request SSR response state — status, headers, state, and document assembly — shared by BOTH render modes: the schema walker (ExoNodeSsr) and the compiled renderer (renderToStringCompiled).",
-        "width": 235,
-        "height": 177,
-        "violations": []
-      },
-      {
-        "id": "ExoSsrWalkerContext",
-        "label": "ExoSsrWalkerContext",
-        "kind": "runtime",
-        "layer": 0,
-        "members": [
-          {
             "visibility": "-",
-            "text": "head: TExoSchema[]",
-            "full": "head: TExoSchema[]",
+            "doc": "The `head` a CALLER passed, as against `renderHead()`, which is what a RENDER collected.",
+            "text": "renderHeadOption(head): string",
+            "full": "renderHeadOption(head): string",
             "parts": []
           },
           {
             "visibility": "+",
-            "text": "addHead(schema): void",
-            "full": "addHead(schema): void",
+            "text": "addHead(entry): void",
+            "full": "addHead(entry): void",
             "parts": []
           },
           {
@@ -393,55 +237,22 @@
           },
           {
             "visibility": "+",
+            "doc": "Called once by `renderExoPage`, after the render, before anything reads the body.",
+            "text": "setBody(html): void",
+            "full": "setBody(html): void",
+            "parts": []
+          },
+          {
+            "visibility": "+",
             "text": "renderBody(): string",
             "full": "renderBody(): string",
             "parts": []
           }
         ],
-        "memberCount": 4,
-        "doc": "The walker's SSR context: <head> is collected as SCHEMAS and rendered with the snapshot walker on demand (compile mode collects pre-rendered HTML instead).",
-        "width": 171,
-        "height": 102,
-        "violations": []
-      },
-      {
-        "id": "Head",
-        "label": "Head",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(context): readonly TExoSchema…",
-            "full": "(context): readonly TExoSchema[]",
-            "parts": [],
-            "fullParts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "`<Head>{…}</Head>` — moves its children into the document `<head>`.",
-        "width": 235,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "Header",
-        "label": "Header",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(context): readonly TExoSchema…",
-            "full": "(context): readonly TExoSchema[]",
-            "parts": [],
-            "fullParts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "`<Header name value append?",
-        "width": 235,
-        "height": 69,
+        "memberCount": 22,
+        "doc": "Once per REQUEST, never per node: written for clarity, not for a render hot path.",
+        "width": 216,
+        "height": 177,
         "violations": []
       },
       {
@@ -463,21 +274,22 @@
         "violations": []
       },
       {
-        "id": "normalizeSchemas",
-        "label": "normalizeSchemas",
+        "id": "readExoStateScript",
+        "label": "readExoStateScript",
         "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(schema): TExoSchema[]",
-            "full": "(schema): TExoSchema[]",
-            "parts": []
+            "text": "(id, doc): Record<string, unkn…",
+            "full": "(id, doc): Record<string, unknown> | undefined",
+            "parts": [],
+            "fullParts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "One normalizer for every \"a schema or a list of schemas\" input in the SSR package: `<Head>` children, the node's `options.head`, and `addHead()`.",
-        "width": 178,
+        "doc": "No DOM touched at module scope and the package is `sideEffects: false`, so a server bundle drops this.",
+        "width": 235,
         "height": 69,
         "violations": []
       },
@@ -488,40 +300,21 @@
         "layer": 0,
         "members": [
           {
-            "text": "(attributes): string",
-            "full": "(attributes): string",
+            "text": "(attributes, declaredBy): string",
+            "full": "(attributes, declaredBy): string",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "Attribute serialization goes through @exodra/string's `spaceAttribute`, the same helper the element renderers use, so `<html>`/`<body>`/`<script>` attributes follow identical rules (className→class, folded object values, bare `true`, dropp…",
-        "width": 165,
+        "doc": "For `<html>`, `<body>` and the container `id` only.",
+        "width": 242,
         "height": 69,
         "violations": []
       },
       {
-        "id": "renderHydrationScript",
-        "label": "renderHydrationScript",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(options): string",
-            "full": "(options): string",
-            "parts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "Renders inline script to auto-hydrate persistor on client",
-        "width": 158,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "renderJsonScript",
-        "label": "renderJsonScript",
+        "id": "renderExoJsonScript",
+        "label": "renderExoJsonScript",
         "kind": "tooling",
         "layer": 0,
         "members": [
@@ -533,446 +326,36 @@
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "The ONE way this package emits a `<script type=\"application/json\">` payload.",
+        "doc": "The ONE emitter of a `<script type=\"application/json\">` payload here — both state channels use it.",
         "width": 184,
         "height": 69,
         "violations": []
       },
       {
-        "id": "renderPersistorHydration",
-        "label": "renderPersistorHydration",
+        "id": "renderExoPage",
+        "label": "renderExoPage",
         "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(persistor, options): string",
-            "full": "(persistor, options): string",
-            "parts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "Combined helper to render both persistor state and hydration script",
-        "width": 216,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "renderPersistorScript",
-        "label": "renderPersistorScript",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(persistor, options): string",
-            "full": "(persistor, options): string",
-            "parts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "Renders a script tag with persistor state for hydration",
-        "width": 216,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "renderSchemas",
-        "label": "renderSchemas",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(schema): string",
-            "full": "(schema): string",
-            "parts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "Render a schema (or list) to HTML with the snapshot walker.",
-        "width": 139,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "renderToStringCompiled",
-        "label": "renderToStringCompiled",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(render): TExoCompiledSsrResu…",
-            "full": "(render): TExoCompiledSsrResult",
-            "parts": [],
-            "fullParts": [
-              {
-                "text": "(render): "
-              },
-              {
-                "text": "TExoCompiledSsrResult",
-                "link": "TExoCompiledSsrResult"
-              }
-            ]
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "Run a compiled SSR page (a `() => SafeHtml` closure) with a fresh request SSR context, returning the HTML plus everything the metadata components collected.",
-        "width": 229,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "ssrContextKey",
-        "label": "ssrContextKey",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "State",
-        "label": "State",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(context): readonly TExoSchema…",
-            "full": "(context): readonly TExoSchema[]",
-            "parts": [],
-            "fullParts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "`<State name value />` — adds an entry to the serialized SSR state.",
-        "width": 235,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "Status",
-        "label": "Status",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(context): readonly TExoSchema…",
-            "full": "(context): readonly TExoSchema[]",
-            "parts": [],
-            "fullParts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "doc": "`<Status code={404} />` — sets the response status.",
-        "width": 235,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "TExoCompiledSsrResult",
-        "label": "TExoCompiledSsrResult",
-        "kind": "app",
-        "layer": 0,
-        "members": [
-          {
-            "visibility": "+",
-            "text": "html: string;",
-            "full": "html: string;",
-            "doc": "The rendered body HTML.",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "status: number;",
-            "full": "status: number;",
-            "doc": "HTTP status set via <Status> (default 200).",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "headers: readonly TExoSsrHeader[];",
-            "full": "headers: readonly TExoSsrHeader[];",
-            "doc": "Response headers set via <Header>.",
+            "text": "(machine, options): TExoSsrPage",
+            "full": "(machine, options): TExoSsrPage",
             "parts": [
               {
-                "text": "headers: readonly "
+                "text": "(machine, options): "
               },
               {
-                "text": "TExoSsrHeader",
-                "link": "TExoSsrHeader"
-              },
-              {
-                "text": "[];"
+                "text": "TExoSsrPage",
+                "link": "TExoSsrPage"
               }
             ]
-          },
-          {
-            "visibility": "+",
-            "text": "head: string;",
-            "full": "head: string;",
-            "doc": "Concatenated <head> HTML collected via <Head>.",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "stateScript: string;",
-            "full": "stateScript: string;",
-            "doc": "A `<script type=\"application/json\">` with the <State>, or `''`.",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "state: Record<string, unknown>;",
-            "full": "state: Record<string, unknown>;",
-            "doc": "Raw collected state.",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderDocument(options?: TExoSsrDocumen…",
-            "full": "renderDocument(options?: TExoSsrDocumentOptions): string;",
-            "doc": "Assemble a full HTML document from the body + collected head/state.",
-            "parts": [],
-            "fullParts": [
-              {
-                "text": "renderDocument(options?: "
-              },
-              {
-                "text": "TExoSsrDocumentOptions",
-                "link": "TExoSsrDocumentOptions"
-              },
-              {
-                "text": "): string;"
-              }
-            ]
-          }
-        ],
-        "memberCount": 7,
-        "stereotype": "interface",
-        "width": 293,
-        "height": 159,
-        "violations": []
-      },
-      {
-        "id": "TExoNodeStringSchema",
-        "label": "TExoNodeStringSchema",
-        "kind": "app",
-        "layer": 0,
-        "members": [
-          {
-            "text": "ConstructorParameters<typeof ExoNodeStr…",
-            "full": "ConstructorParameters<typeof ExoNodeString>[0]",
-            "parts": [],
-            "fullParts": []
           }
         ],
         "memberCount": 1,
-        "stereotype": "type",
-        "width": 293,
+        "stereotype": "function",
+        "doc": "The frame handed to `render` is the same `exoContextFrame` an exonode's `provide` makes — one level above the frame the root instance receives — so a page reads the request through the ordinary `c.inject(EXO_SSR_RESPONSE)`: no second rule.",
+        "width": 235,
         "height": 69,
-        "violations": []
-      },
-      {
-        "id": "TExoPersistorScriptOptions",
-        "label": "TExoPersistorScriptOptions",
-        "kind": "app",
-        "layer": 0,
-        "members": [
-          {
-            "visibility": "+",
-            "text": "id?: string;",
-            "full": "id?: string;",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "nonce?: string;",
-            "full": "nonce?: string;",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "variableName?: string;",
-            "full": "variableName?: string;",
-            "parts": []
-          }
-        ],
-        "memberCount": 3,
-        "stereotype": "interface",
-        "width": 190,
-        "height": 99,
-        "violations": []
-      },
-      {
-        "id": "TExoSsrChild",
-        "label": "TExoSsrChild",
-        "kind": "app",
-        "layer": 0,
-        "members": [
-          {
-            "text": "TExoSchema | readonly TExoSchema[] | nu…",
-            "full": "TExoSchema | readonly TExoSchema[] | null | undefined",
-            "parts": [],
-            "fullParts": []
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "type",
-        "width": 293,
-        "height": 69,
-        "violations": []
-      },
-      {
-        "id": "TExoSsrContext",
-        "label": "TExoSsrContext",
-        "kind": "app",
-        "layer": 0,
-        "members": [
-          {
-            "visibility": "+",
-            "text": "setStatus(status: number): void;",
-            "full": "setStatus(status: number): void;",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getStatus(): number;",
-            "full": "getStatus(): number;",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "setHeader(name: string, value: string):…",
-            "full": "setHeader(name: string, value: string): void;",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "appendHeader(name: string, value: strin…",
-            "full": "appendHeader(name: string, value: string): void;",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getHeader(name: string): string | undef…",
-            "full": "getHeader(name: string): string | undefined;",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getHeaderValues(name: string): readonly…",
-            "full": "getHeaderValues(name: string): readonly string[];",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getHeaders(): readonly TExoSsrHeader[];",
-            "full": "getHeaders(): readonly TExoSsrHeader[];",
-            "parts": [
-              {
-                "text": "getHeaders(): readonly "
-              },
-              {
-                "text": "TExoSsrHeader",
-                "link": "TExoSsrHeader"
-              },
-              {
-                "text": "[];"
-              }
-            ]
-          },
-          {
-            "visibility": "+",
-            "text": "addHead(schema: TExoSchema | readonly T…",
-            "full": "addHead(schema: TExoSchema | readonly TExoSchema[]): void;",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderHead(): string;",
-            "full": "renderHead(): string;",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "setState(key: string, value: unknown): …",
-            "full": "setState(key: string, value: unknown): void;",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getState<TValue = unknown>(key: string)…",
-            "full": "getState<TValue = unknown>(key: string): TValue | undefined;",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "getStateSnapshot(): Record<string, unkn…",
-            "full": "getStateSnapshot(): Record<string, unknown>;",
-            "parts": [],
-            "fullParts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderStateScript(options?: TExoSsrStat…",
-            "full": "renderStateScript(options?: TExoSsrStateScriptOptions): string;",
-            "parts": [],
-            "fullParts": [
-              {
-                "text": "renderStateScript(options?: "
-              },
-              {
-                "text": "TExoSsrStateScriptOptions",
-                "link": "TExoSsrStateScriptOptions"
-              },
-              {
-                "text": "): string;"
-              }
-            ]
-          },
-          {
-            "visibility": "+",
-            "text": "renderBody(): string;",
-            "full": "renderBody(): string;",
-            "parts": []
-          },
-          {
-            "visibility": "+",
-            "text": "renderDocument(options?: TExoSsrDocumen…",
-            "full": "renderDocument(options?: TExoSsrDocumentOptions): string;",
-            "parts": [],
-            "fullParts": [
-              {
-                "text": "renderDocument(options?: "
-              },
-              {
-                "text": "TExoSsrDocumentOptions",
-                "link": "TExoSsrDocumentOptions"
-              },
-              {
-                "text": "): string;"
-              }
-            ]
-          }
-        ],
-        "memberCount": 15,
-        "stereotype": "type",
-        "width": 293,
-        "height": 189,
         "violations": []
       },
       {
@@ -1007,10 +390,20 @@
           },
           {
             "visibility": "+",
-            "text": "head?: TExoSchema | readonly TExoSchema…",
-            "full": "head?: TExoSchema | readonly TExoSchema[];",
-            "parts": [],
-            "fullParts": []
+            "text": "head?: TExoSsrHeadOption;",
+            "full": "head?: TExoSsrHeadOption;",
+            "parts": [
+              {
+                "text": "head?: "
+              },
+              {
+                "text": "TExoSsrHeadOption",
+                "link": "TExoSsrHeadOption"
+              },
+              {
+                "text": ";"
+              }
+            ]
           },
           {
             "visibility": "+",
@@ -1031,6 +424,25 @@
         "stereotype": "type",
         "width": 293,
         "height": 159,
+        "violations": []
+      },
+      {
+        "id": "TExoSsrHeadEntry",
+        "label": "TExoSsrHeadEntry",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "string",
+            "full": "string",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "ONE `<head>` ENTRY, AS MARKUP: there is no walkable node form of a component on this core, so a component entry is `strBackend.render(TITLE)` and an entry is always a string.",
+        "width": 126,
+        "height": 69,
         "violations": []
       },
       {
@@ -1059,11 +471,144 @@
         "violations": []
       },
       {
-        "id": "TExoSsrNodeOptions",
-        "label": "TExoSsrNodeOptions",
+        "id": "TExoSsrHeadOption",
+        "label": "TExoSsrHeadOption",
         "kind": "app",
         "layer": 0,
         "members": [
+          {
+            "text": "TExoSsrHeadEntry | readonly TExoSsrHead…",
+            "full": "TExoSsrHeadEntry | readonly TExoSsrHeadEntry[] | null | undefined",
+            "parts": [
+              {
+                "text": "TExoSsrHeadEntry",
+                "link": "TExoSsrHeadEntry"
+              },
+              {
+                "text": " | readonly TExoSsrHead…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "TExoSsrHeadEntry",
+                "link": "TExoSsrHeadEntry"
+              },
+              {
+                "text": " | readonly "
+              },
+              {
+                "text": "TExoSsrHeadEntry",
+                "link": "TExoSsrHeadEntry"
+              },
+              {
+                "text": "[] | null | undefined"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoSsrPage",
+        "label": "TExoSsrPage",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "html: string;",
+            "full": "html: string;",
+            "doc": "The rendered instances — what goes INSIDE the hydration container.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "status: number;",
+            "full": "status: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "headers: readonly TExoSsrHeader[];",
+            "full": "headers: readonly TExoSsrHeader[];",
+            "doc": "In the order they were set.",
+            "parts": [
+              {
+                "text": "headers: readonly "
+              },
+              {
+                "text": "TExoSsrHeader",
+                "link": "TExoSsrHeader"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "head: string;",
+            "full": "head: string;",
+            "doc": "The seeded entries first, then the ones the page added.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "stateScript: string;",
+            "full": "stateScript: string;",
+            "doc": "`''` when the state map is empty.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "state: Record<string, unknown>;",
+            "full": "state: Record<string, unknown>;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "renderDocument(options?: TExoSsrDocumen…",
+            "full": "renderDocument(options?: TExoSsrDocumentOptions): string;",
+            "doc": "The container it emits is the element `backend.hydrate` must be handed, not its child.",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "renderDocument(options?: "
+              },
+              {
+                "text": "TExoSsrDocumentOptions",
+                "link": "TExoSsrDocumentOptions"
+              },
+              {
+                "text": "): string;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 7,
+        "stereotype": "type",
+        "doc": "Ready-made strings beside the raw values: splice the strings into your own shell, or let `renderDocument()` build one.",
+        "width": 293,
+        "height": 159,
+        "violations": []
+      },
+      {
+        "id": "TExoSsrPageOptions",
+        "label": "TExoSsrPageOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "backend?: TExoStrBackend;",
+            "full": "backend?: TExoStrBackend;",
+            "doc": "Name the SAME object per request: a schema is cached per backend by POINTER, so one built per request recompiles every schema.",
+            "parts": []
+          },
           {
             "visibility": "+",
             "text": "status?: number;",
@@ -1089,10 +634,9 @@
           },
           {
             "visibility": "+",
-            "text": "head?: TExoSchema | readonly TExoSchema…",
-            "full": "head?: TExoSchema | readonly TExoSchema[];",
-            "parts": [],
-            "fullParts": []
+            "text": "head?: string | readonly string[];",
+            "full": "head?: string | readonly string[];",
+            "parts": []
           },
           {
             "visibility": "+",
@@ -1100,33 +644,87 @@
             "full": "state?: Record<string, unknown> | Map<string, unknown>;",
             "parts": [],
             "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "context?: TExoContextFrame | null;",
+            "full": "context?: TExoContextFrame | null;",
+            "doc": "A frame to chain the request's own under, for a caller that already has context of its own to provide — a router handing the page its route.",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "params?: unknown;",
+            "full": "params?: unknown;",
+            "doc": "Handed to the page machine's `wire`, as `backend.render(machine, parent, params)` does.",
+            "parts": []
           }
         ],
-        "memberCount": 4,
+        "memberCount": 7,
         "stereotype": "type",
+        "doc": "Seeded into the response, so a wire that never mentions any of it still produces a complete document.",
         "width": 293,
-        "height": 114,
+        "height": 159,
         "violations": []
       },
       {
-        "id": "TExoSsrState",
-        "label": "TExoSsrState",
+        "id": "TExoSsrResponse",
+        "label": "TExoSsrResponse",
         "kind": "app",
         "layer": 0,
         "members": [
           {
             "visibility": "+",
-            "text": "status: number;",
-            "full": "status: number;",
+            "text": "setStatus(status: number): void;",
+            "full": "setStatus(status: number): void;",
+            "doc": "Defaults to 200.",
             "parts": []
           },
           {
             "visibility": "+",
-            "text": "headers: TExoSsrHeader[];",
-            "full": "headers: TExoSsrHeader[];",
+            "text": "getStatus(): number;",
+            "full": "getStatus(): number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "setHeader(name: string, value: string):…",
+            "full": "setHeader(name: string, value: string): void;",
+            "doc": "Replace every header with this name (case-insensitive), then append it.",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "appendHeader(name: string, value: strin…",
+            "full": "appendHeader(name: string, value: string): void;",
+            "doc": "Add another value under this name, keeping the ones already there (`Set-Cookie`).",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getHeader(name: string): string | undef…",
+            "full": "getHeader(name: string): string | undefined;",
+            "doc": "Every value under this name joined with `, `, or `undefined` when there are none.",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getHeaderValues(name: string): readonly…",
+            "full": "getHeaderValues(name: string): readonly string[];",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getHeaders(): readonly TExoSsrHeader[];",
+            "full": "getHeaders(): readonly TExoSsrHeader[];",
+            "doc": "Copies — mutating the result must not reach the request state.",
             "parts": [
               {
-                "text": "headers: "
+                "text": "getHeaders(): readonly "
               },
               {
                 "text": "TExoSsrHeader",
@@ -1139,21 +737,64 @@
           },
           {
             "visibility": "+",
-            "text": "head: TExoSchema[];",
-            "full": "head: TExoSchema[];",
+            "text": "addHead(entry: string | readonly string…",
+            "full": "addHead(entry: string | readonly string[]): void;",
+            "doc": "MARKUP: `'<title>Home</title>'`, or `strBackend.render(TITLE)`.",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "renderHead(): string;",
+            "full": "renderHead(): string;",
             "parts": []
           },
           {
             "visibility": "+",
-            "text": "state: Map<string, unknown>;",
-            "full": "state: Map<string, unknown>;",
-            "parts": []
+            "text": "setState(key: string, value: unknown): …",
+            "full": "setState(key: string, value: unknown): void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getState<TValue = unknown>(key: string)…",
+            "full": "getState<TValue = unknown>(key: string): TValue | undefined;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "getStateSnapshot(): Record<string, unkn…",
+            "full": "getStateSnapshot(): Record<string, unknown>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "renderStateScript(options?: TExoSsrStat…",
+            "full": "renderStateScript(options?: TExoSsrStateScriptOptions): string;",
+            "doc": "`''` when the state map is empty.",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "renderStateScript(options?: "
+              },
+              {
+                "text": "TExoSsrStateScriptOptions",
+                "link": "TExoSsrStateScriptOptions"
+              },
+              {
+                "text": "): string;"
+              }
+            ]
           }
         ],
-        "memberCount": 4,
+        "memberCount": 13,
         "stereotype": "type",
-        "width": 216,
-        "height": 114,
+        "doc": "The WRITE side only: `renderBody()`/`renderDocument()` are absent because a wire runs DURING the render, so a wire calling them would get a document with an empty container and no error.",
+        "width": 293,
+        "height": 189,
         "violations": []
       },
       {
@@ -1180,91 +821,13 @@
         "width": 184,
         "height": 84,
         "violations": []
-      },
-      {
-        "id": "useSsr",
-        "label": "useSsr",
-        "kind": "tooling",
-        "layer": 0,
-        "members": [
-          {
-            "text": "(context): TExoSsrContext",
-            "full": "(context): TExoSsrContext",
-            "parts": [
-              {
-                "text": "(context): "
-              },
-              {
-                "text": "TExoSsrContext",
-                "link": "TExoSsrContext"
-              }
-            ]
-          }
-        ],
-        "memberCount": 1,
-        "stereotype": "function",
-        "width": 197,
-        "height": 69,
-        "violations": []
       }
     ],
     "edges": [
       {
-        "id": "CompiledSsrContext→ExoSsrContextBase",
-        "from": "CompiledSsrContext",
-        "to": "ExoSsrContextBase",
-        "kinds": [
-          "type-only",
-          "value"
-        ],
-        "weight": 2,
-        "relation": "inheritance",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "specifier": "extends",
-            "kind": "value"
-          },
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoNodeSsr→ExoSsrWalkerContext",
-        "from": "ExoNodeSsr",
-        "to": "ExoSsrWalkerContext",
-        "kinds": [
-          "type-only",
-          "value"
-        ],
-        "weight": 2,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          },
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "specifier": "constructs",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoNodeSsr→ssrContextKey",
-        "from": "ExoNodeSsr",
-        "to": "ssrContextKey",
+        "id": "EXO_SSR_RESPONSE→TExoSsrResponse",
+        "from": "EXO_SSR_RESPONSE",
+        "to": "TExoSsrResponse",
         "kinds": [
           "type-only"
         ],
@@ -1272,8 +835,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/constants/EXO_SSR_RESPONSE.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1281,9 +844,9 @@
         "violations": []
       },
       {
-        "id": "ExoNodeSsr→TExoNodeStringSchema",
-        "from": "ExoNodeSsr",
-        "to": "TExoNodeStringSchema",
+        "id": "ExoSsrResponse→EXO_STATE_SCRIPT_ID",
+        "from": "ExoSsrResponse",
+        "to": "EXO_STATE_SCRIPT_ID",
         "kinds": [
           "type-only"
         ],
@@ -1291,8 +854,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/constants/EXO_STATE_SCRIPT_ID.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1300,110 +863,8 @@
         "violations": []
       },
       {
-        "id": "ExoNodeSsr→TExoSsrContext",
-        "from": "ExoNodeSsr",
-        "to": "TExoSsrContext",
-        "kinds": [
-          "type-only",
-          "value"
-        ],
-        "weight": 2,
-        "relation": "realization",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "implements",
-            "kind": "value"
-          },
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoNodeSsr→TExoSsrDocumentOptions",
-        "from": "ExoNodeSsr",
-        "to": "TExoSsrDocumentOptions",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoNodeSsr→TExoSsrHeader",
-        "from": "ExoNodeSsr",
-        "to": "TExoSsrHeader",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoNodeSsr→TExoSsrNodeOptions",
-        "from": "ExoNodeSsr",
-        "to": "TExoSsrNodeOptions",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoNodeSsr→TExoSsrStateScriptOptions",
-        "from": "ExoNodeSsr",
-        "to": "TExoSsrStateScriptOptions",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoSsrContextBase→normalizeHeaderName",
-        "from": "ExoSsrContextBase",
+        "id": "ExoSsrResponse→normalizeHeaderName",
+        "from": "ExoSsrResponse",
         "to": "normalizeHeaderName",
         "kinds": [
           "value"
@@ -1412,8 +873,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1421,8 +882,8 @@
         "violations": []
       },
       {
-        "id": "ExoSsrContextBase→renderAttributes",
-        "from": "ExoSsrContextBase",
+        "id": "ExoSsrResponse→renderAttributes",
+        "from": "ExoSsrResponse",
         "to": "renderAttributes",
         "kinds": [
           "value"
@@ -1431,8 +892,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1440,9 +901,9 @@
         "violations": []
       },
       {
-        "id": "ExoSsrContextBase→renderJsonScript",
-        "from": "ExoSsrContextBase",
-        "to": "renderJsonScript",
+        "id": "ExoSsrResponse→renderExoJsonScript",
+        "from": "ExoSsrResponse",
+        "to": "renderExoJsonScript",
         "kinds": [
           "value"
         ],
@@ -1450,8 +911,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderJsonScript.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1459,27 +920,8 @@
         "violations": []
       },
       {
-        "id": "ExoSsrContextBase→renderSchemas",
-        "from": "ExoSsrContextBase",
-        "to": "renderSchemas",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderSchemas.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoSsrContextBase→TExoSsrDocumentOptions",
-        "from": "ExoSsrContextBase",
+        "id": "ExoSsrResponse→TExoSsrDocumentOptions",
+        "from": "ExoSsrResponse",
         "to": "TExoSsrDocumentOptions",
         "kinds": [
           "type-only"
@@ -1488,8 +930,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrDocumentOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1497,8 +939,27 @@
         "violations": []
       },
       {
-        "id": "ExoSsrContextBase→TExoSsrHeader",
-        "from": "ExoSsrContextBase",
+        "id": "ExoSsrResponse→TExoSsrHeadEntry",
+        "from": "ExoSsrResponse",
+        "to": "TExoSsrHeadEntry",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadEntry.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoSsrResponse→TExoSsrHeader",
+        "from": "ExoSsrResponse",
         "to": "TExoSsrHeader",
         "kinds": [
           "type-only"
@@ -1507,8 +968,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeader.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1516,9 +977,9 @@
         "violations": []
       },
       {
-        "id": "ExoSsrContextBase→TExoSsrNodeOptions",
-        "from": "ExoSsrContextBase",
-        "to": "TExoSsrNodeOptions",
+        "id": "ExoSsrResponse→TExoSsrHeadOption",
+        "from": "ExoSsrResponse",
+        "to": "TExoSsrHeadOption",
         "kinds": [
           "type-only"
         ],
@@ -1526,8 +987,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadOption.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1535,8 +996,53 @@
         "violations": []
       },
       {
-        "id": "ExoSsrContextBase→TExoSsrStateScriptOptions",
-        "from": "ExoSsrContextBase",
+        "id": "ExoSsrResponse→TExoSsrPageOptions",
+        "from": "ExoSsrResponse",
+        "to": "TExoSsrPageOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPageOptions.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoSsrResponse→TExoSsrResponse",
+        "from": "ExoSsrResponse",
+        "to": "TExoSsrResponse",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "realization",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
+            "specifier": "implements",
+            "kind": "value"
+          },
+          {
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoSsrResponse→TExoSsrStateScriptOptions",
+        "from": "ExoSsrResponse",
         "to": "TExoSsrStateScriptOptions",
         "kinds": [
           "type-only"
@@ -1545,8 +1051,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrStateScriptOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1554,73 +1060,9 @@
         "violations": []
       },
       {
-        "id": "ExoSsrWalkerContext→ExoSsrContextBase",
-        "from": "ExoSsrWalkerContext",
-        "to": "ExoSsrContextBase",
-        "kinds": [
-          "type-only",
-          "value"
-        ],
-        "weight": 2,
-        "relation": "inheritance",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "specifier": "extends",
-            "kind": "value"
-          },
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoSsrContextBase.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoSsrWalkerContext→normalizeSchemas",
-        "from": "ExoSsrWalkerContext",
-        "to": "normalizeSchemas",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/normalizeSchemas.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoSsrWalkerContext→renderSchemas",
-        "from": "ExoSsrWalkerContext",
-        "to": "renderSchemas",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderSchemas.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "ExoSsrWalkerContext→TExoSsrNodeOptions",
-        "from": "ExoSsrWalkerContext",
-        "to": "TExoSsrNodeOptions",
+        "id": "readExoStateScript→EXO_STATE_SCRIPT_ID",
+        "from": "readExoStateScript",
+        "to": "EXO_STATE_SCRIPT_ID",
         "kinds": [
           "type-only"
         ],
@@ -1628,8 +1070,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/readExoStateScript.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/constants/EXO_STATE_SCRIPT_ID.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1637,9 +1079,9 @@
         "violations": []
       },
       {
-        "id": "Head→normalizeSchemas",
-        "from": "Head",
-        "to": "normalizeSchemas",
+        "id": "renderExoJsonScript→attribute",
+        "from": "renderExoJsonScript",
+        "to": "attribute",
         "kinds": [
           "value"
         ],
@@ -1647,8 +1089,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/normalizeSchemas.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1656,9 +1098,28 @@
         "violations": []
       },
       {
-        "id": "Head→TExoSsrChild",
-        "from": "Head",
-        "to": "TExoSsrChild",
+        "id": "renderExoJsonScript→escapeExoJsonForScript",
+        "from": "renderExoJsonScript",
+        "to": "escapeExoJsonForScript",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "renderExoPage→EXO_SSR_RESPONSE",
+        "from": "renderExoPage",
+        "to": "EXO_SSR_RESPONSE",
         "kinds": [
           "type-only"
         ],
@@ -1666,8 +1127,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/components.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/constants/EXO_SSR_RESPONSE.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1675,47 +1136,9 @@
         "violations": []
       },
       {
-        "id": "Head→useSsr",
-        "from": "Head",
-        "to": "useSsr",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "Header→useSsr",
-        "from": "Header",
-        "to": "useSsr",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderHydrationScript→TExoPersistorScriptOptions",
-        "from": "renderHydrationScript",
-        "to": "TExoPersistorScriptOptions",
+        "id": "renderExoPage→EXO_UNCOMPOSED_STR_BACKEND",
+        "from": "renderExoPage",
+        "to": "EXO_UNCOMPOSED_STR_BACKEND",
         "kinds": [
           "type-only"
         ],
@@ -1723,8 +1146,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1732,161 +1155,9 @@
         "violations": []
       },
       {
-        "id": "renderJsonScript→escapeJsonForScript",
-        "from": "renderJsonScript",
-        "to": "escapeJsonForScript",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderJsonScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderJsonScript.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderPersistorHydration→renderHydrationScript",
-        "from": "renderPersistorHydration",
-        "to": "renderHydrationScript",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderPersistorHydration→renderPersistorScript",
-        "from": "renderPersistorHydration",
-        "to": "renderPersistorScript",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderPersistorHydration→TExoPersistorScriptOptions",
-        "from": "renderPersistorHydration",
-        "to": "TExoPersistorScriptOptions",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderPersistorScript→renderJsonScript",
-        "from": "renderPersistorScript",
-        "to": "renderJsonScript",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderJsonScript.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderPersistorScript→TExoPersistorScriptOptions",
-        "from": "renderPersistorScript",
-        "to": "TExoPersistorScriptOptions",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderPersistorScript.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderSchemas→normalizeSchemas",
-        "from": "renderSchemas",
-        "to": "normalizeSchemas",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderSchemas.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/normalizeSchemas.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderSchemas→TExoNodeStringSchema",
-        "from": "renderSchemas",
-        "to": "TExoNodeStringSchema",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderSchemas.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/ExoNodeSsr.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderToStringCompiled→CompiledSsrContext",
-        "from": "renderToStringCompiled",
-        "to": "CompiledSsrContext",
+        "id": "renderExoPage→ExoSsrResponse",
+        "from": "renderExoPage",
+        "to": "ExoSsrResponse",
         "kinds": [
           "value"
         ],
@@ -1894,8 +1165,8 @@
         "relation": "composition",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
             "specifier": "constructs",
             "kind": "value"
           }
@@ -1903,46 +1174,8 @@
         "violations": []
       },
       {
-        "id": "renderToStringCompiled→ssrContextKey",
-        "from": "renderToStringCompiled",
-        "to": "ssrContextKey",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderToStringCompiled→TExoCompiledSsrResult",
-        "from": "renderToStringCompiled",
-        "to": "TExoCompiledSsrResult",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "renderToStringCompiled→TExoSsrDocumentOptions",
-        "from": "renderToStringCompiled",
+        "id": "renderExoPage→TExoSsrDocumentOptions",
+        "from": "renderExoPage",
         "to": "TExoSsrDocumentOptions",
         "kinds": [
           "type-only"
@@ -1951,8 +1184,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrDocumentOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1960,9 +1193,9 @@
         "violations": []
       },
       {
-        "id": "ssrContextKey→TExoSsrContext",
-        "from": "ssrContextKey",
-        "to": "TExoSsrContext",
+        "id": "renderExoPage→TExoSsrPage",
+        "from": "renderExoPage",
+        "to": "TExoSsrPage",
         "kinds": [
           "type-only"
         ],
@@ -1970,8 +1203,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPage.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1979,46 +1212,65 @@
         "violations": []
       },
       {
-        "id": "State→useSsr",
-        "from": "State",
-        "to": "useSsr",
+        "id": "renderExoPage→TExoSsrPageOptions",
+        "from": "renderExoPage",
+        "to": "TExoSsrPageOptions",
         "kinds": [
-          "value"
+          "type-only"
         ],
         "weight": 1,
-        "relation": "association",
+        "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "specifier": "calls",
-            "kind": "value"
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPageOptions.ts",
+            "specifier": "uses",
+            "kind": "type-only"
           }
         ],
         "violations": []
       },
       {
-        "id": "Status→useSsr",
-        "from": "Status",
-        "to": "useSsr",
+        "id": "TExoSsrDocumentOptions→TExoSsrHeadOption",
+        "from": "TExoSsrDocumentOptions",
+        "to": "TExoSsrHeadOption",
         "kinds": [
-          "value"
+          "type-only"
         ],
         "weight": 1,
-        "relation": "association",
+        "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/components.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "specifier": "calls",
-            "kind": "value"
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrDocumentOptions.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadOption.ts",
+            "specifier": "uses",
+            "kind": "type-only"
           }
         ],
         "violations": []
       },
       {
-        "id": "TExoCompiledSsrResult→TExoSsrDocumentOptions",
-        "from": "TExoCompiledSsrResult",
+        "id": "TExoSsrHeadOption→TExoSsrHeadEntry",
+        "from": "TExoSsrHeadOption",
+        "to": "TExoSsrHeadEntry",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadOption.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadEntry.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoSsrPage→TExoSsrDocumentOptions",
+        "from": "TExoSsrPage",
         "to": "TExoSsrDocumentOptions",
         "kinds": [
           "type-only"
@@ -2027,8 +1279,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPage.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrDocumentOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2036,8 +1288,8 @@
         "violations": []
       },
       {
-        "id": "TExoCompiledSsrResult→TExoSsrHeader",
-        "from": "TExoCompiledSsrResult",
+        "id": "TExoSsrPage→TExoSsrHeader",
+        "from": "TExoSsrPage",
         "to": "TExoSsrHeader",
         "kinds": [
           "type-only"
@@ -2046,8 +1298,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/renderToStringCompiled.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPage.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeader.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2055,27 +1307,8 @@
         "violations": []
       },
       {
-        "id": "TExoSsrContext→TExoSsrDocumentOptions",
-        "from": "TExoSsrContext",
-        "to": "TExoSsrDocumentOptions",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "TExoSsrContext→TExoSsrHeader",
-        "from": "TExoSsrContext",
+        "id": "TExoSsrPageOptions→TExoSsrHeader",
+        "from": "TExoSsrPageOptions",
         "to": "TExoSsrHeader",
         "kinds": [
           "type-only"
@@ -2084,8 +1317,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPageOptions.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeader.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2093,8 +1326,27 @@
         "violations": []
       },
       {
-        "id": "TExoSsrContext→TExoSsrStateScriptOptions",
-        "from": "TExoSsrContext",
+        "id": "TExoSsrResponse→TExoSsrHeader",
+        "from": "TExoSsrResponse",
+        "to": "TExoSsrHeader",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeader.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoSsrResponse→TExoSsrStateScriptOptions",
+        "from": "TExoSsrResponse",
         "to": "TExoSsrStateScriptOptions",
         "kinds": [
           "type-only"
@@ -2103,84 +1355,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "TExoSsrNodeOptions→TExoSsrHeader",
-        "from": "TExoSsrNodeOptions",
-        "to": "TExoSsrHeader",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "TExoSsrState→TExoSsrHeader",
-        "from": "TExoSsrState",
-        "to": "TExoSsrHeader",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "useSsr→ssrContextKey",
-        "from": "useSsr",
-        "to": "ssrContextKey",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "useSsr→TExoSsrContext",
-        "from": "useSsr",
-        "to": "TExoSsrContext",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types.ts",
+            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
+            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrStateScriptOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2191,1300 +1367,681 @@
     "rules": {}
   },
   "layout": {
-    "width": 1991,
-    "height": 2120.3,
+    "width": 1544,
+    "height": 1304,
     "nodes": [
       {
-        "id": "CompiledSsrContext",
-        "x": 705.5,
-        "y": 1555.3,
-        "width": 165,
-        "height": 132
-      },
-      {
-        "id": "escapeJsonForScript",
-        "x": 1747.5,
-        "y": 366.3,
-        "width": 146,
-        "height": 69
-      },
-      {
-        "id": "ExoNodeSsr",
-        "x": 323,
-        "y": 1066.8,
-        "width": 293,
-        "height": 177
-      },
-      {
-        "id": "ExoSsrContextBase",
-        "x": 989,
-        "y": 690.3,
-        "width": 235,
-        "height": 177
-      },
-      {
-        "id": "ExoSsrWalkerContext",
-        "x": 702.5,
-        "y": 24,
+        "id": "attribute",
+        "x": 1098,
+        "y": 270,
         "width": 171,
-        "height": 102
-      },
-      {
-        "id": "Head",
-        "x": 24,
-        "y": 2018.3,
-        "width": 235,
         "height": 69
       },
       {
-        "id": "Header",
-        "x": 24,
-        "y": 1892,
-        "width": 235,
+        "id": "escapeExoJsonForScript",
+        "x": 1101,
+        "y": 367,
+        "width": 165,
         "height": 69
+      },
+      {
+        "id": "EXO_SSR_RESPONSE",
+        "x": 406.5,
+        "y": 1034,
+        "width": 126,
+        "height": 46
+      },
+      {
+        "id": "EXO_STATE_SCRIPT_ID",
+        "x": 753.5,
+        "y": 45.5,
+        "width": 146,
+        "height": 46
+      },
+      {
+        "id": "EXO_UNCOMPOSED_STR_BACKEND",
+        "x": 374.5,
+        "y": 300.3,
+        "width": 190,
+        "height": 46
+      },
+      {
+        "id": "ExoSsrResponse",
+        "x": 361.5,
+        "y": 564.3,
+        "width": 216,
+        "height": 177
       },
       {
         "id": "normalizeHeaderName",
-        "x": 1390.5,
-        "y": 631.3,
+        "x": 753.5,
+        "y": 119.5,
         "width": 146,
         "height": 69
       },
       {
-        "id": "normalizeSchemas",
-        "x": 1731.5,
-        "y": 682,
-        "width": 178,
+        "id": "readExoStateScript",
+        "x": 352,
+        "y": 24,
+        "width": 235,
         "height": 69
       },
       {
         "id": "renderAttributes",
-        "x": 1381,
-        "y": 728.3,
-        "width": 165,
+        "x": 705.5,
+        "y": 216.5,
+        "width": 242,
         "height": 69
       },
       {
-        "id": "renderHydrationScript",
-        "x": 1027.5,
-        "y": 419,
-        "width": 158,
-        "height": 69
-      },
-      {
-        "id": "renderJsonScript",
-        "x": 1371.5,
-        "y": 524.3,
+        "id": "renderExoJsonScript",
+        "x": 734.5,
+        "y": 313.5,
         "width": 184,
         "height": 69
       },
       {
-        "id": "renderPersistorHydration",
-        "x": 680,
-        "y": 368.8,
-        "width": 216,
-        "height": 69
-      },
-      {
-        "id": "renderPersistorScript",
-        "x": 998.5,
-        "y": 322,
-        "width": 216,
-        "height": 69
-      },
-      {
-        "id": "renderSchemas",
-        "x": 1394,
-        "y": 427.3,
-        "width": 139,
-        "height": 69
-      },
-      {
-        "id": "renderToStringCompiled",
-        "x": 355,
-        "y": 1666.8,
-        "width": 229,
-        "height": 69
-      },
-      {
-        "id": "ssrContextKey",
-        "x": 728,
-        "y": 1481.3,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "State",
+        "id": "renderExoPage",
         "x": 24,
-        "y": 1795,
+        "y": 650.3,
         "width": 235,
         "height": 69
-      },
-      {
-        "id": "Status",
-        "x": 24,
-        "y": 1698,
-        "width": 235,
-        "height": 69
-      },
-      {
-        "id": "TExoCompiledSsrResult",
-        "x": 960,
-        "y": 1631.8,
-        "width": 293,
-        "height": 159
-      },
-      {
-        "id": "TExoNodeStringSchema",
-        "x": 1674,
-        "y": 108,
-        "width": 293,
-        "height": 69
-      },
-      {
-        "id": "TExoPersistorScriptOptions",
-        "x": 1368.5,
-        "y": 283.5,
-        "width": 190,
-        "height": 99
-      },
-      {
-        "id": "TExoSsrChild",
-        "x": 323,
-        "y": 1999,
-        "width": 293,
-        "height": 69
-      },
-      {
-        "id": "TExoSsrContext",
-        "x": 960,
-        "y": 1409.8,
-        "width": 293,
-        "height": 189
       },
       {
         "id": "TExoSsrDocumentOptions",
-        "x": 1317,
-        "y": 1335,
+        "x": 680,
+        "y": 950.5,
         "width": 293,
         "height": 159
       },
       {
+        "id": "TExoSsrHeadEntry",
+        "x": 1394,
+        "y": 1210.3,
+        "width": 126,
+        "height": 69
+      },
+      {
         "id": "TExoSsrHeader",
-        "x": 1757.5,
-        "y": 1149.8,
+        "x": 1120.5,
+        "y": 534.5,
         "width": 126,
         "height": 84
       },
       {
-        "id": "TExoSsrNodeOptions",
-        "x": 1317,
-        "y": 967.3,
+        "id": "TExoSsrHeadOption",
+        "x": 1037,
+        "y": 1099,
         "width": 293,
-        "height": 114
+        "height": 69
       },
       {
-        "id": "TExoSsrState",
-        "x": 1355.5,
-        "y": 825.3,
-        "width": 216,
-        "height": 114
+        "id": "TExoSsrPage",
+        "x": 323,
+        "y": 769.3,
+        "width": 293,
+        "height": 159
+      },
+      {
+        "id": "TExoSsrPageOptions",
+        "x": 680,
+        "y": 445.3,
+        "width": 293,
+        "height": 159
+      },
+      {
+        "id": "TExoSsrResponse",
+        "x": 680,
+        "y": 718.8,
+        "width": 293,
+        "height": 189
       },
       {
         "id": "TExoSsrStateScriptOptions",
-        "x": 1371.5,
-        "y": 1223,
+        "x": 1091.5,
+        "y": 1196,
         "width": 184,
         "height": 84
-      },
-      {
-        "id": "useSsr",
-        "x": 371,
-        "y": 1810.3,
-        "width": 197,
-        "height": 69
       }
     ],
     "edges": [
       {
-        "id": "CompiledSsrContext→ExoSsrContextBase",
+        "id": "EXO_SSR_RESPONSE→TExoSsrResponse",
         "points": [
           {
-            "x": 870.5,
-            "y": 1621.3
-          },
-          {
-            "x": 928,
-            "y": 1621.3
-          },
-          {
-            "x": 1087.7,
-            "y": 867.3
-          }
-        ]
-      },
-      {
-        "id": "ExoNodeSsr→ExoSsrWalkerContext",
-        "points": [
-          {
-            "x": 484.1,
-            "y": 1066.8
+            "x": 496.4,
+            "y": 1034
           },
           {
             "x": 648,
-            "y": 75
+            "y": 904.3
           },
           {
-            "x": 702.5,
-            "y": 75
+            "x": 680,
+            "y": 887.9
           }
         ]
       },
       {
-        "id": "ExoNodeSsr→ssrContextKey",
+        "id": "ExoSsrResponse→EXO_STATE_SCRIPT_ID",
         "points": [
           {
-            "x": 484.6,
-            "y": 1066.8
+            "x": 498.4,
+            "y": 564.3
           },
           {
             "x": 648,
-            "y": 110.8
+            "y": 106.3
           },
           {
-            "x": 785.7,
-            "y": 1481.3
+            "x": 753.5,
+            "y": 83.9
           }
         ]
       },
       {
-        "id": "ExoNodeSsr→TExoNodeStringSchema",
+        "id": "ExoSsrResponse→normalizeHeaderName",
         "points": [
           {
-            "x": 485.2,
-            "y": 1066.8
+            "x": 501.2,
+            "y": 564.3
           },
           {
             "x": 648,
-            "y": 150
+            "y": 154
           },
           {
-            "x": 788,
-            "y": 150
-          },
-          {
-            "x": 928,
-            "y": 150
-          },
-          {
-            "x": 1106.5,
-            "y": 150
-          },
-          {
-            "x": 1285,
-            "y": 150
-          },
-          {
-            "x": 1463.5,
-            "y": 150
-          },
-          {
-            "x": 1642,
-            "y": 150
-          },
-          {
-            "x": 1674,
-            "y": 148.7
+            "x": 753.5,
+            "y": 154
           }
         ]
       },
       {
-        "id": "ExoNodeSsr→TExoSsrContext",
+        "id": "ExoSsrResponse→renderAttributes",
         "points": [
           {
-            "x": 529.6,
-            "y": 1066.8
+            "x": 508.8,
+            "y": 564.3
           },
           {
             "x": 648,
-            "y": 892.3
-          },
-          {
-            "x": 788,
-            "y": 892.3
-          },
-          {
-            "x": 928,
-            "y": 892.3
-          },
-          {
-            "x": 1078.9,
-            "y": 1409.8
-          }
-        ]
-      },
-      {
-        "id": "ExoNodeSsr→TExoSsrDocumentOptions",
-        "points": [
-          {
-            "x": 616,
-            "y": 1174.7
-          },
-          {
-            "x": 648,
-            "y": 1179
-          },
-          {
-            "x": 788,
-            "y": 1179
-          },
-          {
-            "x": 928,
-            "y": 1179
-          },
-          {
-            "x": 1106.5,
-            "y": 1179
-          },
-          {
-            "x": 1285,
-            "y": 1179
-          },
-          {
-            "x": 1403.2,
-            "y": 1335
-          }
-        ]
-      },
-      {
-        "id": "ExoNodeSsr→TExoSsrHeader",
-        "points": [
-          {
-            "x": 616,
-            "y": 1191.2
-          },
-          {
-            "x": 648,
-            "y": 1199
-          },
-          {
-            "x": 788,
-            "y": 1199
-          },
-          {
-            "x": 928,
-            "y": 1199
-          },
-          {
-            "x": 1106.5,
-            "y": 1199
-          },
-          {
-            "x": 1285,
-            "y": 1199
-          },
-          {
-            "x": 1463.5,
-            "y": 1199
-          },
-          {
-            "x": 1642,
-            "y": 1199
-          },
-          {
-            "x": 1757.5,
-            "y": 1194.3
-          }
-        ]
-      },
-      {
-        "id": "ExoNodeSsr→TExoSsrNodeOptions",
-        "points": [
-          {
-            "x": 616,
-            "y": 1218.2
-          },
-          {
-            "x": 648,
-            "y": 1232
-          },
-          {
-            "x": 788,
-            "y": 1232
-          },
-          {
-            "x": 928,
-            "y": 1232
-          },
-          {
-            "x": 1106.5,
-            "y": 1232
-          },
-          {
-            "x": 1285,
-            "y": 1232
-          },
-          {
-            "x": 1414.5,
-            "y": 1081.3
-          }
-        ]
-      },
-      {
-        "id": "ExoNodeSsr→TExoSsrStateScriptOptions",
-        "points": [
-          {
-            "x": 613.4,
-            "y": 1243.8
-          },
-          {
-            "x": 648,
-            "y": 1265
-          },
-          {
-            "x": 788,
-            "y": 1265
-          },
-          {
-            "x": 928,
-            "y": 1265
-          },
-          {
-            "x": 1106.5,
-            "y": 1265
-          },
-          {
-            "x": 1285,
-            "y": 1265
-          },
-          {
-            "x": 1371.5,
-            "y": 1265
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrContextBase→normalizeHeaderName",
-        "points": [
-          {
-            "x": 1172.4,
-            "y": 690.3
-          },
-          {
-            "x": 1285,
-            "y": 539
-          },
-          {
-            "x": 1414.9,
-            "y": 631.3
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrContextBase→renderAttributes",
-        "points": [
-          {
-            "x": 1193.7,
-            "y": 690.3
-          },
-          {
-            "x": 1285,
-            "y": 597.5
-          },
-          {
-            "x": 1426.2,
-            "y": 728.3
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrContextBase→renderJsonScript",
-        "points": [
-          {
-            "x": 1204.5,
-            "y": 690.3
-          },
-          {
-            "x": 1285,
-            "y": 617.5
-          },
-          {
-            "x": 1371.5,
-            "y": 589
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrContextBase→renderSchemas",
-        "points": [
-          {
-            "x": 1218.3,
-            "y": 690.3
-          },
-          {
-            "x": 1285,
-            "y": 637.5
-          },
-          {
-            "x": 1428.5,
-            "y": 496.3
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrContextBase→TExoSsrDocumentOptions",
-        "points": [
-          {
-            "x": 1217.2,
-            "y": 867.3
-          },
-          {
-            "x": 1285,
-            "y": 921.5
-          },
-          {
-            "x": 1434.7,
-            "y": 1335
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrContextBase→TExoSsrHeader",
-        "points": [
-          {
-            "x": 1154.9,
-            "y": 867.3
-          },
-          {
-            "x": 1285,
-            "y": 1105.3
-          },
-          {
-            "x": 1463.5,
-            "y": 1105.3
-          },
-          {
-            "x": 1642,
-            "y": 1105.3
-          },
-          {
-            "x": 1757.5,
-            "y": 1161.2
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrContextBase→TExoSsrNodeOptions",
-        "points": [
-          {
-            "x": 1152.1,
-            "y": 867.3
-          },
-          {
-            "x": 1285,
-            "y": 1125.3
-          },
-          {
-            "x": 1362.8,
-            "y": 1081.3
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrContextBase→TExoSsrStateScriptOptions",
-        "points": [
-          {
-            "x": 1149.6,
-            "y": 867.3
-          },
-          {
-            "x": 1285,
-            "y": 1145.3
-          },
-          {
-            "x": 1400.9,
-            "y": 1223
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrWalkerContext→ExoSsrContextBase",
-        "points": [
-          {
-            "x": 873.5,
-            "y": 96.8
-          },
-          {
-            "x": 928,
-            "y": 110.8
-          },
-          {
-            "x": 1082.9,
-            "y": 690.3
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrWalkerContext→normalizeSchemas",
-        "points": [
-          {
-            "x": 873.5,
-            "y": 84.6
-          },
-          {
-            "x": 928,
-            "y": 90.8
-          },
-          {
-            "x": 1106.5,
-            "y": 90.8
-          },
-          {
-            "x": 1285,
-            "y": 90.8
-          },
-          {
-            "x": 1463.5,
-            "y": 90.8
-          },
-          {
-            "x": 1642,
-            "y": 90.8
-          },
-          {
-            "x": 1810.7,
-            "y": 682
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrWalkerContext→renderSchemas",
-        "points": [
-          {
-            "x": 873.5,
-            "y": 72.4
-          },
-          {
-            "x": 928,
-            "y": 70.8
-          },
-          {
-            "x": 1106.5,
-            "y": 70.8
-          },
-          {
-            "x": 1285,
-            "y": 70.8
-          },
-          {
-            "x": 1447.8,
-            "y": 427.3
-          }
-        ]
-      },
-      {
-        "id": "ExoSsrWalkerContext→TExoSsrNodeOptions",
-        "points": [
-          {
-            "x": 873.5,
-            "y": 60.2
-          },
-          {
-            "x": 928,
-            "y": 50.8
-          },
-          {
-            "x": 1106.5,
-            "y": 50.8
-          },
-          {
-            "x": 1285,
-            "y": 50.8
-          },
-          {
-            "x": 1453,
-            "y": 967.3
-          }
-        ]
-      },
-      {
-        "id": "Head→normalizeSchemas",
-        "points": [
-          {
-            "x": 259,
-            "y": 2083.6
-          },
-          {
-            "x": 291,
-            "y": 2092
-          },
-          {
-            "x": 469.5,
-            "y": 2092
-          },
-          {
-            "x": 648,
-            "y": 2092
-          },
-          {
-            "x": 788,
-            "y": 2092
-          },
-          {
-            "x": 928,
-            "y": 2092
-          },
-          {
-            "x": 1106.5,
-            "y": 2092
-          },
-          {
-            "x": 1285,
-            "y": 2092
-          },
-          {
-            "x": 1463.5,
-            "y": 2092
-          },
-          {
-            "x": 1642,
-            "y": 2092
-          },
-          {
-            "x": 1816,
-            "y": 751
-          }
-        ]
-      },
-      {
-        "id": "Head→TExoSsrChild",
-        "points": [
-          {
-            "x": 259,
-            "y": 2037.6
-          },
-          {
-            "x": 291,
-            "y": 2033.5
-          },
-          {
-            "x": 323,
-            "y": 2033.5
-          }
-        ]
-      },
-      {
-        "id": "Head→useSsr",
-        "points": [
-          {
-            "x": 217.6,
-            "y": 2018.3
-          },
-          {
-            "x": 291,
-            "y": 1985
-          },
-          {
-            "x": 425.6,
-            "y": 1879.3
-          }
-        ]
-      },
-      {
-        "id": "Header→useSsr",
-        "points": [
-          {
-            "x": 259,
-            "y": 1926.5
-          },
-          {
-            "x": 291,
-            "y": 1926.5
-          },
-          {
-            "x": 394.2,
-            "y": 1879.3
-          }
-        ]
-      },
-      {
-        "id": "renderHydrationScript→TExoPersistorScriptOptions",
-        "points": [
-          {
-            "x": 1185.5,
-            "y": 453.5
-          },
-          {
-            "x": 1285,
-            "y": 453.5
-          },
-          {
-            "x": 1390.2,
-            "y": 382.5
-          }
-        ]
-      },
-      {
-        "id": "renderJsonScript→escapeJsonForScript",
-        "points": [
-          {
-            "x": 1555.5,
-            "y": 558.8
-          },
-          {
-            "x": 1642,
-            "y": 558.8
-          },
-          {
-            "x": 1781.5,
-            "y": 435.3
-          }
-        ]
-      },
-      {
-        "id": "renderPersistorHydration→renderHydrationScript",
-        "points": [
-          {
-            "x": 884.1,
-            "y": 437.8
-          },
-          {
-            "x": 928,
-            "y": 453.5
-          },
-          {
-            "x": 1027.5,
-            "y": 453.5
-          }
-        ]
-      },
-      {
-        "id": "renderPersistorHydration→renderPersistorScript",
-        "points": [
-          {
-            "x": 891.3,
-            "y": 368.8
-          },
-          {
-            "x": 928,
-            "y": 356.5
-          },
-          {
-            "x": 998.5,
-            "y": 356.5
-          }
-        ]
-      },
-      {
-        "id": "renderPersistorHydration→TExoPersistorScriptOptions",
-        "points": [
-          {
-            "x": 810.4,
-            "y": 368.8
-          },
-          {
-            "x": 928,
-            "y": 187.5
-          },
-          {
-            "x": 1106.5,
-            "y": 187.5
-          },
-          {
-            "x": 1285,
-            "y": 187.5
-          },
-          {
-            "x": 1402.8,
-            "y": 283.5
-          }
-        ]
-      },
-      {
-        "id": "renderPersistorScript→renderJsonScript",
-        "points": [
-          {
-            "x": 1214.5,
-            "y": 350.4
-          },
-          {
-            "x": 1285,
-            "y": 346.5
-          },
-          {
-            "x": 1434.5,
-            "y": 524.3
-          }
-        ]
-      },
-      {
-        "id": "renderPersistorScript→TExoPersistorScriptOptions",
-        "points": [
-          {
-            "x": 1214.5,
-            "y": 379.8
-          },
-          {
-            "x": 1285,
-            "y": 395
-          },
-          {
-            "x": 1368.5,
-            "y": 366
-          }
-        ]
-      },
-      {
-        "id": "renderSchemas→normalizeSchemas",
-        "points": [
-          {
-            "x": 1533,
-            "y": 476.7
-          },
-          {
-            "x": 1642,
-            "y": 500.3
-          },
-          {
-            "x": 1792,
-            "y": 682
-          }
-        ]
-      },
-      {
-        "id": "renderSchemas→TExoNodeStringSchema",
-        "points": [
-          {
-            "x": 1509.5,
-            "y": 427.3
-          },
-          {
-            "x": 1642,
-            "y": 328
-          },
-          {
-            "x": 1787.3,
-            "y": 177
-          }
-        ]
-      },
-      {
-        "id": "renderToStringCompiled→CompiledSsrContext",
-        "points": [
-          {
-            "x": 510.8,
-            "y": 1666.8
-          },
-          {
-            "x": 648,
-            "y": 1552.3
+            "y": 251
           },
           {
             "x": 705.5,
-            "y": 1580.6
+            "y": 251
           }
         ]
       },
       {
-        "id": "renderToStringCompiled→ssrContextKey",
+        "id": "ExoSsrResponse→renderExoJsonScript",
         "points": [
           {
-            "x": 519.5,
-            "y": 1666.8
+            "x": 521.3,
+            "y": 564.3
           },
           {
             "x": 648,
-            "y": 1578
+            "y": 348
           },
           {
-            "x": 744.3,
-            "y": 1527.3
+            "x": 734.5,
+            "y": 348
           }
         ]
       },
       {
-        "id": "renderToStringCompiled→TExoCompiledSsrResult",
+        "id": "ExoSsrResponse→TExoSsrDocumentOptions",
         "points": [
           {
-            "x": 584,
-            "y": 1707.7
+            "x": 503,
+            "y": 741.3
           },
           {
             "x": 648,
-            "y": 1711.3
+            "y": 1124
           },
           {
-            "x": 788,
-            "y": 1711.3
-          },
-          {
-            "x": 928,
-            "y": 1711.3
-          },
-          {
-            "x": 960,
-            "y": 1711.3
+            "x": 680,
+            "y": 1107.1
           }
         ]
       },
       {
-        "id": "renderToStringCompiled→TExoSsrDocumentOptions",
+        "id": "ExoSsrResponse→TExoSsrHeadEntry",
         "points": [
           {
-            "x": 523.8,
-            "y": 1735.8
+            "x": 493.8,
+            "y": 741.3
           },
           {
             "x": 648,
-            "y": 1814.8
+            "y": 1304
           },
           {
-            "x": 788,
-            "y": 1814.8
+            "x": 826.5,
+            "y": 1304
           },
           {
-            "x": 928,
-            "y": 1814.8
+            "x": 1005,
+            "y": 1304
           },
           {
-            "x": 1106.5,
-            "y": 1814.8
+            "x": 1183.5,
+            "y": 1304
           },
           {
-            "x": 1285,
-            "y": 1814.8
+            "x": 1362,
+            "y": 1304
           },
           {
-            "x": 1428,
-            "y": 1494
+            "x": 1401.7,
+            "y": 1279.3
           }
         ]
       },
       {
-        "id": "ssrContextKey→TExoSsrContext",
+        "id": "ExoSsrResponse→TExoSsrHeader",
         "points": [
           {
-            "x": 848,
-            "y": 1504.3
+            "x": 577.5,
+            "y": 678.2
           },
           {
-            "x": 928,
-            "y": 1504.3
+            "x": 648,
+            "y": 694.8
           },
           {
-            "x": 960,
-            "y": 1504.3
+            "x": 826.5,
+            "y": 694.8
+          },
+          {
+            "x": 1005,
+            "y": 694.8
+          },
+          {
+            "x": 1120.5,
+            "y": 618.2
           }
         ]
       },
       {
-        "id": "State→useSsr",
+        "id": "ExoSsrResponse→TExoSsrHeadOption",
         "points": [
           {
-            "x": 259,
-            "y": 1829.5
+            "x": 499.7,
+            "y": 741.3
+          },
+          {
+            "x": 648,
+            "y": 1175.8
+          },
+          {
+            "x": 826.5,
+            "y": 1175.8
+          },
+          {
+            "x": 1005,
+            "y": 1175.8
+          },
+          {
+            "x": 1037.7,
+            "y": 1168
+          }
+        ]
+      },
+      {
+        "id": "ExoSsrResponse→TExoSsrPageOptions",
+        "points": [
+          {
+            "x": 577.5,
+            "y": 606.6
+          },
+          {
+            "x": 648,
+            "y": 576.5
+          },
+          {
+            "x": 680,
+            "y": 567.2
+          }
+        ]
+      },
+      {
+        "id": "ExoSsrResponse→TExoSsrResponse",
+        "points": [
+          {
+            "x": 577.5,
+            "y": 720.1
+          },
+          {
+            "x": 648,
+            "y": 764
+          },
+          {
+            "x": 680,
+            "y": 772.8
+          }
+        ]
+      },
+      {
+        "id": "ExoSsrResponse→TExoSsrStateScriptOptions",
+        "points": [
+          {
+            "x": 495.5,
+            "y": 741.3
+          },
+          {
+            "x": 648,
+            "y": 1261
+          },
+          {
+            "x": 826.5,
+            "y": 1261
+          },
+          {
+            "x": 1005,
+            "y": 1261
+          },
+          {
+            "x": 1091.5,
+            "y": 1249.9
+          }
+        ]
+      },
+      {
+        "id": "readExoStateScript→EXO_STATE_SCRIPT_ID",
+        "points": [
+          {
+            "x": 587,
+            "y": 58.5
+          },
+          {
+            "x": 648,
+            "y": 58.5
+          },
+          {
+            "x": 753.5,
+            "y": 64.4
+          }
+        ]
+      },
+      {
+        "id": "renderExoJsonScript→attribute",
+        "points": [
+          {
+            "x": 918.5,
+            "y": 325.6
+          },
+          {
+            "x": 1005,
+            "y": 304.5
+          },
+          {
+            "x": 1098,
+            "y": 304.5
+          }
+        ]
+      },
+      {
+        "id": "renderExoJsonScript→escapeExoJsonForScript",
+        "points": [
+          {
+            "x": 918.5,
+            "y": 375.6
+          },
+          {
+            "x": 1005,
+            "y": 401.5
+          },
+          {
+            "x": 1101,
+            "y": 401.5
+          }
+        ]
+      },
+      {
+        "id": "renderExoPage→EXO_SSR_RESPONSE",
+        "points": [
+          {
+            "x": 155.4,
+            "y": 719.3
           },
           {
             "x": 291,
-            "y": 1829.5
+            "y": 1057
           },
           {
-            "x": 371,
-            "y": 1836.3
+            "x": 406.5,
+            "y": 1057
           }
         ]
       },
       {
-        "id": "Status→useSsr",
+        "id": "renderExoPage→EXO_UNCOMPOSED_STR_BACKEND",
         "points": [
           {
-            "x": 259,
-            "y": 1732.5
+            "x": 155.8,
+            "y": 650.3
           },
           {
             "x": 291,
-            "y": 1732.5
+            "y": 323.3
           },
           {
-            "x": 414.6,
-            "y": 1810.3
+            "x": 374.5,
+            "y": 323.3
           }
         ]
       },
       {
-        "id": "TExoCompiledSsrResult→TExoSsrDocumentOptions",
+        "id": "renderExoPage→ExoSsrResponse",
         "points": [
           {
-            "x": 1253,
-            "y": 1638.4
+            "x": 259,
+            "y": 659.6
           },
           {
-            "x": 1285,
-            "y": 1622.5
+            "x": 291,
+            "y": 652.8
           },
           {
-            "x": 1395.3,
-            "y": 1494
+            "x": 361.5,
+            "y": 652.8
           }
         ]
       },
       {
-        "id": "TExoCompiledSsrResult→TExoSsrHeader",
+        "id": "renderExoPage→TExoSsrDocumentOptions",
         "points": [
           {
-            "x": 1253,
-            "y": 1749.4
+            "x": 153.8,
+            "y": 719.3
           },
           {
-            "x": 1285,
-            "y": 1757.8
+            "x": 291,
+            "y": 1104
           },
           {
-            "x": 1463.5,
-            "y": 1757.8
-          },
-          {
-            "x": 1642,
-            "y": 1757.8
-          },
-          {
-            "x": 1807.3,
-            "y": 1233.8
-          }
-        ]
-      },
-      {
-        "id": "TExoSsrContext→TExoSsrDocumentOptions",
-        "points": [
-          {
-            "x": 1253,
-            "y": 1430.6
-          },
-          {
-            "x": 1285,
-            "y": 1414.5
-          },
-          {
-            "x": 1317,
-            "y": 1414.5
-          }
-        ]
-      },
-      {
-        "id": "TExoSsrContext→TExoSsrHeader",
-        "points": [
-          {
-            "x": 1253,
-            "y": 1515.5
-          },
-          {
-            "x": 1285,
-            "y": 1518
-          },
-          {
-            "x": 1463.5,
-            "y": 1518
-          },
-          {
-            "x": 1642,
-            "y": 1518
-          },
-          {
-            "x": 1797.5,
-            "y": 1233.8
-          }
-        ]
-      },
-      {
-        "id": "TExoSsrContext→TExoSsrStateScriptOptions",
-        "points": [
-          {
-            "x": 1253,
-            "y": 1584.9
-          },
-          {
-            "x": 1285,
-            "y": 1602.5
-          },
-          {
-            "x": 1441.3,
-            "y": 1307
-          }
-        ]
-      },
-      {
-        "id": "TExoSsrNodeOptions→TExoSsrHeader",
-        "points": [
-          {
-            "x": 1610,
-            "y": 1024.3
-          },
-          {
-            "x": 1642,
-            "y": 1024.3
-          },
-          {
-            "x": 1775.7,
-            "y": 1149.8
-          }
-        ]
-      },
-      {
-        "id": "TExoSsrState→TExoSsrHeader",
-        "points": [
-          {
-            "x": 1571.5,
-            "y": 882.3
-          },
-          {
-            "x": 1642,
-            "y": 882.3
-          },
-          {
-            "x": 1796.3,
-            "y": 1149.8
-          }
-        ]
-      },
-      {
-        "id": "useSsr→ssrContextKey",
-        "points": [
-          {
-            "x": 568,
-            "y": 1839.2
+            "x": 469.5,
+            "y": 1104
           },
           {
             "x": 648,
-            "y": 1834.8
+            "y": 1104
           },
           {
-            "x": 778.3,
-            "y": 1527.3
+            "x": 680,
+            "y": 1090.7
           }
         ]
       },
       {
-        "id": "useSsr→TExoSsrContext",
+        "id": "renderExoPage→TExoSsrPage",
         "points": [
           {
-            "x": 508.1,
-            "y": 1879.3
+            "x": 172.9,
+            "y": 719.3
+          },
+          {
+            "x": 291,
+            "y": 848.8
+          },
+          {
+            "x": 323,
+            "y": 848.8
+          }
+        ]
+      },
+      {
+        "id": "renderExoPage→TExoSsrPageOptions",
+        "points": [
+          {
+            "x": 164.8,
+            "y": 650.3
+          },
+          {
+            "x": 291,
+            "y": 463.8
+          },
+          {
+            "x": 469.5,
+            "y": 463.8
           },
           {
             "x": 648,
-            "y": 2004.3
+            "y": 463.8
           },
           {
-            "x": 788,
-            "y": 2004.3
+            "x": 680,
+            "y": 474.7
+          }
+        ]
+      },
+      {
+        "id": "TExoSsrDocumentOptions→TExoSsrHeadOption",
+        "points": [
+          {
+            "x": 973,
+            "y": 1030
           },
           {
-            "x": 928,
-            "y": 2004.3
+            "x": 1005,
+            "y": 1030
           },
           {
-            "x": 1072.8,
-            "y": 1598.8
+            "x": 1124,
+            "y": 1099
+          }
+        ]
+      },
+      {
+        "id": "TExoSsrHeadOption→TExoSsrHeadEntry",
+        "points": [
+          {
+            "x": 1330,
+            "y": 1133.5
+          },
+          {
+            "x": 1362,
+            "y": 1133.5
+          },
+          {
+            "x": 1427.5,
+            "y": 1210.3
+          }
+        ]
+      },
+      {
+        "id": "TExoSsrPage→TExoSsrDocumentOptions",
+        "points": [
+          {
+            "x": 616,
+            "y": 912.6
+          },
+          {
+            "x": 648,
+            "y": 926.5
+          },
+          {
+            "x": 689.4,
+            "y": 950.5
+          }
+        ]
+      },
+      {
+        "id": "TExoSsrPage→TExoSsrHeader",
+        "points": [
+          {
+            "x": 551.1,
+            "y": 769.3
+          },
+          {
+            "x": 648,
+            "y": 674.8
+          },
+          {
+            "x": 826.5,
+            "y": 674.8
+          },
+          {
+            "x": 1005,
+            "y": 674.8
+          },
+          {
+            "x": 1120.5,
+            "y": 611.2
+          }
+        ]
+      },
+      {
+        "id": "TExoSsrPageOptions→TExoSsrHeader",
+        "points": [
+          {
+            "x": 973,
+            "y": 524.8
+          },
+          {
+            "x": 1005,
+            "y": 524.8
+          },
+          {
+            "x": 1120.5,
+            "y": 558.2
+          }
+        ]
+      },
+      {
+        "id": "TExoSsrResponse→TExoSsrHeader",
+        "points": [
+          {
+            "x": 873.4,
+            "y": 718.8
+          },
+          {
+            "x": 1005,
+            "y": 453.8
+          },
+          {
+            "x": 1122.4,
+            "y": 534.5
+          }
+        ]
+      },
+      {
+        "id": "TExoSsrResponse→TExoSsrStateScriptOptions",
+        "points": [
+          {
+            "x": 870.6,
+            "y": 907.8
+          },
+          {
+            "x": 1005,
+            "y": 1195.8
+          },
+          {
+            "x": 1091.5,
+            "y": 1216.2
           }
         ]
       }

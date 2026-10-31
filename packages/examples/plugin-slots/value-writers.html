@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exodra — a schema can hand an element an array</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header class="page-head">
+    <h1 class="page-title">"A component prop has to be a string"</h1>
+    <p class="page-sub">
+        One schema, one machine, one custom element that draws whatever array it is given. Rendered
+        twice: on the left with the shipped writers, where the port becomes
+        <code>setAttribute('series', String(rows))</code> and the element receives nothing it can
+        use; on the right with a pack that writes the same port as a JavaScript
+        <strong>property</strong>, so the element receives the array itself.
+        <br>
+        <span class="slot">the seam: <code>backend.writers</code> · the pack: withExoPropertyWriters</span>
+    </p>
+</header>
+
+<div class="panels">
+    <section class="panel">
+        <h2 class="panel-title">Shipped writers — setAttribute</h2>
+        <p class="panel-note">withExoCompiler(new ExoDomBackend()) — no writer pack composed.</p>
+        <div id="plain"></div>
+        <p class="readout" id="plain-out"></p>
+    </section>
+    <section class="panel">
+        <h2 class="panel-title">Property writers</h2>
+        <p class="panel-note">withExoPropertyWriters(withExoCompiler(new ExoDomBackend()))</p>
+        <div id="props"></div>
+        <p class="readout" id="props-out"></p>
+    </section>
+</div>
+
+<div class="controls">
+    <button class="btn" id="reload" type="button">Reload</button>
+</div>
+
+<p id="boot" class="boot">Loading three packages from this repository's own <code>dist/</code>…</p>
+
+<p class="boot">
+    <strong>Status: written against the source of <code>@exodra/dom</code> and
+    <code>packages/dom/src/plugins/exo-property-writers/tests/exo-property-writers.test.ts</code>,
+    which composes the same pack over <code>withExoCompiler</code>; not yet opened in a browser.</strong>
+    Two <code>withExoCompiler(new ExoDomBackend())</code>s render the one machine, whose wire writes
+    the port with <code>c.attr</code>.
+</p>
+
+<script type="importmap">
+{
+  "imports": {
+    "@exodra/core": "/packages/core/dist/index.js",
+    "@exodra/context": "/packages/context/dist/index.js",
+    "@exodra/dom": "/packages/dom/dist/index.js"
+  }
+}
+</script>
+<script type="module">
+    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import * as exoDom from '@exodra/dom';
+
+    const { ExoDomBackend, withExoCompiler, withExoPropertyWriters } = exoDom;
+
+    const boot = document.getElementById('boot');
+    if (
+        ExoDomBackend === undefined ||
+        withExoCompiler === undefined ||
+        withExoPropertyWriters === undefined
+    ) {
+        boot.className = 'boot boot-error';
+        boot.textContent =
+            'This build of @exodra/dom does not export ExoDomBackend, withExoCompiler and ' +
+            'withExoPropertyWriters. Rebuild it: npm run build --workspace=@exodra/dom';
+        throw new Error('plugin-slots: @exodra/dom/dist predates the exports this page reads');
+    }
+
+    // ── the custom element, which has never heard of Exodra ──────────────────
+
+    class PriceChart extends HTMLElement {
+        set series(rows) {
+            this._rows = rows;
+            this.draw();
+        }
+        get series() {
+            return this._rows;
+        }
+        connectedCallback() {
+            // THE STANDARD CUSTOM-ELEMENT UPGRADE DANCE, and it is not decoration here. An
+            // instance is WIRED and inserted afterwards, so the port's value is written while
+            // this element is still a plain HTMLElement — which leaves an OWN property shadowing
+            // the accessor above, and the setter would never run. Deleting it and re-assigning
+            // pushes the held value back through the accessor. Any element that expects to be
+            // handed a property before it is upgraded needs these three lines, whatever renderer
+            // is writing them.
+            if (Object.prototype.hasOwnProperty.call(this, 'series')) {
+                const held = this.series;
+                delete this.series;
+                this.series = held;
+            }
+            this.draw();
+        }
+        draw() {
+            const rows = this._rows;
+            this.textContent = '';
+            if (!Array.isArray(rows)) return;
+            const top = Math.max(...rows, 1);
+            for (const value of rows) {
+                const bar = document.createElement('i');
+                bar.style.height = Math.round((value / top) * 60) + 'px';
+                this.appendChild(bar);
+            }
+        }
+    }
+    customElements.define('price-chart', PriceChart);
+
+    // ── the schema, and there is only ONE of it ──────────────────────────────
+    //
+    // Both panels below render THIS component. Nothing about it says how its value travels; a
+    // schema is compiled per (machine, BACKEND) — `exoDomSchemaOf` keeps one per backend on the
+    // machine, keyed by the backend's `backendType` — so the two panels get two setter tables out of
+    // one declaration, and
+    // the two backends below must be built ONCE, here, and not per render.
+
+    const SERIES = [3, 1, 4, 1, 5, 9, 2, 6];
+
+    const CHART_SCHEMA = createExoSchema(
+        b => {
+            let series;
+            b.el('price-chart', { class: 'chart' }, e => { series = e.port('series'); });
+            return { series };
+        }
+    );
+    const mChart = createExoMachineBuilder(CHART_SCHEMA);
+    mChart.wire(c => {
+        c.attr(CHART_SCHEMA.ports.series, SERIES);
+    });
+    const CHART = mChart.done();
+
+    const plainBackend = withExoCompiler(new ExoDomBackend());
+    // THE PACK TAKES AN OPTIONAL PREDICATE — `(name, proto) => boolean`, called at COMPILE time,
+    // once per port — and composing it with none is the shipped rule: a hyphenated tag's
+    // non-global attribute becomes a property, everything else is delegated to the shipped writers
+    // unchanged. `price-chart` is hyphenated and `series` is not a global attribute, so this one
+    // port is taken over and nothing else on the page is.
+    const propsBackend = withExoPropertyWriters(withExoCompiler(new ExoDomBackend()));
+
+    plainBackend.render(CHART, document.getElementById('plain'));
+    propsBackend.render(CHART, document.getElementById('props'));
+
+    // ── what each element actually received ─────────────────────────────────
+
+    const describe = value =>
+        Array.isArray(value) ? 'an Array of ' + value.length + ' numbers' : String(value);
+
+    const report = id => {
+        const el = document.querySelector('#' + id + ' price-chart');
+        document.getElementById(id + '-out').textContent =
+            'el.series          → ' + describe(el.series) +
+            '\nel.getAttribute() → ' + JSON.stringify(el.getAttribute('series'));
+    };
+
+    report('plain');
+    report('props');
+
+    document.getElementById('reload').addEventListener('click', () => { location.reload(); });
+
+    // THE ONE WART, SAID OUT LOUD: a taken-over port keeps its empty ` series=""` placeholder
+    // standing on the element beside the live property, because the placeholder is what an
+    // UNFILLED port is swept from. And the SERVER is not composed — `@exodra/string` prints the
+    // stringified attribute for this same port, so a page using this pack gives up byte parity
+    // between the backends.
+    boot.textContent =
+        'Both panels render the same component. Only the composition differs.';
+</script>
+
+</body>
+</html>

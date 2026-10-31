@@ -1,0 +1,32 @@
+{
+  // THE TEST FILES OF `babel-preset-exodra`, COMPILED. Tests live under `tests/`, so `include` names
+  // that directory, `exclude` stops naming it, and `rootDir` widens to `"."` — see
+  // `packages/babel-plugin-exodra-schema/tsconfig.tests.json` for why each of the three is needed.
+  // The scheme itself is written out once in `packages/core/tsconfig.tests.json`.
+  //
+  // `paths` is NOT restated: the base's `@exodra/babel-plugin-schema` mapping is the only sibling
+  // this package names, and `tests/preset.test.ts` adds only `@babel/core` and `module`.
+  //
+  // `module` is overridden here and nowhere else. It inherited `"module": "commonjs"` from this
+  // package's BUILD config — a fact about the published `dist/index.cjs`, which Babel loads as
+  // CommonJS — while `tests/preset.test.ts:15` is `createRequire(import.meta.url)`, and TS1343
+  // refuses `import.meta` under any `module` outside es2020/es2022/esnext/system/node16+. The
+  // suite needs both halves at once: `import.meta.url` because it must resolve `../dist/index.cjs`
+  // relative to THIS file, and `createRequire` because what it loads is a CommonJS build. That is
+  // an ES module reading a CJS artifact, which is what vitest runs it as. `moduleResolution` stays
+  // `"node"`; the argument for not disturbing it is written out in
+  // `packages/bun-plugin-exodra/tsconfig.tests.json`.
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "esnext",
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false,
+    "rootDir": "."
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

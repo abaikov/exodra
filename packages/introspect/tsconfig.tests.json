@@ -1,0 +1,25 @@
+{
+  // THE TEST FILES OF `@exodra/introspect`, COMPILED — 4 suites. The scheme is written out once in
+  // `packages/core/tsconfig.tests.json`.
+  //
+  // TWO DEVIATIONS FROM THE COMMON SHAPE, both forced by this package's base config:
+  //
+  //   `include` is `src/**/*` rather than `src/**/*.ts`, matching the base. This package's build is
+  //   `tsc -b` itself (it is the one documented exception that keeps `outDir: "./dist"`), and its
+  //   sources are gathered by extension-less glob. Narrowing here would compile a different set of
+  //   files than the project it is meant to shadow.
+  //
+  //   The base's `exclude` names `src/**/*.test.ts` AND `src/**/*.test.tsx` — the only config in
+  //   the repository that spells the second one. Both are dropped here; that is the whole job.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "incremental": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", ".tsbuild", "node_modules"]
+}

@@ -4,26 +4,26 @@ title: Style
 
 # Style
 
-`@exodra/style` turns a plain object into a valid CSS `style` string, so you
-don't hand-write `"color:red;font-size:12px"`. It is pure and dependency-free —
-the output is just a string, so it goes straight into `static.style`,
-`bindable.style` (a derived string), or anywhere a `style` attribute is
-accepted, and works identically in the DOM and in SSR.
+`exoStyle` from `@exodra/core/style` turns a plain object into a valid CSS `style`
+string, so you don't hand-write `"color:red;font-size:12px"`. It is pure and
+dependency-free — the output is just a string, so it goes into a schema's static
+attributes, into a `style` port a transition fills with `c.attr`, or anywhere else
+a `style` attribute is accepted, and works identically in the DOM and in SSR.
 
-```bash
-npm install @exodra/style
-```
+It is a separate entry of `@exodra/core`, so neither a bundle nor the CDN build of
+the core carries it unless something imports `@exodra/core/style`.
 
-Exports: `style`, and the `StyleArg`, `StyleObject`, `StyleScalar` types.
+Exports from `@exodra/core/style`: `exoStyle`, and the `TExoStyleInput`, `TExoStyleObject`,
+`TExoStyleScalar` types.
 
-## `style(...args)`
+## `exoStyle(...args)`
 
-```typescript
-type StyleScalar = string | number | null | undefined | false;
-type StyleObject = Record<string, StyleScalar | readonly (string | number)[]>;
-type StyleArg = StyleObject | string | null | undefined | false;
+```typescript signature
+type TExoStyleScalar = string | number | null | undefined | false;
+type TExoStyleObject = Record<string, TExoStyleScalar | readonly (string | number)[]>;
+type TExoStyleInput = TExoStyleObject | string | null | undefined | false;
 
-function style(...args: StyleArg[]): string;
+function exoStyle(...args: TExoStyleInput[]): string;
 ```
 
 Each argument is either a style object, a raw CSS string (appended verbatim), or
@@ -31,9 +31,9 @@ a falsy value (skipped — handy for conditionals). The results are joined with
 `;`; later arguments come after earlier ones, so they win in the browser.
 
 ```javascript
-import { style } from '@exodra/style';
+import { exoStyle } from '@exodra/core/style';
 
-style({ color: 'red', fontSize: 12, '--gap': 8 });
+exoStyle({ color: 'red', fontSize: 12, '--gap': 8 });
 // "color:red;font-size:12px;--gap:8"
 ```
 
@@ -50,7 +50,7 @@ style({ color: 'red', fontSize: 12, '--gap': 8 });
 | `color: null` / `undefined` / `false` | *(omitted)* | falsy values are dropped |
 | `WebkitTransform: 'scale(2)'` | `-webkit-transform:scale(2)` | explicit vendor prefixes serialize correctly (`msFlexAlign` → `-ms-flex-align`) |
 
-There is **no autoprefixing** — `@exodra/style` serializes what you write, it
+There is **no autoprefixing** — `exoStyle` serializes what you write, it
 doesn't invent prefixes. Modern targets rarely need them; when you do need one,
 write it explicitly (`WebkitBackdropFilter`, `msFlexAlign`, …) and it is emitted
 verbatim.
@@ -61,7 +61,7 @@ Falsy arguments and falsy values are skipped, so conditional styles read
 cleanly:
 
 ```javascript
-style(
+exoStyle(
   base,                          // an object of shared declarations
   isActive && { color: 'blue' }, // dropped entirely when isActive is false
   { opacity: hidden ? 0 : 1 }
@@ -70,67 +70,68 @@ style(
 
 ## Usage
 
-The output is a string, so it drops into any bucket that takes a `style`
-attribute.
+A style that never changes is a **static attribute** on the schema, so call
+`exoStyle()` once at module load and let the compiled markup carry the result:
 
-```jsx
-import { style } from '@exodra/style';
-import { bindable, derive } from '@exodra/reactivity';
+```ts
+import { createExoStatic } from '@exodra/core';
+import { exoStyle } from '@exodra/core/style';
 
-function Card() {
-  const active = bindable(false);
-  // A derived string is reactive — the DOM `style` updates when `active` changes.
-  const css = derive(active, on =>
-    style({ padding: 16, borderRadius: 8, background: on ? '#eef' : '#fff' })
-  );
-
-  return <div bindable={{ style: css }}>…</div>;
-}
+export const TOOLBAR = createExoStatic((b) => {
+    b.el('div', { style: exoStyle({ display: 'flex', gap: 8 }) }, (div) => {
+        div.text('—');
+    });
+});
 ```
 
-For a value that never changes, put it in `static`:
+A style that changes is a **port**. A transition builds the string from state
+and writes it — the value that reaches the DOM is still a plain string, so
+nothing about the renderer knows the style was an object:
 
-```jsx
-<div static={{ style: style({ display: 'flex', gap: 8 }) }} />
+```ts
+import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { exoStyle } from '@exodra/core/style';
+import type { TExoAttrPort, TExoEventPort, TExoMachineNode } from '@exodra/core';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+
+const backend = withExoCompiler(new ExoDomBackend());
+
+const CARD_SCHEMA = createExoSchema((b) => {
+    let boxStyle!: TExoAttrPort;
+    let toggle!: TExoEventPort;
+    b.el('div', null, (div) => {
+        boxStyle = div.port('style');
+        toggle = div.eventPort('click');
+    });
+    return { boxStyle, toggle };
+});
+const mCard = createExoMachineBuilder<TExoMachineNode, unknown, { active: boolean }>(CARD_SCHEMA);
+mCard.createInitialState(() => ({ active: false }));
+const show = mCard.transition((c) => {
+    c.attr(
+        CARD_SCHEMA.ports.boxStyle,
+        exoStyle({ padding: 16, borderRadius: 8, background: c.state.active ? '#eef' : '#fff' })
+    );
+});
+mCard.wire((c) => show(c));
+mCard.on(CARD_SCHEMA.ports.toggle, (c) => {
+    c.state.active = !c.state.active;
+    show(c);
+});
+const CARD = mCard.done();
+
+backend.render(CARD, document.body);
 ```
 
-## Compile-time folding (with the babel plugin)
+In the [JSX dialect](../guides/jsx.md) a string literal (`style="padding:16px"`)
+is markup baked into the schema, and `style={$.css}` declares an attribute port
+that the machine fills with `c.attr` — a constant from `exoStyle()` declared at
+module scope, or a string a transition builds from state, like the one above.
 
-`@exodra/babel-plugin-jsx` optimizes `static.style` **objects** for you — this is
-the Exodra path, and the reason `style` objects are first-class in JSX even
-though the runtime helper works with a plain string.
-
-When every value in a `static.style` object is a static literal, the compiler
-folds it to a CSS string **at build time** — zero runtime, and the string is
-then hoistable/clone-cacheable like any other static attribute:
-
-```jsx
-// You write:
-<div static={{ style: { color: 'red', fontSize: 12 } }} />
-
-// The plugin emits (no @exodra/style import, no runtime work):
-h('div', { static: { style: 'color:red;font-size:12px' } });
-```
-
-When any value is dynamic, the compiler wraps the object in a runtime `style(...)`
-call and injects `import { style } from '@exodra/style'` automatically — so the
-exact same normalization happens, and you never write the import yourself:
-
-```jsx
-// You write:
-<div static={{ style: { color: theme.fg, fontSize: 12 } }} />
-
-// The plugin emits:
-import { style } from '@exodra/style';
-h('div', { static: { style: style({ color: theme.fg, fontSize: 12 }) } });
-```
-
-The folded string is guaranteed identical to what `style()` produces at runtime
-(a parity test in the plugin pins the two normalizers together). Because a
-static object costs nothing at runtime, prefer writing `static.style` as an
-object and let the compiler decide.
+There is **no compile-time folding of style objects.** The one compiler,
+`@exodra/babel-plugin-schema`, has no style pass; calling `exoStyle()` at module
+scope does that work once per process, exactly where a constant belongs.
 
 ## Links
 
-- npm: [`@exodra/style`](https://www.npmjs.com/package/@exodra/style)
-- GitHub: [exodra/packages/style](https://github.com/abaikov/exodra/tree/master/packages/style)
+- source: [exodra/packages/core/src/style](https://github.com/abaikov/exodra/tree/master/packages/core/src/style)

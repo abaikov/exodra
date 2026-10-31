@@ -30,8 +30,14 @@ requirements and CWE identifiers, and backed by tests that run on every release:
 
 - **[Security documentation](https://abaikov.github.io/exodra/docs/security)** —
   the full table, including what the framework deliberately does *not* do.
-- `packages/string/src/security.test.ts` — encoding for HTML and attribute contexts.
-- `packages/ssr/src/security.test.ts` — encoding for the JavaScript context.
+- `packages/core/src/escape/tests/escapeExoText.test.ts` and
+  `packages/core/src/escape/tests/escapeExoAttributeValue.test.ts` — the two escapers
+  every backend calls, each pinned across the whole BMP in both directions: the
+  code points it changes, and that it changes nothing else.
+- `packages/dom/src/tests/dynamic-escape.test.ts` — a value that arrives through a
+  port at render time, asserted on the resulting tree on both backends, plus the
+  refusal of an attribute **name** that is not a legal attribute name.
+- `packages/ssr/src/tests/security.test.ts` — encoding for the JavaScript context.
 
 Payloads are drawn from the OWASP XSS Filter Evasion Cheat Sheet.
 

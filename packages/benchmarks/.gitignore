@@ -1,0 +1,30 @@
+# Build output produced by `npm run build:dom-bench` (esbuild bundles `dom-bench/entry.ts`
+# into an ES module the page can import over http). It is an artifact, like everything under
+# `dist/` and `public/bench/`, and it goes stale the moment the packages it re-exports are
+# rebuilt — which is exactly how a benchmark ends up measuring last month's code.
+dom-bench/bundle.js
+
+# Recorded axis tables, written by `run-one-axis.js <axis> --record=<label>` and read by
+# `npm run gate -- <axis> <before> <after>`. They are measurements of ONE machine in ONE
+# thermal state, so they are meaningless anywhere but the session that produced them —
+# committing them would invite exactly the comparison the gate exists to forbid.
+.gate/
+#
+# ── AND THE OTHER HALF, WHICH IS COMMITTED ON PURPOSE ─────────────────────────────────────────
+#
+# `measurements/` is NOT ignored. It holds the recordings that PUBLISHED figures cite — the ones
+# `scripts/check-doc-numbers.mjs` traces every number in `docs-site/docs/**` and `README.md` back to.
+#
+# The split is by PURPOSE, not by age, and it was made after checking rather than assuming: with
+# every recording in `.gate/`, `npm run check:numbers` on a fresh clone failed with TEN problems —
+# verified by moving the directory aside and running it. CI runs `release:check`, which runs that
+# gate. A published number whose evidence sits on one laptop is an unsourced number for every other
+# reader, and a gate that can only pass on that laptop is not a gate.
+#
+# What stays here: A/B pairs. `importnode-before`/`importnode-after`, `pre7arg`/`post7arg`,
+# `viastage0a`/`viastage0b` — two measurements of ONE machine in ONE session, meaningless to anyone
+# who did not run them back to back, and committing them would invite exactly the cross-machine
+# comparison the reason above forbids.
+#
+# What goes to `measurements/`: anything a document quotes. If you publish a figure, its recording
+# is part of the claim and belongs in the repository beside it.

@@ -2,6 +2,16 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "composite": false,
-    "incremental": false
+    "incremental": false,
+    // The bundler's directory, stated here so it does not follow the typecheck's
+    // `.tsbuild` (see tsconfig.build.json).
+    "outDir": "./dist",
+    // The BUILD reads its dependencies' published bundles, not the typecheck's output:
+    // `npm run build` builds core, context and string before this package.
+    "paths": {
+      "@exodra/context": ["../context/dist/index.d.ts"],
+      "@exodra/core": ["../core/dist/index.d.ts"],
+      "@exodra/string": ["../string/dist/index.d.ts"]
+    }
   }
 }
