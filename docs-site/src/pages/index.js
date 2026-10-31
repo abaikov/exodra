@@ -106,7 +106,7 @@ function ClosingSection() {
                         <div className={landingStyles.pairingGrid}>
                             <div>
                                 <a className={landingStyles.pairingName} href="https://cnstra.org/" target="_blank" rel="noopener noreferrer">
-                                    cnstra
+                                    CNStra
                                 </a>
                                 <p className={landingStyles.pairingText}>
                                     Decides what happens and in what order.
@@ -123,7 +123,7 @@ function ClosingSection() {
                             </div>
                         </div>
                         <p className={landingStyles.pairingText}>
-                            Exodra puts it on the screen. One line flushes OIMDB at the end of every cnstra turn:
+                            Exodra puts it on the screen. One line flushes OIMDB at the end of every CNStra turn:
                         </p>
                         <code className={landingStyles.pairingCode}>cns.addDrainListener(() =&gt; db.flush());</code>
                         <Link className={landingStyles.pairingLink} to="/docs/guides/lists">

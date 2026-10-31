@@ -7,19 +7,19 @@ const STAGES = [
         when: 'once, when the module loads',
         name: 'Schema',
         text: 'Markup and its ports, declared with a function call. Every port gets its number here and keeps it.',
-        code: "b.el('span', null, (s) => s.textPort())",
+        code: 'count = span.textPort();',
     },
     {
         when: 'once per instance',
         name: 'Machine',
         text: 'Initial state and transitions. A transition fills ports by number: nothing is diffed, nothing is walked.',
-        code: "c.text(P.count, '1')",
+        code: 'c.text(P.count, String(c.state.count));',
     },
     {
         when: 'wherever it runs',
         name: 'Backend',
         text: 'The same machine renders into the DOM, prints HTML on the server, adopts it on the client, or drives a terminal.',
-        code: 'backend.render(COUNTER, root)',
+        code: 'const backend = withExoCompiler(new ExoDomBackend());\nbackend.render(mCounter.done(), document.body);',
     },
 ];
 
@@ -29,7 +29,7 @@ export default function LandingAnatomy() {
             <div className="container">
                 <Reveal>
                     <p className={styles.eyebrow}>How it works</p>
-                    <h2 className={styles.statement}>Built once. Filled per instance. Rendered anywhere.</h2>
+                    <h2 className={styles.statement}>The counter above, in three steps.</h2>
                 </Reveal>
                 <div className={styles.anatomy}>
                     {STAGES.map((stage, at) => (

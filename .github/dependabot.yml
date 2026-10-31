@@ -10,8 +10,11 @@ updates:
     groups:
       # One PR for the noisy dev tooling instead of a dozen.
       dev-tooling:
-        patterns: ['@types/*', 'eslint*', 'prettier', 'typescript', 'vitest', 'tsup']
+        patterns: ['@types/*', 'eslint*', 'prettier', 'typescript', 'vitest', '@vitest/*', 'tsup']
         update-types: [minor, patch]
+      dev-tooling-major:
+        patterns: ['@types/*', 'eslint*', 'prettier', 'typescript', 'vitest', '@vitest/*', 'tsup']
+        update-types: [major]
     ignore:
       # Framework peers used only for comparison in the benchmark suite; bumping
       # them changes benchmark numbers rather than fixing anything.

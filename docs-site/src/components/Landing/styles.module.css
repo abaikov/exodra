@@ -361,6 +361,8 @@
 
 .anatomyCode {
   align-self: flex-start;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
   margin-top: 0.6rem;
   padding: 0.35rem 0.7rem;
   font-size: 0.8rem;
