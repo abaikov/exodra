@@ -141,7 +141,9 @@ function childDirs(root: string, base: string, deep: boolean): string[] {
 
     const out: string[] = [];
     const walk = (current: string, depth: number): void => {
-        for (const entry of readdirSync(current, { withFileTypes: true })) {
+        for (const entry of readdirSync(current, { withFileTypes: true }).sort((a, b) =>
+            a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+        )) {
             if (!entry.isDirectory() || entry.name === 'node_modules') continue;
             const child = join(current, entry.name);
             out.push(relative(root, child).split(sep).join('/'));

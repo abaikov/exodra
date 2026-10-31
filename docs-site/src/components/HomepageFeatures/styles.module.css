@@ -77,9 +77,15 @@
 }
 
 .more {
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
   color: var(--ifm-link-color);
+}
+
+.moreArrow {
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.95rem;
 }
 
 @media (max-width: 996px) {

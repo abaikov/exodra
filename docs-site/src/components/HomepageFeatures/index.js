@@ -65,7 +65,7 @@ export default function HomepageFeatures() {
                             <Link to={feature.to} className={styles.card}>
                                 <h3 className={styles.title}>{feature.title}</h3>
                                 <p className={styles.text}>{feature.description}</p>
-                                <span className={styles.more}>Learn more →</span>
+                                <span className={styles.more}>Learn more <span className={styles.moreArrow}>→</span></span>
                             </Link>
                         </Reveal>
                     ))}

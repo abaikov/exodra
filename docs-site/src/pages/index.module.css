@@ -132,7 +132,10 @@
 
 .buttons :global(.button--primary) {
   color: #fff;
-  font-weight: 700;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  font-weight: 400;
   border-radius: 999px;
   padding: 0.85rem 2rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -149,6 +152,8 @@
 
 .buttons :global(.button--primary)::after {
   content: '→';
+  font-family: var(--ifm-font-family-base);
+  font-size: 1rem;
   display: inline-block;
   margin-left: 0.6rem;
   transition: transform 0.18s ease;

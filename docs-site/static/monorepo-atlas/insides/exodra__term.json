@@ -1141,7 +1141,7 @@
         ],
         "memberCount": 1,
         "stereotype": "type",
-        "doc": "In source rather than in a test, because every tsconfig here excludes `*.test.ts` and a type assertion nothing typechecks asserts nothing.",
+        "doc": "The portability claim, asserted by the compiler.",
         "width": 120,
         "height": 69,
         "violations": []
@@ -5931,7 +5931,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5969,7 +5969,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6026,7 +6026,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6083,7 +6083,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6121,7 +6121,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

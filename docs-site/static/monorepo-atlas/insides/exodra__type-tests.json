@@ -356,7 +356,6 @@
         "members": [],
         "memberCount": 0,
         "stereotype": "const",
-        "doc": "Structural rather than imported: this package maps `@exodra/core` and not `@exodra/dom`.",
         "width": 120,
         "height": 46,
         "violations": []
@@ -1532,7 +1531,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1627,7 +1626,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1703,7 +1702,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1722,7 +1721,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1760,7 +1759,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1798,7 +1797,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1969,7 +1968,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2026,7 +2025,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2102,7 +2101,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2159,7 +2158,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2406,7 +2405,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2463,7 +2462,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2539,7 +2538,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2566,25 +2565,6 @@
         "violations": []
       },
       {
-        "id": "P→box",
-        "from": "P",
-        "to": "box",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
         "id": "P→title",
         "from": "P",
         "to": "title",
@@ -2595,7 +2575,7 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
@@ -2653,7 +2633,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2691,7 +2671,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3033,7 +3013,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3071,7 +3051,7 @@
         "evidence": [
           {
             "from": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3140,7 +3120,7 @@
   },
   "layout": {
     "width": 2259,
-    "height": 2818,
+    "height": 2709.8,
     "nodes": [
       {
         "id": "_attrAsTag",
@@ -3166,14 +3146,14 @@
       {
         "id": "_count",
         "x": 30.5,
-        "y": 2322,
+        "y": 1866.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "_declaration",
         "x": 30.5,
-        "y": 1950.8,
+        "y": 1428.3,
         "width": 120,
         "height": 46
       },
@@ -3250,21 +3230,21 @@
       {
         "id": "add",
         "x": 632.5,
-        "y": 298.5,
+        "y": 343.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "APP",
         "x": 1671.5,
-        "y": 229.8,
+        "y": 274.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "at",
         "x": 1314.5,
-        "y": 1828.3,
+        "y": 1655.5,
         "width": 120,
         "height": 46
       },
@@ -3299,21 +3279,21 @@
       {
         "id": "box",
         "x": 957.5,
-        "y": 1776.8,
+        "y": 1598.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "c",
         "x": 1314.5,
-        "y": 1363.3,
+        "y": 1321,
         "width": 120,
         "height": 46
       },
       {
         "id": "CARD",
         "x": 632.5,
-        "y": 2409.5,
+        "y": 2542.8,
         "width": 120,
         "height": 46
       },
@@ -3334,14 +3314,14 @@
       {
         "id": "COUNTER",
         "x": 307.5,
-        "y": 2064,
+        "y": 1856.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "dom",
         "x": 1671.5,
-        "y": 1880,
+        "y": 1719,
         "width": 120,
         "height": 46
       },
@@ -3355,49 +3335,49 @@
       {
         "id": "handler",
         "x": 957.5,
-        "y": 2507,
+        "y": 2639.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "HIGHLIGHT_PACK",
         "x": 632.5,
-        "y": 799.3,
+        "y": 850.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "HIGHLIGHTING_CHILD",
         "x": 948,
-        "y": 1156.3,
+        "y": 1207.3,
         "width": 139,
         "height": 46
       },
       {
         "id": "HIGHLIGHTING_PARENT",
         "x": 619.5,
-        "y": 712.5,
+        "y": 771.5,
         "width": 146,
         "height": 46
       },
       {
         "id": "HIGHLIGHTS",
         "x": 632.5,
-        "y": 1632.8,
+        "y": 1608.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "host",
         "x": 30.5,
-        "y": 1692.8,
+        "y": 1672.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "HOST",
         "x": 307.5,
-        "y": 1428.3,
+        "y": 2014.5,
         "width": 120,
         "height": 46
       },
@@ -3411,112 +3391,112 @@
       {
         "id": "LEAF",
         "x": 957.5,
-        "y": 2433,
+        "y": 2565.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "loose",
         "x": 30.5,
-        "y": 2024.8,
+        "y": 1940.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "mHost",
         "x": 30.5,
-        "y": 1428.3,
+        "y": 2014.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "mRow",
         "x": 957.5,
-        "y": 193.8,
+        "y": 200.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "narrowed",
         "x": 632.5,
-        "y": 1037.8,
+        "y": 1088.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "NESTS_HIGHLIGHTS",
         "x": 304.5,
-        "y": 1502.3,
+        "y": 1394.8,
         "width": 126,
         "height": 46
       },
       {
         "id": "NESTS_HIGHLIGHTS_WITHOUT_PACK",
         "x": 262.5,
-        "y": 1873.8,
+        "y": 1782.5,
         "width": 210,
         "height": 46
       },
       {
         "id": "notAny",
         "x": 30.5,
-        "y": 2158.5,
+        "y": 2398.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "notATable",
         "x": 30.5,
-        "y": 2396,
+        "y": 2162.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "notAttr",
         "x": 957.5,
-        "y": 880.5,
+        "y": 949.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "P",
         "x": 1314.5,
-        "y": 1437.3,
+        "y": 1395,
         "width": 120,
         "height": 46
       },
       {
         "id": "PLAIN_PARENT",
         "x": 632.5,
-        "y": 1256.8,
+        "y": 1272.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "portable",
         "x": 30.5,
-        "y": 2470,
+        "y": 2236.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "Q",
         "x": 1314.5,
-        "y": 2386,
+        "y": 2518.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "ROW",
         "x": 957.5,
-        "y": 1640.8,
+        "y": 1685.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "sameMap",
         "x": 30.5,
-        "y": 2565.5,
+        "y": 2088.5,
         "width": 120,
         "height": 46
       },
@@ -3530,98 +3510,98 @@
       {
         "id": "SERVER",
         "x": 1671.5,
-        "y": 90.3,
+        "y": 135.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "table",
         "x": 30.5,
-        "y": 2639.5,
+        "y": 2472.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "TCardPorts",
         "x": 272.5,
-        "y": 2284.5,
+        "y": 2396.8,
         "width": 190,
         "height": 69
       },
       {
         "id": "TCounterPorts",
         "x": 594,
-        "y": 535,
+        "y": 599.5,
         "width": 197,
         "height": 144
       },
       {
         "id": "TExoAllOf",
         "x": 871,
-        "y": 2262.5,
+        "y": 2395.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoDeclNode",
         "x": 1228,
-        "y": 2171.5,
+        "y": 2304.3,
         "width": 293,
         "height": 114
       },
       {
         "id": "TExoDeclPort",
         "x": 1610.5,
-        "y": 2265,
+        "y": 2477.5,
         "width": 242,
         "height": 99
       },
       {
         "id": "TExoDeclPortKind",
         "x": 1942,
-        "y": 2168,
+        "y": 2380.5,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoHighlightApi",
         "x": 1241,
-        "y": 1120.5,
+        "y": 1224,
         "width": 267,
         "height": 69
       },
       {
         "id": "TExoOwnPorts",
         "x": 1228,
-        "y": 1969.8,
+        "y": 2192.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoPortMaps",
         "x": 871,
-        "y": 2098.8,
+        "y": 2231.5,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoPortOfKind",
         "x": 1585,
-        "y": 2168,
+        "y": 2380.5,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoPortsOf",
         "x": 578,
-        "y": 2183,
+        "y": 2282.3,
         "width": 229,
         "height": 69
       },
       {
         "id": "title",
         "x": 1671.5,
-        "y": 958.5,
+        "y": 945,
         "width": 120,
         "height": 46
       },
@@ -3635,21 +3615,21 @@
       {
         "id": "TSameType",
         "x": 221,
-        "y": 2138,
+        "y": 2153,
         "width": 293,
         "height": 69
       },
       {
         "id": "TWidePorts",
         "x": 24,
-        "y": 2713.5,
+        "y": 2546.3,
         "width": 133,
         "height": 69
       },
       {
         "id": "widened",
         "x": 957.5,
-        "y": 1037.8,
+        "y": 1088.8,
         "width": 120,
         "height": 46
       },
@@ -3663,7 +3643,7 @@
       {
         "id": "write",
         "x": 957.5,
-        "y": 1256.8,
+        "y": 1307.8,
         "width": 120,
         "height": 46
       }
@@ -3681,8 +3661,8 @@
             "y": 242
           },
           {
-            "x": 663.6,
-            "y": 535
+            "x": 667.9,
+            "y": 599.5
           }
         ]
       },
@@ -3698,8 +3678,8 @@
             "y": 316
           },
           {
-            "x": 656.3,
-            "y": 535
+            "x": 662.8,
+            "y": 599.5
           }
         ]
       },
@@ -3715,8 +3695,8 @@
             "y": 390
           },
           {
-            "x": 643.9,
-            "y": 535
+            "x": 655,
+            "y": 599.5
           }
         ]
       },
@@ -3725,15 +3705,15 @@
         "points": [
           {
             "x": 150.5,
-            "y": 2345
+            "y": 1889.5
           },
           {
             "x": 189,
-            "y": 2345
+            "y": 1889.5
           },
           {
-            "x": 351.6,
-            "y": 2110
+            "x": 307.5,
+            "y": 1882.9
           }
         ]
       },
@@ -3741,16 +3721,16 @@
         "id": "_declaration→COUNTER",
         "points": [
           {
-            "x": 150.5,
-            "y": 1992.8
+            "x": 100.2,
+            "y": 1474.3
           },
           {
             "x": 189,
-            "y": 2005
+            "y": 1685.8
           },
           {
-            "x": 317.4,
-            "y": 2064
+            "x": 346.3,
+            "y": 1856.5
           }
         ]
       },
@@ -3758,24 +3738,24 @@
         "id": "_declaration→TCounterPorts",
         "points": [
           {
-            "x": 150.5,
-            "y": 1959.4
+            "x": 99,
+            "y": 1428.3
           },
           {
             "x": 189,
-            "y": 1950.3
+            "y": 1184.5
           },
           {
             "x": 367.5,
-            "y": 1950.3
+            "y": 1184.5
           },
           {
             "x": 546,
-            "y": 1950.3
+            "y": 1184.5
           },
           {
-            "x": 684.6,
-            "y": 679
+            "x": 671.9,
+            "y": 743.5
           }
         ]
       },
@@ -3791,8 +3771,8 @@
             "y": 464
           },
           {
-            "x": 618.7,
-            "y": 535
+            "x": 641.7,
+            "y": 599.5
           }
         ]
       },
@@ -3809,7 +3789,7 @@
           },
           {
             "x": 594,
-            "y": 607
+            "y": 628.1
           }
         ]
       },
@@ -3849,8 +3829,8 @@
             "y": 511
           },
           {
-            "x": 1722.8,
-            "y": 958.5
+            "x": 1722.5,
+            "y": 945
           }
         ]
       },
@@ -3867,7 +3847,7 @@
           },
           {
             "x": 594,
-            "y": 644.5
+            "y": 665.6
           }
         ]
       },
@@ -3883,8 +3863,8 @@
             "y": 736.8
           },
           {
-            "x": 611.2,
-            "y": 679
+            "x": 594,
+            "y": 715.4
           }
         ]
       },
@@ -3900,8 +3880,8 @@
             "y": 74
           },
           {
-            "x": 1371.4,
-            "y": 1363.3
+            "x": 1371.3,
+            "y": 1321
           }
         ]
       },
@@ -3925,8 +3905,8 @@
             "y": 37
           },
           {
-            "x": 1727.2,
-            "y": 958.5
+            "x": 1727.1,
+            "y": 945
           }
         ]
       },
@@ -3942,8 +3922,8 @@
             "y": 154
           },
           {
-            "x": 1371.2,
-            "y": 1363.3
+            "x": 1371.1,
+            "y": 1321
           }
         ]
       },
@@ -3959,8 +3939,8 @@
             "y": 134
           },
           {
-            "x": 1371.4,
-            "y": 1437.3
+            "x": 1371.3,
+            "y": 1395
           }
         ]
       },
@@ -3976,8 +3956,8 @@
             "y": 114
           },
           {
-            "x": 1368.6,
-            "y": 1120.5
+            "x": 1369.1,
+            "y": 1224
           }
         ]
       },
@@ -4001,8 +3981,8 @@
             "y": 94
           },
           {
-            "x": 1726.9,
-            "y": 958.5
+            "x": 1726.8,
+            "y": 945
           }
         ]
       },
@@ -4010,8 +3990,8 @@
         "id": "add→c",
         "points": [
           {
-            "x": 714.1,
-            "y": 344.5
+            "x": 722.9,
+            "y": 389.5
           },
           {
             "x": 839,
@@ -4026,8 +4006,8 @@
             "y": 477.5
           },
           {
-            "x": 1370,
-            "y": 1363.3
+            "x": 1369.8,
+            "y": 1321
           }
         ]
       },
@@ -4035,16 +4015,16 @@
         "id": "add→mRow",
         "points": [
           {
-            "x": 724.7,
-            "y": 298.5
+            "x": 716.1,
+            "y": 343.5
           },
           {
             "x": 839,
-            "y": 216.8
+            "y": 223.8
           },
           {
             "x": 957.5,
-            "y": 216.8
+            "y": 223.8
           }
         ]
       },
@@ -4053,15 +4033,15 @@
         "points": [
           {
             "x": 1434.5,
-            "y": 1851.3
+            "y": 1678.5
           },
           {
             "x": 1553,
-            "y": 1851.3
+            "y": 1678.5
           },
           {
             "x": 1671.5,
-            "y": 1885.6
+            "y": 1720.7
           }
         ]
       },
@@ -4077,8 +4057,8 @@
             "y": 370.5
           },
           {
-            "x": 1696.6,
-            "y": 275.8
+            "x": 1675.1,
+            "y": 320.8
           }
         ]
       },
@@ -4094,8 +4074,8 @@
             "y": 263.8
           },
           {
-            "x": 1704.2,
-            "y": 136.3
+            "x": 1692.6,
+            "y": 181.3
           }
         ]
       },
@@ -4104,15 +4084,15 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 1817.1
+            "y": 1640.7
           },
           {
             "x": 1196,
-            "y": 1851.3
+            "y": 1678.5
           },
           {
             "x": 1314.5,
-            "y": 1851.3
+            "y": 1678.5
           }
         ]
       },
@@ -4121,23 +4101,23 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 1801.3
+            "y": 1624.9
           },
           {
             "x": 1196,
-            "y": 1804.3
+            "y": 1631.5
           },
           {
             "x": 1374.5,
-            "y": 1804.3
+            "y": 1631.5
           },
           {
             "x": 1553,
-            "y": 1804.3
+            "y": 1631.5
           },
           {
-            "x": 1689.9,
-            "y": 1880
+            "x": 1694.3,
+            "y": 1719
           }
         ]
       },
@@ -4146,15 +4126,15 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 1787.8
+            "y": 1617
           },
           {
             "x": 1196,
-            "y": 1764.3
+            "y": 1608
           },
           {
-            "x": 1361,
-            "y": 1483.3
+            "x": 1352.9,
+            "y": 1441
           }
         ]
       },
@@ -4162,24 +4142,24 @@
         "id": "CARD→c",
         "points": [
           {
-            "x": 715.8,
-            "y": 2455.5
+            "x": 715.9,
+            "y": 2588.8
           },
           {
             "x": 839,
-            "y": 2577
+            "y": 2709.8
           },
           {
             "x": 1017.5,
-            "y": 2577
+            "y": 2709.8
           },
           {
             "x": 1196,
-            "y": 2577
+            "y": 2709.8
           },
           {
-            "x": 1371.1,
-            "y": 1409.3
+            "x": 1371.5,
+            "y": 1367
           }
         ]
       },
@@ -4187,16 +4167,16 @@
         "id": "CARD→handler",
         "points": [
           {
-            "x": 727.1,
-            "y": 2455.5
+            "x": 727.2,
+            "y": 2588.8
           },
           {
             "x": 839,
-            "y": 2530
+            "y": 2662.8
           },
           {
             "x": 957.5,
-            "y": 2530
+            "y": 2662.8
           }
         ]
       },
@@ -4205,15 +4185,15 @@
         "points": [
           {
             "x": 752.5,
-            "y": 2442.1
+            "y": 2575.2
           },
           {
             "x": 839,
-            "y": 2456
+            "y": 2588.8
           },
           {
             "x": 957.5,
-            "y": 2456
+            "y": 2588.8
           }
         ]
       },
@@ -4222,23 +4202,23 @@
         "points": [
           {
             "x": 752.5,
-            "y": 2422.9
+            "y": 2555.9
           },
           {
             "x": 839,
-            "y": 2409
+            "y": 2541.8
           },
           {
             "x": 1017.5,
-            "y": 2409
+            "y": 2541.8
           },
           {
             "x": 1196,
-            "y": 2409
+            "y": 2541.8
           },
           {
-            "x": 1370.2,
-            "y": 1483.3
+            "x": 1370.8,
+            "y": 1441
           }
         ]
       },
@@ -4247,23 +4227,23 @@
         "points": [
           {
             "x": 752.5,
-            "y": 2414.7
+            "y": 2547.7
           },
           {
             "x": 839,
-            "y": 2389
+            "y": 2521.8
           },
           {
             "x": 1017.5,
-            "y": 2389
+            "y": 2521.8
           },
           {
             "x": 1196,
-            "y": 2389
+            "y": 2521.8
           },
           {
             "x": 1314.5,
-            "y": 2402.3
+            "y": 2535
           }
         ]
       },
@@ -4271,32 +4251,32 @@
         "id": "CARD→title",
         "points": [
           {
-            "x": 736.3,
-            "y": 2409.5
+            "x": 736,
+            "y": 2542.8
           },
           {
             "x": 839,
-            "y": 2355.5
+            "y": 2488.3
           },
           {
             "x": 1017.5,
-            "y": 2355.5
+            "y": 2488.3
           },
           {
             "x": 1196,
-            "y": 2355.5
+            "y": 2488.3
           },
           {
             "x": 1374.5,
-            "y": 2355.5
+            "y": 2488.3
           },
           {
             "x": 1553,
-            "y": 2355.5
+            "y": 2488.3
           },
           {
-            "x": 1728.5,
-            "y": 1004.5
+            "x": 1728.8,
+            "y": 991
           }
         ]
       },
@@ -4329,8 +4309,8 @@
             "y": 296.5
           },
           {
-            "x": 1370.7,
-            "y": 1363.3
+            "x": 1370.6,
+            "y": 1321
           }
         ]
       },
@@ -4355,24 +4335,24 @@
         "id": "COUNTER→box",
         "points": [
           {
-            "x": 427.5,
-            "y": 2095.8
+            "x": 396.4,
+            "y": 1902.5
           },
           {
             "x": 546,
-            "y": 2113.3
+            "y": 2021.5
           },
           {
             "x": 692.5,
-            "y": 2113.3
+            "y": 2021.5
           },
           {
             "x": 839,
-            "y": 2113.3
+            "y": 2021.5
           },
           {
-            "x": 1004.4,
-            "y": 1822.8
+            "x": 1007.2,
+            "y": 1644.5
           }
         ]
       },
@@ -4380,16 +4360,16 @@
         "id": "COUNTER→TCounterPorts",
         "points": [
           {
-            "x": 410.5,
-            "y": 2064
+            "x": 427.5,
+            "y": 1873.8
           },
           {
             "x": 546,
-            "y": 1991.5
+            "y": 1862.5
           },
           {
-            "x": 684.9,
-            "y": 679
+            "x": 683.6,
+            "y": 743.5
           }
         ]
       },
@@ -4405,8 +4385,8 @@
             "y": 444
           },
           {
-            "x": 1370.1,
-            "y": 1363.3
+            "x": 1369.9,
+            "y": 1321
           }
         ]
       },
@@ -4422,8 +4402,8 @@
             "y": 424
           },
           {
-            "x": 1370.5,
-            "y": 1437.3
+            "x": 1370.4,
+            "y": 1395
           }
         ]
       },
@@ -4447,8 +4427,8 @@
             "y": 404
           },
           {
-            "x": 1724.4,
-            "y": 958.5
+            "x": 1724.2,
+            "y": 945
           }
         ]
       },
@@ -4457,15 +4437,15 @@
         "points": [
           {
             "x": 1087,
-            "y": 1187
+            "y": 1241.9
           },
           {
             "x": 1196,
-            "y": 1199.3
+            "y": 1260.3
           },
           {
-            "x": 1352.5,
-            "y": 1363.3
+            "x": 1325.5,
+            "y": 1321
           }
         ]
       },
@@ -4474,15 +4454,15 @@
         "points": [
           {
             "x": 1087,
-            "y": 1176.5
+            "y": 1234.1
           },
           {
             "x": 1196,
-            "y": 1172.3
+            "y": 1240.3
           },
           {
-            "x": 1360.2,
-            "y": 1437.3
+            "x": 1351.4,
+            "y": 1395
           }
         ]
       },
@@ -4491,15 +4471,15 @@
         "points": [
           {
             "x": 1087,
-            "y": 1168.7
+            "y": 1219.7
           },
           {
             "x": 1196,
-            "y": 1152.3
+            "y": 1203.3
           },
           {
-            "x": 1241,
-            "y": 1152.9
+            "x": 1263,
+            "y": 1224
           }
         ]
       },
@@ -4507,24 +4487,24 @@
         "id": "HIGHLIGHTING_PARENT→c",
         "points": [
           {
-            "x": 708.2,
-            "y": 758.5
+            "x": 707.2,
+            "y": 817.5
           },
           {
             "x": 839,
-            "y": 950.5
+            "y": 1024.3
           },
           {
             "x": 1017.5,
-            "y": 950.5
+            "y": 1024.3
           },
           {
             "x": 1196,
-            "y": 950.5
+            "y": 1024.3
           },
           {
-            "x": 1365.1,
-            "y": 1363.3
+            "x": 1361.7,
+            "y": 1321
           }
         ]
       },
@@ -4532,16 +4512,16 @@
         "id": "HIGHLIGHTING_PARENT→HIGHLIGHTING_CHILD",
         "points": [
           {
-            "x": 712.6,
-            "y": 758.5
+            "x": 708.6,
+            "y": 817.5
           },
           {
             "x": 839,
-            "y": 903.5
+            "y": 1004.3
           },
           {
-            "x": 1002.6,
-            "y": 1156.3
+            "x": 999.3,
+            "y": 1207.3
           }
         ]
       },
@@ -4550,23 +4530,23 @@
         "points": [
           {
             "x": 765.5,
-            "y": 737.5
+            "y": 808.3
           },
           {
             "x": 839,
-            "y": 739.5
+            "y": 822.3
           },
           {
             "x": 1017.5,
-            "y": 739.5
+            "y": 822.3
           },
           {
             "x": 1196,
-            "y": 739.5
+            "y": 822.3
           },
           {
-            "x": 1368.8,
-            "y": 1437.3
+            "x": 1367.6,
+            "y": 1395
           }
         ]
       },
@@ -4574,24 +4554,24 @@
         "id": "HIGHLIGHTING_PARENT→TExoHighlightApi",
         "points": [
           {
-            "x": 751.6,
-            "y": 712.5
+            "x": 765.5,
+            "y": 777.9
           },
           {
             "x": 839,
-            "y": 678.5
+            "y": 761.3
           },
           {
             "x": 1017.5,
-            "y": 678.5
+            "y": 761.3
           },
           {
             "x": 1196,
-            "y": 678.5
+            "y": 761.3
           },
           {
-            "x": 1361.6,
-            "y": 1120.5
+            "x": 1362.1,
+            "y": 1224
           }
         ]
       },
@@ -4599,24 +4579,24 @@
         "id": "HIGHLIGHTS→c",
         "points": [
           {
-            "x": 737.4,
-            "y": 1678.8
+            "x": 715.9,
+            "y": 1654.5
           },
           {
             "x": 839,
-            "y": 1730.8
+            "y": 1775.5
           },
           {
             "x": 1017.5,
-            "y": 1730.8
+            "y": 1775.5
           },
           {
             "x": 1196,
-            "y": 1730.8
+            "y": 1775.5
           },
           {
-            "x": 1362.6,
-            "y": 1409.3
+            "x": 1365,
+            "y": 1367
           }
         ]
       },
@@ -4624,24 +4604,24 @@
         "id": "HIGHLIGHTS→P",
         "points": [
           {
-            "x": 752.5,
-            "y": 1678.3
+            "x": 719.7,
+            "y": 1654.5
           },
           {
             "x": 839,
-            "y": 1710.8
+            "y": 1755.5
           },
           {
             "x": 1017.5,
-            "y": 1710.8
+            "y": 1755.5
           },
           {
             "x": 1196,
-            "y": 1710.8
+            "y": 1755.5
           },
           {
-            "x": 1358.1,
-            "y": 1483.3
+            "x": 1362.3,
+            "y": 1441
           }
         ]
       },
@@ -4649,16 +4629,16 @@
         "id": "HIGHLIGHTS→ROW",
         "points": [
           {
-            "x": 752.5,
-            "y": 1659
+            "x": 736.3,
+            "y": 1654.5
           },
           {
             "x": 839,
-            "y": 1663.8
+            "y": 1708.5
           },
           {
             "x": 957.5,
-            "y": 1663.8
+            "y": 1708.5
           }
         ]
       },
@@ -4666,24 +4646,24 @@
         "id": "HIGHLIGHTS→TExoHighlightApi",
         "points": [
           {
-            "x": 752.5,
-            "y": 1639.8
+            "x": 751.6,
+            "y": 1608.5
           },
           {
             "x": 839,
-            "y": 1616.8
+            "y": 1574.5
           },
           {
             "x": 1017.5,
-            "y": 1616.8
+            "y": 1574.5
           },
           {
             "x": 1196,
-            "y": 1616.8
+            "y": 1574.5
           },
           {
-            "x": 1361.2,
-            "y": 1189.5
+            "x": 1355,
+            "y": 1293
           }
         ]
       },
@@ -4691,32 +4671,32 @@
         "id": "HIGHLIGHTS→title",
         "points": [
           {
-            "x": 749.6,
-            "y": 1632.8
+            "x": 736.3,
+            "y": 1608.5
           },
           {
             "x": 839,
-            "y": 1596.8
+            "y": 1554.5
           },
           {
             "x": 1017.5,
-            "y": 1596.8
+            "y": 1554.5
           },
           {
             "x": 1196,
-            "y": 1596.8
+            "y": 1554.5
           },
           {
             "x": 1374.5,
-            "y": 1596.8
+            "y": 1554.5
           },
           {
             "x": 1553,
-            "y": 1596.8
+            "y": 1554.5
           },
           {
-            "x": 1724.8,
-            "y": 1004.5
+            "x": 1724.5,
+            "y": 991
           }
         ]
       },
@@ -4742,15 +4722,15 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 2473
+            "y": 2605.7
           },
           {
             "x": 1196,
-            "y": 2506.5
+            "y": 2639.3
           },
           {
-            "x": 1370.8,
-            "y": 1409.3
+            "x": 1371.3,
+            "y": 1367
           }
         ]
       },
@@ -4759,15 +4739,15 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 2451.5
+            "y": 2584.2
           },
           {
             "x": 1196,
-            "y": 2442.5
+            "y": 2575.3
           },
           {
             "x": 1314.5,
-            "y": 2420.3
+            "y": 2553
           }
         ]
       },
@@ -4776,15 +4756,15 @@
         "points": [
           {
             "x": 150.5,
-            "y": 1451.3
+            "y": 2037.5
           },
           {
             "x": 189,
-            "y": 1451.3
+            "y": 2037.5
           },
           {
             "x": 307.5,
-            "y": 1451.3
+            "y": 2037.5
           }
         ]
       },
@@ -4793,7 +4773,7 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 231.1
+            "y": 235.8
           },
           {
             "x": 1196,
@@ -4810,7 +4790,7 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 202.4
+            "y": 207
           },
           {
             "x": 1196,
@@ -4827,15 +4807,15 @@
         "points": [
           {
             "x": 752.5,
-            "y": 1060.8
+            "y": 1111.8
           },
           {
             "x": 839,
-            "y": 1060.8
+            "y": 1111.8
           },
           {
             "x": 957.5,
-            "y": 1060.8
+            "y": 1111.8
           }
         ]
       },
@@ -4844,31 +4824,31 @@
         "points": [
           {
             "x": 472.5,
-            "y": 1908.5
+            "y": 1827.3
           },
           {
             "x": 546,
-            "y": 1916.8
+            "y": 1842.5
           },
           {
             "x": 692.5,
-            "y": 1916.8
+            "y": 1842.5
           },
           {
             "x": 839,
-            "y": 1916.8
+            "y": 1842.5
           },
           {
             "x": 1017.5,
-            "y": 1916.8
+            "y": 1842.5
           },
           {
             "x": 1196,
-            "y": 1916.8
+            "y": 1842.5
           },
           {
-            "x": 1366.8,
-            "y": 1409.3
+            "x": 1366.3,
+            "y": 1367
           }
         ]
       },
@@ -4877,15 +4857,15 @@
         "points": [
           {
             "x": 472.5,
-            "y": 1896.8
+            "y": 1815.5
           },
           {
             "x": 546,
-            "y": 1896.8
+            "y": 1822.5
           },
           {
-            "x": 678.5,
-            "y": 1678.8
+            "x": 674.9,
+            "y": 1654.5
           }
         ]
       },
@@ -4894,31 +4874,31 @@
         "points": [
           {
             "x": 472.5,
-            "y": 1885
+            "y": 1799.6
           },
           {
             "x": 546,
-            "y": 1876.8
+            "y": 1795.5
           },
           {
             "x": 692.5,
-            "y": 1876.8
+            "y": 1795.5
           },
           {
             "x": 839,
-            "y": 1876.8
+            "y": 1795.5
           },
           {
             "x": 1017.5,
-            "y": 1876.8
+            "y": 1795.5
           },
           {
             "x": 1196,
-            "y": 1876.8
+            "y": 1795.5
           },
           {
-            "x": 1364.6,
-            "y": 1483.3
+            "x": 1363.6,
+            "y": 1441
           }
         ]
       },
@@ -4927,31 +4907,31 @@
         "points": [
           {
             "x": 430.5,
-            "y": 1535.8
+            "y": 1436.4
           },
           {
             "x": 546,
-            "y": 1555.3
+            "y": 1470.5
           },
           {
             "x": 692.5,
-            "y": 1555.3
+            "y": 1470.5
           },
           {
             "x": 839,
-            "y": 1555.3
+            "y": 1470.5
           },
           {
             "x": 1017.5,
-            "y": 1555.3
+            "y": 1470.5
           },
           {
             "x": 1196,
-            "y": 1555.3
+            "y": 1470.5
           },
           {
-            "x": 1350.2,
-            "y": 1409.3
+            "x": 1342,
+            "y": 1367
           }
         ]
       },
@@ -4960,15 +4940,15 @@
         "points": [
           {
             "x": 430.5,
-            "y": 1513.8
+            "y": 1424.8
           },
           {
             "x": 546,
-            "y": 1492.8
+            "y": 1437.8
           },
           {
-            "x": 671.8,
-            "y": 1632.8
+            "x": 675.1,
+            "y": 1608.5
           }
         ]
       },
@@ -4976,32 +4956,32 @@
         "id": "NESTS_HIGHLIGHTS→P",
         "points": [
           {
-            "x": 395.8,
-            "y": 1502.3
+            "x": 430.5,
+            "y": 1417.8
           },
           {
             "x": 546,
-            "y": 1380.3
+            "y": 1417.8
           },
           {
             "x": 692.5,
-            "y": 1380.3
+            "y": 1417.8
           },
           {
             "x": 839,
-            "y": 1380.3
+            "y": 1417.8
           },
           {
             "x": 1017.5,
-            "y": 1380.3
+            "y": 1417.8
           },
           {
             "x": 1196,
-            "y": 1380.3
+            "y": 1417.8
           },
           {
-            "x": 1323.2,
-            "y": 1437.3
+            "x": 1314.5,
+            "y": 1417.9
           }
         ]
       },
@@ -5009,32 +4989,32 @@
         "id": "NESTS_HIGHLIGHTS→TExoHighlightApi",
         "points": [
           {
-            "x": 392.4,
-            "y": 1502.3
+            "x": 430.5,
+            "y": 1410.7
           },
           {
             "x": 546,
-            "y": 1360.3
+            "y": 1397.8
           },
           {
             "x": 692.5,
-            "y": 1360.3
+            "y": 1397.8
           },
           {
             "x": 839,
-            "y": 1360.3
+            "y": 1397.8
           },
           {
             "x": 1017.5,
-            "y": 1360.3
+            "y": 1397.8
           },
           {
             "x": 1196,
-            "y": 1360.3
+            "y": 1397.8
           },
           {
-            "x": 1344.5,
-            "y": 1189.5
+            "x": 1330.3,
+            "y": 1293
           }
         ]
       },
@@ -5042,16 +5022,16 @@
         "id": "notAny→TCardPorts",
         "points": [
           {
-            "x": 113.9,
-            "y": 2204.5
+            "x": 150.5,
+            "y": 2427.3
           },
           {
             "x": 189,
-            "y": 2278.5
+            "y": 2431.3
           },
           {
             "x": 272.5,
-            "y": 2297.4
+            "y": 2431.3
           }
         ]
       },
@@ -5059,16 +5039,16 @@
         "id": "notAny→TSameType",
         "points": [
           {
-            "x": 115.4,
-            "y": 2158.5
+            "x": 106.3,
+            "y": 2398.3
           },
           {
             "x": 189,
-            "y": 2090.5
+            "y": 2277.5
           },
           {
-            "x": 292.4,
-            "y": 2138
+            "x": 299.1,
+            "y": 2222
           }
         ]
       },
@@ -5077,15 +5057,15 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 908
+            "y": 977.3
           },
           {
             "x": 1196,
-            "y": 917
+            "y": 986.3
           },
           {
-            "x": 1366.9,
-            "y": 1437.3
+            "x": 1365,
+            "y": 1395
           }
         ]
       },
@@ -5094,40 +5074,23 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 899
+            "y": 968.2
           },
           {
             "x": 1196,
-            "y": 890
+            "y": 959.3
           },
           {
             "x": 1374.5,
-            "y": 890
+            "y": 959.3
           },
           {
             "x": 1553,
-            "y": 890
+            "y": 959.3
           },
           {
-            "x": 1686.6,
-            "y": 958.5
-          }
-        ]
-      },
-      {
-        "id": "P→box",
-        "points": [
-          {
-            "x": 1361.8,
-            "y": 1483.3
-          },
-          {
-            "x": 1196,
-            "y": 1784.3
-          },
-          {
-            "x": 1077.5,
-            "y": 1794.5
+            "x": 1671.5,
+            "y": 965.1
           }
         ]
       },
@@ -5135,16 +5098,16 @@
         "id": "P→title",
         "points": [
           {
-            "x": 1386,
-            "y": 1437.3
+            "x": 1391.5,
+            "y": 1395
           },
           {
             "x": 1553,
-            "y": 1103
+            "y": 1176.8
           },
           {
-            "x": 1697.7,
-            "y": 1004.5
+            "x": 1711.8,
+            "y": 991
           }
         ]
       },
@@ -5152,24 +5115,24 @@
         "id": "PLAIN_PARENT→c",
         "points": [
           {
-            "x": 752.5,
-            "y": 1299
+            "x": 733.5,
+            "y": 1318.5
           },
           {
             "x": 839,
-            "y": 1326.8
+            "y": 1377.8
           },
           {
             "x": 1017.5,
-            "y": 1326.8
+            "y": 1377.8
           },
           {
             "x": 1196,
-            "y": 1326.8
+            "y": 1377.8
           },
           {
             "x": 1314.5,
-            "y": 1366.3
+            "y": 1355.3
           }
         ]
       },
@@ -5178,15 +5141,15 @@
         "points": [
           {
             "x": 752.5,
-            "y": 1279.8
+            "y": 1309.9
           },
           {
             "x": 839,
-            "y": 1279.8
+            "y": 1330.8
           },
           {
             "x": 976.6,
-            "y": 1202.3
+            "y": 1253.3
           }
         ]
       },
@@ -5195,23 +5158,23 @@
         "points": [
           {
             "x": 752.5,
-            "y": 1260.5
+            "y": 1290.7
           },
           {
             "x": 839,
-            "y": 1232.8
+            "y": 1283.8
           },
           {
             "x": 1017.5,
-            "y": 1232.8
+            "y": 1283.8
           },
           {
             "x": 1196,
-            "y": 1232.8
+            "y": 1283.8
           },
           {
-            "x": 1356.5,
-            "y": 1437.3
+            "x": 1343.9,
+            "y": 1395
           }
         ]
       },
@@ -5220,15 +5183,15 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 1668.3
+            "y": 1713
           },
           {
             "x": 1196,
-            "y": 1677.3
+            "y": 1722
           },
           {
-            "x": 1360.4,
-            "y": 1409.3
+            "x": 1363.6,
+            "y": 1367
           }
         ]
       },
@@ -5237,15 +5200,15 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 1659.2
+            "y": 1705.1
           },
           {
             "x": 1196,
-            "y": 1650.3
+            "y": 1698.5
           },
           {
-            "x": 1352.9,
-            "y": 1483.3
+            "x": 1359.9,
+            "y": 1441
           }
         ]
       },
@@ -5253,32 +5216,32 @@
         "id": "sameMap→box",
         "points": [
           {
-            "x": 117.3,
-            "y": 2611.5
+            "x": 107.3,
+            "y": 2134.5
           },
           {
             "x": 189,
-            "y": 2673
+            "y": 2246
           },
           {
             "x": 367.5,
-            "y": 2673
+            "y": 2246
           },
           {
             "x": 546,
-            "y": 2673
+            "y": 2246
           },
           {
             "x": 692.5,
-            "y": 2673
+            "y": 2246
           },
           {
             "x": 839,
-            "y": 2673
+            "y": 2246
           },
           {
-            "x": 1012.8,
-            "y": 1822.8
+            "x": 1010.9,
+            "y": 1644.5
           }
         ]
       },
@@ -5286,16 +5249,16 @@
         "id": "sameMap→TCardPorts",
         "points": [
           {
-            "x": 150.5,
-            "y": 2605.9
+            "x": 119,
+            "y": 2134.5
           },
           {
             "x": 189,
-            "y": 2617
+            "y": 2191
           },
           {
-            "x": 346.8,
-            "y": 2353.5
+            "x": 341.9,
+            "y": 2396.8
           }
         ]
       },
@@ -5304,47 +5267,47 @@
         "points": [
           {
             "x": 150.5,
-            "y": 2593.7
+            "y": 2122.2
           },
           {
             "x": 189,
-            "y": 2597
+            "y": 2129
           },
           {
             "x": 367.5,
-            "y": 2597
+            "y": 2129
           },
           {
             "x": 546,
-            "y": 2597
+            "y": 2129
           },
           {
             "x": 692.5,
-            "y": 2597
+            "y": 2129
           },
           {
             "x": 839,
-            "y": 2597
+            "y": 2129
           },
           {
             "x": 1017.5,
-            "y": 2597
+            "y": 2129
           },
           {
             "x": 1196,
-            "y": 2597
+            "y": 2129
           },
           {
             "x": 1374.5,
-            "y": 2597
+            "y": 2129
           },
           {
             "x": 1553,
-            "y": 2597
+            "y": 2129
           },
           {
-            "x": 1729,
-            "y": 1004.5
+            "x": 1728,
+            "y": 991
           }
         ]
       },
@@ -5352,16 +5315,16 @@
         "id": "sameMap→TSameType",
         "points": [
           {
-            "x": 109,
-            "y": 2565.5
+            "x": 150.5,
+            "y": 2095.1
           },
           {
             "x": 189,
-            "y": 2466
+            "y": 2084.5
           },
           {
-            "x": 346.5,
-            "y": 2207
+            "x": 307.7,
+            "y": 2153
           }
         ]
       },
@@ -5369,16 +5332,16 @@
         "id": "TCardPorts→CARD",
         "points": [
           {
-            "x": 421.8,
-            "y": 2353.5
+            "x": 413.3,
+            "y": 2465.8
           },
           {
             "x": 546,
-            "y": 2432.5
+            "y": 2565.8
           },
           {
             "x": 632.5,
-            "y": 2432.5
+            "y": 2565.8
           }
         ]
       },
@@ -5386,16 +5349,16 @@
         "id": "TCardPorts→TExoPortsOf",
         "points": [
           {
-            "x": 428.2,
-            "y": 2284.5
+            "x": 421.3,
+            "y": 2396.8
           },
           {
             "x": 546,
-            "y": 2217.5
+            "y": 2316.8
           },
           {
             "x": 578,
-            "y": 2217.5
+            "y": 2316.8
           }
         ]
       },
@@ -5404,15 +5367,15 @@
         "points": [
           {
             "x": 791,
-            "y": 607
+            "y": 671.5
           },
           {
             "x": 839,
-            "y": 607
+            "y": 671.5
           },
           {
-            "x": 1014.1,
-            "y": 1776.8
+            "x": 1013.2,
+            "y": 1598.5
           }
         ]
       },
@@ -5421,15 +5384,15 @@
         "points": [
           {
             "x": 1521,
-            "y": 2228.5
+            "y": 2361.3
           },
           {
             "x": 1553,
-            "y": 2228.5
+            "y": 2361.3
           },
           {
-            "x": 1628.8,
-            "y": 2265
+            "x": 1678.2,
+            "y": 2477.5
           }
         ]
       },
@@ -5438,15 +5401,15 @@
         "points": [
           {
             "x": 1852.5,
-            "y": 2314.5
+            "y": 2527
           },
           {
             "x": 1910,
-            "y": 2314.5
+            "y": 2527
           },
           {
             "x": 2033.5,
-            "y": 2237
+            "y": 2449.5
           }
         ]
       },
@@ -5455,15 +5418,15 @@
         "points": [
           {
             "x": 1484.5,
-            "y": 2038.8
+            "y": 2261.3
           },
           {
             "x": 1553,
-            "y": 2060.3
+            "y": 2282.8
           },
           {
-            "x": 1696.7,
-            "y": 2265
+            "x": 1695.3,
+            "y": 2477.5
           }
         ]
       },
@@ -5472,15 +5435,15 @@
         "points": [
           {
             "x": 1521,
-            "y": 1995.4
+            "y": 2211
           },
           {
             "x": 1553,
-            "y": 1993.5
+            "y": 2207.5
           },
           {
-            "x": 1702,
-            "y": 2168
+            "x": 1701.8,
+            "y": 2380.5
           }
         ]
       },
@@ -5489,15 +5452,15 @@
         "points": [
           {
             "x": 1110.8,
-            "y": 2167.8
+            "y": 2300.5
           },
           {
             "x": 1196,
-            "y": 2199.3
+            "y": 2332
           },
           {
             "x": 1228,
-            "y": 2204.5
+            "y": 2337.2
           }
         ]
       },
@@ -5505,16 +5468,16 @@
         "id": "TExoPortMaps→TExoOwnPorts",
         "points": [
           {
-            "x": 1065.2,
-            "y": 2098.8
+            "x": 1164,
+            "y": 2233.8
           },
           {
             "x": 1196,
-            "y": 2004.3
+            "y": 2226.8
           },
           {
             "x": 1228,
-            "y": 2004.3
+            "y": 2226.8
           }
         ]
       },
@@ -5523,15 +5486,15 @@
         "points": [
           {
             "x": 1878,
-            "y": 2202.5
+            "y": 2415
           },
           {
             "x": 1910,
-            "y": 2202.5
+            "y": 2415
           },
           {
             "x": 1942,
-            "y": 2202.5
+            "y": 2415
           }
         ]
       },
@@ -5539,16 +5502,16 @@
         "id": "TExoPortsOf→TExoAllOf",
         "points": [
           {
-            "x": 756.1,
-            "y": 2252
+            "x": 737.2,
+            "y": 2351.3
           },
           {
             "x": 839,
-            "y": 2297
+            "y": 2429.8
           },
           {
             "x": 871,
-            "y": 2297
+            "y": 2429.8
           }
         ]
       },
@@ -5556,24 +5519,24 @@
         "id": "TExoPortsOf→TExoDeclNode",
         "points": [
           {
-            "x": 807,
-            "y": 2233.9
+            "x": 785.2,
+            "y": 2351.3
           },
           {
             "x": 839,
-            "y": 2238.5
+            "y": 2371.3
           },
           {
             "x": 1017.5,
-            "y": 2238.5
+            "y": 2371.3
           },
           {
             "x": 1196,
-            "y": 2238.5
+            "y": 2371.3
           },
           {
             "x": 1228,
-            "y": 2236.7
+            "y": 2369.5
           }
         ]
       },
@@ -5581,16 +5544,16 @@
         "id": "TExoPortsOf→TExoPortMaps",
         "points": [
           {
-            "x": 752.5,
-            "y": 2183
+            "x": 792.1,
+            "y": 2282.3
           },
           {
             "x": 839,
-            "y": 2133.3
+            "y": 2266
           },
           {
             "x": 871,
-            "y": 2133.3
+            "y": 2266
           }
         ]
       },
@@ -5598,16 +5561,16 @@
         "id": "title→P",
         "points": [
           {
-            "x": 1724.4,
-            "y": 1004.5
+            "x": 1724.1,
+            "y": 991
           },
           {
             "x": 1553,
-            "y": 1563.3
+            "y": 1521
           },
           {
             "x": 1414.4,
-            "y": 1483.3
+            "y": 1441
           }
         ]
       },
@@ -5623,8 +5586,8 @@
             "y": 174
           },
           {
-            "x": 1726.4,
-            "y": 958.5
+            "x": 1726.3,
+            "y": 945
           }
         ]
       },
@@ -5633,15 +5596,15 @@
         "points": [
           {
             "x": 1074.9,
-            "y": 1083.8
+            "y": 1134.8
           },
           {
             "x": 1196,
-            "y": 1132.3
+            "y": 1183.3
           },
           {
-            "x": 1362,
-            "y": 1437.3
+            "x": 1357,
+            "y": 1395
           }
         ]
       },
@@ -5649,24 +5612,24 @@
         "id": "widened→title",
         "points": [
           {
-            "x": 1071,
-            "y": 1037.8
+            "x": 1077.5,
+            "y": 1093.6
           },
           {
             "x": 1196,
-            "y": 984
+            "y": 1057.8
           },
           {
             "x": 1374.5,
-            "y": 984
+            "y": 1057.8
           },
           {
             "x": 1553,
-            "y": 984
+            "y": 1057.8
           },
           {
-            "x": 1671.5,
-            "y": 982.3
+            "x": 1685.8,
+            "y": 991
           }
         ]
       },
@@ -5683,7 +5646,7 @@
           },
           {
             "x": 632.5,
-            "y": 822.3
+            "y": 852.4
           }
         ]
       },
@@ -5692,15 +5655,15 @@
         "points": [
           {
             "x": 1077.5,
-            "y": 1279.8
+            "y": 1330.8
           },
           {
             "x": 1196,
-            "y": 1279.8
+            "y": 1330.8
           },
           {
-            "x": 1336,
-            "y": 1363.3
+            "x": 1314.5,
+            "y": 1339.5
           }
         ]
       }

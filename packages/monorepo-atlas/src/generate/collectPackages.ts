@@ -13,7 +13,9 @@ export function collectPackages(root: string): TExoPackageMeta[] {
         const groupPath = join(root, group);
         if (!existsSync(groupPath)) continue;
 
-        for (const entry of readdirSync(groupPath, { withFileTypes: true })) {
+        for (const entry of readdirSync(groupPath, { withFileTypes: true }).sort((a, b) =>
+            a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+        )) {
             if (!entry.isDirectory() || entry.name === 'examples') continue;
             const dir = group === 'packages' ? entry.name : `examples/${entry.name}`;
             const manifest = join(root, 'packages', dir, 'package.json');

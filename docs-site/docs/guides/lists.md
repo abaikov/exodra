@@ -204,7 +204,7 @@ The fix is not a renderer feature, it is keeping the item objects stable:
 
 - A store that hands back the **same entity object** until that entity actually
   changes gives you focus-safe lists for free. Reactive stores like
-  [`@oimdb/*`](https://abaikov.github.io/oimdb/llms.txt) are built this way — a
+  [`@oimdb/*`](https://oimdb.org/llms.txt) are built this way — a
   row's identity is the entity's permanent slot, not a projection made per read.
 - A field edit should reach the row through the row's **own** effect, not
   through a new list. Subscribe to the field inside `ROW` and a change to it writes

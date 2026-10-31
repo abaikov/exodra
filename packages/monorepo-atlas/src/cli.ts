@@ -164,6 +164,7 @@ export async function run(argv: readonly string[], cwd: string): Promise<number>
     const written = new Set(files.map(([name]) => name));
     const leftover = existsSync(insidesDir)
         ? readdirSync(insidesDir)
+              .sort()
               .map((name) => `insides/${name}`)
               .filter((name) => name.endsWith('.json') && !written.has(name))
         : [];

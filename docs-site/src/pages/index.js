@@ -105,7 +105,7 @@ function ClosingSection() {
                         <p className={landingStyles.pairingLabel}>Recommended together with</p>
                         <div className={landingStyles.pairingGrid}>
                             <div>
-                                <a className={landingStyles.pairingName} href="https://cnstra.org/" target="_blank" rel="noopener noreferrer">
+                                <a className={`${landingStyles.pairingName} ${landingStyles.pairingNamePixel}`} href="https://cnstra.org/" target="_blank" rel="noopener noreferrer">
                                     CNStra
                                 </a>
                                 <p className={landingStyles.pairingText}>
@@ -113,7 +113,7 @@ function ClosingSection() {
                                 </p>
                             </div>
                             <div>
-                                <a className={landingStyles.pairingName} href="https://abaikov.github.io/oimdb/" target="_blank" rel="noopener noreferrer">
+                                <a className={landingStyles.pairingName} href="https://oimdb.org/" target="_blank" rel="noopener noreferrer">
                                     OIMDB
                                 </a>
                                 <p className={landingStyles.pairingText}>

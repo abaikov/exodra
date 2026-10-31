@@ -174,7 +174,7 @@ const COUNTER = mCounter.done();
 ```
 
 The source is anything with a read and a subscription — a store, an
-[OIMDB](https://abaikov.github.io/oimdb/) collection, a socket. Exodra ships no
+[OIMDB](https://oimdb.org/) collection, a socket. Exodra ships no
 cell of its own, and a derived value is computed in the transition that writes it.
 
 ## Composition

@@ -86,7 +86,7 @@ That is a deliberate design choice with two sides:
 - **Heavy multi-source state delegates coherence upward.** If you build many
   interdependent values or computeds over collections, batching and glitch-free
   consistency are **not** the view layer's job — you hand them to the data layer.
-  A reactive store like [`@oimdb/*`](https://abaikov.github.io/oimdb/llms.txt)
+  A reactive store like [`@oimdb/*`](https://oimdb.org/llms.txt)
   already owns a transactional queue: it coalesces writes, flushes a consistent
   snapshot, and feeds **already-settled** values into ports as plain direct
   writes. The batching did not disappear — it lives where a transaction model

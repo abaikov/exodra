@@ -64,7 +64,11 @@ export function extractEntities(options: TExoExtractOptions): TExoGraphModel {
     // Filled by the one fenced call in this file; carried out in the model and counted by
     // the CLI. See `askTheChecker`.
     const unresolved: TExoUnresolvedType[] = [];
-    const declarations = collectDeclarations(project.getSourceFiles(), unresolved);
+    // Sorted: a glob returns files in the file system's order, which is sorted on macOS and not on Linux.
+    const sourceFiles = [...project.getSourceFiles()].sort((a, b) =>
+        a.getFilePath() < b.getFilePath() ? -1 : a.getFilePath() > b.getFilePath() ? 1 : 0
+    );
+    const declarations = collectDeclarations(sourceFiles, unresolved);
     const byNode = new Map<Node, TExoDeclaration>();
     for (const declaration of declarations.values()) {
         byNode.set(declaration.node, declaration);
