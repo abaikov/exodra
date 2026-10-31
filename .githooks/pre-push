@@ -1,0 +1,18 @@
+#!/bin/sh
+# A push publishes. Every pushed commit must have a tree the clean check passed; if the working tree
+# IS that commit's tree and it has not passed yet, the hook runs the clean check itself.
+root="$(git rev-parse --show-toplevel)"
+stamp="$root/.release-check-pass"
+while read local_ref local_sha remote_ref remote_sha; do
+    [ "$local_sha" = "0000000000000000000000000000000000000000" ] && continue
+    want="$(git rev-parse "$local_sha^{tree}")"
+    [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$want" ] && continue
+    if [ -n "$(git status --porcelain)" ] || [ "$(git rev-parse HEAD^{tree})" != "$want" ]; then
+        echo "✖ push refused: $local_ref has not passed npm run release:check:clean, and the working tree is not that commit, so the hook cannot check it. Check out the commit with a clean tree and push again." >&2
+        exit 1
+    fi
+    echo "▶ $local_ref has not passed the clean check yet — running npm run release:check:clean (about 6 minutes)…"
+    (cd "$root" && npm run release:check:clean) || exit 1
+    [ "$(cat "$stamp" 2>/dev/null)" = "$want" ] || { echo "✖ push refused: the clean check passed a different tree." >&2; exit 1; }
+done
+exit 0

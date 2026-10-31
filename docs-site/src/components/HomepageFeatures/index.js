@@ -27,8 +27,8 @@ const FEATURES = [
     },
     {
         title: 'React’s API, React’s libraries',
-        to: '/docs/guides/react-compat',
-        description: 'Alias react and react-dom, and an existing React app runs on Exodra machines, with hooks, context, Suspense and portals. There is no virtual DOM underneath.',
+        to: '/blog/react-on-exodra-faster-than-react',
+        description: 'Alias react and react-dom, and an existing React app runs on Exodra machines, with hooks, context, Suspense and portals. With the compiler, the same code mounts faster than on React itself.',
     },
     {
         title: 'A strategy for the hot path',

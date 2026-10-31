@@ -174,3 +174,6 @@ packages/*/smoke.png
 # Built benchmark participants. Each is produced by packages/benchmarks/bench/build/build-*.mjs
 # and served verbatim out of `public/`, the same way the SSR half serves `ssr/dist/`. Artifacts.
 packages/benchmarks/public/bench/
+
+# The stamp release:check:clean writes for the commit and push hooks.
+.release-check-pass

@@ -264,6 +264,29 @@ function Tabs({ children, active }: TTabsProps) {
 Each `<a className="tab">` passed to `Tabs` is compiled, `child.props.className`
 reads `'tab'`, and the clone renders with the merged class.
 
+## How fast it is
+
+On the benchmark application — an 80-card board written once as ordinary React and
+run unchanged on React 19 and on this package, with byte-identical markup checked
+before any timing — the compiled path mounts faster than React in every run that
+measured both:
+
+<!-- gate: unrecorded col=2 cmd="node scripts/run-one-axis.js initial-render 60 20 --only=exodra,react,reactCompat,reactCompatJsx,solid (narrowed; compat3/compat4 add reactCompatTemplates)" date=2026-10-31 -->
+<!-- gate: unrecorded col=3 cmd="node scripts/run-one-axis.js initial-render 60 20 --only=exodra,react,reactCompat,reactCompatJsx,solid (narrowed; compat3/compat4 add reactCompatTemplates)" date=2026-10-31 -->
+| run | compiled | React | ratio |
+|---|---|---|---|
+| `initial-render.compat1` | 1.065 ms | 1.225 ms | 1.15× faster |
+| `initial-render.compat2` | 0.905 ms | 1.065 ms | 1.18× faster |
+| `initial-render.compat3` | 0.850 ms | 0.995 ms | 1.17× faster |
+| `initial-render.compat4` | 0.890 ms | 1.140 ms | 1.28× faster |
+
+On updates it is ahead of React in all three runs that carried both
+(`app-update.compat1`, `compat2`, `compat4`); that axis reports order only. The
+runs are narrowed to the React family, Solid and Exodra, so only the ratios inside
+a run are comparable. The plain runtime, without the compiler or host templates,
+is behind React on both axes. The full account is the post
+[Your React Code, Faster Than React](/blog/react-on-exodra-faster-than-react).
+
 ## Host templates, without the compiler
 
 When the compiler is not in the build, the runtime can do the same job itself.
