@@ -1430,7 +1430,7 @@ function ladderWire(): string {
     let html = UL_OPEN;
     for (let i = 0; i < N; i++) {
         const c = MAKE_NODE(PLAN, null);
-        WIRE(c, i);
+        WIRE(c, i, undefined);
         html += FILL(c.values);
     }
     return html + UL_CLOSE;

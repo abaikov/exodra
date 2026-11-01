@@ -236,6 +236,27 @@ with a spread (`{...props}`), a namespaced attribute or a `children` attribute. 
 children of such an element are still visited, so a compilable tree below a spread
 is compiled.
 
+### Code that is already compiled
+
+The plugin also reads code that has no JSX left in it: a call to `jsx`, `jsxs` or
+`jsxDEV` from `react/jsx-runtime`, or to `createElement` from `react` (imported,
+`require`d, or as `React.createElement`), whose tag is a string literal and whose
+props are an object literal, is turned back into the element it describes and
+compiled the same way. A `createElement` call that spreads a `const` array declared
+in the statement right before it, and used nowhere else, has that array inlined.
+A call with a spread in its props, a tag held in a variable, or any other shape is
+left as it is.
+
+So the plugin can run after another JSX transform, and over libraries in
+`node_modules`. On the benchmark application written with `createElement`
+(`initial-render.calls2`, narrowed run, ratios only), compiling those calls took
+mounting to 0.780 ms against React's 0.920 — the same as compiling its JSX twin
+(0.800). Of the fifteen libraries the release check runs, react-router and
+Headless UI render host elements with calls of that shape; the others hand theirs
+over with spread props or a tag from a variable and keep the runtime path. The
+library suites run once more with every library compiled this way
+(`compat-compiled` in `packages/react-compat-libraries/vitest.config.ts`).
+
 ### Compiled elements are still elements
 
 A compiled tree evaluates to an element object, not to a node. Its `type` is the
@@ -266,6 +287,30 @@ reads `'tab'`, and the clone renders with the merged class.
 
 ## How fast it is
 
+**Faster than React, through the compiler.** With `@exodra/babel-plugin-schema/react`
+in the build, mounting and updating are faster than React 19. The plugin takes your
+JSX and code that is already compiled to `jsx()` or `createElement` calls, so React
+libraries from npm go through it as they are (all fifteen in the library suite pass
+compiled). Without the compiler, mounting is level with React.
+
+The full field, one recorded run (`initial-render.calls-full-2026-11-01` and
+`app-update.calls-full-2026-11-01`, medians):
+
+<!-- gate: axis=initial-render label=calls-full-2026-11-01 col=2 map="compiled JSX:reactCompatJsx;compiled `createElement` calls:reactCompatCalls;host templates, no compiler (default):reactCompatTemplates;React 19:react;React 19 + React Compiler:reactCompiler;templates off:reactCompat" -->
+<!-- gate: axis=app-update label=calls-full-2026-11-01 col=3 map="compiled JSX:reactCompatJsx;compiled `createElement` calls:reactCompatCalls;host templates, no compiler (default):reactCompatTemplates;React 19:react;React 19 + React Compiler:reactCompiler;templates off:reactCompat" -->
+| participant | mount, ms | 40 update rounds, ms |
+|---|---|---|
+| **compiled JSX** | **0.820** | **8.4** |
+| **compiled `createElement` calls** | **0.825** | **8.4** |
+| host templates, no compiler (default) | 0.915 | 9.5 |
+| React 19 | 0.980 | 11.0 |
+| React 19 + React Compiler | 1.025 | 10.1 |
+| templates off | 1.310 | 13.8 |
+
+Mounting compiled is 1.19× faster than React in that run. `app-update` carries no
+null pair, so its column is an order, not a size: both compiled rows lead React,
+React Compiler and Solid.
+
 On the benchmark application — an 80-card board written once as ordinary React and
 run unchanged on React 19 and on this package, with byte-identical markup checked
 before any timing — the compiled path mounts faster than React in every run that
@@ -279,23 +324,24 @@ measured both:
 | `initial-render.compat2` | 0.905 ms | 1.065 ms | 1.18× faster |
 | `initial-render.compat3` | 0.850 ms | 0.995 ms | 1.17× faster |
 | `initial-render.compat4` | 0.890 ms | 1.140 ms | 1.28× faster |
+| `initial-render.compat8` | 0.860 ms | 0.980 ms | 1.14× faster |
 
-On updates it is ahead of React in all three runs that carried both
-(`app-update.compat1`, `compat2`, `compat4`); that axis reports order only. The
+On updates it is ahead of React in every run that carried both
+(`app-update.compat1`, `compat2`, `compat4`, `compat8`); that axis reports order only. The
 runs are narrowed to the React family, Solid and Exodra, so only the ratios inside
-a run are comparable. The plain runtime, without the compiler or host templates,
-is behind React on both axes. The full account is the post
+a run are comparable. With host templates (on by default) mounting is level with React and updates
+are ahead of it; the plain runtime, with templates switched off, is behind React
+on both axes. The full account is the post
 [Your React Code, Faster Than React](/blog/react-on-exodra-faster-than-react).
 
 ## Host templates, without the compiler
 
-When the compiler is not in the build, the runtime can do the same job itself.
-`enableExoReactHostTemplates()` turns it on for the whole application:
+When the compiler is not in the build, the runtime does the same job itself.
+It is on by default; `enableExoReactHostTemplates(false)` switches it off for
+the whole application:
 
 ```ts
-import { createElement, createRoot, enableExoReactHostTemplates } from '@exodra/react-compat';
-
-enableExoReactHostTemplates();
+import { createElement, createRoot } from '@exodra/react-compat';
 
 function Card({ title }: { title: string }) {
     return createElement('article', null, createElement('h2', null, title), createElement('p', null, 'body'));
@@ -311,19 +357,22 @@ machine per DOM element. A list (an array of keyed elements of one type) and
 anything that is not a host element stays a region the reconciler handles as
 before.
 
-Measured on the benchmark application (`initial-render.compat4`, narrowed run,
-ratios only): mounting took 0.990 ms with templates, 1.330 without them and
-1.140 in React. On `app-update` (`app-update.compat4`) the axis reports no
-resolution, so only the order is known: templates ahead of React, the plain
-runtime behind it.
+Measured on the benchmark application (`initial-render.compat8`, narrowed run,
+ratios only): mounting took 1.000 ms with templates, 1.280 without them and
+0.980 in React — level with React, not ahead of it. Across the four runs that
+carried both, templates against React read 1.39, 0.87, 1.00 and 1.00. On
+`app-update` (`app-update.compat8`) the axis reports no resolution, so only the
+order is known: templates ahead of React, the plain runtime behind it.
 
-**It is off by default because of one difference from React.** If a component
-changes the shape of a tree it already rendered — a host element appears where
-there was none, or a fixed-position key changes — the cached template no longer
-fits. The runtime then builds a merged template that fits both shapes, and an
-instance still on the old one is rebuilt once. React would keep the unchanged
-siblings; here they are replaced, so focus or text typed into an uncontrolled
-input inside that subtree is lost the one time it happens.
+**Changing shape keeps what React keeps.** If a component changes the shape of a
+tree it already rendered — a host element appears where there was none, a text
+turns into an element — the live instance is handed over to the plain path in
+place: its DOM elements stay where they are, nested components keep their state,
+an uncontrolled input keeps what was typed, and each handler still fires once.
+The compiler does the same for compiled trees, and merges the two branches of a
+ternary with one root tag into one schema, so flipping such a branch does not hand
+anything over at all (`host-templates.test.ts` and the compiler's `react.test.ts`
+assert each of these).
 
 ## What is supported
 

@@ -105,6 +105,7 @@ const AXES = {
     // it. A region that is not a multiple of four is rounded UP and says so, because the tag cycle
     // has period four and a region that ends mid-cycle weights the cheap transitions differently.
     'app-update': ['./src/benchmarks/axes/app/app-update.tsx', 'benchmarkAppUpdate'],
+    'react-libraries': ['./src/benchmarks/axes/app/react-libraries.ts', 'benchmarkReactLibraries'],
     // IT HAS ITS OWN BATCH DEFAULT AND THE POSITIONAL BELOW WILL OVERRIDE IT WITH 1 — READ THIS
     // BEFORE RUNNING IT. Chromium clamps `performance.now()` to ~0.1 ms and this axis's two fastest
     // rows land ON that clamp: `.gate/list-update.latest.json` records `exodraOps` and `mikado` at
@@ -1758,7 +1759,7 @@ const AXES_WITH_NULLS = new Set([
     // (`exodraOps` and `mikado`, both `min 0.000 · median 0.100 · max 0.200` on a 0.100 ms clock)
     // could be published as an ordering when they are zero, one and two TICKS, and why the axis's
     // own headline read `17.0× slower than exodraOps` off a denominator of one tick. It declares TWO
-    // pairs rather than one because it straddles two magnitudes: `exodraOps`↔`exodraOps·twin` on the
+    // pairs rather than one because it straddles two magnitudes: `exodraTold`↔`exodraTold·twin` on the
     // told side, where the closest call in the table lives, and `exodra`↔`exodra·twin` on the derive
     // side. Listed here so a recording that loses either block is reported as the regression it
     // would be.

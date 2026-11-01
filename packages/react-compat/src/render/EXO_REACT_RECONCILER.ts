@@ -2,17 +2,21 @@ import { createExoChildList } from '@exodra/dom';
 import { wireExoNode } from '@exodra/core';
 import type { TExoMachine, TExoNode } from '@exodra/core';
 import type { TExoDomMark } from '@exodra/dom';
+import { EXO_REACT_HOST_ADOPTION } from '../constants/EXO_REACT_HOST_ADOPTION';
 import { EXO_REACT_HOST_TEMPLATES } from '../constants/EXO_REACT_HOST_TEMPLATES';
 import { EXO_REACT_RENDER } from '../constants/EXO_REACT_RENDER';
 import { EXO_REACT_SUSPENSE } from '../constants/EXO_REACT_SUSPENSE';
 import { EXO_REACT_SYMBOLS } from '../constants/EXO_REACT_SYMBOLS';
 import { Fragment } from '../Fragment';
 import { isValidElement } from '../isValidElement';
+import { createExoReactSlot } from './createExoReactSlot';
 import { disposeExoReactSlot } from './disposeExoReactSlot';
 import { placeExoReactRange } from './placeExoReactRange';
+import { readExoReactPlainElement } from './readExoReactPlainElement';
 import { renderExoReactClass } from './renderExoReactClass';
 import type { TExoReactContext } from '../types/TExoReactContext';
 import type { TExoReactElement } from '../types/TExoReactElement';
+import type { TExoReactHostShape } from '../types/TExoReactHostShape';
 import type { TExoReactRange } from '../types/TExoReactRange';
 import type { TExoReactSlot } from '../types/TExoReactSlot';
 
@@ -213,25 +217,14 @@ function makeSlot(
     key: string,
     element: TExoReactElement | null
 ): TExoReactSlot {
-    const component = range.component;
-    return {
+    return createExoReactSlot(
+        range,
         kind,
         type,
         key,
-        props: element === null ? null : paramsOf(element),
-        ref: element === null ? null : element.ref,
-        node: null,
-        text: null,
-        range: null,
-        parentRange: range,
-        parentComponent: component,
-        depth: component === null ? 1 : component.depth + 1,
-        hooks: [],
-        consumers: null,
-        dirty: false,
-        alive: true,
-        pass: 0,
-    };
+        element === null ? null : paramsOf(element),
+        element === null ? null : element.ref
+    );
 }
 
 function createTextSlot(range: TExoReactRange, key: string, value: string): TExoReactSlot {
@@ -326,6 +319,20 @@ function placeElement(pass: TExoReactPass, key: string, element: TExoReactElemen
         updateSlot(pass, old, element);
         pass.next.push(old);
         return;
+    }
+    if (old !== undefined && old.kind === 'host' && typeof element.type === 'string') {
+        const shape = (old.type as { readonly exoReactShape?: TExoReactHostShape | null })
+            .exoReactShape;
+        const adopt = EXO_REACT_HOST_ADOPTION.adopt;
+        if (adopt !== null && shape !== undefined && shape !== null && shape.tag === element.type) {
+            adopt(old, shape);
+        }
+        const plain = readExoReactPlainElement(element);
+        if (old.type === plain.host) {
+            updateSlot(pass, old, plain);
+            pass.next.push(old);
+            return;
+        }
     }
     if (old !== undefined) old.pass = 0;
     const range = pass.range;

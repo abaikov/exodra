@@ -5,6 +5,8 @@ import { pickName } from '../pickName';
 import { compileHostTree } from './compileHostTree';
 import { emitRuntimeElement } from './emitRuntimeElement';
 import { isCompilableHost } from './isCompilableHost';
+import { mergeHostBranches } from './mergeHostBranches';
+import { readCallElement } from './readCallElement';
 import type { TExoFileState } from '../types/TExoFileState';
 import type { TExoReactNames } from './types/TExoReactNames';
 import type { TExoReactPluginOptions } from './types/TExoReactPluginOptions';
@@ -54,6 +56,13 @@ function babelPluginExodraReact(api: ConfigAPI, options: TExoReactPluginOptions)
     let names: TExoReactNames;
     let file: TExoFileState;
 
+    const factorySources = new Set([
+        'react',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
+        importSource,
+        importSource + '/jsx-runtime',
+    ]);
     const runtime = (name: string): string => exoImports.use(file, importSource, name);
     const jsxRuntime = (name: string): string =>
         exoImports.use(file, importSource + '/jsx-runtime', name);
@@ -66,6 +75,14 @@ function babelPluginExodraReact(api: ConfigAPI, options: TExoReactPluginOptions)
                     const taken = collectBoundNames(path);
                     names = pickReactNames(taken);
                     file = { schemas: 0, compiled: false, taken, imports: new Map() };
+                    path.traverse({
+                        CallExpression: {
+                            exit(call) {
+                                const element = readCallElement(call, factorySources);
+                                if (element !== null) call.replaceWith(element);
+                            },
+                        },
+                    });
                 },
                 exit(path) {
                     if (!file.compiled) return;
@@ -93,6 +110,10 @@ function babelPluginExodraReact(api: ConfigAPI, options: TExoReactPluginOptions)
                 const target = moduleStatement(path);
                 path.replaceWith(replacement);
                 target.insertBefore(hoisted);
+            },
+            ConditionalExpression(path) {
+                const merged = mergeHostBranches(path.node);
+                if (merged !== null) path.replaceWith(merged);
             },
             JSXFragment(path) {
                 file.compiled = true;

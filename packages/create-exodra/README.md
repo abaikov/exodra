@@ -82,36 +82,36 @@ Common options for `component` / `page`: `-d, --dir <path>`, `-t, --typescript`,
 scaffold writes — so a generated page drops straight into the generated route
 table. A page is a machine **default-exported** from its module; a
 component is a named machine export, filled by its parent with
-`c.one(P.slot, Name)` or repeated with `c.list(P.slot, Name, count)`. Neither
+`c.one(ParentPorts.slot, Name)` or repeated with `c.list(ParentPorts.slot, Name, count)`. Neither
 contains JSX, so neither needs the Babel plugin to compile. With `-t` the files
 carry type annotations; without it they are the same code with the types dropped.
 
-**There are no props.** `createInitialState` is `(exonode, index) => state`: an instance is
-handed its position and nothing else, so the data it shows is read by index from
+**There are no props.** `createInitialState` is `(exonode, index, params) => state`: an instance is
+handed its position and the params of its wire, nothing else, so the data it shows is read by index from
 somewhere the caller put it — which is why the component generator emits an array
 beside the component — and the machine's `wire` writes the ports from that state. A page
 receives the match that selected it as the params of its wire.
 
 ```tsx
 // src/pages/Home.tsx, from `npx exodra page Home -t`
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 
-const PAGE_SCHEMA = createExoSchema(b => {
-  let heading!: TExoTextPort;
+const PagePorts = exoPorts({ heading: EXO_PORT_TEXT });
+
+const pageSchema = createExoSchema(PagePorts, b => {
   b.el('div', { class: 'page' }, d => {
     d.el('h1', null, h => {
-      heading = h.textPort();
+      h.textPort(PagePorts.heading);
     });
     d.el('p', null, p => p.text('Welcome to the Home page.'));
   });
-  return { heading };
 });
-const mPage = createExoMachineBuilder<TExoMachineNode>(PAGE_SCHEMA);
-mPage.wire(c => {
-  c.text(PAGE_SCHEMA.ports.heading, 'Home');
+const pageBuilder = createExoMachineBuilder<TExoMachineNode>(pageSchema);
+pageBuilder.wire(c => {
+  c.text(PagePorts.heading, 'Home');
 });
-export default mPage.done();
+export default pageBuilder.done();
 ```
 
 ## What gets generated
@@ -150,42 +150,47 @@ adopters into its bundle.
 
 A component is one value with two halves: a **schema** built once at module load,
 and a **machine**. `createInitialState` runs once per instance and returns the state
-the instance keeps; transitions turn that state into port writes; handlers change it.
+the instance keeps; the wire turns that state into port writes; handlers change it.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import {
+  EXO_PORT_EVENT,
+  EXO_PORT_TEXT,
+  createExoMachineBuilder,
+  createExoSchema,
+  exoPorts,
+} from '@exodra/core';
+import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
 const backend = withExoCompiler(new ExoDomBackend());
 
-const COUNTER_SCHEMA = createExoSchema((b) => {
-  let caption!: TExoTextPort;
-  let click!: TExoEventPort;
+const CounterPorts = exoPorts({ caption: EXO_PORT_TEXT, click: EXO_PORT_EVENT });
+
+const counterSchema = createExoSchema(CounterPorts, (b) => {
   b.el('div', { class: 'counter' }, (d) => {
     d.el('span', null, (s) => {
-      caption = s.textPort();
+      s.textPort(CounterPorts.caption);
     });
     d.el('button', { class: 'btn' }, (btn) => {
-      click = btn.eventPort('click');
+      btn.eventPort(CounterPorts.click, 'click');
       btn.text('+1');
     });
   });
-  return { caption, click };
 });
-const mCounter = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
-  COUNTER_SCHEMA
+const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
+  counterSchema
 );
-mCounter.createInitialState(() => ({ count: 0 }));
-const show = mCounter.transition((c) => {
-  c.text(COUNTER_SCHEMA.ports.caption, `Count: ${c.state.count}`);
-});
-mCounter.wire((c) => show(c));
-mCounter.on(COUNTER_SCHEMA.ports.click, (c) => {
+counterBuilder.createInitialState(() => ({ count: 0 }));
+function show(c: TExoMachineBuilderNode<typeof counterBuilder>): void {
+  c.text(CounterPorts.caption, `Count: ${c.state.count}`);
+}
+counterBuilder.wire((c) => show(c));
+counterBuilder.on(CounterPorts.click, (c) => {
   c.state.count += 1;
   show(c);
 });
-const Counter = mCounter.done();
+const Counter = counterBuilder.done();
 
 backend.render(Counter, document.getElementById('app') as HTMLElement);
 ```
@@ -193,13 +198,13 @@ backend.render(Counter, document.getElementById('app') as HTMLElement);
 The write doors are the whole set: `c.attr(port, value)` fills an attribute port,
 `c.text(port, value)` a text port, `c.unsafeHtml(port, markup)` raw markup, and
 `c.on(port, handler)` attaches a listener. Following data that lives outside the
-machine is an **effect** that draws through a transition and subscribes, returning
-the unsubscribe: `m.effect((c) => { show(c); return store.subscribe(() => show(c)); })`.
+machine is an **effect** that draws and subscribes, returning
+the unsubscribe: `counterBuilder.effect((c) => { show(c); return store.subscribe(() => show(c)); })`.
 
 Children are placed by the calls that take a component: `c.one(port, C)` for one
 instance, `c.list(port, C, count)` for a fixed number of them — a **count**, not an
 array — and, for a list that changes, a child list opened with `c.childList(port)` in
-`createInitialState` and reconciled from a transition with
+`createInitialState` and reconciled, wherever the items change, with
 `reconcileExoOrder(rows, shown, items, items, (item, i) => c.build(C, i))` from
 `@exodra/list-reconcile`, by the identity of the item objects. Nothing scaffolded here
 uses the reconciler, so `@exodra/list-reconcile` is not among the generated

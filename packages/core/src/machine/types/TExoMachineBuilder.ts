@@ -14,7 +14,7 @@ export interface TExoMachineBuilder<
 > {
     readonly schema: TExoCursorDeclaration<unknown>;
     createInitialState<TValue extends TState>(
-        make: (enode: TWiring, index: number) => TValue
+        make: (enode: TWiring, index: number, params: TParams) => TValue
     ): TExoMachineStateHandle<TValue>;
     wire(apply: (enode: TWiring & { state: TState }, params: TParams) => void): void;
     overrides<TPairs extends readonly ((enode: TWiring, ...args: never[]) => void)[]>(pairs: {
@@ -23,9 +23,12 @@ export interface TExoMachineBuilder<
     effect(
         start: (enode: TWiring & { state: TState }) => (() => void) | null
     ): TExoMachineEffect<TWiring>;
-    on(
-        port: TExoEventPort,
-        handler: (enode: TWiring & { state: TState }, event: TExoEventOf<TWiring>) => void
+    on<TEvent>(
+        port: TExoEventPort<TEvent>,
+        handler: (
+            enode: TWiring & { state: TState },
+            event: unknown extends TEvent ? TExoEventOf<TWiring> : TEvent
+        ) => void
     ): void;
     transition(apply: (enode: TWiring & { state: TState }) => void): (enode: TWiring) => void;
     transition<TFirst>(

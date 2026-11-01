@@ -23,7 +23,7 @@ with no ports in them are never even walked into at render time.
 ```ts
 import { createExoStatic } from '@exodra/core';
 
-export const CARD_HEADER = createExoStatic((b) => {
+export const CardHeader = createExoStatic((b) => {
     b.el('header', { class: 'card__header' }, (header) => {
         header.el('h2', { class: 'card__title' }, (h2) => {
             h2.text('Recent activity');
@@ -41,17 +41,16 @@ attribute stuck empty — a silently wrong page rather than an error.
 
 It has no initial state at all, deliberately: a component with nothing to fill has
 nothing to be about, so it does not even read the index it is handed. It is nested
-by a machine above it like any other component (`c.one(P.slot, CARD_HEADER)`).
+by a machine above it like any other component (`c.one(CardPorts.slot, CardHeader)`).
 
 ## Text and attributes that change
 
-A value that varies is not an attribute. It is a **port**, and a **transition**
+A value that varies is not an attribute. It is a **port**, and the machine
 writes it. Data that lives outside the instance is followed by an **effect**
-that runs the transition first, then subscribes, and returns the unsubscribe.
+that writes the ports first, then subscribes, and returns the unsubscribe.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort, TExoAttrPort } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -77,28 +76,27 @@ function createStore<TValue>(value: TValue) {
 
 const status = createStore<'on' | 'off'>('off');
 
-const BADGE_SCHEMA = createExoSchema((b) => {
-    let cls!: TExoAttrPort;
-    let label!: TExoTextPort;
-    b.el('span', { role: 'status' }, (span) => {
-        cls = span.port('class');
-        label = span.textPort();
-    });
-    return { cls, label };
-});
-const mBadge = createExoMachineBuilder<TExoDomNode>(BADGE_SCHEMA);
-const showStatus = mBadge.transition((c) => {
-    const s = status.getValue();
-    c.attr(BADGE_SCHEMA.ports.cls, s === 'on' ? 'badge badge--on' : 'badge');
-    c.text(BADGE_SCHEMA.ports.label, s.toUpperCase());
-});
-mBadge.effect((c) => {
-    showStatus(c);
-    return status.onChange(() => showStatus(c));
-});
-const BADGE = mBadge.done();
+const BadgePorts = exoPorts({ cls: EXO_PORT_ATTR, label: EXO_PORT_TEXT });
 
-backend.render(BADGE, document.body);
+const badgeSchema = createExoSchema(BadgePorts, (b) => {
+    b.el('span', { role: 'status' }, (span) => {
+        span.attrPort(BadgePorts.cls, 'class');
+        span.textPort(BadgePorts.label);
+    });
+});
+const badgeBuilder = createExoMachineBuilder<TExoDomNode>(badgeSchema);
+badgeBuilder.effect((c) => {
+    const showStatus = () => {
+        const s = status.getValue();
+        c.attr(BadgePorts.cls, s === 'on' ? 'badge badge--on' : 'badge');
+        c.text(BadgePorts.label, s.toUpperCase());
+    };
+    showStatus();
+    return status.onChange(showStatus);
+});
+const Badge = badgeBuilder.done();
+
+backend.render(Badge, document.body);
 
 status.setValue('on'); // one attribute write and one text write, nothing else
 ```
@@ -120,7 +118,7 @@ effect adds is the subscription for later changes. See
 :::
 
 :::note A text port owns its element's whole content
-`textPort()` stands for **everything** inside its element, so an element cannot
+`textPort(Ports.x)` stands for **everything** inside its element, so an element cannot
 have both a text port and static children — the schema compiler refuses that
 combination by name at module load. Static text beside a reactive value means
 two elements: `<span>Hello, </span><strong>«port»</strong>`, which is exactly
@@ -130,7 +128,8 @@ builds.
 
 ## Where children come from
 
-A **children port** is declared with `childrenPort()`, and it *is* a child: it
+A **children port** is declared as `EXO_PORT_CHILDREN` in `exoPorts` and placed
+with `childrenPort(Ports.x)`, and it *is* a child: it
 renders exactly where the call appears in the builder. There are four ways to
 fill one, and choosing between them is most of what this page is about.
 
@@ -139,7 +138,7 @@ fill one, and choosing between them is most of what this page is about.
 | `c.one(port, component)` | one instance, fixed | no |
 | `c.list(port, component, count)` | a fixed run of `count` instances | no |
 | `c.build(component, index)` | an instance placed **nowhere** — the caller decides where it goes | no |
-| `reconcileExoOrder(c.state.rows, c.state.shown, want, want, build)` in a transition, over `c.childList(port)` | rows that follow the array the transition hands it | yes |
+| `reconcileExoOrder(c.state.rows, c.state.shown, want, want, build)` over `c.childList(port)` | rows that follow the array the machine hands it | yes |
 
 The three fixed forms subscribe to nothing and keep no row records — a list whose
 contents cannot change should not pay for the possibility that they might.
@@ -182,8 +181,15 @@ The narrow conditional is a list of length one or zero. Nothing else is needed:
 the same reconcile that runs a thousand rows runs this.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort, TExoEventPort, TExoChildrenPort } from '@exodra/core';
+import {
+    EXO_PORT_CHILDREN,
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+} from '@exodra/core';
+import type { TExoMachineBuilderNode } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -193,57 +199,56 @@ const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
 /** Where a row's own datum waits for it: a view is handed its INDEX and nothing else. */
 const BUILDING: string[] = [];
 
-const DETAILS_SCHEMA = createExoSchema((b) => {
-    let text!: TExoTextPort;
-    b.el('div', { class: 'details' }, (div) => {
-        text = div.textPort();
-    });
-    return { text };
-});
-const mDetails = createExoMachineBuilder<TExoDomNode, unknown, string>(DETAILS_SCHEMA);
-mDetails.createInitialState((_c, index) => BUILDING[index]);
-mDetails.wire((c) => {
-    c.text(DETAILS_SCHEMA.ports.text, c.state);
-});
-const DETAILS = mDetails.done();
+const DetailsPorts = exoPorts({ text: EXO_PORT_TEXT });
 
-const ROW_SCHEMA = createExoSchema((b) => {
-    let toggle!: TExoEventPort;
-    let body!: TExoChildrenPort;
+const detailsSchema = createExoSchema(DetailsPorts, (b) => {
+    b.el('div', { class: 'details' }, (div) => {
+        div.textPort(DetailsPorts.text);
+    });
+});
+const detailsBuilder = createExoMachineBuilder<TExoDomNode, unknown, string>(detailsSchema);
+detailsBuilder.createInitialState((_c, index) => BUILDING[index]);
+detailsBuilder.wire((c) => {
+    c.text(DetailsPorts.text, c.state);
+});
+const Details = detailsBuilder.done();
+
+const RowPorts = exoPorts({ toggle: EXO_PORT_EVENT, body: EXO_PORT_CHILDREN });
+
+const rowSchema = createExoSchema(RowPorts, (b) => {
     b.el('div', { class: 'row' }, (div) => {
         div.el('button', { type: 'button' }, (btn) => {
-            toggle = btn.eventPort('click');
+            btn.eventPort(RowPorts.toggle, 'click');
             btn.text('Toggle');
         });
-        body = div.childrenPort();
+        div.childrenPort(RowPorts.body);
     });
-    return { toggle, body };
 });
 type TRowState = { open: boolean; body: TExoChildList; shown: string[] };
-const mRow = createExoMachineBuilder<TExoDomNode, unknown, TRowState>(ROW_SCHEMA);
-mRow.createInitialState((c) => ({
+const rowBuilder = createExoMachineBuilder<TExoDomNode, unknown, TRowState>(rowSchema);
+rowBuilder.createInitialState((c) => ({
     open: false,
-    body: c.childList(ROW_SCHEMA.ports.body),
+    body: c.childList(RowPorts.body),
     shown: [],
 }));
 // One item when open, none when closed.
-const showBody = mRow.transition((c) => {
+function showBody(c: TExoMachineBuilderNode<typeof rowBuilder>): void {
     const want = c.state.open ? ['Everything about this row'] : [];
     c.state.shown = reconcileExoOrder(c.state.body, c.state.shown, want, want, (item, i) => {
         BUILDING[i] = item;
-        return c.build(DETAILS, i);
+        return c.build(Details, i);
     });
-});
-mRow.wire((c) => {
+}
+rowBuilder.wire((c) => {
     showBody(c);
 });
-mRow.on(ROW_SCHEMA.ports.toggle, (c) => {
+rowBuilder.on(RowPorts.toggle, (c) => {
     c.state.open = !c.state.open;
     showBody(c);
 });
-const ROW = mRow.done();
+const Row = rowBuilder.done();
 
-backend.render(ROW, document.body);
+backend.render(Row, document.body);
 ```
 
 Appearing mounts the instance; disappearing removes its element and ends its
@@ -258,8 +263,7 @@ old instance and builds the new one in its place. An empty array empties the
 position.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort, TExoChildrenPort } from '@exodra/core';
+import { EXO_PORT_CHILDREN, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomMachine, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -283,65 +287,65 @@ function createStore<TValue>(value: TValue) {
     };
 }
 
-const OVERVIEW_SCHEMA = createExoSchema((b) => {
-    let title!: TExoTextPort;
+const OverviewPorts = exoPorts({ title: EXO_PORT_TEXT });
+
+const overviewSchema = createExoSchema(OverviewPorts, (b) => {
     b.el('section', { class: 'overview' }, (s) => {
         s.el('h1', null, (h1) => {
-            title = h1.textPort();
+            h1.textPort(OverviewPorts.title);
         });
     });
-    return { title };
 });
-const mOverview = createExoMachineBuilder<TExoDomNode>(OVERVIEW_SCHEMA);
-mOverview.wire((c) => {
-    c.text(OVERVIEW_SCHEMA.ports.title, 'Overview');
+const overviewBuilder = createExoMachineBuilder<TExoDomNode>(overviewSchema);
+overviewBuilder.wire((c) => {
+    c.text(OverviewPorts.title, 'Overview');
 });
-const OVERVIEW = mOverview.done();
+const Overview = overviewBuilder.done();
 
-const SETTINGS_SCHEMA = createExoSchema((b) => {
-    let body!: TExoTextPort;
+const SettingsPorts = exoPorts({ body: EXO_PORT_TEXT });
+
+const settingsSchema = createExoSchema(SettingsPorts, (b) => {
     b.el('article', { class: 'settings' }, (a) => {
         a.el('p', null, (p) => {
-            body = p.textPort();
+            p.textPort(SettingsPorts.body);
         });
     });
-    return { body };
 });
-const mSettings = createExoMachineBuilder<TExoDomNode>(SETTINGS_SCHEMA);
-mSettings.wire((c) => {
-    c.text(SETTINGS_SCHEMA.ports.body, 'Nothing configured yet');
+const settingsBuilder = createExoMachineBuilder<TExoDomNode>(settingsSchema);
+settingsBuilder.wire((c) => {
+    c.text(SettingsPorts.body, 'Nothing configured yet');
 });
-const SETTINGS = mSettings.done();
+const Settings = settingsBuilder.done();
 
 // The ITEM is the component. One of them, or none.
-const page = createStore<readonly TExoDomMachine[]>([OVERVIEW]);
+const page = createStore<readonly TExoDomMachine[]>([Overview]);
 
-const SHELL_SCHEMA = createExoSchema((b) => {
-    let outlet!: TExoChildrenPort;
+const ShellPorts = exoPorts({ outlet: EXO_PORT_CHILDREN });
+
+const shellSchema = createExoSchema(ShellPorts, (b) => {
     b.el('main', { class: 'shell' }, (main) => {
-        outlet = main.childrenPort();
+        main.childrenPort(ShellPorts.outlet);
     });
-    return { outlet };
 });
 type TShellState = { outlet: TExoChildList; shown: TExoDomMachine[] };
-const mShell = createExoMachineBuilder<TExoDomNode, unknown, TShellState>(SHELL_SCHEMA);
-mShell.createInitialState((c) => ({ outlet: c.childList(SHELL_SCHEMA.ports.outlet), shown: [] }));
-const showPage = mShell.transition((c) => {
-    const want = page.getValue();
-    c.state.shown = reconcileExoOrder(c.state.outlet, c.state.shown, want, want, (component, i) =>
-        c.build(component, i)
-    );
+const shellBuilder = createExoMachineBuilder<TExoDomNode, unknown, TShellState>(shellSchema);
+shellBuilder.createInitialState((c) => ({ outlet: c.childList(ShellPorts.outlet), shown: [] }));
+shellBuilder.effect((c) => {
+    const showPage = () => {
+        const want = page.getValue();
+        c.state.shown = reconcileExoOrder(c.state.outlet, c.state.shown, want, want, (component, i) =>
+            c.build(component, i)
+        );
+    };
+    showPage();
+    return page.onChange(showPage);
 });
-mShell.effect((c) => {
-    showPage(c);
-    return page.onChange(() => showPage(c));
-});
-const SHELL = mShell.done();
+const Shell = shellBuilder.done();
 
-backend.render(SHELL, document.body);
+backend.render(Shell, document.body);
 
 // Later — a different component, in the same position:
-page.setValue([SETTINGS]);
+page.setValue([Settings]);
 ```
 
 The outgoing instance is dropped the way a list row that leaves is: its element
@@ -357,36 +361,36 @@ reconciler with no case for either.
 ### Keep it mounted — toggle a class
 
 When the branch is cheap and its state must survive (an input mid-typing, a
-scroll position), do not remove it. Write a class from a transition and hide
+scroll position), do not remove it. Write a class from the machine and hide
 with CSS:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort } from '@exodra/core';
+import { EXO_PORT_ATTR, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineBuilderNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
 const backend = withExoCompiler(new ExoDomBackend());
 
-const PANEL_SCHEMA = createExoSchema((b) => {
-    let cls!: TExoAttrPort;
+const PanelPorts = exoPorts({ cls: EXO_PORT_ATTR });
+
+const panelSchema = createExoSchema(PanelPorts, (b) => {
     b.el('section', null, (section) => {
-        cls = section.port('class');
+        section.attrPort(PanelPorts.cls, 'class');
         section.el('input', { type: 'text', placeholder: 'Keeps its focus' });
     });
-    return { cls };
 });
-const mPanel = createExoMachineBuilder<TExoDomNode, unknown, { expanded: boolean }>(PANEL_SCHEMA);
-mPanel.createInitialState(() => ({ expanded: false }));
-const showPanel = mPanel.transition((c) => {
-    c.attr(PANEL_SCHEMA.ports.cls, c.state.expanded ? 'panel' : 'panel panel--hidden');
-});
-mPanel.wire((c) => {
+const panelBuilder = createExoMachineBuilder<TExoDomNode, unknown, { expanded: boolean }>(panelSchema);
+panelBuilder.createInitialState(() => ({ expanded: false }));
+function showPanel(c: TExoMachineBuilderNode<typeof panelBuilder>): void {
+    c.attr(PanelPorts.cls, c.state.expanded ? 'panel' : 'panel panel--hidden');
+}
+panelBuilder.wire((c) => {
     showPanel(c);
 });
-const PANEL = mPanel.done();
+const Panel = panelBuilder.done();
 
-backend.render(PANEL, document.body);
+backend.render(Panel, document.body);
 ```
 
 A handler that sets `c.state.expanded` and runs `showPanel(c)` opens and closes it.
@@ -400,8 +404,7 @@ A children port is a child, appended where it was declared, so it may stand
 **between static siblings**. There is no wrapper element and no fragment host:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort, TExoChildrenPort } from '@exodra/core';
+import { EXO_PORT_CHILDREN, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -430,55 +433,55 @@ type TTag = { readonly id: string; readonly label: string };
 /** The row's own item, by index — the slot the build callback writes before building. */
 const BUILDING: TTag[] = [];
 
-const TAG_SCHEMA = createExoSchema((b) => {
-    let label!: TExoTextPort;
+const TagPorts = exoPorts({ label: EXO_PORT_TEXT });
+
+const tagSchema = createExoSchema(TagPorts, (b) => {
     b.el('li', { class: 'tag' }, (li) => {
-        label = li.textPort();
+        li.textPort(TagPorts.label);
     });
-    return { label };
 });
-const mTag = createExoMachineBuilder<TExoDomNode, unknown, TTag>(TAG_SCHEMA);
-mTag.createInitialState((_c, index) => BUILDING[index]);
-mTag.wire((c) => {
-    c.text(TAG_SCHEMA.ports.label, c.state.label);
+const tagBuilder = createExoMachineBuilder<TExoDomNode, unknown, TTag>(tagSchema);
+tagBuilder.createInitialState((_c, index) => BUILDING[index]);
+tagBuilder.wire((c) => {
+    c.text(TagPorts.label, c.state.label);
 });
-const TAG = mTag.done();
+const Tag = tagBuilder.done();
 
 const tags = createStore<readonly TTag[]>([{ id: 'a', label: 'urgent' }]);
 
-const TAG_BAR_SCHEMA = createExoSchema((b) => {
-    let rows!: TExoChildrenPort;
+const TagBarPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
+
+const tagBarSchema = createExoSchema(TagBarPorts, (b) => {
     b.el('ul', { class: 'tags' }, (ul) => {
         // A pinned item, always first…
         ul.el('li', { class: 'tag tag--pinned' }, (li) => {
             li.text('Pinned');
         });
         // …the live rows, right here…
-        rows = ul.childrenPort();
+        ul.childrenPort(TagBarPorts.rows);
         // …and a static footer after them.
         ul.el('li', { class: 'tag tag--more' }, (li) => {
             li.text('More…');
         });
     });
-    return { rows };
 });
 type TTagBarState = { rows: TExoChildList; shown: TTag[] };
-const mTagBar = createExoMachineBuilder<TExoDomNode, unknown, TTagBarState>(TAG_BAR_SCHEMA);
-mTagBar.createInitialState((c) => ({ rows: c.childList(TAG_BAR_SCHEMA.ports.rows), shown: [] }));
-const showTags = mTagBar.transition((c) => {
-    const want = tags.getValue();
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (tag, i) => {
-        BUILDING[i] = tag;
-        return c.build(TAG, i);
-    });
+const tagBarBuilder = createExoMachineBuilder<TExoDomNode, unknown, TTagBarState>(tagBarSchema);
+tagBarBuilder.createInitialState((c) => ({ rows: c.childList(TagBarPorts.rows), shown: [] }));
+tagBarBuilder.effect((c) => {
+    const showTags = () => {
+        const want = tags.getValue();
+        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (tag, i) => {
+            BUILDING[i] = tag;
+            return c.build(Tag, i);
+        });
+    };
+    showTags();
+    return tags.onChange(showTags);
 });
-mTagBar.effect((c) => {
-    showTags(c);
-    return tags.onChange(() => showTags(c));
-});
-const TAG_BAR = mTagBar.done();
+const TagBar = tagBarBuilder.done();
 
-backend.render(TAG_BAR, document.body);
+backend.render(TagBar, document.body);
 tags.setValue([...tags.getValue(), { id: 'b', label: 'blocked' }]);
 ```
 

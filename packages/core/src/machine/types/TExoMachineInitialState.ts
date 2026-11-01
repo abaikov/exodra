@@ -6,7 +6,8 @@
  * with `readState()`, which is why the transitions a wire hands out are closures over this one
  * instance: it is already in scope when they are made.
  */
-export type TExoMachineInitialState<TWiring, TValue = unknown> = (
+export type TExoMachineInitialState<TWiring, TValue = unknown, TParams = unknown> = (
     enode: TWiring,
-    index: number
+    index: number,
+    params: TParams
 ) => TValue;

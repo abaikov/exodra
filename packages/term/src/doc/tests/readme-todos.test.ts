@@ -1,5 +1,5 @@
-// The second acceptance test — the WIDE surface. `TODO_LIST` is typed against
-// `TExoChildrenWiring & TExoMachineNode` and calls `c.list(…, TODO, todos.length)`: the half of the
+// The second acceptance test — the WIDE surface. `TodoList` is typed against
+// `TExoChildrenWiring & TExoMachineNode` and calls `c.list(…, Todo, todos.length)`: the half of the
 // exported API whose signatures name the exonode recursively.
 //
 // A FIXED LIST DOES NOT FOLLOW ITS DATA, and that is the contract being asserted here rather than a
@@ -8,7 +8,7 @@
 // outside this package, and no such layer names this backend yet, so a REACTIVE term list is
 // unproven and is named here rather than left to look covered.
 import { describe, expect, it } from 'vitest';
-import { TODO_LIST, todos } from '../readme-todos';
+import { TodoList, todos } from '../readme-todos';
 import { ExoTermBackend } from '../../backend/ExoTermBackend';
 import { exoTermFind } from '../../utilities/exoTermFind';
 
@@ -17,7 +17,7 @@ const BACKEND = new ExoTermBackend();
 
 describe('the README’s todo list, rendered by a fourth backend', () => {
     it('builds one row per item, reading each item by its index', () => {
-        const screen = BACKEND.renderScreen(TODO_LIST, 1);
+        const screen = BACKEND.renderScreen(TodoList, 1);
 
         expect(screen.text()).toBe(['ul', '  li class="todo" "Learn Exodra"'].join('\n'));
         expect(exoTermFind(screen.roots[0], 'li')).not.toBeNull();
@@ -26,7 +26,7 @@ describe('the README’s todo list, rendered by a fourth backend', () => {
 
     it('builds every item a second render is given, in order', () => {
         todos.push({ id: 2, text: 'Build app' });
-        const screen = BACKEND.renderScreen(TODO_LIST, 1);
+        const screen = BACKEND.renderScreen(TodoList, 1);
 
         expect(screen.text()).toBe(
             ['ul', '  li class="todo" "Learn Exodra"', '  li class="todo" "Build app"'].join('\n')

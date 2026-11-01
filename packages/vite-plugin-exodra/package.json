@@ -1,6 +1,6 @@
 {
   "name": "@exodra/vite-plugin",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -27,7 +27,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "babel-preset-exodra": "^0.1.2"
+    "babel-preset-exodra": "^0.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

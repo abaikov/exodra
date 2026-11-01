@@ -35,14 +35,26 @@ All three React-family rows pass it: same 861 elements, byte for byte.
 ## The numbers
 
 Mounting the whole board, milliseconds per mount, lower is better, from one run
-(`initial-render.compat4`):
+(`initial-render.compat8`):
 
 | participant | ms / mount | against React |
 |---|---|---|
-| **react-compat + compiler** | **0.890** | **1.28× faster** |
-| react-compat + host templates | 0.990 | 1.15× faster |
-| React 19 | 1.140 | — |
-| react-compat, plain runtime | 1.330 | 1.17× slower |
+| **react-compat + compiler** | **0.860** | **1.14× faster** |
+| react-compat + host templates (default) | 1.000 | level (1.02× slower) |
+| React 19 | 0.980 | — |
+| react-compat, templates off | 1.280 | 1.31× slower |
+
+An earlier version of this post put host templates at 1.15× faster than React,
+from `initial-render.compat4` alone; React read 1.140 in that run and 0.98–1.0 in
+every other one, and across the four runs that carried both, templates against
+React read 1.39, 0.87, 1.00 and 1.00. Without the compiler, mounting is level with
+React.
+
+A later run took the whole field, every participant on the axis
+(`initial-render.calls-full-2026-11-01`): compiled 0.820, React 0.980, so 1.19×
+faster; host templates 0.915, level. The same run added a row for code that is
+already compiled to `createElement` calls and then passed through the plugin, the
+way a React library from npm arrives: 0.825, the same as compiled JSX.
 
 And the compiled path against React across every run that measured both:
 
@@ -54,9 +66,9 @@ And the compiled path against React across every run that measured both:
 | `initial-render.compat4` | 0.890 | 1.140 | 1.28× faster |
 
 Updates — every card renaming its deck, toggling its details and advancing its tags — put
-the compiled path ahead of React in all three runs that carried both
-(`app-update.compat1`, `compat2`, `compat4`), and host templates ahead of React in
-the one run that carried them.
+the compiled path ahead of React in every run that carried both
+(`app-update.compat1`, `compat2`, `compat4`, `compat8`), and host templates ahead
+of React in both runs that carried them (`compat4`, `compat8`).
 
 ## How to read them
 
@@ -86,11 +98,11 @@ what sits underneath them.
 
 **Host templates** do the same job at runtime, for code that cannot go through the
 compiler: the first time a component returns a tree of host elements, the runtime
-builds one schema for that shape and caches it on the component. They are off by
-default for one reason, stated in the
-[guide](/docs/guides/react-compat#host-templates-without-the-compiler): a
-component that changes the shape of a tree it already rendered has that subtree
-rebuilt once, where React would keep the unchanged siblings.
+builds one schema for that shape and caches it on the component. They are on by
+default. A component that changes the shape of a tree it already rendered has
+its live instance handed to the plain path in place, keeping its DOM elements and
+the state of every nested component, as React would
+([guide](/docs/guides/react-compat#host-templates-without-the-compiler)).
 
 ## Libraries
 
@@ -117,7 +129,6 @@ module.exports = {
 };
 ```
 
-Without a build step, `enableExoReactHostTemplates()` from `@exodra/react-compat`
-turns on the runtime templates instead. What is supported, what differs from
+Without a build step the runtime templates do that job; they are on by default. What is supported, what differs from
 React, and what is not there yet is on the
 [React Code on Exodra](/docs/guides/react-compat) page.

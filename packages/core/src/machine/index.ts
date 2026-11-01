@@ -7,6 +7,7 @@ export { connectExoNode } from './connectExoNode';
 export { disconnectExoNode } from './disconnectExoNode';
 export { createExoMachineBuilder } from './factories/createExoMachineBuilder';
 export type { TExoMachineBuilder } from './types/TExoMachineBuilder';
+export type { TExoMachineBuilderNode } from './types/TExoMachineBuilderNode';
 export type { TExoMachine } from './types/TExoMachine';
 export type { TExoMachineEffect } from './types/TExoMachineEffect';
 export type { TExoMachineHandler } from './types/TExoMachineHandler';

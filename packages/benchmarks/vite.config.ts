@@ -98,14 +98,18 @@ const REACT_IMPLEMENTATIONS: Readonly<Record<string, Readonly<Record<string, str
         react: 'preact/compat',
         'react-dom': 'preact/compat',
         'react-dom/client': 'preact/compat/client',
+        'react/jsx-runtime': 'preact/jsx-runtime',
     },
     compat: {
         react: '@exodra/react-compat',
         'react-dom': '@exodra/react-compat/client',
         'react-dom/client': '@exodra/react-compat/client',
+        'react/jsx-runtime': '@exodra/react-compat/jsx-runtime',
     },
 };
-const REACT_JSX_APP = /\/apps\/react\/react-jsx\.jsx$/;
+const REACT_JSX_APP = /\/apps\/(react\/react-jsx|react-libraries\/libraryListJsx)\.jsx$/;
+const REACT_LIBRARY = /^(zustand|@tanstack\/)/;
+const COMPAT_IMPL = 'impl=compat';
 const MILLION_APP = /\/apps\/react\/react-jsx\.jsx\?impl=million$/;
 const REACT_COMPILER_APP = /\/apps\/react\/react-jsx\.jsx\?impl=reactCompiler$/;
 
@@ -130,7 +134,7 @@ function ownsExodraCopy(importer: string): boolean {
 function rewriteReactImports(code: string, impl: string): string {
     const targets = REACT_IMPLEMENTATIONS[impl];
     return code.replace(
-        /(from\s*|import\s*\(\s*)(['"])(react|react-dom|react-dom\/client)\2/g,
+        /(from\s*|import\s*\(\s*)(['"])(react|react-dom|react-dom\/client|react\/jsx-runtime)\2/g,
         (_all, head: string, quote: string, name: string) =>
             `${head}${quote}${targets[name]}${quote}`
     );
@@ -183,6 +187,21 @@ function reactImplementations(): Plugin {
         enforce: 'pre',
         async resolveId(source, importer) {
             if (importer === undefined) return null;
+            const importerOnCompat =
+                importer.includes(COMPAT_IMPL) || REACT_JSX_APP.test(importer.replace(/\?.*$/, ''));
+            const importerIsLibraryCopy =
+                importer.includes(COMPAT_IMPL) && importer.includes('/node_modules/');
+            if (
+                importerOnCompat &&
+                (REACT_LIBRARY.test(source) || (importerIsLibraryCopy && source.startsWith('.')))
+            ) {
+                const resolved = await this.resolve(source, importer.replace(/\?.*$/, ''), {
+                    skipSelf: true,
+                });
+                if (resolved === null || resolved.id.includes(COMPAT_IMPL)) return resolved;
+                const joiner = resolved.id.includes('?') ? '&' : '?';
+                return { ...resolved, id: `${resolved.id}${joiner}${COMPAT_IMPL}` };
+            }
             if (
                 (ownsExodraCopy(importer) &&
                     source.startsWith('@exodra/') &&
@@ -227,6 +246,23 @@ function reactImplementations(): Plugin {
                     sourcefile: path,
                 });
                 return { code: out.code, map: null };
+            }
+            if (/[?&]impl=compatCalls\b/.test(id)) {
+                const path = id.replace(/\?.*$/, '');
+                const calls = await esbuildTransform(code, {
+                    loader: 'tsx',
+                    jsx: 'automatic',
+                    jsxImportSource: 'react',
+                    sourcefile: path,
+                });
+                const out = transformSync(calls.code, {
+                    filename: path,
+                    babelrc: false,
+                    configFile: false,
+                    sourceType: 'module',
+                    plugins: [exodraReact.default ?? exodraReact],
+                });
+                return { code: rewriteReactImports(out?.code ?? calls.code, 'compat'), map: null };
             }
             const named = /[?&]impl=(preact|compat)\b/.exec(id);
             if (named !== null) return { code: rewriteReactImports(code, named[1]), map: null };
@@ -327,6 +363,9 @@ export default defineConfig({
     },
     optimizeDeps: {
         exclude: [
+            'zustand',
+            '@tanstack/react-query',
+            '@tanstack/query-core',
             '@exodra/core',
             // `context-cost` times `exoContextFrame` and `readExoContext` against a hand-written chain
             // in this package. Pre-bundling the library half of that pair and not the hand-written half

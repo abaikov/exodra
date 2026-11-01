@@ -139,8 +139,13 @@ neither the attribute nor the text
 expression an application writes:
 
 ```ts
-import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoPlugins,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+} from '@exodra/core';
 import {
     ExoDomBackend,
     createExoDelegatedEvents,
@@ -149,18 +154,18 @@ import {
 } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
-const GREETING_SCHEMA = createExoSchema((b) => {
-    let label!: TExoTextPort;
+const GreetingPorts = exoPorts({ label: EXO_PORT_TEXT });
+
+const greetingSchema = createExoSchema(GreetingPorts, (b) => {
     b.el('h1', null, (h1) => {
-        label = h1.textPort();
+        h1.textPort(GreetingPorts.label);
     });
-    return { label };
 });
-const mGreeting = createExoMachineBuilder<TExoDomNode>(GREETING_SCHEMA);
-mGreeting.wire((c) => {
-    c.text(GREETING_SCHEMA.ports.label, 'Hello');
+const greetingBuilder = createExoMachineBuilder<TExoDomNode>(greetingSchema);
+greetingBuilder.wire((c) => {
+    c.text(GreetingPorts.label, 'Hello');
 });
-const GREETING = mGreeting.done();
+const Greeting = greetingBuilder.done();
 
 /** ONE pack per application, at module level: it keys the schema cache with the backend. */
 const DELEGATED = createExoDelegatedEvents(['click', 'input']);
@@ -173,7 +178,7 @@ const backend = withExoCompiler(
     )
 );
 
-const dispose = backend.render(GREETING, document.getElementById('app') as Element);
+const dispose = backend.render(Greeting, document.getElementById('app') as Element);
 ```
 
 `backend.render` mounts **one** instance and takes no count. A page of rows is a

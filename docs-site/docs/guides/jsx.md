@@ -22,7 +22,7 @@ interface TCounterPorts {
     increment: TExoEventPort;
 }
 
-const COUNTER_SCHEMA = exoJsx<TCounterPorts>(($) => (
+const counterSchema = exoJsx<TCounterPorts>(($) => (
     <div class="counter" data-step={$.step}>
         <span class="counter__value">{$.count}</span>
         <button type="button" onClick={$.increment}>
@@ -30,24 +30,23 @@ const COUNTER_SCHEMA = exoJsx<TCounterPorts>(($) => (
         </button>
     </div>
 ));
-const P = COUNTER_SCHEMA.ports;
+const CounterPorts = counterSchema.ports;
 
 type TCounterState = { n: number };
 
-const m = createExoMachineBuilder<TExoMachineNode, unknown, TCounterState>(COUNTER_SCHEMA);
-m.createInitialState((c): TCounterState => {
-    c.attr(P.step, 1);
-    c.text(P.count, 0);
+const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TCounterState>(
+    counterSchema
+);
+counterBuilder.createInitialState((c): TCounterState => {
+    c.attr(CounterPorts.step, 1);
+    c.text(CounterPorts.count, 0);
     return { n: 0 };
 });
-const show = m.transition((c) => {
-    c.text(P.count, c.state.n);
-});
-m.on(P.increment, (c) => {
+counterBuilder.on(CounterPorts.increment, (c) => {
     c.state.n += 1;
-    show(c);
+    c.text(CounterPorts.count, c.state.n);
 });
-export const COUNTER = m.done();
+export const Counter = counterBuilder.done();
 ```
 
 `@exodra/babel-plugin-schema` compiles the `exoJsx(…)` call away. What it
@@ -69,11 +68,12 @@ const _s0 = createExoNamedSchema((_b0) => {
     });
 });
 
-const COUNTER_SCHEMA = _s0;
+const counterSchema = _s0;
 ```
 
+The result of `exoJsx` is a schema, so it is named like one — `counterSchema`.
 Every port is created under the name written after `$.`, so
-`COUNTER_SCHEMA.ports.count` is the text port and `COUNTER_SCHEMA.ports.increment`
+`counterSchema.ports.count` is the text port and `counterSchema.ports.increment`
 the event port. The type argument `TCounterPorts` types those names: a port used
 in the wrong place, or one the interface does not declare, is a type error.
 Without a type argument every `$.name` is accepted and `.ports` is a record of
@@ -90,11 +90,11 @@ The machine is an ordinary machine, so it goes straight into a backend:
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomMachine } from '@exodra/dom';
 
-declare const COUNTER: TExoDomMachine;
+declare const Counter: TExoDomMachine;
 
 const backend = withExoCompiler(new ExoDomBackend());
 
-backend.render(COUNTER, document.body);
+backend.render(Counter, document.body);
 ```
 
 ## The dialect
@@ -106,12 +106,12 @@ maps to exactly one schema call:
 | --- | --- | --- | --- |
 | `class="row"`, `tabindex={0}`, `disabled` | markup | folded into `el(tag, attrs)` | — |
 | plain text between tags | markup | `text('…')` | — |
-| `data-id={$.id}` | attribute port `id` | `port('data-id', 'id')` | `c.attr(P.id, value)` |
-| `<span>{$.label}</span>` | text port `label` | `textPort('label')` | `c.text(P.label, value)` |
-| `onClick={$.toggle}` | event port `toggle`, event `click` | `eventPort('click', 'toggle')` | `m.on(P.toggle, handler)` |
-| `on:dblclick={$.edit}` | event port `edit`, event `dblclick` | `eventPort('dblclick', 'edit')` | `m.on(P.edit, handler)` |
+| `data-id={$.id}` | attribute port `id` | `port('data-id', 'id')` | `c.attr(RowPorts.id, value)` |
+| `<span>{$.label}</span>` | text port `label` | `textPort('label')` | `c.text(RowPorts.label, value)` |
+| `onClick={$.toggle}` | event port `toggle`, event `click` | `eventPort('click', 'toggle')` | `rowBuilder.on(RowPorts.toggle, handler)` |
+| `on:dblclick={$.edit}` | event port `edit`, event `dblclick` | `eventPort('dblclick', 'edit')` | `rowBuilder.on(RowPorts.edit, handler)` |
 | `ref={$.box}` | ref port `box` | `refPort('box')` | read, never written |
-| `<div unsafeHtml={$.body} />` | children port `body` | `childrenPort('body')` | `c.unsafeHtml(P.body, markup)` |
+| `<div unsafeHtml={$.body} />` | children port `body` | `childrenPort('body')` | `c.unsafeHtml(RowPorts.body, markup)` |
 | `<$.rows />` | children port `rows` | `childrenPort('rows')` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
 
 ### Literal attributes are markup
@@ -119,7 +119,7 @@ maps to exactly one schema call:
 ```tsx
 import { exoJsx } from '@exodra/jsx';
 
-export const CHECKBOX_SCHEMA = exoJsx(() => (
+export const checkboxSchema = exoJsx(() => (
     <input type="checkbox" tabindex={0} checked disabled={false} />
 ));
 ```
@@ -143,7 +143,7 @@ goes in an element of its own:
 import { exoJsx } from '@exodra/jsx';
 import type { TExoTextPort } from '@exodra/core';
 
-export const GREETING_SCHEMA = exoJsx<{ name: TExoTextPort }>(($) => (
+export const greetingSchema = exoJsx<{ name: TExoTextPort }>(($) => (
     <p class="greeting">
         Hello, <b>{$.name}</b>!
     </p>
@@ -158,7 +158,7 @@ for `keydown`. `on:` keeps the event name exactly as written — `on:dblclick`,
 `on:focusin`, `on:my-thing` — for a name whose case or spelling must survive.
 Both forms are typed per DOM event, so `on:clik` is a type error.
 
-The handler is attached by the machine, `m.on(P.toggle, (c, event) => …)`: one
+The handler is attached by the machine, `rowBuilder.on(RowPorts.toggle, (c, event) => …)`: one
 function for every instance, with the instance as `c`. This is also the form
 [`createExoDelegatedEvents`](../api/dom.md#events-as-a-plugin) serves with one
 root listener per event name.
@@ -171,7 +171,7 @@ A reference to the element and no way to write to it — see
 ### `unsafeHtml={$.name}`
 
 Declares a children port standing for the element's whole content, which the
-machine fills with unescaped markup through `c.unsafeHtml(P.name, markup)`.
+machine fills with unescaped markup through `c.unsafeHtml(RowPorts.name, markup)`.
 Nothing on this path escapes and nothing sanitises — see
 [Security](../security.md). An element with `unsafeHtml` takes no children.
 
@@ -185,7 +185,7 @@ siblings:
 import { exoJsx } from '@exodra/jsx';
 import type { TExoChildrenPort } from '@exodra/core';
 
-export const PANEL_SCHEMA = exoJsx<{ body: TExoChildrenPort }>(($) => (
+export const panelSchema = exoJsx<{ body: TExoChildrenPort }>(($) => (
     <section class="panel">
         <h3>Panel</h3>
         <$.body />
@@ -199,14 +199,14 @@ three calls, and the choice is a choice of cost:
 
 | call | what it is | pays for diffs |
 | --- | --- | --- |
-| `c.one(P.body, MACHINE, params?)` | one instance, for the life of this one | no |
-| `c.list(P.rows, MACHINE, count)` | a fixed number of instances, each built with its index | no |
-| `c.childList(P.rows)` + `reconcileExoOrder` | a list that changes, reconciled by identity | yes |
+| `c.one(PanelPorts.body, Machine, params?)` | one instance, for the life of this one | no |
+| `c.list(ListPorts.rows, Machine, count)` | a fixed number of instances, each built with its index | no |
+| `c.childList(ListPorts.rows)` + `reconcileExoOrder` | a list that changes, reconciled by identity | yes |
 
 ## A list
 
 The changing list is a children port whose child list the machine keeps in its
-state and reconciles inside a transition with `reconcileExoOrder` from
+state and reconciles with `reconcileExoOrder` from
 `@exodra/list-reconcile`. Rows are matched by **identity of the item**: a row
 that survives an update is the same element with the same instance.
 
@@ -217,6 +217,7 @@ import type {
     TExoAttrPort,
     TExoChildrenPort,
     TExoEventPort,
+    TExoMachineBuilderNode,
     TExoMachineNode,
     TExoTextPort,
 } from '@exodra/core';
@@ -225,20 +226,22 @@ import { reconcileExoOrder } from '@exodra/list-reconcile';
 
 type TTask = { id: string; title: string };
 
-const TASK_SCHEMA = exoJsx<{ id: TExoAttrPort; title: TExoTextPort }>(($) => (
+const taskSchema = exoJsx<{ id: TExoAttrPort; title: TExoTextPort }>(($) => (
     <li class="task" data-id={$.id}>
         <span class="task__title">{$.title}</span>
     </li>
 ));
-const mTask = createExoMachineBuilder<TExoMachineNode, TTask>(TASK_SCHEMA);
-mTask.createInitialState(() => null);
-mTask.wire((c, task) => {
-    c.attr(TASK_SCHEMA.ports.id, task.id);
-    c.text(TASK_SCHEMA.ports.title, task.title);
-});
-const TASK = mTask.done();
+const TaskPorts = taskSchema.ports;
 
-const TASK_LIST_SCHEMA = exoJsx<{
+const taskBuilder = createExoMachineBuilder<TExoMachineNode, TTask>(taskSchema);
+taskBuilder.createInitialState(() => null);
+taskBuilder.wire((c, task) => {
+    c.attr(TaskPorts.id, task.id);
+    c.text(TaskPorts.title, task.title);
+});
+const Task = taskBuilder.done();
+
+const taskListSchema = exoJsx<{
     rows: TExoChildrenPort;
     add: TExoEventPort;
     reverse: TExoEventPort;
@@ -256,16 +259,16 @@ const TASK_LIST_SCHEMA = exoJsx<{
         </button>
     </section>
 ));
-const P = TASK_LIST_SCHEMA.ports;
+const TaskListPorts = taskListSchema.ports;
 
 type TTaskListState = { rows: TExoChildList; tasks: TTask[]; shown: TTask[] };
 
-const mTaskList = createExoMachineBuilder<TExoDomNode, unknown, TTaskListState>(
-    TASK_LIST_SCHEMA
+const taskListBuilder = createExoMachineBuilder<TExoDomNode, unknown, TTaskListState>(
+    taskListSchema
 );
-mTaskList.createInitialState(
+taskListBuilder.createInitialState(
     (c): TTaskListState => ({
-        rows: c.childList(P.rows),
+        rows: c.childList(TaskListPorts.rows),
         tasks: [
             { id: 't1', title: 'Write the schema' },
             { id: 't2', title: 'Write the machine' },
@@ -274,37 +277,37 @@ mTaskList.createInitialState(
     })
 );
 
-const showRows = mTaskList.transition((c) => {
+function showRows(c: TExoMachineBuilderNode<typeof taskListBuilder>): void {
     const state = c.state;
     state.shown = reconcileExoOrder(state.rows, state.shown, state.tasks, state.tasks, (task, at) =>
-        c.build(TASK, at, task)
+        c.build(Task, at, task)
     );
-});
+}
 
-mTaskList.effect((c) => {
+taskListBuilder.effect((c) => {
     showRows(c);
     return null;
 });
 
 let nextTask = 3;
-mTaskList.on(P.add, (c) => {
+taskListBuilder.on(TaskListPorts.add, (c) => {
     c.state.tasks = [...c.state.tasks, { id: `t${nextTask}`, title: `Task ${nextTask}` }];
     nextTask += 1;
     showRows(c);
 });
-mTaskList.on(P.reverse, (c) => {
+taskListBuilder.on(TaskListPorts.reverse, (c) => {
     c.state.tasks = [...c.state.tasks].reverse();
     showRows(c);
 });
 
-export const TASK_LIST = mTaskList.done();
+export const TaskList = taskListBuilder.done();
 ```
 
 `reconcileExoOrder(kids, shown, keys, items, build)` takes the child list, the
 keys it showed last time, the keys and items to show now, and a `build` for an
 item it has not seen; it returns the keys it now shows. Here the item is its own
 key. Data from a store reaches the list the same way: an effect subscribes to the
-store directly and calls the transition — see [Lists](./lists.md).
+store directly and calls `showRows` — see [Lists](./lists.md).
 
 ## What is refused
 

@@ -14,7 +14,7 @@ Form controls for Exodra without a bound model. Five functions and two types:
 
 The package imports nothing at runtime. There is no binding, no source, no subscription and
 no listener inside it: the field holds its own value, the machine listens where it chooses,
-and a transition writes only what depends on that value.
+and it writes only what depends on that value.
 
 ## Installation
 
@@ -25,63 +25,75 @@ npm install @exodra/forms @exodra/core
 ## A form, end to end
 
 One event port on a **container**, one handler that reads the control the event came from,
-and transitions that write what depends on the value.
+and functions that write what depends on the value.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoEventPort, TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+} from '@exodra/core';
+import type { TExoMachineBuilderNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
 
-const SIGNUP_SCHEMA = createExoSchema((b) => {
-    let input!: TExoEventPort;
-    let greeting!: TExoTextPort;
-    let error!: TExoTextPort;
-    let send!: TExoAttrPort;
+const SignupPorts = exoPorts({
+    input: EXO_PORT_EVENT,
+    greeting: EXO_PORT_TEXT,
+    error: EXO_PORT_TEXT,
+    send: EXO_PORT_ATTR,
+});
+
+const signupSchema = createExoSchema(SignupPorts, (b) => {
     b.el('div', { class: 'signup' }, (d) => {
-        input = d.eventPort('input');
+        d.eventPort(SignupPorts.input, 'input');
         d.el('input', { type: 'text', name: 'name' });
         d.el('input', { type: 'number', name: 'age' });
         d.el('p', null, (p) => {
-            greeting = p.textPort();
+            p.textPort(SignupPorts.greeting);
         });
         d.el('p', { class: 'error' }, (p) => {
-            error = p.textPort();
+            p.textPort(SignupPorts.error);
         });
         d.el('button', { type: 'button' }, (button) => {
-            send = button.port('disabled');
+            button.attrPort(SignupPorts.send, 'disabled');
             button.text('Send');
         });
     });
-    return { input, greeting, error, send };
 });
 
 type TSignup = { name: string; age: number };
 
-const mSignup = createExoMachineBuilder<TExoDomNode, unknown, TSignup>(SIGNUP_SCHEMA);
-mSignup.createInitialState(() => ({ name: '', age: Number.NaN }));
-mSignup.wire((c) => {
-    c.attr(SIGNUP_SCHEMA.ports.send, true);
+const signupBuilder = createExoMachineBuilder<TExoDomNode, unknown, TSignup>(signupSchema);
+signupBuilder.createInitialState(() => ({ name: '', age: Number.NaN }));
+signupBuilder.wire((c) => {
+    c.attr(SignupPorts.send, true);
 });
-const takeName = mSignup.transition<string>((c, name) => {
+
+function takeName(c: TExoMachineBuilderNode<typeof signupBuilder>, name: string): void {
     c.state.name = name;
-    c.text(SIGNUP_SCHEMA.ports.greeting, name === '' ? '' : `Hello, ${name}`);
-    c.attr(SIGNUP_SCHEMA.ports.send, name === '' || Number.isNaN(c.state.age));
-});
-const takeAge = mSignup.transition<number>((c, age) => {
+    c.text(SignupPorts.greeting, name === '' ? '' : `Hello, ${name}`);
+    c.attr(SignupPorts.send, name === '' || Number.isNaN(c.state.age));
+}
+
+function takeAge(c: TExoMachineBuilderNode<typeof signupBuilder>, age: number): void {
     c.state.age = age;
-    c.text(SIGNUP_SCHEMA.ports.error, Number.isNaN(age) ? 'Age has to be a number' : '');
-    c.attr(SIGNUP_SCHEMA.ports.send, c.state.name === '' || Number.isNaN(age));
-});
-mSignup.on(SIGNUP_SCHEMA.ports.input, (c, event) => {
+    c.text(SignupPorts.error, Number.isNaN(age) ? 'Age has to be a number' : '');
+    c.attr(SignupPorts.send, c.state.name === '' || Number.isNaN(age));
+}
+
+signupBuilder.on(SignupPorts.input, (c, event) => {
     const field = event.target as HTMLInputElement;
     if (field.name === 'name') takeName(c, readExoControlValue(field) as string);
     else if (field.name === 'age') takeAge(c, readExoControlValue(field) as number);
 });
 
 const backend = withExoCompiler(new ExoDomBackend());
-backend.render(mSignup.done(), document.getElementById('root') as HTMLElement);
+backend.render(signupBuilder.done(), document.getElementById('root') as HTMLElement);
 ```
 
 What this shape decides:
@@ -92,60 +104,68 @@ What this shape decides:
   event port when it is the only one.
 - **The field's own `value` is never written back.** The browser already holds what the
   person typed; writing it again on every keystroke is a DOM write that changes nothing.
-  A transition writes only what *depends* on the value: a read-out, an error text, a
+  The machine writes only what *depends* on the value: a read-out, an error text, a
   `disabled` flag.
 - **The value lives in `c.state`** when something else needs it later — the third type
   argument of `createExoMachineBuilder` is its type, and `createInitialState` returns the
   starting value. When nothing needs it later, keep no state at all.
-- **A transition with an argument names its type**: `transition<string>((c, name) => …)`.
-  Writing `(c, name: string) => …` without the explicit type argument leaves `c` implicitly
-  `any`.
+- **A function the handler calls is typed by the builder**:
+  `TExoMachineBuilderNode<typeof signupBuilder>` is the exonode with its `state`. A
+  `signupBuilder.transition(…)` is for the case where something outside the machine fires it.
 
 ### Which field fired
 
 Two ways to tell, and both cost nothing per field:
 
 - **By `name`**, as above: a static attribute in the schema, compared in the handler.
-- **By identity**, against the elements behind ref ports. `c.portNodeReader()` reads a ref
+- **By identity**, against the elements behind ref ports. `c.portNode(port)` reads a ref
   port's element out of the instance's port table; read it once, in `createInitialState`, and
   keep it in the state:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoRefPort, TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+    exoRefPortKind,
+} from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
 
-const LOGIN_SCHEMA = createExoSchema((b) => {
-    let input!: TExoEventPort;
-    let email!: TExoRefPort;
-    let hint!: TExoTextPort;
+const LoginPorts = exoPorts({
+    input: EXO_PORT_EVENT,
+    email: exoRefPortKind<HTMLInputElement>(),
+    hint: EXO_PORT_TEXT,
+});
+
+const loginSchema = createExoSchema(LoginPorts, (b) => {
     b.el('fieldset', null, (f) => {
-        input = f.eventPort('input');
+        f.eventPort(LoginPorts.input, 'input');
         f.el('input', { type: 'email' }, (i) => {
-            email = i.refPort();
+            i.refPort(LoginPorts.email);
         });
         f.el('input', { type: 'password' });
         f.el('small', null, (s) => {
-            hint = s.textPort();
+            s.textPort(LoginPorts.hint);
         });
     });
-    return { input, email, hint };
 });
 
-const mLogin = createExoMachineBuilder<TExoDomNode, unknown, { email: Element }>(LOGIN_SCHEMA);
-mLogin.createInitialState((c) => ({
-    email: c.portNodeReader()(c.portTable(), LOGIN_SCHEMA.ports.email),
+const loginBuilder = createExoMachineBuilder<TExoDomNode, unknown, { email: HTMLInputElement }>(
+    loginSchema
+);
+loginBuilder.createInitialState((c) => ({
+    email: c.portNode(LoginPorts.email),
 }));
-const showHint = mLogin.transition<string>((c, email) => {
-    c.text(LOGIN_SCHEMA.ports.hint, email.includes('@') ? '' : 'An address has an @ in it');
-});
-mLogin.on(LOGIN_SCHEMA.ports.input, (c, event) => {
+loginBuilder.on(LoginPorts.input, (c, event) => {
     if (event.target === c.state.email) {
-        showHint(c, readExoControlValue(event.target) as string);
+        const email = readExoControlValue(event.target) as string;
+        c.text(LoginPorts.hint, email.includes('@') ? '' : 'An address has an @ in it');
     }
 });
-export const LOGIN = mLogin.done();
+export const Login = loginBuilder.done();
 ```
 
 ### Validate when a field is left
@@ -155,11 +175,11 @@ fields inside it. `focusout` is the same moment and does bubble:
 
 ```ts no-check
 b.el('form', null, (f) => {
-    leave = f.eventPort('focusout');
+    f.eventPort(FormPorts.leave, 'focusout');
     // …the fields
 });
 
-m.on(P.leave, (c, event) => {
+formBuilder.on(FormPorts.leave, (c, event) => {
     const field = event.target as HTMLInputElement;
     if (field.name === 'email') checkEmail(c, readExoControlValue(field) as string);
 });
@@ -169,34 +189,31 @@ m.on(P.leave, (c, event) => {
 
 The one time a field's `value` is written is when the application, not the person, decides
 it: a "clear" button, a loaded record, a suggestion picked from a list. That is its own
-transition, writing a `value` port:
+write, to a `value` port:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoEventPort } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
-const SEARCH_SCHEMA = createExoSchema((b) => {
-    let value!: TExoAttrPort;
-    let clear!: TExoEventPort;
+const SearchPorts = exoPorts({ value: EXO_PORT_ATTR, clear: EXO_PORT_EVENT });
+
+const searchSchema = createExoSchema(SearchPorts, (b) => {
     b.el('div', { class: 'search' }, (d) => {
         d.el('input', { type: 'search' }, (i) => {
-            value = i.port('value');
+            i.attrPort(SearchPorts.value, 'value');
         });
         d.el('button', { type: 'button' }, (button) => {
-            clear = button.eventPort('click');
+            button.eventPort(SearchPorts.clear, 'click');
             button.text('Clear');
         });
     });
-    return { value, clear };
 });
 
-const mSearch = createExoMachineBuilder<TExoDomNode>(SEARCH_SCHEMA);
-const clearQuery = mSearch.transition((c) => {
-    c.attr(SEARCH_SCHEMA.ports.value, '');
+const searchBuilder = createExoMachineBuilder<TExoDomNode>(searchSchema);
+searchBuilder.on(SearchPorts.clear, (c) => {
+    c.attr(SearchPorts.value, '');
 });
-mSearch.on(SEARCH_SCHEMA.ports.clear, (c) => clearQuery(c));
-export const SEARCH = mSearch.done();
+export const Search = searchBuilder.done();
 ```
 
 `value`, `checked` and `selected` ports are written as DOM **properties**, decided when the
@@ -210,44 +227,41 @@ A form that needs its values once, when it is sent, registers nothing per field.
 port on each control and read them all in the submit handler:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoRefPort } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_REF, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValues } from '@exodra/forms';
 
-const CONTACT_SCHEMA = createExoSchema((b) => {
-    let submit!: TExoEventPort;
-    let name!: TExoRefPort;
-    let age!: TExoRefPort;
-    let subscribe!: TExoRefPort;
+const ContactPorts = exoPorts({
+    submit: EXO_PORT_EVENT,
+    name: EXO_PORT_REF,
+    age: EXO_PORT_REF,
+    subscribe: EXO_PORT_REF,
+});
+
+const contactSchema = createExoSchema(ContactPorts, (b) => {
     b.el('form', null, (f) => {
-        submit = f.eventPort('submit');
+        f.eventPort(ContactPorts.submit, 'submit');
         f.el('input', { type: 'text' }, (i) => {
-            name = i.refPort();
+            i.refPort(ContactPorts.name);
         });
         f.el('input', { type: 'number' }, (i) => {
-            age = i.refPort();
+            i.refPort(ContactPorts.age);
         });
         f.el('input', { type: 'checkbox' }, (i) => {
-            subscribe = i.refPort();
+            i.refPort(ContactPorts.subscribe);
         });
         f.el('button', { type: 'submit' }, (button) => button.text('Send'));
     });
-    return { submit, name, age, subscribe };
 });
-const CONTACT_FIELDS = [
-    CONTACT_SCHEMA.ports.name,
-    CONTACT_SCHEMA.ports.age,
-    CONTACT_SCHEMA.ports.subscribe,
-];
+const CONTACT_FIELDS = [ContactPorts.name, ContactPorts.age, ContactPorts.subscribe];
 
-const mContact = createExoMachineBuilder<TExoDomNode>(CONTACT_SCHEMA);
-mContact.on(CONTACT_SCHEMA.ports.submit, (c, event) => {
+const contactBuilder = createExoMachineBuilder<TExoDomNode>(contactSchema);
+contactBuilder.on(ContactPorts.submit, (c, event) => {
     event.preventDefault();
     const [name, age, subscribe] = readExoControlValues(c, CONTACT_FIELDS);
     console.log({ name, age, subscribe });
 });
-export const CONTACT = mContact.done();
+export const Contact = contactBuilder.done();
 ```
 
 The values come back in the order of the ports. A radio reads as its `value` only while it
@@ -270,56 +284,62 @@ It is used in two places:
 
 - **In `createInitialState`, for the starting mark.** The server prints `checked=""` on that
   radio, or `selected` on that option, so the page arrives chosen before any JavaScript runs.
-- **In a transition, for a choice the application makes.** A person's own click moves the
+- **In a handler or a wire, for a choice the application makes.** A person's own click moves the
   mark natively; there is nothing to write for it.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoEventPort } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { writeExoChoice } from '@exodra/forms';
 
 const SIZES = ['s', 'm', 'l'];
 
-const SIZE_SCHEMA = createExoSchema((b) => {
-    let reset!: TExoEventPort;
-    const radios: TExoAttrPort[] = [];
-    const options: TExoAttrPort[] = [];
+const SizePorts = exoPorts({
+    reset: EXO_PORT_EVENT,
+    smallRadio: EXO_PORT_ATTR,
+    mediumRadio: EXO_PORT_ATTR,
+    largeRadio: EXO_PORT_ATTR,
+    smallOption: EXO_PORT_ATTR,
+    mediumOption: EXO_PORT_ATTR,
+    largeOption: EXO_PORT_ATTR,
+});
+const SIZE_RADIOS = [SizePorts.smallRadio, SizePorts.mediumRadio, SizePorts.largeRadio];
+const SIZE_OPTIONS = [SizePorts.smallOption, SizePorts.mediumOption, SizePorts.largeOption];
+
+const sizeSchema = createExoSchema(SizePorts, (b) => {
     b.el('div', null, (d) => {
         d.el('fieldset', null, (f) => {
-            for (const size of SIZES) {
+            SIZES.forEach((size, at) => {
                 f.el('input', { type: 'radio', name: 'size', value: size }, (i) => {
-                    radios.push(i.port('checked'));
+                    i.attrPort(SIZE_RADIOS[at], 'checked');
                 });
-            }
+            });
         });
         d.el('select', { name: 'fit' }, (s) => {
-            for (const size of SIZES) {
+            SIZES.forEach((size, at) => {
                 s.el('option', { value: size }, (o) => {
-                    options.push(o.port('selected'));
+                    o.attrPort(SIZE_OPTIONS[at], 'selected');
                     o.text(size.toUpperCase());
                 });
-            }
+            });
         });
         d.el('button', { type: 'button' }, (button) => {
-            reset = button.eventPort('click');
+            button.eventPort(SizePorts.reset, 'click');
             button.text('Back to M');
         });
     });
-    return { reset, radios, options };
 });
 
-const mSize = createExoMachineBuilder<TExoDomNode>(SIZE_SCHEMA);
-mSize.createInitialState((c) => {
-    writeExoChoice(c, SIZE_SCHEMA.ports.radios, SIZES, 'm');
-    writeExoChoice(c, SIZE_SCHEMA.ports.options, SIZES, 'm');
+const sizeBuilder = createExoMachineBuilder<TExoDomNode>(sizeSchema);
+sizeBuilder.createInitialState((c) => {
+    writeExoChoice(c, SIZE_RADIOS, SIZES, 'm');
+    writeExoChoice(c, SIZE_OPTIONS, SIZES, 'm');
 });
-const backToMedium = mSize.transition((c) => {
-    writeExoChoice(c, SIZE_SCHEMA.ports.radios, SIZES, 'm');
-    writeExoChoice(c, SIZE_SCHEMA.ports.options, SIZES, 'm');
+sizeBuilder.on(SizePorts.reset, (c) => {
+    writeExoChoice(c, SIZE_RADIOS, SIZES, 'm');
+    writeExoChoice(c, SIZE_OPTIONS, SIZES, 'm');
 });
-mSize.on(SIZE_SCHEMA.ports.reset, (c) => backToMedium(c));
-export const SIZE = mSize.done();
+export const Size = sizeBuilder.done();
 ```
 
 ### A group whose value comes from a parent
@@ -329,65 +349,70 @@ the value as params and writes the mark. The parent builds it with the starting 
 re-runs the wire with `wireExoNode` when the value changes:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema, wireExoNode } from '@exodra/core';
-import type {
-    TExoAttrPort,
-    TExoChildrenPort,
-    TExoEventPort,
-    TExoMachineNode,
-    TExoNode,
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_CHILDREN,
+    EXO_PORT_EVENT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+    wireExoNode,
 } from '@exodra/core';
+import type { TExoMachineNode, TExoNode } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { writeExoChoice } from '@exodra/forms';
 
 const PLANS = ['free', 'team', 'business'];
 
-const PLAN_GROUP_SCHEMA = createExoSchema((b) => {
-    const radios: TExoAttrPort[] = [];
+const PlanGroupPorts = exoPorts({
+    freeRadio: EXO_PORT_ATTR,
+    teamRadio: EXO_PORT_ATTR,
+    businessRadio: EXO_PORT_ATTR,
+});
+const PLAN_RADIOS = [PlanGroupPorts.freeRadio, PlanGroupPorts.teamRadio, PlanGroupPorts.businessRadio];
+
+const planGroupSchema = createExoSchema(PlanGroupPorts, (b) => {
     b.el('fieldset', null, (f) => {
-        for (const plan of PLANS) {
+        PLANS.forEach((plan, at) => {
             f.el('label', null, (l) => {
                 l.el('input', { type: 'radio', name: 'plan', value: plan }, (i) => {
-                    radios.push(i.port('checked'));
+                    i.attrPort(PLAN_RADIOS[at], 'checked');
                 });
                 l.text(plan);
             });
-        }
+        });
     });
-    return { radios };
 });
-const mPlanGroup = createExoMachineBuilder<TExoMachineNode, string>(PLAN_GROUP_SCHEMA);
-mPlanGroup.wire((c, chosen) => {
-    writeExoChoice(c, PLAN_GROUP_SCHEMA.ports.radios, PLANS, chosen);
+const planGroupBuilder = createExoMachineBuilder<TExoMachineNode, string>(planGroupSchema);
+planGroupBuilder.wire((c, chosen) => {
+    writeExoChoice(c, PLAN_RADIOS, PLANS, chosen);
 });
-const PLAN_GROUP = mPlanGroup.done();
+const PlanGroup = planGroupBuilder.done();
 
-const ACCOUNT_SCHEMA = createExoSchema((b) => {
-    let slot!: TExoChildrenPort;
-    let downgrade!: TExoEventPort;
+const AccountPorts = exoPorts({ slot: EXO_PORT_CHILDREN, downgrade: EXO_PORT_EVENT });
+
+const accountSchema = createExoSchema(AccountPorts, (b) => {
     b.el('div', null, (d) => {
-        slot = d.childrenPort();
+        d.childrenPort(AccountPorts.slot);
         d.el('button', { type: 'button' }, (button) => {
-            downgrade = button.eventPort('click');
+            button.eventPort(AccountPorts.downgrade, 'click');
             button.text('Downgrade to free');
         });
     });
-    return { slot, downgrade };
 });
 
-const mAccount = createExoMachineBuilder<TExoDomNode, unknown, { group: TExoNode }>(
-    ACCOUNT_SCHEMA
+const accountBuilder = createExoMachineBuilder<TExoDomNode, unknown, { group: TExoNode }>(
+    accountSchema
 );
-mAccount.createInitialState((c) => {
-    const group = c.build(PLAN_GROUP, 0, 'team');
-    c.childList(ACCOUNT_SCHEMA.ports.slot).insert(group);
+accountBuilder.createInitialState((c) => {
+    const group = c.build(PlanGroup, 0, 'team');
+    c.childList(AccountPorts.slot).insert(group);
     return { group };
 });
-const downgrade = mAccount.transition((c) => {
-    wireExoNode(c.state.group, PLAN_GROUP, 'free');
+accountBuilder.on(AccountPorts.downgrade, (c) => {
+    wireExoNode(c.state.group, PlanGroup, 'free');
 });
-mAccount.on(ACCOUNT_SCHEMA.ports.downgrade, (c) => downgrade(c));
-export const ACCOUNT = mAccount.done();
+export const Account = accountBuilder.done();
 ```
 
 `writeExoChoice` relies on the browser's exclusivity, so it is **not** for a group of
@@ -406,58 +431,57 @@ wire. A row's wire may only write ports; `wireExoNode` from `@exodra/core` re-ru
 live row.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema, wireExoNode } from '@exodra/core';
-import type {
-    TExoAttrPort,
-    TExoChildrenPort,
-    TExoEventPort,
-    TExoMachineNode,
-    TExoNode,
-    TExoTextPort,
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_CHILDREN,
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+    wireExoNode,
 } from '@exodra/core';
+import type { TExoMachineBuilderNode, TExoMachineNode, TExoNode } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
 
 const PRICES = [12, 30, 7];
 
-const ROW_SCHEMA = createExoSchema((b) => {
-    let at!: TExoAttrPort;
-    let total!: TExoTextPort;
+const RowPorts = exoPorts({ at: EXO_PORT_ATTR, total: EXO_PORT_TEXT });
+
+const rowSchema = createExoSchema(RowPorts, (b) => {
     b.el('li', null, (li) => {
         li.el('input', { type: 'number', min: '0', value: '1' }, (i) => {
-            at = i.port('data-row');
+            i.attrPort(RowPorts.at, 'data-row');
         });
         li.el('span', null, (s) => {
-            total = s.textPort();
+            s.textPort(RowPorts.total);
         });
     });
-    return { at, total };
 });
 
 type TRowParams = { readonly price: number; readonly quantity: number };
 
-const mRow = createExoMachineBuilder<TExoMachineNode, TRowParams, number>(ROW_SCHEMA);
-mRow.createInitialState((_c, index) => index);
-mRow.wire((c, row) => {
-    c.attr(ROW_SCHEMA.ports.at, c.state);
-    c.text(ROW_SCHEMA.ports.total, Number.isNaN(row.quantity) ? '–' : row.price * row.quantity);
+const rowBuilder = createExoMachineBuilder<TExoMachineNode, TRowParams, number>(rowSchema);
+rowBuilder.createInitialState((_c, index) => index);
+rowBuilder.wire((c, row) => {
+    c.attr(RowPorts.at, c.state);
+    c.text(RowPorts.total, Number.isNaN(row.quantity) ? '–' : row.price * row.quantity);
 });
-const ROW = mRow.done();
+const Row = rowBuilder.done();
 
-const CART_SCHEMA = createExoSchema((b) => {
-    let input!: TExoEventPort;
-    let rows!: TExoChildrenPort;
-    let sum!: TExoTextPort;
+const CartPorts = exoPorts({ input: EXO_PORT_EVENT, rows: EXO_PORT_CHILDREN, sum: EXO_PORT_TEXT });
+
+const cartSchema = createExoSchema(CartPorts, (b) => {
     b.el('div', { class: 'cart' }, (d) => {
-        input = d.eventPort('input');
+        d.eventPort(CartPorts.input, 'input');
         d.el('ul', null, (ul) => {
-            rows = ul.childrenPort();
+            ul.childrenPort(CartPorts.rows);
         });
         d.el('p', null, (p) => {
-            sum = p.textPort();
+            p.textPort(CartPorts.sum);
         });
     });
-    return { input, rows, sum };
 });
 
 type TCart = { quantities: number[]; rows: TExoNode[] };
@@ -465,31 +489,38 @@ type TCart = { quantities: number[]; rows: TExoNode[] };
 const sumOf = (quantities: readonly number[]): number =>
     quantities.reduce((sum, quantity, i) => sum + (Number.isNaN(quantity) ? 0 : quantity * PRICES[i]), 0);
 
-const mCart = createExoMachineBuilder<TExoDomNode, unknown, TCart>(CART_SCHEMA);
-mCart.createInitialState((c) => {
-    const list = c.childList(CART_SCHEMA.ports.rows);
+const cartBuilder = createExoMachineBuilder<TExoDomNode, unknown, TCart>(cartSchema);
+cartBuilder.createInitialState((c) => {
+    const list = c.childList(CartPorts.rows);
     const quantities = PRICES.map(() => 1);
     const rows = PRICES.map((price, i) => {
-        const row = c.build(ROW, i, { price, quantity: quantities[i] });
+        const row = c.build(Row, i, { price, quantity: quantities[i] });
         list.insert(row);
         return row;
     });
     return { quantities, rows };
 });
-const showSum = mCart.transition((c) => {
-    c.text(CART_SCHEMA.ports.sum, sumOf(c.state.quantities));
-});
-mCart.wire((c) => showSum(c));
-const setQuantity = mCart.transition<number, number>((c, at, quantity) => {
+
+function showSum(c: TExoMachineBuilderNode<typeof cartBuilder>): void {
+    c.text(CartPorts.sum, sumOf(c.state.quantities));
+}
+
+function setQuantity(
+    c: TExoMachineBuilderNode<typeof cartBuilder>,
+    at: number,
+    quantity: number
+): void {
     c.state.quantities[at] = quantity;
-    wireExoNode(c.state.rows[at], ROW, { price: PRICES[at], quantity });
+    wireExoNode(c.state.rows[at], Row, { price: PRICES[at], quantity });
     showSum(c);
-});
-mCart.on(CART_SCHEMA.ports.input, (c, event) => {
+}
+
+cartBuilder.wire((c) => showSum(c));
+cartBuilder.on(CartPorts.input, (c, event) => {
     const field = event.target as HTMLInputElement;
     setQuantity(c, Number(field.dataset.row), readExoControlValue(field) as number);
 });
-export const CART = mCart.done();
+export const Cart = cartBuilder.done();
 ```
 
 The field's starting value is a static `value` attribute in the schema, so it is markup the
@@ -537,12 +568,12 @@ served radio group and the `undefined` answers on `@exodra/string`.
 
 ## Known limits
 
-- **A `<select>` has no `value` port that the server can print.** `port('value')` on a
+- **A `<select>` has no `value` port that the server can print.** `attrPort(port, 'value')` on a
   `<select>` is refused when the schema is built (`EXO0015`): the markup for "this option is
   chosen" is `selected` on the `<option>`, a different element, so the server would serve the
-  first option whatever the state says. Mark the options with `port('selected')` and write
-  the mark with `writeExoChoice`. The same refusal covers `port('value')` on an `<output>`, whose
-  value is its text: use a `textPort()`.
+  first option whatever the state says. Mark the options with `attrPort(port, 'selected')` and write
+  the mark with `writeExoChoice`. The same refusal covers a `value` port on an `<output>`, whose
+  value is its text: use a `textPort(port)`.
 - **`form.reset()` on a client-rendered field empties it.** A `value` port is written as the
   `value` property only, never the attribute, so a field rendered in the browser has no
   default to reset to. A served field resets to what the server printed. `checked` and

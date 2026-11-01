@@ -39,36 +39,35 @@ export function generateComponentFile(
     // whatever else the app does. The generated machine calls `c.text` and nothing else, so the
     // MINIMAL surface is the honest type; a machine that nests components takes `TExoChildrenWiring & TExoMachineNode`.
     const typeImports = useTypeScript
-        ? "import type { TExoMachineNode, TExoTextPort } from '@exodra/core';\n"
+        ? "import type { TExoMachineNode } from '@exodra/core';\n"
         : '';
-    const labelPort = useTypeScript ? 'let label!: TExoTextPort;' : 'let label;';
-    const schemaName = `${componentName
-        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
-        .toUpperCase()}_SCHEMA`;
-    const builderName = `m${componentName}`;
+    const camelName = componentName.charAt(0).toLowerCase() + componentName.slice(1);
+    const portsName = `${componentName}Ports`;
+    const schemaName = `${camelName}Schema`;
+    const builderName = `${camelName}Builder`;
     const builderType = useTypeScript ? '<TExoMachineNode, unknown, { label: string }>' : '';
     const store = useTypeScript
         ? `export const ${componentName}Labels: string[] = [];`
         : `export const ${componentName}Labels = [];`;
 
-    return `import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    return `import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 ${typeImports}
 // The data each instance shows, read BY INDEX: an instance is handed its position, never props, so a
 // parent fills this and then names the count:
-// \`${componentName}Labels.push('${componentName}'); c.list(PARENT_SCHEMA.ports.slot, ${componentName}, 1)\`.
+// \`${componentName}Labels.push('${componentName}'); c.list(ParentPorts.slot, ${componentName}, 1)\`.
 ${store}
 
-const ${schemaName} = createExoSchema(b => {
-  ${labelPort}
+const ${portsName} = exoPorts({ label: EXO_PORT_TEXT });
+
+const ${schemaName} = createExoSchema(${portsName}, b => {
   b.el('div', { class: '${className}' }, d => {
-    label = d.textPort();
+    d.textPort(${portsName}.label);
   });
-  return { label };
 });
 const ${builderName} = createExoMachineBuilder${builderType}(${schemaName});
 ${builderName}.createInitialState((_c, i) => ({ label: ${componentName}Labels[i] }));
 ${builderName}.wire(c => {
-  c.text(${schemaName}.ports.label, c.state.label);
+  c.text(${portsName}.label, c.state.label);
 });
 export const ${componentName} = ${builderName}.done();
 `;
@@ -82,31 +81,30 @@ export const ${componentName} = ${builderName}.done();
  */
 export function generatePageFile(pageName: string, useTypeScript: boolean): string {
     const typeImports = useTypeScript
-        ? "import type { TExoMachineNode, TExoTextPort } from '@exodra/core';\n"
+        ? "import type { TExoMachineNode } from '@exodra/core';\n"
         : '';
-    const headingPort = useTypeScript ? 'let heading!: TExoTextPort;' : 'let heading;';
     const builderType = useTypeScript ? '<TExoMachineNode>' : '';
 
-    return `import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    return `import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 ${typeImports}
 // A page takes no props — the match that selected it arrives as the params of its wire,
-// \`mPage.wire((c, match) => …)\`, whose \`params\` and \`pathname\` are what a page needs. It is
+// \`pageBuilder.wire((c, match) => …)\`, whose \`params\` and \`pathname\` are what a page needs. It is
 // default-exported because the route table imports it that way.
-const PAGE_SCHEMA = createExoSchema(b => {
-  ${headingPort}
+const PagePorts = exoPorts({ heading: EXO_PORT_TEXT });
+
+const pageSchema = createExoSchema(PagePorts, b => {
   b.el('div', { class: 'page' }, d => {
     d.el('h1', null, h => {
-      heading = h.textPort();
+      h.textPort(PagePorts.heading);
     });
     d.el('p', null, p => p.text('Welcome to the ${pageName} page.'));
   });
-  return { heading };
 });
-const mPage = createExoMachineBuilder${builderType}(PAGE_SCHEMA);
-mPage.wire(c => {
-  c.text(PAGE_SCHEMA.ports.heading, '${pageName}');
+const pageBuilder = createExoMachineBuilder${builderType}(pageSchema);
+pageBuilder.wire(c => {
+  c.text(PagePorts.heading, '${pageName}');
 });
-export default mPage.done();
+export default pageBuilder.done();
 `;
 }
 

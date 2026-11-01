@@ -132,6 +132,7 @@ export type Mounts = Record<
     | 'reactCompat'
     | 'reactCompatTemplates'
     | 'reactCompatCompiled'
+    | 'reactCompatCalls'
     | 'million'
     | 'reactCompiler'
     | 'voby'
@@ -199,6 +200,7 @@ export async function loadMounts(): Promise<Mounts> {
     const compat = await import('@exodra/react-compat');
     const { ReactApp: CompatApp } = await import('../../apps/react/react.tsx?impl=compat');
     const { ReactJsxApp: CompiledApp } = await import('../../apps/react/react-jsx.jsx');
+    const { ReactApp: CallsApp } = await import('../../apps/react/react.tsx?impl=compatCalls');
     const { ReactJsxApp: MillionApp } = await import('../../apps/react/react-jsx.jsx?impl=million');
     const { ReactJsxApp: ReactCompilerApp } = await import(
         '../../apps/react/react-jsx.jsx?impl=reactCompiler'
@@ -216,14 +218,19 @@ export async function loadMounts(): Promise<Mounts> {
         if (queued !== null) queued();
     };
     const compatSync = (run: () => void): void => {
-        compat.flushSync(run);
+        compat.enableExoReactHostTemplates(false);
+        try {
+            compat.flushSync(run);
+        } finally {
+            compat.enableExoReactHostTemplates();
+        }
     };
     const compatTemplatesSync = (run: () => void): void => {
         compat.enableExoReactHostTemplates();
         try {
             compat.flushSync(run);
         } finally {
-            compat.enableExoReactHostTemplates(false);
+            compat.enableExoReactHostTemplates();
         }
     };
     const CardsDyn = (await import('../../svelte/CardsDyn.svelte')).default;
@@ -332,6 +339,14 @@ export async function loadMounts(): Promise<Mounts> {
                 c,
                 compat.createRoot(c),
                 (slot) => compat.createElement(CompiledApp, { slot }),
+                compatSync
+            ),
+        reactCompatCalls: (c: HTMLElement) =>
+            mountReactLike(
+                'reactCompatCalls',
+                c,
+                compat.createRoot(c),
+                (slot) => compat.createElement(CallsApp, { slot }),
                 compatSync
             ),
         reactCompiler: (c: HTMLElement) =>

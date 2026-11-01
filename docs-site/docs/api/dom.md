@@ -50,29 +50,28 @@ page for every name hydration claims: `withExoHydration`'s bodies ignore `next` 
 replace. See [Plugins](../guides/plugins.md#the-fields-a-composition-can-replace).
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
-const GREETING_SCHEMA = createExoSchema((b) => {
-    let label!: TExoTextPort;
+const GreetingPorts = exoPorts({ label: EXO_PORT_TEXT });
+
+const greetingSchema = createExoSchema(GreetingPorts, (b) => {
     b.el('h1', { class: 'title' }, (h1) => {
-        label = h1.textPort();
+        h1.textPort(GreetingPorts.label);
     });
-    return { label };
 });
-const mGreeting = createExoMachineBuilder<TExoDomNode>(GREETING_SCHEMA);
-mGreeting.wire((c) => {
-    c.text(GREETING_SCHEMA.ports.label, 'Hello');
+const greetingBuilder = createExoMachineBuilder<TExoDomNode>(greetingSchema);
+greetingBuilder.wire((c) => {
+    c.text(GreetingPorts.label, 'Hello');
 });
-const GREETING = mGreeting.done();
+const Greeting = greetingBuilder.done();
 
 /** ONE backend for the application, at module level — it is the schema cache key. */
 const backend = withExoCompiler(new ExoDomBackend());
 
 const root = document.getElementById('root') as HTMLElement;
-const dispose = backend.render(GREETING, root);
+const dispose = backend.render(Greeting, root);
 
 // later…
 dispose();
@@ -163,16 +162,16 @@ compose by intersection. What each costs and refuses is on
 ## Following data is an effect
 
 A machine keeps its ports in step with outside data the same way everywhere: a
-**transition** writes the ports from the data, and an **effect** runs that
-transition once and then subscribes, returning the unsubscribe. A reactive list
+function writes the ports from the data, and an **effect** runs that
+function once and then subscribes, returning the unsubscribe. A reactive list
 is the same shape with `reconcileExoOrder` from `@exodra/list-reconcile` inside
-the transition, over the child-list door:
+that function, over the child-list door:
 
 ```ts no-check
-const show = m.transition((c) => {
-    c.text(P.label, store.getValue().label);
-});
-m.effect((c) => {
+const show = (c: TExoMachineBuilderNode<typeof labelBuilder>): void => {
+    c.text(LabelPorts.label, store.getValue().label);
+};
+labelBuilder.effect((c) => {
     show(c);
     return store.onChange(() => show(c));
 });
@@ -218,6 +217,7 @@ the last port may be filled first.
 | `childList(port)` | The child-list door for a children port: it holds whatever is put in it. This is the half a reconciler stands on — see below. |
 | `onTeardown(off)` | Hand the instance a disposer to run when it goes. |
 | `foreign(t)` | A child this renderer did not make. A pack: compose `EXO_DOM_FOREIGN_VOCABULARY` first. |
+| `portNode(port)` | The element standing at a ref port, typed by the port when it was declared with `exoRefPortKind<TNode>()`. |
 | `portTable()` / `portNodeReader()` / `portNodeWriter()` | The instance's node table, and readers and writers over it. |
 
 There is no `bind` method on this list. Keeping a port in step with data is a
@@ -237,8 +237,8 @@ The data can live anywhere that offers a read and a change notification. Here it
 is a store object of a dozen lines; in an application it is the data layer.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoEventPort, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineBuilderNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -261,35 +261,36 @@ function createStore<TValue>(value: TValue) {
 
 const active = createStore(false);
 
-const PANEL_SCHEMA = createExoSchema((b) => {
-    let panelClass!: TExoAttrPort;
-    let buttonText!: TExoTextPort;
-    let click!: TExoEventPort;
+const PanelPorts = exoPorts({
+    panelClass: EXO_PORT_ATTR,
+    buttonText: EXO_PORT_TEXT,
+    click: EXO_PORT_EVENT,
+});
+
+const panelSchema = createExoSchema(PanelPorts, (b) => {
     b.el('div', null, (div) => {
-        panelClass = div.port('class');
+        div.attrPort(PanelPorts.panelClass, 'class');
         div.el('button', { type: 'button' }, (btn) => {
-            click = btn.eventPort('click');
-            buttonText = btn.textPort();
+            btn.eventPort(PanelPorts.click, 'click');
+            btn.textPort(PanelPorts.buttonText);
         });
     });
-    return { panelClass, buttonText, click };
 });
-const P = PANEL_SCHEMA.ports;
 
-const mPanel = createExoMachineBuilder<TExoDomNode>(PANEL_SCHEMA);
-const showActive = mPanel.transition((c) => {
+const panelBuilder = createExoMachineBuilder<TExoDomNode>(panelSchema);
+const showActive = (c: TExoMachineBuilderNode<typeof panelBuilder>): void => {
     const on = active.getValue();
-    c.attr(P.panelClass, on ? 'panel panel--open' : 'panel');
-    c.text(P.buttonText, on ? 'Close' : 'Open');
-});
-mPanel.effect((c) => {
+    c.attr(PanelPorts.panelClass, on ? 'panel panel--open' : 'panel');
+    c.text(PanelPorts.buttonText, on ? 'Close' : 'Open');
+};
+panelBuilder.effect((c) => {
     showActive(c);
     return active.onChange(() => showActive(c));
 });
-mPanel.on(P.click, () => active.setValue(!active.getValue()));
-const PANEL = mPanel.done();
+panelBuilder.on(PanelPorts.click, () => active.setValue(!active.getValue()));
+const Panel = panelBuilder.done();
 
-backend.render(PANEL, document.body);
+backend.render(Panel, document.body);
 ```
 
 The first `showActive(c)` runs synchronously inside the effect, so the instance
@@ -350,8 +351,8 @@ The packs are independent, so the order among them does not matter:
 ### Nesting and lists
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoChildrenPort, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_CHILDREN, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineBuilderNode } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -360,21 +361,20 @@ const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
 type TTask = { readonly id: string; readonly title: string };
 
-const TASK_SCHEMA = createExoSchema((b) => {
-    let id!: TExoAttrPort;
-    let title!: TExoTextPort;
+const TaskPorts = exoPorts({ id: EXO_PORT_ATTR, title: EXO_PORT_TEXT });
+
+const taskSchema = createExoSchema(TaskPorts, (b) => {
     b.el('li', null, (li) => {
-        id = li.port('data-id');
-        title = li.textPort();
+        li.attrPort(TaskPorts.id, 'data-id');
+        li.textPort(TaskPorts.title);
     });
-    return { id, title };
 });
-const mTask = createExoMachineBuilder<TExoDomNode>(TASK_SCHEMA);
-const showTask = mTask.transition((row: TExoDomNode, task: TTask) => {
-    row.attr(TASK_SCHEMA.ports.id, task.id);
-    row.text(TASK_SCHEMA.ports.title, task.title);
+const taskBuilder = createExoMachineBuilder<TExoDomNode>(taskSchema);
+const showTask = taskBuilder.transition((row: TExoDomNode, task: TTask) => {
+    row.attr(TaskPorts.id, task.id);
+    row.text(TaskPorts.title, task.title);
 });
-const TASK = mTask.done();
+const Task = taskBuilder.done();
 
 let tasks: readonly TTask[] = [
     { id: 'a', title: 'First' },
@@ -386,26 +386,26 @@ function setTasks(next: readonly TTask[]): void {
     taskListeners.forEach((listener) => listener());
 }
 
-const BOARD_SCHEMA = createExoSchema((b) => {
-    let rows!: TExoChildrenPort;
+const BoardPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
+
+const boardSchema = createExoSchema(BoardPorts, (b) => {
     b.el('ul', { class: 'board' }, (ul) => {
-        rows = ul.childrenPort();
+        ul.childrenPort(BoardPorts.rows);
     });
-    return { rows };
 });
 
 type TBoardState = { rows: TExoChildList; shown: TTask[] };
 
-const mBoard = createExoMachineBuilder<TExoDomNode, unknown, TBoardState>(BOARD_SCHEMA);
-mBoard.createInitialState((c) => ({ rows: c.childList(BOARD_SCHEMA.ports.rows), shown: [] }));
-const showTasks = mBoard.transition((c) => {
+const boardBuilder = createExoMachineBuilder<TExoDomNode, unknown, TBoardState>(boardSchema);
+boardBuilder.createInitialState((c) => ({ rows: c.childList(BoardPorts.rows), shown: [] }));
+const showTasks = (c: TExoMachineBuilderNode<typeof boardBuilder>): void => {
     c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, tasks, tasks, (task, at) => {
-        const row = c.build(TASK, at);
+        const row = c.build(Task, at);
         showTask(row, task);
         return row;
     });
-});
-mBoard.effect((c) => {
+};
+boardBuilder.effect((c) => {
     showTasks(c);
     const listener = (): void => showTasks(c);
     taskListeners.add(listener);
@@ -413,9 +413,9 @@ mBoard.effect((c) => {
         taskListeners.delete(listener);
     };
 });
-const BOARD = mBoard.done();
+const Board = boardBuilder.done();
 
-backend.render(BOARD, document.body);
+backend.render(Board, document.body);
 
 setTasks([...tasks, { id: 'c', title: 'Third' }]);
 ```
@@ -488,8 +488,8 @@ because a machine that names a context is the same module on the server.
 `render(component, parent, params?)` is two calls, and both are public:
 
 ```ts no-check
-const node = backend.buildRoot(GREETING, params); // the exonode, built and wired, placed nowhere
-// fire transitions at it, re-run its wire: wireExoNode(node, GREETING, nextParams)
+const node = backend.buildRoot(Greeting, params); // the exonode, built and wired, placed nowhere
+// fire transitions at it, re-run its wire: wireExoNode(node, Greeting, nextParams)
 const dispose = backend.mountRoot(node, root);    // places it, installs the event strategy
 ```
 
@@ -545,15 +545,15 @@ import type { TExoMachine, TExoWiring } from '@exodra/core';
 // ONE type, not an intersection of two backends'. `TExoWiring` is the surface all
 // three exonodes share, and a machine is contravariant in its exonode, so this value
 // satisfies both backends.
-declare const APP: TExoMachine<TExoWiring, number>;
+declare const App: TExoMachine<TExoWiring, number>;
 
 // On the server:
-const html = new ExoStrBackend().render(APP);
+const html = new ExoStrBackend().render(App);
 
 // On the client, against the markup the server sent:
 const backend = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const root = document.getElementById('root') as HTMLElement;
-const dispose = backend.hydrate(APP, root);
+const dispose = backend.hydrate(App, root);
 ```
 
 It adopts **one instance**, out of `parent`'s first *element* child — by element
@@ -613,7 +613,7 @@ import { composeExoPlugins } from '@exodra/core';
 import { ExoDomBackend, createExoDelegatedEvents, withExoCompiler } from '@exodra/dom';
 import type { TExoDomMachine } from '@exodra/dom';
 
-declare const APP: TExoDomMachine;
+declare const App: TExoDomMachine;
 
 /** ONE pack for the application, at module level. */
 const DELEGATED = createExoDelegatedEvents(['click']);
@@ -623,7 +623,7 @@ const backend = composeExoPlugins(withExoCompiler(new ExoDomBackend()), {
     events: () => DELEGATED,
 });
 
-backend.render(APP, document.body);
+backend.render(App, document.body);
 ```
 
 `createExoDelegatedEvents` returns a `TExoEventsApi` — a value for the `events` field,

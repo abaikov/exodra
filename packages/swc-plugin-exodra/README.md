@@ -20,7 +20,7 @@ is written in TypeScript around the declaration and is not touched.
 ```tsx no-check
 import { exoJsx } from '@exodra/jsx';
 
-const ROW_SCHEMA = exoJsx<TRowPorts>(($) => (
+const rowSchema = exoJsx<TRowPorts>(($) => (
     <li class="row" data-id={$.id}>
         <span class="row__label">{$.label}</span>
         <button class="row__btn" onClick={$.toggle} />
@@ -37,7 +37,7 @@ const _s0 = createExoNamedSchema(_b0 => {
         _b1.el("button", { class: "row__btn" }, _b2 => { _b2.eventPort("click", "toggle"); });
     });
 });
-const ROW_SCHEMA = _s0;
+const rowSchema = _s0;
 ```
 
 HOISTING IS NOT AN OPTIMISATION HERE, so there is no switch for it: every backend
@@ -46,15 +46,17 @@ a different program, not a slower one.
 
 ### The dialect
 
+In the last column `RowPorts` is `rowSchema.ports` and `rowBuilder` is the machine builder over `rowSchema`.
+
 | written | schema call | filled by the machine with |
 |---|---|---|
 | `class="row"`, `tabindex={0}`, `disabled` | folded into the markup | — |
-| `data-id={$.id}` | `port("data-id", "id")` | `c.attr(P.id, value)` |
-| `<span>{$.label}</span>` | `textPort("label")` | `c.text(P.label, value)` |
-| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `m.on(P.toggle, handler)` |
-| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `m.on(P.edit, handler)` |
+| `data-id={$.id}` | `port("data-id", "id")` | `c.attr(RowPorts.id, value)` |
+| `<span>{$.label}</span>` | `textPort("label")` | `c.text(RowPorts.label, value)` |
+| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `rowBuilder.on(RowPorts.toggle, handler)` |
+| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `rowBuilder.on(RowPorts.edit, handler)` |
 | `ref={$.box}` | `refPort("box")` | — |
-| `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(P.body, markup)` |
+| `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(RowPorts.body, markup)` |
 | `<$.rows />` | `childrenPort("rows")` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
 
 Any other expression (a closure, `item.id`, a conditional), a component tag (`<Row />`),

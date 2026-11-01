@@ -10,7 +10,7 @@ import { exoJsx } from '@exodra/jsx';
 import { createExoMachineBuilder } from '@exodra/core';
 import type { TExoAttrPort, TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 
-const ROW_SCHEMA = exoJsx<{ id: TExoAttrPort; label: TExoTextPort; toggle: TExoEventPort }>(
+const rowSchema = exoJsx<{ id: TExoAttrPort; label: TExoTextPort; toggle: TExoEventPort }>(
     ($) => (
         <li class="row" data-id={$.id}>
             <span class="row__label">{$.label}</span>
@@ -18,18 +18,18 @@ const ROW_SCHEMA = exoJsx<{ id: TExoAttrPort; label: TExoTextPort; toggle: TExoE
         </li>
     )
 );
-const P = ROW_SCHEMA.ports;
+const RowPorts = rowSchema.ports;
 
 type TRow = { id: string; label: string; done: boolean };
 
-const mRow = createExoMachineBuilder<TExoMachineNode, TRow>(ROW_SCHEMA);
-mRow.createInitialState(() => null);
-mRow.wire((c, row) => {
-    c.attr(P.id, row.id);
-    c.text(P.label, row.label);
+const rowBuilder = createExoMachineBuilder<TExoMachineNode, TRow>(rowSchema);
+rowBuilder.createInitialState(() => null);
+rowBuilder.wire((c, row) => {
+    c.attr(RowPorts.id, row.id);
+    c.text(RowPorts.label, row.label);
 });
-mRow.on(P.toggle, () => console.log('toggled'));
-export const ROW = mRow.done();
+rowBuilder.on(RowPorts.toggle, () => console.log('toggled'));
+export const Row = rowBuilder.done();
 ```
 
 The `exoJsx(…)` call becomes:
@@ -45,10 +45,10 @@ const _s0 = createExoNamedSchema((_b0) => {
     });
 });
 
-const ROW_SCHEMA = _s0;
+const rowSchema = _s0;
 ```
 
-Every port is created under the name written after `$.`, so `ROW_SCHEMA.ports.label` is
+Every port is created under the name written after `$.`, so `rowSchema.ports.label` is
 the text port. The declaration is hoisted to module scope wherever it was written, so it
 costs **one** schema for the process. Hoisting is not a switch: every backend indexes its
 prepared plan by the schema's ports, so a declaration rebuilt per render would be a
@@ -110,12 +110,12 @@ For TypeScript, point JSX at the dialect's types:
 | --- | --- | --- |
 | `class="row"`, `tabindex={0}`, `disabled` | folded into `el(tag, attrs)` | — |
 | plain text | `text('…')` | — |
-| `data-id={$.id}` | `port('data-id', 'id')` | `c.attr(P.id, value)` |
-| `<span>{$.label}</span>` | `textPort('label')` | `c.text(P.label, value)` |
-| `onClick={$.toggle}` | `eventPort('click', 'toggle')` | `m.on(P.toggle, handler)` |
-| `on:dblclick={$.edit}` | `eventPort('dblclick', 'edit')` | `m.on(P.edit, handler)` |
+| `data-id={$.id}` | `port('data-id', 'id')` | `c.attr(RowPorts.id, value)` |
+| `<span>{$.label}</span>` | `textPort('label')` | `c.text(RowPorts.label, value)` |
+| `onClick={$.toggle}` | `eventPort('click', 'toggle')` | `rowBuilder.on(RowPorts.toggle, handler)` |
+| `on:dblclick={$.edit}` | `eventPort('dblclick', 'edit')` | `rowBuilder.on(RowPorts.edit, handler)` |
 | `ref={$.box}` | `refPort('box')` | — |
-| `unsafeHtml={$.body}` | `childrenPort('body')` | `c.unsafeHtml(P.body, markup)` |
+| `unsafeHtml={$.body}` | `childrenPort('body')` | `c.unsafeHtml(RowPorts.body, markup)` |
 | `<$.rows />` | `childrenPort('rows')` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
 
 - **A text port is its element's only child.** Varying text beside static text gets an

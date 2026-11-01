@@ -11,9 +11,8 @@
 // source, which re-reads `getValue()` and diffs it — so the only thing a caller can say to a list
 // is what it now holds.
 //
-// THERE IS NO SECOND EXODRA ROW ON THIS AXIS ANY MORE. `exodraOps` and `exodraOps·twin` priced
-// `c.bindList` applying a list op straight to the child list without diffing; that door is
-// deleted and nothing replaces it, so both rows are struck rather than re-pointed.
+// `exodraTold` is the second Exodra row: the same shell, with each op applied to
+// `c.childList(port)` by index from a transition, and nothing diffed.
 //
 // `marko` joins the DECLARATIVE side for the same reason, and the argument for putting it
 // there rather than on the imperative side is written out in `marko/MkList.marko` next to the
@@ -60,8 +59,7 @@
 // ── WHAT EACH ROW IS TOLD AT THE START OF A TIMED REGION ──────────────────────────────────────
 //
 // `update-floor`'s two words are used here unchanged, because this axis is where its `told` floor
-// was taken from — but the row that floor was read off, `exodraOps`, IS STRUCK (see above), so the
-// told side of this axis now carries one participant and no Exodra counterpart:
+// was taken from:
 //
 //   told    handed exactly what changed — an index, and for two of the four ops an item. The row
 //           never sees an array of rows, and compares nothing.
@@ -109,9 +107,7 @@
 //     the point where Mikado starts to shine."
 //
 // So the told side of this axis is Mikado's advertised strength, measured through the API Mikado's
-// own documentation points at — and THERE IS NOTHING OF OURS LEFT TO READ IT AGAINST, because the
-// row that answered the same contract is struck. That is the gap this axis now publishes: the
-// comparison worth having needs a renderer door that is told what changed, and today there is none.
+// own documentation points at, and `exodraTold` is read against it.
 //
 // TWO COSTS THAT RIDE WITH THE CONTRACT AND ARE NOT THE HARNESS'S DOING, stated here rather than
 // left to be discovered from a profile:
@@ -305,13 +301,10 @@ function reportScale(rows: readonly AbRow[], quantum: number, batch: number): vo
 //          adjacent in the rotation, so this is the round-to-round scatter that ANY comparison of
 //          two rows in this table carries. It cannot cancel.
 //
-// THIS AXIS CARRIED TWO PAIRS AND NOW CARRIES ONE, and the missing one is a gap rather than a
-// simplification. It straddles two magnitudes — `mikado`, told what changed, sits near 0.1 ms and
-// the derive rows near 1–9 ms — and a null taken at one end says nothing about the other, because
-// scatter grows with the region it is taken on. `exodra`↔`exodra·twin` bounds the DERIVE side, where
-// `exodra` sits between `mikadoKeyed` and `solid` within a few tenths of a millisecond. The told
-// side's pair was `exodraOps`↔`exodraOps·twin` and both halves are struck with the door they
-// priced, so NOTHING bounds `mikado`'s magnitude on this axis and `reportResolution` says so.
+// THIS AXIS CARRIES TWO PAIRS because it straddles two magnitudes — `mikado`, told what changed,
+// sits near 0.1 ms and the derive rows near 1–9 ms — and a null taken at one end says nothing about
+// the other, because scatter grows with the region it is taken on. `exodra`↔`exodra·twin` bounds the
+// DERIVE side and `exodraTold`↔`exodraTold·twin` the TOLD side.
 
 interface TNull {
     readonly bias: number;
@@ -361,6 +354,7 @@ function reportResolution(rows: readonly AbRow[], quantum: number, batch: number
 
     const declared: readonly (readonly [string, string, string])[] = [
         ['exodra', 'exodra·twin', 'the DERIVE side — the contract every other row is read against'],
+        ['exodraTold', 'exodraTold·twin', 'the TOLD side — the contract `mikado` runs'],
     ];
     const found = declared
         .map(([a, b, what]) => ({ a: at(a), b: at(b), an: a, bn: b, what }))
@@ -369,10 +363,10 @@ function reportResolution(rows: readonly AbRow[], quantum: number, batch: number
         });
     if (found.length === 0) {
         refuseLine(
-            'list-update: NO RESOLUTION — this run did not sample the one null pair whole ' +
-                '(`exodra`+`exodra·twin`), so nothing here says how small a difference the ' +
-                'instrument can see and NO GAP IN THE TABLE ABOVE MAY BE QUOTED AS A SIZE. Add the ' +
-                'pair to --only, or run the full field.'
+            'list-update: NO RESOLUTION — this run did not sample a null pair whole ' +
+                '(`exodra`+`exodra·twin` or `exodraTold`+`exodraTold·twin`), so nothing here says ' +
+                'how small a difference the instrument can see and NO GAP IN THE TABLE ABOVE MAY BE ' +
+                'QUOTED AS A SIZE. Add a pair to --only, or run the full field.'
         );
         return;
     }
@@ -420,14 +414,11 @@ function reportResolution(rows: readonly AbRow[], quantum: number, batch: number
                       'property of this axis and not of the clock.'
             }`
     );
-    if (at('mikado') !== undefined) {
+    if (at('mikado') !== undefined && at('exodraTold·twin') === undefined) {
         refuseLine(
-            'list-update: NO CONTROL AT THE TOLD MAGNITUDE — the floor printed above was taken on ' +
-                '`exodra`, near a millisecond, and `mikado` runs near a tenth of one. A null bounds ' +
-                "the SHAPE AND SIZE it was taken on, so NOTHING here bounds `mikado`'s row or any " +
-                'gap read off it. The pair that bounded that magnitude was `exodraOps`+' +
-                '`exodraOps·twin`, and both halves were struck with the door they priced: a list ' +
-                'told what changed and never diffing. A control returns when that door does.'
+            'list-update: NO CONTROL AT THE TOLD MAGNITUDE — `mikado` runs near a tenth of a ' +
+                'millisecond and this run did not sample `exodraTold`+`exodraTold·twin`, so nothing ' +
+                "here bounds `mikado`'s row or any gap read off it."
         );
     }
 
@@ -437,7 +428,10 @@ function reportResolution(rows: readonly AbRow[], quantum: number, batch: number
     // makes. A pair inside the floor is a pair this run ranked and did not measure. A twin sits
     // adjacent to the row it twins by construction, so the null pair itself is skipped — listing it
     // would report the control as a finding.
-    const twinOf = new Map<string, string>([['exodra·twin', 'exodra']]);
+    const twinOf = new Map<string, string>([
+        ['exodra·twin', 'exodra'],
+        ['exodraTold·twin', 'exodraTold'],
+    ]);
     const isNullPair = (x: string, y: string): boolean =>
         twinOf.get(x) === y || twinOf.get(y) === x;
     const inside: string[] = [];
@@ -455,9 +449,26 @@ function reportResolution(rows: readonly AbRow[], quantum: number, batch: number
             : `  INSIDE THE FLOOR, therefore ORDERINGS AND NOT SIZES: ${inside.join(' · ')}`
     );
 
-    // THE TOLD HEADLINE IS STRUCK. It read `exodraOps` against `mikado`, and `exodraOps` priced
-    // `c.bindList` applying a list op to the child list without diffing — a door that is
-    // deleted, with nothing in the renderer answering that contract today.
+    // ── THE TOLD HEADLINE: `exodraTold` AGAINST `mikado`, both handed the index ─────────────────
+    const told = at('exodraTold');
+    const mik = at('mikado');
+    const toldNull = nulls.find((p) => p.an === 'exodraTold');
+    if (told !== undefined && mik !== undefined && toldNull !== undefined) {
+        const gap = told.stat.median - mik.stat.median;
+        line(
+            Math.abs(gap) <= toldNull.n.resolution
+                ? `  TOLD headline — exodraTold ${f(told.stat.median)} against mikado ` +
+                      `${f(mik.stat.median)}: inside the told floor (${f6(
+                          toldNull.n.resolution
+                      )} ms), ` +
+                      'an ordering and not a size'
+                : `  TOLD headline — exodraTold ${f(told.stat.median)} against mikado ` +
+                      `${f(mik.stat.median)} = ${(told.stat.median / mik.stat.median).toFixed(
+                          2
+                      )}×, ` +
+                      `outside the told floor (${f6(toldNull.n.resolution)} ms)`
+        );
+    }
 
     // ── THE DERIVE HEADLINE: `exodra` AGAINST `stage0`, THE CEILING OF THAT SIDE ────────────────
     const ceiling = at('stage0');
@@ -479,11 +490,6 @@ function reportResolution(rows: readonly AbRow[], quantum: number, batch: number
                       'never a framework recommendation.'
         );
     }
-
-    // THE CROSS-CONTRACT RATIO IS STRUCK WITH THE ROW ITS DENOMINATOR WAS. `exodra` ÷ `exodraOps`
-    // priced the declarative contract against the op contract inside one renderer; there is one
-    // contract now, because every notification is answered by re-reading `getValue()` and
-    // diffing it.
 }
 
 // --- the schema core's ROW: module scope, built once for the life of the process,
@@ -824,10 +830,81 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
     };
     const exodraPrep = (): Scenario => makeExodraList().scenario;
 
-    // THE OP-PATH ROW IS STRUCK. `exodraOps` priced `c.bindList` handed a list source whose
-    // notification carried an OP, which the children primitive applied without diffing. That door is
-    // deleted: the list transition takes any notification as a bare "it moved", re-reads
-    // `getValue()` and diffs, so the row would be the same program as `exodra` under another name.
+    // THE TOLD ROW. Each op goes straight to the shell's `c.childList` — `move(0, 150)`,
+    // `insert(build, 75)`, `remove(200)`, `insert(build)` — through transitions the scenario fires
+    // from outside, the same four index calls `mikado`'s row makes on its view. Nothing is diffed.
+    const makeExodraToldList = (
+        row: typeof LI,
+        building: Row[],
+        backend: typeof EXO_BACKEND
+    ): { scenario: Scenario; data: Row[]; c: HTMLElement } => {
+        const data = seed();
+        const c = el();
+        const UL_TOLD_SCHEMA = createExoSchema((b) => {
+            let rowsPort!: TExoChildrenPort;
+            b.el('ul', null, (ul) => {
+                rowsPort = ul.childrenPort();
+            });
+            return { rows: rowsPort };
+        });
+        const mUL_TOLD = createExoMachineBuilder<TExoDomNode>(UL_TOLD_SCHEMA);
+        const K_UL_TOLD = mUL_TOLD.createInitialState((c2) => ({
+            kids: c2.childList(UL_TOLD_SCHEMA.ports.rows),
+        }));
+        let node!: TExoDomNode;
+        mUL_TOLD.effect((c2) => {
+            node = c2;
+            const kids = c2.readState(K_UL_TOLD).kids;
+            for (let i = 0; i < data.length; i++) {
+                building[i] = data[i];
+                kids.insert(c2.build(row, i), i);
+            }
+            return null;
+        });
+        const insertRow = mUL_TOLD.transition((c2: TExoDomNode, item: Row, at: number) => {
+            const kids = c2.readState(K_UL_TOLD).kids;
+            building[at] = item;
+            kids.insert(c2.build(row, at), at);
+        });
+        const moveRow = mUL_TOLD.transition((c2: TExoDomNode, from: number, to: number) => {
+            c2.readState(K_UL_TOLD).kids.move(from, to);
+        });
+        const removeRow = mUL_TOLD.transition((c2: TExoDomNode, at: number) => {
+            c2.readState(K_UL_TOLD).kids.remove(at);
+        });
+        const UL_TOLD = mUL_TOLD.done();
+        const dispose = backend.render(UL_TOLD, c);
+        return {
+            data,
+            c,
+            scenario: {
+                measure: () => {
+                    for (let r = 0; r < OP_ROUNDS; r++) {
+                        data.splice(150, 0, data.splice(0, 1)[0]);
+                        moveRow(node, 0, 150);
+                        const ins = { id: 1e6 + uid, text: `ins ${uid++}` };
+                        data.splice(75, 0, ins);
+                        insertRow(node, ins, 75);
+                        data.splice(200, 1);
+                        removeRow(node, 200);
+                        const add = { id: 1e6 + uid, text: `add ${uid++}` };
+                        data.push(add);
+                        insertRow(node, add, data.length - 1);
+                    }
+                },
+                cleanup: () => {
+                    dispose();
+                    c.remove();
+                },
+            },
+        };
+    };
+    const makeExodraTold = (): { scenario: Scenario; data: Row[]; c: HTMLElement } =>
+        makeExodraToldList(LI, BUILDING, EXO_BACKEND);
+    const makeExodraToldTwin = (): { scenario: Scenario; data: Row[]; c: HTMLElement } =>
+        makeExodraToldList(LI_TWIN, BUILDING_TWIN, EXO_BACKEND_TWIN);
+    const exodraToldPrep = (): Scenario => makeExodraTold().scenario;
+    const exodraToldTwinPrep = (): Scenario => makeExodraToldTwin().scenario;
 
     // --- THE NULL CONTROL: the same program, declared a second time -----------------------------
     //
@@ -838,12 +915,6 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
     // twins is ZERO BY CONSTRUCTION, so what the table shows between them is this instrument
     // reading its own zero, and `reportResolution` turns that into the floor every gap on this axis
     // is read against.
-    //
-    // THIS AXIS USED TO DECLARE TWO OF THEM, because it straddles two magnitudes: `mikado`, told
-    // what changed, sits near a tenth of a millisecond and the derive rows near one to nine, and
-    // round-to-round scatter grows with the region it is taken on. The second pair twinned
-    // `exodraOps`, which is struck, so the only null here is at the DERIVE magnitude and `mikado`'s
-    // is bounded by nothing — `reportResolution` refuses in those words rather than implying cover.
     //
     // WHAT IS NOT DUPLICATED, and this is the line that keeps a twin a null rather than a second
     // experiment: the DATA and the OP SEQUENCE. The twin seeds its own `Row` objects (identity is
@@ -892,9 +963,6 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
         };
     };
     const exodraTwinPrep = (): Scenario => makeExodraTwinList().scenario;
-
-    // THE TOLD SIDE'S NULL IS STRUCK WITH THE ROW IT TWINNED. `exodraOps·twin` was a second
-    // declaration of `c.bindList` over a list source, and that door is deleted.
 
     // --- Marko: declarative, same treatment as Solid/React/Svelte/voby ------------
     // Shaped like `makeExodraList` so it can go through the SAME gate below rather than a
@@ -1048,7 +1116,7 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
     // --- Mikado, IMPERATIVE: the same four ops, said to the view -------------------
     // Shaped like every other mounter here so it goes through the SAME gate: the plain array is kept
     // in step purely so the gate can read the expected order off it, and nothing in the measured
-    // region ever re-reads it. The participant it was comparable to, `exodraOps`, is struck.
+    // region ever re-reads it. The participant it is comparable to is `exodraTold`.
     //
     // A MIKADO VIEW OWNS THE CHILDREN OF THE ROOT IT IS MOUNTED ON (`mount()` empties that root),
     // so the `<ul>` is created here rather than by a template — the same arrangement
@@ -1238,6 +1306,8 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
     // broken control does not read as broken; it reads as a coarse instrument, and it would silence
     // real differences by declaring them unresolvable.
     gateList('exodra·twin', makeExodraTwinList);
+    gateList('exodraTold', makeExodraTold);
+    gateList('exodraTold·twin', makeExodraToldTwin);
     gateList('marko', makeMarkoList);
     // BOTH Mikado rows go through it, unchanged and unwidened, and each can fail it in its own
     // way. The imperative row applies ops it never checks — `shift(0, 150)` off by one produces a
@@ -1287,6 +1357,7 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
     const normalise = (html: string): string => html.replace(/>(ins|add) \d+</g, '>$1<');
     for (const [label, mkRef, mkTwin] of [
         ['exodra', makeExodraList, makeExodraTwinList],
+        ['exodraTold', makeExodraTold, makeExodraToldTwin],
     ] as const) {
         const ref = mkRef();
         const twin = mkTwin();
@@ -1470,8 +1541,10 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
             // what the table shows between them is the resolution `reportResolution` prints below
             // it. See THE NULL CONTROL above.
             'exodra·twin': exodraTwinPrep,
-            // IMPERATIVE side, and ALONE on it — the Exodra row that answered the same contract is
-            // struck. Read this against nothing in this table; a derive row is a different program.
+            // IMPERATIVE side: `exodraTold` and `mikado` make the same four index calls and are read
+            // against each other only; a derive row is a different program.
+            exodraTold: exodraToldPrep,
+            'exodraTold·twin': exodraToldTwinPrep,
             mikado: mikadoPrep,
             solid: solidPrep,
             svelte: sveltePrep,

@@ -34,8 +34,8 @@ from the machine's initial state, and keep the handle it returns. `render(props)
 on that handle re-renders the island; a transition or an effect calls it.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoMachineNode } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { reactIsland } from '@exodra/react';
 import type { TExoReactIsland } from '@exodra/react';
 import type { ComponentType } from 'react';
@@ -62,26 +62,27 @@ const chartProps = {
     },
 };
 
-const CHART_SCHEMA = createExoSchema((b) => {
-    let host!: TExoChildrenPort;
+const ChartPorts = exoPorts({ host: EXO_PORT_CHILDREN });
+
+const chartSchema = createExoSchema(ChartPorts, (b) => {
     b.el('div', { 'data-exo-react': '' }, (div) => {
-        host = div.childrenPort();
+        div.childrenPort(ChartPorts.host);
     });
-    return { host };
 });
-const mChart = createExoMachineBuilder<
+const chartBuilder = createExoMachineBuilder<
     TExoMachineNode,
     unknown,
     { island: TExoReactIsland<TChartProps> }
->(CHART_SCHEMA);
-mChart.createInitialState((c) => ({
-    island: reactIsland(c, CHART_SCHEMA.ports.host, FancyChart, chartProps.getValue()),
+>(chartSchema);
+chartBuilder.createInitialState((c) => ({
+    island: reactIsland(c, ChartPorts.host, FancyChart, chartProps.getValue()),
 }));
-const showChart = mChart.transition((c) => {
-    c.state.island.render(chartProps.getValue());
-});
-mChart.effect((c) => chartProps.onChange(() => showChart(c)));
-const CHART = mChart.done();
+chartBuilder.effect((c) =>
+    chartProps.onChange(() => {
+        c.state.island.render(chartProps.getValue());
+    })
+);
+const Chart = chartBuilder.done();
 
 // Later — one change re-renders the island with the latest props:
 chartProps.setValue({ series: [1, 2, 3], theme: 'light' });
@@ -175,11 +176,11 @@ is what makes the boundary safe rather than a race.
 import { useExoMount } from '@exodra/react-mount';
 import type { TExoDomMachine } from '@exodra/dom';
 
-declare const CHART: TExoDomMachine;
+declare const Chart: TExoDomMachine;
 declare const seriesId: string;
 
-export function Chart() {
-  const { ref } = useExoMount<HTMLElement>(CHART, { deps: [seriesId] });
+export function ChartIsland() {
+  const { ref } = useExoMount<HTMLElement>(Chart, { deps: [seriesId] });
   return <figure ref={ref} />;
 }
 ```
@@ -193,10 +194,10 @@ export function Chart() {
 import { ExoMount } from '@exodra/react-mount';
 import type { TExoDomMachine } from '@exodra/dom';
 
-declare const CHART: TExoDomMachine;
+declare const Chart: TExoDomMachine;
 
 export function Panel() {
-  return <ExoMount component={CHART} className="chart" />;
+  return <ExoMount component={Chart} className="chart" />;
 }
 ```
 
@@ -247,13 +248,13 @@ A React parent passes values in through `params`; the machine reads them in its
 import { ExoMount } from '@exodra/react-mount';
 
 export function Profile({ name }: { name: string }) {
-  return <ExoMount component={GREETING} params={{ name }} />;
+  return <ExoMount component={Greeting} params={{ name }} />;
 }
 ```
 
 The instance is built with `backend.buildRoot` and placed with
 `backend.mountRoot` (see [Build, then mount](../api/dom.md#build-then-mount));
-a params change is `wireExoNode(node, GREETING, params)` on that same node, so
+a params change is `wireExoNode(node, Greeting, params)` on that same node, so
 the elements, the machine state and the effects all stay.
 
 Two limits come from the machine, not from this package:
@@ -270,8 +271,8 @@ handler — read `node.current` from the hook:
 
 ```tsx no-check
 /** @jsxImportSource react */
-export function Greeting() {
-  const { ref, node } = useExoMount<HTMLDivElement>(GREETING, { params: { name: 'Ann' } });
+export function GreetingIsland() {
+  const { ref, node } = useExoMount<HTMLDivElement>(Greeting, { params: { name: 'Ann' } });
   return (
     <>
       <div ref={ref} />
@@ -287,7 +288,7 @@ export function Greeting() {
 is the normal thing to pass: `createExoSchema` builds the schema once at module
 
 load, so there is nothing to rebuild per mount. The function form is how a
-component gets *chosen* — `() => tab === 'chart' ? CHART : TABLE` — and it runs
+component gets *chosen* — `() => tab === 'chart' ? Chart : Table` — and it runs
 once per mount, never per React render, with `deps` deciding when that choice is
 made again.
 

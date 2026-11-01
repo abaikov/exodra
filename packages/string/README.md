@@ -16,35 +16,33 @@ npm install @exodra/string @exodra/core
 ## Rendering
 
 ```typescript
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
 import type { TExoStrNode } from '@exodra/string';
 
-const CARD_SCHEMA = createExoSchema((b) => {
-    let title!: TExoTextPort;
-    let body!: TExoTextPort;
+const CardPorts = exoPorts({ title: EXO_PORT_TEXT, body: EXO_PORT_TEXT });
+
+const cardSchema = createExoSchema(CardPorts, (b) => {
     b.el('article', { class: 'card' }, (card) => {
         card.el('h2', null, (h2) => {
-            title = h2.textPort();
+            h2.textPort(CardPorts.title);
         });
         card.el('p', null, (p) => {
-            body = p.textPort();
+            p.textPort(CardPorts.body);
         });
     });
-    return { title, body };
 });
-const mCard = createExoMachineBuilder<TExoStrNode>(CARD_SCHEMA);
-mCard.wire((c) => {
-    c.text(CARD_SCHEMA.ports.title, 'Card');
-    c.text(CARD_SCHEMA.ports.body, 'Welcome to Exodra');
+const cardBuilder = createExoMachineBuilder<TExoStrNode>(cardSchema);
+cardBuilder.wire((c) => {
+    c.text(CardPorts.title, 'Card');
+    c.text(CardPorts.body, 'Welcome to Exodra');
 });
-const CARD = mCard.done();
+const Card = cardBuilder.done();
 
 // ONE backend, at module level.
 const backend = new ExoStrBackend();
 
-const html = backend.render(CARD);
+const html = backend.render(Card);
 // <article class="card"><h2>Card</h2><p>Welcome to Exodra</p></article>
 ```
 
@@ -101,7 +99,7 @@ declaration on the page.
 Two of those look like omissions and are not:
 
 - **`on` must accept both forms or the design breaks in half.** The moment
-  `c.on(H.click, TOGGLE_DONE, item)` is a call this backend does not have, every
+  `c.on(TodoPorts.click, toggleDone, item)` is a call this backend does not have, every
   component with a declarative handler needs a second machine.
 - **An effect reads its source once and subscribes to nothing it keeps.**
   It draws what the source holds now and returns its unsubscribe, and the render stops every

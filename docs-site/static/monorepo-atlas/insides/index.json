@@ -9,6 +9,7 @@
   "@exodra/dom-profiler",
   "@exodra/examples-ssr-test",
   "@exodra/examples-todo-cnstra-oimdb",
+  "@exodra/examples-todo-react-rtk",
   "@exodra/forms",
   "@exodra/introspect",
   "@exodra/jsx",

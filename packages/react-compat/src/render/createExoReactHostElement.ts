@@ -1,4 +1,6 @@
+import { EXO_REACT_HOST_ADOPTION } from '../constants/EXO_REACT_HOST_ADOPTION';
 import { EXO_REACT_SYMBOLS } from '../constants/EXO_REACT_SYMBOLS';
+import { adoptExoReactHostSlot } from './adoptExoReactHostSlot';
 import type { TExoReactElement } from '../types/TExoReactElement';
 import type { TExoReactHostElement } from '../types/TExoReactHostElement';
 
@@ -29,6 +31,8 @@ class ExoReactHostElement implements TExoReactHostElement {
         return this.source.props;
     }
 }
+
+EXO_REACT_HOST_ADOPTION.adopt = adoptExoReactHostSlot;
 
 export function createExoReactHostElement(
     host: unknown,

@@ -5,6 +5,7 @@ import Layout from '@theme/Layout';
 import { MDXProvider } from '@mdx-js/react';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import LandingSpeed from '@site/src/components/Landing/LandingSpeed';
+import LandingReact from '@site/src/components/Landing/LandingReact';
 import HeroCodePre from '@site/src/components/Landing/HeroCodePre';
 import LandingAnatomy from '@site/src/components/Landing/LandingAnatomy';
 import Reveal from '@site/src/components/Landing/Reveal';
@@ -66,16 +67,17 @@ function HomepageHeader() {
                     <img className={styles.brandLogo} src={useBaseUrl('/img/favicon.svg')} alt="" aria-hidden="true" />
                     <span className={styles.brandName}>EXODRA</span>
                 </div>
-                <p className={styles.kicker}>Imperative template engine · no build step required</p>
+                <p className={styles.kicker}>Imperative UI framework · no build step required</p>
                 <h1 className={styles.title}>
                     Plain TypeScript.
                     <br />
                     <span className={styles.accent}>Near hand-written speed.</span>
                 </h1>
                 <p className={styles.subtitle}>
-                    Declare a schema with a function call, fill its ports directly, and mount within 30% of hand-written
-                    DOM code. Reactivity, keys, hydration and React’s API sit on top as plugins: take the ones a screen
-                    needs, leave the rest out of the bundle.
+                    Components with state, effects and context at the cost of a template engine: mounts faster than Mikado,
+                    updates level with hand-rolled DOM code, ahead of Lit, Solid and React on both. Reactivity, keys,
+                    hydration and React’s API sit on top as plugins: take the ones a screen needs, leave the rest out of
+                    the bundle.
                 </p>
                 <div className={styles.buttons}>
                     <Link className="button button--primary button--lg" to="/docs/getting-started">
@@ -113,7 +115,7 @@ function ClosingSection() {
                                 </p>
                             </div>
                             <div>
-                                <a className={landingStyles.pairingName} href="https://oimdb.org/" target="_blank" rel="noopener noreferrer">
+                                <a className={`${landingStyles.pairingName} ${landingStyles.pairingNamePixel}`} href="https://oimdb.org/" target="_blank" rel="noopener noreferrer">
                                     OIMDB
                                 </a>
                                 <p className={landingStyles.pairingText}>
@@ -148,13 +150,14 @@ export default function Home() {
     return (
         <Layout
             title="Plain TypeScript. Near hand-written speed."
-            description="Exodra is an imperative template engine for plain TypeScript: no build step required, mounting within 30% of hand-written DOM code, with reactivity, keys, hydration and React's API as plugins on top."
+            description="Exodra is an imperative UI framework for plain TypeScript: no build step required, mounting within 30% of hand-written DOM code, with reactivity, keys, hydration and React's API as plugins on top."
         >
             <HomepageHeader />
             <main>
                 <HomepageFeatures />
                 <LandingAnatomy />
                 <LandingSpeed />
+                <LandingReact />
                 <ClosingSection />
             </main>
         </Layout>

@@ -4,28 +4,23 @@ import { createExoMachineBuilder } from '@exodra/core';
 import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-type TCounterPorts = { count: TExoTextPort; increment: TExoEventPort };
-
-const COUNTER_SCHEMA = exoJsx<TCounterPorts>(($) => (
+const counterSchema = exoJsx<{ count: TExoTextPort; increment: TExoEventPort }>(($) => (
     <div class="counter">
         <span>{$.count}</span>
         <button type="button" onClick={$.increment}>+1</button>
     </div>
 ));
-const P = COUNTER_SCHEMA.ports;
+const CounterPorts = counterSchema.ports;
 
-type TCounterState = { count: number };
-
-const mCounter = createExoMachineBuilder<TExoMachineNode, unknown, TCounterState>(COUNTER_SCHEMA);
-mCounter.createInitialState(() => ({ count: 0 }));
-const show = mCounter.transition((c) => {
-    c.text(P.count, String(c.state.count));
+const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(counterSchema);
+counterBuilder.createInitialState(() => ({ count: 0 }));
+counterBuilder.wire((c) => {
+    c.text(CounterPorts.count, String(c.state.count));
 });
-mCounter.wire((c) => show(c));
-mCounter.on(P.increment, (c) => {
+counterBuilder.on(CounterPorts.increment, (c) => {
     c.state.count += 1;
-    show(c);
+    c.text(CounterPorts.count, String(c.state.count));
 });
 
-withExoCompiler(new ExoDomBackend()).render(mCounter.done(), document.body);
+withExoCompiler(new ExoDomBackend()).render(counterBuilder.done(), document.body);
 ```

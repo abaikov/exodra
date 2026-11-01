@@ -17,7 +17,7 @@ export function armExoNode<TWiring extends TExoMachineNode>(
     }
 
     const createInitialState = machine.createInitialState;
-    if (createInitialState !== null) enode.state = createInitialState(enode, index);
+    if (createInitialState !== null) enode.state = createInitialState(enode, index, params);
     const wire = machine.wire;
     if (wire !== undefined && wire !== null) wire.call(machine, enode, params);
 

@@ -236,6 +236,14 @@ describe('what the decoration assigns', () => {
         expect(backend.written).toEqual([0]);
     });
 
+    it('hands the author`s initial state the index and the params the arm call carries', () => {
+        const m = machine(createExoSchema(buildCard));
+        m.createInitialState((_enode, index, params) => ({ index, params }));
+        const enode = bareNode(new ExoCardBackend());
+        armExoNode(enode, m.done(), 4, { id: 'a' });
+        expect(enode.state).toEqual({ index: 4, params: { id: 'a' } });
+    });
+
     it('counts the fields, so the count and the declarations cannot disagree', () => {
         const schema = createExoSchema(buildCard);
         const m = machine(schema);

@@ -93,17 +93,17 @@ describe('component generator', () => {
 
     it('emits a schema-core component, not the previous runtime', () => {
         expect(ts).toContain(
-            "import { createExoMachineBuilder, createExoSchema } from '@exodra/core'"
+            "import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core'"
         );
         expect(ts).not.toContain('@exodra/wire');
         expect(ts).not.toContain('@exodra/jsx');
         // `hLegacy` / `defineComponentLegacy` / `mountLegacy` — the runtime this
         // generator used to emit, and which the current router refuses.
         expect(ts).not.toContain('Legacy');
-        expect(ts).toContain('textPort()');
+        expect(ts).toContain('d.textPort(ButtonPorts.label)');
         expect(ts).toContain('createInitialState((_c, i) => ({ label: ButtonLabels[i] }))');
-        expect(ts).toContain('c.text(BUTTON_SCHEMA.ports.label, c.state.label)');
-        expect(ts).toContain('export const Button = mButton.done();');
+        expect(ts).toContain('c.text(ButtonPorts.label, c.state.label)');
+        expect(ts).toContain('export const Button = buttonBuilder.done();');
     });
 
     it('names only doors that still exist', () => {
@@ -128,15 +128,15 @@ describe('component generator', () => {
     });
 
     it('emits types only in the TypeScript variant', () => {
-        expect(ts).toContain("import type { TExoMachineNode, TExoTextPort } from '@exodra/core'");
+        expect(ts).toContain("import type { TExoMachineNode } from '@exodra/core'");
         // The port's holder is declared before the call that mints it — a port escapes a nested
         // closure — so the scaffold has to SPELL the port's type, and it spells the named one.
-        expect(ts).toContain('let label!: TExoTextPort;');
+        expect(ts).toContain('const ButtonPorts = exoPorts({ label: EXO_PORT_TEXT });');
         expect(ts).toContain('export const ButtonLabels: string[] = [];');
         expect(js).not.toContain('import type');
         expect(js).not.toContain('TExoMachineNode');
-        expect(js).toContain('createExoMachineBuilder(BUTTON_SCHEMA)');
-        expect(js).toContain('let label;');
+        expect(js).toContain('createExoMachineBuilder(buttonSchema)');
+        expect(js).toContain('createExoSchema(ButtonPorts, b =>');
         expect(js).toContain('export const ButtonLabels = [];');
     });
 
@@ -148,7 +148,7 @@ describe('component generator', () => {
         // both directions, because "contains the right thing" is also satisfied by a file that
         // contains the wrong one beside it.
         expect(ts).toContain(
-            'createExoMachineBuilder<TExoMachineNode, unknown, { label: string }>(BUTTON_SCHEMA)'
+            'createExoMachineBuilder<TExoMachineNode, unknown, { label: string }>(buttonSchema)'
         );
         expect(ts).not.toContain('TExoDomNode');
         expect(ts).not.toContain("from '@exodra/dom'");
@@ -183,16 +183,16 @@ describe('page generator', () => {
 
     it('emits a default-exported schema-core page', () => {
         expect(ts).toContain(
-            "import { createExoMachineBuilder, createExoSchema } from '@exodra/core'"
+            "import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core'"
         );
-        expect(ts).toContain('export default mPage.done();');
+        expect(ts).toContain('export default pageBuilder.done();');
         expect(ts).not.toContain('@exodra/wire');
         expect(ts).not.toContain('@exodra/jsx');
         expect(ts).not.toContain('Legacy');
     });
 
     it('types the page against the SHARED surface and takes no props', () => {
-        expect(ts).toContain('createExoMachineBuilder<TExoMachineNode>(PAGE_SCHEMA)');
+        expect(ts).toContain('createExoMachineBuilder<TExoMachineNode>(pageSchema)');
         // Not `TExoDomNode` — a page typed against the browser exonode cannot be
         // rendered by `@exodra/string`, which is the whole of what an SSR'd route is. See the
         // component generator's own case for the argument.

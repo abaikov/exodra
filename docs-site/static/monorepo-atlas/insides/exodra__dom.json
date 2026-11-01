@@ -4890,6 +4890,13 @@
           },
           {
             "visibility": "+",
+            "text": "portNode<TNode>(port: TExoRefPort<TNode…",
+            "full": "portNode<TNode>(port: TExoRefPort<TNode>): unknown extends TNode ? Element : TNode;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
             "text": "onTeardown(off: () => void): void;",
             "full": "onTeardown(off: () => void): void;",
             "parts": []
@@ -4963,7 +4970,7 @@
             ]
           }
         ],
-        "memberCount": 12,
+        "memberCount": 13,
         "stereotype": "interface",
         "doc": "`TExoMachine<this, …>` and not a flat spelling: the type is contravariant in its exonode, so a flat one refuses a child whose wire uses a method a PACK added.",
         "width": 293,

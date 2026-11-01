@@ -7,7 +7,7 @@ title: Core Concepts
 
 Four ideas carry the whole runtime: a component is a **schema plus a wiring
 function**, the schema declares **ports** that a backend fills through an
-**exonode**, change is **explicit** — transitions write ports and effects
+**exonode**, change is **explicit** — the machine writes ports and effects
 subscribe — rather than automatic tracking,
 and children are reconciled by **identity** rather than by keys. The rest
 follows from these four.
@@ -28,44 +28,47 @@ element plus one indirect call per port. Nothing is diffed and nothing is walked
 at render time.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 
 /** The row's own datum, by index. A view is handed its index and nothing else. */
 const BUILDING: string[] = [];
 
-const ROW_SCHEMA = createExoSchema((b) => {
-    let id!: TExoAttrPort;
-    let label!: TExoTextPort;
+const RowPorts = exoPorts({ id: EXO_PORT_ATTR, label: EXO_PORT_TEXT });
+
+const rowSchema = createExoSchema(RowPorts, (b) => {
     b.el('li', { class: 'row' }, (li) => {
-        id = li.port('data-id');
+        li.attrPort(RowPorts.id, 'data-id');
         li.el('span', null, (span) => {
-            label = span.textPort();
+            span.textPort(RowPorts.label);
         });
     });
-    return { id, label };
 });
-const mRow = createExoMachineBuilder<TExoMachineNode, unknown, string>(ROW_SCHEMA);
-mRow.createInitialState((_c, index) => BUILDING[index]);
-mRow.wire((c) => {
+const rowBuilder = createExoMachineBuilder<TExoMachineNode, unknown, string>(rowSchema);
+rowBuilder.createInitialState((_c, index) => BUILDING[index]);
+rowBuilder.wire((c) => {
     const name = c.state;
-    c.attr(ROW_SCHEMA.ports.id, name);
-    c.text(ROW_SCHEMA.ports.label, name.toUpperCase());
+    c.attr(RowPorts.id, name);
+    c.text(RowPorts.label, name.toUpperCase());
 });
-const ROW = mRow.done();
+const Row = rowBuilder.done();
 ```
 
 ## Ports
 
-A port is a **place**, declared once and named by **identity**. `port(name)` is
-an attribute, `eventPort(name)` a listener, `textPort()` an element's whole text
-content, and `childrenPort()` a variable-length sequence of children.
+A port is a **place**, declared once and named by **identity**. A component's
+ports are declared up front as its port interface — `exoPorts({ … })`, one kind
+per name — and the schema places each one: `attrPort(Ports.x, name)` on an
+attribute, `eventPort(Ports.x, name)` on a listener, `textPort(Ports.x)` on an
+element's whole text content, and `childrenPort(Ports.x)` on a variable-length
+sequence of children.
 
 Everything else — the tags, the static attributes, the static text — is folded
 into prepared markup and costs nothing per instance. An attribute whose value
 varies is not an attribute; it is a port.
 
-Ports are numbered after the whole shape is known, in **document order**. That
+Ports are numbered by their **place in the port interface** (a port the markup
+names itself takes the next number, in the order it is named). That
 numbering is the contract between the backends: the server and the browser never
 speak to each other, and they agree because both index their prepared plans by
 the same numbers. Change the order and a page hydrates into nonsense rather than
@@ -91,7 +94,7 @@ nothing else.
 ## Identity & reconciliation
 
 `reconcileExoOrder(kids, shown, keys, want, build)` from `@exodra/list-reconcile`,
-called from a transition over `c.childList(port)`, makes a children port equal to
+called from the machine over `c.childList(port)`, makes a children port equal to
 the array it is handed, reconciled by **object identity**, and returns the new
 order shown for the machine to keep in its state:
 
@@ -108,7 +111,7 @@ object — which is what preserves input focus, scroll position and per-row stat
 A key is available as an **opt-in plugin**, never as a core default:
 `EXO_KEYED_LIST_VOCABULARY` from `@exodra/list-reconcile` puts
 `c.keyedList(port, keyOf, build, update)` on the exonode of a backend that
-composed it — it returns a list whose `reconcile(items)` a transition calls — over
+composed it — it returns a list whose `reconcile(items)` the machine calls — over
 the free function `createExoKeyedList`, for the case where
 identity genuinely is not available — rows arriving as freshly parsed JSON on every
 refetch. See
@@ -128,14 +131,14 @@ if you wanted one. See
 ## State, transitions and effects
 
 A machine's state is what `createInitialState` returns, once per instance; it is
-`c.state` from then on. A **transition** — `m.transition((c) => …)` — is the one
-place that turns state into port writes, and the wire, the handlers and the
-effects all call it. Data that lives **outside** the instance is followed by an
+`c.state` from then on. A **transition** — `counterBuilder.transition((c) => …)` —
+is one named place that turns state into port writes: the wire, the handlers and
+the effects can all call it, and so can code outside the machine. Data that lives **outside** the instance is followed by an
 **effect** that draws first, then subscribes, and returns the unsubscribe:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 
 const count = {
     value: 0,
@@ -155,22 +158,22 @@ const count = {
     },
 };
 
-const COUNTER_SCHEMA = createExoSchema((b) => {
-    let text!: TExoTextPort;
+const CounterPorts = exoPorts({ text: EXO_PORT_TEXT });
+
+const counterSchema = createExoSchema(CounterPorts, (b) => {
     b.el('output', null, (output) => {
-        text = output.textPort();
+        output.textPort(CounterPorts.text);
     });
-    return { text };
 });
-const mCounter = createExoMachineBuilder<TExoMachineNode>(COUNTER_SCHEMA);
-const showCount = mCounter.transition((c) => {
-    c.text(COUNTER_SCHEMA.ports.text, count.getValue());
+const counterBuilder = createExoMachineBuilder<TExoMachineNode>(counterSchema);
+const showCount = counterBuilder.transition((c) => {
+    c.text(CounterPorts.text, count.getValue());
 });
-mCounter.effect((c) => {
+counterBuilder.effect((c) => {
     showCount(c);
     return count.onChange(() => showCount(c));
 });
-const COUNTER = mCounter.done();
+const Counter = counterBuilder.done();
 ```
 
 The source is anything with a read and a subscription — a store, an
@@ -184,35 +187,41 @@ calls, and the difference between them is how much may change later:
 
 | Call | What it puts in the port |
 | --- | --- |
-| `c.one(port, COMPONENT)` | one instance, built now |
-| `c.list(port, COMPONENT, count)` | a fixed list of `count` instances — rendered once, never reconciled |
-| `reconcileExoOrder(c.state.rows, c.state.shown, want, want, build)` in a transition | a live list, reconciled by object identity |
+| `c.one(port, component)` | one instance, built now |
+| `c.list(port, component, count)` | a fixed list of `count` instances — rendered once, never reconciled |
+| `reconcileExoOrder(c.state.rows, c.state.shown, want, want, build)` over `c.childList(port)` | a live list, reconciled by object identity |
 
-A children port **is a child**: it renders exactly where `childrenPort()` was
+A children port **is a child**: it renders exactly where `childrenPort(Ports.x)` was
 called, so it may stand between static siblings.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema, createExoStatic } from '@exodra/core';
-import type { TExoChildrenPort, TExoChildrenWiring, TExoMachineNode } from '@exodra/core';
+import {
+    EXO_PORT_CHILDREN,
+    createExoMachineBuilder,
+    createExoSchema,
+    createExoStatic,
+    exoPorts,
+} from '@exodra/core';
+import type { TExoChildrenWiring, TExoMachineNode } from '@exodra/core';
 
 // A component with nothing to fill — an icon, a separator, a masthead.
-const MASTHEAD = createExoStatic((b) => {
+const Masthead = createExoStatic((b) => {
     b.el('h1', { class: 'masthead' }, (h1) => h1.text('Exodra'));
 });
 
-const PAGE_SCHEMA = createExoSchema((b) => {
-    let head!: TExoChildrenPort;
+const PagePorts = exoPorts({ head: EXO_PORT_CHILDREN });
+
+const pageSchema = createExoSchema(PagePorts, (b) => {
     b.el('div', { class: 'app' }, (div) => {
-        div.el('header', null, (h) => { head = h.childrenPort(); });
+        div.el('header', null, (h) => { h.childrenPort(PagePorts.head); });
         div.el('main', null, (m) => { m.text('…'); });
     });
-    return { head };
 });
-const mPage = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(PAGE_SCHEMA);
-mPage.createInitialState((c) => {
-    c.one(PAGE_SCHEMA.ports.head, MASTHEAD);
+const pageBuilder = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(pageSchema);
+pageBuilder.createInitialState((c) => {
+    c.one(PagePorts.head, Masthead);
 });
-const PAGE = mPage.done();
+const Page = pageBuilder.done();
 ```
 
 ## Cleanup

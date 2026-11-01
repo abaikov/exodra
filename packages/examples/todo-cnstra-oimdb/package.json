@@ -8,10 +8,11 @@
   },
   "dependencies": {
     "@cnstra/core": "^2.5.0",
+    "@exodra/context": "^0.3.0",
     "@exodra/core": "^0.3.0",
     "@exodra/dom": "^0.3.0",
     "@exodra/forms": "^0.3.0",
     "@exodra/list-reconcile": "^0.3.0",
-    "@oimdb/core": "^3.12.1"
+    "@oimdb/core": "^4.7.0"
   }
 }

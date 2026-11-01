@@ -12,6 +12,7 @@ import type {
     TExoAttrPort,
     TExoTextPort,
     TExoChildrenPort,
+    TExoRefPort,
 } from '@exodra/core';
 import type { TExoChildListEntry } from './types/TExoChildListEntry';
 import type { TExoDomInstanceRecord } from './types/TExoDomInstanceRecord';
@@ -44,6 +45,7 @@ export interface TExoDomNodeApi {
     portTable(): TExoPortTable;
     portNodeWriter(): TExoPortNodeWriter;
     portNodeReader(): TExoPortNodeReader<Element>;
+    portNode<TNode>(port: TExoRefPort<TNode>): unknown extends TNode ? Element : TNode;
     onTeardown(off: () => void): void;
     on(port: TExoEventPort, handler: TExoEventHandler<Event, Element>, subject?: unknown): void;
     one<TParams>(
@@ -145,6 +147,15 @@ const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
             schema.domPortNodes = at;
         }
         return at;
+    },
+
+    portNode<TNode>(
+        this: TExoDomNode,
+        port: TExoRefPort<TNode>
+    ): unknown extends TNode ? Element : TNode {
+        return this.portNodeReader()(this.portTable(), port) as unknown extends TNode
+            ? Element
+            : TNode;
     },
 
     /** The disposer is filed with the OWNER, not with this instance: three of the five paths an instance arrives by (root mount, `c.one` child, fixed-`list` row) build no `TExoDomChild` to run a list. */

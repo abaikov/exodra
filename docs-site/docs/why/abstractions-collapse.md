@@ -44,8 +44,8 @@ For scale, the same axis's medians on the same day, ms/mount, lower first
 stage0 0.345, mikado 0.355, **exodra 0.405**, solid 0.490, marko 0.505, sinuous
 0.870, react 0.980, svelte 0.980, uhtml 1.075, lit 1.105, voby 1.155. Absolute
 numbers do not compare across runs — the table on
-[Benchmarks](../benchmarks.md) quotes `initial-render.post-repair`, a different
-run, and reads differently.
+[Benchmarks](../benchmarks.md) quotes `initial-render.tmpl-full-2026-11-01`, a
+different run, and reads differently.
 
 ## How the gate knows
 

@@ -33,7 +33,11 @@ export function compileHostTree(
         nextPort: 0,
     };
     const rootCursor = `${names.cursor}0`;
-    const { statement: tree, source } = emitHostElement(element, rootCursor, 1, false, walk, true);
+    const {
+        statement: tree,
+        source,
+        shape,
+    } = emitHostElement(element, rootCursor, 1, false, walk, true);
     const schema = `${names.schema}${serial}`;
     const machine = `${names.machine}${serial}`;
     const ports = walk.ports.map((port) => `${port}_${serial}`);
@@ -107,6 +111,7 @@ export function compileHostTree(
                     ),
                     t.stringLiteral((element.openingElement.name as t.JSXIdentifier).name),
                     t.arrowFunctionExpression([t.identifier(names.values)], source),
+                    shape,
                 ])
             ),
         ]),

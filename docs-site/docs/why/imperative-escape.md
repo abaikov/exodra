@@ -21,7 +21,7 @@ imperative hot spot, done almost vanilla**.
 ```ts no-check
 import { exoNodeDom, exoOnTeardown } from '@exodra/dom';
 
-const panel = c.build(DETAILS, i);
+const panel = c.build(Details, i);
 
 const element = exoNodeDom(panel).node;   // the real Element, right now
 exoOnTeardown(exoNodeDom(panel), () => socket.close());   // run this when it leaves
@@ -126,8 +126,7 @@ The right shape is the imperative one: **one element you own, repainted.**
 ### The code
 
 ```ts no-check
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoEventPort } from '@exodra/core';
+import { EXO_PORT_CHILDREN, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoDomBackend, exoForeignNode, withExoChildList, withExoCompiler } from '@exodra/dom';
 
@@ -206,32 +205,31 @@ function highlightedText(c: TExoDomNode, text: string) {
     });
 }
 
-const READER_SCHEMA = createExoSchema((b) => {
-    let field!: TExoEventPort;
-    let body!: TExoChildrenPort;
+const ReaderPorts = exoPorts({ field: EXO_PORT_EVENT, body: EXO_PORT_CHILDREN });
+
+const readerSchema = createExoSchema(ReaderPorts, (b) => {
     b.el('div', { class: 'reader' }, (div) => {
         div.el('input', { class: 'reader-search', type: 'search' }, (input) => {
-            field = input.eventPort('input');
+            input.eventPort(ReaderPorts.field, 'input');
         });
         div.el('div', { class: 'reader-body' }, (host) => {
-            body = host.childrenPort();
+            host.childrenPort(ReaderPorts.body);
         });
     });
-    return { field, body };
 });
-const mReader = createExoMachineBuilder<TExoDomNode>(READER_SCHEMA);
-mReader.createInitialState((c) => {
+const readerBuilder = createExoMachineBuilder<TExoDomNode>(readerSchema);
+readerBuilder.createInitialState((c) => {
     // ONE CHILD THAT NEVER CHANGES, built by the CALLER and placed through the
     // child list's own `insert` — there is no order to reconcile.
-    c.childList(READER_SCHEMA.ports.body).insert(highlightedText(c, ARTICLE));
+    c.childList(ReaderPorts.body).insert(highlightedText(c, ARTICLE));
 });
-mReader.on(READER_SCHEMA.ports.field, (c, event) => {
+readerBuilder.on(ReaderPorts.field, (c, event) => {
     query.setValue((event.currentTarget as HTMLInputElement).value);
 });
-const READER = mReader.done();
+const Reader = readerBuilder.done();
 
 const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
-backend.render(READER, document.getElementById('root') as Element);
+backend.render(Reader, document.getElementById('root') as Element);
 ```
 
 This matches the idiom in `packages/examples/escape-hatches/index.html`, which

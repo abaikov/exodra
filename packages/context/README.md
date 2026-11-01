@@ -20,35 +20,33 @@ npm install @exodra/context
 ## Example
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoMachineNode } from '@exodra/core';
+import { EXO_PORT_ATTR, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { exoContextToken, nextExoId } from '@exodra/context';
 
 export const THEME = exoContextToken<string>('theme');
 
-const FIELD_SCHEMA = createExoSchema((b) => {
-    let cls!: TExoAttrPort;
-    let labelFor!: TExoAttrPort;
-    let inputId!: TExoAttrPort;
+const FieldPorts = exoPorts({ cls: EXO_PORT_ATTR, labelFor: EXO_PORT_ATTR, inputId: EXO_PORT_ATTR });
+
+const fieldSchema = createExoSchema(FieldPorts, (b) => {
     b.el('p', null, (p) => {
-        cls = p.port('class');
+        p.attrPort(FieldPorts.cls, 'class');
         p.el('label', null, (label) => {
-            labelFor = label.port('for');
+            label.attrPort(FieldPorts.labelFor, 'for');
         });
         p.el('input', null, (input) => {
-            inputId = input.port('id');
+            input.attrPort(FieldPorts.inputId, 'id');
         });
     });
-    return { cls, labelFor, inputId };
 });
-const mField = createExoMachineBuilder<TExoMachineNode, unknown, string>(FIELD_SCHEMA);
-mField.createInitialState((c) => nextExoId(c));
-mField.wire((c) => {
-    c.attr(FIELD_SCHEMA.ports.cls, 'field field--' + (c.inject(THEME) ?? 'light'));
-    c.attr(FIELD_SCHEMA.ports.labelFor, c.state);
-    c.attr(FIELD_SCHEMA.ports.inputId, c.state);
+const fieldBuilder = createExoMachineBuilder<TExoMachineNode, unknown, string>(fieldSchema);
+fieldBuilder.createInitialState((c) => nextExoId(c));
+fieldBuilder.wire((c) => {
+    c.attr(FieldPorts.cls, 'field field--' + (c.inject(THEME) ?? 'light'));
+    c.attr(FieldPorts.labelFor, c.state);
+    c.attr(FieldPorts.inputId, c.state);
 });
-export const FIELD = mField.done();
+export const Field = fieldBuilder.done();
 ```
 
 The root provides both, in its `createInitialState`, on the server and in the

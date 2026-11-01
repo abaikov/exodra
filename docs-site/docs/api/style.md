@@ -7,7 +7,7 @@ title: Style
 `exoStyle` from `@exodra/core/style` turns a plain object into a valid CSS `style`
 string, so you don't hand-write `"color:red;font-size:12px"`. It is pure and
 dependency-free — the output is just a string, so it goes into a schema's static
-attributes, into a `style` port a transition fills with `c.attr`, or anywhere else
+attributes, into a `style` port a machine fills with `c.attr`, or anywhere else
 a `style` attribute is accepted, and works identically in the DOM and in SSR.
 
 It is a separate entry of `@exodra/core`, so neither a bundle nor the CDN build of
@@ -77,56 +77,55 @@ A style that never changes is a **static attribute** on the schema, so call
 import { createExoStatic } from '@exodra/core';
 import { exoStyle } from '@exodra/core/style';
 
-export const TOOLBAR = createExoStatic((b) => {
+export const Toolbar = createExoStatic((b) => {
     b.el('div', { style: exoStyle({ display: 'flex', gap: 8 }) }, (div) => {
         div.text('—');
     });
 });
 ```
 
-A style that changes is a **port**. A transition builds the string from state
+A style that changes is a **port**. The machine builds the string from state
 and writes it — the value that reaches the DOM is still a plain string, so
 nothing about the renderer knows the style was an object:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import { exoStyle } from '@exodra/core/style';
-import type { TExoAttrPort, TExoEventPort, TExoMachineNode } from '@exodra/core';
+import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
 const backend = withExoCompiler(new ExoDomBackend());
 
-const CARD_SCHEMA = createExoSchema((b) => {
-    let boxStyle!: TExoAttrPort;
-    let toggle!: TExoEventPort;
+const CardPorts = exoPorts({ boxStyle: EXO_PORT_ATTR, toggle: EXO_PORT_EVENT });
+
+const cardSchema = createExoSchema(CardPorts, (b) => {
     b.el('div', null, (div) => {
-        boxStyle = div.port('style');
-        toggle = div.eventPort('click');
+        div.attrPort(CardPorts.boxStyle, 'style');
+        div.eventPort(CardPorts.toggle, 'click');
     });
-    return { boxStyle, toggle };
 });
-const mCard = createExoMachineBuilder<TExoMachineNode, unknown, { active: boolean }>(CARD_SCHEMA);
-mCard.createInitialState(() => ({ active: false }));
-const show = mCard.transition((c) => {
+const cardBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { active: boolean }>(cardSchema);
+cardBuilder.createInitialState(() => ({ active: false }));
+const show = (c: TExoMachineBuilderNode<typeof cardBuilder>): void => {
     c.attr(
-        CARD_SCHEMA.ports.boxStyle,
+        CardPorts.boxStyle,
         exoStyle({ padding: 16, borderRadius: 8, background: c.state.active ? '#eef' : '#fff' })
     );
-});
-mCard.wire((c) => show(c));
-mCard.on(CARD_SCHEMA.ports.toggle, (c) => {
+};
+cardBuilder.wire((c) => show(c));
+cardBuilder.on(CardPorts.toggle, (c) => {
     c.state.active = !c.state.active;
     show(c);
 });
-const CARD = mCard.done();
+const Card = cardBuilder.done();
 
-backend.render(CARD, document.body);
+backend.render(Card, document.body);
 ```
 
 In the [JSX dialect](../guides/jsx.md) a string literal (`style="padding:16px"`)
 is markup baked into the schema, and `style={$.css}` declares an attribute port
 that the machine fills with `c.attr` — a constant from `exoStyle()` declared at
-module scope, or a string a transition builds from state, like the one above.
+module scope, or a string the machine builds from state, like the one above.
 
 There is **no compile-time folding of style objects.** The one compiler,
 `@exodra/babel-plugin-schema`, has no style pass; calling `exoStyle()` at module

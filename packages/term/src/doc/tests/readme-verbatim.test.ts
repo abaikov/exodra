@@ -76,30 +76,30 @@ function withoutEntryPoint(block: string): { kept: string; dropped: string[] } {
 describe('the doc components this backend runs are the README’s, character for character', () => {
     it('finds both blocks in README.md', () => {
         const blocks = tsBlocks(README);
-        expect(blocks.some((b) => b.includes('const COUNTER = mCounter.done();'))).toBe(true);
-        expect(blocks.some((b) => b.includes('const TODO_LIST = mList.done();'))).toBe(true);
+        expect(blocks.some((b) => b.includes('const Counter = counterBuilder.done();'))).toBe(true);
+        expect(blocks.some((b) => b.includes('const TodoList = todoListBuilder.done();'))).toBe(true);
     });
 
     it('the counter fixture is the README block minus its two entry-point lines', () => {
-        const block = tsBlocks(README).find((b) => b.includes('const COUNTER = mCounter.done();'));
+        const block = tsBlocks(README).find((b) => b.includes('const Counter = counterBuilder.done();'));
         expect(block).toBeDefined();
         const { kept, dropped } = withoutEntryPoint(block as string);
 
         expect(dropped).toEqual([
             "import { ExoDomBackend, withExoCompiler } from '@exodra/dom';",
-            'const dispose = withExoCompiler(new ExoDomBackend()).render(COUNTER, document.body);',
+            'const dispose = withExoCompiler(new ExoDomBackend()).render(Counter, document.body);',
         ]);
         expect(kept).toBe(verbatimRegion('../readme-counter.ts'));
     });
 
     it('the todo-list fixture is the README block minus its entry point', () => {
-        const block = tsBlocks(README).find((b) => b.includes('const TODO_LIST = mList.done();'));
+        const block = tsBlocks(README).find((b) => b.includes('const TodoList = todoListBuilder.done();'));
         expect(block).toBeDefined();
         const { kept, dropped } = withoutEntryPoint(block as string);
 
         expect(dropped).toEqual([
             "import { ExoDomBackend, withExoCompiler } from '@exodra/dom';",
-            'withExoCompiler(new ExoDomBackend()).render(TODO_LIST, document.body);',
+            'withExoCompiler(new ExoDomBackend()).render(TodoList, document.body);',
         ]);
         expect(kept).toBe(verbatimRegion('../readme-todos.ts'));
     });

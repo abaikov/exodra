@@ -41,7 +41,7 @@ The machine that fills those ports is written in TypeScript around it.
 ```tsx no-check
 import { exoJsx } from '@exodra/jsx';
 
-const ROW_SCHEMA = exoJsx<TRowPorts>(($) => (
+const rowSchema = exoJsx<TRowPorts>(($) => (
   <li class="row" data-id={$.id}>
     <span class="row__label">{$.label}</span>
     <button class="row__btn" onClick={$.toggle} />
@@ -62,7 +62,7 @@ const _s0 = createExoNamedSchema((_b0) => {
   });
 });
 
-const ROW_SCHEMA = _s0;
+const rowSchema = _s0;
 ```
 
 The declaration left the expression it was written in and landed at module

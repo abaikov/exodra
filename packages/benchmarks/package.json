@@ -47,6 +47,7 @@
         "@babel/core": "^7.29.7",
         "@builder.io/qwik": "^1.20.0",
         "@sveltejs/vite-plugin-svelte": "^6.2.4",
+        "@tanstack/react-query": "^5.105.0",
         "@types/node": "^20.10.6",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
@@ -62,6 +63,7 @@
         "uhtml": "^5.0.9",
         "vite": "^7.3.0",
         "vite-plugin-solid": "^2.11.10",
-        "voby": "^0.58.1"
+        "voby": "^0.58.1",
+        "zustand": "^5.0.16"
     }
 }

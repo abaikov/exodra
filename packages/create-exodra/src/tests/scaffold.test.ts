@@ -251,7 +251,7 @@ describe('what the scaffolded sources are written in', () => {
     it('SPA: pages declare their markup with exoJsx, typed by the schema dialect', () => {
         const page = readFileSync(join(spa(), 'src/pages/index.tsx'), 'utf8');
         expect(page).toContain("import { exoJsx } from '@exodra/jsx';");
-        expect(page).toContain('mPage.wire(');
+        expect(page).toContain('pageBuilder.wire(');
         expect(page).not.toContain('createInitialState');
 
         const tsconfig = JSON.parse(readFileSync(join(spa(), 'tsconfig.json'), 'utf8')) as {

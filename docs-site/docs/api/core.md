@@ -31,44 +31,35 @@ once, at definition time, so filling a port at render time is one array load and
 one indirect call.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 
 type TRow = { readonly id: string; readonly title: string };
 
-/** Where a row's item waits for it: a view is handed its INDEX and nothing else. */
-const BUILDING: TRow[] = [];
+const RowPorts = exoPorts({ id: EXO_PORT_ATTR, label: EXO_PORT_TEXT });
 
-// THE SCHEMA half. Runs once, at module load.
-const ROW_SCHEMA = createExoSchema((b) => {
-    // A port is minted inside a nested closure and escapes to the record below, so its
-    // holder is declared first — and each port-declaring call has a named type to declare
-    // it with.
-    let id!: TExoAttrPort;
-    let label!: TExoTextPort;
+const rowSchema = createExoSchema(RowPorts, (b) => {
     b.el('li', { class: 'row' }, (li) => {
-        id = li.port('data-id');
+        li.attrPort(RowPorts.id, 'data-id');
         li.el('span', { class: 'row__label' }, (span) => {
-            label = span.textPort();
+            span.textPort(RowPorts.label);
         });
     });
-    // What the builder returns IS the component's API: the machine
-    // names `ROW_SCHEMA.ports.id`, never "port 0".
-    return { id, label };
 });
 
-// THE MACHINE half. `createInitialState` runs once per instance. `TExoMachineNode` is the
-// surface ALL THREE backends share, so this one value is served, rendered and
-// hydrated with no cast — see "The connector surface" below.
-const mRow = createExoMachineBuilder<TExoMachineNode, unknown, TRow>(ROW_SCHEMA);
-mRow.createInitialState((_c, index) => BUILDING[index]);
-mRow.wire((c) => {
-    const item = c.state;
-    c.attr(ROW_SCHEMA.ports.id, item.id);
-    c.text(ROW_SCHEMA.ports.label, item.title);
+const rowBuilder = createExoMachineBuilder<TExoMachineNode, TRow, TRow>(rowSchema);
+rowBuilder.createInitialState((_c, _index, row) => row);
+rowBuilder.wire((c) => {
+    c.attr(RowPorts.id, c.state.id);
+    c.text(RowPorts.label, c.state.title);
 });
-export const ROW = mRow.done();
+export const Row = rowBuilder.done();
 ```
+
+The ports object is the component's API: the machine names `RowPorts.id`, never
+"port 0", and `rowSchema.ports` is that same object. `TExoMachineNode` is the
+surface all three backends share, so this one value is served, rendered and
+hydrated with no cast.
 
 Which produces, per item, `<li class="row" data-id="…"><span class="row__label">…</span></li>`
 — identically on the server, on a client render and through hydration, because
@@ -77,10 +68,58 @@ all three index the same port numbers.
 ## createExoSchema()
 
 ```ts no-check
+function createExoSchema<TPorts extends Readonly<Record<string, TExoAnyPort>>>(
+    ports: TPorts,
+    build: (emitter: TExoEmitter<TPorts>) => void
+): TExoCursorDeclaration<TPorts>;
 function createExoSchema<TPorts>(
-    build: (builder: TExoSchemaCursor) => TPorts
+    build: (cursor: TExoSchemaCursor) => TPorts,
+    decorate?: TExoSchemaDecorator<TPorts>
+): TExoCursorDeclaration<TPorts>;
+function createExoNamedSchema<TPorts>(
+    build: (cursor: TExoSchemaCursor<TPorts>) => void,
+    decorate?: TExoSchemaDecorator<TPorts>
 ): TExoCursorDeclaration<TPorts>;
 ```
+
+**The port interface** is the first form: `exoPorts({ name: kind, … })` declares
+every port up front, and the build callback places each one where it stands. The
+schema's `.ports` is that same object, so a machine can name the ports before the
+schema exists. A port's number is its place in `exoPorts`.
+
+Two alternative forms mint the ports inside the build callback instead. The
+**return-object** form returns the record the machine will read:
+
+```ts
+import { createExoSchema } from '@exodra/core';
+import type { TExoTextPort } from '@exodra/core';
+
+export const titleSchema = createExoSchema((b) => {
+    let title!: TExoTextPort;
+    b.el('h1', null, (h1) => {
+        title = h1.textPort();
+    });
+    return { title };
+});
+```
+
+The **self-naming** form, `createExoNamedSchema<TPorts>`, names each port where it
+stands and returns nothing; `TPorts` comes from the type argument:
+
+```ts
+import { createExoNamedSchema } from '@exodra/core';
+import type { TExoAttrPort, TExoTextPort } from '@exodra/core';
+
+export const linkSchema = createExoNamedSchema<{ href: TExoAttrPort; label: TExoTextPort }>((b) => {
+    b.el('a', null, (a) => {
+        a.port('href', 'href');
+        a.textPort('label');
+    });
+});
+```
+
+One callback may not both name a port and return a record; that is refused
+rather than merged.
 
 The schema half. A component is made from it by handing it to
 `createExoMachineBuilder` — see [Machines](#machines) — and the plan compilers,
@@ -94,22 +133,28 @@ It throws if the builder produced no element.
 ## TExoSchemaCursor
 
 The definition-time cursor. It walks the shape once, when the module loads, and
-records what it saw. Every port-declaring call hands back the port it created —
-one object per template, shared by every row.
+records what it saw. Every port-placing call takes the declared port first and
+hands it back — one object per template, shared by every row.
 
-| Method                 | What it declares                                                                                                                                           | Hands back         |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| `el(tag, attrs?, fn?)` | A child element with its **static** attributes, and optionally a body. Everything in `attrs` is folded into the prepared markup and costs nothing per row. | the builder        |
-| `text(value)`          | Static text inside the current element.                                                                                                                    | the builder        |
-| `port(name)`           | A port for **one attribute** of the current element.                                                                                                       | `TExoAttrPort`     |
-| `eventPort(name)`      | A port for **one event listener**. It emits no markup and still takes a slot.                                                                              | `TExoEventPort`    |
-| `textPort()`           | A port standing for the **whole text content** of the current element.                                                                                     | `TExoTextPort`     |
-| `childrenPort()`       | A port holding a **variable-length sequence of children** — a list, or one nested instance.                                                                | `TExoChildrenPort` |
-| `refPort()`            | A **reference to the current element** and no way to write to it.                                                                                          | `TExoRefPort`      |
+| Method                          | What it places                                                                                                                                             | Hands back         |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `el(tag, attrs?, fn?)`          | A child element with its **static** attributes, and optionally a body. Everything in `attrs` is folded into the prepared markup and costs nothing per row. | the builder        |
+| `text(value)`                   | Static text inside the current element.                                                                                                                    | the builder        |
+| `attrPort(port, name)`          | A port for **one attribute** of the current element.                                                                                                       | `TExoAttrPort`     |
+| `stringPort(port, name)`        | An attribute port whose value is always a string.                                                                                                          | `TExoAttrPort`     |
+| `togglePort(port, name)`        | A boolean attribute: present or absent.                                                                                                                    | `TExoAttrPort`     |
+| `eventPort(port, name)`         | A port for **one event listener**. It emits no markup and still takes a slot.                                                                              | `TExoEventPort`    |
+| `textPort(port)`                | A port standing for the **whole text content** of the current element.                                                                                     | `TExoTextPort`     |
+| `childrenPort(port)`            | A port holding a **variable-length sequence of children** — a list, or one nested instance.                                                                | `TExoChildrenPort` |
+| `refPort(port)`                 | A **reference to the current element** and no way to write to it.                                                                                          | `TExoRefPort`      |
 
-Each of those five types pins its port's kind, so a holder declared for a text
-port refuses an attribute port; the first four are `TExoPort`s, which is what
-every writing signature takes, and `TExoRefPort` deliberately is not.
+The alternative forms call the same methods without the port (`attrPort(name)`,
+`port(name)`, `textPort()`, …) and the call mints one; the self-naming form adds the
+port's name as the last argument.
+
+Each port type pins its port's kind, so a text port refuses an attribute
+position; all but `TExoRefPort` are `TExoPort`s, which is what every writing
+signature takes, and `TExoRefPort` deliberately is not.
 
 An attribute whose value varies is not an attribute here — it is a port.
 
@@ -117,32 +162,29 @@ A children port **is a child**: it is appended where it was declared, so it may
 stand between static siblings.
 
 ```ts
-import { createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_CHILDREN, EXO_PORT_TEXT, createExoSchema, exoPorts } from '@exodra/core';
 
-export const PANEL = createExoSchema((b) => {
-    let heading!: TExoTextPort;
-    let body!: TExoChildrenPort;
+export const PanelPorts = exoPorts({ heading: EXO_PORT_TEXT, body: EXO_PORT_CHILDREN });
+
+export const panelSchema = createExoSchema(PanelPorts, (b) => {
     b.el('section', { class: 'panel' }, (section) => {
         section.el('h2', null, (h2) => {
-            heading = h2.textPort();
+            h2.textPort(PanelPorts.heading);
         });
-        // Declared between two static siblings — and that is where it renders.
-        body = section.childrenPort();
+        section.childrenPort(PanelPorts.body);
         section.el('footer', { class: 'panel__foot' }, (foot) => {
             foot.text('—');
         });
     });
-    return { heading, body };
 });
 ```
 
-### Document order
+`body` is placed between two static siblings, and that is where it renders.
 
-Ports are numbered **after** the whole shape is known, by walking it in document
-order: for each element, its attribute and event ports in declaration order,
-then its content port, then its static children recursively; a children port is
-numbered where it stands among the static ones.
+### Port order
+
+A port's number is its place in `exoPorts`. In the alternative forms, where the
+markup mints the ports, it is the order the minting calls were made in.
 
 This ordering is the contract between the backends. They never speak to each
 other; they agree because both index their prepared plans by these numbers. It
@@ -157,7 +199,7 @@ separator, an empty state.
 ```ts
 import { createExoStatic } from '@exodra/core';
 
-export const SPINNER = createExoStatic((b) => {
+export const Spinner = createExoStatic((b) => {
     b.el('span', { class: 'spinner', role: 'status' }, (s) => {
         s.text('Loading…');
     });
@@ -175,14 +217,17 @@ of it.
 ## The initial state and the wire
 
 ```ts no-check
-type TExoMachineInitialState<TWiring, TValue = unknown> = (
+type TExoMachineInitialState<TWiring, TValue = unknown, TParams = unknown> = (
     enode: TWiring,
-    index: number
+    index: number,
+    params: TParams
 ) => TValue;
 ```
 
 `m.createInitialState(make)` declares it: it runs once per instance, and what it returns is
-what the instance keeps, read back with `c.readState()`. `m.wire((c, params) => …)` declares
+what the instance keeps, read back with `c.readState()`. It receives the same `params` the
+instance is built with, so a row bound to one record for its whole life keeps that record in
+its state from the start instead of waiting for the wire. `m.wire((c, params) => …)` declares
 the other half — a transition that writes ports only and may run again with new `params`.
 
 **One declaration, three backends.** It is generic over the connector and
@@ -268,7 +313,7 @@ value that differs between the server and the browser — a media query, a
 locale, a clock — is therefore corrected by the same call that printed it:
 
 ```ts no-check
-c.attr(P.cls, matchMedia('(hover: none)').matches ? 'touch' : 'mouse');
+c.attr(BadgePorts.cls, matchMedia('(hover: none)').matches ? 'touch' : 'mouse');
 ```
 
 An **event** port is the exception in the other direction: its `set`-time
@@ -297,18 +342,38 @@ type TExoPort = {
 The seven kinds are exported as plain constants — a plugin that compiles its own
 plan switches on exactly these, and there is no enum object to load them from:
 
-| Constant               | Value | Declared by                       |
+| Constant               | Value | Placed by                         |
 | ---------------------- | ----- | --------------------------------- |
-| `EXO_PORT_ATTR`        | `0`   | `port(name)` / `attrPort(name)`   |
-| `EXO_PORT_TEXT`        | `1`   | `textPort()`                      |
-| `EXO_PORT_CHILDREN`    | `2`   | `childrenPort()`                  |
-| `EXO_PORT_EVENT`       | `3`   | `eventPort(name)`                 |
-| `EXO_PORT_REF`         | `4`   | `refPort()`                       |
-| `EXO_PORT_ATTR_STRING` | `5`   | `stringPort(name)`                |
-| `EXO_PORT_ATTR_TOGGLE` | `6`   | `togglePort(name)`                |
+| `EXO_PORT_ATTR`        | `0`   | `attrPort(port, name)`            |
+| `EXO_PORT_TEXT`        | `1`   | `textPort(port)`                  |
+| `EXO_PORT_CHILDREN`    | `2`   | `childrenPort(port)`              |
+| `EXO_PORT_EVENT`       | `3`   | `eventPort(port, name)`           |
+| `EXO_PORT_REF`         | `4`   | `refPort(port)`                   |
+| `EXO_PORT_ATTR_STRING` | `5`   | `stringPort(port, name)`          |
+| `EXO_PORT_ATTR_TOGGLE` | `6`   | `togglePort(port, name)`          |
 
 `EXO_PORT_REF` is deliberately not in `TExoPortKind`: a ref port is read, never
 written, so `c.set(refPort, …)` does not compile.
+
+An event port and a ref port can carry the type of what they hand back. Declare them with
+`exoEventPortKind<TEvent>()` and `exoRefPortKind<TNode>()` in place of the plain constants;
+the value is the same number, only the type changes:
+
+```ts no-check
+const FieldPorts = exoPorts({
+    keydown: exoEventPortKind<KeyboardEvent>(),
+    field: exoRefPortKind<HTMLInputElement>(),
+});
+
+fieldBuilder.on(FieldPorts.keydown, (c, event) => {
+    if (event.key === 'Enter') c.portNode(FieldPorts.field).focus();
+});
+```
+
+A handler on a typed event port receives that event type; on a plain `EXO_PORT_EVENT` it
+receives the backend's own event type, as before. A function written outside the builder
+names the instance it is handed as `TExoMachineBuilderNode<typeof fieldBuilder>`: the
+builder's node type with its `state`.
 
 ## Contexts
 
@@ -329,26 +394,27 @@ only while a wiring is running, and a method cannot be called without a
 connector.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoMachineNode } from '@exodra/core';
+import { EXO_PORT_ATTR, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { exoContextToken } from '@exodra/context';
 
 export const THEME = exoContextToken<string>('theme');
 
-const BADGE_SCHEMA = createExoSchema((b) => {
-    let cls!: TExoAttrPort;
+const BadgePorts = exoPorts({ cls: EXO_PORT_ATTR });
+
+const badgeSchema = createExoSchema(BadgePorts, (b) => {
     b.el('span', null, (span) => {
-        cls = span.port('class');
+        span.attrPort(BadgePorts.cls, 'class');
     });
-    return { cls };
 });
-const mBadge = createExoMachineBuilder<TExoMachineNode>(BADGE_SCHEMA);
-mBadge.wire((c) => {
-    // `undefined` when nobody above provided it — not a throw.
-    c.attr(BADGE_SCHEMA.ports.cls, 'badge badge--' + (c.inject(THEME) ?? 'light'));
+const badgeBuilder = createExoMachineBuilder<TExoMachineNode>(badgeSchema);
+badgeBuilder.wire((c) => {
+    c.attr(BadgePorts.cls, 'badge badge--' + (c.inject(THEME) ?? 'light'));
 });
-export const BADGE = mBadge.done();
+export const Badge = badgeBuilder.done();
 ```
+
+`c.inject(THEME)` is `undefined` when nobody above provided it — not a throw.
 
 :::caution Contexts are not reactive by themselves
 What is provided is what a consumer holds forever: nothing watches the chain and
@@ -367,35 +433,34 @@ than three. The types are `TExoContextToken<TValue>` and `TExoContextFrame`.
 prints and hydration finds again. `@exodra/context` counts them per render:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoMachineNode } from '@exodra/core';
+import { EXO_PORT_ATTR, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { nextExoId, provideExoIds } from '@exodra/context';
 
-const FIELD_SCHEMA = createExoSchema((b) => {
-    let labelFor!: TExoAttrPort;
-    let inputId!: TExoAttrPort;
+const FieldPorts = exoPorts({ labelFor: EXO_PORT_ATTR, inputId: EXO_PORT_ATTR });
+
+const fieldSchema = createExoSchema(FieldPorts, (b) => {
     b.el('p', null, (p) => {
         p.el('label', null, (label) => {
-            labelFor = label.port('for');
+            label.attrPort(FieldPorts.labelFor, 'for');
         });
         p.el('input', null, (input) => {
-            inputId = input.port('id');
+            input.attrPort(FieldPorts.inputId, 'id');
         });
     });
-    return { labelFor, inputId };
 });
-const mField = createExoMachineBuilder<TExoMachineNode, unknown, string>(FIELD_SCHEMA);
-mField.createInitialState((c) => nextExoId(c)); // 'app-0', 'app-1', …
-mField.wire((c) => {
-    const id = c.state;
-    c.attr(FIELD_SCHEMA.ports.labelFor, id);
-    c.attr(FIELD_SCHEMA.ports.inputId, id);
+const fieldBuilder = createExoMachineBuilder<TExoMachineNode, unknown, string>(fieldSchema);
+fieldBuilder.createInitialState((c) => nextExoId(c));
+fieldBuilder.wire((c) => {
+    c.attr(FieldPorts.labelFor, c.state);
+    c.attr(FieldPorts.inputId, c.state);
 });
-export const FIELD = mField.done();
-
-// in the root's createInitialState, on the server and in the browser:
-// provideExoIds(c, 'app');
+export const Field = fieldBuilder.done();
 ```
+
+`nextExoId(c)` hands out `'app-0'`, `'app-1'`, … once the root's
+`createInitialState` has called `provideExoIds(c, 'app')`, on the server and in
+the browser.
 
 ```ts no-check
 function provideExoIds(c: { provide(...) }, prefix: string): TExoIdCounter;
@@ -458,7 +523,7 @@ type TTodo = { readonly done: { setValue(next: boolean): void } };
 const REMOVE = (event: Event, subject?: unknown): void => {
     (subject as TTodo).done.setValue(true);
 };
-// in wire:  c.on(S.ports.click, REMOVE, todo);
+// in wire:  c.on(TodoPorts.click, REMOVE, todo);
 ```
 
 A fill with no subject is allowed under the direct strategy and the handler
@@ -471,43 +536,39 @@ The handler type lives here rather than in `@exodra/dom` because a wiring
 function that fills an event port is the same module on the server.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventHandler, TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoEventHandler, TExoMachineNode } from '@exodra/core';
 
 type TCell<T> = { getValue(): T; setValue(next: T): void };
 type TTodo = { readonly title: string; readonly done: TCell<boolean> };
 
-/** ONE function for every row of this template. */
 const toggleDone: TExoEventHandler = (_event, subject): void => {
     const cell = (subject as TTodo).done;
     cell.setValue(cell.getValue() === true ? false : true);
 };
 
-/** The row's own todo, by index — the build callback writes it, then builds. */
-const BUILDING_TODO: TTodo[] = [];
+const TodoPorts = exoPorts({ click: EXO_PORT_EVENT, label: EXO_PORT_TEXT });
 
-const TODO_SCHEMA = createExoSchema((b) => {
-    let click!: TExoEventPort;
-    let label!: TExoTextPort;
+const todoSchema = createExoSchema(TodoPorts, (b) => {
     b.el('li', null, (li) => {
         li.el('button', { type: 'button' }, (btn) => {
-            click = btn.eventPort('click');
-            label = btn.textPort();
+            btn.eventPort(TodoPorts.click, 'click');
+            btn.textPort(TodoPorts.label);
         });
     });
-    return { click, label };
 });
-const mTodo = createExoMachineBuilder<TExoMachineNode, unknown, TTodo>(TODO_SCHEMA);
-mTodo.createInitialState((_c, index) => BUILDING_TODO[index]);
-mTodo.wire((c) => {
-    const todo = c.state;
-    c.text(TODO_SCHEMA.ports.label, todo.title);
-    // THE SUBJECT is what makes one module-level handler serve every row: the
-    // row hands its own datum to the fill, and the handler is told which.
-    c.on(TODO_SCHEMA.ports.click, toggleDone, todo);
+const todoBuilder = createExoMachineBuilder<TExoMachineNode, TTodo, TTodo>(todoSchema);
+todoBuilder.createInitialState((_c, _index, todo) => todo);
+todoBuilder.wire((c) => {
+    c.text(TodoPorts.label, c.state.title);
+    c.on(TodoPorts.click, toggleDone, c.state);
 });
-export const TODO = mTodo.done();
+export const Todo = todoBuilder.done();
 ```
+
+`toggleDone` is one function for every row of this template. The subject is what
+makes that possible: the row hands its own datum to the fill, and the handler is
+told which.
 
 ## Nodes
 
@@ -530,38 +591,38 @@ function object for the whole component instead of one per row, and per-instance
 state is a numbered slot rather than a captured variable.
 
 ```typescript
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
-const COUNTER = createExoSchema((b) => {
-    let label!: TExoTextPort;
-    let click!: TExoEventPort;
+const CounterButtonPorts = exoPorts({ label: EXO_PORT_TEXT, click: EXO_PORT_EVENT });
+
+const counterButtonSchema = createExoSchema(CounterButtonPorts, (b) => {
     b.el('button', { class: 'counter' }, (button) => {
-        label = button.textPort();
-        click = button.eventPort('click');
+        button.textPort(CounterButtonPorts.label);
+        button.eventPort(CounterButtonPorts.click, 'click');
     });
-    return { label, click };
 });
 
-const m = createExoMachineBuilder<TExoDomNode>(COUNTER);
+const counterButtonBuilder = createExoMachineBuilder<TExoDomNode>(counterButtonSchema);
 
-// A slot, numbered here and seeded once per instance — never shared between two.
-const COUNT = m.createInitialState(() => ({ n: 0 }));
+const COUNT = counterButtonBuilder.createInitialState(() => ({ n: 0 }));
 
-// One handler object for the whole component; the instance arrives as an argument.
-m.on(COUNTER.ports.click, (c) => {
+counterButtonBuilder.on(CounterButtonPorts.click, (c) => {
     const state = c.readState(COUNT);
     state.n += 1;
-    c.text(COUNTER.ports.label, `${state.n}`);
+    c.text(CounterButtonPorts.label, `${state.n}`);
 });
 
-export const COUNTER_BUTTON = m.done();
+export const CounterButton = counterButtonBuilder.done();
 ```
+
+`COUNT` is a slot, numbered where it is declared and seeded once per instance —
+never shared between two. The handler is one function object for the whole
+component; the instance arrives as its argument.
 
 | Method              | What it declares                                                                                                                                                                                                                                                   | Hands back                       |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
-| `createInitialState(make)` | A numbered slot, seeded by `make(instance, index)` once per instance, taking its row in declaration order. `make` must be a **function**: a value handed here would be one object shared by every instance, each seeing every other's writes, so the builder refuses one. | `TExoMachineStateHandle<TValue>` |
+| `createInitialState(make)` | A numbered slot, seeded by `make(instance, index, params)` once per instance, taking its row in declaration order. `make` must be a **function**: a value handed here would be one object shared by every instance, each seeing every other's writes, so the builder refuses one. | `TExoMachineStateHandle<TValue>` |
 | `effect(start)`     | An effect. `start(instance)` returns its own stop function or `null`, and the instance re-runs one through `restartEffect(handle)`.                                                                                                                                | `TExoMachineEffect<TWiring>`     |
 | `on(port, handler)` | A listener on an event port. You write `handler(instance, event)`; the builder transposes it once per component into the `(event, subject)` shape a dispatcher calls, so nothing is allocated per row.                                                             | nothing                          |
 | `done()`            | Compiles and seals the machine.                                                                                                                                                                                                                                    | `TExoMachine<TWiring>`  |
@@ -579,7 +640,7 @@ and no branch — so the machine form costs a component that keeps nothing
 nothing.
 
 A machine takes **no props and no seed**. Its declared start is
-`m.createInitialState(make)`, which runs once per instance while the instance is
+`builder.createInitialState(make)`, which runs once per instance while the instance is
 being armed and is the only thing that writes `state`; `c.readState(handle)`
 reads it back.
 
@@ -587,7 +648,7 @@ Anything that belongs to ONE instance arrives instead as a **transition
 argument**. `c.build(component)` arms the machine and hands back the exonode
 with no element in the document, which is the moment a caller fires an init
 transition at it before placing it — and an init transition is, in substance,
-what `m.wire((c, params) => …)` declares once for the whole machine: a transition that writes
+what `builder.wire((c, params) => …)` declares once for the whole machine: a transition that writes
 ports only and may run again with new `params`.
 
 ## Placement primitives — not here
@@ -624,7 +685,7 @@ What stays here is the **imperative** builder of
 and writes a port; nothing is derived, so there is no field, no pending word
 and no commit walk.
 
-The split is the price, made choosable. Saying `m.derive(port, [field], by)`
+The split is the price, made choosable. Saying `builder.derive(port, [field], by)`
 instead of writing the port yourself buys the inversion table, the chain of
 wakes and the commit — and a page that derives nothing must not pay for them.
 `npm run check:computed-shake` is the gate that keeps that true, module by

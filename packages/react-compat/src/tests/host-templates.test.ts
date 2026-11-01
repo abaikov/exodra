@@ -136,6 +136,105 @@ describe('host templates', () => {
         expect(view.container.innerHTML).toBe('<div><i>t2</i><b>1</b></div>');
     });
 
+    it('keeps a nested component and its state when a sibling is appended to its template', async () => {
+        let bump!: () => void;
+        function Counter(): unknown {
+            const [n, setN] = useState(0);
+            bump = () => setN((v) => v + 1);
+            return h('b', null, n);
+        }
+        function Shell({ extra }: { extra: boolean }): unknown {
+            return extra
+                ? h('div', null, h('i', null, 't'), h(Counter, null), h('u', null, 'x'))
+                : h('div', null, h('i', null, 't'), h(Counter, null));
+        }
+        const view = mount(h(Shell, { extra: false }));
+        await act(async () => bump());
+        const b = view.container.querySelector('b');
+        view.render(h(Shell, { extra: true }));
+        expect(view.container.innerHTML).toBe('<div><i>t</i><b>1</b><u>x</u></div>');
+        expect(view.container.querySelector('b')).toBe(b);
+    });
+
+    it('keeps the DOM nodes, typed text, state and one click handler across shape changes back and forth', async () => {
+        let bump!: () => void;
+        const clicks: string[] = [];
+        function Counter(): unknown {
+            const [n, setN] = useState(0);
+            bump = () => setN((v) => v + 1);
+            return h('b', null, n);
+        }
+        function Shell({ extra, label }: { extra: boolean; label: string }): unknown {
+            const kids = [
+                h('input', { key: 'in', defaultValue: 'start' }),
+                h('button', { key: 'go', onClick: () => clicks.push(label) }, 'go'),
+                h(Counter, { key: 'c' }),
+            ];
+            return extra
+                ? h('div', { className: 'x' }, ...kids, h('u', { key: 'u' }, 'tail'))
+                : h('div', { className: 'y', title: label }, ...kids);
+        }
+        const view = mount(h(Shell, { extra: false, label: 'a' }));
+        await act(async () => bump());
+        const input = view.container.querySelector('input') as HTMLInputElement;
+        const button = view.container.querySelector('button') as HTMLButtonElement;
+        input.value = 'typed';
+        view.render(h(Shell, { extra: true, label: 'b' }));
+        expect(view.container.innerHTML).toBe(
+            '<div class="x"><input><button>go</button><b>1</b><u>tail</u></div>'
+        );
+        expect(view.container.querySelector('input')).toBe(input);
+        expect(input.value).toBe('typed');
+        button.click();
+        expect(clicks).toEqual(['b']);
+        view.render(h(Shell, { extra: false, label: 'c' }));
+        expect(view.container.innerHTML).toBe(
+            '<div class="y" title="c"><input><button>go</button><b>1</b></div>'
+        );
+        expect(view.container.querySelector('button')).toBe(button);
+        button.click();
+        expect(clicks).toEqual(['b', 'c']);
+        await act(async () => bump());
+        expect(view.container.querySelector('b')?.textContent).toBe('2');
+    });
+
+    it('keeps an unkeyed component at the same position when its sibling turns from text into an element', async () => {
+        let bump!: () => void;
+        function Counter(): unknown {
+            const [n, setN] = useState(0);
+            bump = () => setN((v) => v + 1);
+            return h('b', null, n);
+        }
+        function Row({ rich }: { rich: boolean }): unknown {
+            return h(
+                'p',
+                null,
+                h('i', null, 'a'),
+                rich ? h('em', null, 'e') : 'plain',
+                h(Counter, null)
+            );
+        }
+        const view = mount(h(Row, { rich: false }));
+        await act(async () => bump());
+        view.render(h(Row, { rich: true }));
+        expect(view.container.innerHTML).toBe('<p><i>a</i><em>e</em><b>1</b></p>');
+    });
+
+    it('renders two text children of one element and a host beside text', () => {
+        function Title({ id }: { id: string }): unknown {
+            return h(
+                'section',
+                null,
+                h('h1', null, 'user ', id),
+                h('p', null, h('i', null, 'a'), 'b')
+            );
+        }
+        const view = mount(h(Title, { id: '7' }));
+        expect(view.container.innerHTML).toBe('<section><h1>user 7</h1><p><i>a</i>b</p></section>');
+        view.render(h(Title, { id: '8' }));
+        expect(view.container.querySelector('h1')?.textContent).toBe('user 8');
+    });
+
     it('renders inner html on a nested element', () => {
         function Note({ html }: { html: string }): unknown {
             return h('div', null, h('p', { dangerouslySetInnerHTML: { __html: html } }));

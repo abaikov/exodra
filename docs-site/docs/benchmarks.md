@@ -39,8 +39,9 @@ the last column and nothing else.
 
 The same page also **understated** us in the other direction: it reported
 initial-render as "#2 — Solid leads by ~6%", a number measured on a renderer
-that has since been replaced. On `.gate/initial-render.post-repair.json` it is
-0.385 vs 0.485.
+that has since been replaced. On `.gate/initial-render.post-repair.json` it was
+0.385 vs 0.485, and on `.gate/initial-render.tmpl-full-2026-11-01.json` it is
+0.48 vs 0.82.
 
 Both errors have the same cause — publishing numbers nobody re-measured. The
 fix is three lines in `packages/benchmarks/vite.config.ts` (a forced
@@ -180,40 +181,39 @@ somebody has to change.
 **initial-render** — mount the 80-card todo app (details toggle + dynamic tag
 lists per card), ms/mount, lower is better:
 
-<!-- gate: axis=initial-render label=post-repair -->
+<!-- gate: axis=initial-render label=tmpl-full-2026-11-01 map="*stage0 (hand-rolled ceiling)*:stage0;Mikado (imperative):mikado;React code on Exodra (compiled):reactCompatJsx;React code on Exodra (no compiler):reactCompat" -->
 
 | Framework | ms/mount |
 |---|---|
-| *stage0 (hand-rolled ceiling)* | *0.325* |
-| Mikado (imperative) | 0.34 |
-| **Exodra** | **0.385** |
-| Solid | 0.485 |
-| Marko | 0.57 |
-| React | 0.775 |
-| sinuous | 0.83 |
-| Svelte | 0.985 |
-| uhtml | 1.015 |
-| Lit | 1.07 |
-| voby | 1.135 |
+| **Exodra** | **0.48** |
+| *stage0 (hand-rolled ceiling)* | *0.52* |
+| Mikado (imperative) | 0.74 |
+| Marko | 0.78 |
+| Solid | 0.82 |
+| React code on Exodra (compiled) | 0.90 |
+| React | 1.06 |
+| Svelte | 1.10 |
+| React code on Exodra (no compiler) | 1.34 |
+| Lit | 1.52 |
+| sinuous | 1.52 |
+| uhtml | 1.60 |
+| Preact | 1.86 |
+| voby | 2.08 |
 
-Printed from `.gate/initial-render.post-repair.json`, medians, in the order that
-file records them.
+Printed from `.gate/initial-render.tmpl-full-2026-11-01.json`, medians, all 17
+participants sampled; the table leaves out the React compiler, React-compat with
+host templates and Million rows, which are in the file.
 
-**Exodra is third, and the two rows ahead of it are not frameworks.** The
-hand-rolled ceiling mounts this app in 0.325 and hand-written imperative Mikado
-in 0.34, against Exodra's 0.385 — 18% and 13% behind respectively. That is the
-honest result of this axis: the gap between a renderer and no renderer at all is
-about 0.06 ms per mounted app here, and Exodra pays it.
+**Exodra mounts this app faster than every other row, the hand-rolled ceiling
+included**: 1.08× ahead of stage0, 1.54× ahead of Mikado, 1.71× ahead of Solid,
+2.21× ahead of React, 3.17× ahead of Lit.
 
-Against the framework field it leads: 1.26× ahead of Solid, 1.48× ahead of
-Marko, 2.01× ahead of React, 2.56× ahead of Svelte, 2.78× ahead of Lit and 2.95×
-ahead of voby.
-
-This is the axis the previous revision of this page reported as a loss ("Solid
-leads by ~6%"). That was measured on the previous renderer; on all nine
-`initial-render` recordings now on disk, Exodra is ahead of Solid. Nothing was
-tuned for this benchmark between those two measurements — the renderer was
-replaced.
+**What the earlier revision of this page said.** On `.gate/initial-render.post-repair.json`
+Exodra was third, behind stage0 (0.325) and Mikado (0.34) at 0.385. Those three
+are now 0.52, 0.74 and 0.48. The absolute medians of two runs are not
+comparable — each is read against its own field — but the ORDER inside each run
+is, and it changed: Exodra moved from behind both non-framework rows to ahead of
+them.
 
 The same mount, run by the `exodra-initial-render` axis over its own field:
 
@@ -271,37 +271,39 @@ run.
 ## Application update
 
 **app-update** — 80 cards, each toggling a details block and growing/shrinking a
-dynamic tag list, fired by real dispatched clicks, ×5 rounds per timed region:
+dynamic tag list, ×40 rounds per timed region. The axis calls each card's own
+handlers directly rather than dispatching events, so the browser's event
+delivery — identical work for every participant — is not in the number:
 
-<!-- gate: axis=app-update label=rec1 -->
+<!-- gate: axis=app-update label=tmpl-full-2026-11-01 map="*stage0 (hand-rolled ceiling)*:stage0;Mikado (imperative):mikado;React code on Exodra (compiled):reactCompatJsx;React code on Exodra (no compiler):reactCompat" -->
 
-| Framework | ms/5 rounds |
+| Framework | ms/40 rounds |
 |---|---|
-| *floor (harness cost, no renderer)* | *3.575* |
-| *stage0 (hand-rolled ceiling)* | *4.41* |
-| Mikado (imperative) | 4.485 |
-| **Exodra** | **4.595** |
-| Lit | 4.915 |
-| Marko | 5.045 |
-| sinuous | 5.2 |
-| Solid | 5.48 |
-| uhtml | 5.59 |
-| voby | 5.665 |
-| Svelte | 6.455 |
-| React | 9.335 |
+| *stage0 (hand-rolled ceiling)* | *4.6* |
+| **Exodra** | **4.6** |
+| Mikado (imperative) | 8.9 |
+| Lit | 15.6 |
+| sinuous | 17.0 |
+| React code on Exodra (compiled) | 17.8 |
+| Svelte | 18.7 |
+| Solid | 19.0 |
+| React | 21.8 |
+| voby | 23.1 |
+| React code on Exodra (no compiler) | 26.2 |
+| Preact | 32.8 |
+| uhtml | 53.0 |
 
-Printed from `.gate/app-update.rec1.json`, medians, in the order that file
-records them.
+Printed from `.gate/app-update.tmpl-full-2026-11-01.json`, medians, all 17
+participants sampled; the file also carries the harness's `driver` row, which
+renders nothing, and the React compiler, React-compat with host templates and
+Million rows.
 
-**Marko is no longer ahead of us here — that has changed.** The previous
-revision of this page published Marko at 4.660 against Exodra's 4.740 and called
-it a tie Marko was on the right side of. On this recording it is Exodra 4.595
-against Marko 5.045, and the two non-framework rows — stage0 at 4.41 and
-hand-written imperative Mikado at 4.485 — are the ones ahead of us, by 0.185 and
-0.110 ms.
-
-Those margins are small against a floor of 3.575 ms that every row carries.
-Against Solid the gap is 1.19×, against React 2.03×.
+**Exodra is level with the hand-rolled ceiling** — the two medians are equal —
+and ahead of everything else: 1.93× ahead of Mikado, 3.39× ahead of Lit, 4.13×
+ahead of Solid, 4.74× ahead of React. This axis has no null pair, so those are
+orderings, not sizes. Exodra also does a smaller job than stage0 here: its
+transition tells the tag region which rows joined or left, where stage0 builds
+the new tag array and lets `stage0/reconcile` find the same difference again.
 
 The same update, run by the `exodra-app-update` axis over its own field:
 
@@ -364,11 +366,13 @@ round calls `clickAll` twice, and those two calls produce **160
 `querySelectorAll` matches and 160 dispatched `MouseEvent`s** — identical work
 for every framework in the table, added to every framework's number.
 
-On app-update the floor is **3.575 of the 4.595 ms Exodra prints — about 78% of
-the row**; on `exodra-app-update` it is 2.925 of 3.855, about 76%. That is why
-two renderers 5% apart on either axis cannot be told apart
-from the printed numbers alone: 5% of the total may be a much larger fraction of
-the part either renderer is responsible for.
+On the click-dispatching `app-update` recorded in `.gate/app-update.rec1.json` the
+floor was **3.575 of the 4.595 ms Exodra printed — about 78% of the row**; on
+`exodra-app-update`, which still dispatches clicks, it is 2.925 of 3.855, about
+76%. That is why two renderers 5% apart on either axis cannot be told apart from
+the printed numbers alone. The current `app-update` calls the handlers directly,
+so the clicks and their floor are no longer in its number; its `driver` row,
+which renders nothing, reads 0.0 ms.
 
 The floor is published raw, as its own row in the same table, and no
 floor-subtracted column appears anywhere on this page. The subtraction is one
@@ -529,6 +533,29 @@ renderer by about that much.
 Against the framework field: 1.83× ahead of Lit, 2.37× ahead of Marko, 2.95×
 ahead of Solid, 3.91× ahead of React.
 
+## React libraries
+
+**react-libraries** — 200 rows, each reading a zustand selector and a react-query
+query; a region is 20 rounds, each writing 40 counts to the zustand store and 40
+labels to the react-query cache. The same source runs on React 19 and on
+`@exodra/react-compat`, each with its own copy of both libraries; the markup is
+compared byte for byte after the mount and after two rounds, and the run refuses
+if a compat row carries any React internals.
+
+<!-- gate: axis=react-libraries label=second-2026-11-01 -->
+
+| Row | ms/20 rounds |
+|---|---|
+| reactCompatJsx | **4.7** |
+| reactCompat | 5.1 |
+| react | 6.9 |
+
+Printed from `.gate/react-libraries.second-2026-11-01.json`, medians. `reactCompatJsx`
+is the JSX compiled by `@exodra/babel-plugin-schema/react`; `reactCompat` is the
+same `createElement` source React runs, with no compiler. This axis has no null
+pair, so the gaps are an ordering: both compat rows ahead of React with the
+libraries doing the updates.
+
 ## Toggle
 
 **toggle** — tear a 200-panel block out of the document and build a different
@@ -642,15 +669,14 @@ voby, uhtml, sinuous — Exodra leads every client axis on this page except
 toggle. Against the whole field, including the rows that are not frameworks
 (`stage0`, hand-written `mikado`, the harness `floor` and our own `exodraOimdb`,
 the last of which has since been removed from the suite),
-it leads two — **reconcile** (1.18, ahead of every row including the hand-rolled
-ceiling) and **list-update on the op-source contract** (0.075). Where it does not
+it leads three — **initial-render** (0.48, ahead of the hand-rolled ceiling at
+0.52), **reconcile** (1.18, ahead of every row including the hand-rolled ceiling)
+and **list-update on the op-source contract** (0.075) — and is level with the
+hand-rolled ceiling on **app-update** (4.6 against 4.6). Where it does not
 lead, this is what is in front of it, and every figure is in the table for its own
 axis above:
 
 - **reactive-update** — second: `mikado` 0.305 against 0.325.
-- **initial-render** — third: `stage0` 0.325 and `mikado` 0.34 against 0.385.
-- **app-update** — third renderer: `stage0` 4.41 and `mikado` 4.485 against
-  4.595, on a `floor` row of 3.575 that all three carry.
 - **list-update, diffing contract** — third of the diffing rows: `stage0` 0.6 and
   `mikadoKeyed` 0.69 against 0.815.
 - **toggle** — out of the box, behind four rows: `mikado` 7.4, `stage0` 8.9,
@@ -661,16 +687,18 @@ axis above:
 
 Where it does not lead:
 
-- **`stage0` and hand-written imperative Mikado are ahead on mount, app-update
-  and the diffing half of list-update.** Neither is a framework: `stage0` is
+- **`stage0` and hand-written imperative Mikado are ahead on the diffing half of
+  list-update**, and `stage0` ties app-update. Neither is a framework: `stage0` is
   ~570 B of hand-rolled clone-and-patch and `mikado` is imperative code written
-  against Mikado's node API. What separates them from Exodra is the renderer
-  itself, and on mount that is about 0.06 ms per app.
+  against Mikado's node API. On mount both are now behind:
+  `.gate/initial-render.tmpl-full-2026-11-01.json` has Exodra 0.48, `stage0` 0.52,
+  `mikado` 0.74.
 - **Mikado is ahead on reactive-update** (0.305 vs 0.325). The previous revision
   of this page claimed this axis as a lead; it is not one.
 - **Marko is no longer ahead on app-update.** The previous revision published
-  4.660 vs 4.740 against us; the recording has 4.595 vs 5.045 for us, and
-  `exodra-app-update.rec1` reproduces it independently at 3.855 vs 3.980.
+  4.660 vs 4.740 against us; `app-update.rec1` had 4.595 vs 5.045 for us, and
+  `exodra-app-update.rec1` reproduces it independently at 3.855 vs 3.980. Marko
+  is not in the current `app-update` field, which no longer dispatches events.
 - **Toggle is the loss.** Out of the box Exodra is 10.2 against Solid's 9.2 and
   Mikado's 7.4, and it takes keeping the subtree alive — a strategy the caller
   has to reach for — to lead at 3.3.

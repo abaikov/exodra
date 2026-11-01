@@ -15,6 +15,8 @@ import { isExoReactTemplateHost } from './isExoReactTemplateHost';
 import { reconcileExoReactRegion } from './reconcileExoReactRegion';
 import { writeExoReactProps } from './writeExoReactProps';
 import type { TExoReactElement } from '../types/TExoReactElement';
+import type { TExoReactHostShape } from '../types/TExoReactHostShape';
+import type { TExoReactHostShapeKid } from '../types/TExoReactHostShapeKid';
 import type { TExoReactHostState } from '../types/TExoReactHostState';
 import type { TExoReactHostTemplate } from '../types/TExoReactHostTemplate';
 import type { TExoReactHostTemplateKind } from '../types/TExoReactHostTemplateKind';
@@ -24,6 +26,55 @@ import type { TExoReactHostTemplatePlan } from '../types/TExoReactHostTemplatePl
 
 const PART_PROPS =
     /^(style|value|checked|selected|defaultValue|defaultChecked|muted|indeterminate|dangerouslySetInnerHTML)$/;
+
+function isControlled(node: TExoReactHostTemplateNode): boolean {
+    return node.tag === 'input' && (node.props.includes('value') || node.props.includes('checked'));
+}
+
+function isPartProp(name: string, controlled: boolean): boolean {
+    const event =
+        name.length > 2 && name[0] === 'o' && name[1] === 'n' && name[2] >= 'A' && name[2] <= 'Z';
+    return event ? controlled || name.endsWith('Capture') : PART_PROPS.test(name);
+}
+
+function shapeOf(node: TExoReactHostTemplateNode, next: { value: number }): TExoReactHostShape {
+    const controlled = isControlled(node);
+    const values = node.props.map(() => next.value++);
+    const ref = node.ref ? next.value++ : -1;
+    const kids: TExoReactHostShapeKid[] = [];
+    if (!node.html && node.wholeRegion) {
+        kids.push({ kind: 'region', value: next.value++, width: 0, whole: true });
+    } else if (!node.html) {
+        for (let i = 0; i < node.kinds.length; ) {
+            const kind = node.kinds[i];
+            if (kind === 'host') {
+                kids.push({
+                    kind: 'host',
+                    shape: shapeOf(node.nested[i] as TExoReactHostTemplateNode, next),
+                });
+                i++;
+            } else if (kind === 'text') {
+                kids.push({ kind: 'text', value: next.value++, text: '', width: 1 });
+                i++;
+            } else {
+                const end = node.runEnd[i];
+                kids.push({ kind: 'region', value: next.value++, width: end - i, whole: false });
+                i = end;
+            }
+        }
+    }
+    return {
+        tag: node.tag,
+        key: node.key,
+        props: node.props,
+        values,
+        statics: [],
+        ref,
+        part: node.ref || node.props.some((name) => isPartProp(name, controlled)),
+        html: node.html,
+        kids,
+    };
+}
 
 function isListOf(children: unknown): boolean {
     if (!Array.isArray(children)) return false;
@@ -76,6 +127,7 @@ function nodeOf(
         for (let i = 0; i < count; i++) {
             const kid = Array.isArray(children) ? children[i] : children;
             let kind = kindOf(kid);
+            if (kind === 'text' && count > 1) kind = 'region';
             const hinted = like === null ? null : like.nested[i];
             if (like !== null && like.kinds[i] !== kind) kind = 'region';
             if (
@@ -125,9 +177,7 @@ function walkNode(
             return plan === null ? -1 : plan.claims++;
         };
         if (root) claim((c) => c.refPort());
-        const controlled =
-            node.tag === 'input' &&
-            (node.props.includes('value') || node.props.includes('checked'));
+        const controlled = isControlled(node);
         const base = plan === null ? 0 : plan.value;
         if (plan !== null) plan.value += node.props.length;
         const partNames: string[] = [];
@@ -153,7 +203,7 @@ function walkNode(
                 }
                 continue;
             }
-            if (event || PART_PROPS.test(name)) {
+            if (isPartProp(name, controlled)) {
                 partNames.push(name);
                 partValues.push(value);
                 continue;
@@ -316,7 +366,8 @@ export function compileExoReactHostTemplate(
         plan.parts.map((at) => ports[at] as TExoRefPort),
         wireOf(ops),
         node.tag,
-        null
+        null,
+        shapeOf(node, { value: 0 })
     );
     return { machine, node };
 }

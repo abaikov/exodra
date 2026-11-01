@@ -1,6 +1,6 @@
 {
   "name": "bun-plugin-exodra",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Bun bundler/loader plugin that compiles Exodra JSX (delegates to the canonical Babel pipeline)",
   "keywords": [
     "exodra",
@@ -33,7 +33,7 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "dependencies": {
-    "babel-preset-exodra": "^0.1.2"
+    "babel-preset-exodra": "^0.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0"

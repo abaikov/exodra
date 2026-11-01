@@ -60,8 +60,9 @@ slowest way to load this library.
 function that throws, because an element in that dialect is compiled away into a
 `b.el(…)` line inside a schema and a `c.text(…)` / `c.attr(…)` line inside a
 machine's `wire`, and no runtime can interpret one. On a page with no
-compiler you write those two halves yourself — `createExoSchema(build)` and
-`createExoMachineBuilder(schema)` — which is what every example below does.
+compiler you write those two halves yourself — `exoPorts({ … })` with
+`createExoSchema(ports, build)`, and `createExoMachineBuilder(schema)` — which is
+what every example below does.
 
 ## ES modules (recommended)
 
@@ -90,35 +91,34 @@ what resolves it, and it pins every version in one place as a bonus:
 }}
 </script>
 <script type="module">
-  import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+  import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
   import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
   const backend = withExoCompiler(new ExoDomBackend());
 
-  const COUNTER_SCHEMA = createExoSchema(b => {
-    let click, text;
+  const CounterPorts = exoPorts({ click: EXO_PORT_EVENT, text: EXO_PORT_TEXT });
+
+  const counterSchema = createExoSchema(CounterPorts, b => {
     b.el('div', null, div => {
       div.el('button', { type: 'button' }, btn => {
-        click = btn.eventPort('click');
+        btn.eventPort(CounterPorts.click, 'click');
         btn.text('+');
       });
-      div.el('span', null, span => { text = span.textPort(); });
+      div.el('span', null, span => { span.textPort(CounterPorts.text); });
     });
-    return { click, text };
   });
-  const mCounter = createExoMachineBuilder(COUNTER_SCHEMA);
-  mCounter.createInitialState(() => ({ count: 0 }));
-  const showCount = mCounter.transition(c => {
-    c.text(COUNTER_SCHEMA.ports.text, `Count: ${c.state.count}`);
+  const counterBuilder = createExoMachineBuilder(counterSchema);
+  counterBuilder.createInitialState(() => ({ count: 0 }));
+  counterBuilder.wire(c => {
+    c.text(CounterPorts.text, `Count: ${c.state.count}`);
   });
-  mCounter.wire(c => showCount(c));
-  mCounter.on(COUNTER_SCHEMA.ports.click, c => {
+  counterBuilder.on(CounterPorts.click, c => {
     c.state.count++;
-    showCount(c);
+    c.text(CounterPorts.text, `Count: ${c.state.count}`);
   });
-  const COUNTER = mCounter.done();
+  const Counter = counterBuilder.done();
 
-  backend.render(COUNTER, document.body);
+  backend.render(Counter, document.body);
 </script>
 ```
 
@@ -199,35 +199,34 @@ internet into `Uncaught SyntaxError: Unexpected token 'export'`.
 <script src="https://cdn.jsdelivr.net/npm/@exodra/core@0.3"></script>
 <script src="https://cdn.jsdelivr.net/npm/@exodra/dom@0.3"></script>
 <script>
-  const { createExoMachineBuilder, createExoSchema } = Exodra.core;
+  const { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } = Exodra.core;
   const { ExoDomBackend, withExoCompiler } = Exodra.dom;
 
   const backend = withExoCompiler(new ExoDomBackend());
 
-  const COUNTER_SCHEMA = createExoSchema(b => {
-    let click, text;
+  const CounterPorts = exoPorts({ click: EXO_PORT_EVENT, text: EXO_PORT_TEXT });
+
+  const counterSchema = createExoSchema(CounterPorts, b => {
     b.el('div', null, div => {
       div.el('button', { type: 'button' }, btn => {
-        click = btn.eventPort('click');
+        btn.eventPort(CounterPorts.click, 'click');
         btn.text('+');
       });
-      div.el('span', null, span => { text = span.textPort(); });
+      div.el('span', null, span => { span.textPort(CounterPorts.text); });
     });
-    return { click, text };
   });
-  const mCounter = createExoMachineBuilder(COUNTER_SCHEMA);
-  mCounter.createInitialState(() => ({ count: 0 }));
-  const showCount = mCounter.transition(c => {
-    c.text(COUNTER_SCHEMA.ports.text, `Count: ${c.state.count}`);
+  const counterBuilder = createExoMachineBuilder(counterSchema);
+  counterBuilder.createInitialState(() => ({ count: 0 }));
+  counterBuilder.wire(c => {
+    c.text(CounterPorts.text, `Count: ${c.state.count}`);
   });
-  mCounter.wire(c => showCount(c));
-  mCounter.on(COUNTER_SCHEMA.ports.click, c => {
+  counterBuilder.on(CounterPorts.click, c => {
     c.state.count++;
-    showCount(c);
+    c.text(CounterPorts.text, `Count: ${c.state.count}`);
   });
-  const COUNTER = mCounter.done();
+  const Counter = counterBuilder.done();
 
-  backend.render(COUNTER, document.body);
+  backend.render(Counter, document.body);
 </script>
 ```
 
@@ -252,7 +251,7 @@ What each namespace holds:
 
 | package | global |
 | --- | --- |
-| `@exodra/core` | `Exodra.core` — `createExoSchema`, `createExoMachineBuilder`, `createExoNamedSchema`, `createExoStatic`, `exoPorts`, `withExoSchemaAsserts`, `composeExoPlugins` |
+| `@exodra/core` | `Exodra.core` — `createExoSchema`, `createExoMachineBuilder`, `createExoNamedSchema`, `createExoStatic`, `exoPorts`, the `EXO_PORT_*` kinds, `withExoSchemaAsserts`, `composeExoPlugins` |
 | `@exodra/dom` | `Exodra.dom` — `ExoDomBackend`, `withExoCompiler`, `withExoHydration`, `exoForeignNode` |
 | `@exodra/router` | `Exodra.router` — `createExoRouter`, `createExoBrowserHistory`, `provideExoRouter`, `injectExoRouter`, `ExoOutlet`, `exoOutlet`, `ExoLink` |
 | `@exodra/list-reconcile` | `Exodra.listReconcile` — `reconcileExoOrder`, `createExoKeyedList`, `EXO_KEYED_LIST_VOCABULARY` |

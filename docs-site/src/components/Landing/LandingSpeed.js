@@ -46,7 +46,7 @@ function AxisBar({ row, maxValue, isShown }) {
     );
 }
 
-function AxisStory({ axis, isFlipped }) {
+export function AxisStory({ axis, isFlipped }) {
     const [barsRef, , isShown] = useRevealed();
     const maxValue = Math.max(...axis.rows.map((row) => row.value));
     const verdict = verdictOf(axis);
@@ -81,15 +81,17 @@ export default function LandingSpeed() {
             <div className="container">
                 <Reveal>
                     <p className={styles.eyebrow}>Benchmarks</p>
-                    <h2 className={styles.statement}>Measured against programs with no framework in them.</h2>
+                    <h2 className={styles.statement}>An imperative framework at the cost of a template engine.</h2>
                     <p className={styles.lead}>
-                        Each axis runs the frameworks beside hand-rolled code with no framework in it. The distance to
-                        that code is what the abstraction costs, and every figure names the recording it came from.
+                        Components, state and effects, and reactive when a screen wants it: <code>@exodra/computed</code>{' '}
+                        derives ports from fields, and effects subscribe to your own data layer. Each axis below runs the
+                        frameworks beside hand-rolled code with no framework in it; the distance to that code is what the
+                        abstraction costs, and every figure names the recording it came from.
                     </p>
                 </Reveal>
                 <Reveal className={styles.trio}>
                     <div className={styles.trioItem}>
-                        <span className={styles.trioValue}><span className={styles.trioUnit}>≤</span>{MOUNT_HEADROOM_PERCENT}%</span>
+                        <span className={styles.trioValue}><span className={styles.trioPrefix}>&lt;</span>{MOUNT_HEADROOM_PERCENT}%</span>
                         <span className={styles.trioLabel}>headroom left above Exodra at mounting</span>
                         <span className={styles.trioFloor}>for any framework, measured against hand-written DOM calls</span>
                         <Link className={styles.trioLink} to="/docs/why/what-the-floor-says">What the floor says →</Link>

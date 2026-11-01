@@ -62,6 +62,7 @@ export function exoReactTagMachine(tag: string): TExoMachine<TExoDomNode> {
             }
         },
         tag,
+        null,
         null
     );
     TAG_MACHINES.set(tag, machine);

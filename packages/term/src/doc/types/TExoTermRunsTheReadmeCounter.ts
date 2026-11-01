@@ -1,6 +1,6 @@
 import type { TExoTermMachine } from '../../instance/types/TExoTermMachine';
-import { COUNTER } from '../readme-counter';
-import { TODO, TODO_LIST } from '../readme-todos';
+import { Counter } from '../readme-counter';
+import { Todo, TodoList } from '../readme-todos';
 
 // The portability claim, asserted by the compiler. IT IS IN `src/` AND NOT IN A `.test.ts`: every
 // tsconfig here excludes test files and vitest transpiles without checking types, so
@@ -9,13 +9,13 @@ import { TODO, TODO_LIST } from '../readme-todos';
 type TAssert<T extends true> = T;
 
 export type TExoTermRunsTheReadmeCounter = TAssert<
-    typeof COUNTER extends TExoTermMachine ? true : false
+    typeof Counter extends TExoTermMachine ? true : false
 >;
 
 export type TExoTermRunsTheReadmeTodoRow = TAssert<
-    typeof TODO extends TExoTermMachine ? true : false
+    typeof Todo extends TExoTermMachine ? true : false
 >;
 
 export type TExoTermRunsTheReadmeTodoList = TAssert<
-    typeof TODO_LIST extends TExoTermMachine ? true : false
+    typeof TodoList extends TExoTermMachine ? true : false
 >;

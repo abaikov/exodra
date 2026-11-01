@@ -54,6 +54,26 @@ function readExpression(value: t.JSXAttribute['value']): t.Expression {
     return t.booleanLiteral(true);
 }
 
+function readLiteralKey(element: t.JSXElement): string | null | undefined {
+    for (const attribute of element.openingElement.attributes as t.JSXAttribute[]) {
+        if ((attribute.name as t.JSXIdentifier).name !== 'key') continue;
+        const literal = readStaticValue(attribute.value);
+        return t.isStringLiteral(literal) ? literal.value : undefined;
+    }
+    return null;
+}
+
+function shapeKid(kind: string, fields: t.ObjectProperty[]): t.ObjectExpression {
+    return t.objectExpression([
+        t.objectProperty(t.identifier('kind'), t.stringLiteral(kind)),
+        ...fields,
+    ]);
+}
+
+function field(name: string, value: t.Expression): t.ObjectProperty {
+    return t.objectProperty(t.identifier(name), value);
+}
+
 function addValue(walk: TExoHostTreeWalk, expression: t.Expression): number {
     walk.values.push(expression);
     return walk.values.length - 1;
@@ -66,7 +86,11 @@ export function emitHostElement(
     svg: boolean,
     walk: TExoHostTreeWalk,
     root: boolean
-): { readonly statement: t.Statement; readonly source: t.Expression } {
+): {
+    readonly statement: t.Statement;
+    readonly source: t.Expression;
+    readonly shape: t.ObjectExpression;
+} {
     const tag = (element.openingElement.name as t.JSXIdentifier).name;
     const inSvg = svg || tag === 'svg';
     const cursor = `${walk.names.cursor}${depth}`;
@@ -85,9 +109,14 @@ export function emitHostElement(
         );
     const partProps: t.ObjectProperty[] = [];
     const sourceProps: t.ObjectProperty[] = [];
-    const sourceChildren: t.Expression[] = [];
+    const sourceChildren: (t.Expression | t.SpreadElement)[] = [];
     let partRef: t.Expression | null = null;
     let innerHtml = false;
+    const shapeProps: t.Expression[] = [];
+    const shapeValues: t.Expression[] = [];
+    const shapeStatics: t.Expression[] = [];
+    const shapeKids: t.Expression[] = [];
+    let shapeRef = -1;
     for (const attribute of attributes) {
         const name = (attribute.name as t.JSXIdentifier).name;
         if (name === 'key') continue;
@@ -96,6 +125,9 @@ export function emitHostElement(
         const literal = readStaticValue(attribute.value);
         if (literal !== undefined && !event && !PART_PROPS.test(name)) {
             if (literal === null) continue;
+            shapeProps.push(t.stringLiteral(name));
+            shapeValues.push(t.unaryExpression('-', t.numericLiteral(1)));
+            shapeStatics.push(t.cloneNode(literal));
             sourceProps.push(t.objectProperty(propertyKey(name), t.cloneNode(literal)));
             statics.push(
                 t.objectProperty(propertyKey(readExoReactAttributeName(name, inSvg)), literal)
@@ -104,6 +136,13 @@ export function emitHostElement(
         }
         const index = addValue(walk, readExpression(attribute.value));
         sourceProps.push(t.objectProperty(propertyKey(name), at(values, index)));
+        if (name === 'ref') {
+            shapeRef = index;
+        } else {
+            shapeProps.push(t.stringLiteral(name));
+            shapeValues.push(t.numericLiteral(index));
+            shapeStatics.push(t.identifier('undefined'));
+        }
         if (name === 'dangerouslySetInnerHTML') innerHtml = true;
         if (event && !controlled && !name.endsWith('Capture')) {
             const handler = walk.events.length;
@@ -179,13 +218,29 @@ export function emitHostElement(
                 body.push(
                     t.expressionStatement(cursorCall(cursor, 'text', [t.stringLiteral(text)]))
                 );
-                sourceChildren.push(t.stringLiteral(text));
+                for (const kid of kids) sourceChildren.push(t.cloneNode(kid));
+                shapeKids.push(
+                    shapeKid('text', [
+                        field('value', t.unaryExpression('-', t.numericLiteral(1))),
+                        field('text', t.stringLiteral(text)),
+                        field('width', t.numericLiteral(kids.length)),
+                    ])
+                );
                 return;
             }
             const region = walk.regions.length;
             walk.regions.push(claimPort(walk, body, cursorCall(cursor, 'childrenPort', [])));
             const index = addValue(walk, kids.length === 1 ? kids[0] : t.arrayExpression(kids));
-            sourceChildren.push(at(values, index));
+            sourceChildren.push(
+                kids.length === 1 ? at(values, index) : t.spreadElement(at(values, index))
+            );
+            shapeKids.push(
+                shapeKid('region', [
+                    field('value', t.numericLiteral(index)),
+                    field('width', t.numericLiteral(kids.length)),
+                    field('whole', t.booleanLiteral(false)),
+                ])
+            );
             walk.fills.push(
                 t.expressionStatement(
                     t.callExpression(t.identifier(walk.helpers.reconcileRegion), [
@@ -196,11 +251,12 @@ export function emitHostElement(
             );
         };
         for (const kid of t.react.buildChildren(element)) {
-            if (t.isJSXElement(kid) && isCompilableHost(kid)) {
+            if (t.isJSXElement(kid) && isCompilableHost(kid) && readLiteralKey(kid) !== undefined) {
                 flush();
                 const nested = emitHostElement(kid, cursor, depth + 1, inSvg, walk, false);
                 body.push(nested.statement);
                 sourceChildren.push(nested.source);
+                shapeKids.push(shapeKid('host', [field('shape', nested.shape)]));
                 continue;
             }
             run.push(kid as t.Expression);
@@ -212,18 +268,38 @@ export function emitHostElement(
     else if (body.length > 0) args.push(t.nullLiteral());
     if (body.length > 0)
         args.push(t.arrowFunctionExpression([t.identifier(cursor)], t.blockStatement(body)));
-    if (sourceChildren.length === 1) {
-        sourceProps.push(t.objectProperty(t.identifier('children'), sourceChildren[0]));
-    } else if (sourceChildren.length > 1) {
+    const onlyChild = sourceChildren.length === 1 ? sourceChildren[0] : null;
+    if (onlyChild !== null && !t.isSpreadElement(onlyChild)) {
+        sourceProps.push(t.objectProperty(t.identifier('children'), onlyChild));
+    } else if (sourceChildren.length > 0) {
         sourceProps.push(
             t.objectProperty(t.identifier('children'), t.arrayExpression(sourceChildren))
         );
     }
+    const key = root ? null : readLiteralKey(element);
+    const sourceArgs: t.Expression[] = [t.stringLiteral(tag), t.objectExpression(sourceProps)];
+    if (key !== null && key !== undefined) sourceArgs.push(t.stringLiteral(key));
     return {
         statement: t.expressionStatement(cursorCall(parent, 'el', args)),
-        source: t.callExpression(t.identifier(walk.helpers.jsx), [
-            t.stringLiteral(tag),
-            t.objectExpression(sourceProps),
+        source: t.callExpression(t.identifier(walk.helpers.jsx), sourceArgs),
+        shape: t.objectExpression([
+            field('tag', t.stringLiteral(tag)),
+            field(
+                'key',
+                key === null || key === undefined ? t.nullLiteral() : t.stringLiteral(key)
+            ),
+            field('props', t.arrayExpression(shapeProps)),
+            field('values', t.arrayExpression(shapeValues)),
+            field('statics', t.arrayExpression(shapeStatics)),
+            field(
+                'ref',
+                shapeRef < 0
+                    ? t.unaryExpression('-', t.numericLiteral(1))
+                    : t.numericLiteral(shapeRef)
+            ),
+            field('part', t.booleanLiteral(partProps.length > 0 || partRef !== null)),
+            field('html', t.booleanLiteral(innerHtml)),
+            field('kids', t.arrayExpression(shapeKids)),
         ]),
     };
 }

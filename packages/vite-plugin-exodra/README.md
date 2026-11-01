@@ -63,37 +63,36 @@ The table is exposed as the virtual module `virtual:exodra-routes`. Each entry i
 `{ path, component: exoLazy(() => import(file)) }` (plus `catchAll` /
 `optionalCatchAll`), and a page file's **default export** is its machine. A page
 receives its match as the params of its wire:
-`createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(SCHEMA)` and
-`mPage.wire((c, match) => ...)`.
+`createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(pageSchema)` and
+`pageBuilder.wire((c, match) => ...)`.
 
 ```ts no-check
 // main.ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { createExoBrowserHistory, createExoRouter, exoOutlet, provideExoRouter } from '@exodra/router';
 import { routes } from 'virtual:exodra-routes';
 
 const router = createExoRouter(routes, { history: createExoBrowserHistory() });
-const ROUTED = exoOutlet('main');
+const Routed = exoOutlet('main');
 
-const APP_SCHEMA = createExoSchema((b) => {
-    let body!: TExoChildrenPort;
+const AppPorts = exoPorts({ body: EXO_PORT_CHILDREN });
+
+const appSchema = createExoSchema(AppPorts, (b) => {
     b.el('div', { class: 'app' }, (d) => {
-        body = d.childrenPort();
+        d.childrenPort(AppPorts.body);
     });
-    return { body };
 });
-const mApp = createExoMachineBuilder<TExoDomNode>(APP_SCHEMA);
-mApp.createInitialState((c) => {
+const appBuilder = createExoMachineBuilder<TExoDomNode>(appSchema);
+appBuilder.createInitialState((c) => {
     provideExoRouter(c, router);
-    c.one(APP_SCHEMA.ports.body, ROUTED);
+    c.one(AppPorts.body, Routed);
 });
-const APP = mApp.done();
+const App = appBuilder.done();
 
 const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
-backend.render(APP, document.getElementById('app') as HTMLElement);
+backend.render(App, document.getElementById('app') as HTMLElement);
 ```
 
 Declare the virtual module for TypeScript:

@@ -1,0 +1,198 @@
+{
+  "axis": "app-update",
+  "label": "tmpl-full-2026-11-01",
+  "quantum": 0.1,
+  "batch": null,
+  "rows": [
+    {
+      "name": "driver",
+      "min": 0,
+      "p25": 0,
+      "median": 0,
+      "p75": 0.09999990463256836,
+      "max": 0.19999980926513672,
+      "appLines": null,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "stage0",
+      "min": 4.199999809265137,
+      "p25": 4.400000095367432,
+      "median": 4.599999904632568,
+      "p75": 4.799999713897705,
+      "max": 6.200000286102295,
+      "appLines": 325,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "exodra",
+      "min": 4.300000190734863,
+      "p25": 4.599999904632568,
+      "median": 4.600000381469727,
+      "p75": 4.799999713897705,
+      "max": 7.099999904632568,
+      "appLines": 478,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "mikado",
+      "min": 8.099999904632568,
+      "p25": 8.599999904632568,
+      "median": 8.900000095367432,
+      "p75": 9.299999713897705,
+      "max": 26.299999713897705,
+      "appLines": 367,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "lit",
+      "min": 13.099999904632568,
+      "p25": 14.900000095367432,
+      "median": 15.599999904632568,
+      "p75": 16.300000190734863,
+      "max": 27.299999713897705,
+      "appLines": 303,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "sinuous",
+      "min": 14.599999904632568,
+      "p25": 16.40000009536743,
+      "median": 17,
+      "p75": 18,
+      "max": 29.59999990463257,
+      "appLines": 244,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "reactCompatJsx",
+      "min": 14.599999904632568,
+      "p25": 16.5,
+      "median": 17.800000190734863,
+      "p75": 19,
+      "max": 35.59999990463257,
+      "appLines": 204,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "svelte",
+      "min": 16.800000190734863,
+      "p25": 17.90000009536743,
+      "median": 18.700000286102295,
+      "p75": 19.5,
+      "max": 26.800000190734863,
+      "appLines": 202,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "solid",
+      "min": 16.800000190734863,
+      "p25": 18.199999809265137,
+      "median": 19,
+      "p75": 19.90000009536743,
+      "max": 26.90000009536743,
+      "appLines": 220,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "reactCompatTemplates",
+      "min": 16.5,
+      "p25": 17.90000009536743,
+      "median": 19.199999809265137,
+      "p75": 21,
+      "max": 27.600000381469727,
+      "appLines": 208,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "reactCompiler",
+      "min": 16.899999618530273,
+      "p25": 19.5,
+      "median": 20.699999809265137,
+      "p75": 22.199999809265137,
+      "max": 27.40000009536743,
+      "appLines": 204,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "react",
+      "min": 18.899999618530273,
+      "p25": 20.90000009536743,
+      "median": 21.799999713897705,
+      "p75": 22.59999990463257,
+      "max": 26.799999713897705,
+      "appLines": 208,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "voby",
+      "min": 19,
+      "p25": 22,
+      "median": 23.100000381469727,
+      "p75": 24.5,
+      "max": 37.90000009536743,
+      "appLines": 208,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "reactCompat",
+      "min": 19,
+      "p25": 22.700000286102295,
+      "median": 26.199999809265137,
+      "p75": 28.800000190734863,
+      "max": 45.89999961853027,
+      "appLines": 208,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "preact",
+      "min": 29.800000190734863,
+      "p25": 31.700000286102295,
+      "median": 32.80000019073486,
+      "p75": 34.69999980926514,
+      "max": 53.30000019073486,
+      "appLines": 208,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "million",
+      "min": 36.30000019073486,
+      "p25": 38.80000019073486,
+      "median": 40.89999961853027,
+      "p75": 43.90000009536743,
+      "max": 85.10000038146973,
+      "appLines": 204,
+      "unit": "ms",
+      "per": "40 update rounds"
+    },
+    {
+      "name": "uhtml",
+      "min": 46.700000286102295,
+      "p25": 49.19999980926514,
+      "median": 53,
+      "p75": 63.200000286102295,
+      "max": 117.90000009536743,
+      "appLines": 249,
+      "unit": "ms",
+      "per": "40 update rounds"
+    }
+  ],
+  "refusals": [
+    "app-update: NO RESOLUTION — this axis carries no null pair, so nothing in this run says how small a difference the instrument can see and NO GAP IN THE TABLE ABOVE MAY BE QUOTED AS A SIZE. Every ordering below is an ORDERING and nothing more. See the block above this function for what restoring the floor would cost."
+  ]
+}

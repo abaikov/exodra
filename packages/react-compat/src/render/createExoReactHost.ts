@@ -9,33 +9,15 @@ import type {
 import type { TExoDomNode, TExoDomRenderNode } from '@exodra/dom';
 import { EXO_REACT_RENDER } from '../constants/EXO_REACT_RENDER';
 import { createExoReactSyntheticEvent } from './createExoReactSyntheticEvent';
-import { disposeExoReactSlot } from './disposeExoReactSlot';
-import { writeExoReactProps } from './writeExoReactProps';
+import { createExoReactHostState } from './createExoReactHostState';
+import { disposeExoReactHostState } from './disposeExoReactHostState';
 import type { TExoReactElement } from '../types/TExoReactElement';
+import type { TExoReactHostShape } from '../types/TExoReactHostShape';
 import type { TExoReactHostState } from '../types/TExoReactHostState';
 import type { TExoReactRange } from '../types/TExoReactRange';
 
-const NO_PROPS: Readonly<Record<string, unknown>> = {};
 const NO_REGIONS: TExoReactRange[] = [];
 const NO_PARTS: TExoReactHostState[] = [];
-
-function createHostState(
-    element: Element,
-    regions: TExoReactRange[],
-    parts: TExoReactHostState[],
-    handlerCount: number
-): TExoReactHostState {
-    return {
-        element,
-        regions,
-        parts,
-        handlers: handlerCount === 0 ? [] : new Array(handlerCount).fill(null),
-        last: [],
-        props: NO_PROPS,
-        listeners: null,
-        ref: null,
-    };
-}
 
 export function createExoReactHost(
     declaration: TExoCursorDeclaration<unknown>,
@@ -45,11 +27,13 @@ export function createExoReactHost(
     partPorts: readonly TExoRefPort[],
     wire: (c: TExoDomNode, element: TExoReactElement, state: TExoReactHostState) => void,
     tag: string,
-    source: ((values: readonly unknown[]) => TExoReactElement) | null
+    source: ((values: readonly unknown[]) => TExoReactElement) | null,
+    shape: TExoReactHostShape | null
 ): TExoMachine<TExoDomNode> {
     return {
         exoReactTag: tag,
         exoReactSource: source,
+        exoReactShape: shape,
         declaration,
         forms: [],
         createInitialState(c: TExoDomNode): TExoReactHostState {
@@ -70,9 +54,16 @@ export function createExoReactHost(
             }
             const parts: TExoReactHostState[] = partPorts.length === 0 ? NO_PARTS : [];
             for (let i = 0; i < partPorts.length; i++) {
-                parts.push(createHostState(read(table, partPorts[i]), NO_REGIONS, NO_PARTS, 0));
+                parts.push(
+                    createExoReactHostState(read(table, partPorts[i]), NO_REGIONS, NO_PARTS, 0)
+                );
             }
-            const state = createHostState(read(table, rootPort), regions, parts, eventPorts.length);
+            const state = createExoReactHostState(
+                read(table, rootPort),
+                regions,
+                parts,
+                eventPorts.length
+            );
             for (let i = 0; i < eventPorts.length; i++) {
                 c.on(eventPorts[i], function (this: Element, event: Event): void {
                     const handler = state.handlers[i];
@@ -81,16 +72,7 @@ export function createExoReactHost(
                     }
                 });
             }
-            c.onTeardown((): void => {
-                if (state.ref !== null) writeExoReactProps(state, state.props, null);
-                for (let p = 0; p < parts.length; p++) {
-                    if (parts[p].ref !== null) writeExoReactProps(parts[p], parts[p].props, null);
-                }
-                for (let r = 0; r < regions.length; r++) {
-                    const slots = regions[r].slots;
-                    for (let i = 0; i < slots.length; i++) disposeExoReactSlot(slots[i]);
-                }
-            });
+            c.onTeardown((): void => disposeExoReactHostState(state));
             return state;
         },
         wire(c: TExoDomNode, element: TExoReactElement): void {

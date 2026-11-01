@@ -25,7 +25,7 @@ declare module '@exodra/jsx/schema/jsx-runtime' {
     }
 }
 
-export const WIDGET_SCHEMA = exoJsx(($) => <my-widget id="chart" title={$.heading} />);
+export const widgetSchema = exoJsx(($) => <my-widget id="chart" title={$.heading} />);
 ```
 
 **Event names work.** An event port carries its name verbatim
@@ -60,7 +60,7 @@ focused:
 ```ts no-check
 import { exoNodeDom } from '@exodra/dom';
 
-const child = c.build(SELECT, 0, params);
+const child = c.build(Select, 0, params);
 exoNodeDom(child).mount = function () {
     (this.node as HTMLElement & { options: unknown }).options = items;
 };
@@ -153,35 +153,15 @@ grows and shrinks is level with hand-written diff code (1.000×), and the rest
 sit above their floor — `text-sweep` 1.522×, `text-one` 1.562×, `reorder`
 1.566× and `wide` **2.242×**, the application-wide flip.
 
-### A list cannot be told what changed
-
-`c.bindList` once applied a list operation — insert here, remove there —
-straight to the child list without diffing, and it was the fastest row on
-`list-update`. That door is deleted (`list-reconcile.tsx` says so where the row
-was struck): every list notification is now a bare "it moved", re-read and
-diffed. Building children with `c.build` and placing them yourself is still
-possible, but no axis measures it, and `benchmarks.md` still prints the old
-op-source row.
-
-### The runtime path of `@exodra/react-compat` is slower than React by default
+### Without the compiler, `@exodra/react-compat` mounts level with React, not ahead
 
 Measured on the benchmark application with production builds, in narrowed runs
-(ratios only, inside one run, `initial-render.compat4`): mounting through the
-plain runtime path took 1.330 ms against React's 1.140. With
-`enableExoReactHostTemplates()` it took 0.990, ahead of React, and the compiled
-path, `@exodra/babel-plugin-schema/react`, took 0.890. On `app-update`
-(`app-update.compat4`) the axis reports no resolution, so only the order is
+(ratios only, inside one run, `initial-render.compat8`): mounting with host
+templates, which are on by default, took 1.000 ms against React's 0.980; with
+templates switched off, 1.280. The compiled path,
+`@exodra/babel-plugin-schema/react`, took 0.860. On `app-update`
+(`app-update.compat8`) the axis reports no resolution, so only the order is
 known: compiled, then templates, then React, then the plain runtime.
-
-Templates are off by default because a component that changes the shape of a
-tree it already rendered has that subtree rebuilt once, where React would keep
-the unchanged siblings ([Host templates](./guides/react-compat.md#host-templates-without-the-compiler)).
-
-### React library compatibility is not checked by anything
-
-`packages/react-compat-libraries/tests/` holds fifteen suites — Formik,
-react-query, framer-motion, Radix, react-hook-form and others — that the default
-test run does not collect, so none of what they assert is currently asserted.
 
 ### Toggling a large block rebuilds it by default
 

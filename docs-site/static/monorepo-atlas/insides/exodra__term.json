@@ -46,8 +46,8 @@
         "violations": []
       },
       {
-        "id": "COUNTER",
-        "label": "COUNTER",
+        "id": "Counter",
+        "label": "Counter",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -58,8 +58,32 @@
         "violations": []
       },
       {
-        "id": "COUNTER_SCHEMA",
-        "label": "COUNTER_SCHEMA",
+        "id": "counterBuilder",
+        "label": "counterBuilder",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "CounterPorts",
+        "label": "CounterPorts",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "counterSchema",
+        "label": "counterSchema",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -932,18 +956,6 @@
         "violations": []
       },
       {
-        "id": "increment",
-        "label": "increment",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
         "id": "instantiateExoTermProto",
         "label": "instantiateExoTermProto",
         "kind": "tooling",
@@ -971,54 +983,6 @@
         "violations": []
       },
       {
-        "id": "LIST_SCHEMA",
-        "label": "LIST_SCHEMA",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "mCounter",
-        "label": "mCounter",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "mList",
-        "label": "mList",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "mTodo",
-        "label": "mTodo",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
         "id": "namedAttrPort",
         "label": "namedAttrPort",
         "kind": "tooling",
@@ -1035,18 +999,6 @@
         "doc": "A STRING attribute carries no absence: the kind says the value is a string, so nothing is tested and nothing is removed.",
         "width": 126,
         "height": 69,
-        "violations": []
-      },
-      {
-        "id": "P",
-        "label": "P",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
         "violations": []
       },
       {
@@ -1106,18 +1058,6 @@
       {
         "id": "RESET",
         "label": "RESET",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 120,
-        "height": 46,
-        "violations": []
-      },
-      {
-        "id": "show",
-        "label": "show",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -2292,8 +2232,8 @@
         "layer": 0,
         "members": [
           {
-            "text": "TAssert< typeof COUNTER extends TExoTer…",
-            "full": "TAssert< typeof COUNTER extends TExoTermMachine ? true : false >",
+            "text": "TAssert< typeof Counter extends TExoTer…",
+            "full": "TAssert< typeof Counter extends TExoTermMachine ? true : false >",
             "parts": [
               {
                 "text": "TAssert",
@@ -2303,8 +2243,8 @@
                 "text": "< typeof "
               },
               {
-                "text": "COUNTER",
-                "link": "COUNTER"
+                "text": "Counter",
+                "link": "Counter"
               },
               {
                 "text": " extends TExoTer…"
@@ -2319,8 +2259,8 @@
                 "text": "< typeof "
               },
               {
-                "text": "COUNTER",
-                "link": "COUNTER"
+                "text": "Counter",
+                "link": "Counter"
               },
               {
                 "text": " extends "
@@ -2348,8 +2288,8 @@
         "layer": 0,
         "members": [
           {
-            "text": "TAssert< typeof TODO_LIST extends TExoT…",
-            "full": "TAssert< typeof TODO_LIST extends TExoTermMachine ? true : false >",
+            "text": "TAssert< typeof TodoList extends TExoTe…",
+            "full": "TAssert< typeof TodoList extends TExoTermMachine ? true : false >",
             "parts": [
               {
                 "text": "TAssert",
@@ -2359,11 +2299,11 @@
                 "text": "< typeof "
               },
               {
-                "text": "TODO_LIST",
-                "link": "TODO_LIST"
+                "text": "TodoList",
+                "link": "TodoList"
               },
               {
-                "text": " extends TExoT…"
+                "text": " extends TExoTe…"
               }
             ],
             "fullParts": [
@@ -2375,8 +2315,8 @@
                 "text": "< typeof "
               },
               {
-                "text": "TODO_LIST",
-                "link": "TODO_LIST"
+                "text": "TodoList",
+                "link": "TodoList"
               },
               {
                 "text": " extends "
@@ -2404,8 +2344,8 @@
         "layer": 0,
         "members": [
           {
-            "text": "TAssert< typeof TODO extends TExoTermMa…",
-            "full": "TAssert< typeof TODO extends TExoTermMachine ? true : false >",
+            "text": "TAssert< typeof Todo extends TExoTermMa…",
+            "full": "TAssert< typeof Todo extends TExoTermMachine ? true : false >",
             "parts": [
               {
                 "text": "TAssert",
@@ -2415,8 +2355,8 @@
                 "text": "< typeof "
               },
               {
-                "text": "TODO",
-                "link": "TODO"
+                "text": "Todo",
+                "link": "Todo"
               },
               {
                 "text": " extends TExoTermMa…"
@@ -2431,8 +2371,8 @@
                 "text": "< typeof "
               },
               {
-                "text": "TODO",
-                "link": "TODO"
+                "text": "Todo",
+                "link": "Todo"
               },
               {
                 "text": " extends "
@@ -2926,8 +2866,8 @@
         "violations": []
       },
       {
-        "id": "TODO",
-        "label": "TODO",
+        "id": "Todo",
+        "label": "Todo",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -2938,8 +2878,8 @@
         "violations": []
       },
       {
-        "id": "TODO_LIST",
-        "label": "TODO_LIST",
+        "id": "todoBuilder",
+        "label": "todoBuilder",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -2950,8 +2890,56 @@
         "violations": []
       },
       {
-        "id": "TODO_SCHEMA",
-        "label": "TODO_SCHEMA",
+        "id": "TodoList",
+        "label": "TodoList",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "todoListBuilder",
+        "label": "todoListBuilder",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TodoListPorts",
+        "label": "TodoListPorts",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "todoListSchema",
+        "label": "todoListSchema",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "TodoPorts",
+        "label": "TodoPorts",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -2964,6 +2952,18 @@
       {
         "id": "todos",
         "label": "todos",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "todoSchema",
+        "label": "todoSchema",
         "kind": "app",
         "layer": 0,
         "members": [],
@@ -3127,9 +3127,47 @@
         "violations": []
       },
       {
-        "id": "COUNTER→mCounter",
-        "from": "COUNTER",
-        "to": "mCounter",
+        "id": "Counter→counterBuilder",
+        "from": "Counter",
+        "to": "counterBuilder",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "counterBuilder→counterSchema",
+        "from": "counterBuilder",
+        "to": "counterSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "counterSchema→CounterPorts",
+        "from": "counterSchema",
+        "to": "CounterPorts",
         "kinds": [
           "type-only"
         ],
@@ -4780,44 +4818,6 @@
         "violations": []
       },
       {
-        "id": "increment→mCounter",
-        "from": "increment",
-        "to": "mCounter",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "increment→show",
-        "from": "increment",
-        "to": "show",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
         "id": "instantiateExoTermProto→TExoTermElement",
         "from": "instantiateExoTermProto",
         "to": "TExoTermElement",
@@ -4887,101 +4887,6 @@
           {
             "from": "/Users/abaikov/work/exodra/packages/term/src/instance/instantiateExoTermProto.ts",
             "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "mCounter→COUNTER_SCHEMA",
-        "from": "mCounter",
-        "to": "COUNTER_SCHEMA",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "mList→LIST_SCHEMA",
-        "from": "mList",
-        "to": "LIST_SCHEMA",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "mTodo→TODO_SCHEMA",
-        "from": "mTodo",
-        "to": "TODO_SCHEMA",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "mTodo→TTodo",
-        "from": "mTodo",
-        "to": "TTodo",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "P→COUNTER_SCHEMA",
-        "from": "P",
-        "to": "COUNTER_SCHEMA",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5134,44 +5039,6 @@
           {
             "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
             "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "show→mCounter",
-        "from": "show",
-        "to": "mCounter",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "show→P",
-        "from": "show",
-        "to": "P",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5901,9 +5768,9 @@
         "violations": []
       },
       {
-        "id": "TExoTermRunsTheReadmeCounter→COUNTER",
+        "id": "TExoTermRunsTheReadmeCounter→Counter",
         "from": "TExoTermRunsTheReadmeCounter",
-        "to": "COUNTER",
+        "to": "Counter",
         "kinds": [
           "type-only"
         ],
@@ -5996,9 +5863,9 @@
         "violations": []
       },
       {
-        "id": "TExoTermRunsTheReadmeTodoList→TODO_LIST",
+        "id": "TExoTermRunsTheReadmeTodoList→TodoList",
         "from": "TExoTermRunsTheReadmeTodoList",
-        "to": "TODO_LIST",
+        "to": "TodoList",
         "kinds": [
           "type-only"
         ],
@@ -6053,9 +5920,9 @@
         "violations": []
       },
       {
-        "id": "TExoTermRunsTheReadmeTodoRow→TODO",
+        "id": "TExoTermRunsTheReadmeTodoRow→Todo",
         "from": "TExoTermRunsTheReadmeTodoRow",
-        "to": "TODO",
+        "to": "Todo",
         "kinds": [
           "type-only"
         ],
@@ -6357,9 +6224,9 @@
         "violations": []
       },
       {
-        "id": "TODO_LIST→mList",
-        "from": "TODO_LIST",
-        "to": "mList",
+        "id": "Todo→todoBuilder",
+        "from": "Todo",
+        "to": "todoBuilder",
         "kinds": [
           "type-only"
         ],
@@ -6376,9 +6243,85 @@
         "violations": []
       },
       {
-        "id": "TODO→mTodo",
-        "from": "TODO",
-        "to": "mTodo",
+        "id": "todoBuilder→todoSchema",
+        "from": "todoBuilder",
+        "to": "todoSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "todoBuilder→TTodo",
+        "from": "todoBuilder",
+        "to": "TTodo",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TodoList→todoListBuilder",
+        "from": "TodoList",
+        "to": "todoListBuilder",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "todoListBuilder→todoListSchema",
+        "from": "todoListBuilder",
+        "to": "todoListSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "todoListSchema→TodoListPorts",
+        "from": "todoListSchema",
+        "to": "TodoListPorts",
         "kinds": [
           "type-only"
         ],
@@ -6398,6 +6341,25 @@
         "id": "todos→TTodo",
         "from": "todos",
         "to": "TTodo",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "todoSchema→TodoPorts",
+        "from": "todoSchema",
+        "to": "TodoPorts",
         "kinds": [
           "type-only"
         ],
@@ -6456,334 +6418,299 @@
   },
   "layout": {
     "width": 5542,
-    "height": 4561.8,
+    "height": 4577.5,
     "nodes": [
       {
         "id": "BOLD",
         "x": 1381.5,
-        "y": 1471.5,
+        "y": 1475.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "compileExoTermSchema",
         "x": 2085.5,
-        "y": 2770.5,
+        "y": 2817.8,
         "width": 248,
         "height": 69
       },
       {
-        "id": "COUNTER",
+        "id": "Counter",
         "x": 2149.5,
-        "y": 458.5,
+        "y": 344.5,
         "width": 120,
         "height": 46
       },
       {
-        "id": "COUNTER_SCHEMA",
+        "id": "counterBuilder",
+        "x": 2506.5,
+        "y": 344.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "CounterPorts",
+        "x": 3220.5,
+        "y": 344.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "counterSchema",
         "x": 2863.5,
-        "y": 291.5,
+        "y": 344.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "createAttrWriter",
         "x": 3548.5,
-        "y": 3608,
+        "y": 3623.8,
         "width": 178,
         "height": 69
       },
       {
         "id": "createClassWriter",
         "x": 3886.5,
-        "y": 3685.8,
+        "y": 3701.5,
         "width": 216,
         "height": 69
       },
       {
         "id": "createExoTermChildList",
         "x": 3532.5,
-        "y": 4124,
+        "y": 4139.8,
         "width": 210,
         "height": 69
       },
       {
         "id": "createExoTermInstanceFactory",
         "x": 1684,
-        "y": 4361.8,
+        "y": 4377.5,
         "width": 235,
         "height": 69
       },
       {
         "id": "createMissingWriter",
         "x": 3902.5,
-        "y": 3789.8,
+        "y": 3805.5,
         "width": 184,
         "height": 69
       },
       {
         "id": "createRefusingWriter",
         "x": 3877,
-        "y": 3471.8,
+        "y": 3487.5,
         "width": 235,
         "height": 69
       },
       {
         "id": "createStringAttrWriter",
         "x": 3905.5,
-        "y": 3374.8,
+        "y": 3390.5,
         "width": 178,
         "height": 69
       },
       {
         "id": "createToggleAttrWriter",
         "x": 3905.5,
-        "y": 3277.8,
+        "y": 3293.5,
         "width": 178,
         "height": 69
       },
       {
         "id": "DIM",
         "x": 1381.5,
-        "y": 1397.5,
+        "y": 1401.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "disposeExoTermChild",
         "x": 3921.5,
-        "y": 3588.8,
+        "y": 3604.5,
         "width": 146,
         "height": 69
       },
       {
         "id": "ESC",
         "x": 1741.5,
-        "y": 1397.5,
+        "y": 1372.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "EXO_TERM_FOREIGN_METHODS",
         "x": 4262.5,
-        "y": 1782,
+        "y": 1772.8,
         "width": 178,
         "height": 46
       },
       {
         "id": "EXO_TERM_FOREIGN_VOCABULARY",
         "x": 3896,
-        "y": 1782,
+        "y": 1772.8,
         "width": 197,
         "height": 46
       },
       {
         "id": "EXO_TERM_MARK",
         "x": 5337,
-        "y": 1810,
+        "y": 1792.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "EXO_TERM_NODE_METHODS",
         "x": 1362.5,
-        "y": 3894.8,
+        "y": 3867.8,
         "width": 158,
         "height": 46
       },
       {
         "id": "EXO_TERM_NODE_VOCABULARY",
         "x": 1043.5,
-        "y": 3894.8,
+        "y": 3867.8,
         "width": 178,
         "height": 46
       },
       {
         "id": "EXO_TERM_WRITER_FACTORIES",
         "x": 3188.5,
-        "y": 3462,
+        "y": 3509,
         "width": 184,
         "height": 46
       },
       {
         "id": "exoForeignTermNode",
         "x": 3886.5,
-        "y": 1884,
+        "y": 1879,
         "width": 216,
         "height": 69
       },
       {
         "id": "ExoTermBackend",
         "x": 24,
-        "y": 570.8,
+        "y": 547.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "ExoTermBackendBase",
         "x": 565,
-        "y": 1115.8,
+        "y": 1081.5,
         "width": 357,
         "height": 102
       },
       {
         "id": "exoTermContextSlot",
         "x": 1063,
-        "y": 1570.5,
+        "y": 1575,
         "width": 139,
         "height": 46
       },
       {
         "id": "ExoTermEmitter",
         "x": 2442.5,
-        "y": 2980.5,
+        "y": 3027.8,
         "width": 248,
         "height": 177
       },
       {
         "id": "exoTermFind",
         "x": 4227.5,
-        "y": 582.8,
+        "y": 581.5,
         "width": 248,
         "height": 69
       },
       {
         "id": "exoTermFire",
         "x": 4243.5,
-        "y": 679.8,
+        "y": 678.5,
         "width": 216,
         "height": 69
       },
       {
         "id": "exoTermSchemaOf",
         "x": 1674.5,
-        "y": 2623.5,
+        "y": 2749.3,
         "width": 254,
         "height": 69
       },
       {
         "id": "exoTermText",
         "x": 1040.5,
-        "y": 1301.3,
+        "y": 1305.8,
         "width": 184,
         "height": 69
       },
       {
         "id": "exoTermWriterForPort",
         "x": 2786.5,
-        "y": 3265,
+        "y": 3312.3,
         "width": 274,
         "height": 69
       },
       {
         "id": "GREEN",
         "x": 1381.5,
-        "y": 1323.5,
+        "y": 1327.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "HERE",
         "x": 2149.5,
-        "y": 4082,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "increment",
-        "x": 1741.5,
-        "y": 291.5,
+        "y": 4097.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "instantiateExoTermProto",
         "x": 3134,
-        "y": 4468.8,
+        "y": 4484.5,
         "width": 293,
         "height": 69
       },
       {
-        "id": "LIST_SCHEMA",
-        "x": 2863.5,
-        "y": 545.5,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "mCounter",
-        "x": 2506.5,
-        "y": 328.5,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "mList",
-        "x": 2506.5,
-        "y": 535.5,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "mTodo",
-        "x": 2506.5,
-        "y": 619.5,
-        "width": 120,
-        "height": 46
-      },
-      {
         "id": "namedAttrPort",
         "x": 3574.5,
-        "y": 3219.3,
+        "y": 3235,
         "width": 126,
         "height": 69
       },
       {
-        "id": "P",
-        "x": 2506.5,
-        "y": 254.5,
-        "width": 120,
-        "height": 46
-      },
-      {
         "id": "renderExoTermInstance",
         "x": 1604,
-        "y": 1803,
+        "y": 1807.5,
         "width": 395,
         "height": 69
       },
       {
         "id": "requireExoTermRegion",
         "x": 1664.5,
-        "y": 4017.8,
+        "y": 4033.5,
         "width": 274,
         "height": 69
       },
       {
         "id": "RESET",
         "x": 1381.5,
-        "y": 1249.5,
-        "width": 120,
-        "height": 46
-      },
-      {
-        "id": "show",
-        "x": 2149.5,
-        "y": 264.5,
+        "y": 1253.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "TAssert",
         "x": 2149.5,
-        "y": 693.5,
+        "y": 678.5,
         "width": 120,
         "height": 69
       },
       {
         "id": "TExoTermApi",
         "x": 3491,
-        "y": 2297.3,
+        "y": 2342.3,
         "width": 293,
         "height": 69
       },
@@ -6804,182 +6731,182 @@
       {
         "id": "TExoTermChild",
         "x": 4205,
-        "y": 2825.5,
+        "y": 2872.8,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermChildList",
         "x": 4562,
-        "y": 3844.3,
+        "y": 3860,
         "width": 293,
         "height": 174
       },
       {
         "id": "TExoTermElement",
         "x": 4562,
-        "y": 2080.3,
+        "y": 2075.3,
         "width": 293,
         "height": 129
       },
       {
         "id": "TExoTermEvent",
         "x": 5276,
-        "y": 2099.5,
+        "y": 2081.8,
         "width": 242,
         "height": 84
       },
       {
         "id": "TExoTermForeignApi",
         "x": 4562,
-        "y": 1799.8,
+        "y": 1790.5,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermKid",
         "x": 4919,
-        "y": 2125.3,
+        "y": 2120.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermListener",
         "x": 4919,
-        "y": 2289,
+        "y": 2324,
         "width": 293,
         "height": 84
       },
       {
         "id": "TExoTermMachine",
         "x": 2111,
-        "y": 972.8,
+        "y": 976.5,
         "width": 197,
         "height": 69
       },
       {
         "id": "TExoTermMark",
         "x": 4948,
-        "y": 1872.5,
+        "y": 1838.3,
         "width": 235,
         "height": 69
       },
       {
         "id": "TExoTermNode",
         "x": 2433,
-        "y": 1666.5,
+        "y": 1661.5,
         "width": 267,
         "height": 69
       },
       {
         "id": "TExoTermNodeApi",
         "x": 4205,
-        "y": 1556.8,
+        "y": 1552.3,
         "width": 293,
         "height": 189
       },
       {
         "id": "TExoTermNodeConstructor",
         "x": 2063,
-        "y": 4351,
+        "y": 4366.8,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermNodeFields",
         "x": 2777,
-        "y": 2110.3,
+        "y": 2105.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermNodeInit",
         "x": 2420,
-        "y": 4282.5,
+        "y": 4298.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermOpenElement",
         "x": 3494.5,
-        "y": 2708.3,
+        "y": 2724,
         "width": 286,
         "height": 189
       },
       {
         "id": "TExoTermProtoElement",
         "x": 3491,
-        "y": 2925.3,
+        "y": 2941,
         "width": 293,
         "height": 129
       },
       {
         "id": "TExoTermProtoKid",
         "x": 3848,
-        "y": 2820.3,
+        "y": 2836,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermProtoRegion",
         "x": 4262.5,
-        "y": 3019.5,
+        "y": 3066.8,
         "width": 178,
         "height": 69
       },
       {
         "id": "TExoTermProtoText",
         "x": 4262.5,
-        "y": 2922.5,
+        "y": 2969.8,
         "width": 178,
         "height": 69
       },
       {
         "id": "TExoTermRegion",
         "x": 5295.5,
-        "y": 4051.8,
+        "y": 4056.3,
         "width": 203,
         "height": 69
       },
       {
         "id": "TExoTermRunsTheReadmeCounter",
         "x": 1655,
-        "y": 470.8,
+        "y": 366.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermRunsTheReadmeTodoList",
         "x": 1655,
-        "y": 587.8,
+        "y": 592.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermRunsTheReadmeTodoRow",
         "x": 1655,
-        "y": 696,
+        "y": 700.5,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermSatisfiesCoreChildren",
         "x": 1655,
-        "y": 817.3,
+        "y": 821,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermSatisfiesCoreValues",
         "x": 1655,
-        "y": 914.3,
+        "y": 918,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermSchema",
         "x": 3134,
-        "y": 2315.8,
+        "y": 2252.3,
         "width": 293,
         "height": 189
       },
@@ -6993,91 +6920,126 @@
       {
         "id": "TExoTermStaticText",
         "x": 5308,
-        "y": 1884,
+        "y": 1866.3,
         "width": 178,
         "height": 69
       },
       {
         "id": "TExoTermSurface",
         "x": 3934.5,
-        "y": 1672.3,
+        "y": 1663,
         "width": 120,
         "height": 46
       },
       {
         "id": "TExoTermTextOptions",
         "x": 1343,
-        "y": 688.5,
+        "y": 640,
         "width": 197,
         "height": 84
       },
       {
         "id": "TExoTermWriter",
         "x": 4205,
-        "y": 3195,
+        "y": 3239,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermWriterFactories",
         "x": 3491,
-        "y": 3102.3,
+        "y": 3118,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermWriterFactory",
         "x": 3851.5,
-        "y": 3102.3,
+        "y": 3118,
         "width": 286,
         "height": 69
       },
       {
-        "id": "TODO",
+        "id": "Todo",
         "x": 2149.5,
-        "y": 619.5,
+        "y": 604.5,
         "width": 120,
         "height": 46
       },
       {
-        "id": "TODO_LIST",
-        "x": 2149.5,
-        "y": 535.5,
+        "id": "todoBuilder",
+        "x": 2506.5,
+        "y": 604.5,
         "width": 120,
         "height": 46
       },
       {
-        "id": "TODO_SCHEMA",
+        "id": "TodoList",
+        "x": 2149.5,
+        "y": 530.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "todoListBuilder",
+        "x": 2506.5,
+        "y": 530.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TodoListPorts",
+        "x": 3220.5,
+        "y": 530.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "todoListSchema",
         "x": 2863.5,
-        "y": 830.3,
+        "y": 530.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "TodoPorts",
+        "x": 3220.5,
+        "y": 824.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "todos",
         "x": 2506.5,
-        "y": 442.5,
+        "y": 437.5,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "todoSchema",
+        "x": 2863.5,
+        "y": 824.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "TTodo",
         "x": 2838,
-        "y": 433.5,
+        "y": 418.5,
         "width": 171,
         "height": 84
       },
       {
         "id": "writeText",
         "x": 4272.5,
-        "y": 3527.3,
+        "y": 3543,
         "width": 158,
         "height": 69
       },
       {
         "id": "YELLOW",
         "x": 1381.5,
-        "y": 1155.5,
+        "y": 1159.3,
         "width": 120,
         "height": 46
       }
@@ -7088,15 +7050,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1494.5
+            "y": 1498.3
           },
           {
             "x": 1572,
-            "y": 1494.5
+            "y": 1498.3
           },
           {
-            "x": 1741.5,
-            "y": 1439.8
+            "x": 1750,
+            "y": 1418.8
           }
         ]
       },
@@ -7105,15 +7067,15 @@
         "points": [
           {
             "x": 2232.8,
-            "y": 2839.5
+            "y": 2886.8
           },
           {
             "x": 2388,
-            "y": 3069
+            "y": 3116.3
           },
           {
             "x": 2442.5,
-            "y": 3069
+            "y": 3116.3
           }
         ]
       },
@@ -7121,40 +7083,40 @@
         "id": "compileExoTermSchema→TExoTermApi",
         "points": [
           {
-            "x": 2253.3,
-            "y": 2770.5
+            "x": 2245.3,
+            "y": 2817.8
           },
           {
             "x": 2388,
-            "y": 2664.3
+            "y": 2680
           },
           {
             "x": 2566.5,
-            "y": 2664.3
+            "y": 2680
           },
           {
             "x": 2745,
-            "y": 2664.3
+            "y": 2680
           },
           {
             "x": 2923.5,
-            "y": 2664.3
+            "y": 2680
           },
           {
             "x": 3102,
-            "y": 2664.3
+            "y": 2680
           },
           {
             "x": 3280.5,
-            "y": 2664.3
+            "y": 2680
           },
           {
             "x": 3459,
-            "y": 2664.3
+            "y": 2680
           },
           {
-            "x": 3619,
-            "y": 2366.3
+            "x": 3617.2,
+            "y": 2411.3
           }
         ]
       },
@@ -7162,40 +7124,40 @@
         "id": "compileExoTermSchema→TExoTermProtoElement",
         "points": [
           {
-            "x": 2247.8,
-            "y": 2770.5
+            "x": 2241.5,
+            "y": 2817.8
           },
           {
             "x": 2388,
-            "y": 2644.3
+            "y": 2660
           },
           {
             "x": 2566.5,
-            "y": 2644.3
+            "y": 2660
           },
           {
             "x": 2745,
-            "y": 2644.3
+            "y": 2660
           },
           {
             "x": 2923.5,
-            "y": 2644.3
+            "y": 2660
           },
           {
             "x": 3102,
-            "y": 2644.3
+            "y": 2660
           },
           {
             "x": 3280.5,
-            "y": 2644.3
+            "y": 2660
           },
           {
             "x": 3459,
-            "y": 2644.3
+            "y": 2660
           },
           {
             "x": 3604.2,
-            "y": 2925.3
+            "y": 2941
           }
         ]
       },
@@ -7203,49 +7165,83 @@
         "id": "compileExoTermSchema→TExoTermSchema",
         "points": [
           {
-            "x": 2243.6,
-            "y": 2770.5
+            "x": 2238.5,
+            "y": 2817.8
           },
           {
             "x": 2388,
-            "y": 2624.3
+            "y": 2640
           },
           {
             "x": 2566.5,
-            "y": 2624.3
+            "y": 2640
           },
           {
             "x": 2745,
-            "y": 2624.3
+            "y": 2640
           },
           {
             "x": 2923.5,
-            "y": 2624.3
+            "y": 2640
           },
           {
             "x": 3102,
-            "y": 2624.3
+            "y": 2640
           },
           {
-            "x": 3201.7,
-            "y": 2504.8
+            "x": 3223,
+            "y": 2441.3
           }
         ]
       },
       {
-        "id": "COUNTER→mCounter",
+        "id": "Counter→counterBuilder",
         "points": [
           {
             "x": 2269.5,
-            "y": 481.5
+            "y": 367.5
           },
           {
             "x": 2388,
-            "y": 481.5
+            "y": 367.5
           },
           {
-            "x": 2534.9,
-            "y": 374.5
+            "x": 2506.5,
+            "y": 367.5
+          }
+        ]
+      },
+      {
+        "id": "counterBuilder→counterSchema",
+        "points": [
+          {
+            "x": 2626.5,
+            "y": 367.5
+          },
+          {
+            "x": 2745,
+            "y": 367.5
+          },
+          {
+            "x": 2863.5,
+            "y": 367.5
+          }
+        ]
+      },
+      {
+        "id": "counterSchema→CounterPorts",
+        "points": [
+          {
+            "x": 2983.5,
+            "y": 367.5
+          },
+          {
+            "x": 3102,
+            "y": 367.5
+          },
+          {
+            "x": 3220.5,
+            "y": 367.5
           }
         ]
       },
@@ -7254,15 +7250,15 @@
         "points": [
           {
             "x": 3716.7,
-            "y": 3677
+            "y": 3692.8
           },
           {
             "x": 3816,
-            "y": 3720.3
+            "y": 3736
           },
           {
             "x": 3886.5,
-            "y": 3720.3
+            "y": 3736
           }
         ]
       },
@@ -7271,23 +7267,23 @@
         "points": [
           {
             "x": 3716.7,
-            "y": 3608
+            "y": 3623.8
           },
           {
             "x": 3816,
-            "y": 3564.8
+            "y": 3580.5
           },
           {
             "x": 3994.5,
-            "y": 3564.8
+            "y": 3580.5
           },
           {
             "x": 4173,
-            "y": 3564.8
+            "y": 3580.5
           },
           {
-            "x": 4333.1,
-            "y": 3264
+            "x": 4331.4,
+            "y": 3308
           }
         ]
       },
@@ -7296,15 +7292,15 @@
         "points": [
           {
             "x": 4102.5,
-            "y": 3720.3
+            "y": 3736
           },
           {
             "x": 4173,
-            "y": 3720.3
+            "y": 3736
           },
           {
-            "x": 4339,
-            "y": 3264
+            "x": 4338.2,
+            "y": 3308
           }
         ]
       },
@@ -7313,15 +7309,15 @@
         "points": [
           {
             "x": 3742.5,
-            "y": 4182
+            "y": 4197.8
           },
           {
             "x": 3816,
-            "y": 4198.5
+            "y": 4214.3
           },
           {
             "x": 3983.8,
-            "y": 3657.8
+            "y": 3673.5
           }
         ]
       },
@@ -7330,23 +7326,23 @@
         "points": [
           {
             "x": 3742.5,
-            "y": 4170.3
+            "y": 4186
           },
           {
             "x": 3816,
-            "y": 4178.5
+            "y": 4194.3
           },
           {
             "x": 3994.5,
-            "y": 4178.5
+            "y": 4194.3
           },
           {
             "x": 4173,
-            "y": 4178.5
+            "y": 4194.3
           },
           {
-            "x": 4346.8,
-            "y": 2894.5
+            "x": 4346.7,
+            "y": 2941.8
           }
         ]
       },
@@ -7355,31 +7351,31 @@
         "points": [
           {
             "x": 3742.5,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 3816,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 3994.5,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 4173,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 4351.5,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 4530,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 4640.2,
-            "y": 4018.3
+            "y": 4034
           }
         ]
       },
@@ -7388,39 +7384,39 @@
         "points": [
           {
             "x": 3742.5,
-            "y": 4127.5
+            "y": 4143.2
           },
           {
             "x": 3816,
-            "y": 4105.8
+            "y": 4121.5
           },
           {
             "x": 3994.5,
-            "y": 4105.8
+            "y": 4121.5
           },
           {
             "x": 4173,
-            "y": 4105.8
+            "y": 4121.5
           },
           {
             "x": 4351.5,
-            "y": 4105.8
+            "y": 4121.5
           },
           {
             "x": 4530,
-            "y": 4105.8
+            "y": 4121.5
           },
           {
             "x": 4708.5,
-            "y": 4105.8
+            "y": 4121.5
           },
           {
             "x": 4887,
-            "y": 4105.8
+            "y": 4121.5
           },
           {
-            "x": 5062.7,
-            "y": 1941.5
+            "x": 5062.8,
+            "y": 1907.3
           }
         ]
       },
@@ -7429,47 +7425,47 @@
         "points": [
           {
             "x": 3722.1,
-            "y": 4124
+            "y": 4139.8
           },
           {
             "x": 3816,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 3994.5,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 4173,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 4351.5,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 4530,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 4708.5,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 4887,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 5065.5,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 5244,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 5295.5,
-            "y": 4085.9
+            "y": 4097.9
           }
         ]
       },
@@ -7478,39 +7474,39 @@
         "points": [
           {
             "x": 1875.5,
-            "y": 4430.8
+            "y": 4446.5
           },
           {
             "x": 2031,
-            "y": 4503.3
+            "y": 4519
           },
           {
             "x": 2209.5,
-            "y": 4503.3
+            "y": 4519
           },
           {
             "x": 2388,
-            "y": 4503.3
+            "y": 4519
           },
           {
             "x": 2566.5,
-            "y": 4503.3
+            "y": 4519
           },
           {
             "x": 2745,
-            "y": 4503.3
+            "y": 4519
           },
           {
             "x": 2923.5,
-            "y": 4503.3
+            "y": 4519
           },
           {
             "x": 3102,
-            "y": 4503.3
+            "y": 4519
           },
           {
             "x": 3134,
-            "y": 4503.3
+            "y": 4519
           }
         ]
       },
@@ -7519,71 +7515,71 @@
         "points": [
           {
             "x": 1919,
-            "y": 4420.7
+            "y": 4436.4
           },
           {
             "x": 2031,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 2209.5,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 2388,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 2566.5,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 2745,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 2923.5,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 3102,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 3280.5,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 3459,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 3637.5,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 3816,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 3994.5,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 4173,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 4351.5,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 4530,
-            "y": 4444
+            "y": 4459.8
           },
           {
             "x": 4703.5,
-            "y": 2209.3
+            "y": 2204.3
           }
         ]
       },
@@ -7592,15 +7588,15 @@
         "points": [
           {
             "x": 1919,
-            "y": 4390.7
+            "y": 4406.5
           },
           {
             "x": 2031,
-            "y": 4385.5
+            "y": 4401.3
           },
           {
             "x": 2063,
-            "y": 4385.5
+            "y": 4401.3
           }
         ]
       },
@@ -7609,23 +7605,23 @@
         "points": [
           {
             "x": 1901.4,
-            "y": 4361.8
+            "y": 4377.5
           },
           {
             "x": 2031,
-            "y": 4317
+            "y": 4332.8
           },
           {
             "x": 2209.5,
-            "y": 4317
+            "y": 4332.8
           },
           {
             "x": 2388,
-            "y": 4317
+            "y": 4332.8
           },
           {
             "x": 2420,
-            "y": 4317
+            "y": 4332.8
           }
         ]
       },
@@ -7634,87 +7630,87 @@
         "points": [
           {
             "x": 1859,
-            "y": 4361.8
+            "y": 4377.5
           },
           {
             "x": 2031,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 2209.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 2388,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 2566.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 2745,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 2923.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 3102,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 3280.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 3459,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 3637.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 3816,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 3994.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 4173,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 4351.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 4530,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 4708.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 4887,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 5065.5,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
             "x": 5244,
-            "y": 4258.5
+            "y": 4274.3
           },
           {
-            "x": 5366.4,
-            "y": 4120.8
+            "x": 5368.2,
+            "y": 4125.3
           }
         ]
       },
@@ -7723,39 +7719,39 @@
         "points": [
           {
             "x": 1851.7,
-            "y": 4361.8
+            "y": 4377.5
           },
           {
             "x": 2031,
-            "y": 4238.5
+            "y": 4254.3
           },
           {
             "x": 2209.5,
-            "y": 4238.5
+            "y": 4254.3
           },
           {
             "x": 2388,
-            "y": 4238.5
+            "y": 4254.3
           },
           {
             "x": 2566.5,
-            "y": 4238.5
+            "y": 4254.3
           },
           {
             "x": 2745,
-            "y": 4238.5
+            "y": 4254.3
           },
           {
             "x": 2923.5,
-            "y": 4238.5
+            "y": 4254.3
           },
           {
             "x": 3102,
-            "y": 4238.5
+            "y": 4254.3
           },
           {
-            "x": 3271.3,
-            "y": 2504.8
+            "x": 3271.7,
+            "y": 2441.3
           }
         ]
       },
@@ -7764,15 +7760,15 @@
         "points": [
           {
             "x": 4086.5,
-            "y": 3824.3
+            "y": 3840
           },
           {
             "x": 4173,
-            "y": 3824.3
+            "y": 3840
           },
           {
-            "x": 4341.1,
-            "y": 3264
+            "x": 4340.6,
+            "y": 3308
           }
         ]
       },
@@ -7781,15 +7777,15 @@
         "points": [
           {
             "x": 4112,
-            "y": 3506.3
+            "y": 3522
           },
           {
             "x": 4173,
-            "y": 3506.3
+            "y": 3522
           },
           {
-            "x": 4329.2,
-            "y": 3264
+            "x": 4326.7,
+            "y": 3308
           }
         ]
       },
@@ -7798,15 +7794,15 @@
         "points": [
           {
             "x": 4083.5,
-            "y": 3409.3
+            "y": 3425
           },
           {
             "x": 4173,
-            "y": 3409.3
+            "y": 3425
           },
           {
-            "x": 4317.2,
-            "y": 3264
+            "x": 4310.9,
+            "y": 3308
           }
         ]
       },
@@ -7815,15 +7811,15 @@
         "points": [
           {
             "x": 4083.5,
-            "y": 3312.3
+            "y": 3328
           },
           {
             "x": 4173,
-            "y": 3312.3
+            "y": 3328
           },
           {
-            "x": 4277.1,
-            "y": 3264
+            "x": 4238.5,
+            "y": 3308
           }
         ]
       },
@@ -7832,15 +7828,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1420.5
+            "y": 1424.3
           },
           {
             "x": 1572,
-            "y": 1420.5
+            "y": 1424.3
           },
           {
             "x": 1741.5,
-            "y": 1420.5
+            "y": 1403.2
           }
         ]
       },
@@ -7849,15 +7845,15 @@
         "points": [
           {
             "x": 4067.5,
-            "y": 3623.3
+            "y": 3639
           },
           {
             "x": 4173,
-            "y": 3623.3
+            "y": 3639
           },
           {
-            "x": 4343.4,
-            "y": 2894.5
+            "x": 4343.1,
+            "y": 2941.8
           }
         ]
       },
@@ -7866,15 +7862,15 @@
         "points": [
           {
             "x": 4440.5,
-            "y": 1819.6
+            "y": 1810.3
           },
           {
             "x": 4530,
-            "y": 1834.3
+            "y": 1825
           },
           {
             "x": 4562,
-            "y": 1834.3
+            "y": 1825
           }
         ]
       },
@@ -7882,24 +7878,24 @@
         "id": "EXO_TERM_FOREIGN_METHODS→TExoTermMark",
         "points": [
           {
-            "x": 4429.3,
-            "y": 1782
+            "x": 4416.9,
+            "y": 1772.8
           },
           {
             "x": 4530,
-            "y": 1752.3
+            "y": 1733
           },
           {
             "x": 4708.5,
-            "y": 1752.3
+            "y": 1733
           },
           {
             "x": 4887,
-            "y": 1752.3
+            "y": 1733
           },
           {
-            "x": 5025.7,
-            "y": 1872.5
+            "x": 5021.4,
+            "y": 1838.3
           }
         ]
       },
@@ -7908,15 +7904,15 @@
         "points": [
           {
             "x": 4093,
-            "y": 1805
+            "y": 1795.8
           },
           {
             "x": 4173,
-            "y": 1805
+            "y": 1795.8
           },
           {
             "x": 4262.5,
-            "y": 1805
+            "y": 1795.8
           }
         ]
       },
@@ -7924,56 +7920,56 @@
         "id": "EXO_TERM_NODE_METHODS→createExoTermChildList",
         "points": [
           {
-            "x": 1454,
-            "y": 3940.8
+            "x": 1452.1,
+            "y": 3913.8
           },
           {
             "x": 1572,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 1801.5,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 2031,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 2209.5,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 2388,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 2566.5,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 2745,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 2923.5,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 3102,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 3280.5,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 3459,
-            "y": 4158.5
+            "y": 4174.3
           },
           {
             "x": 3532.5,
-            "y": 4158.5
+            "y": 4174.3
           }
         ]
       },
@@ -7981,16 +7977,16 @@
         "id": "EXO_TERM_NODE_METHODS→exoTermSchemaOf",
         "points": [
           {
-            "x": 1455.3,
-            "y": 3940.8
+            "x": 1453,
+            "y": 3913.8
           },
           {
             "x": 1572,
-            "y": 4135
+            "y": 4150.8
           },
           {
-            "x": 1796.1,
-            "y": 2692.5
+            "x": 1795.7,
+            "y": 2818.3
           }
         ]
       },
@@ -7998,24 +7994,24 @@
         "id": "EXO_TERM_NODE_METHODS→HERE",
         "points": [
           {
-            "x": 1456.7,
-            "y": 3940.8
+            "x": 1454,
+            "y": 3913.8
           },
           {
             "x": 1572,
-            "y": 4115
+            "y": 4130.8
           },
           {
             "x": 1801.5,
-            "y": 4115
+            "y": 4130.8
           },
           {
             "x": 2031,
-            "y": 4115
+            "y": 4130.8
           },
           {
             "x": 2149.5,
-            "y": 4108.4
+            "y": 4124.1
           }
         ]
       },
@@ -8023,16 +8019,16 @@
         "id": "EXO_TERM_NODE_METHODS→renderExoTermInstance",
         "points": [
           {
-            "x": 1459.4,
-            "y": 3940.8
+            "x": 1455.7,
+            "y": 3913.8
           },
           {
             "x": 1572,
-            "y": 4085.8
+            "y": 4101.5
           },
           {
             "x": 1798,
-            "y": 1872
+            "y": 1876.5
           }
         ]
       },
@@ -8040,16 +8036,16 @@
         "id": "EXO_TERM_NODE_METHODS→requireExoTermRegion",
         "points": [
           {
-            "x": 1463.8,
-            "y": 3940.8
+            "x": 1458.4,
+            "y": 3913.8
           },
           {
             "x": 1572,
-            "y": 4052.3
+            "y": 4068
           },
           {
             "x": 1664.5,
-            "y": 4052.3
+            "y": 4068
           }
         ]
       },
@@ -8057,72 +8053,72 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermChild",
         "points": [
           {
-            "x": 1501.8,
-            "y": 3940.8
+            "x": 1473.9,
+            "y": 3913.8
           },
           {
             "x": 1572,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 1801.5,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 2031,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 2209.5,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 2388,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 2566.5,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 2745,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 2923.5,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 3102,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 3280.5,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 3459,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 3637.5,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 3816,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 3994.5,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
             "x": 4173,
-            "y": 3967.5
+            "y": 3983.3
           },
           {
-            "x": 4345.9,
-            "y": 2894.5
+            "x": 4345.8,
+            "y": 2941.8
           }
         ]
       },
@@ -8130,80 +8126,80 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermChildList",
         "points": [
           {
-            "x": 1520.5,
-            "y": 3925.9
+            "x": 1494.9,
+            "y": 3913.8
           },
           {
             "x": 1572,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 1801.5,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 2031,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 2209.5,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 2388,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 2566.5,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 2745,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 2923.5,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 3102,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 3280.5,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 3459,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 3637.5,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 3816,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 3994.5,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 4173,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 4351.5,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 4530,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 4562,
-            "y": 3931.3
+            "y": 3947
           }
         ]
       },
@@ -8211,80 +8207,80 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermElement",
         "points": [
           {
-            "x": 1443.3,
-            "y": 3894.8
+            "x": 1443.6,
+            "y": 3867.8
           },
           {
             "x": 1572,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 1801.5,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 2031,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 2209.5,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 2388,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 2566.5,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 2745,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 2923.5,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 3102,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 3280.5,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 3459,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 3637.5,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 3816,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 3994.5,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 4173,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 4351.5,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
             "x": 4530,
-            "y": 2253.3
+            "y": 2465.3
           },
           {
-            "x": 4602.4,
-            "y": 2209.3
+            "x": 4673.1,
+            "y": 2204.3
           }
         ]
       },
@@ -8293,95 +8289,95 @@
         "points": [
           {
             "x": 1443.3,
-            "y": 3894.8
+            "y": 3867.8
           },
           {
             "x": 1572,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 1801.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 2031,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 2209.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 2388,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 2566.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 2745,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 2923.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 3102,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 3280.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 3459,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 3637.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 3816,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 3994.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 4173,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 4351.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 4530,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 4708.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 4887,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 5065.5,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
             "x": 5244,
-            "y": 2233.3
+            "y": 2228.3
           },
           {
-            "x": 5327,
-            "y": 2183.5
+            "x": 5335.5,
+            "y": 2165.8
           }
         ]
       },
@@ -8390,23 +8386,23 @@
         "points": [
           {
             "x": 1443.2,
-            "y": 3894.8
+            "y": 3867.8
           },
           {
             "x": 1572,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 1801.5,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 2031,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
-            "x": 2204.1,
-            "y": 1041.8
+            "x": 2204,
+            "y": 1045.5
           }
         ]
       },
@@ -8415,87 +8411,87 @@
         "points": [
           {
             "x": 1443.1,
-            "y": 3894.8
+            "y": 3867.8
           },
           {
             "x": 1572,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 1801.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 2031,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 2209.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 2388,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 2566.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 2745,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 2923.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 3102,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 3280.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 3459,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 3637.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 3816,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 3994.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 4173,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 4351.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 4530,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 4708.5,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
             "x": 4887,
-            "y": 2056.3
+            "y": 2051.3
           },
           {
-            "x": 5024.2,
-            "y": 1941.5
+            "x": 5031,
+            "y": 1907.3
           }
         ]
       },
@@ -8504,31 +8500,31 @@
         "points": [
           {
             "x": 1443.1,
-            "y": 3894.8
+            "y": 3867.8
           },
           {
             "x": 1572,
-            "y": 2036.3
+            "y": 2031.3
           },
           {
             "x": 1801.5,
-            "y": 2036.3
+            "y": 2031.3
           },
           {
             "x": 2031,
-            "y": 2036.3
+            "y": 2031.3
           },
           {
             "x": 2209.5,
-            "y": 2036.3
+            "y": 2031.3
           },
           {
             "x": 2388,
-            "y": 2036.3
+            "y": 2031.3
           },
           {
             "x": 2548.1,
-            "y": 1735.5
+            "y": 1730.5
           }
         ]
       },
@@ -8537,71 +8533,71 @@
         "points": [
           {
             "x": 1442.8,
-            "y": 3894.8
+            "y": 3867.8
           },
           {
             "x": 1572,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 1801.5,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 2031,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 2209.5,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 2388,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 2566.5,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 2745,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 2923.5,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 3102,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 3280.5,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 3459,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 3637.5,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 3816,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 3994.5,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 4173,
-            "y": 1617
+            "y": 1616.8
           },
           {
             "x": 4205,
-            "y": 1623.1
+            "y": 1622.1
           }
         ]
       },
@@ -8610,15 +8606,15 @@
         "points": [
           {
             "x": 1221.5,
-            "y": 3917.8
+            "y": 3890.8
           },
           {
             "x": 1311,
-            "y": 3917.8
+            "y": 3890.8
           },
           {
             "x": 1362.5,
-            "y": 3917.8
+            "y": 3890.8
           }
         ]
       },
@@ -8626,16 +8622,16 @@
         "id": "EXO_TERM_WRITER_FACTORIES→createAttrWriter",
         "points": [
           {
-            "x": 3306.6,
-            "y": 3508
+            "x": 3313,
+            "y": 3555
           },
           {
             "x": 3459,
-            "y": 3642.5
+            "y": 3658.3
           },
           {
             "x": 3548.5,
-            "y": 3642.5
+            "y": 3658.3
           }
         ]
       },
@@ -8644,23 +8640,23 @@
         "points": [
           {
             "x": 3372.5,
-            "y": 3496
+            "y": 3526.8
           },
           {
             "x": 3459,
-            "y": 3506.3
+            "y": 3522
           },
           {
             "x": 3637.5,
-            "y": 3506.3
+            "y": 3522
           },
           {
             "x": 3816,
-            "y": 3506.3
+            "y": 3522
           },
           {
             "x": 3877,
-            "y": 3506.3
+            "y": 3522
           }
         ]
       },
@@ -8668,24 +8664,24 @@
         "id": "EXO_TERM_WRITER_FACTORIES→createStringAttrWriter",
         "points": [
           {
-            "x": 3334.7,
-            "y": 3462
+            "x": 3318.9,
+            "y": 3509
           },
           {
             "x": 3459,
-            "y": 3409.3
+            "y": 3425
           },
           {
             "x": 3637.5,
-            "y": 3409.3
+            "y": 3425
           },
           {
             "x": 3816,
-            "y": 3409.3
+            "y": 3425
           },
           {
             "x": 3905.5,
-            "y": 3409.3
+            "y": 3425
           }
         ]
       },
@@ -8693,24 +8689,24 @@
         "id": "EXO_TERM_WRITER_FACTORIES→createToggleAttrWriter",
         "points": [
           {
-            "x": 3304.3,
-            "y": 3462
+            "x": 3300.6,
+            "y": 3509
           },
           {
             "x": 3459,
-            "y": 3312.3
+            "y": 3328
           },
           {
             "x": 3637.5,
-            "y": 3312.3
+            "y": 3328
           },
           {
             "x": 3816,
-            "y": 3312.3
+            "y": 3328
           },
           {
             "x": 3905.5,
-            "y": 3312.3
+            "y": 3328
           }
         ]
       },
@@ -8718,16 +8714,16 @@
         "id": "EXO_TERM_WRITER_FACTORIES→namedAttrPort",
         "points": [
           {
-            "x": 3298.3,
-            "y": 3462
+            "x": 3296.1,
+            "y": 3509
           },
           {
             "x": 3459,
-            "y": 3253.8
+            "y": 3269.5
           },
           {
             "x": 3574.5,
-            "y": 3253.8
+            "y": 3269.5
           }
         ]
       },
@@ -8735,16 +8731,16 @@
         "id": "EXO_TERM_WRITER_FACTORIES→TExoTermWriterFactories",
         "points": [
           {
-            "x": 3296.3,
-            "y": 3462
+            "x": 3294.6,
+            "y": 3509
           },
           {
             "x": 3459,
-            "y": 3224.5
+            "y": 3240.3
           },
           {
             "x": 3567.3,
-            "y": 3171.3
+            "y": 3187
           }
         ]
       },
@@ -8752,32 +8748,32 @@
         "id": "EXO_TERM_WRITER_FACTORIES→writeText",
         "points": [
           {
-            "x": 3294.7,
-            "y": 3462
+            "x": 3293.3,
+            "y": 3509
           },
           {
             "x": 3459,
-            "y": 3195.3
+            "y": 3211
           },
           {
             "x": 3637.5,
-            "y": 3195.3
+            "y": 3211
           },
           {
             "x": 3816,
-            "y": 3195.3
+            "y": 3211
           },
           {
             "x": 3994.5,
-            "y": 3195.3
+            "y": 3211
           },
           {
             "x": 4173,
-            "y": 3195.3
+            "y": 3211
           },
           {
             "x": 4334.7,
-            "y": 3527.3
+            "y": 3543
           }
         ]
       },
@@ -8786,15 +8782,15 @@
         "points": [
           {
             "x": 4102.5,
-            "y": 1934.8
+            "y": 1925.1
           },
           {
             "x": 4173,
-            "y": 1945.5
+            "y": 1932.8
           },
           {
-            "x": 4344.8,
-            "y": 2825.5
+            "x": 4345.2,
+            "y": 2872.8
           }
         ]
       },
@@ -8803,23 +8799,23 @@
         "points": [
           {
             "x": 4102.5,
-            "y": 1917.1
+            "y": 1907.4
           },
           {
             "x": 4173,
-            "y": 1916.3
+            "y": 1903.5
           },
           {
             "x": 4351.5,
-            "y": 1916.3
+            "y": 1903.5
           },
           {
             "x": 4530,
-            "y": 1916.3
+            "y": 1903.5
           },
           {
-            "x": 4658.1,
-            "y": 2080.3
+            "x": 4659.8,
+            "y": 2075.3
           }
         ]
       },
@@ -8828,31 +8824,31 @@
         "points": [
           {
             "x": 4102.5,
-            "y": 1902.9
+            "y": 1895.3
           },
           {
             "x": 4173,
-            "y": 1892.8
+            "y": 1883.5
           },
           {
             "x": 4351.5,
-            "y": 1892.8
+            "y": 1883.5
           },
           {
             "x": 4530,
-            "y": 1892.8
+            "y": 1883.5
           },
           {
             "x": 4708.5,
-            "y": 1892.8
+            "y": 1883.5
           },
           {
             "x": 4887,
-            "y": 1892.8
+            "y": 1883.5
           },
           {
             "x": 4948,
-            "y": 1897.6
+            "y": 1879.8
           }
         ]
       },
@@ -8860,24 +8856,24 @@
         "id": "ExoTermBackend→ExoTermBackendBase",
         "points": [
           {
-            "x": 87.6,
-            "y": 616.8
+            "x": 87.7,
+            "y": 593.3
           },
           {
             "x": 176,
-            "y": 1176.8
+            "y": 1142.5
           },
           {
             "x": 354.5,
-            "y": 1176.8
+            "y": 1142.5
           },
           {
             "x": 533,
-            "y": 1176.8
+            "y": 1142.5
           },
           {
             "x": 565,
-            "y": 1175.2
+            "y": 1141
           }
         ]
       },
@@ -8885,8 +8881,8 @@
         "id": "ExoTermBackend→TExoTermBackendConstructor",
         "points": [
           {
-            "x": 88.8,
-            "y": 570.8
+            "x": 89.1,
+            "y": 547.3
           },
           {
             "x": 176,
@@ -8903,31 +8899,31 @@
         "points": [
           {
             "x": 746.8,
-            "y": 1217.8
+            "y": 1183.5
           },
           {
             "x": 954,
-            "y": 4396.3
+            "y": 4412
           },
           {
             "x": 1132.5,
-            "y": 4396.3
+            "y": 4412
           },
           {
             "x": 1311,
-            "y": 4396.3
+            "y": 4412
           },
           {
             "x": 1441.5,
-            "y": 4396.3
+            "y": 4412
           },
           {
             "x": 1572,
-            "y": 4396.3
+            "y": 4412
           },
           {
             "x": 1684,
-            "y": 4396.3
+            "y": 4412
           }
         ]
       },
@@ -8936,79 +8932,79 @@
         "points": [
           {
             "x": 747,
-            "y": 1217.8
+            "y": 1183.5
           },
           {
             "x": 954,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 1132.5,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 1311,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 1441.5,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 1572,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 1801.5,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 2031,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 2209.5,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 2388,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 2566.5,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 2745,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 2923.5,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 3102,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 3280.5,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 3459,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 3637.5,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 3816,
-            "y": 4218.5
+            "y": 4234.3
           },
           {
             "x": 3984.2,
-            "y": 3657.8
+            "y": 3673.5
           }
         ]
       },
@@ -9017,15 +9013,15 @@
         "points": [
           {
             "x": 747.4,
-            "y": 1217.8
+            "y": 1183.5
           },
           {
             "x": 954,
-            "y": 3917.8
+            "y": 3890.8
           },
           {
             "x": 1043.5,
-            "y": 3917.8
+            "y": 3890.8
           }
         ]
       },
@@ -9033,16 +9029,16 @@
         "id": "ExoTermBackendBase→exoTermContextSlot",
         "points": [
           {
-            "x": 768.7,
-            "y": 1217.8
+            "x": 766.6,
+            "y": 1183.5
           },
           {
             "x": 954,
-            "y": 1593.5
+            "y": 1598
           },
           {
             "x": 1063,
-            "y": 1593.5
+            "y": 1598
           }
         ]
       },
@@ -9050,32 +9046,32 @@
         "id": "ExoTermBackendBase→exoTermSchemaOf",
         "points": [
           {
-            "x": 771.8,
-            "y": 1217.8
+            "x": 769.2,
+            "y": 1183.5
           },
           {
             "x": 954,
-            "y": 1546.5
+            "y": 1551
           },
           {
             "x": 1132.5,
-            "y": 1546.5
+            "y": 1551
           },
           {
             "x": 1311,
-            "y": 1546.5
+            "y": 1551
           },
           {
             "x": 1441.5,
-            "y": 1546.5
+            "y": 1551
           },
           {
             "x": 1572,
-            "y": 1546.5
+            "y": 1551
           },
           {
-            "x": 1794.4,
-            "y": 2623.5
+            "x": 1795.1,
+            "y": 2749.3
           }
         ]
       },
@@ -9083,16 +9079,16 @@
         "id": "ExoTermBackendBase→exoTermText",
         "points": [
           {
-            "x": 807,
-            "y": 1217.8
+            "x": 795.2,
+            "y": 1183.5
           },
           {
             "x": 954,
-            "y": 1335.8
+            "y": 1340.3
           },
           {
             "x": 1040.5,
-            "y": 1335.8
+            "y": 1340.3
           }
         ]
       },
@@ -9101,31 +9097,31 @@
         "points": [
           {
             "x": 922,
-            "y": 1132
+            "y": 1130
           },
           {
             "x": 954,
-            "y": 1125.8
+            "y": 1129.5
           },
           {
             "x": 1132.5,
-            "y": 1125.8
+            "y": 1129.5
           },
           {
             "x": 1311,
-            "y": 1125.8
+            "y": 1129.5
           },
           {
             "x": 1441.5,
-            "y": 1125.8
+            "y": 1129.5
           },
           {
             "x": 1572,
-            "y": 1125.8
+            "y": 1129.5
           },
           {
             "x": 1790.4,
-            "y": 1803
+            "y": 1807.5
           }
         ]
       },
@@ -9133,72 +9129,72 @@
         "id": "ExoTermBackendBase→TExoTermApi",
         "points": [
           {
-            "x": 919.5,
-            "y": 1115.8
+            "x": 922,
+            "y": 1113
           },
           {
             "x": 954,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 1132.5,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 1311,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 1441.5,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 1572,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 1801.5,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 2031,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 2209.5,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 2388,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 2566.5,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 2745,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 2923.5,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 3102,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 3280.5,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
             "x": 3459,
-            "y": 1105.8
+            "y": 1109.5
           },
           {
-            "x": 3632.5,
-            "y": 2297.3
+            "x": 3632.6,
+            "y": 2342.3
           }
         ]
       },
@@ -9206,88 +9202,88 @@
         "id": "ExoTermBackendBase→TExoTermChild",
         "points": [
           {
-            "x": 876,
-            "y": 1115.8
+            "x": 922,
+            "y": 1096
           },
           {
             "x": 954,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 1132.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 1311,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 1441.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 1572,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 1801.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 2031,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 2209.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 2388,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 2566.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 2745,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 2923.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 3102,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 3280.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 3459,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 3637.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 3816,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 3994.5,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
             "x": 4173,
-            "y": 1085.8
+            "y": 1089.5
           },
           {
-            "x": 4348,
-            "y": 2825.5
+            "x": 4348.1,
+            "y": 2872.8
           }
         ]
       },
@@ -9295,96 +9291,96 @@
         "id": "ExoTermBackendBase→TExoTermElement",
         "points": [
           {
-            "x": 849.8,
-            "y": 1115.8
+            "x": 913.9,
+            "y": 1081.5
           },
           {
             "x": 954,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 1132.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 1311,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 1441.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 1572,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 1801.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 2031,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 2209.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 2388,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 2566.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 2745,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 2923.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 3102,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 3280.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 3459,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 3637.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 3816,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 3994.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 4173,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 4351.5,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
             "x": 4530,
-            "y": 1065.8
+            "y": 1069.5
           },
           {
-            "x": 4697.8,
-            "y": 2080.3
+            "x": 4697.7,
+            "y": 2075.3
           }
         ]
       },
@@ -9392,40 +9388,40 @@
         "id": "ExoTermBackendBase→TExoTermMachine",
         "points": [
           {
-            "x": 810.8,
-            "y": 1115.8
+            "x": 831.9,
+            "y": 1081.5
           },
           {
             "x": 954,
-            "y": 1007.3
+            "y": 1011
           },
           {
             "x": 1132.5,
-            "y": 1007.3
+            "y": 1011
           },
           {
             "x": 1311,
-            "y": 1007.3
+            "y": 1011
           },
           {
             "x": 1441.5,
-            "y": 1007.3
+            "y": 1011
           },
           {
             "x": 1572,
-            "y": 1007.3
+            "y": 1011
           },
           {
             "x": 1801.5,
-            "y": 1007.3
+            "y": 1011
           },
           {
             "x": 2031,
-            "y": 1007.3
+            "y": 1011
           },
           {
             "x": 2111,
-            "y": 1007.3
+            "y": 1011
           }
         ]
       },
@@ -9433,56 +9429,56 @@
         "id": "ExoTermBackendBase→TExoTermNodeFields",
         "points": [
           {
-            "x": 757.8,
-            "y": 1115.8
+            "x": 756.6,
+            "y": 1081.5
           },
           {
             "x": 954,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 1132.5,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 1311,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 1441.5,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 1572,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 1801.5,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 2031,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 2209.5,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 2388,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 2566.5,
-            "y": 418.5
+            "y": 314
           },
           {
             "x": 2745,
-            "y": 418.5
+            "y": 314
           },
           {
-            "x": 2919.9,
-            "y": 2110.3
+            "x": 2920.1,
+            "y": 2105.3
           }
         ]
       },
@@ -9490,64 +9486,64 @@
         "id": "ExoTermBackendBase→TExoTermSchema",
         "points": [
           {
-            "x": 757.5,
-            "y": 1115.8
+            "x": 756.3,
+            "y": 1081.5
           },
           {
             "x": 954,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 1132.5,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 1311,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 1441.5,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 1572,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 1801.5,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 2031,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 2209.5,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 2388,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 2566.5,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 2745,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 2923.5,
-            "y": 398.5
+            "y": 294
           },
           {
             "x": 3102,
-            "y": 398.5
+            "y": 294
           },
           {
-            "x": 3272.1,
-            "y": 2315.8
+            "x": 3272.3,
+            "y": 2252.3
           }
         ]
       },
@@ -9555,8 +9551,8 @@
         "id": "ExoTermBackendBase→TExoTermScreen",
         "points": [
           {
-            "x": 754.8,
-            "y": 1115.8
+            "x": 755.3,
+            "y": 1081.5
           },
           {
             "x": 954,
@@ -9572,8 +9568,8 @@
         "id": "ExoTermBackendBase→TExoTermTextOptions",
         "points": [
           {
-            "x": 754,
-            "y": 1115.8
+            "x": 754.4,
+            "y": 1081.5
           },
           {
             "x": 954,
@@ -9588,8 +9584,8 @@
             "y": 147
           },
           {
-            "x": 1432.1,
-            "y": 688.5
+            "x": 1431.3,
+            "y": 640
           }
         ]
       },
@@ -9597,40 +9593,40 @@
         "id": "ExoTermEmitter→createMissingWriter",
         "points": [
           {
-            "x": 2587.4,
-            "y": 3157.5
+            "x": 2588.3,
+            "y": 3204.8
           },
           {
             "x": 2745,
-            "y": 3824.3
+            "y": 3840
           },
           {
             "x": 2923.5,
-            "y": 3824.3
+            "y": 3840
           },
           {
             "x": 3102,
-            "y": 3824.3
+            "y": 3840
           },
           {
             "x": 3280.5,
-            "y": 3824.3
+            "y": 3840
           },
           {
             "x": 3459,
-            "y": 3824.3
+            "y": 3840
           },
           {
             "x": 3637.5,
-            "y": 3824.3
+            "y": 3840
           },
           {
             "x": 3816,
-            "y": 3824.3
+            "y": 3840
           },
           {
             "x": 3902.5,
-            "y": 3824.3
+            "y": 3840
           }
         ]
       },
@@ -9639,15 +9635,15 @@
         "points": [
           {
             "x": 2635,
-            "y": 3157.5
+            "y": 3204.8
           },
           {
             "x": 2745,
-            "y": 3299.5
+            "y": 3346.8
           },
           {
             "x": 2786.5,
-            "y": 3299.5
+            "y": 3346.8
           }
         ]
       },
@@ -9655,32 +9651,32 @@
         "id": "ExoTermEmitter→TExoTermOpenElement",
         "points": [
           {
-            "x": 2690.5,
-            "y": 2996.4
+            "x": 2673.8,
+            "y": 3027.8
           },
           {
             "x": 2745,
-            "y": 2964.5
+            "y": 2969
           },
           {
             "x": 2923.5,
-            "y": 2964.5
+            "y": 2969
           },
           {
             "x": 3102,
-            "y": 2964.5
+            "y": 2969
           },
           {
             "x": 3280.5,
-            "y": 2964.5
+            "y": 2969
           },
           {
             "x": 3459,
-            "y": 2964.5
+            "y": 2969
           },
           {
-            "x": 3533.2,
-            "y": 2897.3
+            "x": 3525.4,
+            "y": 2913
           }
         ]
       },
@@ -9688,32 +9684,32 @@
         "id": "ExoTermEmitter→TExoTermProtoElement",
         "points": [
           {
-            "x": 2690.5,
-            "y": 2982.5
+            "x": 2661,
+            "y": 3027.8
           },
           {
             "x": 2745,
-            "y": 2944.5
+            "y": 2949
           },
           {
             "x": 2923.5,
-            "y": 2944.5
+            "y": 2949
           },
           {
             "x": 3102,
-            "y": 2944.5
+            "y": 2949
           },
           {
             "x": 3280.5,
-            "y": 2944.5
+            "y": 2949
           },
           {
             "x": 3459,
-            "y": 2944.5
+            "y": 2949
           },
           {
             "x": 3491,
-            "y": 2952.6
+            "y": 2959.1
           }
         ]
       },
@@ -9721,48 +9717,48 @@
         "id": "ExoTermEmitter→TExoTermWriter",
         "points": [
           {
-            "x": 2607.6,
-            "y": 2980.5
+            "x": 2604.5,
+            "y": 3027.8
           },
           {
             "x": 2745,
-            "y": 2684.3
+            "y": 2700
           },
           {
             "x": 2923.5,
-            "y": 2684.3
+            "y": 2700
           },
           {
             "x": 3102,
-            "y": 2684.3
+            "y": 2700
           },
           {
             "x": 3280.5,
-            "y": 2684.3
+            "y": 2700
           },
           {
             "x": 3459,
-            "y": 2684.3
+            "y": 2700
           },
           {
             "x": 3637.5,
-            "y": 2684.3
+            "y": 2700
           },
           {
             "x": 3816,
-            "y": 2684.3
+            "y": 2700
           },
           {
             "x": 3994.5,
-            "y": 2684.3
+            "y": 2700
           },
           {
             "x": 4173,
-            "y": 2684.3
+            "y": 2700
           },
           {
-            "x": 4340.2,
-            "y": 3195
+            "x": 4340.8,
+            "y": 3239
           }
         ]
       },
@@ -9771,15 +9767,15 @@
         "points": [
           {
             "x": 4475.5,
-            "y": 617.3
+            "y": 616
           },
           {
             "x": 4530,
-            "y": 617.3
+            "y": 616
           },
           {
-            "x": 4701,
-            "y": 2080.3
+            "x": 4700.9,
+            "y": 2075.3
           }
         ]
       },
@@ -9788,15 +9784,15 @@
         "points": [
           {
             "x": 4459.5,
-            "y": 725.9
+            "y": 724.6
           },
           {
             "x": 4530,
-            "y": 733.5
+            "y": 732.3
           },
           {
             "x": 4700.3,
-            "y": 2080.3
+            "y": 2075.3
           }
         ]
       },
@@ -9805,31 +9801,31 @@
         "points": [
           {
             "x": 4459.5,
-            "y": 691
+            "y": 689.7
           },
           {
             "x": 4530,
-            "y": 675.8
+            "y": 674.5
           },
           {
             "x": 4708.5,
-            "y": 675.8
+            "y": 674.5
           },
           {
             "x": 4887,
-            "y": 675.8
+            "y": 674.5
           },
           {
             "x": 5065.5,
-            "y": 675.8
+            "y": 674.5
           },
           {
             "x": 5244,
-            "y": 675.8
+            "y": 674.5
           },
           {
             "x": 5392.6,
-            "y": 2099.5
+            "y": 2081.8
           }
         ]
       },
@@ -9837,16 +9833,16 @@
         "id": "exoTermSchemaOf→compileExoTermSchema",
         "points": [
           {
-            "x": 1855.4,
-            "y": 2692.5
+            "x": 1917.1,
+            "y": 2818.3
           },
           {
             "x": 2031,
-            "y": 2805
+            "y": 2852.3
           },
           {
             "x": 2085.5,
-            "y": 2805
+            "y": 2852.3
           }
         ]
       },
@@ -9854,48 +9850,48 @@
         "id": "exoTermSchemaOf→TExoTermApi",
         "points": [
           {
-            "x": 1927.2,
-            "y": 2623.5
+            "x": 1844.9,
+            "y": 2749.3
           },
           {
             "x": 2031,
-            "y": 2595
+            "y": 2601.5
           },
           {
             "x": 2209.5,
-            "y": 2595
+            "y": 2601.5
           },
           {
             "x": 2388,
-            "y": 2595
+            "y": 2601.5
           },
           {
             "x": 2566.5,
-            "y": 2595
+            "y": 2601.5
           },
           {
             "x": 2745,
-            "y": 2595
+            "y": 2601.5
           },
           {
             "x": 2923.5,
-            "y": 2595
+            "y": 2601.5
           },
           {
             "x": 3102,
-            "y": 2595
+            "y": 2601.5
           },
           {
             "x": 3280.5,
-            "y": 2595
+            "y": 2601.5
           },
           {
             "x": 3459,
-            "y": 2595
+            "y": 2601.5
           },
           {
-            "x": 3614.1,
-            "y": 2366.3
+            "x": 3610.1,
+            "y": 2411.3
           }
         ]
       },
@@ -9903,40 +9899,40 @@
         "id": "exoTermSchemaOf→TExoTermSchema",
         "points": [
           {
-            "x": 1833.5,
-            "y": 2623.5
+            "x": 1840.6,
+            "y": 2749.3
           },
           {
             "x": 2031,
-            "y": 2410.3
+            "y": 2581.5
           },
           {
             "x": 2209.5,
-            "y": 2410.3
+            "y": 2581.5
           },
           {
             "x": 2388,
-            "y": 2410.3
+            "y": 2581.5
           },
           {
             "x": 2566.5,
-            "y": 2410.3
+            "y": 2581.5
           },
           {
             "x": 2745,
-            "y": 2410.3
+            "y": 2581.5
           },
           {
             "x": 2923.5,
-            "y": 2410.3
+            "y": 2581.5
           },
           {
             "x": 3102,
-            "y": 2410.3
+            "y": 2581.5
           },
           {
-            "x": 3134,
-            "y": 2410.3
+            "x": 3208.6,
+            "y": 2441.3
           }
         ]
       },
@@ -9944,16 +9940,16 @@
         "id": "exoTermText→BOLD",
         "points": [
           {
-            "x": 1171.3,
-            "y": 1370.3
+            "x": 1171.5,
+            "y": 1374.8
           },
           {
             "x": 1311,
-            "y": 1494.5
+            "y": 1498.3
           },
           {
             "x": 1381.5,
-            "y": 1494.5
+            "y": 1498.3
           }
         ]
       },
@@ -9961,16 +9957,16 @@
         "id": "exoTermText→DIM",
         "points": [
           {
-            "x": 1205.2,
-            "y": 1370.3
+            "x": 1205.8,
+            "y": 1374.8
           },
           {
             "x": 1311,
-            "y": 1420.5
+            "y": 1424.3
           },
           {
             "x": 1381.5,
-            "y": 1420.5
+            "y": 1424.3
           }
         ]
       },
@@ -9979,15 +9975,15 @@
         "points": [
           {
             "x": 1224.5,
-            "y": 1341.3
+            "y": 1345.4
           },
           {
             "x": 1311,
-            "y": 1346.5
+            "y": 1350.3
           },
           {
             "x": 1381.5,
-            "y": 1346.5
+            "y": 1350.3
           }
         ]
       },
@@ -9996,15 +9992,15 @@
         "points": [
           {
             "x": 1224.5,
-            "y": 1303.2
+            "y": 1307.3
           },
           {
             "x": 1311,
-            "y": 1272.5
+            "y": 1276.3
           },
           {
             "x": 1381.5,
-            "y": 1272.5
+            "y": 1276.3
           }
         ]
       },
@@ -10012,88 +10008,88 @@
         "id": "exoTermText→TExoTermElement",
         "points": [
           {
-            "x": 1188.4,
-            "y": 1301.3
+            "x": 1188,
+            "y": 1305.8
           },
           {
             "x": 1311,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 1441.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 1572,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 1801.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 2031,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 2209.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 2388,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 2566.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 2745,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 2923.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 3102,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 3280.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 3459,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 3637.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 3816,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 3994.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 4173,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 4351.5,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
             "x": 4530,
-            "y": 1225.5
+            "y": 1229.3
           },
           {
-            "x": 4696,
-            "y": 2080.3
+            "x": 4695.9,
+            "y": 2075.3
           }
         ]
       },
@@ -10101,16 +10097,16 @@
         "id": "exoTermText→TExoTermTextOptions",
         "points": [
           {
-            "x": 1178.5,
-            "y": 1301.3
+            "x": 1178.3,
+            "y": 1305.8
           },
           {
             "x": 1311,
-            "y": 1202
+            "y": 1205.8
           },
           {
-            "x": 1429.9,
-            "y": 772.5
+            "x": 1431,
+            "y": 724
           }
         ]
       },
@@ -10118,16 +10114,16 @@
         "id": "exoTermText→YELLOW",
         "points": [
           {
-            "x": 1171.7,
-            "y": 1301.3
+            "x": 1171.5,
+            "y": 1305.8
           },
           {
             "x": 1311,
-            "y": 1178.5
+            "y": 1182.3
           },
           {
             "x": 1381.5,
-            "y": 1178.5
+            "y": 1182.3
           }
         ]
       },
@@ -10136,15 +10132,15 @@
         "points": [
           {
             "x": 2956.7,
-            "y": 3334
+            "y": 3381.3
           },
           {
             "x": 3102,
-            "y": 3485
+            "y": 3532
           },
           {
             "x": 3188.5,
-            "y": 3485
+            "y": 3532
           }
         ]
       },
@@ -10152,40 +10148,40 @@
         "id": "exoTermWriterForPort→TExoTermWriter",
         "points": [
           {
-            "x": 2951.3,
-            "y": 3265
+            "x": 2947.9,
+            "y": 3312.3
           },
           {
             "x": 3102,
-            "y": 3078.3
+            "y": 3094
           },
           {
             "x": 3280.5,
-            "y": 3078.3
+            "y": 3094
           },
           {
             "x": 3459,
-            "y": 3078.3
+            "y": 3094
           },
           {
             "x": 3637.5,
-            "y": 3078.3
+            "y": 3094
           },
           {
             "x": 3816,
-            "y": 3078.3
+            "y": 3094
           },
           {
             "x": 3994.5,
-            "y": 3078.3
+            "y": 3094
           },
           {
             "x": 4173,
-            "y": 3078.3
+            "y": 3094
           },
           {
-            "x": 4310.8,
-            "y": 3195
+            "x": 4317.2,
+            "y": 3239
           }
         ]
       },
@@ -10193,24 +10189,24 @@
         "id": "exoTermWriterForPort→TExoTermWriterFactories",
         "points": [
           {
-            "x": 2947.6,
-            "y": 3265
+            "x": 2945,
+            "y": 3312.3
           },
           {
             "x": 3102,
-            "y": 3044
+            "y": 3059.8
           },
           {
             "x": 3280.5,
-            "y": 3044
+            "y": 3059.8
           },
           {
             "x": 3459,
-            "y": 3044
+            "y": 3059.8
           },
           {
             "x": 3571.1,
-            "y": 3102.3
+            "y": 3118
           }
         ]
       },
@@ -10219,57 +10215,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1346.5
+            "y": 1350.3
           },
           {
             "x": 1572,
-            "y": 1346.5
+            "y": 1350.3
           },
           {
             "x": 1741.5,
-            "y": 1401.2
-          }
-        ]
-      },
-      {
-        "id": "increment→mCounter",
-        "points": [
-          {
-            "x": 1861.5,
-            "y": 327.7
-          },
-          {
-            "x": 2031,
-            "y": 365
-          },
-          {
-            "x": 2209.5,
-            "y": 365
-          },
-          {
-            "x": 2388,
-            "y": 365
-          },
-          {
-            "x": 2506.5,
-            "y": 356
-          }
-        ]
-      },
-      {
-        "id": "increment→show",
-        "points": [
-          {
-            "x": 1861.5,
-            "y": 307.4
-          },
-          {
-            "x": 2031,
-            "y": 287.5
-          },
-          {
-            "x": 2149.5,
-            "y": 287.5
+            "y": 1383.9
           }
         ]
       },
@@ -10278,39 +10232,39 @@
         "points": [
           {
             "x": 3427,
-            "y": 4527.9
+            "y": 4543.6
           },
           {
             "x": 3459,
-            "y": 4533.3
+            "y": 4549
           },
           {
             "x": 3637.5,
-            "y": 4533.3
+            "y": 4549
           },
           {
             "x": 3816,
-            "y": 4533.3
+            "y": 4549
           },
           {
             "x": 3994.5,
-            "y": 4533.3
+            "y": 4549
           },
           {
             "x": 4173,
-            "y": 4533.3
+            "y": 4549
           },
           {
             "x": 4351.5,
-            "y": 4533.3
+            "y": 4549
           },
           {
             "x": 4530,
-            "y": 4533.3
+            "y": 4549
           },
           {
             "x": 4703.7,
-            "y": 2209.3
+            "y": 2204.3
           }
         ]
       },
@@ -10319,47 +10273,47 @@
         "points": [
           {
             "x": 3427,
-            "y": 4511.5
+            "y": 4527.2
           },
           {
             "x": 3459,
-            "y": 4513.3
+            "y": 4529
           },
           {
             "x": 3637.5,
-            "y": 4513.3
+            "y": 4529
           },
           {
             "x": 3816,
-            "y": 4513.3
+            "y": 4529
           },
           {
             "x": 3994.5,
-            "y": 4513.3
+            "y": 4529
           },
           {
             "x": 4173,
-            "y": 4513.3
+            "y": 4529
           },
           {
             "x": 4351.5,
-            "y": 4513.3
+            "y": 4529
           },
           {
             "x": 4530,
-            "y": 4513.3
+            "y": 4529
           },
           {
             "x": 4708.5,
-            "y": 4513.3
+            "y": 4529
           },
           {
             "x": 4887,
-            "y": 4513.3
+            "y": 4529
           },
           {
-            "x": 5062.1,
-            "y": 2373
+            "x": 5062,
+            "y": 2408
           }
         ]
       },
@@ -10368,15 +10322,15 @@
         "points": [
           {
             "x": 3427,
-            "y": 4495
+            "y": 4510.8
           },
           {
             "x": 3459,
-            "y": 4493.3
+            "y": 4509
           },
           {
             "x": 3629.8,
-            "y": 3054.3
+            "y": 3070
           }
         ]
       },
@@ -10385,140 +10339,55 @@
         "points": [
           {
             "x": 3427,
-            "y": 4478.6
+            "y": 4494.4
           },
           {
             "x": 3459,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 3637.5,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 3816,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 3994.5,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 4173,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 4351.5,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 4530,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 4708.5,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 4887,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 5065.5,
-            "y": 4473.3
+            "y": 4489
           },
           {
             "x": 5244,
-            "y": 4473.3
+            "y": 4489
           },
           {
-            "x": 5383.4,
-            "y": 4120.8
-          }
-        ]
-      },
-      {
-        "id": "mCounter→COUNTER_SCHEMA",
-        "points": [
-          {
-            "x": 2626.5,
-            "y": 351.5
-          },
-          {
-            "x": 2745,
-            "y": 351.5
-          },
-          {
-            "x": 2863.5,
-            "y": 326.9
-          }
-        ]
-      },
-      {
-        "id": "mList→LIST_SCHEMA",
-        "points": [
-          {
-            "x": 2626.5,
-            "y": 558.5
-          },
-          {
-            "x": 2745,
-            "y": 558.5
-          },
-          {
-            "x": 2863.5,
-            "y": 565.1
-          }
-        ]
-      },
-      {
-        "id": "mTodo→TODO_SCHEMA",
-        "points": [
-          {
-            "x": 2586,
-            "y": 665.5
-          },
-          {
-            "x": 2745,
-            "y": 853.3
-          },
-          {
-            "x": 2863.5,
-            "y": 853.3
-          }
-        ]
-      },
-      {
-        "id": "mTodo→TTodo",
-        "points": [
-          {
-            "x": 2626.5,
-            "y": 630.1
-          },
-          {
-            "x": 2745,
-            "y": 605.5
-          },
-          {
-            "x": 2865.8,
-            "y": 517.5
-          }
-        ]
-      },
-      {
-        "id": "P→COUNTER_SCHEMA",
-        "points": [
-          {
-            "x": 2626.5,
-            "y": 277.5
-          },
-          {
-            "x": 2745,
-            "y": 277.5
-          },
-          {
-            "x": 2863.5,
-            "y": 302.1
+            "x": 5383.7,
+            "y": 4125.3
           }
         ]
       },
@@ -10526,56 +10395,56 @@
         "id": "renderExoTermInstance→disposeExoTermChild",
         "points": [
           {
-            "x": 1851.1,
-            "y": 1872
+            "x": 1854.3,
+            "y": 1876.5
           },
           {
             "x": 2031,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 2209.5,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 2388,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 2566.5,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 2745,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 2923.5,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 3102,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 3280.5,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 3459,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 3637.5,
-            "y": 1997
+            "y": 1992
           },
           {
             "x": 3816,
-            "y": 1997
+            "y": 1992
           },
           {
-            "x": 3990.7,
-            "y": 3588.8
+            "x": 3990.8,
+            "y": 3604.5
           }
         ]
       },
@@ -10583,64 +10452,64 @@
         "id": "renderExoTermInstance→TExoTermChild",
         "points": [
           {
-            "x": 1858.3,
-            "y": 1872
+            "x": 1862.4,
+            "y": 1876.5
           },
           {
             "x": 2031,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 2209.5,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 2388,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 2566.5,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 2745,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 2923.5,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 3102,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 3280.5,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 3459,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 3637.5,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 3816,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 3994.5,
-            "y": 1977
+            "y": 1972
           },
           {
             "x": 4173,
-            "y": 1977
+            "y": 1972
           },
           {
-            "x": 4344.5,
-            "y": 2825.5
+            "x": 4344.9,
+            "y": 2872.8
           }
         ]
       },
@@ -10649,15 +10518,15 @@
         "points": [
           {
             "x": 1999,
-            "y": 1836
+            "y": 1832.3
           },
           {
             "x": 2031,
-            "y": 1835.8
+            "y": 1830.8
           },
           {
-            "x": 2202.1,
-            "y": 1041.8
+            "x": 2202,
+            "y": 1045.5
           }
         ]
       },
@@ -10665,24 +10534,24 @@
         "id": "renderExoTermInstance→TExoTermNode",
         "points": [
           {
-            "x": 1859.5,
-            "y": 1803
+            "x": 1855.7,
+            "y": 1807.5
           },
           {
             "x": 2031,
-            "y": 1701
+            "y": 1696
           },
           {
             "x": 2209.5,
-            "y": 1701
+            "y": 1696
           },
           {
             "x": 2388,
-            "y": 1701
+            "y": 1696
           },
           {
             "x": 2433,
-            "y": 1701
+            "y": 1696
           }
         ]
       },
@@ -10690,40 +10559,40 @@
         "id": "renderExoTermInstance→TExoTermSchema",
         "points": [
           {
-            "x": 1841.9,
-            "y": 1803
+            "x": 1840.1,
+            "y": 1807.5
           },
           {
             "x": 2031,
-            "y": 1641.8
+            "y": 1636.8
           },
           {
             "x": 2209.5,
-            "y": 1641.8
+            "y": 1636.8
           },
           {
             "x": 2388,
-            "y": 1641.8
+            "y": 1636.8
           },
           {
             "x": 2566.5,
-            "y": 1641.8
+            "y": 1636.8
           },
           {
             "x": 2745,
-            "y": 1641.8
+            "y": 1636.8
           },
           {
             "x": 2923.5,
-            "y": 1641.8
+            "y": 1636.8
           },
           {
             "x": 3102,
-            "y": 1641.8
+            "y": 1636.8
           },
           {
-            "x": 3258.6,
-            "y": 2315.8
+            "x": 3256.7,
+            "y": 2252.3
           }
         ]
       },
@@ -10732,15 +10601,15 @@
         "points": [
           {
             "x": 1938.5,
-            "y": 4066.3
+            "y": 4082
           },
           {
             "x": 2031,
-            "y": 4075.8
+            "y": 4091.5
           },
           {
             "x": 2149.5,
-            "y": 4095.2
+            "y": 4110.9
           }
         ]
       },
@@ -10749,87 +10618,87 @@
         "points": [
           {
             "x": 1938.5,
-            "y": 4046.3
+            "y": 4062
           },
           {
             "x": 2031,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 2209.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 2388,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 2566.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 2745,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 2923.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 3102,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 3280.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 3459,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 3637.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 3816,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 3994.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 4173,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 4351.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 4530,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 4708.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 4887,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 5065.5,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 5244,
-            "y": 4042.3
+            "y": 4058
           },
           {
             "x": 5295.5,
-            "y": 4057.1
+            "y": 4069
           }
         ]
       },
@@ -10838,49 +10707,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1272.5
+            "y": 1276.3
           },
           {
             "x": 1572,
-            "y": 1272.5
+            "y": 1276.3
           },
           {
-            "x": 1765.8,
-            "y": 1397.5
-          }
-        ]
-      },
-      {
-        "id": "show→mCounter",
-        "points": [
-          {
-            "x": 2269.5,
-            "y": 299.9
-          },
-          {
-            "x": 2388,
-            "y": 324.5
-          },
-          {
-            "x": 2506.5,
-            "y": 342.4
-          }
-        ]
-      },
-      {
-        "id": "show→P",
-        "points": [
-          {
-            "x": 2269.5,
-            "y": 284.1
-          },
-          {
-            "x": 2388,
-            "y": 277.5
-          },
-          {
-            "x": 2506.5,
-            "y": 277.5
+            "x": 1757.3,
+            "y": 1372.8
           }
         ]
       },
@@ -10888,16 +10723,16 @@
         "id": "TExoTermApi→TExoTermSchema",
         "points": [
           {
-            "x": 3605.8,
-            "y": 2366.3
+            "x": 3491,
+            "y": 2392.5
           },
           {
             "x": 3459,
-            "y": 2525.8
+            "y": 2396
           },
           {
-            "x": 3426.5,
-            "y": 2504.8
+            "x": 3427,
+            "y": 2387.2
           }
         ]
       },
@@ -10906,15 +10741,15 @@
         "points": [
           {
             "x": 3784,
-            "y": 2331.8
+            "y": 2376.8
           },
           {
             "x": 3816,
-            "y": 2331.8
+            "y": 2376.8
           },
           {
-            "x": 3988,
-            "y": 1718.3
+            "x": 3988.6,
+            "y": 1709
           }
         ]
       },
@@ -10930,8 +10765,8 @@
             "y": 107
           },
           {
-            "x": 733.4,
-            "y": 1115.8
+            "x": 733,
+            "y": 1081.5
           }
         ]
       },
@@ -11020,7 +10855,7 @@
           },
           {
             "x": 3992,
-            "y": 1672.3
+            "y": 1663
           }
         ]
       },
@@ -11028,16 +10863,16 @@
         "id": "TExoTermBackendConstructor→ExoTermBackendBase",
         "points": [
           {
-            "x": 364.6,
+            "x": 364.8,
             "y": 190
           },
           {
             "x": 533,
-            "y": 766
+            "y": 755.3
           },
           {
-            "x": 716.7,
-            "y": 1115.8
+            "x": 715,
+            "y": 1081.5
           }
         ]
       },
@@ -11126,7 +10961,7 @@
           },
           {
             "x": 3991.9,
-            "y": 1672.3
+            "y": 1663
           }
         ]
       },
@@ -11134,16 +10969,16 @@
         "id": "TExoTermChild→TExoTermElement",
         "points": [
           {
-            "x": 4375.9,
-            "y": 2894.5
+            "x": 4379.4,
+            "y": 2941.8
           },
           {
             "x": 4530,
-            "y": 3112.3
+            "y": 3128
           },
           {
-            "x": 4696.6,
-            "y": 2209.3
+            "x": 4696.8,
+            "y": 2204.3
           }
         ]
       },
@@ -11151,32 +10986,32 @@
         "id": "TExoTermChild→TExoTermRegion",
         "points": [
           {
-            "x": 4365.5,
-            "y": 2825.5
+            "x": 4366.4,
+            "y": 2872.8
           },
           {
             "x": 4530,
-            "y": 2419.5
+            "y": 2494.5
           },
           {
             "x": 4708.5,
-            "y": 2419.5
+            "y": 2494.5
           },
           {
             "x": 4887,
-            "y": 2419.5
+            "y": 2494.5
           },
           {
             "x": 5065.5,
-            "y": 2419.5
+            "y": 2494.5
           },
           {
             "x": 5244,
-            "y": 2419.5
+            "y": 2494.5
           },
           {
-            "x": 5393.8,
-            "y": 4051.8
+            "x": 5393.7,
+            "y": 4056.3
           }
         ]
       },
@@ -11185,15 +11020,15 @@
         "points": [
           {
             "x": 4855,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 4887,
-            "y": 3931.3
+            "y": 3947
           },
           {
             "x": 5062.5,
-            "y": 1941.5
+            "y": 1907.3
           }
         ]
       },
@@ -11202,15 +11037,15 @@
         "points": [
           {
             "x": 4855,
-            "y": 2145.4
+            "y": 2140.4
           },
           {
             "x": 4887,
-            "y": 2145.5
+            "y": 2140.5
           },
           {
             "x": 4919,
-            "y": 2148.1
+            "y": 2143.1
           }
         ]
       },
@@ -11219,15 +11054,15 @@
         "points": [
           {
             "x": 4855,
-            "y": 2108.4
+            "y": 2103.4
           },
           {
             "x": 4887,
-            "y": 2100.5
+            "y": 2095.5
           },
           {
-            "x": 5033,
-            "y": 2289
+            "x": 5037.8,
+            "y": 2324
           }
         ]
       },
@@ -11236,15 +11071,15 @@
         "points": [
           {
             "x": 4855,
-            "y": 1834.3
+            "y": 1825
           },
           {
             "x": 4887,
-            "y": 1834.3
+            "y": 1825
           },
           {
-            "x": 4980.9,
-            "y": 1872.5
+            "x": 4948,
+            "y": 1841.3
           }
         ]
       },
@@ -11253,15 +11088,15 @@
         "points": [
           {
             "x": 4919,
-            "y": 2175.5
+            "y": 2170.5
           },
           {
             "x": 4887,
-            "y": 2179
+            "y": 2174
           },
           {
             "x": 4855,
-            "y": 2172.9
+            "y": 2167.9
           }
         ]
       },
@@ -11270,15 +11105,15 @@
         "points": [
           {
             "x": 5212,
-            "y": 2175.5
+            "y": 2170.5
           },
           {
             "x": 5244,
-            "y": 2179
+            "y": 2174
           },
           {
             "x": 5394.2,
-            "y": 4051.8
+            "y": 4056.3
           }
         ]
       },
@@ -11286,16 +11121,16 @@
         "id": "TExoTermKid→TExoTermStaticText",
         "points": [
           {
-            "x": 5212,
-            "y": 2140.9
+            "x": 5183.4,
+            "y": 2120.3
           },
           {
             "x": 5244,
-            "y": 2136.8
+            "y": 2102.5
           },
           {
-            "x": 5372.8,
-            "y": 1953
+            "x": 5370.8,
+            "y": 1935.3
           }
         ]
       },
@@ -11303,16 +11138,16 @@
         "id": "TExoTermListener→TExoTermElement",
         "points": [
           {
-            "x": 5029.9,
-            "y": 2289
+            "x": 5035.6,
+            "y": 2324
           },
           {
             "x": 4887,
-            "y": 2120.5
+            "y": 2115.5
           },
           {
             "x": 4855,
-            "y": 2124.8
+            "y": 2119.8
           }
         ]
       },
@@ -11321,15 +11156,15 @@
         "points": [
           {
             "x": 5212,
-            "y": 2331
+            "y": 2366
           },
           {
             "x": 5244,
-            "y": 2331
+            "y": 2366
           },
           {
-            "x": 5363.1,
-            "y": 2183.5
+            "x": 5370.5,
+            "y": 2165.8
           }
         ]
       },
@@ -11338,15 +11173,15 @@
         "points": [
           {
             "x": 2308,
-            "y": 1007.3
+            "y": 1011
           },
           {
             "x": 2388,
-            "y": 1007.3
+            "y": 1011
           },
           {
-            "x": 2557.6,
-            "y": 1666.5
+            "x": 2557.5,
+            "y": 1661.5
           }
         ]
       },
@@ -11355,15 +11190,15 @@
         "points": [
           {
             "x": 5183,
-            "y": 1907
+            "y": 1872.8
           },
           {
             "x": 5244,
-            "y": 1907
+            "y": 1872.8
           },
           {
-            "x": 5349.4,
-            "y": 1856
+            "x": 5337,
+            "y": 1837.8
           }
         ]
       },
@@ -11371,16 +11206,16 @@
         "id": "TExoTermNode→TExoTermNodeFields",
         "points": [
           {
-            "x": 2614.2,
-            "y": 1735.5
+            "x": 2615.9,
+            "y": 1730.5
           },
           {
             "x": 2745,
-            "y": 1830
+            "y": 1820.8
           },
           {
-            "x": 2903.9,
-            "y": 2110.3
+            "x": 2904.2,
+            "y": 2105.3
           }
         ]
       },
@@ -11389,39 +11224,39 @@
         "points": [
           {
             "x": 2700,
-            "y": 1696.7
+            "y": 1688.5
           },
           {
             "x": 2745,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 2923.5,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 3102,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 3280.5,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 3459,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 3637.5,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 3816,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 3934.5,
-            "y": 1695.3
+            "y": 1686
           }
         ]
       },
@@ -11430,15 +11265,15 @@
         "points": [
           {
             "x": 4498,
-            "y": 1717.7
+            "y": 1701.1
           },
           {
             "x": 4530,
-            "y": 1732.3
+            "y": 1713
           },
           {
-            "x": 4701.4,
-            "y": 3844.3
+            "x": 4701.5,
+            "y": 3860
           }
         ]
       },
@@ -11447,15 +11282,15 @@
         "points": [
           {
             "x": 4498,
-            "y": 1701.3
+            "y": 1672.4
           },
           {
             "x": 4530,
-            "y": 1712.3
+            "y": 1678
           },
           {
-            "x": 4681.9,
-            "y": 2080.3
+            "x": 4683.6,
+            "y": 2075.3
           }
         ]
       },
@@ -11463,32 +11298,32 @@
         "id": "TExoTermNodeApi→TExoTermEvent",
         "points": [
           {
-            "x": 4443.9,
-            "y": 1556.8
+            "x": 4443.3,
+            "y": 1552.3
           },
           {
             "x": 4530,
-            "y": 1468.8
+            "y": 1463
           },
           {
             "x": 4708.5,
-            "y": 1468.8
+            "y": 1463
           },
           {
             "x": 4887,
-            "y": 1468.8
+            "y": 1463
           },
           {
             "x": 5065.5,
-            "y": 1468.8
+            "y": 1463
           },
           {
             "x": 5244,
-            "y": 1468.8
+            "y": 1463
           },
           {
-            "x": 5387.4,
-            "y": 2099.5
+            "x": 5387.3,
+            "y": 2081.8
           }
         ]
       },
@@ -11496,24 +11331,24 @@
         "id": "TExoTermNodeApi→TExoTermMark",
         "points": [
           {
-            "x": 4434.8,
-            "y": 1556.8
+            "x": 4434.3,
+            "y": 1552.3
           },
           {
             "x": 4530,
-            "y": 1448.8
+            "y": 1443
           },
           {
             "x": 4708.5,
-            "y": 1448.8
+            "y": 1443
           },
           {
             "x": 4887,
-            "y": 1448.8
+            "y": 1443
           },
           {
-            "x": 5052.1,
-            "y": 1872.5
+            "x": 5051.2,
+            "y": 1838.3
           }
         ]
       },
@@ -11522,15 +11357,15 @@
         "points": [
           {
             "x": 2356,
-            "y": 4401.3
+            "y": 4417
           },
           {
             "x": 2388,
-            "y": 4404.8
+            "y": 4420.5
           },
           {
             "x": 2564.2,
-            "y": 1735.5
+            "y": 1730.5
           }
         ]
       },
@@ -11539,31 +11374,31 @@
         "points": [
           {
             "x": 2356,
-            "y": 4377.3
+            "y": 4393
           },
           {
             "x": 2388,
-            "y": 4375.5
+            "y": 4391.3
           },
           {
             "x": 2566.5,
-            "y": 4375.5
+            "y": 4391.3
           },
           {
             "x": 2745,
-            "y": 4375.5
+            "y": 4391.3
           },
           {
             "x": 2923.5,
-            "y": 4375.5
+            "y": 4391.3
           },
           {
             "x": 3102,
-            "y": 4375.5
+            "y": 4391.3
           },
           {
-            "x": 3271.9,
-            "y": 2504.8
+            "x": 3272.2,
+            "y": 2441.3
           }
         ]
       },
@@ -11572,39 +11407,39 @@
         "points": [
           {
             "x": 3062.7,
-            "y": 2179.3
+            "y": 2174.3
           },
           {
             "x": 3102,
-            "y": 2189
+            "y": 2184
           },
           {
             "x": 3280.5,
-            "y": 2189
+            "y": 2184
           },
           {
             "x": 3459,
-            "y": 2189
+            "y": 2184
           },
           {
             "x": 3637.5,
-            "y": 2189
+            "y": 2184
           },
           {
             "x": 3816,
-            "y": 2189
+            "y": 2184
           },
           {
             "x": 3994.5,
-            "y": 2189
+            "y": 2184
           },
           {
             "x": 4173,
-            "y": 2189
+            "y": 2184
           },
           {
-            "x": 4342.3,
-            "y": 2825.5
+            "x": 4343,
+            "y": 2872.8
           }
         ]
       },
@@ -11613,47 +11448,47 @@
         "points": [
           {
             "x": 3070,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 3102,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 3280.5,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 3459,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 3637.5,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 3816,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 3994.5,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 4173,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 4351.5,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 4530,
-            "y": 2144.8
+            "y": 2139.8
           },
           {
             "x": 4562,
-            "y": 2144.8
+            "y": 2139.8
           }
         ]
       },
@@ -11662,15 +11497,15 @@
         "points": [
           {
             "x": 3070,
-            "y": 2116.6
+            "y": 2111.6
           },
           {
             "x": 3102,
-            "y": 2110.5
+            "y": 2105.5
           },
           {
-            "x": 3224.2,
-            "y": 2315.8
+            "x": 3210.6,
+            "y": 2252.3
           }
         ]
       },
@@ -11679,39 +11514,39 @@
         "points": [
           {
             "x": 3037,
-            "y": 2110.3
+            "y": 2105.3
           },
           {
             "x": 3102,
-            "y": 2090.5
+            "y": 2085.5
           },
           {
             "x": 3280.5,
-            "y": 2090.5
+            "y": 2085.5
           },
           {
             "x": 3459,
-            "y": 2090.5
+            "y": 2085.5
           },
           {
             "x": 3637.5,
-            "y": 2090.5
+            "y": 2085.5
           },
           {
             "x": 3816,
-            "y": 2090.5
+            "y": 2085.5
           },
           {
             "x": 3994.5,
-            "y": 2090.5
+            "y": 2085.5
           },
           {
             "x": 4173,
-            "y": 2090.5
+            "y": 2085.5
           },
           {
-            "x": 4346.1,
-            "y": 3195
+            "x": 4346.3,
+            "y": 3239
           }
         ]
       },
@@ -11720,15 +11555,15 @@
         "points": [
           {
             "x": 2713,
-            "y": 4317
+            "y": 4332.8
           },
           {
             "x": 2745,
-            "y": 4317
+            "y": 4332.8
           },
           {
             "x": 2920.7,
-            "y": 2179.3
+            "y": 2174.3
           }
         ]
       },
@@ -11737,15 +11572,15 @@
         "points": [
           {
             "x": 3780.5,
-            "y": 2802.8
+            "y": 2818.5
           },
           {
             "x": 3816,
-            "y": 2802.8
+            "y": 2818.5
           },
           {
             "x": 3876.1,
-            "y": 2820.3
+            "y": 2836
           }
         ]
       },
@@ -11754,15 +11589,15 @@
         "points": [
           {
             "x": 3775.4,
-            "y": 2925.3
+            "y": 2941
           },
           {
             "x": 3816,
-            "y": 2906.3
+            "y": 2922
           },
           {
             "x": 3874.9,
-            "y": 2889.3
+            "y": 2905
           }
         ]
       },
@@ -11771,15 +11606,15 @@
         "points": [
           {
             "x": 3958.1,
-            "y": 2889.3
+            "y": 2905
           },
           {
             "x": 3816,
-            "y": 3024
+            "y": 3039.8
           },
           {
             "x": 3784,
-            "y": 3017.9
+            "y": 3033.6
           }
         ]
       },
@@ -11788,15 +11623,15 @@
         "points": [
           {
             "x": 4042.7,
-            "y": 2889.3
+            "y": 2905
           },
           {
             "x": 4173,
-            "y": 2982.5
+            "y": 2998.3
           },
           {
-            "x": 4265.4,
-            "y": 3019.5
+            "x": 4291.7,
+            "y": 3066.8
           }
         ]
       },
@@ -11804,16 +11639,16 @@
         "id": "TExoTermProtoKid→TExoTermProtoText",
         "points": [
           {
-            "x": 4055.3,
-            "y": 2820.3
+            "x": 4060.9,
+            "y": 2836
           },
           {
             "x": 4173,
-            "y": 2753.5
+            "y": 2777.8
           },
           {
-            "x": 4321.2,
-            "y": 2922.5
+            "x": 4324.3,
+            "y": 2969.8
           }
         ]
       },
@@ -11821,49 +11656,49 @@
         "id": "TExoTermRegion→TExoTermChild",
         "points": [
           {
-            "x": 5392.3,
-            "y": 4051.8
+            "x": 5392.2,
+            "y": 4056.3
           },
           {
             "x": 5244,
-            "y": 2966.8
+            "y": 2982.5
           },
           {
             "x": 5065.5,
-            "y": 2966.8
+            "y": 2982.5
           },
           {
             "x": 4887,
-            "y": 2966.8
+            "y": 2982.5
           },
           {
             "x": 4708.5,
-            "y": 2966.8
+            "y": 2982.5
           },
           {
             "x": 4530,
-            "y": 2966.8
+            "y": 2982.5
           },
           {
-            "x": 4409.2,
-            "y": 2894.5
+            "x": 4433.3,
+            "y": 2941.8
           }
         ]
       },
       {
-        "id": "TExoTermRunsTheReadmeCounter→COUNTER",
+        "id": "TExoTermRunsTheReadmeCounter→Counter",
         "points": [
           {
             "x": 1948,
-            "y": 518
+            "y": 413.5
           },
           {
             "x": 2031,
-            "y": 525.3
+            "y": 420.8
           },
           {
             "x": 2149.5,
-            "y": 496.2
+            "y": 385.4
           }
         ]
       },
@@ -11872,15 +11707,15 @@
         "points": [
           {
             "x": 1948,
-            "y": 505.3
+            "y": 400.8
           },
           {
             "x": 2031,
-            "y": 505.3
+            "y": 400.8
           },
           {
-            "x": 2181.9,
-            "y": 693.5
+            "x": 2189.8,
+            "y": 678.5
           }
         ]
       },
@@ -11889,15 +11724,15 @@
         "points": [
           {
             "x": 1948,
-            "y": 492.5
+            "y": 388
           },
           {
             "x": 2031,
-            "y": 485.3
+            "y": 380.8
           },
           {
-            "x": 2197.7,
-            "y": 972.8
+            "x": 2199.7,
+            "y": 976.5
           }
         ]
       },
@@ -11906,15 +11741,15 @@
         "points": [
           {
             "x": 1948,
-            "y": 646.8
+            "y": 651.3
           },
           {
             "x": 2031,
-            "y": 660.8
+            "y": 665.3
           },
           {
             "x": 2149.5,
-            "y": 705.4
+            "y": 696.9
           }
         ]
       },
@@ -11923,32 +11758,32 @@
         "points": [
           {
             "x": 1948,
-            "y": 634.1
+            "y": 638.6
           },
           {
             "x": 2031,
-            "y": 640.8
+            "y": 645.3
           },
           {
             "x": 2192.7,
-            "y": 972.8
+            "y": 976.5
           }
         ]
       },
       {
-        "id": "TExoTermRunsTheReadmeTodoList→TODO_LIST",
+        "id": "TExoTermRunsTheReadmeTodoList→TodoList",
         "points": [
           {
             "x": 1948,
-            "y": 609.5
+            "y": 614
           },
           {
             "x": 2031,
-            "y": 602.3
+            "y": 606.8
           },
           {
             "x": 2149.5,
-            "y": 573.2
+            "y": 571.4
           }
         ]
       },
@@ -11957,15 +11792,15 @@
         "points": [
           {
             "x": 1948,
-            "y": 764.2
+            "y": 762.3
           },
           {
             "x": 2031,
-            "y": 783.3
+            "y": 777.8
           },
           {
             "x": 2149.5,
-            "y": 746.6
+            "y": 734.8
           }
         ]
       },
@@ -11974,32 +11809,32 @@
         "points": [
           {
             "x": 1948,
-            "y": 736.9
+            "y": 735
           },
           {
             "x": 2031,
-            "y": 740.5
+            "y": 735
           },
           {
-            "x": 2186.4,
-            "y": 972.8
+            "x": 2187.2,
+            "y": 976.5
           }
         ]
       },
       {
-        "id": "TExoTermRunsTheReadmeTodoRow→TODO",
+        "id": "TExoTermRunsTheReadmeTodoRow→Todo",
         "points": [
           {
             "x": 1948,
-            "y": 709.6
+            "y": 707.7
           },
           {
             "x": 2031,
-            "y": 697.8
+            "y": 692.3
           },
           {
             "x": 2149.5,
-            "y": 661.1
+            "y": 649.3
           }
         ]
       },
@@ -12008,15 +11843,15 @@
         "points": [
           {
             "x": 1948,
-            "y": 876.3
+            "y": 880.1
           },
           {
             "x": 2031,
-            "y": 890.3
+            "y": 894
           },
           {
-            "x": 2171.5,
-            "y": 762.5
+            "x": 2175.5,
+            "y": 747.5
           }
         ]
       },
@@ -12025,23 +11860,23 @@
         "points": [
           {
             "x": 1948,
-            "y": 845.4
+            "y": 843.2
           },
           {
             "x": 2031,
-            "y": 841.8
+            "y": 836.3
           },
           {
             "x": 2209.5,
-            "y": 841.8
+            "y": 836.3
           },
           {
             "x": 2388,
-            "y": 841.8
+            "y": 836.3
           },
           {
             "x": 2559.3,
-            "y": 1666.5
+            "y": 1661.5
           }
         ]
       },
@@ -12050,15 +11885,15 @@
         "points": [
           {
             "x": 1948,
-            "y": 961
+            "y": 964.8
           },
           {
             "x": 2031,
-            "y": 968
+            "y": 971.8
           },
           {
-            "x": 2183.8,
-            "y": 762.5
+            "x": 2185.7,
+            "y": 747.5
           }
         ]
       },
@@ -12067,23 +11902,23 @@
         "points": [
           {
             "x": 1948,
-            "y": 924.2
+            "y": 927.9
           },
           {
             "x": 2031,
-            "y": 910.3
+            "y": 914
           },
           {
             "x": 2209.5,
-            "y": 910.3
+            "y": 914
           },
           {
             "x": 2388,
-            "y": 910.3
+            "y": 914
           },
           {
-            "x": 2558.7,
-            "y": 1666.5
+            "x": 2558.6,
+            "y": 1661.5
           }
         ]
       },
@@ -12092,15 +11927,15 @@
         "points": [
           {
             "x": 3427,
-            "y": 2488.6
+            "y": 2355.6
           },
           {
             "x": 3459,
-            "y": 2505.8
+            "y": 2357.5
           },
           {
-            "x": 3602.1,
-            "y": 2366.3
+            "x": 3491,
+            "y": 2361
           }
         ]
       },
@@ -12109,39 +11944,39 @@
         "points": [
           {
             "x": 3427,
-            "y": 2393.8
+            "y": 2322.7
           },
           {
             "x": 3459,
-            "y": 2390.3
+            "y": 2317.5
           },
           {
             "x": 3637.5,
-            "y": 2390.3
+            "y": 2317.5
           },
           {
             "x": 3816,
-            "y": 2390.3
+            "y": 2317.5
           },
           {
             "x": 3994.5,
-            "y": 2390.3
+            "y": 2317.5
           },
           {
             "x": 4173,
-            "y": 2390.3
+            "y": 2317.5
           },
           {
             "x": 4351.5,
-            "y": 2390.3
+            "y": 2317.5
           },
           {
             "x": 4530,
-            "y": 2390.3
+            "y": 2317.5
           },
           {
-            "x": 4661.6,
-            "y": 2209.3
+            "x": 4643.7,
+            "y": 2204.3
           }
         ]
       },
@@ -12149,24 +11984,24 @@
         "id": "TExoTermSchema→TExoTermNode",
         "points": [
           {
-            "x": 3257.7,
-            "y": 2315.8
+            "x": 3255.7,
+            "y": 2252.3
           },
           {
             "x": 3102,
-            "y": 1671
+            "y": 1666
           },
           {
             "x": 2923.5,
-            "y": 1671
+            "y": 1666
           },
           {
             "x": 2745,
-            "y": 1671
+            "y": 1666
           },
           {
             "x": 2700,
-            "y": 1678.6
+            "y": 1673.6
           }
         ]
       },
@@ -12175,15 +12010,15 @@
         "points": [
           {
             "x": 3427,
-            "y": 2345.8
+            "y": 2306.3
           },
           {
             "x": 3459,
-            "y": 2331.8
+            "y": 2297.5
           },
           {
-            "x": 3620,
-            "y": 2925.3
+            "x": 3621.2,
+            "y": 2941
           }
         ]
       },
@@ -12191,32 +12026,32 @@
         "id": "TExoTermSchema→TExoTermWriter",
         "points": [
           {
-            "x": 3403.6,
-            "y": 2315.8
+            "x": 3427,
+            "y": 2289.9
           },
           {
             "x": 3459,
-            "y": 2273.3
+            "y": 2277.5
           },
           {
             "x": 3637.5,
-            "y": 2273.3
+            "y": 2277.5
           },
           {
             "x": 3816,
-            "y": 2273.3
+            "y": 2277.5
           },
           {
             "x": 3994.5,
-            "y": 2273.3
+            "y": 2277.5
           },
           {
             "x": 4173,
-            "y": 2273.3
+            "y": 2277.5
           },
           {
-            "x": 4345.1,
-            "y": 3195
+            "x": 4345.3,
+            "y": 3239
           }
         ]
       },
@@ -12225,87 +12060,87 @@
         "points": [
           {
             "x": 1279,
-            "y": 228.7
+            "y": 242.5
           },
           {
             "x": 1311,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 1441.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 1572,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 1801.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 2031,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 2209.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 2388,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 2566.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 2745,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 2923.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 3102,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 3280.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 3459,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 3637.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 3816,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 3994.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 4173,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 4351.5,
-            "y": 230.5
+            "y": 247.3
           },
           {
             "x": 4530,
-            "y": 230.5
+            "y": 247.3
           },
           {
-            "x": 4702.5,
-            "y": 2080.3
+            "x": 4702.4,
+            "y": 2075.3
           }
         ]
       },
@@ -12321,8 +12156,8 @@
             "y": 193.8
           },
           {
-            "x": 1431.3,
-            "y": 688.5
+            "x": 1430.3,
+            "y": 640
           }
         ]
       },
@@ -12331,15 +12166,15 @@
         "points": [
           {
             "x": 4054.5,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 4173,
-            "y": 1695.3
+            "y": 1686
           },
           {
             "x": 4205,
-            "y": 1687.4
+            "y": 1679
           }
         ]
       },
@@ -12348,15 +12183,15 @@
         "points": [
           {
             "x": 4498,
-            "y": 3229.5
+            "y": 3273.5
           },
           {
             "x": 4530,
-            "y": 3229.5
+            "y": 3273.5
           },
           {
-            "x": 4697.9,
-            "y": 2209.3
+            "x": 4698.3,
+            "y": 2204.3
           }
         ]
       },
@@ -12365,15 +12200,15 @@
         "points": [
           {
             "x": 3784,
-            "y": 3136.8
+            "y": 3152.5
           },
           {
             "x": 3816,
-            "y": 3136.8
+            "y": 3152.5
           },
           {
             "x": 3851.5,
-            "y": 3136.8
+            "y": 3152.5
           }
         ]
       },
@@ -12382,49 +12217,117 @@
         "points": [
           {
             "x": 4137.5,
-            "y": 3136.8
+            "y": 3152.5
           },
           {
             "x": 4173,
-            "y": 3136.8
+            "y": 3152.5
           },
           {
-            "x": 4285.1,
-            "y": 3195
+            "x": 4300.6,
+            "y": 3239
           }
         ]
       },
       {
-        "id": "TODO_LIST→mList",
+        "id": "Todo→todoBuilder",
         "points": [
           {
             "x": 2269.5,
-            "y": 558.5
+            "y": 627.5
           },
           {
             "x": 2388,
-            "y": 558.5
+            "y": 627.5
           },
           {
             "x": 2506.5,
-            "y": 558.5
+            "y": 627.5
           }
         ]
       },
       {
-        "id": "TODO→mTodo",
+        "id": "todoBuilder→todoSchema",
+        "points": [
+          {
+            "x": 2585.1,
+            "y": 650.5
+          },
+          {
+            "x": 2745,
+            "y": 847.8
+          },
+          {
+            "x": 2863.5,
+            "y": 847.8
+          }
+        ]
+      },
+      {
+        "id": "todoBuilder→TTodo",
+        "points": [
+          {
+            "x": 2626.5,
+            "y": 618.4
+          },
+          {
+            "x": 2745,
+            "y": 600.5
+          },
+          {
+            "x": 2870,
+            "y": 502.5
+          }
+        ]
+      },
+      {
+        "id": "TodoList→todoListBuilder",
         "points": [
           {
             "x": 2269.5,
-            "y": 642.5
+            "y": 553.5
           },
           {
             "x": 2388,
-            "y": 642.5
+            "y": 553.5
           },
           {
             "x": 2506.5,
-            "y": 642.5
+            "y": 553.5
+          }
+        ]
+      },
+      {
+        "id": "todoListBuilder→todoListSchema",
+        "points": [
+          {
+            "x": 2626.5,
+            "y": 553.5
+          },
+          {
+            "x": 2745,
+            "y": 553.5
+          },
+          {
+            "x": 2863.5,
+            "y": 553.5
+          }
+        ]
+      },
+      {
+        "id": "todoListSchema→TodoListPorts",
+        "points": [
+          {
+            "x": 2983.5,
+            "y": 553.5
+          },
+          {
+            "x": 3102,
+            "y": 553.5
+          },
+          {
+            "x": 3220.5,
+            "y": 553.5
           }
         ]
       },
@@ -12433,15 +12336,32 @@
         "points": [
           {
             "x": 2626.5,
-            "y": 465.5
+            "y": 460.5
           },
           {
             "x": 2745,
-            "y": 465.5
+            "y": 460.5
           },
           {
             "x": 2838,
-            "y": 470.7
+            "y": 460.5
+          }
+        ]
+      },
+      {
+        "id": "todoSchema→TodoPorts",
+        "points": [
+          {
+            "x": 2983.5,
+            "y": 847.8
+          },
+          {
+            "x": 3102,
+            "y": 847.8
+          },
+          {
+            "x": 3220.5,
+            "y": 847.8
           }
         ]
       },
@@ -12450,15 +12370,15 @@
         "points": [
           {
             "x": 4430.5,
-            "y": 3561.8
+            "y": 3577.5
           },
           {
             "x": 4530,
-            "y": 3561.8
+            "y": 3577.5
           },
           {
-            "x": 4700.4,
-            "y": 2209.3
+            "x": 4700.5,
+            "y": 2204.3
           }
         ]
       },
@@ -12467,15 +12387,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1178.5
+            "y": 1182.3
           },
           {
             "x": 1572,
-            "y": 1178.5
+            "y": 1182.3
           },
           {
-            "x": 1779.7,
-            "y": 1397.5
+            "x": 1776.8,
+            "y": 1372.8
           }
         ]
       }

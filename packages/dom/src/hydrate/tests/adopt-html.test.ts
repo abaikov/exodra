@@ -101,7 +101,7 @@ const htmlFollowing = <TPorts extends { html: TExoChildrenPort }>(
     const m = createExoMachineBuilder<TExoMachineNode & TFilling>(schema);
     if (make !== undefined) {
         const fill = make(schema.ports);
-        m.createInitialState((c, i) => fill(c, i));
+        m.createInitialState((c, i, params) => fill(c, i, params));
     }
     const draw = m.transition((c) => {
         c.unsafeHtml(schema.ports.html, body.getValue());

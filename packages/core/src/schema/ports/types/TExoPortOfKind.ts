@@ -8,7 +8,9 @@ import type { EXO_PORT_TEXT } from '../constants/EXO_PORT_TEXT';
 import type { TExoAttrPort } from './TExoAttrPort';
 import type { TExoChildrenPort } from './TExoChildrenPort';
 import type { TExoEventPort } from './TExoEventPort';
+import type { TExoEventPortKind } from './TExoEventPortKind';
 import type { TExoRefPort } from './TExoRefPort';
+import type { TExoRefPortKind } from './TExoRefPortKind';
 import type { TExoTextPort } from './TExoTextPort';
 
 export type TExoPortOfKind<TMark> = TMark extends
@@ -20,8 +22,12 @@ export type TExoPortOfKind<TMark> = TMark extends
     ? TExoTextPort
     : TMark extends typeof EXO_PORT_CHILDREN
     ? TExoChildrenPort
+    : TMark extends TExoEventPortKind<infer TEvent>
+    ? TExoEventPort<TEvent>
     : TMark extends typeof EXO_PORT_EVENT
     ? TExoEventPort
+    : TMark extends TExoRefPortKind<infer TNode>
+    ? TExoRefPort<TNode>
     : TMark extends typeof EXO_PORT_REF
     ? TExoRefPort
     : never;

@@ -80,7 +80,7 @@ that fills the ports is written in TypeScript around it and is not touched.
 ```tsx no-check
 import { exoJsx } from '@exodra/jsx';
 
-const ROW_SCHEMA = exoJsx<TRowPorts>(($) => (
+const rowSchema = exoJsx<TRowPorts>(($) => (
   <li class="row" data-id={$.id}>
     <span class="row__label">{$.label}</span>
     <button class="row__btn" onClick={$.toggle} />
@@ -99,7 +99,7 @@ const _s0 = createExoNamedSchema((_b0) => {
   });
 });
 
-const ROW_SCHEMA = _s0;
+const rowSchema = _s0;
 ```
 
 There is no hoisting switch: every backend indexes its prepared plan by the
@@ -110,17 +110,17 @@ slower one.
 
 `@exodra/babel-plugin-schema` is the specification, and this plugin compiles the
 same dialect to the same output, up to SWC's own codegen formatting (arrow
-spacing, quote style).
+spacing, quote style). In the last column `RowPorts` is `rowSchema.ports` and `rowBuilder` is the machine builder over `rowSchema`.
 
 | written | schema call | filled by the machine with |
 | --- | --- | --- |
 | `class="row"`, `tabindex={0}`, `disabled` | folded into the markup | — |
-| `data-id={$.id}` | `port("data-id", "id")` | `c.attr(P.id, value)` |
-| `<span>{$.label}</span>` | `textPort("label")` | `c.text(P.label, value)` |
-| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `m.on(P.toggle, handler)` |
-| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `m.on(P.edit, handler)` |
+| `data-id={$.id}` | `port("data-id", "id")` | `c.attr(RowPorts.id, value)` |
+| `<span>{$.label}</span>` | `textPort("label")` | `c.text(RowPorts.label, value)` |
+| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `rowBuilder.on(RowPorts.toggle, handler)` |
+| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `rowBuilder.on(RowPorts.edit, handler)` |
 | `ref={$.box}` | `refPort("box")` | — |
-| `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(P.body, markup)` |
+| `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(RowPorts.body, markup)` |
 | `<$.rows />` | `childrenPort("rows")` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
 
 Everything else is a compile error naming the spelling that would have worked —

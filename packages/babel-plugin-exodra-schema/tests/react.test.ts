@@ -14,6 +14,8 @@ const MODULES: Readonly<Record<string, unknown>> = {
     '@exodra/core': core,
     '@exodra/react-compat': compat,
     '@exodra/react-compat/jsx-runtime': jsxRuntime,
+    react: compat,
+    'react/jsx-runtime': jsxRuntime,
 };
 
 function compile(source: string): string {
@@ -92,6 +94,203 @@ describe('the React compiler turns host trees into schemas with ports', () => {
         expect(host.querySelector('em')?.textContent).toBe('2!');
         expect(host.firstChild).toBe(div);
         expect(Array.from(host.querySelectorAll('li'))).toEqual(rows);
+    });
+
+    it('keeps a nested component and its state when a ternary switches between two trees of the same root', async () => {
+        const { Shell, bump } = load(`
+            import { useState } from '@exodra/react-compat';
+            let up;
+            export const bump = () => up();
+            function Counter() {
+                const [n, setN] = useState(0);
+                up = () => setN((v) => v + 1);
+                return <b>{n}</b>;
+            }
+            export function Shell({ extra }) {
+                return extra ? (
+                    <div><i>t</i><Counter /><u>x</u></div>
+                ) : (
+                    <div><i>t</i><Counter /></div>
+                );
+            }
+        `) as { Shell: unknown; bump: () => void };
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        const root = createRoot(host);
+        root.render(jsx(Shell, { extra: false }));
+        await act(async () => bump());
+        root.render(jsx(Shell, { extra: true }));
+        expect(host.innerHTML).toBe('<div><i>t</i><b>1</b><u>x</u></div>');
+    });
+
+    it('keeps DOM nodes, typed text, state and one click handler when compiled branches flip back and forth', async () => {
+        const { Shell, bump, clicks } = load(`
+            import { useState } from '@exodra/react-compat';
+            let up;
+            export const clicks = [];
+            export const bump = () => up();
+            function Counter() {
+                const [n, setN] = useState(0);
+                up = () => setN((v) => v + 1);
+                return <b>{n}</b>;
+            }
+            export function Shell({ extra, label }) {
+                return extra ? (
+                    <div className="x"><input defaultValue="start" /><button onClick={() => clicks.push(label)}>go</button><Counter /><u>tail</u></div>
+                ) : (
+                    <div className="y" title={label}><input defaultValue="start" /><button onClick={() => clicks.push(label)}>go</button><Counter /></div>
+                );
+            }
+        `) as { Shell: unknown; bump: () => void; clicks: string[] };
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        const root = createRoot(host);
+        root.render(jsx(Shell, { extra: false, label: 'a' }));
+        await act(async () => bump());
+        const input = host.querySelector('input') as HTMLInputElement;
+        const button = host.querySelector('button') as HTMLButtonElement;
+        input.value = 'typed';
+        root.render(jsx(Shell, { extra: true, label: 'b' }));
+        expect(host.innerHTML).toBe(
+            '<div class="x"><input><button>go</button><b>1</b><u>tail</u></div>'
+        );
+        expect(host.querySelector('input')).toBe(input);
+        expect(input.value).toBe('typed');
+        button.click();
+        expect(clicks).toEqual(['b']);
+        root.render(jsx(Shell, { extra: false, label: 'c' }));
+        expect(host.innerHTML).toBe(
+            '<div class="y" title="c"><input><button>go</button><b>1</b></div>'
+        );
+        button.click();
+        expect(clicks).toEqual(['b', 'c']);
+        await act(async () => bump());
+        expect(host.querySelector('b')?.textContent).toBe('2');
+    });
+
+    it('keys a run of dynamic children and merged static text by their React positions', async () => {
+        const { Shell, bump } = load(`
+            import { useState } from '@exodra/react-compat';
+            let up;
+            export const bump = () => up();
+            function Counter() {
+                const [n, setN] = useState(0);
+                up = () => setN((v) => v + 1);
+                return <b>{n}</b>;
+            }
+            export function Shell({ more, note }) {
+                return more ? (
+                    <div>a{'b'}<Counter />{note}</div>
+                ) : (
+                    <div>a{'b'}<Counter /></div>
+                );
+            }
+        `) as { Shell: unknown; bump: () => void };
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        const root = createRoot(host);
+        root.render(jsx(Shell, { more: false, note: 'n' }));
+        await act(async () => bump());
+        root.render(jsx(Shell, { more: true, note: 'n' }));
+        expect(host.innerHTML).toBe('<div>ab<b>1</b>n</div>');
+    });
+
+    it('merges the two branches of a ternary with one root tag into one schema', async () => {
+        const source = `
+            export function Shell({ extra, label }) {
+                return extra ? (
+                    <div className="x"><i>t</i><u>{label}</u></div>
+                ) : (
+                    <div className="y"><i>t</i></div>
+                );
+            }
+        `;
+        expect(compile(source).match(/\.el\("div"/g)).toHaveLength(1);
+        const { Shell } = load(source) as { Shell: unknown };
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        const root = createRoot(host);
+        root.render(jsx(Shell, { extra: false, label: 'a' }));
+        const i = host.querySelector('i');
+        expect(host.innerHTML).toBe('<div class="y"><i>t</i></div>');
+        root.render(jsx(Shell, { extra: true, label: 'b' }));
+        expect(host.innerHTML).toBe('<div class="x"><i>t</i><u>b</u></div>');
+        expect(host.querySelector('i')).toBe(i);
+    });
+
+    it('compiles already-compiled jsx(), jsxs(), require()d runtime calls and React.createElement', async () => {
+        const source = `
+            import { jsx as _jsx, jsxs as _jsxs } from 'react/jsx-runtime';
+            import React, { useState } from 'react';
+            const runtime = require('react/jsx-runtime');
+            export function Card({ title, n }) {
+                return _jsxs('article', {
+                    className: 'card',
+                    children: [
+                        _jsx('h2', { children: title }),
+                        (0, runtime.jsx)('p', { 'data-n': n, children: 'body' }),
+                        React.createElement('i', { title: 't' }, 'x'),
+                    ],
+                });
+            }
+            export function Spread(props) {
+                return _jsx('div', { ...props });
+            }
+        `;
+        const out = compile(source);
+        expect(out.match(/createExoSchema\(/g)).toHaveLength(1);
+        expect(out).not.toMatch(/_jsxs\('article'|_jsx\('h2'|createElement\('i'/);
+        expect(out).toMatch(/_jsx\(["']div["'], \{\s*\.\.\.props/);
+        const { Card, Spread } = load(source) as { Card: unknown; Spread: unknown };
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        const root = createRoot(host);
+        root.render(jsx(Card, { title: 'A', n: 1 }));
+        expect(host.innerHTML).toBe(
+            '<article class="card"><h2>A</h2><p data-n="1">body</p><i title="t">x</i></article>'
+        );
+        const h2 = host.querySelector('h2');
+        root.render(jsx(Card, { title: 'B', n: 2 }));
+        expect(host.innerHTML).toBe(
+            '<article class="card"><h2>B</h2><p data-n="2">body</p><i title="t">x</i></article>'
+        );
+        expect(host.querySelector('h2')).toBe(h2);
+        root.render(jsx(Spread, { id: 's' }));
+        expect(host.innerHTML).toBe('<div id="s"></div>');
+    });
+
+    it('inlines a const kids array spread into createElement, and leaves a reused one alone', async () => {
+        const source = `
+            import { createElement as rc } from 'react';
+            export function Card({ open, tags }) {
+                const kids = [
+                    rc('h3', { key: 'h' }, 'title'),
+                    open ? rc('p', { key: 'd' }, 'details') : null,
+                    rc('ul', { key: 't' }, tags.map((t) => rc('li', { key: t }, t))),
+                ];
+                return rc('div', { className: 'card' }, ...kids);
+            }
+            export function Twice() {
+                const kids = [rc('b', { key: 'b' }, 'x')];
+                console.log(kids.length);
+                return rc('div', null, ...kids);
+            }
+        `;
+        const out = compile(source);
+        expect(out.match(/const kids =/g)).toHaveLength(1);
+        expect(out).toMatch(/\.\.\.kids/);
+        const { Card } = load(source) as { Card: unknown };
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        const root = createRoot(host);
+        root.render(jsx(Card, { open: false, tags: ['a', 'b'] }));
+        expect(host.innerHTML).toBe(
+            '<div class="card"><h3>title</h3><ul><li>a</li><li>b</li></ul></div>'
+        );
+        root.render(jsx(Card, { open: true, tags: ['b', 'a'] }));
+        expect(host.innerHTML).toBe(
+            '<div class="card"><h3>title</h3><p>details</p><ul><li>b</li><li>a</li></ul></div>'
+        );
     });
 
     it('re-orders compiled keyed rows by moving their nodes', async () => {

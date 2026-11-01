@@ -1,6 +1,6 @@
 # Exodra
 
-**An imperative template engine for plain TypeScript, at near hand-written speed, with the abstractions on top.**
+**An imperative UI framework for plain TypeScript, at near hand-written speed, with the abstractions on top.**
 
 [![npm](https://img.shields.io/npm/v/@exodra/core)](https://www.npmjs.com/package/@exodra/core)
 [![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
@@ -13,6 +13,11 @@ once, when the module loads, and you fill those ports directly from your own cod
 Nothing is diffed and nothing is walked when a value changes. Everything people
 usually expect a framework to impose — reactivity, keyed lists, hydration, JSX,
 React's API — sits on top of that core as a plugin you can take or leave.
+
+That makes it a component system — state, effects, context, routing, forms, swappable
+backends — at the cost of a template engine: it mounts faster than Mikado and a hand-rolled
+clone-and-patch, updates level with that hand-rolled code, and is ahead of Lit, Solid and
+React on both.
 
 ## Why Exodra
 
@@ -55,58 +60,55 @@ for a project template and JSX.
 ### A component is one value
 
 A component is a **machine**: a **schema**, built once when the module loads, and
-the machine's initial state and transitions, run per instance. The schema declares
-**ports** — places a value may be put — and the machine fills them, naming each by
-identity. Nothing is diffed and nothing is walked at render time, and the same
+the machine's initial state, wire and handlers, run per instance. `exoPorts` declares
+the **ports** — places a value may be put — the schema places each one in the markup,
+and the machine fills them, naming each by identity. Nothing is diffed and nothing is walked at render time, and the same
 machine runs on the server, on a client render and through hydration.
 
 No compiler is involved: this is a function call.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const COUNTER_SCHEMA = createExoSchema((b) => {
-    let text!: TExoTextPort;
-    let click!: TExoEventPort;
+const CounterPorts = exoPorts({ text: EXO_PORT_TEXT, click: EXO_PORT_EVENT });
+
+const counterSchema = createExoSchema(CounterPorts, (b) => {
     b.el('div', { class: 'counter' }, (div) => {
         div.el('span', null, (span) => {
-            text = span.textPort();
+            span.textPort(CounterPorts.text);
         });
         div.el('button', { class: 'btn', type: 'button' }, (btn) => {
-            click = btn.eventPort('click');
+            btn.eventPort(CounterPorts.click, 'click');
             btn.text('Increment');
         });
     });
-    return { text, click };
 });
-const P = COUNTER_SCHEMA.ports;
 
-const mCounter = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
-    COUNTER_SCHEMA
+const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
+    counterSchema
 );
-mCounter.createInitialState(() => ({ count: 0 }));
-const show = mCounter.transition((c) => {
-    c.text(P.text, `Count: ${c.state.count}`);
+counterBuilder.createInitialState(() => ({ count: 0 }));
+counterBuilder.wire((c) => {
+    c.text(CounterPorts.text, `Count: ${c.state.count}`);
 });
-mCounter.wire((c) => show(c));
-const increment = mCounter.transition((c) => {
+counterBuilder.on(CounterPorts.click, (c) => {
     c.state.count += 1;
-    show(c);
+    c.text(CounterPorts.text, `Count: ${c.state.count}`);
 });
-mCounter.on(P.click, (c) => increment(c));
-const COUNTER = mCounter.done();
+const Counter = counterBuilder.done();
 
-const dispose = withExoCompiler(new ExoDomBackend()).render(COUNTER, document.body);
+const dispose = withExoCompiler(new ExoDomBackend()).render(Counter, document.body);
 ```
 
-`c.attr` fills an attribute port, `c.text` fills a text port, `m.on` attaches a
-listener, and a transition is the only place state moves. Following an outside
-source is an effect — `m.effect((c) => source.onChange(() => update(c)))` — so a
+`c.attr` fills an attribute port, `c.text` fills a text port, and
+`counterBuilder.on` attaches a listener that moves the state and writes the ports it
+changed. Following an outside source is an effect —
+`counterBuilder.effect((c) => source.onChange(() => update(c)))` — so a
 disconnected instance stops listening and a torn-down one lets go. Reconciling a
-children port is `reconcileExoOrder` from `@exodra/list-reconcile`, called from a
-transition the same way. See the
+children port is `reconcileExoOrder` from `@exodra/list-reconcile`, called from the
+machine's own code the same way. See the
 [Components guide](https://exodra.org/docs/guides/components).
 
 ### Schemas in JSX
@@ -125,7 +127,7 @@ import { exoJsx } from '@exodra/jsx';
 import { createExoMachineBuilder } from '@exodra/core';
 import type { TExoAttrPort, TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 
-const PERSON_SCHEMA = exoJsx<{
+const personSchema = exoJsx<{
   id: TExoAttrPort;
   name: TExoTextPort;
   role: TExoTextPort;
@@ -139,19 +141,19 @@ const PERSON_SCHEMA = exoJsx<{
     </button>
   </li>
 ));
-const P = PERSON_SCHEMA.ports;
+const PersonPorts = personSchema.ports;
 
 type TPerson = { id: string; name: string; role: string };
 
-const mPerson = createExoMachineBuilder<TExoMachineNode, TPerson>(PERSON_SCHEMA);
-mPerson.createInitialState(() => null);
-mPerson.wire((c, person) => {
-  c.attr(P.id, person.id);
-  c.text(P.name, person.name);
-  c.text(P.role, person.role);
+const personBuilder = createExoMachineBuilder<TExoMachineNode, TPerson>(personSchema);
+personBuilder.createInitialState(() => null);
+personBuilder.wire((c, person) => {
+  c.attr(PersonPorts.id, person.id);
+  c.text(PersonPorts.name, person.name);
+  c.text(PersonPorts.role, person.role);
 });
-mPerson.on(P.select, () => console.log('selected'));
-export const PERSON = mPerson.done();
+personBuilder.on(PersonPorts.select, () => console.log('selected'));
+export const Person = personBuilder.done();
 ```
 
 `swc-plugin-exodra` compiles the same dialect in Rust for SWC-based toolchains.
@@ -164,53 +166,65 @@ fixed run of rows, each told its index, and is done with them: no diff, no regis
 nothing to pay for the possibility of changing.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoChildrenWiring, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_CHILDREN,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+} from '@exodra/core';
+import type { TExoChildrenWiring, TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
 type TTodo = { readonly id: number; readonly text: string };
 
 const todos: TTodo[] = [{ id: 1, text: 'Learn Exodra' }];
 
-const TODO_SCHEMA = createExoSchema((b) => {
-    let text!: TExoTextPort;
+const TodoPorts = exoPorts({ text: EXO_PORT_TEXT });
+
+const todoSchema = createExoSchema(TodoPorts, (b) => {
     b.el('li', { class: 'todo' }, (li) => {
-        text = li.textPort();
+        li.textPort(TodoPorts.text);
     });
-    return { text };
 });
-const mTodo = createExoMachineBuilder<TExoMachineNode, unknown, TTodo>(TODO_SCHEMA);
-mTodo.createInitialState((_c, index) => todos[index]);
-mTodo.wire((c) => {
-    c.text(TODO_SCHEMA.ports.text, c.state.text);
+const todoBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TTodo>(todoSchema);
+todoBuilder.createInitialState((_c, index) => todos[index]);
+todoBuilder.wire((c) => {
+    c.text(TodoPorts.text, c.state.text);
 });
-const TODO = mTodo.done();
+const Todo = todoBuilder.done();
 
-const LIST_SCHEMA = createExoSchema((b) => {
-    let rows!: TExoChildrenPort;
+const TodoListPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
+
+const todoListSchema = createExoSchema(TodoListPorts, (b) => {
     b.el('ul', null, (ul) => {
-        rows = ul.childrenPort();
+        ul.childrenPort(TodoListPorts.rows);
     });
-    return { rows };
 });
-const mList = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(LIST_SCHEMA);
-mList.createInitialState((c) => {
-    c.list(LIST_SCHEMA.ports.rows, TODO, todos.length);
+const todoListBuilder = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(todoListSchema);
+todoListBuilder.createInitialState((c) => {
+    c.list(TodoListPorts.rows, Todo, todos.length);
 });
-const TODO_LIST = mList.done();
+const TodoList = todoListBuilder.done();
 
-withExoCompiler(new ExoDomBackend()).render(TODO_LIST, document.body);
+withExoCompiler(new ExoDomBackend()).render(TodoList, document.body);
 ```
 
 A list that DOES change opens the port with `c.childList(port)` in
-`createInitialState` and reconciles it from a transition with `reconcileExoOrder`
+`createInitialState` and reconciles it from the machine's own code with `reconcileExoOrder`
 from `@exodra/list-reconcile`. It compares the order shown with the order wanted by
 the identity of the item objects, so a row that survives an update is the same
 element it was; an effect draws the list first and then follows the data.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_CHILDREN,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+} from '@exodra/core';
+import type { TExoMachineBuilderNode } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -231,42 +245,42 @@ const todos = {
     },
 };
 
-const TODO_SCHEMA = createExoSchema((b) => {
-    let text!: TExoTextPort;
-    b.el('li', { class: 'todo' }, (li) => {
-        text = li.textPort();
-    });
-    return { text };
-});
-const mTodo = createExoMachineBuilder<TExoDomNode, TTodo>(TODO_SCHEMA);
-mTodo.wire((c, todo) => {
-    c.text(TODO_SCHEMA.ports.text, todo.text);
-});
-const TODO = mTodo.done();
+const TodoPorts = exoPorts({ text: EXO_PORT_TEXT });
 
-const LIST_SCHEMA = createExoSchema((b) => {
-    let rows!: TExoChildrenPort;
-    b.el('ul', null, (ul) => {
-        rows = ul.childrenPort();
+const todoSchema = createExoSchema(TodoPorts, (b) => {
+    b.el('li', { class: 'todo' }, (li) => {
+        li.textPort(TodoPorts.text);
     });
-    return { rows };
 });
-type TListState = { rows: TExoChildList; shown: TTodo[] };
-const mList = createExoMachineBuilder<TExoDomNode, unknown, TListState>(LIST_SCHEMA);
-mList.createInitialState((c) => ({ rows: c.childList(LIST_SCHEMA.ports.rows), shown: [] }));
-const showRows = mList.transition((c) => {
+const todoBuilder = createExoMachineBuilder<TExoDomNode, TTodo>(todoSchema);
+todoBuilder.wire((c, todo) => {
+    c.text(TodoPorts.text, todo.text);
+});
+const Todo = todoBuilder.done();
+
+const TodoListPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
+
+const todoListSchema = createExoSchema(TodoListPorts, (b) => {
+    b.el('ul', null, (ul) => {
+        ul.childrenPort(TodoListPorts.rows);
+    });
+});
+type TTodoListState = { rows: TExoChildList; shown: TTodo[] };
+const todoListBuilder = createExoMachineBuilder<TExoDomNode, unknown, TTodoListState>(todoListSchema);
+todoListBuilder.createInitialState((c) => ({ rows: c.childList(TodoListPorts.rows), shown: [] }));
+function showRows(c: TExoMachineBuilderNode<typeof todoListBuilder>): void {
     const want = todos.getValue();
     c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (todo, i) =>
-        c.build(TODO, i, todo)
+        c.build(Todo, i, todo)
     );
-});
-mList.effect((c) => {
+}
+todoListBuilder.effect((c) => {
     showRows(c);
     return todos.onChange(() => showRows(c));
 });
-const TODO_LIST = mList.done();
+const TodoList = todoListBuilder.done();
 
-withExoChildList(withExoCompiler(new ExoDomBackend())).render(TODO_LIST, document.body);
+withExoChildList(withExoCompiler(new ExoDomBackend())).render(TodoList, document.body);
 todos.setValue([...todos.getValue(), { id: 2, text: 'Ship it' }]);
 ```
 
@@ -285,7 +299,7 @@ All `@exodra/*` packages are published under the `0.x` line.
 | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **[@exodra/core](./packages/core)**                                      | `createExoSchema`, `createExoMachineBuilder` (the machine: initial state, wire, transitions, effects), ports, contexts, event descriptors, the escapers |
 | **[@exodra/computed](./packages/computed)**                              | The declarative half of a machine: `withExoComputedMachine`, `exoWiring`, fields, derivations, transitions. A page that derives nothing links none of it |
-| **[@exodra/list-reconcile](./packages/list-reconcile)**                  | `reconcileExoOrder` (identity reconcile from a transition), `createExoKeyedList` and the `keyedList` pack |
+| **[@exodra/list-reconcile](./packages/list-reconcile)**                  | `reconcileExoOrder` (identity reconcile from the machine's own code), `createExoKeyedList` and the `keyedList` pack |
 | **[@exodra/dom](./packages/dom)**                                        | Browser backend: `mountExoSchema`, `withExoCompiler`'s `render`/`withExoHydration`'s `hydrate`, identity reconcile, event plugins                                                                    |
 | **[@exodra/jsx](./packages/jsx)**                                        | `exoJsx` and the types for the JSX dialect (`jsxImportSource: "@exodra/jsx/schema"`)                                                                     |
 | **[@exodra/babel-plugin-schema](./packages/babel-plugin-exodra-schema)** | The JSX compiler: `exoJsx(…)` → a module-level `createExoNamedSchema()`                                                                                                     |

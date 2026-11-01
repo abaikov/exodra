@@ -84,10 +84,21 @@
   color: transparent;
 }
 
-.trioUnit {
-  margin-left: 0.15em;
-  font-size: 0.45em;
-  letter-spacing: -0.02em;
+.trioPrefix {
+  position: relative;
+  margin-right: 0.2em;
+  font-size: 0.75em;
+  vertical-align: 0.29em;
+}
+
+.trioPrefix::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 0.875em;
+  bottom: -0.125em;
+  height: 0.125em;
+  background: var(--exo-gradient-heading-start);
 }
 
 .trioLabel {
@@ -277,6 +288,32 @@
 
 .storyBarFillCeiling {
   background: repeating-linear-gradient(90deg, rgba(127, 127, 127, 0.55) 0 6px, transparent 6px 10px);
+}
+
+.reactLibrariesLabel {
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.reactLibraries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 0 3.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.reactLibrary {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--exo-hairline);
+  border-radius: 999px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
 }
 
 .footnote {

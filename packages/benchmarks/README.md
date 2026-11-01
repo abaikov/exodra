@@ -96,7 +96,7 @@ anything is timed.
 
 | axis | the question | participants | notes |
 |---|---|---|---|
-| `list-update` (`list-reconcile.tsx`) | imperative `move` / `insert` / `remove` on 300 rows | `exodra` `exodraOps` + twins · `solid` `svelte` `react` `lit` `mikado` `mikadoKeyed` `stage0` `uhtml` `sinuous` `marko` | **run `list-update 100 32`** — at batch 1 the fastest rows land on the clock's 0.1 ms clamp |
+| `list-update` (`list-reconcile.tsx`) | imperative `move` / `insert` / `remove` on 300 rows | `exodra` `exodraTold` + twins · `solid` `svelte` `react` `lit` `mikado` `mikadoKeyed` `stage0` `uhtml` `sinuous` `marko` | **run `list-update 100 32`** — at batch 1 the fastest rows land on the clock's 0.1 ms clamp |
 | `reconcile` | declarative replace (keyed diff) | `exodra` · `solid` `svelte` `react` `lit` `mikado` `stage0` `uhtml` `sinuous` `marko` | |
 | `refetch` (`list-replace.tsx`) | full replace, **same ids as fresh objects** — an extracted key matches, identity does not | `floor` `floor·twin` `floor·rebuild` `exodra` `exodra·ops` `exodra·positional` `exodra·targeted` `solid·for` `solid·slots` `react·keyed` | three axes share this file on purpose: one copy of the participants |
 | `pagination` (`list-replace.tsx`) | full replace, **different ids** — only a positional strategy keeps its nodes | same field | |
@@ -341,7 +341,7 @@ third-party row passes.
 
 | row | axis | what it is |
 |---|---|---|
-| `exodraOps` | `list-update` | the same list told WHAT CHANGED instead of handed a new array |
+| `exodraTold` | `list-update` | the same list told WHAT CHANGED: each op applied to `c.childList` by index, nothing diffed |
 | `exodraDelegated` | `toggle` | **a COMPETING row, not a diagnostic.** The same block, the same 200 panels and the same 40 transitions, rendered with `createExoDelegatedEvents(['click'])` instead of the default `EXO_DIRECT_EVENTS` — so a show writes two properties per panel where `exodra` calls `addEventListener` 200 times. It differs from `exodra` in TWO things and the axis header names both: the event pack, and the fill that pack REQUIRES (a shared handler plus a subject, because the delegated strategy refuses a fill with no subject). So its delta against `exodra` is "delegation + subject", never delegation alone; the third row that would isolate delegation — the direct pack with the same shared handler and subject — is not on this axis, and `op-click-floor` is the axis written to carry that pair (`exodra·op` against `exodra·op·deleg`). Its delegated root is the scenario's own container — where `backend.render` installs the pack — in the bubble phase, against Mikado's `window` in capture |
 | `exodraKept` | `toggle` | the block's 200 panels built once in setup, kept alive across the hide (each child's `unmount` overridden — the documented `exoNodeDom` extension point) and re-filled with the next generation's text instead of rebuilt: a pool with a hit rate of 1. Its counterpart on that axis is `mikadoPooled` (Mikado with `{ recycle: true, pool: true }`), which is Mikado's own answer to the same question and is likewise a diagnostic, read against `mikado` alone |
 | `exodraMono` | `component-split` | the whole 80-card app as ONE schema instead of four |

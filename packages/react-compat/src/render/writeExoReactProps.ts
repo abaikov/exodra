@@ -117,6 +117,13 @@ function writeProp(
     const svg = element.namespaceURI === 'http://www.w3.org/2000/svg';
     const attribute = readExoReactAttributeName(name, svg);
     if (!svg && attribute === name && name in element && !PROPERTY_ATTRIBUTES.test(name)) {
+        if (
+            (value === null || value === undefined) &&
+            typeof (element as unknown as Record<string, unknown>)[name] === 'string'
+        ) {
+            element.removeAttribute(attribute);
+            return;
+        }
         try {
             (element as unknown as Record<string, unknown>)[name] =
                 value === null || value === undefined ? '' : value;

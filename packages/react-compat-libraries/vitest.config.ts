@@ -1,6 +1,35 @@
+import { createRequire } from 'node:module';
+import { transformSync } from '@babel/core';
+import type { PluginItem } from '@babel/core';
 import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 import { EXO_REACT_LIBRARIES } from './EXO_REACT_LIBRARIES';
+
+const require = createRequire(import.meta.url);
+const exodraReact = require('@exodra/babel-plugin-schema/react') as {
+    default?: PluginItem;
+} & PluginItem;
+const EXODRA_REACT_OPTIONS = { importSource: 'react', schemaSource: '@exodra/core' };
+
+const compileElementCalls = (code: string, id: string): { code: string; map: null } | null => {
+    const file = id.split('?')[0];
+    if (!/\.(m?js|jsx|tsx)$/.test(file)) return null;
+    if (!/\bimport\b/.test(code) || !/jsxs?\(|jsxDEV\(|createElement\(/.test(code)) return null;
+    const out = transformSync(code, {
+        filename: file,
+        babelrc: false,
+        configFile: false,
+        sourceType: 'module',
+        plugins: [[exodraReact.default ?? exodraReact, EXODRA_REACT_OPTIONS]],
+    });
+    return out?.code ? { code: out.code, map: null } : null;
+};
+
+const EXODRA_REACT_COMPILE = {
+    name: 'exodra-react-compile-element-calls',
+    enforce: 'post' as const,
+    transform: compileElementCalls,
+};
 
 const packageRoot = fileURLToPath(new URL('.', import.meta.url));
 const fromPackages = (path: string): string =>
@@ -72,6 +101,34 @@ export default defineConfig({
                                 enabled: true,
                                 include: LIBRARY_IMPORTS.filter((id) => !ESM_ONLY.includes(id)),
                                 exclude: [...REACT_IMPORTS, ...ESM_ONLY],
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                root: packageRoot,
+                oxc: JSX,
+                plugins: [EXODRA_REACT_COMPILE],
+                resolve: { alias: COMPAT_ALIASES },
+                test: {
+                    ...SHARED_TEST,
+                    name: 'compat-compiled',
+                    server: { deps: { inline: true } },
+                    deps: {
+                        optimizer: {
+                            client: {
+                                enabled: true,
+                                include: LIBRARY_IMPORTS.filter((id) => !ESM_ONLY.includes(id)),
+                                exclude: [...REACT_IMPORTS, ...ESM_ONLY, '@exodra/core'],
+                                rolldownOptions: {
+                                    plugins: [
+                                        {
+                                            name: 'exodra-react-compile-element-calls',
+                                            transform: compileElementCalls,
+                                        },
+                                    ],
+                                },
                             },
                         },
                     },

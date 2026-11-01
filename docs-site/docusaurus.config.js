@@ -11,7 +11,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Exodra',
-  tagline: 'An imperative template engine for plain TypeScript, at near hand-written speed',
+  tagline: 'An imperative UI framework for plain TypeScript, at near hand-written speed',
   favicon: 'img/favicon.svg',
 
   markdown: {

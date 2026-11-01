@@ -1,36 +1,31 @@
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const COUNTER_SCHEMA = createExoSchema((b) => {
-    let count!: TExoTextPort;
-    let increment!: TExoEventPort;
+const CounterPorts = exoPorts({ count: EXO_PORT_TEXT, increment: EXO_PORT_EVENT });
+
+const counterSchema = createExoSchema(CounterPorts, (b) => {
     b.el('div', { class: 'counter' }, (div) => {
         div.el('span', null, (span) => {
-            count = span.textPort();
+            span.textPort(CounterPorts.count);
         });
         div.el('button', { type: 'button' }, (button) => {
-            increment = button.eventPort('click');
+            button.eventPort(CounterPorts.increment, 'click');
             button.text('+1');
         });
     });
-    return { count, increment };
 });
-const P = COUNTER_SCHEMA.ports;
 
-type TCounterState = { count: number };
-
-const mCounter = createExoMachineBuilder<TExoMachineNode, unknown, TCounterState>(COUNTER_SCHEMA);
-mCounter.createInitialState(() => ({ count: 0 }));
-const show = mCounter.transition((c) => {
-    c.text(P.count, String(c.state.count));
+const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(counterSchema);
+counterBuilder.createInitialState(() => ({ count: 0 }));
+counterBuilder.wire((c) => {
+    c.text(CounterPorts.count, String(c.state.count));
 });
-mCounter.wire((c) => show(c));
-mCounter.on(P.increment, (c) => {
+counterBuilder.on(CounterPorts.increment, (c) => {
     c.state.count += 1;
-    show(c);
+    c.text(CounterPorts.count, String(c.state.count));
 });
 
-withExoCompiler(new ExoDomBackend()).render(mCounter.done(), document.body);
+withExoCompiler(new ExoDomBackend()).render(counterBuilder.done(), document.body);
 ```

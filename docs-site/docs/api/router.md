@@ -238,27 +238,29 @@ A component that follows the URL subscribes with `onChange` from a machine
 teardown ends it:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
 import { injectExoRouter } from '@exodra/router';
 
-const WHERE_SCHEMA = createExoSchema((b) => {
-    let path!: TExoTextPort;
+const WherePorts = exoPorts({ path: EXO_PORT_TEXT });
+
+const whereSchema = createExoSchema(WherePorts, (b) => {
     b.el('p', null, (p) => {
-        path = p.textPort();
+        p.textPort(WherePorts.path);
     });
-    return { path };
 });
-const mWhere = createExoMachineBuilder<TExoMachineNode>(WHERE_SCHEMA);
-const showPath = mWhere.transition((c) => {
-    c.text(WHERE_SCHEMA.ports.path, injectExoRouter(c).getLocation().pathname);
-});
-mWhere.wire((c) => showPath(c));
-mWhere.effect((c) => {
+const whereBuilder = createExoMachineBuilder<TExoMachineNode>(whereSchema);
+
+function showPath(c: TExoMachineBuilderNode<typeof whereBuilder>): void {
+    c.text(WherePorts.path, injectExoRouter(c).getLocation().pathname);
+}
+
+whereBuilder.wire((c) => showPath(c));
+whereBuilder.effect((c) => {
     showPath(c);
     return injectExoRouter(c).onChange(() => showPath(c));
 });
-const WHERE = mWhere.done();
+const Where = whereBuilder.done();
 ```
 
 `onChange` runs after every commit and every navigation-state change, and only
@@ -383,8 +385,8 @@ live URL?) that never existed. Rename `readExoSearch` → `parseExoQuery` and
 Three things make a routed page, and none of them is a JSX element:
 
 - **A page is a machine**, and the match that selected it arrives as the
-  **params of its wire**: `createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(SCHEMA)`,
-  then `mPage.wire((c, match) => …)`.
+  **params of its wire**: `createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(pageSchema)`,
+  then `pageBuilder.wire((c, match) => …)`.
 - **A route boundary is a machine.** `ExoOutlet` (a `<div>`) or `exoOutlet(tag, attrs)`,
   placed with `c.one(port, ExoOutlet)`; its one child is the page the URL selects.
 - **The router travels in the context.** `provideExoRouter(c, router)` above,
@@ -404,20 +406,26 @@ what a route entry is made of.
 
 ```ts no-check  // `./pages` stands for your own page components
 import type { TExoRoute } from '@exodra/router';
-import { ABOUT_PAGE, HOME_PAGE, USER_PAGE } from './pages';
+import { AboutPage, HomePage, UserPage } from './pages';
 
 const ROUTES: readonly TExoRoute[] = [
-  { path: '/', component: HOME_PAGE },
-  { path: '/about', component: ABOUT_PAGE, handle: { crumb: 'About' } },
-  { path: '/users/:id', component: USER_PAGE },
+  { path: '/', component: HomePage },
+  { path: '/about', component: AboutPage, handle: { crumb: 'About' } },
+  { path: '/users/:id', component: UserPage },
 ];
 ```
 
 ## A routed page, end to end
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import {
+  EXO_PORT_CHILDREN,
+  EXO_PORT_TEXT,
+  createExoMachineBuilder,
+  createExoSchema,
+  exoPorts,
+} from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import {
@@ -429,46 +437,45 @@ import {
 } from '@exodra/router';
 import type { TExoRoute, TExoRouteMatch } from '@exodra/router';
 
-const USER_PAGE_SCHEMA = createExoSchema(b => {
-  let name!: TExoTextPort;
-  b.el('h1', null, h => {
-    name = h.textPort();
-  });
-  return { name };
-});
-const mUserPage = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(USER_PAGE_SCHEMA);
-mUserPage.wire((c, match) => {
-  c.text(USER_PAGE_SCHEMA.ports.name, match.params.id);
-});
-const USER_PAGE = mUserPage.done();
+const UserPagePorts = exoPorts({ name: EXO_PORT_TEXT });
 
-const ROUTES: readonly TExoRoute[] = [{ path: '/users/:id', component: USER_PAGE }];
+const userPageSchema = createExoSchema(UserPagePorts, (b) => {
+  b.el('h1', null, (h) => {
+    h.textPort(UserPagePorts.name);
+  });
+});
+const userPageBuilder = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(userPageSchema);
+userPageBuilder.wire((c, match) => {
+  c.text(UserPagePorts.name, match.params.id);
+});
+const UserPage = userPageBuilder.done();
+
+const ROUTES: readonly TExoRoute[] = [{ path: '/users/:id', component: UserPage }];
 
 const router = createExoRouter(ROUTES, { history: createExoBrowserHistory() });
 
-const APP_SCHEMA = createExoSchema(b => {
-  let nav!: TExoChildrenPort;
-  let page!: TExoChildrenPort;
-  b.el('div', { class: 'app' }, d => {
-    d.el('nav', null, n => {
-      nav = n.childrenPort();
+const AppPorts = exoPorts({ nav: EXO_PORT_CHILDREN, page: EXO_PORT_CHILDREN });
+
+const appSchema = createExoSchema(AppPorts, (b) => {
+  b.el('div', { class: 'app' }, (d) => {
+    d.el('nav', null, (n) => {
+      n.childrenPort(AppPorts.nav);
     });
-    d.el('main', null, m => {
-      page = m.childrenPort();
+    d.el('main', null, (m) => {
+      m.childrenPort(AppPorts.page);
     });
   });
-  return { nav, page };
 });
-const mApp = createExoMachineBuilder<TExoDomNode>(APP_SCHEMA);
-mApp.createInitialState(c => {
+const appBuilder = createExoMachineBuilder<TExoDomNode>(appSchema);
+appBuilder.createInitialState((c) => {
   provideExoRouter(c, router);
-  c.one(APP_SCHEMA.ports.nav, ExoLink, { to: '/users/1', label: 'First user' });
-  c.one(APP_SCHEMA.ports.page, ExoOutlet);
+  c.one(AppPorts.nav, ExoLink, { to: '/users/1', label: 'First user' });
+  c.one(AppPorts.page, ExoOutlet);
 });
-const APP = mApp.done();
+const App = appBuilder.done();
 
 const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
-backend.render(APP, document.getElementById('root') as HTMLElement);
+backend.render(App, document.getElementById('root') as HTMLElement);
 ```
 
 `TExoDomNode` types the app against the browser. A machine that has to run on the
@@ -513,7 +520,7 @@ function exoOutlet(tag?: string, attrs?: Readonly<Record<string, unknown>> | nul
 | Form | Use it when |
 | --- | --- |
 | `c.one(port, ExoOutlet)` | You just want a boundary; it is a `<div>`. |
-| `c.one(port, ROUTED)`, with `const ROUTED = exoOutlet('main')` at module level | The boundary should be the tag the layout was going to write anyway — the node then costs nothing. |
+| `c.one(port, Routed)`, with `const Routed = exoOutlet('main')` at module level | The boundary should be the tag the layout was going to write anyway — the node then costs nothing. |
 | `c.childList(port).insert(c.build(ExoOutlet))` | The boundary goes into a child list the layout already manages. |
 
 `exoOutlet()` builds a schema, so **call it at module level** — per render it
@@ -524,7 +531,7 @@ would rebuild and re-plan a shape that has not changed.
 A layout is a route with `children`, and its page places its own `ExoOutlet`:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode } from '@exodra/core';
 import { ExoOutlet } from '@exodra/router';
 
@@ -532,18 +539,18 @@ interface TNestingNode extends TExoMachineNode {
   one(port: TExoChildrenPort, machine: TExoMachine<never>): void;
 }
 
-const LAYOUT_SCHEMA = createExoSchema(b => {
-  let page!: TExoChildrenPort;
-  b.el('section', { class: 'layout' }, s => {
-    page = s.childrenPort();
+const LayoutPorts = exoPorts({ page: EXO_PORT_CHILDREN });
+
+const layoutSchema = createExoSchema(LayoutPorts, (b) => {
+  b.el('section', { class: 'layout' }, (s) => {
+    s.childrenPort(LayoutPorts.page);
   });
-  return { page };
 });
-const mLayout = createExoMachineBuilder<TNestingNode>(LAYOUT_SCHEMA);
-mLayout.createInitialState(c => {
-  c.one(LAYOUT_SCHEMA.ports.page, ExoOutlet);
+const layoutBuilder = createExoMachineBuilder<TNestingNode>(layoutSchema);
+layoutBuilder.createInitialState((c) => {
+  c.one(LayoutPorts.page, ExoOutlet);
 });
-const LAYOUT = mLayout.done();
+const Layout = layoutBuilder.done();
 ```
 
 Depth is automatic: the nested boundary finds its parent boundary through the
@@ -591,25 +598,24 @@ type TExoLinkParams = {
 ```
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoLink } from '@exodra/router';
 
-const NAV_SCHEMA = createExoSchema(b => {
-  let items!: TExoChildrenPort;
-  b.el('nav', null, n => {
-    items = n.childrenPort();
+const NavPorts = exoPorts({ items: EXO_PORT_CHILDREN });
+
+const navSchema = createExoSchema(NavPorts, (b) => {
+  b.el('nav', null, (n) => {
+    n.childrenPort(NavPorts.items);
   });
-  return { items };
 });
-const mNav = createExoMachineBuilder<TExoDomNode>(NAV_SCHEMA);
-mNav.createInitialState(c => {
-  const items = c.childList(NAV_SCHEMA.ports.items);
+const navBuilder = createExoMachineBuilder<TExoDomNode>(navSchema);
+navBuilder.createInitialState((c) => {
+  const items = c.childList(NavPorts.items);
   items.insert(c.build(ExoLink, 0, { to: '/', label: 'Home', currentWhen: 'exact' }));
   items.insert(c.build(ExoLink, 1, { to: '/about', label: 'About', currentWhen: 'prefix' }));
 });
-const NAV = mNav.done();
+const Nav = navBuilder.done();
 ```
 
 `ExoLink` injects the router itself, and it renders on the **server** too — the
@@ -645,16 +651,16 @@ afterwards can print it — which is what makes a lazy route server-renderable.
 ```ts no-check  // `./shell` and `./pages/dashboard` stand for your own modules
 import { ExoStrBackend } from '@exodra/string';
 import { createExoMemoryHistory, createExoRouter, exoLazy, preloadExoPage } from '@exodra/router';
-import { SHELL } from './shell';
+import { Shell } from './shell';
 
-const DASHBOARD = exoLazy(() => import('./pages/dashboard'));
+const Dashboard = exoLazy(() => import('./pages/dashboard'));
 
-const router = createExoRouter([{ path: '/dashboard', component: DASHBOARD }], {
+const router = createExoRouter([{ path: '/dashboard', component: Dashboard }], {
   history: createExoMemoryHistory('/dashboard'),   // seeded from the request URL
 });
 
-await preloadExoPage(DASHBOARD);                        // before the server render
-const html = new ExoStrBackend().render(SHELL);         // the dashboard is in the markup
+await preloadExoPage(Dashboard);                        // before the server render
+const html = new ExoStrBackend().render(Shell);         // the dashboard is in the markup
 ```
 
 `fetchExoRouteChunk` is **not** this: it only makes the chunk arrive, which stops

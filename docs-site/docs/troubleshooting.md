@@ -54,11 +54,11 @@ the row that keeps its item keeps its DOM element and its live subscriptions.
 
 This distinction is what tells you whether you are looking at this problem at all.
 
-- **`c.list(port, ROW, count)`** — the fixed form. It has no reconcile at all; it builds
+- **`c.list(port, Row, count)`** — the fixed form. It has no reconcile at all; it builds
   `count` instances and each reads its datum by index, so a duplicated item renders twice
   and there is nothing here to diverge.
 - **`reconcileExoOrder(c.childList(port), shown, items, items, build)`** — the reactive
-  form, called from a transition. It reconciles, and reconciling is where identity is
+  form, called wherever the items change. It reconciles, and reconciling is where identity is
   consulted — but it is consulted to decide which row SURVIVES, so the count still
   follows the positions.
 
@@ -72,25 +72,25 @@ object referenced from two positions. The item object *is* the row's name, and t
 rows cannot share a name.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort, TExoChildrenPort } from '@exodra/core';
+import { EXO_PORT_CHILDREN, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineBuilderNode } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 
 type TTag = { readonly label: string };
 
-const TAG_SCHEMA = createExoSchema((b) => {
-    let label!: TExoTextPort;
+const TagPorts = exoPorts({ label: EXO_PORT_TEXT });
+
+const tagSchema = createExoSchema(TagPorts, (b) => {
     b.el('li', null, (li) => {
-        label = li.textPort();
+        li.textPort(TagPorts.label);
     });
-    return { label };
 });
-const mTag = createExoMachineBuilder<TExoDomNode>(TAG_SCHEMA);
-const showTag = mTag.transition<TTag>((c, tag) => {
-    c.text(TAG_SCHEMA.ports.label, tag.label);
+const tagBuilder = createExoMachineBuilder<TExoDomNode>(tagSchema);
+const showTag = tagBuilder.transition<TTag>((c, tag) => {
+    c.text(TagPorts.label, tag.label);
 });
-const TAG = mTag.done();
+const Tag = tagBuilder.done();
 
 const shared: TTag = { label: 'urgent' };
 
@@ -100,28 +100,28 @@ const ambiguous: readonly TTag[] = [shared, shared];
 // One object PER position: two identities, two rows, on every backend.
 const distinct: readonly TTag[] = [{ label: 'urgent' }, { label: 'urgent' }];
 
-const TAGS_SCHEMA = createExoSchema((b) => {
-    let rows!: TExoChildrenPort;
+const TagsPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
+
+const tagsSchema = createExoSchema(TagsPorts, (b) => {
     b.el('ul', null, (ul) => {
-        rows = ul.childrenPort();
+        ul.childrenPort(TagsPorts.rows);
     });
-    return { rows };
 });
-const mTags = createExoMachineBuilder<TExoDomNode, unknown, { rows: TExoChildList; shown: TTag[] }>(
-    TAGS_SCHEMA
+const tagsBuilder = createExoMachineBuilder<TExoDomNode, unknown, { rows: TExoChildList; shown: TTag[] }>(
+    tagsSchema
 );
-mTags.createInitialState((c) => ({ rows: c.childList(TAGS_SCHEMA.ports.rows), shown: [] }));
-const showTags = mTags.transition<readonly TTag[]>((c, tags) => {
+tagsBuilder.createInitialState((c) => ({ rows: c.childList(TagsPorts.rows), shown: [] }));
+function showTags(c: TExoMachineBuilderNode<typeof tagsBuilder>, tags: readonly TTag[]): void {
     c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, tags, tags, (tag, i) => {
-        const row = c.build(TAG, i);
+        const row = c.build(Tag, i);
         showTag(row, tag);
         return row;
     });
-});
-mTags.wire((c) => {
+}
+tagsBuilder.wire((c) => {
     showTags(c, distinct);
 });
-const TAGS = mTags.done();
+const Tags = tagsBuilder.done();
 ```
 
 Where duplicates usually come from, and what each one wants instead:

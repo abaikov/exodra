@@ -66,7 +66,7 @@ const rowWith = (
     const schema = createExoSchema(buildRow);
     const m = createExoMachineBuilder<TExoMachineNode & TSurface>(schema);
     const fill = make(schema.ports);
-    m.createInitialState((c, i) => fill(c, i));
+    m.createInitialState((c, i, params) => fill(c, i, params));
     const following = follow(schema.ports);
     const draw = m.transition((c) => following.draw(c));
     m.effect((c) => {

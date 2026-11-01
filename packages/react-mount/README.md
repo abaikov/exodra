@@ -32,28 +32,27 @@ React app needs nothing.)
 ```tsx setup
 /** @jsxImportSource react */
 import { ExoMount } from '@exodra/react-mount';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 
 // Built ONCE, at module load — this is what a component is in this core. There are no props
-// anywhere: an initial state is `(exonode, index) => …`, and a mounted root is handed `0` as its
+// anywhere: an initial state is `(exonode, index, params) => …`, and a mounted root is handed `0` as its
 // index. The EXONODE is typed `TExoMachineNode` — the surface all three backends share — rather
 // than `@exodra/dom`'s `TExoDomNode`, which would tie the component to the browser for no
 // reason.
-const CHART_SCHEMA = createExoSchema(b => {
-  let label!: TExoTextPort;
-  b.el('div', { class: 'chart' }, div => { label = div.textPort(); });
-  return { label };
+const ChartPorts = exoPorts({ label: EXO_PORT_TEXT });
+const chartSchema = createExoSchema(ChartPorts, b => {
+  b.el('div', { class: 'chart' }, div => { div.textPort(ChartPorts.label); });
 });
-const mChart = createExoMachineBuilder<TExoMachineNode>(CHART_SCHEMA);
-mChart.createInitialState(c => { c.text(CHART_SCHEMA.ports.label, 'rendered by Exodra'); });
-const CHART = mChart.done();
+const chartBuilder = createExoMachineBuilder<TExoMachineNode>(chartSchema);
+chartBuilder.createInitialState(c => { c.text(ChartPorts.label, 'rendered by Exodra'); });
+const Chart = chartBuilder.done();
 
 function Panel() {
   return (
     <section className="panel">
       <h2>Rendered by React</h2>
-      <ExoMount className="chart" component={CHART} />
+      <ExoMount className="chart" component={Chart} />
     </section>
   );
 }
@@ -64,9 +63,9 @@ too, and is how you *choose* a component at mount time:
 
 ```tsx
 declare const mode: 'chart' | 'table';
-declare const TABLE: typeof CHART;
+declare const Table: typeof Chart;
 
-<ExoMount component={() => (mode === 'chart' ? CHART : TABLE)} deps={[mode]} />
+<ExoMount component={() => (mode === 'chart' ? Chart : Table)} deps={[mode]} />
 ```
 
 The function runs once per mount, never per React render.
@@ -79,8 +78,8 @@ container to be your own element:
 ```tsx
 import { useExoMount } from '@exodra/react-mount';
 
-function Chart({ seriesId }: { seriesId: string }) {
-  const { ref } = useExoMount<HTMLElement>(CHART, { deps: [seriesId] });
+function ChartFigure({ seriesId }: { seriesId: string }) {
+  const { ref } = useExoMount<HTMLElement>(Chart, { deps: [seriesId] });
   return <figure ref={ref} className="chart" />;
 }
 ```
@@ -97,10 +96,10 @@ wire re-runs on the same instance instead of re-mounting:
 import type { TExoMachine } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
-declare const GREETING: TExoMachine<TExoDomNode, unknown, { name: string }>;
+declare const Greeting: TExoMachine<TExoDomNode, unknown, { name: string }>;
 declare const name: string;
 
-<ExoMount component={GREETING} params={{ name }} />
+<ExoMount component={Greeting} params={{ name }} />
 ```
 
 A machine with no `wire` is re-mounted instead; a wire that opens children
@@ -111,19 +110,19 @@ refuses a re-run with `EXO0103`.
 There is no `count`, and there never can be one: `backend.buildRoot` builds a single
 instance and hands its initial state `0` as its index. Rows that vary are a
 **list**, which is a property of the component rather than of the mount — a
-children port filled with `c.list(port, ROW, count)` for a fixed number of them, or
+children port filled with `c.list(port, Row, count)` for a fixed number of them, or
 a child list opened in `createInitialState` and driven by
-`reconcileExoOrder(rows, shown, items, items, (item, i) => c.build(ROW, i, { item }))`
+`reconcileExoOrder(rows, shown, items, items, (item, i) => c.build(Row, i, { item }))`
 from `@exodra/list-reconcile` in a transition, for a list that follows a source. Each
 row gets its index and, as the third argument, the params its `wire` reads.
 
 So mount one component that owns the list:
 
 ```tsx
-declare const BOARD: typeof CHART;
-// BOARD's initial state opens c.childList(P.rows); an effect runs a transition that does
-//   c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => c.build(ROW, i))
-<ExoMount component={BOARD} />
+declare const Board: typeof Chart;
+// Board's initial state opens c.childList(BoardPorts.rows); an effect does
+//   c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => c.build(Row, i))
+<ExoMount component={Board} />
 ```
 
 That is also what a benchmark is comparing when another framework "renders 1000
@@ -138,8 +137,10 @@ does not re-render, and does not need to know:
 ```tsx
 declare const status: { get(): string; subscribe(listener: () => void): () => void };
 // in the machine:
-//   const show = m.transition((c) => c.text(P.text, status.get()));
-//   m.effect((c) => { show(c); return status.subscribe(() => show(c)); });
+//   statusBuilder.effect((c) => {
+//       c.text(StatusPorts.text, status.get());
+//       return status.subscribe(() => c.text(StatusPorts.text, status.get()));
+//   });
 // — an effect that draws and subscribes; there is no `c.bind`.
 // When `status` changes, the text updates; React never re-rendered.
 ```
@@ -161,10 +162,10 @@ is the finished UI, and JavaScript only attaches behaviour.
 ```tsx
 // build step (Node)
 import { ExoStrBackend } from '@exodra/string';
-const html = new ExoStrBackend().render(CHART);
+const html = new ExoStrBackend().render(Chart);
 
 // page
-<ExoMount component={CHART} html={html} />
+<ExoMount component={Chart} html={html} />
 ```
 
 This is the shape a static site generator wants — Next.js, Astro, Docusaurus —

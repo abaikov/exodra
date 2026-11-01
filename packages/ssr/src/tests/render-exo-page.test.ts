@@ -100,10 +100,10 @@ const fill =
 const pageSaying = (say: (ssr: TExoSsrResponse, index: number) => void) =>
     pageWith((P) => {
         const base = fill(P);
-        return (c, index) => {
+        return (c, index, params) => {
             const ssr = c.inject(EXO_SSR_RESPONSE);
             if (ssr !== undefined) say(ssr, index);
-            base(c, index);
+            base(c, index, params);
         };
     });
 
@@ -286,9 +286,9 @@ describe('renderExoPage — the request is one render long', () => {
         const seen: (TExoSsrResponse | undefined)[] = [];
         const AFTER = pageWith((P) => {
             const base = fill(P);
-            return (c, index) => {
+            return (c, index, params) => {
                 seen.push(c.inject(EXO_SSR_RESPONSE));
-                base(c, index);
+                base(c, index, params);
             };
         });
         EXO_STR.render(AFTER);
@@ -303,9 +303,9 @@ describe('renderExoPage — the request is one render long', () => {
         const seen: (TExoSsrResponse | undefined)[] = [];
         const AFTER = pageWith((P) => {
             const base = fill(P);
-            return (c, index) => {
+            return (c, index, params) => {
                 seen.push(c.inject(EXO_SSR_RESPONSE));
-                base(c, index);
+                base(c, index, params);
             };
         });
         EXO_STR.render(AFTER);
@@ -323,19 +323,19 @@ describe('renderExoPage — the request is one render long', () => {
 
         const INNER_PAGE = pageWith((P) => {
             const base = fill(P);
-            return (c, index) => {
+            return (c, index, params) => {
                 seenInner.push(c.inject(INNER));
-                base(c, index);
+                base(c, index, params);
             };
         });
 
         const OUTER_PAGE = pageWith((P) => {
             const base = fill(P);
-            return (c, index) => {
+            return (c, index, params) => {
                 renderExoPage(INNER_PAGE, { context: exoContextFrame(null, INNER, 'inner') });
                 // READ AFTER the nested render returns: this is the line a holder got wrong.
                 seenOuter.push(c.inject(OUTER));
-                base(c, index);
+                base(c, index, params);
             };
         });
 
@@ -350,9 +350,9 @@ describe('renderExoPage — the request is one render long', () => {
         const seen: (TExoSsrResponse | undefined)[] = [];
         const PAGE = pageWith((P) => {
             const base = fill(P);
-            return (c, index) => {
+            return (c, index, params) => {
                 seen.push(c.inject(EXO_SSR_RESPONSE));
-                base(c, index);
+                base(c, index, params);
             };
         });
         EXO_STR.render(PAGE);
@@ -367,10 +367,10 @@ describe('renderExoPage — the request is one render long', () => {
         const seen: (string | undefined)[] = [];
         const PAGE = pageWith((P) => {
             const base = fill(P);
-            return (c, index) => {
+            return (c, index, params) => {
                 seen.push(c.inject(ROUTER));
                 expect(c.inject(EXO_SSR_RESPONSE)).not.toBe(undefined);
-                base(c, index);
+                base(c, index, params);
             };
         });
 

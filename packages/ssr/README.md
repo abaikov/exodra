@@ -3,24 +3,23 @@
 Server-side rendering for Exodra applications: the full HTML document, the HTTP
 status, the response headers, the `<head>`, and the state transfer to the client.
 
-`new ExoStrBackend().render(APP)` from `@exodra/string` returns the instance's
+`new ExoStrBackend().render(App)` from `@exodra/string` returns the instance's
 markup and nothing else. This package is the rest of the response: `renderExoPage`
 runs a component through that backend with the request installed as a context, and
 hands back the markup plus everything the wiring said about the response — status,
 headers, `<head>`, and the state script the client reads back.
 
 If you want *only* markup, you do not need this package at all:
-`new ExoStrBackend().render(APP)` is the whole of it.
+`new ExoStrBackend().render(App)` is the whole of it.
 
 ## renderExoPage
 
-`new ExoStrBackend().render(APP)` returns the instance's markup and nothing else —
+`new ExoStrBackend().render(App)` returns the instance's markup and nothing else —
 no doctype, no `<html>`, no `<head>`, no state script, no status and no headers.
 `renderExoPage` is the rest of the response.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoTextPort } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import { renderExoPage, EXO_SSR_RESPONSE } from '@exodra/ssr';
 import type { TExoStrNode } from '@exodra/string';
 
@@ -30,16 +29,16 @@ declare const res: {
     send(body: string): void;
 };
 
-const APP_SCHEMA = createExoSchema(b => {
-    let title!: TExoTextPort;
+const AppPorts = exoPorts({ title: EXO_PORT_TEXT });
+
+const appSchema = createExoSchema(AppPorts, b => {
     b.el('main', { class: 'page' }, main => {
-        main.el('h1', null, h1 => { title = h1.textPort(); });
+        main.el('h1', null, h1 => { h1.textPort(AppPorts.title); });
     });
-    return { title };
 });
 // The builder's type argument names the exonode.
-const mApp = createExoMachineBuilder<TExoStrNode, { title: string }>(APP_SCHEMA);
-mApp.wire((c, params) => {
+const appBuilder = createExoMachineBuilder<TExoStrNode, { title: string }>(appSchema);
+appBuilder.wire((c, params) => {
     // The request, reached the ordinary way: it is a context, provided by
     // `renderExoPage` and read with `inject`, anywhere in the tree.
     const ssr = c.inject(EXO_SSR_RESPONSE)!;
@@ -48,14 +47,14 @@ mApp.wire((c, params) => {
     ssr.addHead('<title>' + params.title + '</title>');
     ssr.setState('user', { id: 7 });
 
-    c.text(APP_SCHEMA.ports.title, params.title);
+    c.text(AppPorts.title, params.title);
 });
-const APP = mApp.done();
+const App = appBuilder.done();
 
 // In the request handler. `renderExoPage(machine, options?)` — there is no
 // instance count: it renders ONE root, and rows that vary are a list inside it.
 // `params` reaches the machine's `wire`, as `backend.render(machine, parent, params)` does.
-const page = renderExoPage(APP, { head: '<meta charset="utf-8">', params: { title: 'Home' } });
+const page = renderExoPage(App, { head: '<meta charset="utf-8">', params: { title: 'Home' } });
 res.status(page.status);
 for (const { name, value } of page.headers) res.append(name, value);
 res.send(page.renderDocument({ rootId: 'app' }));
@@ -81,14 +80,14 @@ import { ExoDomBackend, withExoHydration } from '@exodra/dom';
 import type { TExoDomMachine } from '@exodra/dom';
 import { readExoStateScript } from '@exodra/ssr';
 
-declare const APP: TExoDomMachine;
+declare const App: TExoDomMachine;
 
 // ONE backend, at module level. `hydrate` exists only because this composes the
 // plugin — a backend built without it has no such method, in the type or at runtime.
 const backend = withExoHydration(new ExoDomBackend());
 
 const state = readExoStateScript();                  // what setState transferred
-backend.hydrate(APP, document.getElementById('app')!);   // the CONTAINER
+backend.hydrate(App, document.getElementById('app')!);   // the CONTAINER
 ```
 
 There is no count to keep in step. `renderExoPage` renders one root and `hydrate`
@@ -107,7 +106,7 @@ of the one in front.
 
 **A value that moved between the response and the hydration is repaired, whatever
 wrote it.** An adopting fill compares what the server printed against what it is
-handed and writes only on disagreement, so a plain `c.text(P.title, title)` whose
+handed and writes only on disagreement, so a plain `c.text(AppPorts.title, title)` whose
 value the client computes differently is corrected on adoption. Following a data
 source afterwards is an effect: it draws once, synchronously, and subscribes.
 
@@ -160,7 +159,7 @@ its behalf.
 children were authored as markup, in JSX, and the walker rendered them. `addHead`
 takes a string, so a head entry is now either a literal
 (`ssr.addHead('<title>Home</title>')`) or a component rendered on the spot
-(`ssr.addHead(strBackend.render(TITLE))`). That is a real loss of authoring
+(`ssr.addHead(strBackend.render(Title))`). That is a real loss of authoring
 comfort for a page with a large head, and it is the one place a future
 `<Head>`-shaped primitive would earn its keep.
 

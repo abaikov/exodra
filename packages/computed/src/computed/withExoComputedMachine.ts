@@ -63,11 +63,15 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
     // THE DECORATION TAKES THE ONE DOOR AND HANDS IT BACK: it needs an arm-time hook for its managed
     // rows, which live in `managedState`, and `state` is the author's. Consuming the door outright
     // left every decorated component unable to hold unmanaged state at all.
-    let authorCreatesInitialState: ((enode: TInstance) => unknown) | null = null;
+    let authorCreatesInitialState:
+        | ((enode: TInstance, index: number, params: unknown) => unknown)
+        | null = null;
 
-    base.createInitialState((enode: TInstance): unknown => {
+    base.createInitialState((enode: TInstance, index: number, params: unknown): unknown => {
         seatExoManagedRows(enode, managedSeeds);
-        return authorCreatesInitialState === null ? EXO_NO_STATE : authorCreatesInitialState(enode);
+        return authorCreatesInitialState === null
+            ? EXO_NO_STATE
+            : authorCreatesInitialState(enode, index, params);
     });
 
     // THE TWO ROWS OF THE SYSTEM ITSELF, taken before any field so every closure below can close over
@@ -165,7 +169,9 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
     const plugin = {
         createInitialState:
             () =>
-            <TValue>(make: (enode: TWiring) => TValue): TExoMachineStateHandle<TValue> => {
+            <TValue>(
+                make: (enode: TWiring, index: number, params: unknown) => TValue
+            ): TExoMachineStateHandle<TValue> => {
                 if (sealed) {
                     refuse(
                         typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
@@ -187,7 +193,11 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
                             : ''
                     );
                 }
-                authorCreatesInitialState = make as (enode: TInstance) => unknown;
+                authorCreatesInitialState = make as (
+                    enode: TInstance,
+                    index: number,
+                    params: unknown
+                ) => unknown;
                 return {};
             },
 

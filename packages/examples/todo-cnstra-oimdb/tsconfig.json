@@ -16,7 +16,6 @@
             "@exodra/list-reconcile": ["../../list-reconcile/src/index.ts"],
             "@exodra/dom": ["../../dom/src/index.ts"],
             "@exodra/forms": ["../../forms/src/index.ts"],
-            "@oimdb/core": ["../../../../oimdb/packages/core/src/index.ts"],
             "@cnstra/core": ["../../../../cnstra/packages/core/src/index.ts"],
             "@cnstra/types": ["../../../../cnstra/packages/types/src/index.ts"]
         }

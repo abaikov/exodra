@@ -3,39 +3,35 @@
 // of the block are absent, and both are the ENTRY POINT, which is a backend's by definition.
 // NOTHING ELSE IS ADAPTED: no cast, no wrapper, no shim, no local type.
 // >>> BEGIN VERBATIM — README.md, "A component is one value"
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 
-const COUNTER_SCHEMA = createExoSchema((b) => {
-    let text!: TExoTextPort;
-    let click!: TExoEventPort;
+const CounterPorts = exoPorts({ text: EXO_PORT_TEXT, click: EXO_PORT_EVENT });
+
+const counterSchema = createExoSchema(CounterPorts, (b) => {
     b.el('div', { class: 'counter' }, (div) => {
         div.el('span', null, (span) => {
-            text = span.textPort();
+            span.textPort(CounterPorts.text);
         });
         div.el('button', { class: 'btn', type: 'button' }, (btn) => {
-            click = btn.eventPort('click');
+            btn.eventPort(CounterPorts.click, 'click');
             btn.text('Increment');
         });
     });
-    return { text, click };
 });
-const P = COUNTER_SCHEMA.ports;
 
-const mCounter = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
-    COUNTER_SCHEMA
+const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
+    counterSchema
 );
-mCounter.createInitialState(() => ({ count: 0 }));
-const show = mCounter.transition((c) => {
-    c.text(P.text, `Count: ${c.state.count}`);
+counterBuilder.createInitialState(() => ({ count: 0 }));
+counterBuilder.wire((c) => {
+    c.text(CounterPorts.text, `Count: ${c.state.count}`);
 });
-mCounter.wire((c) => show(c));
-const increment = mCounter.transition((c) => {
+counterBuilder.on(CounterPorts.click, (c) => {
     c.state.count += 1;
-    show(c);
+    c.text(CounterPorts.text, `Count: ${c.state.count}`);
 });
-mCounter.on(P.click, (c) => increment(c));
-const COUNTER = mCounter.done();
+const Counter = counterBuilder.done();
 // <<< END VERBATIM
 
-export { COUNTER, increment };
+export { Counter };

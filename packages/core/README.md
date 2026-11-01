@@ -63,8 +63,14 @@ port. A port is named by **identity**, so an initial state cannot count wrong
 and never looks anything up.
 
 ```typescript
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoAttrPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+} from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 
 type TRow = { readonly id: string; readonly title: string };
 
@@ -72,71 +78,74 @@ type TRow = { readonly id: string; readonly title: string };
  *  there are no props anywhere, so the data is reached through the index. */
 const ROWS: TRow[] = [];
 
-const ROW_SCHEMA = createExoSchema((b) => {
-    let id!: TExoAttrPort;
-    let label!: TExoTextPort;
+const RowPorts = exoPorts({ id: EXO_PORT_ATTR, label: EXO_PORT_TEXT });
+
+const rowSchema = createExoSchema(RowPorts, (b) => {
     b.el('li', { class: 'row' }, (li) => {
-        id = li.port('data-id');
+        li.attrPort(RowPorts.id, 'data-id');
         li.el('span', { class: 'row__label' }, (span) => {
-            label = span.textPort();
+            span.textPort(RowPorts.label);
         });
     });
-    return { id, label };
 });
-const mRow = createExoMachineBuilder<TExoMachineNode, unknown, TRow>(ROW_SCHEMA);
-mRow.createInitialState((_c, index) => ROWS[index]);
-mRow.wire((c) => {
-    c.attr(ROW_SCHEMA.ports.id, c.state.id);
-    c.text(ROW_SCHEMA.ports.label, c.state.title);
+const rowBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TRow>(rowSchema);
+rowBuilder.createInitialState((_c, index) => ROWS[index]);
+rowBuilder.wire((c) => {
+    c.attr(RowPorts.id, c.state.id);
+    c.text(RowPorts.label, c.state.title);
 });
-export const ROW = mRow.done();
+export const Row = rowBuilder.done();
 ```
 
-`createExoSchema` runs the builder once, at module load, and keeps what it returned as
-`schema.ports`; `createExoMachineBuilder` is handed that schema, and the wire names
-its ports through it. That makes the order structural — a wire cannot be written
-before the ports it fills exist.
+`exoPorts` declares the ports up front — a name and a kind each — and numbers them in
+declaration order. `createExoSchema(RowPorts, build)` hands back a schema whose `.ports`
+is that same `RowPorts` object; the build callback only places each port where it
+stands. `createExoMachineBuilder` is handed the schema, and the wire names its ports
+through `RowPorts`. That makes the order structural — a wire cannot be written before
+the ports it fills exist.
 
 The three fill doors are `attr`, `text` and `html` (`TExoFillDoors`), one per kind
 of port a value can be put in. There is no single `set`.
 
 ## The builder
 
-| Call                   | Declares                                                              | Hands back         |
-| ---------------------- | --------------------------------------------------------------------- | ------------------ |
-| `el(tag, attrs?, fn?)` | a child element with its **static** attributes, and optionally a body | the builder        |
-| `text(value)`          | static text                                                           | the builder        |
-| `port(name)`           | a port for one **attribute**                                          | `TExoAttrPort`     |
-| `eventPort(name)`      | a port for one **listener** (emits no markup, still takes a slot)     | `TExoEventPort`    |
-| `textPort()`           | a port for the **whole text content** of the current element          | `TExoTextPort`     |
-| `childrenPort()`       | a port for a **variable-length sequence of children**                 | `TExoChildrenPort` |
-| `refPort()`            | a **reference to the current element**, with no way to write to it    | `TExoRefPort`      |
+| Call                         | Places                                                                     | Declared with                   |
+| ---------------------------- | -------------------------------------------------------------------------- | ------------------------------- |
+| `el(tag, attrs?, fn?)`       | a child element with its **static** attributes, and optionally a body      | —                               |
+| `text(value)`                | static text                                                                | —                               |
+| `attrPort(Ports.x, name)`    | a port for one **attribute**                                               | `EXO_PORT_ATTR`                 |
+| `stringPort(Ports.x, name)`  | an attribute port whose value is always written as its string form        | `EXO_PORT_ATTR_STRING`          |
+| `togglePort(Ports.x, name)`  | an attribute port that is present-and-empty or absent                      | `EXO_PORT_ATTR_TOGGLE`          |
+| `eventPort(Ports.x, name)`   | a port for one **listener** (emits no markup, still takes a slot)          | `EXO_PORT_EVENT`, `exoEventPortKind<TEvent>()` |
+| `textPort(Ports.x)`          | a port for the **whole text content** of the current element               | `EXO_PORT_TEXT`                 |
+| `childrenPort(Ports.x)`      | a port for a **variable-length sequence of children**                      | `EXO_PORT_CHILDREN`             |
+| `refPort(Ports.x)`           | a **reference to the current element**, with no way to write to it         | `EXO_PORT_REF`, `exoRefPortKind<TNode>()` |
 
-A port is minted inside a nested closure and escapes to the record the builder
-returns, so its holder is declared before the call that mints it — which is why
-each call has a name to declare it with. Each type pins its port's kind, and the
-first four are `TExoPort`s (what every writing signature takes) while
-`TExoRefPort` deliberately is not.
+`exoPorts({ … })` turns each kind into a port of the matching type — `TExoAttrPort`,
+`TExoEventPort`, `TExoTextPort`, `TExoChildrenPort`, `TExoRefPort` — and each type pins
+its port's kind. The first four are `TExoPort`s (what every writing signature takes)
+while `TExoRefPort` deliberately is not.
 
 An attribute whose value varies is not an attribute here — it is a port. A
 children port **is a child**: it renders exactly where the call appears, so it
 may stand between static siblings.
 
-### Document order
+### Port numbers
 
-Ports are numbered after the whole shape is known, by walking it in document
-order: per element, its attribute and event ports in declaration order, then its
-content port, then its static children recursively; a children port is numbered
-where it stands among them.
+A declared port's number is its position in `exoPorts`; a port the markup mints itself
+(the alternative forms below) is numbered in the order its call ran.
 
-That ordering is the **contract between the backends**. They never speak to each
+That numbering is the **contract between the backends**. They never speak to each
 other; they agree because both index their prepared schemas by these numbers.
 
 ## `createExoSchema` and `createExoStatic`
 
--   `createExoSchema(build)` — the schema half alone, which `createExoMachineBuilder(schema)`
-    builds a machine over. It is also what a compiler that hoists the shape to module
-    scope calls, and what the schema compilers call.
+-   `createExoSchema(Ports, build)` — the schema half alone, which
+    `createExoMachineBuilder(schema)` builds a machine over; `Ports` comes from `exoPorts`
+    and the schema's `.ports` is that object. Two alternative forms take the build
+    callback alone — returning a record of ports, or naming each port where it stands —
+    and are shown under [Alternative forms](#alternative-forms). The return-a-record
+    form is also what a compiler that hoists the shape to module scope calls.
 -   `createExoStatic(build)` — a component with **nothing to fill**: an icon, a
     separator, a conditional block's body. It throws at construction (`EXO0019`)
     if the builder declared ports, and the machine it carries is one shared frozen
@@ -146,25 +155,51 @@ other; they agree because both index their prepared schemas by these numbers.
     separate name rather than an overload, because `TPorts` stands in the cursor's
     argument position in one and in its return position in the other.
 
-## Naming ports
+## Alternative forms
 
-A port-declaring call can file itself under a name from an interface you declare, and the name is
-checked against the **kind** of port that call mints:
+The port interface above is the form to reach for. Two others let the markup mint its
+ports itself, with no `exoPorts` declaration.
+
+**Returning a record.** Each call mints a port and hands it back; the callback returns
+them, and that record becomes `schema.ports`:
 
 ```typescript
-import type { TExoAttrPort, TExoSchemaCursor, TExoTextPort } from '@exodra/core';
+import { createExoSchema } from '@exodra/core';
+import type { TExoAttrPort, TExoTextPort } from '@exodra/core';
+
+const cardSchema = createExoSchema((b) => {
+    let index!: TExoAttrPort;
+    let title!: TExoTextPort;
+    b.el('li', null, (li) => {
+        index = li.attrPort('data-i');
+        title = li.textPort();
+    });
+    return { index, title };
+});
+```
+
+**Naming each port where it stands.** Each call files its port under a name from an
+interface you declare, and the callback returns nothing:
+
+```typescript
+import { createExoNamedSchema } from '@exodra/core';
+import type { TExoAttrPort, TExoTextPort } from '@exodra/core';
 
 interface TCardPorts {
     index: TExoAttrPort;
     title: TExoTextPort;
 }
 
-declare const card: TExoSchemaCursor<TCardPorts>;
-
-card.port('data-i', 'index'); // compiles
-// @ts-expect-error — does not compile: `title` is a text port
-card.port('data-i', 'title');
+const cardSchema = createExoNamedSchema<TCardPorts>((b) => {
+    b.el('li', null, (li) => {
+        li.attrPort('data-i', 'index');
+        li.textPort('title');
+    });
+});
 ```
+
+The name is checked against the **kind** of port the call mints, so
+`li.attrPort('data-i', 'title')` does not compile: `title` is a text port.
 
 `TExoPortName<TPorts, TPort>` is the whole mechanism: no runtime half, no registry, nothing a
 render ever reads. Two consequences fall out of the assignability direction. A key declared as the
@@ -182,13 +217,14 @@ position would make naming unusable from JavaScript.
 What runs once per instance is the machine's `createInitialState`:
 
 ```ts no-check
-type TExoMachineInitialState<TWiring, TValue = unknown> = (
+type TExoMachineInitialState<TWiring, TValue = unknown, TParams = unknown> = (
     enode: TWiring,
-    index: number
+    index: number,
+    params: TParams
 ) => TValue;
 ```
 
-`m.wire((c, params) => …)` is the other half: a transition that writes ports only and may run
+`builder.wire((c, params) => …)` is the other half: a transition that writes ports only and may run
 again with new `params`, so it keeps no state of its own.
 
 **One declaration, every backend** — generic over the exonode and nothing else.
@@ -197,8 +233,9 @@ for every backend names `TExoMachineNode` (the calls every backend has: `attr`, 
 `html`, `on`, `provide`, `inject`, `onTeardown`, `readState`) or
 `TExoChildrenWiring & TExoMachineNode` (that plus `one`, `list`, `build`), all exported from here.
 
-**There are no props.** The initial state takes the exonode and an `index`, which is the
-instance's position **at arming time and nothing more** — a reconciler moves
+**There are no props.** The initial state takes the exonode, an `index` and the wire's
+`params` — a list row bound to one record for life can take that record there. The `index`
+is the instance's position **at arming time and nothing more** — a reconciler moves
 nodes, it does not re-arm them, so a component that needs a live position is
 told it by a transition. A row that must differ from its neighbours reads what it needs
 out of state keyed by that index.
@@ -208,7 +245,7 @@ out of state keyed by that index.
 `c.build` both hand back **the child's exonode**, so a parent reaches a child's
 transitions through them.
 
-**Watching a source is an effect, not a door.** `m.effect((c) => { show(c); return
+**Watching a source is an effect, not a door.** `builder.effect((c) => { show(c); return
 store.subscribe(() => show(c)); })` draws through a transition, which writes with the
 fill doors, and returns the unsubscribe the instance runs when it ends — so one
 machine serves the browser, the server and the terminal. There is no `c.bind`, and no
@@ -279,7 +316,7 @@ function toggleDone(_event: unknown, subject?: unknown): void {
     const cell = (subject as TRow).done;
     cell.setValue(cell.getValue() === true ? false : true);
 }
-// in the initial state:  c.on(P.click, toggleDone, row);
+// in the initial state:  c.on(RowPorts.click, toggleDone, row);
 ```
 
 A wrong-kinded port is refused by the **types**: `on` takes a `TExoEventPort`,
@@ -296,7 +333,7 @@ compares `port.kind` for these doors.
 | `escapeExoText`, `escapeExoAttributeValue`                                                               | the escapers **both** backends use, so their bytes agree                                                                                                                                                                                                      |
 | `EXO_VOID_ELEMENTS`, `EXO_DOM_PROPERTIES`, `EXO_RAW_TEXT_ELEMENTS`, `exoAttribute`, `exoDomPropertyKind` | what an element and an attribute name mean. `exoAttribute` answers from the NAME alone and caches; `exoDomPropertyKind` is the same question asked of a TAG, and the two disagree on purpose — `value` is live state on an `<input>` and nothing on a `<div>` |
 | `assertExoChildrenPort`, `assertExoNoTextAfterChildrenPort`, `assertExoIntactRawTextBoundary`            | the refusals every backend shares, so the server and the browser refuse the same shapes in the same words                                                                                                                                                     |
-| `EXO_PORT_ATTR`, `EXO_PORT_TEXT`, `EXO_PORT_CHILDREN`, `EXO_PORT_EVENT`                                  | the port kinds, as plain constants                                                                                                                                                                                                                            |
+| `EXO_PORT_ATTR`, `EXO_PORT_ATTR_STRING`, `EXO_PORT_ATTR_TOGGLE`, `EXO_PORT_TEXT`, `EXO_PORT_CHILDREN`, `EXO_PORT_EVENT`, `EXO_PORT_REF` | the port kinds, as plain constants — what `exoPorts` takes                                                                                                                                                                                                                            |
 
 ### `exoAttribute` — four facts its source does not show
 
@@ -341,19 +378,19 @@ document, stop listening to its sources, and come back listening:
 const row = rows.detach(i);
 disconnectExoNode(row);
 rows.attach(row, j);
-connectExoNode(row, ROW);
+connectExoNode(row, Row);
 ```
 
 Only machine effects are covered. A subscription an initial state registered through
 `c.onTeardown` lives in a closure and cannot be started again.
 
-One effect at a time: `m.effect(...)` hands back the effect's handle, `c.stopEffect(handle)`
+One effect at a time: `builder.effect(...)` hands back the effect's handle, `c.stopEffect(handle)`
 ends that one and leaves the rest running, and `c.restartEffect(handle)` starts it again. The
 effect is off when `stopEffect` returns even if its own stop restarted it on the way out.
 
 **`withExoComputedMachine`, `exoTransition`, `exoWiring` and everything that
 compiles a field into a slot are [`@exodra/computed`](https://github.com/abaikov/exodra/blob/master/packages/computed/README.md),
-and this package exports none of them.** Say `m.field(0)` and `m.derive(port,
+and this package exports none of them.** Say `builder.field(0)` and `builder.derive(port,
 [field], by)` instead of writing the port, and a page pays for the inversion
 table, the pending word and the commit walk — which is exactly what a page
 that never derives anything must not pay. The split is what makes that

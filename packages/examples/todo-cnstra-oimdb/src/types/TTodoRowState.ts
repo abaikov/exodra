@@ -1,7 +1,9 @@
+import type { TTodoCns } from './TTodoCns';
+import type { TTodoSlot } from './TTodoSlot';
+
 export type TTodoRowState = {
-    id: string | null;
-    title: string | null;
-    done: boolean | null;
+    cns: TTodoCns;
+    slot: TTodoSlot;
     editing: boolean;
-    className: string | undefined;
+    done: boolean;
 };

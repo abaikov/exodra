@@ -6,9 +6,10 @@ import type { TExoPortCompiler } from './TExoPortCompiler';
  * door, and no runtime guard does that work. `name` is TYPED `string | null` so this and
  * `TExoPort` differ in exactly ONE field and a compiler can narrow on `kind` alone.
  */
-export type TExoRefPort = {
+export type TExoRefPort<TNode = unknown> = {
     index: number;
     readonly kind: typeof EXO_PORT_REF;
     readonly name: string | null;
     compileWith<TWriter>(into: TExoPortCompiler<TWriter>): TWriter;
+    readonly nodeShape?: TNode;
 };

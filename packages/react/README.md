@@ -23,8 +23,8 @@ inside it, and the machine's initial state hands that port to React and keeps th
 handle it gets back.
 
 ```tsx setup
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoMachineNode } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { reactIsland } from '@exodra/react';
 import type { TExoReactIsland, TExoReactWiring } from '@exodra/react';
@@ -39,28 +39,27 @@ declare const chartStore: {
     subscribe(listener: () => void): () => void;
 };
 
-const PANEL_SCHEMA = createExoSchema((b) => {
-    let host!: TExoChildrenPort;
+const PanelPorts = exoPorts({ host: EXO_PORT_CHILDREN });
+
+const panelSchema = createExoSchema(PanelPorts, (b) => {
     b.el('section', { class: 'panel' }, (section) => {
         section.el('h2', null, (h2) => h2.text('Live chart (React island)'));
         section.el('div', { 'data-exo-react': '' }, (div) => {
-            host = div.childrenPort();
+            div.childrenPort(PanelPorts.host);
         });
     });
-    return { host };
 });
 type TPanelState = { readonly chart: TExoReactIsland<TChartProps> };
-const mPanel = createExoMachineBuilder<TExoReactWiring & TExoMachineNode, unknown, TPanelState>(
-    PANEL_SCHEMA
+const panelBuilder = createExoMachineBuilder<TExoReactWiring & TExoMachineNode, unknown, TPanelState>(
+    panelSchema
 );
-mPanel.createInitialState((c) => ({
-    chart: reactIsland(c, PANEL_SCHEMA.ports.host, FancyChart, chartStore.get()),
+panelBuilder.createInitialState((c) => ({
+    chart: reactIsland(c, PanelPorts.host, FancyChart, chartStore.get()),
 }));
-const showChart = mPanel.transition((c) => c.state.chart.render(chartStore.get()));
-mPanel.effect((c) => chartStore.subscribe(() => showChart(c)));
-const PANEL = mPanel.done();
+panelBuilder.effect((c) => chartStore.subscribe(() => c.state.chart.render(chartStore.get())));
+const Panel = panelBuilder.done();
 
-withExoCompiler(new ExoDomBackend()).render(PANEL, document.getElementById('root')!);
+withExoCompiler(new ExoDomBackend()).render(Panel, document.getElementById('root')!);
 ```
 
 The **port must be its element's only child**, which is what a host element is by
@@ -70,8 +69,8 @@ into without deleting a sibling.
 
 `reactIsland` mounts with a plain props object and returns a `TExoReactIsland`
 handle, `{ render(props) }`. The island never subscribes to anything itself: the
-machine keeps the handle in its state and calls `render` from a transition — which
-an effect runs when the data the island shows changes. A render after the island
+machine keeps the handle in its state and calls `render` from an effect when the
+data the island shows changes. A render after the island
 was torn down is ignored.
 
 ## One machine, three backends
@@ -88,8 +87,8 @@ serves all three:
 ```ts
 declare const c: TExoReactWiring;
 declare const props: TChartProps;
-reactIsland(c, PANEL_SCHEMA.ports.host, FancyChart, props);                 // SSR + hydrate (default)
-reactIsland(c, PANEL_SCHEMA.ports.host, FancyChart, props, { ssr: false }); // client-only: empty host on the server
+reactIsland(c, PanelPorts.host, FancyChart, props);                 // SSR + hydrate (default)
+reactIsland(c, PanelPorts.host, FancyChart, props, { ssr: false }); // client-only: empty host on the server
 ```
 
 On the server the handle's `render` does nothing: a request has no second pass.

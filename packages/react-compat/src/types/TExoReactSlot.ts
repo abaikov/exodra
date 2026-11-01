@@ -4,14 +4,14 @@ import type { TExoReactRange } from './TExoReactRange';
 
 export type TExoReactSlot = {
     readonly kind: 'host' | 'text' | 'component' | 'portal';
-    readonly type: unknown;
-    readonly key: string;
+    type: unknown;
+    key: string;
     props: unknown;
     ref: unknown;
     node: TExoNode<TExoDomMark> | null;
     text: Text | null;
     range: TExoReactRange | null;
-    readonly parentRange: TExoReactRange;
+    parentRange: TExoReactRange;
     readonly parentComponent: TExoReactSlot | null;
     readonly depth: number;
     hooks: unknown[];

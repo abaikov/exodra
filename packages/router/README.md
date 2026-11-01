@@ -16,8 +16,14 @@ npm install @exodra/router @exodra/core @exodra/context
 ## A routed page, end to end
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_CHILDREN,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+} from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import {
@@ -29,46 +35,45 @@ import {
 } from '@exodra/router';
 import type { TExoRoute, TExoRouteMatch } from '@exodra/router';
 
-const USER_PAGE_SCHEMA = createExoSchema((b) => {
-    let name!: TExoTextPort;
-    b.el('h1', null, (h) => {
-        name = h.textPort();
-    });
-    return { name };
-});
-const mUserPage = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(USER_PAGE_SCHEMA);
-mUserPage.wire((c, match) => {
-    c.text(USER_PAGE_SCHEMA.ports.name, match.params.id);
-});
-const USER_PAGE = mUserPage.done();
+const UserPagePorts = exoPorts({ name: EXO_PORT_TEXT });
 
-const ROUTES: readonly TExoRoute[] = [{ path: '/users/:id', component: USER_PAGE }];
+const userPageSchema = createExoSchema(UserPagePorts, (b) => {
+    b.el('h1', null, (h) => {
+        h.textPort(UserPagePorts.name);
+    });
+});
+const userPageBuilder = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(userPageSchema);
+userPageBuilder.wire((c, match) => {
+    c.text(UserPagePorts.name, match.params.id);
+});
+const UserPage = userPageBuilder.done();
+
+const ROUTES: readonly TExoRoute[] = [{ path: '/users/:id', component: UserPage }];
 
 const router = createExoRouter(ROUTES, { history: createExoBrowserHistory() });
 
-const APP_SCHEMA = createExoSchema((b) => {
-    let nav!: TExoChildrenPort;
-    let page!: TExoChildrenPort;
+const AppPorts = exoPorts({ nav: EXO_PORT_CHILDREN, page: EXO_PORT_CHILDREN });
+
+const appSchema = createExoSchema(AppPorts, (b) => {
     b.el('div', { class: 'app' }, (d) => {
         d.el('nav', null, (n) => {
-            nav = n.childrenPort();
+            n.childrenPort(AppPorts.nav);
         });
         d.el('main', null, (m) => {
-            page = m.childrenPort();
+            m.childrenPort(AppPorts.page);
         });
     });
-    return { nav, page };
 });
-const mApp = createExoMachineBuilder<TExoDomNode>(APP_SCHEMA);
-mApp.createInitialState((c) => {
+const appBuilder = createExoMachineBuilder<TExoDomNode>(appSchema);
+appBuilder.createInitialState((c) => {
     provideExoRouter(c, router);
-    c.one(APP_SCHEMA.ports.nav, ExoLink, { to: '/users/1', label: 'First user' });
-    c.one(APP_SCHEMA.ports.page, ExoOutlet);
+    c.one(AppPorts.nav, ExoLink, { to: '/users/1', label: 'First user' });
+    c.one(AppPorts.page, ExoOutlet);
 });
-const APP = mApp.done();
+const App = appBuilder.done();
 
 const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
-backend.render(APP, document.getElementById('root') as HTMLElement);
+backend.render(App, document.getElementById('root') as HTMLElement);
 ```
 
 - The page receives the match that selected it as the **params of its wire**.
@@ -121,55 +126,56 @@ wire throws `EXO0103` when the wire is re-run, so children go in
 `injectExoRouter(c).getMatches()[index]` (`index` is the boundary depth):
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoLink, injectExoRouter } from '@exodra/router';
 
-const ORG_SCHEMA = createExoSchema((b) => {
-    let tabs!: TExoChildrenPort;
+const OrgPorts = exoPorts({ tabs: EXO_PORT_CHILDREN });
+
+const orgSchema = createExoSchema(OrgPorts, (b) => {
     b.el('section', null, (s) => {
         s.el('nav', null, (n) => {
-            tabs = n.childrenPort();
+            n.childrenPort(OrgPorts.tabs);
         });
     });
-    return { tabs };
 });
-const mOrg = createExoMachineBuilder<TExoDomNode>(ORG_SCHEMA);
-mOrg.createInitialState((c, index) => {
+const orgBuilder = createExoMachineBuilder<TExoDomNode>(orgSchema);
+orgBuilder.createInitialState((c, index) => {
     const match = injectExoRouter(c).getMatches()[index];
-    const tabs = c.childList(ORG_SCHEMA.ports.tabs);
+    const tabs = c.childList(OrgPorts.tabs);
     tabs.insert(c.build(ExoLink, 0, { to: match.pathname + '/repos', label: 'Repositories' }));
     tabs.insert(c.build(ExoLink, 1, { to: match.pathname + '/people', label: 'People' }));
 });
-export const ORG_PAGE = mOrg.done();
+export const OrgPage = orgBuilder.done();
 ```
 
 A component that follows the URL subscribes from an **effect**; `onChange` returns
 the unsubscribe, which is what an effect returns:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
 import { injectExoRouter } from '@exodra/router';
 
-const WHERE_SCHEMA = createExoSchema((b) => {
-    let path!: TExoTextPort;
+const WherePorts = exoPorts({ path: EXO_PORT_TEXT });
+
+const whereSchema = createExoSchema(WherePorts, (b) => {
     b.el('p', null, (p) => {
-        path = p.textPort();
+        p.textPort(WherePorts.path);
     });
-    return { path };
 });
-const mWhere = createExoMachineBuilder<TExoMachineNode>(WHERE_SCHEMA);
-const showPath = mWhere.transition((c) => {
-    c.text(WHERE_SCHEMA.ports.path, injectExoRouter(c).getLocation().pathname);
-});
-mWhere.wire((c) => showPath(c));
-mWhere.effect((c) => {
+const whereBuilder = createExoMachineBuilder<TExoMachineNode>(whereSchema);
+
+function showPath(c: TExoMachineBuilderNode<typeof whereBuilder>): void {
+    c.text(WherePorts.path, injectExoRouter(c).getLocation().pathname);
+}
+
+whereBuilder.wire((c) => showPath(c));
+whereBuilder.effect((c) => {
     showPath(c);
     return injectExoRouter(c).onChange(() => showPath(c));
 });
-export const WHERE = mWhere.done();
+export const Where = whereBuilder.done();
 ```
 
 `onChange` runs after every commit and every navigation-state change, after every
@@ -181,7 +187,7 @@ called on the next one.
 | Form | Use it when |
 | --- | --- |
 | `c.one(port, ExoOutlet)` | a boundary in a `<div>` |
-| `c.one(port, ROUTED)` with `const ROUTED = exoOutlet('main')` | the boundary should be your own tag; call `exoOutlet(tag, attrs?)` at module level |
+| `c.one(port, Routed)` with `const Routed = exoOutlet('main')` | the boundary should be your own tag; call `exoOutlet(tag, attrs?)` at module level |
 | `c.childList(port).insert(c.build(ExoOutlet))` | the boundary goes into a child list you manage |
 
 A layout is a route with `children` whose page places its own outlet. Depth is
@@ -189,8 +195,14 @@ found through the context, so the nested outlet draws the next entry of the
 matched branch:
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_CHILDREN,
+    EXO_PORT_TEXT,
+    createExoMachineBuilder,
+    createExoSchema,
+    exoPorts,
+} from '@exodra/core';
+import type { TExoChildrenPort, TExoMachine, TExoMachineNode } from '@exodra/core';
 import { ExoOutlet } from '@exodra/router';
 import type { TExoRoute, TExoRouteMatch } from '@exodra/router';
 
@@ -198,46 +210,45 @@ interface TNestingNode extends TExoMachineNode {
     one(port: TExoChildrenPort, machine: TExoMachine<never>): void;
 }
 
-const USERS_LAYOUT_SCHEMA = createExoSchema((b) => {
-    let page!: TExoChildrenPort;
+const UsersLayoutPorts = exoPorts({ page: EXO_PORT_CHILDREN });
+
+const usersLayoutSchema = createExoSchema(UsersLayoutPorts, (b) => {
     b.el('section', { class: 'users' }, (s) => {
         s.el('h2', null, (h) => h.text('Users'));
-        page = s.childrenPort();
+        s.childrenPort(UsersLayoutPorts.page);
     });
-    return { page };
 });
-const mUsersLayout = createExoMachineBuilder<TNestingNode>(USERS_LAYOUT_SCHEMA);
-mUsersLayout.createInitialState((c) => {
-    c.one(USERS_LAYOUT_SCHEMA.ports.page, ExoOutlet);
+const usersLayoutBuilder = createExoMachineBuilder<TNestingNode>(usersLayoutSchema);
+usersLayoutBuilder.createInitialState((c) => {
+    c.one(UsersLayoutPorts.page, ExoOutlet);
 });
-const USERS_LAYOUT = mUsersLayout.done();
+const UsersLayout = usersLayoutBuilder.done();
 
-const USER_SCHEMA = createExoSchema((b) => {
-    let name!: TExoTextPort;
+const UserPorts = exoPorts({ name: EXO_PORT_TEXT });
+
+const userSchema = createExoSchema(UserPorts, (b) => {
     b.el('h1', null, (h) => {
-        name = h.textPort();
+        h.textPort(UserPorts.name);
     });
-    return { name };
 });
-const mUser = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(USER_SCHEMA);
-mUser.wire((c, match) => {
-    c.text(USER_SCHEMA.ports.name, match.params.id);
+const userBuilder = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(userSchema);
+userBuilder.wire((c, match) => {
+    c.text(UserPorts.name, match.params.id);
 });
-const USER = mUser.done();
+const User = userBuilder.done();
 
-const USER_LIST_SCHEMA = createExoSchema((b) => {
+const userListSchema = createExoSchema(exoPorts({}), (b) => {
     b.el('p', null, (p) => p.text('Pick a user'));
-    return {};
 });
-const USER_LIST = createExoMachineBuilder<TExoMachineNode>(USER_LIST_SCHEMA).done();
+const UserList = createExoMachineBuilder<TExoMachineNode>(userListSchema).done();
 
 export const ROUTES: readonly TExoRoute[] = [
     {
         path: '/users',
-        component: USERS_LAYOUT,
+        component: UsersLayout,
         children: [
-            { path: '', component: USER_LIST },
-            { path: ':id', component: USER },
+            { path: '', component: UserList },
+            { path: ':id', component: User },
         ],
     },
 ];
@@ -300,14 +311,14 @@ one of those.
 import { createExoBrowserHistory, createExoRouter } from '@exodra/router';
 import type { TExoPageMachine } from '@exodra/router';
 
-declare const ADMIN_PAGE: TExoPageMachine;
+declare const AdminPage: TExoPageMachine;
 declare function getUser(): Promise<{ isAdmin: boolean }>;
 
 const router = createExoRouter(
     [
         {
             path: '/admin',
-            component: ADMIN_PAGE,
+            component: AdminPage,
             beforeEnter: async () => ((await getUser()).isAdmin ? true : '/login'),
         },
     ],
@@ -364,13 +375,13 @@ routers.
 ```ts no-check
 import { createExoBrowserHistory, createExoRouter, exoLazy, preloadExoPage } from '@exodra/router';
 
-const DASHBOARD = exoLazy(() => import('./pages/dashboard'));
+const Dashboard = exoLazy(() => import('./pages/dashboard'));
 
-const router = createExoRouter([{ path: '/dashboard', component: DASHBOARD }], {
+const router = createExoRouter([{ path: '/dashboard', component: Dashboard }], {
     history: createExoBrowserHistory(),
 });
 
-await preloadExoPage(DASHBOARD);
+await preloadExoPage(Dashboard);
 ```
 
 A render is synchronous, so a boundary that meets an unresolved loader starts the

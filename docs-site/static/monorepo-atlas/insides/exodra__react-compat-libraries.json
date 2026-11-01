@@ -20,6 +20,25 @@
         "violations": []
       },
       {
+        "id": "compileElementCalls",
+        "label": "compileElementCalls",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(code, id): { code: string; map…",
+            "full": "(code, id): { code: string; map: null } | null",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 242,
+        "height": 69,
+        "violations": []
+      },
+      {
         "id": "ESM_ONLY",
         "label": "ESM_ONLY",
         "kind": "app",
@@ -41,6 +60,42 @@
         "memberCount": 0,
         "stereotype": "const",
         "width": 146,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXODRA_REACT_COMPILE",
+        "label": "EXODRA_REACT_COMPILE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 152,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "EXODRA_REACT_OPTIONS",
+        "label": "EXODRA_REACT_OPTIONS",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 152,
+        "height": 46,
+        "violations": []
+      },
+      {
+        "id": "exodraReact",
+        "label": "exodraReact",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
         "height": 46,
         "violations": []
       },
@@ -111,6 +166,18 @@
         "violations": []
       },
       {
+        "id": "require",
+        "label": "require",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
         "id": "SHARED_TEST",
         "label": "SHARED_TEST",
         "kind": "app",
@@ -128,6 +195,82 @@
         "id": "COMPAT_ALIASES→fromPackages",
         "from": "COMPAT_ALIASES",
         "to": "fromPackages",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileElementCalls→EXODRA_REACT_OPTIONS",
+        "from": "compileElementCalls",
+        "to": "EXODRA_REACT_OPTIONS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileElementCalls→exodraReact",
+        "from": "compileElementCalls",
+        "to": "exodraReact",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXODRA_REACT_COMPILE→compileElementCalls",
+        "from": "EXODRA_REACT_COMPILE",
+        "to": "compileElementCalls",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exodraReact→require",
+        "from": "exodraReact",
+        "to": "require",
         "kinds": [
           "value"
         ],
@@ -166,69 +309,104 @@
     "rules": {}
   },
   "layout": {
-    "width": 378,
-    "height": 549.5,
+    "width": 906,
+    "height": 649,
     "nodes": [
       {
         "id": "COMPAT_ALIASES",
-        "x": 24,
-        "y": 35.5,
+        "x": 40,
+        "y": 357,
         "width": 120,
         "height": 46
       },
       {
+        "id": "compileElementCalls",
+        "x": 240,
+        "y": 49.5,
+        "width": 242,
+        "height": 69
+      },
+      {
         "id": "ESM_ONLY",
-        "x": 24,
-        "y": 109.5,
+        "x": 40,
+        "y": 135,
         "width": 120,
         "height": 46
       },
       {
         "id": "EXO_REACT_LIBRARIES",
-        "x": 208,
-        "y": 257.5,
+        "x": 288,
+        "y": 209,
         "width": 146,
         "height": 46
       },
       {
-        "id": "fromPackages",
-        "x": 218,
+        "id": "EXODRA_REACT_COMPILE",
+        "x": 24,
+        "y": 61,
+        "width": 152,
+        "height": 46
+      },
+      {
+        "id": "EXODRA_REACT_OPTIONS",
+        "x": 546,
+        "y": 98,
+        "width": 152,
+        "height": 46
+      },
+      {
+        "id": "exodraReact",
+        "x": 562,
         "y": 24,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "fromPackages",
+        "x": 298,
+        "y": 345.5,
         "width": 126,
         "height": 69
       },
       {
         "id": "JSX",
-        "x": 24,
-        "y": 183.5,
+        "x": 40,
+        "y": 283,
         "width": 120,
         "height": 46
       },
       {
         "id": "LIBRARY_IMPORTS",
-        "x": 24,
-        "y": 257.5,
+        "x": 40,
+        "y": 209,
         "width": 120,
         "height": 46
       },
       {
         "id": "packageRoot",
-        "x": 24,
-        "y": 331.5,
+        "x": 40,
+        "y": 431,
         "width": 120,
         "height": 46
       },
       {
         "id": "REACT_IMPORTS",
-        "x": 24,
-        "y": 405.5,
+        "x": 40,
+        "y": 505,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "require",
+        "x": 762,
+        "y": 24,
         "width": 120,
         "height": 46
       },
       {
         "id": "SHARED_TEST",
-        "x": 24,
-        "y": 479.5,
+        "x": 40,
+        "y": 579,
         "width": 120,
         "height": 46
       }
@@ -238,16 +416,84 @@
         "id": "COMPAT_ALIASES→fromPackages",
         "points": [
           {
-            "x": 144,
-            "y": 58.5
+            "x": 160,
+            "y": 380
           },
+          {
+            "x": 208,
+            "y": 380
+          },
+          {
+            "x": 298,
+            "y": 380
+          }
+        ]
+      },
+      {
+        "id": "compileElementCalls→EXODRA_REACT_OPTIONS",
+        "points": [
+          {
+            "x": 482,
+            "y": 113.3
+          },
+          {
+            "x": 514,
+            "y": 121
+          },
+          {
+            "x": 546,
+            "y": 121
+          }
+        ]
+      },
+      {
+        "id": "compileElementCalls→exodraReact",
+        "points": [
+          {
+            "x": 482,
+            "y": 54.7
+          },
+          {
+            "x": 514,
+            "y": 47
+          },
+          {
+            "x": 562,
+            "y": 47
+          }
+        ]
+      },
+      {
+        "id": "EXODRA_REACT_COMPILE→compileElementCalls",
+        "points": [
           {
             "x": 176,
-            "y": 58.5
+            "y": 84
           },
           {
-            "x": 218,
-            "y": 58.5
+            "x": 208,
+            "y": 84
+          },
+          {
+            "x": 240,
+            "y": 84
+          }
+        ]
+      },
+      {
+        "id": "exodraReact→require",
+        "points": [
+          {
+            "x": 682,
+            "y": 47
+          },
+          {
+            "x": 730,
+            "y": 47
+          },
+          {
+            "x": 762,
+            "y": 47
           }
         ]
       },
@@ -255,16 +501,16 @@
         "id": "LIBRARY_IMPORTS→EXO_REACT_LIBRARIES",
         "points": [
           {
-            "x": 144,
-            "y": 280.5
-          },
-          {
-            "x": 176,
-            "y": 280.5
+            "x": 160,
+            "y": 232
           },
           {
             "x": 208,
-            "y": 280.5
+            "y": 232
+          },
+          {
+            "x": 288,
+            "y": 232
           }
         ]
       }

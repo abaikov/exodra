@@ -7,7 +7,7 @@ for the Exodra JSX dialect. Every `exoJsx(…)` call is compiled away by
 
 A declaration holds markup and named ports, and nothing else. A literal attribute
 is markup; every port is named off `$` where it stands, and the machine fills it
-through `SCHEMA.ports`.
+through the schema's `.ports`.
 
 ## Installation
 
@@ -55,7 +55,7 @@ interface TCardPorts {
     tags: TExoChildrenPort;
 }
 
-export const CARD_SCHEMA = exoJsx<TCardPorts>(($) => (
+export const cardSchema = exoJsx<TCardPorts>(($) => (
     <article class="card" data-id={$.id} ref={$.box} on:dblclick={$.edit}>
         <h3>{$.title}</h3>
         <button type="button" onClick={$.open}>
@@ -71,10 +71,10 @@ export const CARD_SCHEMA = exoJsx<TCardPorts>(($) => (
 
 - A literal (`class="card"`, `tabindex={0}`, bare `disabled`) — markup, baked into
   the schema.
-- `data-id={$.id}` — an attribute port, filled with `c.attr(P.id, value)`.
+- `data-id={$.id}` — an attribute port, filled with `c.attr(CardPorts.id, value)`.
 - `{$.title}` as an element's **only** child — a text port, filled with `c.text`.
 - `onClick={$.open}` (tail lowercased) or `on:dblclick={$.edit}` (name as written)
-  — an event port, handled with `m.on(P.open, handler)`.
+  — an event port, handled with `cardBuilder.on(CardPorts.open, handler)`.
 - `ref={$.box}` — a ref port: a reference to the element and no way to write it.
 - `unsafeHtml={$.body}` — a children port standing for the element's whole
   content, filled with unescaped markup by `c.unsafeHtml`; nothing sanitises it.

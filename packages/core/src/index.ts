@@ -26,6 +26,8 @@ export type { TExoCursorDeclaration } from './schema/types/TExoCursorDeclaration
 export type { TExoSchemaBuild } from './schema/types/TExoSchemaBuild';
 export type { TExoEmitter } from './schema/types/TExoEmitter';
 export { exoPorts } from './schema/ports/factories/exoPorts';
+export { exoEventPortKind } from './schema/ports/factories/exoEventPortKind';
+export { exoRefPortKind } from './schema/ports/factories/exoRefPortKind';
 export { nameExoPort } from './schema/ports/nameExoPort';
 export type { TExoPortKindMark } from './schema/ports/types/TExoPortKindMark';
 export type { TExoPortOfKind } from './schema/ports/types/TExoPortOfKind';
@@ -40,6 +42,8 @@ export { mintExoPort } from './schema/ports/factories/mintExoPort';
 export { harvestExoSchema } from './schema/factories/harvestExoSchema';
 export type { TExoAttrPort } from './schema/ports/types/TExoAttrPort';
 export type { TExoAttrPortKind } from './schema/ports/types/TExoAttrPortKind';
+export type { TExoEventPortKind } from './schema/ports/types/TExoEventPortKind';
+export type { TExoRefPortKind } from './schema/ports/types/TExoRefPortKind';
 export type { TExoTextPort } from './schema/ports/types/TExoTextPort';
 export type { TExoChildrenPort } from './schema/ports/types/TExoChildrenPort';
 export type { TExoEventPort } from './schema/ports/types/TExoEventPort';
@@ -121,6 +125,7 @@ export type {
     TExoMachineStateHandle,
     TExoMachineEffect,
     TExoMachineBuilder,
+    TExoMachineBuilderNode,
     TExoMachineHandler,
     TExoMachineInitialState,
     TExoMachineNode,

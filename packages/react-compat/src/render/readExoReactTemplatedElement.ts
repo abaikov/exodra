@@ -23,9 +23,10 @@ function templatedOf(
         type: element.type,
         props: element.props,
         key: element.key,
-        ref: null,
+        ref: element.ref,
         host: template.machine,
         values,
+        source: element,
     } as TExoReactElement;
 }
 

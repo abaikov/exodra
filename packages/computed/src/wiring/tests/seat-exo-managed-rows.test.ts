@@ -122,8 +122,8 @@ describe('the one door onto managedState', () => {
         const backend = new ExoCardBackend();
         const first = nodeOf(backend);
         const second = nodeOf(backend);
-        wire(first, 0);
-        wire(second, 1);
+        wire(first, 0, undefined);
+        wire(second, 1, undefined);
 
         expect(first.managedState).not.toBe(EXO_NO_MANAGED_STATE);
         expect(first.managedState).not.toBe(second.managedState);

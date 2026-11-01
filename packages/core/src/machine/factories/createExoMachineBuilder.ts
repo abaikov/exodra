@@ -18,7 +18,8 @@ export function createExoMachineBuilder<
     TState = unknown
 >(schema: TExoCursorDeclaration<unknown>): TExoMachineBuilder<TWiring, TParams, TState> {
     harvestExoSchema(schema);
-    let createInitialState: ((enode: TWiring, index: number) => unknown) | null = null;
+    let createInitialState: ((enode: TWiring, index: number, params: unknown) => unknown) | null =
+        null;
     let wire: ((enode: TWiring, params: unknown) => void) | null = null;
     const transitions: unknown[] = [];
     const effects: TExoMachineEffect<TWiring>[] = [];
@@ -45,7 +46,7 @@ export function createExoMachineBuilder<
         schema,
 
         createInitialState: <TValue>(
-            make: (enode: TWiring, index: number) => TValue
+            make: (enode: TWiring, index: number, params: unknown) => TValue
         ): TExoMachineStateHandle<TValue> => {
             sealed('an initial state');
             // THE ONE PLACE THE SHARED-OBJECT BUG CAN BE CAUGHT: a value handed here would be ONE object
@@ -66,7 +67,11 @@ export function createExoMachineBuilder<
                         : 'EXO0086'
                 );
             }
-            createInitialState = make as (enode: TWiring, index: number) => unknown;
+            createInitialState = make as (
+                enode: TWiring,
+                index: number,
+                params: unknown
+            ) => unknown;
             return {};
         },
 
