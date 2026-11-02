@@ -42,7 +42,7 @@
     It renders from one <code>withExoChildList(withExoCompiler(new ExoDomBackend()))</code> built at
     module level — the outlet and the nav bar both open a child list, so the pack is required; a
     page receives its match as the params of its <code>wire</code>, the nav bar is
-    <code>c.build(ExoLink, i, params)</code> placed with <code>c.childList(port).insert</code>, and
+    <code>c.build(ExoLink, params)</code> placed with <code>c.childList(port).insert</code>, and
     the search field follows the URL from an effect subscribed with <code>router.onChange</code>.
 </p>
 
@@ -57,7 +57,14 @@
 }
 </script>
 <script type="module">
-    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import {
+        composeExoMachine,
+        createExoMachine,
+        createExoSchema,
+        withExoEffects,
+        withExoHandlers,
+        withExoWire,
+    } from '@exodra/core';
     import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
     import * as exoRouter from '@exodra/router';
 
@@ -127,7 +134,7 @@
             return {};
         }
     );
-    const HOME = createExoMachineBuilder(HOME_SCHEMA).done();
+    const HOME = createExoMachine(HOME_SCHEMA);
 
     /**
      * `/users/:id` — the param route. Moving from `/users/1` to `/users/2` RE-RUNS this wire on the
@@ -145,11 +152,9 @@
             return { who };
         }
     );
-    const mUser = createExoMachineBuilder(USER_SCHEMA);
-    mUser.wire((c, match) => {
+    const USER = withExoWire(createExoMachine(USER_SCHEMA), (c, match) => {
         c.text(USER_SCHEMA.ports.who, 'id = ' + match.params.id + '  ·  matched at ' + match.pathname);
     });
-    const USER = mUser.done();
 
     /**
      * `/admin` — A LAYOUT, WHICH IS JUST A ROUTE WITH `children` AND AN OUTLET INSIDE IT.
@@ -178,11 +183,11 @@
             return { slot };
         }
     );
-    const mAdmin = createExoMachineBuilder(ADMIN_SCHEMA);
-    mAdmin.createInitialState((c) => {
-        c.one(ADMIN_SCHEMA.ports.slot, ExoOutlet);
+    const ADMIN = createExoMachine(ADMIN_SCHEMA, {
+        createInitialState: (c) => {
+            c.one(ADMIN_SCHEMA.ports.slot, ExoOutlet);
+        },
     });
-    const ADMIN = mAdmin.done();
 
     const ADMIN_USERS_SCHEMA = createExoSchema(
         (b) => {
@@ -190,7 +195,7 @@
             return {};
         }
     );
-    const ADMIN_USERS = createExoMachineBuilder(ADMIN_USERS_SCHEMA).done();
+    const ADMIN_USERS = createExoMachine(ADMIN_USERS_SCHEMA);
 
     const ADMIN_SETTINGS_SCHEMA = createExoSchema(
         (b) => {
@@ -198,7 +203,7 @@
             return {};
         }
     );
-    const ADMIN_SETTINGS = createExoMachineBuilder(ADMIN_SETTINGS_SCHEMA).done();
+    const ADMIN_SETTINGS = createExoMachine(ADMIN_SETTINGS_SCHEMA);
 
     const LOGIN_SCHEMA = createExoSchema(
         (b) => {
@@ -213,7 +218,7 @@
             return {};
         }
     );
-    const LOGIN = createExoMachineBuilder(LOGIN_SCHEMA).done();
+    const LOGIN = createExoMachine(LOGIN_SCHEMA);
 
     /**
      * `/search` — THE QUERY, FOLLOWED BOTH WAYS. Typing patches `q` into the URL with
@@ -239,22 +244,29 @@
             return { field, input, echo };
         }
     );
-    const mSearch = createExoMachineBuilder(SEARCH_SCHEMA);
-    mSearch.createInitialState((c) => ({ router: injectExoRouter(c) }));
-    const showUrl = mSearch.transition((c) => {
+    const searchBase = createExoMachine(SEARCH_SCHEMA, {
+        createInitialState: (c) => ({ router: injectExoRouter(c) }),
+    });
+    const showUrl = (c) => {
         const location = c.state.router.getLocation();
         const q = c.state.router.getQuery().q;
         c.attr(SEARCH_SCHEMA.ports.field, typeof q === 'string' ? q : '');
         c.text(SEARCH_SCHEMA.ports.echo, 'the URL now reads: ' + location.href);
-    });
-    mSearch.on(SEARCH_SCHEMA.ports.input, (c, event) => {
-        void c.state.router.patchQuery({ q: event.target.value || undefined }, { replace: true });
-    });
-    mSearch.effect((c) => {
-        showUrl(c);
-        return c.state.router.onChange(() => showUrl(c));
-    });
-    const SEARCH = mSearch.done();
+    };
+    const SEARCH = composeExoMachine(
+        searchBase,
+        (m) => withExoHandlers(m, (on) => {
+            on(SEARCH_SCHEMA.ports.input, (c, event) => {
+                void c.state.router.patchQuery({ q: event.target.value || undefined }, { replace: true });
+            });
+        }),
+        (m) => withExoEffects(m, (effect) => {
+            effect((c) => {
+                showUrl(c);
+                return c.state.router.onChange(() => showUrl(c));
+            });
+        }),
+    );
 
     /**
      * A LAZY PAGE. `exoLazy` takes anything that returns a promise for a component — an
@@ -267,7 +279,7 @@
                 setTimeout(
                     () =>
                         resolve(
-                            createExoMachineBuilder(createExoSchema(
+                            createExoMachine(createExoSchema(
                                 (b) => {
                                     b.el('div', { class: 'page' }, (d) => {
                                         d.el('h3', null, (h) => h.text('Lazy page'));
@@ -279,7 +291,7 @@
                                     });
                                     return {};
                                 }
-                            )).done()
+                            ))
                         ),
                     600
                 )
@@ -358,17 +370,17 @@
             return { nav, body };
         }
     );
-    const mApp = createExoMachineBuilder(APP_SCHEMA);
-    mApp.createInitialState((c) => {
-        provideExoRouter(c, router);
-        // `ExoLink` builds a real `<a href>` — hover one and the status bar shows where it goes,
-        // ⌘-click opens a tab, and the last one in the list is another origin and is left to
-        // the browser entirely. That policy is `shouldIgnoreExoLinkClick`.
-        const nav = c.childList(APP_SCHEMA.ports.nav);
-        LINKS.forEach((link, i) => nav.insert(c.build(ExoLink, i, { ...link, currentWhen: 'exact' })));
-        c.one(APP_SCHEMA.ports.body, ROUTED);
+    const APP = createExoMachine(APP_SCHEMA, {
+        createInitialState: (c) => {
+            provideExoRouter(c, router);
+            // `ExoLink` builds a real `<a href>` — hover one and the status bar shows where it goes,
+            // ⌘-click opens a tab, and the last one in the list is another origin and is left to
+            // the browser entirely. That policy is `shouldIgnoreExoLinkClick`.
+            const nav = c.childList(APP_SCHEMA.ports.nav);
+            LINKS.forEach((link) => nav.insert(c.build(ExoLink, { ...link, currentWhen: 'exact' })));
+            c.one(APP_SCHEMA.ports.body, ROUTED);
+        },
     });
-    const APP = mApp.done();
 
     // ONE BACKEND, AT MODULE LEVEL, and the placement is the whole of the advice. A backend is the
     // schema cache key — `exoDomSchemaOf(machine, backend)` keeps one compiled schema per backend

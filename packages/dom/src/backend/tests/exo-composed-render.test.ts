@@ -1,5 +1,12 @@
 // @vitest-environment jsdom
-import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    composeExoPlugins,
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenPort,
@@ -26,8 +33,6 @@ const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 type TItem = { readonly id: string };
 
 const items = (ids: readonly string[]): TItem[] => ids.map((id) => ({ id }));
-
-const BUILDING: TItem[] = [];
 
 /** What a pack was asked for, in the order it was asked — the whole of "the compiler used this". */
 type TAsked = { readonly attr: string[]; readonly text: string[] };
@@ -82,8 +87,7 @@ const withWriters = (writers: TExoWritersApi) => ({
  * AT MODULE LEVEL, once. A component built inside a wire would be a new DECLARATION per instance,
  * and a new declaration is a new schema — the markup parsed again for every row of every list.
  *
- * A wire takes no props, so the item a row stands for is written into `BUILDING[i]` by the build
- * callback an instant before `c.build` runs the wire.
+ * The item a row stands for arrives as its params.
  */
 const ROW = createExoTestMachine(
     (b) => {
@@ -94,8 +98,8 @@ const ROW = createExoTestMachine(
         return { id };
     },
     (P): TExoMachineInitialState<TExoDomNode> =>
-        (c, i) => {
-            c.attr(P.id, BUILDING[i].id);
+        (c, item) => {
+            c.attr(P.id, (item as TItem).id);
         }
 );
 
@@ -115,24 +119,35 @@ const listComponent = (src: TExoTestSource<readonly TItem[]>) => {
         });
         return { rows };
     });
-    const m = createExoMachineBuilder<
-        TExoDomNode,
-        unknown,
-        { rows: TExoChildList; shown: TItem[] }
-    >(schema);
-    m.createInitialState((c) => ({ rows: c.childList(schema.ports.rows), shown: [] }));
-    const showRows = m.transition((c) => {
-        const want = src.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            BUILDING[i] = item;
-            return c.build(ROW, i);
-        });
-    });
-    m.effect((c) => {
-        showRows(c);
-        return src.onChange(() => showRows(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoDomNode, unknown, { rows: TExoChildList; shown: TItem[] }>(
+        schema,
+        { createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] }) }
+    );
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = src.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(ROW, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return src.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 /** A `<section>` with ONE children port, filled by whatever the caller does with it. */
@@ -317,7 +332,7 @@ describe('the composition reaches a schema c.list and c.build look up, not just 
         const src = source<readonly TItem[]>(items(['a', 'b']));
         const INNER = listComponent(src);
         const OUTER = withChildrenPort((c, slot) => {
-            c.list(slot, INNER, 2);
+            c.list(slot, INNER, Array.from({ length: 2 }));
         });
         const parent = host();
 
@@ -369,7 +384,7 @@ describe('the composition reaches a schema c.list and c.build look up, not just 
             (P): TExoMachineInitialState<TExoDomNode> =>
                 (c) => {
                     c.text(P.label, 'made');
-                    c.build(BUILT, 0);
+                    c.build(BUILT);
                 }
         );
         const parent = host();

@@ -1,5 +1,5 @@
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import { createExoMachine } from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenPort,
@@ -32,7 +32,7 @@ export const COUNTER = exoJsx<TCounterPorts>(($) => (
 
 const _declaration: TExoCursorDeclaration<TCounterPorts> = COUNTER;
 const _count: TExoTextPort = COUNTER.ports.count;
-createExoMachineBuilder<TExoDomNode>(COUNTER);
+createExoMachine<TExoDomNode>(COUNTER);
 
 export const _onColon = exoJsx<{ go: TExoEventPort }>(($) => <button on:dblclick={$.go} />);
 

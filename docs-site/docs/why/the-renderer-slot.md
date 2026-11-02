@@ -47,8 +47,8 @@ Read from the four signatures: `packages/dom/src/dom/ExoDomBackend.ts`,
 **Three of the four already agree on more than they used to**, and that belongs
 here before the disagreements are counted. `render` is the same method name on both
 shipped backends, both take the component as one value, and **neither takes an
-instance count**: each mounts ONE instance and hands its initial state `0` as its
-index, because rows that vary are a LIST — a children port filled by `c.list`
+instance count**: each mounts ONE instance and hands its initial state the
+render's own `params`, because rows that vary are a LIST — a children port filled by `c.list`
 or by `reconcileExoOrder` over `c.childList` — rather than a parameter. `@exodra/term` is the one that still
 takes a count, and its own header states why rather than leaving it to be read as
 an oversight: its output is a text SCREEN rather than a document, so there is no

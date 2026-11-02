@@ -36,13 +36,7 @@ class ExoStrBackendBase {
         // `composeExoPlugins` wrote the methods onto `this`; no class declaration can show that.
         const backend = this as unknown as TExoStrApi;
         const schema = exoStrSchemaOf(machine, backend);
-        return renderExoStrInstance(
-            schema,
-            machine as unknown as TExoStrMachine,
-            0,
-            context,
-            params
-        );
+        return renderExoStrInstance(schema, machine as unknown as TExoStrMachine, context, params);
     }
 }
 

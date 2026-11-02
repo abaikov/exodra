@@ -42,7 +42,6 @@ Mounting the whole board, milliseconds per mount, lower is better, from one run
 | **react-compat + compiler** | **0.860** | **1.14× faster** |
 | react-compat + host templates (default) | 1.000 | level (1.02× slower) |
 | React 19 | 0.980 | — |
-| react-compat, templates off | 1.280 | 1.31× slower |
 
 An earlier version of this post put host templates at 1.15× faster than React,
 from `initial-render.compat4` alone; React read 1.140 in that run and 0.98–1.0 in
@@ -80,10 +79,6 @@ within one table is what they are for.
 **On updates, only the order is known.** The update axis carries no null pair, so
 it reports that it cannot say how small a difference it can see. That is why the
 update result above is stated as an order and not as a factor.
-
-**The plain runtime is behind React today.** Without the compiler or host
-templates, every host element is its own machine, and that costs more than React's
-fiber on this board. The two faster paths exist precisely to remove that cost.
 
 ## Why it is faster
 

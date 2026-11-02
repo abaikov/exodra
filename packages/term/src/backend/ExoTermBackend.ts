@@ -53,7 +53,6 @@ class ExoTermBackendBase {
             const child = renderExoTermInstance(
                 schema,
                 component as unknown as TExoTermMachine,
-                i,
                 context,
                 params
             );

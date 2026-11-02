@@ -3,7 +3,7 @@ import {
     EXO_BASE_NODE_VOCABULARY,
     EXO_NO_MANAGED_STATE,
     EXO_NO_STATE,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     composeExoPlugins,
     armExoNode,
@@ -14,6 +14,7 @@ import { withExoComputedMachine } from '../../computed/withExoComputedMachine';
 import type { TExoAttrPort } from '@exodra/core';
 import type { TExoBaseNodeFields } from '@exodra/core';
 import type { TExoComputedMachineNode } from '../../computed/types/TExoComputedMachineNode';
+import type { TExoMachineFieldHandle } from '../../fields/types/TExoMachineFieldHandle';
 import type { TExoEventHandler } from '@exodra/core';
 import type { TExoEventPort } from '@exodra/core';
 import type { TExoSchemaCursor } from '@exodra/core';
@@ -89,10 +90,12 @@ describe('seatExoManagedRows', () => {
 describe('the one door onto managedState', () => {
     it('seats a decorated machine`s rows through it, fresh per instance', () => {
         const schema = createExoSchema(buildCard);
-        const m = withExoComputedMachine(createExoMachineBuilder<TCard>(schema));
-        const marks = m.field((): string[] => []);
-        m.derive(schema.ports.label, [marks], (held) => held.length);
-        const CARD = m.done();
+        let marks!: TExoMachineFieldHandle<TCard, string[]>;
+        const CARD = withExoComputedMachine(createExoMachine<TCard>(schema), (b) => {
+            const held = b.field((): string[] => []);
+            b.derive(schema.ports.label, [held], (rows) => rows.length);
+            marks = held;
+        });
 
         const backend = new ExoCardBackend();
         const first = nodeOf(backend);
@@ -108,11 +111,10 @@ describe('the one door onto managedState', () => {
 
     it('seats a wiring block`s table through it too, and the block assigns nothing itself', () => {
         const seen: string[] = [];
-        // A wiring block is handed its INDEX and nothing else, so the seed a row shows is read by
-        // that index from the array the caller filed it in.
-        const NAMES = ['a', 'b'];
-        const wire = exoWiring<TCard, void>((w, _c, index) => {
-            const name = w.field(NAMES[index]);
+        // A wiring block is handed its PARAMS and nothing else, so the seed a row shows is the
+        // value the caller armed it with.
+        const wire = exoWiring<TCard, void>((w, _c, params) => {
+            const name = w.field(params as string);
             w.fill([name], (enode): void => {
                 seen.push(name.get(enode));
             });
@@ -122,8 +124,8 @@ describe('the one door onto managedState', () => {
         const backend = new ExoCardBackend();
         const first = nodeOf(backend);
         const second = nodeOf(backend);
-        wire(first, 0, undefined);
-        wire(second, 1, undefined);
+        wire(first, 'a');
+        wire(second, 'b');
 
         expect(first.managedState).not.toBe(EXO_NO_MANAGED_STATE);
         expect(first.managedState).not.toBe(second.managedState);

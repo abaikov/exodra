@@ -1,8 +1,9 @@
 # @exodra/computed
 
 The **declarative** half of an Exodra machine. `@exodra/core` gives you
-`createExoMachineBuilder(schema)`, where a handler reads its slot and writes its port
-itself. This decorates that builder so you can instead say what a port **is** —
+`createExoMachine(schema)` and its `withExo*` decorators, where a handler reads its slot and
+writes its port itself. `withExoComputedMachine` is one more decorator over that machine, so you
+can instead say what a port **is** —
 a function of some fields — and let a commit decide what re-runs.
 
 It is a package of its own because of what a page
@@ -32,8 +33,8 @@ anything here names another package, and `core-is-zero-dep` fails it if core
 names this one back.
 
 **Four types come the other way and stay in core.**
-`TExoMachineBuilder`, `TExoMachine` and `TExoMachineWiring` are the
-builder this one extends. `TExoMachineEffect` is the odd one and the reason is
+`TExoMachine`, `TExoMachineNode` and `TExoMachineInitialState` are the
+machine this one decorates. `TExoMachineEffect` is the odd one and the reason is
 worth stating: `kept()` and `restartEffect()` are methods on **every** node,
 merged onto it by `EXO_BASE_NODE_VOCABULARY`, so the types they name belong where
 that implementation is. Import all four from `@exodra/core`.
@@ -42,8 +43,8 @@ that implementation is. Import all four from `@exodra/core`.
 
 | door | where the declarations are made | compiled |
 | --- | --- | --- |
-| `withExoComputedMachine(createExoMachineBuilder(SCHEMA))` | once, at module load, beside the schema | once, at `done()` |
-| `exoWiring((w, c, index) => …)` | inside a **wire**, per instance | once, by the first instance; the program is then shared |
+| `withExoComputedMachine(createExoMachine(SCHEMA), (b) => …)` | once, at module load, inside the callback | once, when the callback returns |
+| `exoWiring((w, c, params) => …)` | inside a **wire**, per instance | once, by the first instance; the program is then shared |
 
 The first is what an application writes. The second exists for a component
 whose derivations are only known per instance — the block is the same vocabulary
@@ -53,14 +54,31 @@ block that never calls `done()` is refused by name rather than rendering empty
 
 ## The vocabulary
 
+Every call is made on `b`, inside the callback handed to
+`withExoComputedMachine(machine, (b) => …)`; whatever the callback returns becomes
+`machine.transitions`. The machine handed in must have no effects yet — the decorator orders
+them itself: the initial fill first, the author's `b.effect`s in declaration order, the wake
+chains last. A wire or handlers can be added before or after with `withExoWire` and
+`withExoHandlers`.
+
+```ts no-check
+const cardMachine = withExoComputedMachine(createExoMachine(cardSchema), (b) => {
+    const title = b.field('');
+    b.derive(CardPorts.heading, [title], (value) => value.toUpperCase());
+    const rename = b.transition((c, next: string) => title.set(c, next));
+    return { rename };
+});
+```
+
 | call | what it declares |
 | --- | --- |
-| `m.field(seed)` | a value the instance holds, given a bit in the pending word |
-| `m.mounted()` | a field the engine sets once the instance is in its document |
-| `m.derive(port, from, by)` | this port **is** `by(...from)`; it runs inside the commit's walk and may not disturb it |
-| `m.fill(from, run)` | run this when any of `from` moves — the instance is handed over, not the values |
-| `m.effectOn(from, start)` | the same wake set, for something with a teardown |
-| `exoTransition(of, apply)` | a function that applies `apply` and then **settles**: one commit, whatever moved |
+| `b.field(seed)` | a value the instance holds, given a bit in the pending word |
+| `b.mounted()` | a field the engine sets once the instance is in its document |
+| `b.derive(port, from, by)` | this port **is** `by(...from)`; it runs inside the commit's walk and may not disturb it |
+| `b.fill(from, run)` | run this when any of `from` moves — the instance is handed over, not the values |
+| `b.effectOn(from, start)` | the same wake set, for something with a teardown |
+| `b.effect(start)` | an effect with no wake set; returns its handle |
+| `b.transition(apply)` | a function that applies `apply` and then **settles**: one commit, whatever moved |
 
 **For a derivation the declared list is both the wake set and the argument
 list. For `fill` and `effectOn` it is the wake set alone** — each is handed the
@@ -97,7 +115,7 @@ bit that already belongs to field 0 — two fields sharing one bit, each waking
 the other's derivations, with no error anywhere. Thirty-one fields is the
 largest set for which every bit is distinct and positive.
 
-A component that needs more state than that is not blocked: `m.keep` in
+A component that needs more state than that is not blocked: `c.state` in
 `@exodra/core` holds any object in a slot, uncapped, and pays no pending word
 because nothing derives from it.
 

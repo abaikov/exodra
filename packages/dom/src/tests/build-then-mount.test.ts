@@ -1,5 +1,13 @@
 // @vitest-environment jsdom
-import { createExoMachineBuilder, createExoSchema, wireExoNode } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+    wireExoNode,
+} from '@exodra/core';
 import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
 import { describe, expect, it } from 'vitest';
@@ -17,22 +25,31 @@ const BADGE_SCHEMA = createExoSchema((b) => {
     return { label };
 });
 const log: string[] = [];
-const mBadge = createExoMachineBuilder<TExoMachineNode, TBadgeParams, { bumps: number }>(
-    BADGE_SCHEMA
+const mBadge = createExoMachine<TExoMachineNode, TBadgeParams, { bumps: number }>(BADGE_SCHEMA, {
+    createInitialState: () => ({ bumps: 0 }),
+});
+const BADGE = composeExoMachine(
+    mBadge,
+    (m) =>
+        withExoTransitions(m, {
+            bump: (c) => {
+                c.state.bumps += 1;
+                c.text(BADGE_SCHEMA.ports.label, 'bumped ' + c.state.bumps);
+            },
+        }),
+    (m) =>
+        withExoWire(m, (c, params) => {
+            c.text(BADGE_SCHEMA.ports.label, params.label);
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect(() => {
+                log.push('start');
+                return () => log.push('stop');
+            });
+        })
 );
-mBadge.createInitialState(() => ({ bumps: 0 }));
-const bump = mBadge.transition((c) => {
-    c.state.bumps += 1;
-    c.text(BADGE_SCHEMA.ports.label, 'bumped ' + c.state.bumps);
-});
-mBadge.wire((c, params) => {
-    c.text(BADGE_SCHEMA.ports.label, params.label);
-});
-mBadge.effect(() => {
-    log.push('start');
-    return () => log.push('stop');
-});
-const BADGE = mBadge.done();
+const { bump } = BADGE.transitions;
 
 const BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 

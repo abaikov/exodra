@@ -5,7 +5,6 @@ import type { TExoMachineNode } from './types/TExoMachineNode';
 export function armExoNode<TWiring extends TExoMachineNode>(
     enode: TWiring,
     machine: TExoMachine<TWiring>,
-    index = 0,
     params?: unknown
 ): void {
     const rerun = EXO_WIRE_RERUN.value;
@@ -17,7 +16,7 @@ export function armExoNode<TWiring extends TExoMachineNode>(
     }
 
     const createInitialState = machine.createInitialState;
-    if (createInitialState !== null) enode.state = createInitialState(enode, index, params);
+    if (createInitialState !== null) enode.state = createInitialState(enode, params);
     const wire = machine.wire;
     if (wire !== undefined && wire !== null) wire.call(machine, enode, params);
 

@@ -30,7 +30,7 @@ type TSetting = {
 
 /** The same, for the wire that builds a LIST of rows rather than filling one. */
 type TListing = {
-    list(port: TExoChildrenPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoChildrenPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 type TRowPorts = ReturnType<typeof buildRow>;
@@ -46,7 +46,7 @@ const rowWith = (make: (ports: TRowPorts) => TExoMachineInitialState<TSetting>) 
  * A BACKEND MOUNTS ONE INSTANCE. It takes no count, and that is on purpose: no library asks an
  * application how many copies of its root to make. What these cases were always really about is
  * SIBLINGS — rows sharing one prototype, one exonode and one schema — and `c.list` is the call
- * that makes those, handing row `i` the number `i` as its index, which is what the wires read.
+ * that makes those, handing row `i` the number `i` as its params, which is what the wires read.
  *
  * The `<ul>` is the element the children port lives on. It is printed identically by both
  * backends, so the byte-parity case still compares like with like.
@@ -62,7 +62,11 @@ const listOf = <TPorts>(row: TExoMachine<TSetting, TPorts>, n: number) => {
         },
         (P): TExoMachineInitialState<TListing> =>
             (c) => {
-                c.list(P.rows, row, n);
+                c.list(
+                    P.rows,
+                    row,
+                    Array.from({ length: n }, (_, i) => i)
+                );
             }
     );
 };

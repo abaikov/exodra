@@ -330,7 +330,14 @@
 // is what the clock refusal asks for by name. Batch 1 is the one to run first. `@exodra/*` resolve
 // to their BUILT dists, so `npm run build:all` at the repository root has to have run or every
 // `exodra` row is last week's code.
-import { createExoMachineBuilder, createExoSchema, type TExoAttrPort } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+    type TExoAttrPort,
+} from '@exodra/core';
 import {
     ExoDomBackend,
     exoDomSchemaOf,
@@ -528,59 +535,66 @@ type TCardState = {
     readonly href: TExoBenchSource<string>;
 };
 
-const m = createExoMachineBuilder<TExoDomNode, unknown, TCardState>(CARD_SCHEMA);
-
-m.createInitialState((): TCardState => {
-    const cls = createExoBenchSource(CLS[0]);
-    const sty = createExoBenchSource(STY[0]);
-    const val = createExoBenchSource(VAL[0]);
-    const box = createExoBenchSource(BOX[0]);
-    const gcls = createExoBenchSource(GCLS[0]);
-    const href = createExoBenchSource(HREF[0]);
-    const chk = createExoBenchSource(CHK[0]);
-    COLLECT_STR.push(cls, sty, val, box, gcls, href);
-    COLLECT_BOOL.push(chk);
-    return { cls, sty, val, chk, box, gcls, href };
+const m = createExoMachine<TExoDomNode, unknown, TCardState>(CARD_SCHEMA, {
+    createInitialState: (): TCardState => {
+        const cls = createExoBenchSource(CLS[0]);
+        const sty = createExoBenchSource(STY[0]);
+        const val = createExoBenchSource(VAL[0]);
+        const box = createExoBenchSource(BOX[0]);
+        const gcls = createExoBenchSource(GCLS[0]);
+        const href = createExoBenchSource(HREF[0]);
+        const chk = createExoBenchSource(CHK[0]);
+        COLLECT_STR.push(cls, sty, val, box, gcls, href);
+        COLLECT_BOOL.push(chk);
+        return { cls, sty, val, chk, box, gcls, href };
+    },
 });
 
-const showCls = m.transition((c) => c.attr(P.cls, c.state.cls.getValue()));
-const showSty = m.transition((c) => c.attr(P.sty, c.state.sty.getValue()));
-const showVal = m.transition((c) => c.attr(P.val, c.state.val.getValue()));
-const showChk = m.transition((c) => c.attr(P.chk, c.state.chk.getValue()));
-const showBox = m.transition((c) => c.attr(P.box, c.state.box.getValue()));
-const showGcls = m.transition((c) => c.attr(P.gcls, c.state.gcls.getValue()));
-const showHref = m.transition((c) => c.attr(P.href, c.state.href.getValue()));
-
-m.effect((c) => {
-    showCls(c);
-    return c.state.cls.onChange(() => showCls(c));
-});
-m.effect((c) => {
-    showSty(c);
-    return c.state.sty.onChange(() => showSty(c));
-});
-m.effect((c) => {
-    showVal(c);
-    return c.state.val.onChange(() => showVal(c));
-});
-m.effect((c) => {
-    showChk(c);
-    return c.state.chk.onChange(() => showChk(c));
-});
-m.effect((c) => {
-    showBox(c);
-    return c.state.box.onChange(() => showBox(c));
-});
-m.effect((c) => {
-    showGcls(c);
-    return c.state.gcls.onChange(() => showGcls(c));
-});
-m.effect((c) => {
-    showHref(c);
-    return c.state.href.onChange(() => showHref(c));
-});
-
-const CARD = m.done();
+const CARD = composeExoMachine(
+    m,
+    (m) =>
+        withExoTransitions(m, {
+            showCls: (c) => c.attr(P.cls, c.state.cls.getValue()),
+            showSty: (c) => c.attr(P.sty, c.state.sty.getValue()),
+            showVal: (c) => c.attr(P.val, c.state.val.getValue()),
+            showChk: (c) => c.attr(P.chk, c.state.chk.getValue()),
+            showBox: (c) => c.attr(P.box, c.state.box.getValue()),
+            showGcls: (c) => c.attr(P.gcls, c.state.gcls.getValue()),
+            showHref: (c) => c.attr(P.href, c.state.href.getValue()),
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showCls(c);
+                return c.state.cls.onChange(() => showCls(c));
+            });
+            effect((c) => {
+                showSty(c);
+                return c.state.sty.onChange(() => showSty(c));
+            });
+            effect((c) => {
+                showVal(c);
+                return c.state.val.onChange(() => showVal(c));
+            });
+            effect((c) => {
+                showChk(c);
+                return c.state.chk.onChange(() => showChk(c));
+            });
+            effect((c) => {
+                showBox(c);
+                return c.state.box.onChange(() => showBox(c));
+            });
+            effect((c) => {
+                showGcls(c);
+                return c.state.gcls.onChange(() => showGcls(c));
+            });
+            effect((c) => {
+                showHref(c);
+                return c.state.href.onChange(() => showHref(c));
+            });
+        })
+);
+const { showCls, showSty, showVal, showChk, showBox, showGcls, showHref } = CARD.transitions;
 
 /**
  * THE TWO BACKENDS THIS AXIS RENDERS THROUGH, BUILT ONCE AT MODULE LOAD.

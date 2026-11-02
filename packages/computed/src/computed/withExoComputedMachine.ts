@@ -1,4 +1,4 @@
-import { EXO_NO_STATE, composeExoPlugins } from '@exodra/core';
+import { EXO_NO_STATE } from '@exodra/core';
 import { seatExoManagedRows } from '../wiring/seatExoManagedRows';
 import { EXO_MOUNTED } from '../lifecycle/constants/EXO_MOUNTED';
 import { exoMachineSettle } from '../transitions/exoMachineSettle';
@@ -7,12 +7,7 @@ import { chainExoMachineWakes } from '../machine/chainExoMachineWakes';
 import { compileExoMachine } from '../machine/compileExoMachine';
 import { exoFieldBit } from '../fields/exoFieldBit';
 import { fillExoMachineDerivations } from '../fields/fillExoMachineDerivations';
-import type {
-    TExoLive,
-    TExoMachineBuilder,
-    TExoMachine,
-    TExoMachineStateHandle,
-} from '@exodra/core';
+import type { TExoLive, TExoMachine, TExoMachineEffect } from '@exodra/core';
 import type { TExoComputedBuilder } from './types/TExoComputedBuilder';
 import type { TExoComputedMachine } from './types/TExoComputedMachine';
 import type { TExoComputedLive } from './types/TExoComputedLive';
@@ -32,17 +27,38 @@ const HERE = 'withExoComputedMachine';
  *
  *  · THE FIRST, registered before the author declares anything, is the INITIAL FILL. Its DISPOSER is
  *    what says `mounted` false — first registered means last disposed.
- *  · THE LAST, registered by `done()`, installs the wake chains. It must not happen while the
+ *  · THE LAST, registered once the declaration returns, installs the wake chains. It must not happen while the
  *    author's effects are establishing, or a `set` fired inside a `start` would re-run derivations
  *    the fill has just run and write them through a path carrying no fill record.
  */
-export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
-    base: TExoMachineBuilder<TWiring>
-): TExoComputedBuilder<TWiring> {
+export function withExoComputedMachine<
+    TWiring extends TExoComputedMachineNode,
+    TPorts,
+    TParams,
+    TState,
+    TTransitions extends object | void
+>(
+    machine: TExoMachine<TWiring, TPorts, TParams, TState>,
+    declare: (b: TExoComputedBuilder<TWiring & { state: TState }>) => TTransitions
+): TExoComputedMachine<TWiring> &
+    TExoMachine<TWiring, TPorts, TParams, TState> & { readonly transitions: TTransitions } {
     type TInstance = TWiring;
     type TWake = TExoMachineWake<TInstance>;
 
-    const addressBase = base.schema.portList.length;
+    const addressBase = machine.declaration.portList.length;
+    const effects: TExoMachineEffect<TInstance>[] = [];
+    const effect = (start: (c: TInstance) => (() => void) | null): TExoMachineEffect<TInstance> => {
+        if (sealed) {
+            refuse(
+                typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
+                    ? 'an effect was declared after the declaration returned'
+                    : ''
+            );
+        }
+        const handle: TExoMachineEffect<TInstance> = { at: effects.length, start };
+        effects.push(handle);
+        return handle;
+    };
 
     const managedSeeds: unknown[] = [];
     const settleCells: TExoComputedSettleCell<TInstance>[] = [];
@@ -51,7 +67,7 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
         if (sealed) {
             refuse(
                 typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-                    ? 'a field was declared after done()'
+                    ? 'a field was declared after the declaration returned'
                     : ''
             );
         }
@@ -59,20 +75,6 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
         managedSeeds.push(seed);
         return row;
     };
-
-    // THE DECORATION TAKES THE ONE DOOR AND HANDS IT BACK: it needs an arm-time hook for its managed
-    // rows, which live in `managedState`, and `state` is the author's. Consuming the door outright
-    // left every decorated component unable to hold unmanaged state at all.
-    let authorCreatesInitialState:
-        | ((enode: TInstance, index: number, params: unknown) => unknown)
-        | null = null;
-
-    base.createInitialState((enode: TInstance, index: number, params: unknown): unknown => {
-        seatExoManagedRows(enode, managedSeeds);
-        return authorCreatesInitialState === null
-            ? EXO_NO_STATE
-            : authorCreatesInitialState(enode, index, params);
-    });
 
     // THE TWO ROWS OF THE SYSTEM ITSELF, taken before any field so every closure below can close over
     // a number rather than reach for one.
@@ -96,7 +98,7 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
         );
     };
 
-    base.effect((c: TInstance): (() => void) | null => {
+    effect((c: TInstance): (() => void) | null => {
         const compiled = program as TExoMachineProgram<TInstance>;
         fillExoMachineDerivations(compiled, c);
         const live = setMounted;
@@ -117,7 +119,7 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
         };
     });
 
-    const declare = <TValue>(seed: unknown): TExoMachineFieldHandle<TWiring, TValue> => {
+    const declareField = <TValue>(seed: unknown): TExoMachineFieldHandle<TWiring, TValue> => {
         const at = marks.length;
         const bit = exoFieldBit(at);
         const row = reserveManagedRow(seed);
@@ -166,47 +168,11 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
             ? EXO_MOUNTED
             : `field ${port.address}`;
 
-    const plugin = {
-        createInitialState:
-            () =>
-            <TValue>(
-                make: (enode: TWiring, index: number, params: unknown) => TValue
-            ): TExoMachineStateHandle<TValue> => {
-                if (sealed) {
-                    refuse(
-                        typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-                            ? 'an initial state was declared after done()'
-                            : ''
-                    );
-                }
-                if (typeof make !== 'function') {
-                    refuse(
-                        typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-                            ? 'createInitialState() was handed a value, not a function'
-                            : ''
-                    );
-                }
-                if (authorCreatesInitialState !== null) {
-                    refuse(
-                        typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-                            ? 'createInitialState() was called twice; unmanaged state is ONE value'
-                            : ''
-                    );
-                }
-                authorCreatesInitialState = make as (
-                    enode: TInstance,
-                    index: number,
-                    params: unknown
-                ) => unknown;
-                return {};
-            },
+    const builder = {
+        field: <TValue>(seed: unknown): TExoMachineFieldHandle<TWiring, TValue> =>
+            declareField<TValue>(seed),
 
-        field:
-            () =>
-            <TValue>(seed: unknown): TExoMachineFieldHandle<TWiring, TValue> =>
-                declare<TValue>(seed),
-
-        mounted: () => (): TExoMachineFieldHandle<TWiring, boolean> => {
+        mounted: (): TExoMachineFieldHandle<TWiring, boolean> => {
             if (mountedField !== null) {
                 refuse(
                     typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
@@ -214,145 +180,165 @@ export function withExoComputedMachine<TWiring extends TExoComputedMachineNode>(
                         : ''
                 );
             }
-            const handle = declare<boolean>(false);
+            const handle = declareField<boolean>(false);
             mountedField = handle;
             return handle;
         },
 
-        derive:
-            () =>
-            (
-                port: TExoMachineTarget<TInstance>,
-                from: readonly TExoMachineFieldHandle<TWiring, unknown>[],
-                by: (...values: never[]) => unknown
-            ): void => {
-                derivations.push({
-                    label: labelOf(port),
-                    reads: from,
-                    into: port,
-                    compute: by,
-                });
-            },
+        derive: (
+            port: TExoMachineTarget<TInstance>,
+            from: readonly TExoMachineFieldHandle<TWiring, unknown>[],
+            by: (...values: never[]) => unknown
+        ): void => {
+            derivations.push({
+                label: labelOf(port),
+                reads: from,
+                into: port,
+                compute: by,
+            });
+        },
 
-        fill:
-            () =>
-            (
-                from: readonly TExoMachineFieldHandle<TWiring, unknown>[],
-                run: (enode: TInstance) => void
-            ): void => {
-                base.effect((enode: TInstance): null => {
-                    run(enode);
-                    return null;
-                });
-                bodies.push({
-                    label: `fill ${bodies.length}`,
-                    reads: from,
-                    start: run as unknown as (instance: never) => void,
-                });
-            },
+        fill: (
+            from: readonly TExoMachineFieldHandle<TWiring, unknown>[],
+            run: (enode: TInstance) => void
+        ): void => {
+            effect((enode: TInstance): null => {
+                run(enode);
+                return null;
+            });
+            bodies.push({
+                label: `fill ${bodies.length}`,
+                reads: from,
+                start: run as unknown as (instance: never) => void,
+            });
+        },
 
         /**
          * A MANAGED FIELD MUST RECOMPUTE, so a transition over one is its body PLUS the settle —
-         * which does not exist until `done()` has compiled the program, hence the cell.
+         * which does not exist until the declaration returns and the program is compiled, hence the cell.
          */
-        transition:
-            () =>
-            <TFirst, TSecond>(
-                apply: (enode: TInstance, first: TFirst, second: TSecond) => void
-            ): ((enode: TInstance, first: TFirst, second: TSecond) => void) => {
-                if (sealed) {
-                    refuse(
-                        typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-                            ? 'a transition was declared after done()'
-                            : ''
-                    );
-                }
-                const cell: TExoComputedSettleCell<TInstance> = { settle: null };
-                settleCells.push(cell);
-                return (enode, first, second): void => {
-                    apply(enode, first, second);
-                    const settle = cell.settle;
-                    if (settle !== null) settle(enode);
-                };
-            },
-
-        effectOn:
-            () =>
-            (
-                from: readonly TExoMachineFieldHandle<TWiring, unknown>[],
-                start: (c: TInstance) => (() => void) | null
-            ): void => {
-                const handle = base.effect(start);
-                bodies.push({
-                    label: `effect ${bodies.length}`,
-                    reads: from,
-                    start: ((c: TInstance): void => {
-                        c.restartEffect(handle);
-                    }) as unknown as (instance: never) => void,
-                });
-            },
-
-        done: (next: () => TExoMachine<TWiring>) => (): TExoComputedMachine<TWiring> => {
-            if (program !== null) return next() as TExoComputedMachine<TWiring>;
-            const fields = marks.length;
-            const compiled = compileExoMachine<TInstance>({
-                fields: fields,
-                pendingRow: pendingRow,
-                wakesRow: wakesRow,
-                derivations: derivations,
-                bodies: bodies,
-            });
-            program = compiled;
-
-            /**
-             * A FIELD WHOSE MARK IS ZERO IS READ BY NOTHING THIS COMPONENT DOES, so every scrap
-             * of machinery it carries can never be used — `keep` is where such a value lives.
-             * THIS IS THE MOMENT AND THERE IS NO OTHER: a mark is complete only once every
-             * declaration has been made, and none may follow `done()`.
-             */
-            const declares = derivations.length !== 0 || bodies.length !== 0;
-            for (let at = 0; at < fields; at++) {
-                const mark = compiled.fieldMarks[at];
-                if (declares && mark === 0) {
-                    const name =
-                        mountedField !== null && mountedField.row === rows[at]
-                            ? `${EXO_MOUNTED}()`
-                            : `field ${addressBase + at}`;
-                    refuse(
-                        typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-                            ? `${name} is read by none of this component's ${derivations.length} ` +
-                                  `derivation(s) and ${bodies.length} fill(s)/effect(s)`
-                            : ''
-                    );
-                }
-                marks[at] = mark;
+        transition: <TFirst, TSecond>(
+            apply: (enode: TInstance, first: TFirst, second: TSecond) => void
+        ): ((enode: TInstance, first: TFirst, second: TSecond) => void) => {
+            if (sealed) {
+                refuse(
+                    typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
+                        ? 'a transition was declared after the declaration returned'
+                        : ''
+                );
             }
-
-            const settle =
-                compiled.computes.length === 0 && compiled.bodyMask === 0
-                    ? null
-                    : exoMachineSettle<TInstance>(compiled);
-            for (let at = 0; at < settleCells.length; at++) settleCells[at].settle = settle;
-
-            if (mountedField !== null) {
-                const live = mountedField;
-                setMounted = exoTransition<TInstance, boolean>(compiled, (enode, on): void => {
-                    live.set(enode, on);
-                });
-            }
-
-            if (declares) {
-                wakes = chainExoMachineWakes<TInstance>(compiled);
-                base.effect((c: TInstance): null => {
-                    c.managedState[wakesRow] = wakes;
-                    return null;
-                });
-            }
-
-            sealed = true;
-            return { ...next(), program: compiled };
+            const cell: TExoComputedSettleCell<TInstance> = { settle: null };
+            settleCells.push(cell);
+            return (enode, first, second): void => {
+                apply(enode, first, second);
+                const settle = cell.settle;
+                if (settle !== null) settle(enode);
+            };
         },
+
+        effectOn: (
+            from: readonly TExoMachineFieldHandle<TWiring, unknown>[],
+            start: (c: TInstance) => (() => void) | null
+        ): void => {
+            const handle = effect(start);
+            bodies.push({
+                label: `effect ${bodies.length}`,
+                reads: from,
+                start: ((c: TInstance): void => {
+                    c.restartEffect(handle);
+                }) as unknown as (instance: never) => void,
+            });
+        },
+
+        effect,
     };
 
-    return composeExoPlugins(base, plugin) as unknown as TExoComputedBuilder<TWiring>;
+    if (machine.effects.length !== 0) {
+        refuse(
+            typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
+                ? 'this machine already has effects; declare them with b.effect inside the ' +
+                      'computed declaration, so the initial fill runs before them and the wake ' +
+                      'chains are installed after them'
+                : ''
+        );
+    }
+    const transitions = declare(
+        builder as unknown as TExoComputedBuilder<TWiring & { state: TState }>
+    );
+    const declaredMounted = mountedField as TExoMachineFieldHandle<TWiring, boolean> | null;
+    {
+        const fields = marks.length;
+        const compiled = compileExoMachine<TInstance>({
+            fields: fields,
+            pendingRow: pendingRow,
+            wakesRow: wakesRow,
+            derivations: derivations,
+            bodies: bodies,
+        });
+        program = compiled;
+
+        /**
+         * A FIELD WHOSE MARK IS ZERO IS READ BY NOTHING THIS COMPONENT DOES, so every scrap
+         * of machinery it carries can never be used — `keep` is where such a value lives.
+         * THIS IS THE MOMENT AND THERE IS NO OTHER: a mark is complete only once every
+         * declaration has been made, and none may follow the declaration's return.
+         */
+        const declares = derivations.length !== 0 || bodies.length !== 0;
+        for (let at = 0; at < fields; at++) {
+            const mark = compiled.fieldMarks[at];
+            if (declares && mark === 0) {
+                const name =
+                    declaredMounted !== null && declaredMounted.row === rows[at]
+                        ? `${EXO_MOUNTED}()`
+                        : `field ${addressBase + at}`;
+                refuse(
+                    typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
+                        ? `${name} is read by none of this component's ${derivations.length} ` +
+                              `derivation(s) and ${bodies.length} fill(s)/effect(s)`
+                        : ''
+                );
+            }
+            marks[at] = mark;
+        }
+
+        const settle =
+            compiled.computes.length === 0 && compiled.bodyMask === 0
+                ? null
+                : exoMachineSettle<TInstance>(compiled);
+        for (let at = 0; at < settleCells.length; at++) settleCells[at].settle = settle;
+
+        if (declaredMounted !== null) {
+            const live = declaredMounted;
+            setMounted = exoTransition<TInstance, boolean>(compiled, (enode, on): void => {
+                live.set(enode, on);
+            });
+        }
+
+        if (declares) {
+            wakes = chainExoMachineWakes<TInstance>(compiled);
+            effect((c: TInstance): null => {
+                c.managedState[wakesRow] = wakes;
+                return null;
+            });
+        }
+
+        sealed = true;
+        const authorCreatesInitialState = machine.createInitialState as
+            | ((enode: TInstance, params: unknown) => unknown)
+            | null;
+        return {
+            ...machine,
+            forms: [],
+            effects,
+            createInitialState: (enode: TInstance, params: unknown): unknown => {
+                seatExoManagedRows(enode, managedSeeds);
+                return authorCreatesInitialState === null
+                    ? EXO_NO_STATE
+                    : authorCreatesInitialState(enode, params);
+            },
+            program: compiled,
+            transitions,
+        } as unknown as TExoComputedMachine<TWiring> &
+            TExoMachine<TWiring, TPorts, TParams, TState> & { readonly transitions: TTransitions };
+    }
 }

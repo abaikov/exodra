@@ -12,7 +12,6 @@ export function createExoMachineNode<TWiring extends TExoMachineNode>(
     schema: TExoDomSchema,
     root: Element,
     machine: TExoMachine<TWiring>,
-    index: number,
     ownerChild: TExoDomChild | null,
     holder: TExoDomInstanceRecord,
     context: TExoContextFrame | null = null,
@@ -34,7 +33,7 @@ export function createExoMachineNode<TWiring extends TExoMachineNode>(
     holder.childLists = schema.hasAdjacentChildLists ? [] : null;
     holder.child = ownerChild;
     holder.context = context;
-    armExoNode(holder as unknown as TWiring, machine, index, params);
+    armExoNode(holder as unknown as TWiring, machine, params);
     // THE INSTANCE ITSELF, where a wire publishes what it returned: a machine has no return value,
     // and handing back the exonode is what lets the caller fire transitions at the thing it built.
     EXO_ARMED_INSTANCE.value = holder;

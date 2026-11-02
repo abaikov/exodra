@@ -110,7 +110,7 @@
 // THE TWO DIAGNOSTIC ROWS, which are NOT competing with anybody.
 //
 // `exodraKept` — the schema core with its panels KEPT ALIVE across the hide. A list being a
-// COMPOSITION exposes the pieces separately: `c.build(component, index)` returns
+// COMPOSITION exposes the pieces separately: `c.build(component, params)` returns
 // a built, wired, DETACHED child as a VALUE, `reconcileExoOrder` over a source of THOSE
 // CHILDREN keeps the region equal to the array,
 // and a child states its own policy by replacing its `unmount` — the documented extension
@@ -233,7 +233,7 @@
 // layers the APPLICATION asks for, and every row is expressible by a user through the public API:
 //
 //   exodra          an effect calling `reconcileExoOrder(c.childList(port), shown, rows, rows,
-//                   (row, i) => c.build(PANEL, i))` — the children reconciler and the build layer.
+//                   (row) => c.build(PANEL, row))` — the children reconciler and the build layer.
 //   exodraPlaced    `c.build(...)` + the application's own `appendChild` and `textContent = ''`.
 //                   THE CHILDREN RECONCILER IS NOT USED, nor the children port: the wire
 //                   fills nothing and the holder places the children it built.
@@ -273,7 +273,7 @@
 // FINDING, and it belongs here rather than being faked with a stand-in:
 //
 //   * THE REACTIVE DISPATCH PER PORT IS ALREADY ABSENT. `PANEL`'s wire is
-//     `c.text(P.text, BUILDING_ROWS[i].text)`
+//     `c.text(P.text, row.text)`
 //     and `c.on(P.close, noop)` — no binding anywhere, so no cell and no subscription per panel.
 //     This scenario's data never changes after a panel is built (a panel is thrown away, never
 //     updated), so there is nothing for a write-versus-binding row to remove: the renderer is
@@ -544,12 +544,17 @@ import { gateMarkup, markupOf } from '../../gates/markup-gate';
 // `TExoFillDoors` is the KEEP LADDER's bottom rung and nothing else: `exodraDirectKept` fills its
 // panels' text through the handle `c.fillDoors()` hands a wire, which is how an application drives a
 // port with no cell and no subscription behind it. See the keep-ladder section in the header.
-// `createExoMachineBuilder` and `createExoSchema` are the two rows added beside `exodraDirectKept`: the SAME kept block
+// `createExoMachine` and `createExoSchema` are the two rows added beside `exodraDirectKept`: the SAME kept block
 // with the panel's text written by a MODULE-LEVEL transition that takes the instance, instead of
 // through a kept port table, and its null. See their section below.
 import {
-    createExoMachineBuilder,
-    createExoSchema, // WHAT COMPOSES AN AD-HOC PACK ONTO A BACKEND. `withExoCompiler(new ExoDomBackend(...))` no longer takes packs —
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoHandlers,
+    withExoEffects,
+    createExoSchema,
+    // WHAT COMPOSES AN AD-HOC PACK ONTO A BACKEND. `withExoCompiler(new ExoDomBackend(...))` no longer takes packs —
     // every shipped one is a `with*` decorator — and the delegated-events row's pack is written
     // here rather than shipped, so it is merged by hand. `composeExoPlugins` MUTATES and returns the
     // object it is handed, so `DELEGATED_BACKEND` is one identity and the schema cache keys on it.
@@ -609,25 +614,6 @@ const noop = (): void => {};
 
 /** One panel's data. Structurally the row every participant file declares for itself. */
 type TToggleRow = { id: number; text: string };
-
-/**
- * WHAT A PANEL'S WIRE READS, BY INDEX — THERE ARE NO PROPS ANYWHERE IN THIS LIBRARY.
- *
- * A wire is `(enode, index) => TOut`: the second parameter is the POSITION and nothing else, so the
- * item a panel stands for is written into one of these arrays an instant before `c.build` runs the
- * wire. THREE arrays, because the panels below want three different things of their holder — a
- * row's text, a cell to subscribe to, a slot to hand a port table back through — and one array per
- * kind keeps the store a plain indexed write with no tag to test. The third (`BUILDING_SLOTS`)
- * stands with the type it holds.
- *
- * Module level and never re-allocated: a holder overwrites the slots it is about to build into, so
- * nothing here allocates inside a measured region. ONE indexed store per panel is what the absence
- * of props costs this axis, and it is paid by every exodra row here equally.
- * `packages/dom/src/dom/tests/reconcile-exo-children.test.ts` writes the idiom out with its
- * reasoning.
- */
-const BUILDING_ROWS: TToggleRow[] = [];
-const BUILDING_CELLS: TExoBenchSource<string>[] = [];
 
 /**
  * TWO GENERATIONS OF ROWS, allocated once for the life of the process and alternated, so that
@@ -1279,8 +1265,8 @@ function reportLayers(rows: readonly AbRow[], quantum: number, batch: number): v
                 'THE CHILDREN RECONCILER against HAND PLACEMENT — the notification, the shown ' +
                 'mirror and the Map it diffs against, the order splices, index and the clear ' +
                 'branch, against the holder appending what it built. Both pay one exoNodeDom() ' +
-                'per panel (insert() makes the same call) and both pay the staging store that ' +
-                'stands in for the props this library does not have, so neither is in it',
+                'per panel (insert() makes the same call) and both hand each panel its row as ' +
+                'c.build params, so neither is in it',
         },
         {
             more: 'exodraPlaced',
@@ -1759,7 +1745,7 @@ function gateMikadoMarkup(
 
 // --- the schema core's PANEL: module scope, built once for the life of the process -------------
 // This is the declaration a show clones, so it is the one that must not be rebuilt per scenario:
-// `createExoMachineBuilder` numbers its ports at module load and the DOM backend compiles its schema on the
+// `createExoSchema` numbers its ports at module load and the DOM backend compiles its schema on the
 // first render and never again. The button's handler is an EVENT PORT — it emits no markup and
 // still costs a slot, so the panel really does carry the listener the others attach. The text is
 // `set`, not `bind`: a panel built for one show never changes its text, it is thrown away, and a
@@ -1779,12 +1765,13 @@ const PANEL_SCHEMA = createExoSchema((b) => {
     });
     return { close, text };
 });
-const mPANEL = createExoMachineBuilder<TExoDomNode>(PANEL_SCHEMA);
-mPANEL.createInitialState((c, i) => {
-    c.text(PANEL_SCHEMA.ports.text, BUILDING_ROWS[i].text);
-    c.on(PANEL_SCHEMA.ports.close, noop);
+const mPANEL = createExoMachine(PANEL_SCHEMA, {
+    createInitialState: (c: TExoDomNode, row: TToggleRow) => {
+        c.text(PANEL_SCHEMA.ports.text, row.text);
+        c.on(PANEL_SCHEMA.ports.close, noop);
+    },
 });
-const PANEL = mPANEL.done();
+const PANEL = mPANEL;
 
 /**
  * THE SAME PANEL WITH ITS TEXT BOUND — the panel `exodraKept` builds once and keeps.
@@ -1810,19 +1797,29 @@ const PANEL_BOUND_SCHEMA = createExoSchema((b) => {
     });
     return { close, text };
 });
-const mPANEL_BOUND = createExoMachineBuilder<TExoDomNode>(PANEL_BOUND_SCHEMA);
-const K_PANEL_BOUND = mPANEL_BOUND.createInitialState((c, i) => {
-    c.on(PANEL_BOUND_SCHEMA.ports.close, noop);
-    return BUILDING_CELLS[i];
+const mPANEL_BOUND = createExoMachine(PANEL_BOUND_SCHEMA, {
+    createInitialState: (c: TExoDomNode, cell: TExoBenchSource<string>) => {
+        c.on(PANEL_BOUND_SCHEMA.ports.close, noop);
+        return cell;
+    },
 });
-const showBoundText = mPANEL_BOUND.transition((c: TExoDomNode) => {
-    c.text(PANEL_BOUND_SCHEMA.ports.text, c.readState(K_PANEL_BOUND).getValue());
-});
-mPANEL_BOUND.effect((c) => {
-    showBoundText(c);
-    return c.readState(K_PANEL_BOUND).onChange(() => showBoundText(c));
-});
-const PANEL_BOUND = mPANEL_BOUND.done();
+const PANEL_BOUND = composeExoMachine(
+    mPANEL_BOUND,
+    (m) =>
+        withExoTransitions(m, {
+            showBoundText: (c) => {
+                c.text(PANEL_BOUND_SCHEMA.ports.text, c.state.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showBoundText(c);
+                return c.state.onChange(() => showBoundText(c));
+            });
+        })
+);
+const { showBoundText } = PANEL_BOUND.transitions;
 
 /**
  * WHERE ONE DIRECT PANEL PUTS ITS PORT HANDLE — one object per panel, allocated in `prep`.
@@ -1832,9 +1829,6 @@ const PANEL_BOUND = mPANEL_BOUND.done();
  * WHAT they hold per panel and not in HOW MANY objects they hold.
  */
 type TToggleSlot = { ports: TExoFillDoors | null };
-
-/** The third staging array — see `BUILDING_ROWS`. Its slots are what `PANEL_DIRECT` writes into. */
-const BUILDING_SLOTS: TToggleSlot[] = [];
 
 /**
  * THE SAME PANEL AGAIN, WRITTEN BY HAND — the panel `exodraDirectKept` builds once, keeps, and
@@ -1871,16 +1865,17 @@ const PANEL_DIRECT_SCHEMA = createExoSchema((b) => {
     });
     return { close, text };
 });
-const mPANEL_DIRECT = createExoMachineBuilder<TExoDomNode>(PANEL_DIRECT_SCHEMA);
-mPANEL_DIRECT.createInitialState((c, i) => {
-    c.text(PANEL_DIRECT_SCHEMA.ports.text, '');
-    c.on(PANEL_DIRECT_SCHEMA.ports.close, noop);
-    // THE ONE LINE THIS COMPONENT EXISTS FOR. Called while the connector is standing on this
-    // instance, which is the only moment it may be called; what it hands back outlives the
-    // call, which is the only reason this row can exist.
-    BUILDING_SLOTS[i].ports = c.fillDoors();
+const mPANEL_DIRECT = createExoMachine(PANEL_DIRECT_SCHEMA, {
+    createInitialState: (c: TExoDomNode, slot: TToggleSlot) => {
+        c.text(PANEL_DIRECT_SCHEMA.ports.text, '');
+        c.on(PANEL_DIRECT_SCHEMA.ports.close, noop);
+        // THE ONE LINE THIS COMPONENT EXISTS FOR. Called while the connector is standing on this
+        // instance, which is the only moment it may be called; what it hands back outlives the
+        // call, which is the only reason this row can exist.
+        slot.ports = c.fillDoors();
+    },
 });
-const PANEL_DIRECT = mPANEL_DIRECT.done();
+const PANEL_DIRECT = mPANEL_DIRECT;
 
 // --- the schema core's PANEL AS A MACHINE, IMPERATIVELY SPELLED -------------------------------
 //
@@ -1909,7 +1904,7 @@ const PANEL_DIRECT = mPANEL_DIRECT.done();
 //
 // AND THERE IS NO `m.field` IN IT BECAUSE THERE COULD NOT BE. A field earns its address and its bit
 // by being READ by an `m.derive`, an `m.fill` or an `m.effect`, and this component declares none of
-// the three; `done()` refuses a field whose mark word is zero and names the cache as what it should
+// the three; `withExoComputedMachine` refuses a field whose mark word is zero and names the cache as what it should
 // have been. The shape is the library's, not a preference.
 //
 // IT IS NOT A RUNG OF THE KEEP LADDER and must not be inserted into `reportKeptLayers`'s CHAIN. Every
@@ -1924,8 +1919,7 @@ type TMachinePanelMemory = { text: string };
  * THE PANEL'S SCHEMA — the same four elements in the same order as `PANEL`, `PANEL_BOUND` and
  * `PANEL_DIRECT`, character for character, so the markup gate is comparing wirings and not markup.
  *
- * `createExoSchema` and not `createExoMachineBuilder`, because a machine IS the wire: there is no wire factory to hand
- * ports to, and the ports are numbered when this call returns, which is what `m.done()` requires.
+ * The ports are numbered when this call returns, before `createExoMachine` is handed the schema.
  */
 const MACHINE_PANEL_SCHEMA = createExoSchema((b) => {
     let close!: TExoEventPort;
@@ -1948,7 +1942,12 @@ const MPP = MACHINE_PANEL_SCHEMA.ports;
  *  wrapper: the object a wire and a declaration receive IS the instance. */
 type TMachinePanel = TExoDomNode;
 
-const mPanel = createExoMachineBuilder<TExoDomNode>(MACHINE_PANEL_SCHEMA);
+const mPanel = createExoMachine<TExoDomNode>(MACHINE_PANEL_SCHEMA, {
+    createInitialState: (c): TMachinePanelMemory => {
+        c.text(MPP.text, '');
+        return { text: '' };
+    },
+});
 
 /**
  * THE CACHE, AND THE PANEL'S INITIAL FILL, IN ONE DECLARATION — a machine takes no props, so the
@@ -1961,49 +1960,53 @@ const mPanel = createExoMachineBuilder<TExoDomNode>(MACHINE_PANEL_SCHEMA);
  * states: `setExoText` on the parsed-empty placeholder is a `.data` store that LEAVES the Text node
  * standing.
  */
-const K_PANEL = mPanel.createInitialState((c): TMachinePanelMemory => {
-    c.text(MPP.text, '');
-    return { text: '' };
-});
 
 /** The close handler, DECLARED ONCE for the component where `PANEL_DIRECT`'s wire calls `c.on` once
  *  per instance. `armExoNode` makes that same one call per instance off this declaration. */
-mPanel.on(MPP.close, noop);
 
-/**
- * THE OUT INTERFACE — one DECLARED TRANSITION, and it is everything the world may do to a panel.
- *
- * `m.transition` IS THE MACHINE'S DOOR AND COSTS THE ROW NOTHING TO GO THROUGH. The builder checks
- * that the declaration stands in front of `done()` and hands the author's own function straight back
- * (`createExoMachineBuilder.ts:76-81`), so what the holder calls per show is the arrow written here and no wrapper
- * round it. The declaration is what makes it a door rather than a loose function over an exonode.
- *
- * NO `exoTransition` WRAPS IT EITHER, AND THE REASON IS CHECKABLE RATHER THAN STYLISTIC.
- * `exoTransition` takes a compiled PROGRAM; `createExoMachineBuilder` alone compiles none, and only
- * `withExoComputedMachine` does — which would put one engine effect and one `effectStops` array on
- * every panel in order to obtain a wrapper that `exoTransition.ts:22-25` then declines to build,
- * because this component declares no field, no derivation, no fill and no effect and
- * `computes.length === 0 && bodyMask === 0` returns the author's own function unchanged.
- * `handler-count.ts` states the same case.
- *
- * THE WRITE GOES THROUGH `c.set` BECAUSE NO SECOND WRITE DOOR IS LEFT: `TExoWiring`'s own note
- * says "THERE IS NO THIRD WRITE DOOR", and the remaining pair (`portTable()` + `portNodeWriter()`)
- * costs two calls per write against `set`'s one. The property store beside it is the term in
- * `exodraMachineKept − exodraDirectKept`.
- */
-const setPanelText = mPanel.transition<string>((c, value) => {
-    c.readState(K_PANEL).text = value;
-    c.text(MPP.text, value);
-});
-
-const MACHINE_PANEL = mPanel.done();
+const MACHINE_PANEL = composeExoMachine(
+    mPanel,
+    (m) =>
+        withExoTransitions(m, {
+            /**
+             * THE OUT INTERFACE — one DECLARED TRANSITION, and it is everything the world may do to a panel.
+             *
+             * `withExoTransitions` IS THE MACHINE'S DOOR AND COSTS THE ROW ONE NULL TEST TO GO THROUGH. It wraps
+             * the author's own function in one `transitionOverrides === null` test, and no panel here is built
+             * with overrides, so what the holder calls per show is that test and the arrow written here. The
+             * declaration is what makes it a door rather than a loose function over an exonode.
+             *
+             * NO `exoTransition` WRAPS IT EITHER, AND THE REASON IS CHECKABLE RATHER THAN STYLISTIC.
+             * `exoTransition` takes a compiled PROGRAM; `createExoMachine` alone compiles none, and only
+             * `withExoComputedMachine` does — which would put one engine effect and one `effectStops` array on
+             * every panel in order to obtain a wrapper that `exoTransition.ts:22-25` then declines to build,
+             * because this component declares no field, no derivation, no fill and no effect and
+             * `computes.length === 0 && bodyMask === 0` returns the author's own function unchanged.
+             * `handler-count.ts` states the same case.
+             *
+             * THE WRITE GOES THROUGH `c.set` BECAUSE NO SECOND WRITE DOOR IS LEFT: `TExoWiring`'s own note
+             * says "THERE IS NO THIRD WRITE DOOR", and the remaining pair (`portTable()` + `portNodeWriter()`)
+             * costs two calls per write against `set`'s one. The property store beside it is the term in
+             * `exodraMachineKept − exodraDirectKept`.
+             */
+            setPanelText: (c, value: string) => {
+                c.readState<TMachinePanelMemory>().text = value;
+                c.text(MPP.text, value);
+            },
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(MPP.close, noop);
+        })
+);
+const { setPanelText } = MACHINE_PANEL.transitions;
 
 // --- THE NULL'S PANEL: the same machine, declared a SECOND time --------------------------------
 /**
  * THE OTHER HALF OF THIS AXIS'S FIRST KEEP-CONTRACT NULL, and it is written out again rather than
  * aliased or produced by a factory for the reason `list-reconcile.tsx`'s `LI_TWIN` gives: what has to
  * be duplicated is the DECLARATION — a second trip through `createExoSchema`, a second port numbering, a
- * second `createExoMachineBuilder`, a second compiled program and a second schema on a second backend. An alias
+ * second `createExoMachine`, a second compiled program and a second schema on a second backend. An alias
  * would give a difference of zero by SHARING rather than by construction.
  *
  * WHY THIS AXIS WANTED ONE. `reportKeptLayers` says it in its own words: "there is no twin on the
@@ -2029,21 +2032,28 @@ const MACHINE_PANEL_TWIN_SCHEMA = createExoSchema((b) => {
 });
 const MPP_TWIN = MACHINE_PANEL_TWIN_SCHEMA.ports;
 
-const mPanelTwin = createExoMachineBuilder<TExoDomNode>(MACHINE_PANEL_TWIN_SCHEMA);
-
-const K_PANEL_TWIN = mPanelTwin.createInitialState((c): TMachinePanelMemory => {
-    c.text(MPP_TWIN.text, '');
-    return { text: '' };
+const mPanelTwin = createExoMachine<TExoDomNode>(MACHINE_PANEL_TWIN_SCHEMA, {
+    createInitialState: (c): TMachinePanelMemory => {
+        c.text(MPP_TWIN.text, '');
+        return { text: '' };
+    },
 });
 
-mPanelTwin.on(MPP_TWIN.close, noop);
-
-const setPanelTwinText = mPanelTwin.transition<string>((c, value) => {
-    c.readState(K_PANEL_TWIN).text = value;
-    c.text(MPP_TWIN.text, value);
-});
-
-const MACHINE_PANEL_TWIN = mPanelTwin.done();
+const MACHINE_PANEL_TWIN = composeExoMachine(
+    mPanelTwin,
+    (m) =>
+        withExoTransitions(m, {
+            setPanelTwinText: (c, value: string) => {
+                c.readState<TMachinePanelMemory>().text = value;
+                c.text(MPP_TWIN.text, value);
+            },
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(MPP_TWIN.close, noop);
+        })
+);
+const { setPanelTwinText } = MACHINE_PANEL_TWIN.transitions;
 
 /** The machine row's own schema cache, for the reason `DELEGATED_BACKEND` has one: a backend is the
  *  schema cache key, so sharing `EXO_BACKEND` would change a neighbouring row's cache merely
@@ -2140,12 +2150,13 @@ const PANEL_DELEGATED_SCHEMA = createExoSchema((b) => {
     });
     return { close, text };
 });
-const mPANEL_DELEGATED = createExoMachineBuilder<TExoDomNode>(PANEL_DELEGATED_SCHEMA);
-mPANEL_DELEGATED.createInitialState((c, i) => {
-    c.text(PANEL_DELEGATED_SCHEMA.ports.text, BUILDING_ROWS[i].text);
-    c.on(PANEL_DELEGATED_SCHEMA.ports.close, CLOSE, CLOSE_SUBJECT);
+const mPANEL_DELEGATED = createExoMachine(PANEL_DELEGATED_SCHEMA, {
+    createInitialState: (c: TExoDomNode, row: TToggleRow) => {
+        c.text(PANEL_DELEGATED_SCHEMA.ports.text, row.text);
+        c.on(PANEL_DELEGATED_SCHEMA.ports.close, CLOSE, CLOSE_SUBJECT);
+    },
 });
-const PANEL_DELEGATED = mPANEL_DELEGATED.done();
+const PANEL_DELEGATED = mPANEL_DELEGATED;
 
 /** What the host needs of a source: an array of rows it can read and be told about. */
 type TToggleSource = TExoBenchSource<readonly TToggleRow[]>;
@@ -2153,12 +2164,12 @@ type TToggleSource = TExoBenchSource<readonly TToggleRow[]>;
 type TToggleHostState<TItem> = {
     readonly kids: TExoChildList;
     shown: TItem[];
-    readonly build: (item: TItem, index: number) => TExoNode<TExoDomMark>;
+    readonly build: (item: TItem) => TExoNode<TExoDomMark>;
 };
 
 function createExoToggleHost<TItem>(
     source: TExoBenchSource<readonly TItem[]>,
-    build: (cc: TExoDomNode, item: TItem, index: number) => TExoNode<TExoDomMark>,
+    build: (cc: TExoDomNode, item: TItem) => TExoNode<TExoDomMark>,
     prepare: (cc: TExoDomNode) => void = noop
 ) {
     const schema = createExoSchema((b) => {
@@ -2168,25 +2179,41 @@ function createExoToggleHost<TItem>(
         });
         return { panels };
     });
-    const m = createExoMachineBuilder<TExoDomNode>(schema);
-    const K = m.createInitialState((cc): TToggleHostState<TItem> => {
-        prepare(cc);
-        return {
-            kids: cc.childList(schema.ports.panels),
-            shown: [],
-            build: (item, index) => build(cc, item, index),
-        };
-    });
-    const showRows = m.transition((cc: TExoDomNode) => {
-        const state = cc.readState(K);
-        const want = source.getValue();
-        state.shown = reconcileExoOrder(state.kids, state.shown, want, want, state.build);
-    });
-    m.effect((cc) => {
-        showRows(cc);
-        return source.onChange(() => showRows(cc));
-    });
-    return { schema, host: m.done() };
+    const host = composeExoMachine(
+        createExoMachine<TExoDomNode>(schema, {
+            createInitialState: (cc: TExoDomNode): TToggleHostState<TItem> => {
+                prepare(cc);
+                return {
+                    kids: cc.childList(schema.ports.panels),
+                    shown: [],
+                    build: (item) => build(cc, item),
+                };
+            },
+        }),
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (cc: TExoDomNode) => {
+                    const state = cc.readState<TToggleHostState<TItem>>();
+                    const want = source.getValue();
+                    state.shown = reconcileExoOrder(
+                        state.kids,
+                        state.shown,
+                        want,
+                        want,
+                        state.build
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((cc) => {
+                    showRows(cc);
+                    return source.onChange(() => showRows(cc));
+                });
+            })
+    );
+    const { showRows } = host.transitions;
+    return { schema, host };
 }
 
 /**
@@ -2199,10 +2226,7 @@ function createExoToggleHost<TItem>(
  * split for the same reason.)
  */
 function mountExodraToggle(c: HTMLElement, rows: TToggleSource): () => void {
-    const { host } = createExoToggleHost(rows, (cc, row: TToggleRow, i) => {
-        BUILDING_ROWS[i] = row;
-        return cc.build(PANEL, i);
-    });
+    const { host } = createExoToggleHost(rows, (cc, row: TToggleRow) => cc.build(PANEL, row));
     return EXO_BACKEND.render(host, c);
 }
 
@@ -2221,10 +2245,9 @@ function mountExodraToggle(c: HTMLElement, rows: TToggleSource): () => void {
  * worth knowing and why it cannot affect this axis's number.
  */
 function mountExodraToggleDelegated(c: HTMLElement, rows: TToggleSource): () => void {
-    const { host } = createExoToggleHost(rows, (cc, row: TToggleRow, i) => {
-        BUILDING_ROWS[i] = row;
-        return cc.build(PANEL_DELEGATED, i);
-    });
+    const { host } = createExoToggleHost(rows, (cc, row: TToggleRow) =>
+        cc.build(PANEL_DELEGATED, row)
+    );
     return DELEGATED_BACKEND.render(host, c);
 }
 
@@ -2247,7 +2270,7 @@ const KEEP_ALIVE = function keepAlive(): void {};
  *
  * `exodra` above rebuilds every panel on every show, because its reconciler maps ITEMS to children
  * and a child whose item left is dropped. The pieces are separable because both are compositions
- * over the same two doors: `c.build(component, index)` returns a built, wired, DETACHED child as a
+ * over the same two doors: `c.build(component, params)` returns a built, wired, DETACHED child as a
  * VALUE, and `reconcileExoOrder` over a source of THOSE CHILDREN keeps a region equal to the
  * array — it inserts, moves and removes them by identity and calls each one's `mount`/`unmount`,
  * with no idea what an item is, because here the item IS the child. So "keep the block" stops being
@@ -2285,8 +2308,7 @@ function mountExodraToggleKept(
         (cc) => {
             // Built at MOUNT, once, and held — the whole difference from `exodra`.
             for (let i = 0; i < PANELS; i++) {
-                BUILDING_CELLS[i] = cells[i];
-                const child = cc.build(PANEL_BOUND, i);
+                const child = cc.build(PANEL_BOUND, cells[i]);
                 exoNodeDom(child).unmount = KEEP_ALIVE;
                 kept[i] = child;
             }
@@ -2336,20 +2358,20 @@ function mountExodraTogglePlacedKept(
         });
         return { panels };
     });
-    const mHOST4 = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA4);
-    mHOST4.createInitialState((cc) => {
-        // Declared and deliberately not filled — named so it cannot be dropped from the
-        // schema by someone tidying an unused binding, exactly as `exodraPlaced` names it.
-        void HOST_SCHEMA4.ports.panels;
-        for (let i = 0; i < PANELS; i++) {
-            BUILDING_CELLS[i] = cells[i];
-            // AT MOUNT, UNTIMED — `c.build` clones, walks and wires inside this call.
-            const rec = exoNodeDom(cc.build(PANEL_BOUND, i));
-            rec.unmount = KEEP_ALIVE;
-            held[i] = rec;
-        }
+    const mHOST4 = createExoMachine<TExoDomNode>(HOST_SCHEMA4, {
+        createInitialState: (cc) => {
+            // Declared and deliberately not filled — named so it cannot be dropped from the
+            // schema by someone tidying an unused binding, exactly as `exodraPlaced` names it.
+            void HOST_SCHEMA4.ports.panels;
+            for (let i = 0; i < PANELS; i++) {
+                // AT MOUNT, UNTIMED — `c.build` clones, walks and wires inside this call.
+                const rec = exoNodeDom(cc.build(PANEL_BOUND, cells[i]));
+                rec.unmount = KEEP_ALIVE;
+                held[i] = rec;
+            }
+        },
     });
-    const HOST = mHOST4.done();
+    const HOST = mHOST4;
     return EXO_BACKEND.render(HOST, c);
 }
 
@@ -2386,19 +2408,19 @@ function mountExodraToggleDirectKept(
         });
         return { panels };
     });
-    const mHOST5 = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA5);
-    mHOST5.createInitialState((cc) => {
-        void HOST_SCHEMA5.ports.panels;
-        for (let i = 0; i < PANELS; i++) {
-            BUILDING_SLOTS[i] = slots[i];
-            // The wire runs INSIDE this call, which is also where `slots[i].ports` is
-            // filled: `c.build` clones, walks and wires before it returns.
-            const rec = exoNodeDom(cc.build(PANEL_DIRECT, i));
-            rec.unmount = KEEP_ALIVE;
-            held[i] = rec;
-        }
+    const mHOST5 = createExoMachine<TExoDomNode>(HOST_SCHEMA5, {
+        createInitialState: (cc) => {
+            void HOST_SCHEMA5.ports.panels;
+            for (let i = 0; i < PANELS; i++) {
+                // The wire runs INSIDE this call, which is also where `slots[i].ports` is
+                // filled: `c.build` clones, walks and wires before it returns.
+                const rec = exoNodeDom(cc.build(PANEL_DIRECT, slots[i]));
+                rec.unmount = KEEP_ALIVE;
+                held[i] = rec;
+            }
+        },
     });
-    const HOST = mHOST5.done();
+    const HOST = mHOST5;
     return EXO_BACKEND.render(HOST, c);
 }
 
@@ -2439,17 +2461,18 @@ function mountExodraToggleMachineKept(
         });
         return { panels };
     });
-    const mHOST6 = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA6);
-    mHOST6.createInitialState((cc) => {
-        void HOST_SCHEMA6.ports.panels;
-        for (let i = 0; i < PANELS; i++) {
-            const rec = exoNodeDom(cc.build(MACHINE_PANEL));
-            rec.unmount = KEEP_ALIVE;
-            instances[i] = rec as unknown as TMachinePanel;
-            held[i] = rec;
-        }
+    const mHOST6 = createExoMachine<TExoDomNode>(HOST_SCHEMA6, {
+        createInitialState: (cc) => {
+            void HOST_SCHEMA6.ports.panels;
+            for (let i = 0; i < PANELS; i++) {
+                const rec = exoNodeDom(cc.build(MACHINE_PANEL));
+                rec.unmount = KEEP_ALIVE;
+                instances[i] = rec as unknown as TMachinePanel;
+                held[i] = rec;
+            }
+        },
     });
-    const HOST = mHOST6.done();
+    const HOST = mHOST6;
     return MACHINE_KEEP_BACKEND.render(HOST, c);
 }
 
@@ -2467,17 +2490,18 @@ function mountExodraToggleMachineKeptTwin(
         });
         return { panels };
     });
-    const mHOST_TWIN = createExoMachineBuilder<TExoDomNode>(HOST_TWIN_SCHEMA);
-    mHOST_TWIN.createInitialState((cc) => {
-        void HOST_TWIN_SCHEMA.ports.panels;
-        for (let i = 0; i < PANELS; i++) {
-            const rec = exoNodeDom(cc.build(MACHINE_PANEL_TWIN));
-            rec.unmount = KEEP_ALIVE;
-            instances[i] = rec as unknown as TMachinePanel;
-            held[i] = rec;
-        }
+    const mHOST_TWIN = createExoMachine<TExoDomNode>(HOST_TWIN_SCHEMA, {
+        createInitialState: (cc) => {
+            void HOST_TWIN_SCHEMA.ports.panels;
+            for (let i = 0; i < PANELS; i++) {
+                const rec = exoNodeDom(cc.build(MACHINE_PANEL_TWIN));
+                rec.unmount = KEEP_ALIVE;
+                instances[i] = rec as unknown as TMachinePanel;
+                held[i] = rec;
+            }
+        },
     });
-    const HOST_TWIN = mHOST_TWIN.done();
+    const HOST_TWIN = mHOST_TWIN;
     return MACHINE_KEEP_TWIN_BACKEND.render(HOST_TWIN, c);
 }
 
@@ -2555,25 +2579,25 @@ function mountExodraToggleDetachedKept(
         });
         return { panels };
     });
-    const mHOST7 = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA7);
-    mHOST7.createInitialState((cc) => {
-        // THE PORT IS FILLED, which is what separates this row from `exodraPlacedKept`: the
-        // child list is a real children port with a real `order`, and every command below
-        // maintains it. `c.childList` stamps the port as written.
-        const region = cc.childList(HOST_SCHEMA7.ports.panels);
-        for (let i = 0; i < PANELS; i++) {
-            BUILDING_SLOTS[i] = slots[i];
-            // AT MOUNT, UNTIMED — `c.build` clones, walks and wires inside this call, which
-            // is also where `slots[i].ports` is filled.
-            const child = cc.build(PANEL_DIRECT, i);
-            held[i] = child;
-        }
-        // NOTHING IS PLACED HERE. The region is empty when the render returns, exactly as
-        // the two hand-placed rows leave their host, so the first show is a full 200-way
-        // attach and every state below is one of this axis's four.
-        take(region);
+    const mHOST7 = createExoMachine<TExoDomNode>(HOST_SCHEMA7, {
+        createInitialState: (cc) => {
+            // THE PORT IS FILLED, which is what separates this row from `exodraPlacedKept`: the
+            // child list is a real children port with a real `order`, and every command below
+            // maintains it. `c.childList` stamps the port as written.
+            const region = cc.childList(HOST_SCHEMA7.ports.panels);
+            for (let i = 0; i < PANELS; i++) {
+                // AT MOUNT, UNTIMED — `c.build` clones, walks and wires inside this call, which
+                // is also where `slots[i].ports` is filled.
+                const child = cc.build(PANEL_DIRECT, slots[i]);
+                held[i] = child;
+            }
+            // NOTHING IS PLACED HERE. The region is empty when the render returns, exactly as
+            // the two hand-placed rows leave their host, so the first show is a full 200-way
+            // attach and every state below is one of this axis's four.
+            take(region);
+        },
     });
-    const HOST = mHOST7.done();
+    const HOST = mHOST7;
     return EXO_BACKEND.render(HOST, c);
 }
 
@@ -2627,8 +2651,8 @@ type TToggleConnector = Parameters<TExoMachineInitialState<TExoDomNode>>[0];
  * SO WHAT IS LEFT IN `exodra − exodraPlaced` is the reconciler's own bookkeeping — the
  * notification, the `shown` mirror and the `Map` it diffs against, the `order` splices, `index` and
  * the clear branch — AGAINST what hand placement costs instead, which is one `exoNodeDom(child)`
- * call per panel that `TExoChildList.insert` makes too. BOTH SIDES pay the `BUILDING_ROWS[i]` store
- * that stands in for the props this library does not have, so that is not in the difference. That is
+ * call per panel that `TExoChildList.insert` makes too. BOTH SIDES hand each panel its row as
+ * `c.build` params, so that is not in the difference. That is
  * why the header calls this pair a REPLACEMENT and not a removal, and why either sign of it is a
  * finding.
  */
@@ -2640,14 +2664,15 @@ function mountExodraTogglePlaced(c: HTMLElement, take: (cc: TToggleConnector) =>
         });
         return { panels };
     });
-    const mHOST8 = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA8);
-    mHOST8.createInitialState((cc) => {
-        // `P.panels` is declared and deliberately not filled — see the header. Named here so
-        // the port cannot be dropped from the schema by someone tidying an unused binding.
-        void HOST_SCHEMA8.ports.panels;
-        take(cc);
+    const mHOST8 = createExoMachine<TExoDomNode>(HOST_SCHEMA8, {
+        createInitialState: (cc) => {
+            // `P.panels` is declared and deliberately not filled — see the header. Named here so
+            // the port cannot be dropped from the schema by someone tidying an unused binding.
+            void HOST_SCHEMA8.ports.panels;
+            take(cc);
+        },
     });
-    const HOST = mHOST8.done();
+    const HOST = mHOST8;
     return EXO_BACKEND.render(HOST, c);
 }
 
@@ -3328,8 +3353,7 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
                         continue;
                     }
                     for (let i = 0; i < PANELS; i++) {
-                        BUILDING_ROWS[i] = rows[i];
-                        const rec = exoNodeDom(conn.build(PANEL, i));
+                        const rec = exoNodeDom(conn.build(PANEL, rows[i]));
                         root.appendChild(rec.node);
                         rec.mount();
                         held[i] = rec;
@@ -3586,10 +3610,7 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
         const gateRows = createExoBenchSource<readonly TToggleRow[]>(HIDDEN);
         const { schema: GATE_HOST_SCHEMA, host: GATE_HOST } = createExoToggleHost(
             gateRows,
-            (cc, row: TToggleRow, i) => {
-                BUILDING_ROWS[i] = row;
-                return cc.build(PANEL, i);
-            }
+            (cc, row: TToggleRow) => cc.build(PANEL, row)
         );
         const portIndex = GATE_HOST_SCHEMA.ports.panels.index;
         const owns = exoDomSchemaOf(GATE_HOST, EXO_BACKEND).ownsElement[portIndex];
@@ -4185,8 +4206,7 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
                     return;
                 }
                 for (let i = 0; i < PANELS; i++) {
-                    BUILDING_ROWS[i] = rows[i];
-                    const rec = exoNodeDom(conn.build(PANEL, i));
+                    const rec = exoNodeDom(conn.build(PANEL, rows[i]));
                     root.appendChild(rec.node);
                     rec.mount();
                     held[i] = rec;

@@ -1135,27 +1135,24 @@
           },
           {
             "visibility": "+",
-            "text": "done(): TExoComputedMachine<TWiring>;",
-            "full": "done(): TExoComputedMachine<TWiring>;",
-            "parts": [
-              {
-                "text": "done(): "
-              },
-              {
-                "text": "TExoComputedMachine",
-                "link": "TExoComputedMachine"
-              },
-              {
-                "text": "<TWiring>;"
-              }
-            ]
+            "text": "effect(start: (c: TWiring) => (() => vo…",
+            "full": "effect(start: (c: TWiring) => (() => void) | null): TExoMachineEffect<TWiring>;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "transition<TFirst = undefined, TSecond …",
+            "full": "transition<TFirst = undefined, TSecond = undefined>( apply: (enode: TWiring, first: TFirst, second: TSecond) => void ): (enode: TWiring, first: TFirst, second: TSecond) => void;",
+            "parts": [],
+            "fullParts": []
           }
         ],
-        "memberCount": 7,
+        "memberCount": 8,
         "stereotype": "interface",
         "doc": "FOR A DERIVATION the declared list is BOTH the wake set AND the argument list.",
         "width": 293,
-        "height": 159,
+        "height": 174,
         "violations": []
       },
       {
@@ -1291,7 +1288,7 @@
         ],
         "memberCount": 1,
         "stereotype": "type",
-        "doc": "One transition's settle step, filled at `done()`: a transition is declared BEFORE the program it settles exists, and this is the slot that lets the closure made then reach the settler made later.",
+        "doc": "One transition's settle step, filled once the declaration returns: a transition is declared BEFORE the program it settles exists, and this is the slot that lets the closure made then reach the settler made later.",
         "width": 293,
         "height": 69,
         "violations": []
@@ -2039,15 +2036,15 @@
         "layer": 0,
         "members": [
           {
-            "text": "(base): TExoComputedBuilder…",
-            "full": "(base): TExoComputedBuilder<TWiring>",
+            "text": "(machine, declare): TExoComputedMachine…",
+            "full": "(machine, declare): TExoComputedMachine<TWiring> & TExoMachine<TWiring, TPorts, TParams, TState> & { readonly transitions: TTransitions }",
             "parts": [
               {
-                "text": "(base): "
+                "text": "(machine, declare): "
               },
               {
-                "text": "TExoComputedBuilder",
-                "link": "TExoComputedBuilder"
+                "text": "TExoComputedMachine",
+                "link": "TExoComputedMachine"
               },
               {
                 "text": "…"
@@ -2055,14 +2052,14 @@
             ],
             "fullParts": [
               {
-                "text": "(base): "
+                "text": "(machine, declare): "
               },
               {
-                "text": "TExoComputedBuilder",
-                "link": "TExoComputedBuilder"
+                "text": "TExoComputedMachine",
+                "link": "TExoComputedMachine"
               },
               {
-                "text": "<TWiring>"
+                "text": "<TWiring> & TExoMachine<TWiring, TPorts, TParams, TState> & { readonly transitions: TTransitions }"
               }
             ]
           }
@@ -2070,7 +2067,7 @@
         "memberCount": 1,
         "stereotype": "function",
         "doc": "TWO ENGINE EFFECTS, AND THE ORDER IS THE WHOLE OF THE ARRANGEMENT: · THE FIRST, registered before the author declares anything, is the INITIAL FILL.",
-        "width": 216,
+        "width": 293,
         "height": 69,
         "violations": []
       }
@@ -3884,25 +3881,6 @@
         "violations": []
       },
       {
-        "id": "TExoComputedBuilder→TExoComputedMachine",
-        "from": "TExoComputedBuilder",
-        "to": "TExoComputedMachine",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedBuilder.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedMachine.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
         "id": "TExoComputedBuilder→TExoMachineFieldHandle",
         "from": "TExoComputedBuilder",
         "to": "TExoMachineFieldHandle",
@@ -4731,75 +4709,75 @@
   },
   "layout": {
     "width": 2444,
-    "height": 4298.5,
+    "height": 4103,
     "nodes": [
       {
         "id": "bindExoMachineReads",
         "x": 1050.5,
-        "y": 3526,
+        "y": 3323.8,
         "width": 254,
         "height": 69
       },
       {
         "id": "chainExoMachineWakes",
         "x": 1060,
-        "y": 2621,
+        "y": 2526.3,
         "width": 235,
         "height": 69
       },
       {
         "id": "chainOf1",
         "x": 1416.5,
-        "y": 2835,
+        "y": 2760.3,
         "width": 261,
         "height": 69
       },
       {
         "id": "chainOf2",
         "x": 1407,
-        "y": 2738,
+        "y": 2643.3,
         "width": 280,
         "height": 69
       },
       {
         "id": "chainOf3",
         "x": 1397.5,
-        "y": 2621,
+        "y": 2526.3,
         "width": 299,
         "height": 69
       },
       {
         "id": "chainOf4",
         "x": 1388,
-        "y": 2504,
+        "y": 2409.3,
         "width": 318,
         "height": 69
       },
       {
         "id": "chainOfMany",
         "x": 1404,
-        "y": 2387,
+        "y": 2292.3,
         "width": 286,
         "height": 69
       },
       {
         "id": "chainTo",
         "x": 1407,
-        "y": 2270,
+        "y": 2175.3,
         "width": 280,
         "height": 69
       },
       {
         "id": "commitExoMachine",
         "x": 1458,
-        "y": 1870.5,
+        "y": 1787.3,
         "width": 178,
         "height": 69
       },
       {
         "id": "compileExoMachine",
         "x": 712.5,
-        "y": 2113.8,
+        "y": 1845,
         "width": 216,
         "height": 69
       },
@@ -4813,14 +4791,14 @@
       {
         "id": "EXO_HOLD_METHODS",
         "x": 757.5,
-        "y": 1433.3,
+        "y": 1359.3,
         "width": 126,
         "height": 46
       },
       {
         "id": "EXO_HOLD_VOCABULARY",
         "x": 384,
-        "y": 1533,
+        "y": 1486,
         "width": 146,
         "height": 46
       },
@@ -4841,14 +4819,14 @@
       {
         "id": "EXO_STORE_COMPILER",
         "x": 1108,
-        "y": 421.8,
+        "y": 326.3,
         "width": 139,
         "height": 46
       },
       {
         "id": "exoBody",
         "x": 1047,
-        "y": 4147.8,
+        "y": 3979,
         "width": 261,
         "height": 69
       },
@@ -4862,7 +4840,7 @@
       {
         "id": "exoComputed",
         "x": 1047,
-        "y": 3623,
+        "y": 3440.3,
         "width": 261,
         "height": 69
       },
@@ -4876,42 +4854,42 @@
       {
         "id": "exoMachineField",
         "x": 304,
-        "y": 1656.3,
+        "y": 1628.5,
         "width": 306,
         "height": 69
       },
       {
         "id": "exoMachineSettle",
         "x": 1060,
-        "y": 1732.8,
+        "y": 1649.5,
         "width": 235,
         "height": 69
       },
       {
         "id": "exoTransition",
         "x": 696.5,
-        "y": 1654.3,
+        "y": 1531.8,
         "width": 248,
         "height": 69
       },
       {
         "id": "exoWiring",
         "x": 24,
-        "y": 1226,
+        "y": 1152,
         "width": 216,
         "height": 69
       },
       {
         "id": "ExoWiringBlock",
         "x": 317,
-        "y": 1328,
+        "y": 1281,
         "width": 280,
         "height": 177
       },
       {
         "id": "fillExoMachineDerivations",
         "x": 1455,
-        "y": 1585.8,
+        "y": 1531.8,
         "width": 184,
         "height": 69
       },
@@ -4925,161 +4903,161 @@
       {
         "id": "HERE",
         "x": 1117.5,
-        "y": 651.3,
+        "y": 573.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "PENDING_ROW",
         "x": 760.5,
-        "y": 569.3,
+        "y": 515.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "refuse",
         "x": 1458,
-        "y": 1193.3,
+        "y": 1218.3,
         "width": 178,
         "height": 69
       },
       {
         "id": "runExoMachineSlots",
         "x": 1458,
-        "y": 1488.8,
+        "y": 1414.8,
         "width": 178,
         "height": 69
       },
       {
         "id": "sameExoReads",
         "x": 741.5,
-        "y": 643.3,
+        "y": 589.3,
         "width": 158,
         "height": 69
       },
       {
         "id": "seatExoManagedRows",
         "x": 738,
-        "y": 1091.3,
+        "y": 1017.3,
         "width": 165,
         "height": 69
       },
       {
         "id": "stubBody",
         "x": 760.5,
-        "y": 760.3,
+        "y": 706.3,
         "width": 120,
         "height": 69
       },
       {
         "id": "TExoCommitNode",
         "x": 1821.5,
-        "y": 441.5,
+        "y": 398.3,
         "width": 190,
         "height": 69
       },
       {
         "id": "TExoComputedBuilder",
         "x": 674,
-        "y": 3268.5,
+        "y": 3363,
         "width": 293,
-        "height": 159
+        "height": 174
       },
       {
         "id": "TExoComputedHead",
         "x": 1400.5,
-        "y": 2972,
+        "y": 2897.3,
         "width": 293,
         "height": 84
       },
       {
         "id": "TExoComputedLive",
         "x": 715.5,
-        "y": 877.3,
+        "y": 823.3,
         "width": 210,
         "height": 69
       },
       {
         "id": "TExoComputedMachine",
-        "x": 1031,
-        "y": 2123,
+        "x": 1400.5,
+        "y": 1981.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoComputedMachineNode",
         "x": 1050.5,
-        "y": 1101.3,
+        "y": 960.5,
         "width": 254,
         "height": 69
       },
       {
         "id": "TExoComputedSettleCell",
         "x": 674,
-        "y": 974.3,
+        "y": 920.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoHoldApi",
         "x": 1031,
-        "y": 1395.5,
+        "y": 1321.5,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoMachineBody",
         "x": 1400.5,
-        "y": 4034.3,
+        "y": 3865.5,
         "width": 293,
         "height": 99
       },
       {
         "id": "TExoMachineDeclaration",
         "x": 1031,
-        "y": 3850.8,
+        "y": 3585,
         "width": 293,
         "height": 129
       },
       {
         "id": "TExoMachineDeclared",
         "x": 1400.5,
-        "y": 1967.5,
+        "y": 1884.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoMachineDerivation",
         "x": 1400.5,
-        "y": 3491.8,
+        "y": 3303.5,
         "width": 293,
         "height": 114
       },
       {
         "id": "TExoMachineField",
         "x": 2127,
-        "y": 4145.5,
+        "y": 3950,
         "width": 293,
         "height": 129
       },
       {
         "id": "TExoMachineFieldHandle",
         "x": 1410,
-        "y": 3823.5,
+        "y": 3676.5,
         "width": 274,
         "height": 84
       },
       {
         "id": "TExoMachineProgram",
         "x": 1770,
-        "y": 2126,
+        "y": 2280,
         "width": 293,
         "height": 189
       },
       {
         "id": "TExoMachineReads",
         "x": 1031,
-        "y": 3753.8,
+        "y": 3742,
         "width": 293,
         "height": 69
       },
@@ -5093,14 +5071,14 @@
       {
         "id": "TExoMachineTarget",
         "x": 1770,
-        "y": 2989.5,
+        "y": 2914.8,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoMachineWake",
         "x": 1824.5,
-        "y": 3539.8,
+        "y": 3328.3,
         "width": 184,
         "height": 69
       },
@@ -5114,22 +5092,22 @@
       {
         "id": "TExoStated",
         "x": 1426,
-        "y": 2064.5,
+        "y": 2078.3,
         "width": 242,
         "height": 69
       },
       {
         "id": "TExoWiringSite",
         "x": 1031,
-        "y": 3155,
+        "y": 3066.3,
         "width": 293,
         "height": 159
       },
       {
         "id": "withExoComputedMachine",
-        "x": 349,
-        "y": 1753.3,
-        "width": 216,
+        "x": 310.5,
+        "y": 1725.5,
+        "width": 293,
         "height": 69
       }
     ],
@@ -5138,32 +5116,32 @@
         "id": "bindExoMachineReads→TExoMachineField",
         "points": [
           {
-            "x": 1185.8,
-            "y": 3595
+            "x": 1185.5,
+            "y": 3392.8
           },
           {
             "x": 1356,
-            "y": 4300.8
+            "y": 4132
           },
           {
             "x": 1547,
-            "y": 4300.8
+            "y": 4132
           },
           {
             "x": 1738,
-            "y": 4300.8
+            "y": 4132
           },
           {
             "x": 1916.5,
-            "y": 4300.8
+            "y": 4132
           },
           {
             "x": 2095,
-            "y": 4300.8
+            "y": 4132
           },
           {
-            "x": 2146.6,
-            "y": 4274.5
+            "x": 2175.5,
+            "y": 4079
           }
         ]
       },
@@ -5171,16 +5149,16 @@
         "id": "bindExoMachineReads→TExoStated",
         "points": [
           {
-            "x": 1181.7,
-            "y": 3526
+            "x": 1182.4,
+            "y": 3323.8
           },
           {
             "x": 1356,
-            "y": 2099
+            "y": 2112.8
           },
           {
             "x": 1426,
-            "y": 2099
+            "y": 2112.8
           }
         ]
       },
@@ -5188,16 +5166,16 @@
         "id": "chainExoMachineWakes→chainOf1",
         "points": [
           {
-            "x": 1206.3,
-            "y": 2690
+            "x": 1203.8,
+            "y": 2595.3
           },
           {
             "x": 1356,
-            "y": 2869.5
+            "y": 2794.8
           },
           {
             "x": 1416.5,
-            "y": 2869.5
+            "y": 2794.8
           }
         ]
       },
@@ -5206,15 +5184,15 @@
         "points": [
           {
             "x": 1230.1,
-            "y": 2690
+            "y": 2595.3
           },
           {
             "x": 1356,
-            "y": 2772.5
+            "y": 2677.8
           },
           {
             "x": 1407,
-            "y": 2772.5
+            "y": 2677.8
           }
         ]
       },
@@ -5223,15 +5201,15 @@
         "points": [
           {
             "x": 1295,
-            "y": 2655.5
+            "y": 2560.8
           },
           {
             "x": 1356,
-            "y": 2655.5
+            "y": 2560.8
           },
           {
             "x": 1397.5,
-            "y": 2655.5
+            "y": 2560.8
           }
         ]
       },
@@ -5240,15 +5218,15 @@
         "points": [
           {
             "x": 1230.1,
-            "y": 2621
+            "y": 2526.3
           },
           {
             "x": 1356,
-            "y": 2538.5
+            "y": 2443.8
           },
           {
             "x": 1388,
-            "y": 2538.5
+            "y": 2443.8
           }
         ]
       },
@@ -5257,15 +5235,15 @@
         "points": [
           {
             "x": 1203.8,
-            "y": 2621
+            "y": 2526.3
           },
           {
             "x": 1356,
-            "y": 2421.5
+            "y": 2326.8
           },
           {
             "x": 1404,
-            "y": 2421.5
+            "y": 2326.8
           }
         ]
       },
@@ -5274,15 +5252,15 @@
         "points": [
           {
             "x": 1195,
-            "y": 2621
+            "y": 2526.3
           },
           {
             "x": 1356,
-            "y": 2304.5
+            "y": 2209.8
           },
           {
             "x": 1407,
-            "y": 2304.5
+            "y": 2209.8
           }
         ]
       },
@@ -5290,24 +5268,24 @@
         "id": "chainExoMachineWakes→TExoCommitNode",
         "points": [
           {
-            "x": 1184.2,
-            "y": 2621
+            "x": 1184.7,
+            "y": 2526.3
           },
           {
             "x": 1356,
-            "y": 1738
+            "y": 1703.3
           },
           {
             "x": 1547,
-            "y": 1738
+            "y": 1703.3
           },
           {
             "x": 1738,
-            "y": 1738
+            "y": 1703.3
           },
           {
-            "x": 1911.6,
-            "y": 510.5
+            "x": 1911.7,
+            "y": 467.3
           }
         ]
       },
@@ -5315,24 +5293,24 @@
         "id": "chainExoMachineWakes→TExoMachineProgram",
         "points": [
           {
-            "x": 1200.1,
-            "y": 2690
+            "x": 1198.6,
+            "y": 2595.3
           },
           {
             "x": 1356,
-            "y": 2928
+            "y": 2853.3
           },
           {
             "x": 1547,
-            "y": 2928
+            "y": 2853.3
           },
           {
             "x": 1738,
-            "y": 2928
+            "y": 2853.3
           },
           {
-            "x": 1892.7,
-            "y": 2315
+            "x": 1881.3,
+            "y": 2469
           }
         ]
       },
@@ -5340,24 +5318,24 @@
         "id": "chainExoMachineWakes→TExoMachineWake",
         "points": [
           {
-            "x": 1183.5,
-            "y": 2690
+            "x": 1184,
+            "y": 2595.3
           },
           {
             "x": 1356,
-            "y": 3677.5
+            "y": 3508.3
           },
           {
             "x": 1547,
-            "y": 3677.5
+            "y": 3508.3
           },
           {
             "x": 1738,
-            "y": 3677.5
+            "y": 3508.3
           },
           {
-            "x": 1856.9,
-            "y": 3608.8
+            "x": 1874.2,
+            "y": 3397.3
           }
         ]
       },
@@ -5365,16 +5343,16 @@
         "id": "chainOf1→TExoCommitNode",
         "points": [
           {
-            "x": 1550.9,
-            "y": 2835
+            "x": 1551,
+            "y": 2760.3
           },
           {
             "x": 1738,
-            "y": 1201.3
+            "y": 1156.5
           },
           {
             "x": 1908,
-            "y": 510.5
+            "y": 467.3
           }
         ]
       },
@@ -5382,16 +5360,16 @@
         "id": "chainOf1→TExoMachineWake",
         "points": [
           {
-            "x": 1555.7,
-            "y": 2904
+            "x": 1557.1,
+            "y": 2829.3
           },
           {
             "x": 1738,
-            "y": 3629.8
+            "y": 3447
           },
           {
-            "x": 1824.5,
-            "y": 3602.9
+            "x": 1843.4,
+            "y": 3397.3
           }
         ]
       },
@@ -5399,16 +5377,16 @@
         "id": "chainOf2→TExoCommitNode",
         "points": [
           {
-            "x": 1551.1,
-            "y": 2738
+            "x": 1551.3,
+            "y": 2643.3
           },
           {
             "x": 1738,
-            "y": 1181.3
+            "y": 1136.5
           },
           {
-            "x": 1907.8,
-            "y": 510.5
+            "x": 1907.7,
+            "y": 467.3
           }
         ]
       },
@@ -5416,16 +5394,16 @@
         "id": "chainOf2→TExoMachineWake",
         "points": [
           {
-            "x": 1554.9,
-            "y": 2807
+            "x": 1555.8,
+            "y": 2712.3
           },
           {
             "x": 1738,
-            "y": 3609.8
+            "y": 3427
           },
           {
             "x": 1824.5,
-            "y": 3592.5
+            "y": 3395.9
           }
         ]
       },
@@ -5433,16 +5411,16 @@
         "id": "chainOf3→TExoCommitNode",
         "points": [
           {
-            "x": 1551.4,
-            "y": 2621
+            "x": 1551.6,
+            "y": 2526.3
           },
           {
             "x": 1738,
-            "y": 1161.3
+            "y": 1116.5
           },
           {
             "x": 1907.5,
-            "y": 510.5
+            "y": 467.3
           }
         ]
       },
@@ -5450,16 +5428,16 @@
         "id": "chainOf3→TExoMachineWake",
         "points": [
           {
-            "x": 1554.1,
-            "y": 2690
+            "x": 1554.8,
+            "y": 2595.3
           },
           {
             "x": 1738,
-            "y": 3589.8
+            "y": 3407
           },
           {
             "x": 1824.5,
-            "y": 3582.2
+            "y": 3385.6
           }
         ]
       },
@@ -5467,16 +5445,16 @@
         "id": "chainOf4→TExoCommitNode",
         "points": [
           {
-            "x": 1551.7,
-            "y": 2504
+            "x": 1551.9,
+            "y": 2409.3
           },
           {
             "x": 1738,
-            "y": 1141.3
+            "y": 1096.5
           },
           {
             "x": 1907.2,
-            "y": 510.5
+            "y": 467.3
           }
         ]
       },
@@ -5484,16 +5462,16 @@
         "id": "chainOf4→TExoMachineWake",
         "points": [
           {
-            "x": 1553.4,
-            "y": 2573
+            "x": 1554,
+            "y": 2478.3
           },
           {
             "x": 1738,
-            "y": 3569.8
+            "y": 3387
           },
           {
             "x": 1824.5,
-            "y": 3571.9
+            "y": 3375.2
           }
         ]
       },
@@ -5501,16 +5479,16 @@
         "id": "chainOfMany→TExoCommitNode",
         "points": [
           {
-            "x": 1552.1,
-            "y": 2387
+            "x": 1552.3,
+            "y": 2292.3
           },
           {
             "x": 1738,
-            "y": 1121.3
+            "y": 1076.5
           },
           {
-            "x": 1907,
-            "y": 510.5
+            "x": 1906.9,
+            "y": 467.3
           }
         ]
       },
@@ -5518,16 +5496,16 @@
         "id": "chainOfMany→TExoMachineWake",
         "points": [
           {
-            "x": 1552.8,
-            "y": 2456
+            "x": 1553.3,
+            "y": 2361.3
           },
           {
             "x": 1738,
-            "y": 3549.8
+            "y": 3367
           },
           {
             "x": 1824.5,
-            "y": 3561.6
+            "y": 3364.9
           }
         ]
       },
@@ -5535,16 +5513,16 @@
         "id": "chainTo→TExoCommitNode",
         "points": [
           {
-            "x": 1552.5,
-            "y": 2270
+            "x": 1552.7,
+            "y": 2175.3
           },
           {
             "x": 1738,
-            "y": 1101.3
+            "y": 1056.5
           },
           {
-            "x": 1906.7,
-            "y": 510.5
+            "x": 1906.6,
+            "y": 467.3
           }
         ]
       },
@@ -5552,16 +5530,16 @@
         "id": "chainTo→TExoMachineWake",
         "points": [
           {
-            "x": 1552.4,
-            "y": 2339
+            "x": 1552.8,
+            "y": 2244.3
           },
           {
             "x": 1738,
-            "y": 3529.8
+            "y": 3347
           },
           {
             "x": 1824.5,
-            "y": 3551.3
+            "y": 3354.6
           }
         ]
       },
@@ -5569,16 +5547,16 @@
         "id": "commitExoMachine→TExoCommitNode",
         "points": [
           {
-            "x": 1555,
-            "y": 1870.5
+            "x": 1555.4,
+            "y": 1787.3
           },
           {
             "x": 1738,
-            "y": 1081.3
+            "y": 1036.5
           },
           {
             "x": 1906.3,
-            "y": 510.5
+            "y": 467.3
           }
         ]
       },
@@ -5586,16 +5564,16 @@
         "id": "commitExoMachine→TExoMachineProgram",
         "points": [
           {
-            "x": 1554.2,
-            "y": 1939.5
+            "x": 1553.8,
+            "y": 1856.3
           },
           {
             "x": 1738,
-            "y": 2821
+            "y": 2794.8
           },
           {
-            "x": 1888.4,
-            "y": 2315
+            "x": 1876.4,
+            "y": 2469
           }
         ]
       },
@@ -5603,16 +5581,16 @@
         "id": "compileExoMachine→bindExoMachineReads",
         "points": [
           {
-            "x": 824.6,
-            "y": 2182.8
+            "x": 824.4,
+            "y": 1914
           },
           {
             "x": 999,
-            "y": 3642
+            "y": 3459.3
           },
           {
-            "x": 1101.9,
-            "y": 3595
+            "x": 1116.5,
+            "y": 3392.8
           }
         ]
       },
@@ -5620,16 +5598,16 @@
         "id": "compileExoMachine→EXO_MACHINE_LIMIT",
         "points": [
           {
-            "x": 823.8,
-            "y": 2113.8
+            "x": 824.3,
+            "y": 1845
           },
           {
             "x": 999,
-            "y": 295.8
+            "y": 268.8
           },
           {
             "x": 1111,
-            "y": 260.9
+            "y": 250.9
           }
         ]
       },
@@ -5637,16 +5615,16 @@
         "id": "compileExoMachine→EXO_STORE_COMPILER",
         "points": [
           {
-            "x": 824.1,
-            "y": 2113.8
+            "x": 824.5,
+            "y": 1845
           },
           {
             "x": 999,
-            "y": 444.8
+            "y": 349.3
           },
           {
             "x": 1108,
-            "y": 444.8
+            "y": 349.3
           }
         ]
       },
@@ -5654,16 +5632,16 @@
         "id": "compileExoMachine→HERE",
         "points": [
           {
-            "x": 825.1,
-            "y": 2113.8
+            "x": 826,
+            "y": 1845
           },
           {
             "x": 999,
-            "y": 804.8
+            "y": 750.8
           },
           {
-            "x": 1146,
-            "y": 697.3
+            "x": 1150.8,
+            "y": 619.8
           }
         ]
       },
@@ -5671,24 +5649,24 @@
         "id": "compileExoMachine→refuse",
         "points": [
           {
-            "x": 828.4,
-            "y": 2113.8
+            "x": 831.1,
+            "y": 1845
           },
           {
             "x": 999,
-            "y": 1371.5
+            "y": 1297.5
           },
           {
             "x": 1177.5,
-            "y": 1371.5
+            "y": 1297.5
           },
           {
             "x": 1356,
-            "y": 1371.5
+            "y": 1297.5
           },
           {
-            "x": 1501.2,
-            "y": 1262.3
+            "x": 1458,
+            "y": 1273.6
           }
         ]
       },
@@ -5696,24 +5674,24 @@
         "id": "compileExoMachine→TExoMachineBody",
         "points": [
           {
-            "x": 823.6,
-            "y": 2182.8
+            "x": 823.5,
+            "y": 1914
           },
           {
             "x": 999,
-            "y": 4123.8
+            "y": 3955
           },
           {
             "x": 1177.5,
-            "y": 4123.8
+            "y": 3955
           },
           {
             "x": 1356,
-            "y": 4123.8
+            "y": 3955
           },
           {
             "x": 1400.5,
-            "y": 4114.4
+            "y": 3945.7
           }
         ]
       },
@@ -5722,15 +5700,15 @@
         "points": [
           {
             "x": 824,
-            "y": 2182.8
+            "y": 1914
           },
           {
             "x": 999,
-            "y": 3915.3
+            "y": 3649.5
           },
           {
             "x": 1031,
-            "y": 3915.3
+            "y": 3649.5
           }
         ]
       },
@@ -5738,40 +5716,40 @@
         "id": "compileExoMachine→TExoMachineField",
         "points": [
           {
-            "x": 823.4,
-            "y": 2182.8
+            "x": 823.3,
+            "y": 1914
           },
           {
             "x": 999,
-            "y": 4280.8
+            "y": 4112
           },
           {
             "x": 1177.5,
-            "y": 4280.8
+            "y": 4112
           },
           {
             "x": 1356,
-            "y": 4280.8
+            "y": 4112
           },
           {
             "x": 1547,
-            "y": 4280.8
+            "y": 4112
           },
           {
             "x": 1738,
-            "y": 4280.8
+            "y": 4112
           },
           {
             "x": 1916.5,
-            "y": 4280.8
+            "y": 4112
           },
           {
             "x": 2095,
-            "y": 4280.8
+            "y": 4112
           },
           {
-            "x": 2127,
-            "y": 4268.1
+            "x": 2155.4,
+            "y": 4079
           }
         ]
       },
@@ -5779,32 +5757,32 @@
         "id": "compileExoMachine→TExoMachineProgram",
         "points": [
           {
-            "x": 831.4,
-            "y": 2182.8
+            "x": 827.7,
+            "y": 1914
           },
           {
             "x": 999,
-            "y": 2714
+            "y": 2736.3
           },
           {
             "x": 1177.5,
-            "y": 2714
+            "y": 2736.3
           },
           {
             "x": 1356,
-            "y": 2714
+            "y": 2736.3
           },
           {
             "x": 1547,
-            "y": 2714
+            "y": 2736.3
           },
           {
             "x": 1738,
-            "y": 2714
+            "y": 2736.3
           },
           {
-            "x": 1882.3,
-            "y": 2315
+            "x": 1869.9,
+            "y": 2469
           }
         ]
       },
@@ -5812,24 +5790,24 @@
         "id": "EXO_HOLD_METHODS→commitExoMachine",
         "points": [
           {
-            "x": 828.9,
-            "y": 1479.3
+            "x": 829.1,
+            "y": 1405.3
           },
           {
             "x": 999,
-            "y": 1943.5
+            "y": 1860.3
           },
           {
             "x": 1177.5,
-            "y": 1943.5
+            "y": 1860.3
           },
           {
             "x": 1356,
-            "y": 1943.5
+            "y": 1860.3
           },
           {
             "x": 1458,
-            "y": 1922.9
+            "y": 1839.7
           }
         ]
       },
@@ -5837,8 +5815,8 @@
         "id": "EXO_HOLD_METHODS→heldStates",
         "points": [
           {
-            "x": 823.8,
-            "y": 1433.3
+            "x": 824,
+            "y": 1359.3
           },
           {
             "x": 999,
@@ -5863,23 +5841,23 @@
         "points": [
           {
             "x": 859.4,
-            "y": 1479.3
+            "y": 1405.3
           },
           {
             "x": 999,
-            "y": 1561.8
+            "y": 1487.8
           },
           {
             "x": 1177.5,
-            "y": 1561.8
+            "y": 1487.8
           },
           {
             "x": 1356,
-            "y": 1561.8
+            "y": 1487.8
           },
           {
             "x": 1458,
-            "y": 1541.2
+            "y": 1467.2
           }
         ]
       },
@@ -5888,31 +5866,31 @@
         "points": [
           {
             "x": 824.8,
-            "y": 1433.3
+            "y": 1359.3
           },
           {
             "x": 999,
-            "y": 491.8
+            "y": 437.8
           },
           {
             "x": 1177.5,
-            "y": 491.8
+            "y": 437.8
           },
           {
             "x": 1356,
-            "y": 491.8
+            "y": 437.8
           },
           {
             "x": 1547,
-            "y": 491.8
+            "y": 437.8
           },
           {
             "x": 1738,
-            "y": 491.8
+            "y": 437.8
           },
           {
             "x": 1821.5,
-            "y": 484.4
+            "y": 435.4
           }
         ]
       },
@@ -5921,15 +5899,15 @@
         "points": [
           {
             "x": 883.5,
-            "y": 1447
+            "y": 1373
           },
           {
             "x": 999,
-            "y": 1430
+            "y": 1356
           },
           {
             "x": 1031,
-            "y": 1430
+            "y": 1356
           }
         ]
       },
@@ -5937,24 +5915,24 @@
         "id": "EXO_HOLD_METHODS→TExoMachineDeclared",
         "points": [
           {
-            "x": 827.5,
-            "y": 1479.3
+            "x": 827.6,
+            "y": 1405.3
           },
           {
             "x": 999,
-            "y": 2040.5
+            "y": 1957.3
           },
           {
             "x": 1177.5,
-            "y": 2040.5
+            "y": 1957.3
           },
           {
             "x": 1356,
-            "y": 2040.5
+            "y": 1957.3
           },
           {
             "x": 1400.5,
-            "y": 2031.5
+            "y": 1948.3
           }
         ]
       },
@@ -5962,32 +5940,32 @@
         "id": "EXO_HOLD_METHODS→TExoMachineProgram",
         "points": [
           {
-            "x": 824.1,
-            "y": 1479.3
+            "x": 823.8,
+            "y": 1405.3
           },
           {
             "x": 999,
-            "y": 2597
+            "y": 2619.3
           },
           {
             "x": 1177.5,
-            "y": 2597
+            "y": 2619.3
           },
           {
             "x": 1356,
-            "y": 2597
+            "y": 2619.3
           },
           {
             "x": 1547,
-            "y": 2597
+            "y": 2619.3
           },
           {
             "x": 1738,
-            "y": 2597
+            "y": 2619.3
           },
           {
-            "x": 1871.7,
-            "y": 2315
+            "x": 1847.6,
+            "y": 2469
           }
         ]
       },
@@ -5995,16 +5973,16 @@
         "id": "EXO_HOLD_VOCABULARY→EXO_HOLD_METHODS",
         "points": [
           {
-            "x": 499.7,
-            "y": 1533
+            "x": 490.6,
+            "y": 1486
           },
           {
             "x": 642,
-            "y": 1456.3
+            "y": 1382.3
           },
           {
             "x": 757.5,
-            "y": 1456.3
+            "y": 1382.3
           }
         ]
       },
@@ -6012,16 +5990,16 @@
         "id": "EXO_STORE_COMPILER→refuse",
         "points": [
           {
-            "x": 1182,
-            "y": 467.8
+            "x": 1181.9,
+            "y": 372.3
           },
           {
             "x": 1356,
-            "y": 1351.5
+            "y": 1277.5
           },
           {
-            "x": 1493.8,
-            "y": 1262.3
+            "x": 1458,
+            "y": 1264.3
           }
         ]
       },
@@ -6029,24 +6007,24 @@
         "id": "EXO_STORE_COMPILER→TExoCommitNode",
         "points": [
           {
-            "x": 1247,
-            "y": 444.8
+            "x": 1237.4,
+            "y": 372.3
           },
           {
             "x": 1356,
-            "y": 444.8
+            "y": 417.8
           },
           {
             "x": 1547,
-            "y": 444.8
+            "y": 417.8
           },
           {
             "x": 1738,
-            "y": 444.8
+            "y": 417.8
           },
           {
             "x": 1821.5,
-            "y": 459.4
+            "y": 424.8
           }
         ]
       },
@@ -6054,8 +6032,8 @@
         "id": "EXO_STORE_COMPILER→TExoPortStore",
         "points": [
           {
-            "x": 1188.1,
-            "y": 421.8
+            "x": 1191.6,
+            "y": 326.3
           },
           {
             "x": 1356,
@@ -6072,15 +6050,15 @@
         "points": [
           {
             "x": 1255.9,
-            "y": 4147.8
+            "y": 3979
           },
           {
             "x": 1356,
-            "y": 4103.8
+            "y": 3935
           },
           {
             "x": 1400.5,
-            "y": 4099.1
+            "y": 3930.3
           }
         ]
       },
@@ -6089,31 +6067,31 @@
         "points": [
           {
             "x": 1255.9,
-            "y": 4216.8
+            "y": 4048
           },
           {
             "x": 1356,
-            "y": 4260.8
+            "y": 4092
           },
           {
             "x": 1547,
-            "y": 4260.8
+            "y": 4092
           },
           {
             "x": 1738,
-            "y": 4260.8
+            "y": 4092
           },
           {
             "x": 1916.5,
-            "y": 4260.8
+            "y": 4092
           },
           {
             "x": 2095,
-            "y": 4260.8
+            "y": 4092
           },
           {
             "x": 2127,
-            "y": 4251.7
+            "y": 4078.1
           }
         ]
       },
@@ -6121,16 +6099,16 @@
         "id": "exoBoundTransition→HERE",
         "points": [
           {
-            "x": 836.4,
+            "x": 839,
             "y": 432.3
           },
           {
             "x": 999,
-            "y": 784.8
+            "y": 730.8
           },
           {
-            "x": 1140.3,
-            "y": 697.3
+            "x": 1146.9,
+            "y": 619.8
           }
         ]
       },
@@ -6162,8 +6140,8 @@
             "y": 397.8
           },
           {
-            "x": 1837.8,
-            "y": 441.5
+            "x": 1821.5,
+            "y": 414.1
           }
         ]
       },
@@ -6189,15 +6167,15 @@
         "points": [
           {
             "x": 1308,
-            "y": 3657.5
+            "y": 3474.8
           },
           {
             "x": 1356,
-            "y": 3657.5
+            "y": 3474.8
           },
           {
-            "x": 1446.9,
-            "y": 3605.8
+            "x": 1451.7,
+            "y": 3417.5
           }
         ]
       },
@@ -6222,16 +6200,16 @@
         "id": "exoMachineField→exoFieldBit",
         "points": [
           {
-            "x": 461.5,
-            "y": 1656.3
+            "x": 461.3,
+            "y": 1628.5
           },
           {
             "x": 642,
-            "y": 259.5
+            "y": 184
           },
           {
             "x": 754,
-            "y": 239
+            "y": 210.8
           }
         ]
       },
@@ -6239,48 +6217,48 @@
         "id": "exoMachineField→TExoMachineField",
         "points": [
           {
-            "x": 459.5,
-            "y": 1725.3
+            "x": 459.6,
+            "y": 1697.5
           },
           {
             "x": 642,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 820.5,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 999,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 1177.5,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 1356,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 1547,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 1738,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 1916.5,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 2095,
-            "y": 4240.8
+            "y": 4072
           },
           {
             "x": 2127,
-            "y": 4235.2
+            "y": 4061.7
           }
         ]
       },
@@ -6289,15 +6267,15 @@
         "points": [
           {
             "x": 1229.5,
-            "y": 1801.8
+            "y": 1718.5
           },
           {
             "x": 1356,
-            "y": 1885.8
+            "y": 1802.5
           },
           {
             "x": 1458,
-            "y": 1896
+            "y": 1812.8
           }
         ]
       },
@@ -6305,16 +6283,16 @@
         "id": "exoMachineSettle→runExoMachineSlots",
         "points": [
           {
-            "x": 1204.8,
-            "y": 1732.8
+            "x": 1206,
+            "y": 1649.5
           },
           {
             "x": 1356,
-            "y": 1541.8
+            "y": 1467.8
           },
           {
             "x": 1458,
-            "y": 1531.9
+            "y": 1457.9
           }
         ]
       },
@@ -6322,8 +6300,8 @@
         "id": "exoMachineSettle→TExoCommitNode",
         "points": [
           {
-            "x": 1181.8,
-            "y": 1732.8
+            "x": 1182.1,
+            "y": 1649.5
           },
           {
             "x": 1356,
@@ -6338,8 +6316,8 @@
             "y": 349.3
           },
           {
-            "x": 1867.9,
-            "y": 441.5
+            "x": 1842.7,
+            "y": 398.3
           }
         ]
       },
@@ -6347,24 +6325,24 @@
         "id": "exoMachineSettle→TExoMachineProgram",
         "points": [
           {
-            "x": 1186.1,
-            "y": 1801.8
+            "x": 1185,
+            "y": 1718.5
           },
           {
             "x": 1356,
-            "y": 2480
+            "y": 2502.3
           },
           {
             "x": 1547,
-            "y": 2480
+            "y": 2502.3
           },
           {
             "x": 1738,
-            "y": 2480
+            "y": 2502.3
           },
           {
-            "x": 1851.5,
-            "y": 2315
+            "x": 1784.5,
+            "y": 2469
           }
         ]
       },
@@ -6372,16 +6350,16 @@
         "id": "exoTransition→exoMachineSettle",
         "points": [
           {
-            "x": 883,
-            "y": 1723.3
+            "x": 865.2,
+            "y": 1600.8
           },
           {
             "x": 999,
-            "y": 1787.3
+            "y": 1704
           },
           {
             "x": 1060,
-            "y": 1780.4
+            "y": 1697.2
           }
         ]
       },
@@ -6389,32 +6367,32 @@
         "id": "exoTransition→TExoCommitNode",
         "points": [
           {
-            "x": 825,
-            "y": 1654.3
+            "x": 825.4,
+            "y": 1531.8
           },
           {
             "x": 999,
-            "y": 329.3
+            "y": 302.3
           },
           {
             "x": 1177.5,
-            "y": 329.3
+            "y": 302.3
           },
           {
             "x": 1356,
-            "y": 329.3
+            "y": 302.3
           },
           {
             "x": 1547,
-            "y": 329.3
+            "y": 302.3
           },
           {
             "x": 1738,
-            "y": 329.3
+            "y": 302.3
           },
           {
-            "x": 1874.5,
-            "y": 441.5
+            "x": 1869.3,
+            "y": 398.3
           }
         ]
       },
@@ -6422,24 +6400,24 @@
         "id": "exoTransition→TExoMachineDeclared",
         "points": [
           {
-            "x": 840.2,
-            "y": 1723.3
+            "x": 838,
+            "y": 1600.8
           },
           {
             "x": 999,
-            "y": 2002
+            "y": 1918.8
           },
           {
             "x": 1177.5,
-            "y": 2002
+            "y": 1918.8
           },
           {
             "x": 1356,
-            "y": 2002
+            "y": 1918.8
           },
           {
             "x": 1400.5,
-            "y": 2002
+            "y": 1918.8
           }
         ]
       },
@@ -6447,32 +6425,32 @@
         "id": "exoTransition→TExoMachineProgram",
         "points": [
           {
-            "x": 829.6,
-            "y": 1723.3
+            "x": 828,
+            "y": 1600.8
           },
           {
             "x": 999,
-            "y": 2363
+            "y": 2385.3
           },
           {
             "x": 1177.5,
-            "y": 2363
+            "y": 2385.3
           },
           {
             "x": 1356,
-            "y": 2363
+            "y": 2385.3
           },
           {
             "x": 1547,
-            "y": 2363
+            "y": 2385.3
           },
           {
             "x": 1738,
-            "y": 2363
+            "y": 2385.3
           },
           {
-            "x": 1798.1,
-            "y": 2315
+            "x": 1770,
+            "y": 2383.3
           }
         ]
       },
@@ -6480,16 +6458,16 @@
         "id": "exoWiring→ExoWiringBlock",
         "points": [
           {
-            "x": 163,
-            "y": 1295
+            "x": 158.4,
+            "y": 1221
           },
           {
             "x": 272,
-            "y": 1416.5
+            "y": 1369.5
           },
           {
             "x": 317,
-            "y": 1416.5
+            "y": 1369.5
           }
         ]
       },
@@ -6497,32 +6475,32 @@
         "id": "exoWiring→HERE",
         "points": [
           {
-            "x": 141.2,
-            "y": 1226
+            "x": 141.6,
+            "y": 1152
           },
           {
             "x": 272,
-            "y": 736.3
+            "y": 682.3
           },
           {
             "x": 457,
-            "y": 736.3
+            "y": 682.3
           },
           {
             "x": 642,
-            "y": 736.3
+            "y": 682.3
           },
           {
             "x": 820.5,
-            "y": 736.3
+            "y": 682.3
           },
           {
             "x": 999,
-            "y": 736.3
+            "y": 682.3
           },
           {
-            "x": 1117.5,
-            "y": 695.1
+            "x": 1129.5,
+            "y": 619.8
           }
         ]
       },
@@ -6531,31 +6509,31 @@
         "points": [
           {
             "x": 217.9,
-            "y": 1226
+            "y": 1152
           },
           {
             "x": 272,
-            "y": 1204.3
+            "y": 1130.3
           },
           {
             "x": 457,
-            "y": 1204.3
+            "y": 1130.3
           },
           {
             "x": 642,
-            "y": 1204.3
+            "y": 1130.3
           },
           {
             "x": 820.5,
-            "y": 1204.3
+            "y": 1130.3
           },
           {
             "x": 999,
-            "y": 1204.3
+            "y": 1130.3
           },
           {
-            "x": 1087.6,
-            "y": 1170.3
+            "x": 1132,
+            "y": 1029.5
           }
         ]
       },
@@ -6564,31 +6542,31 @@
         "points": [
           {
             "x": 134.4,
-            "y": 1295
+            "y": 1221
           },
           {
             "x": 272,
-            "y": 3244.5
+            "y": 3187.5
           },
           {
             "x": 457,
-            "y": 3244.5
+            "y": 3187.5
           },
           {
             "x": 642,
-            "y": 3244.5
+            "y": 3187.5
           },
           {
             "x": 820.5,
-            "y": 3244.5
+            "y": 3187.5
           },
           {
             "x": 999,
-            "y": 3244.5
+            "y": 3187.5
           },
           {
             "x": 1031,
-            "y": 3242.7
+            "y": 3180
           }
         ]
       },
@@ -6596,24 +6574,24 @@
         "id": "ExoWiringBlock→bindExoMachineReads",
         "points": [
           {
-            "x": 464.7,
-            "y": 1505
+            "x": 465.3,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 3541.3
+            "y": 3339
           },
           {
             "x": 820.5,
-            "y": 3541.3
+            "y": 3339
           },
           {
             "x": 999,
-            "y": 3541.3
+            "y": 3339
           },
           {
             "x": 1050.5,
-            "y": 3546.8
+            "y": 3344.6
           }
         ]
       },
@@ -6621,16 +6599,16 @@
         "id": "ExoWiringBlock→compileExoMachine",
         "points": [
           {
-            "x": 478.8,
-            "y": 1505
+            "x": 490.4,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 2167.5
+            "y": 1860.3
           },
           {
             "x": 712.5,
-            "y": 2159.9
+            "y": 1867.9
           }
         ]
       },
@@ -6638,8 +6616,8 @@
         "id": "ExoWiringBlock→EXO_BLOCK_SEEDS",
         "points": [
           {
-            "x": 469.8,
-            "y": 1328
+            "x": 470.3,
+            "y": 1281
           },
           {
             "x": 642,
@@ -6655,8 +6633,8 @@
         "id": "ExoWiringBlock→exoBoundTransition",
         "points": [
           {
-            "x": 473.1,
-            "y": 1328
+            "x": 473.8,
+            "y": 1281
           },
           {
             "x": 642,
@@ -6672,8 +6650,8 @@
         "id": "ExoWiringBlock→exoFieldBit",
         "points": [
           {
-            "x": 470.5,
-            "y": 1328
+            "x": 471,
+            "y": 1281
           },
           {
             "x": 642,
@@ -6689,24 +6667,24 @@
         "id": "ExoWiringBlock→exoMachineSettle",
         "points": [
           {
-            "x": 503.7,
-            "y": 1505
+            "x": 509.1,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 1767.3
+            "y": 1684
           },
           {
             "x": 820.5,
-            "y": 1767.3
+            "y": 1684
           },
           {
             "x": 999,
-            "y": 1767.3
+            "y": 1684
           },
           {
             "x": 1060,
-            "y": 1767.3
+            "y": 1684
           }
         ]
       },
@@ -6714,32 +6692,32 @@
         "id": "ExoWiringBlock→fillExoMachineDerivations",
         "points": [
           {
-            "x": 533.6,
-            "y": 1505
+            "x": 521.1,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 1630.3
+            "y": 1624.8
           },
           {
             "x": 820.5,
-            "y": 1630.3
+            "y": 1624.8
           },
           {
             "x": 999,
-            "y": 1630.3
+            "y": 1624.8
           },
           {
             "x": 1177.5,
-            "y": 1630.3
+            "y": 1624.8
           },
           {
             "x": 1356,
-            "y": 1630.3
+            "y": 1624.8
           },
           {
             "x": 1455,
-            "y": 1625.1
+            "y": 1594.4
           }
         ]
       },
@@ -6747,24 +6725,24 @@
         "id": "ExoWiringBlock→HERE",
         "points": [
           {
-            "x": 475.8,
-            "y": 1328
+            "x": 475.6,
+            "y": 1281
           },
           {
             "x": 642,
-            "y": 545.3
+            "y": 491.3
           },
           {
             "x": 820.5,
-            "y": 545.3
+            "y": 491.3
           },
           {
             "x": 999,
-            "y": 545.3
+            "y": 491.3
           },
           {
-            "x": 1145.7,
-            "y": 651.3
+            "x": 1138.6,
+            "y": 573.8
           }
         ]
       },
@@ -6772,16 +6750,16 @@
         "id": "ExoWiringBlock→PENDING_ROW",
         "points": [
           {
-            "x": 476.9,
-            "y": 1328
+            "x": 476.7,
+            "y": 1281
           },
           {
             "x": 642,
-            "y": 592.3
+            "y": 538.3
           },
           {
             "x": 760.5,
-            "y": 592.3
+            "y": 538.3
           }
         ]
       },
@@ -6789,32 +6767,32 @@
         "id": "ExoWiringBlock→refuse",
         "points": [
           {
-            "x": 597,
-            "y": 1341
+            "x": 586.2,
+            "y": 1281
           },
           {
             "x": 642,
-            "y": 1316.8
+            "y": 1242.8
           },
           {
             "x": 820.5,
-            "y": 1316.8
+            "y": 1242.8
           },
           {
             "x": 999,
-            "y": 1316.8
+            "y": 1242.8
           },
           {
             "x": 1177.5,
-            "y": 1316.8
+            "y": 1242.8
           },
           {
             "x": 1356,
-            "y": 1316.8
+            "y": 1242.8
           },
           {
-            "x": 1473,
-            "y": 1262.3
+            "x": 1458,
+            "y": 1248.1
           }
         ]
       },
@@ -6823,31 +6801,31 @@
         "points": [
           {
             "x": 597,
-            "y": 1482.1
+            "y": 1414.7
           },
           {
             "x": 642,
-            "y": 1503.3
+            "y": 1429.3
           },
           {
             "x": 820.5,
-            "y": 1503.3
+            "y": 1429.3
           },
           {
             "x": 999,
-            "y": 1503.3
+            "y": 1429.3
           },
           {
             "x": 1177.5,
-            "y": 1503.3
+            "y": 1429.3
           },
           {
             "x": 1356,
-            "y": 1503.3
+            "y": 1429.3
           },
           {
             "x": 1458,
-            "y": 1513.9
+            "y": 1439.9
           }
         ]
       },
@@ -6855,16 +6833,16 @@
         "id": "ExoWiringBlock→sameExoReads",
         "points": [
           {
-            "x": 479.2,
-            "y": 1328
+            "x": 479,
+            "y": 1281
           },
           {
             "x": 642,
-            "y": 677.8
+            "y": 623.8
           },
           {
             "x": 741.5,
-            "y": 677.8
+            "y": 623.8
           }
         ]
       },
@@ -6872,16 +6850,16 @@
         "id": "ExoWiringBlock→seatExoManagedRows",
         "points": [
           {
-            "x": 517.3,
-            "y": 1328
+            "x": 503,
+            "y": 1281
           },
           {
             "x": 642,
-            "y": 1145
+            "y": 1013.3
           },
           {
             "x": 738,
-            "y": 1134.6
+            "y": 1034
           }
         ]
       },
@@ -6889,16 +6867,16 @@
         "id": "ExoWiringBlock→stubBody",
         "points": [
           {
-            "x": 483.3,
-            "y": 1328
+            "x": 483,
+            "y": 1281
           },
           {
             "x": 642,
-            "y": 794.8
+            "y": 740.8
           },
           {
             "x": 760.5,
-            "y": 794.8
+            "y": 740.8
           }
         ]
       },
@@ -6906,16 +6884,16 @@
         "id": "ExoWiringBlock→TExoComputedLive",
         "points": [
           {
-            "x": 492.1,
-            "y": 1328
+            "x": 487.8,
+            "y": 1281
           },
           {
             "x": 642,
-            "y": 950.3
+            "y": 838.5
           },
           {
             "x": 715.5,
-            "y": 934.4
+            "y": 846.4
           }
         ]
       },
@@ -6923,24 +6901,24 @@
         "id": "ExoWiringBlock→TExoComputedMachineNode",
         "points": [
           {
-            "x": 527.5,
-            "y": 1328
+            "x": 520.2,
+            "y": 1281
           },
           {
             "x": 642,
-            "y": 1184.3
+            "y": 1110.3
           },
           {
             "x": 820.5,
-            "y": 1184.3
+            "y": 1110.3
           },
           {
             "x": 999,
-            "y": 1184.3
+            "y": 1110.3
           },
           {
-            "x": 1050.5,
-            "y": 1170.3
+            "x": 1124.1,
+            "y": 1029.5
           }
         ]
       },
@@ -6948,32 +6926,32 @@
         "id": "ExoWiringBlock→TExoMachineFieldHandle",
         "points": [
           {
-            "x": 463.3,
-            "y": 1505
+            "x": 463.6,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 4023.8
+            "y": 3855
           },
           {
             "x": 820.5,
-            "y": 4023.8
+            "y": 3855
           },
           {
             "x": 999,
-            "y": 4023.8
+            "y": 3855
           },
           {
             "x": 1177.5,
-            "y": 4023.8
+            "y": 3855
           },
           {
             "x": 1356,
-            "y": 4023.8
+            "y": 3855
           },
           {
-            "x": 1496.3,
-            "y": 3907.5
+            "x": 1488.2,
+            "y": 3760.5
           }
         ]
       },
@@ -6981,40 +6959,40 @@
         "id": "ExoWiringBlock→TExoMachineProgram",
         "points": [
           {
-            "x": 476.7,
-            "y": 1505
+            "x": 475.2,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 2246
+            "y": 2268.3
           },
           {
             "x": 820.5,
-            "y": 2246
+            "y": 2268.3
           },
           {
             "x": 999,
-            "y": 2246
+            "y": 2268.3
           },
           {
             "x": 1177.5,
-            "y": 2246
+            "y": 2268.3
           },
           {
             "x": 1356,
-            "y": 2246
+            "y": 2268.3
           },
           {
             "x": 1547,
-            "y": 2246
+            "y": 2268.3
           },
           {
             "x": 1738,
-            "y": 2246
+            "y": 2268.3
           },
           {
             "x": 1770,
-            "y": 2241.4
+            "y": 2287.3
           }
         ]
       },
@@ -7022,24 +7000,24 @@
         "id": "ExoWiringBlock→TExoMachineReads",
         "points": [
           {
-            "x": 463.8,
-            "y": 1505
+            "x": 463.7,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 3841.8
+            "y": 3795.8
           },
           {
             "x": 820.5,
-            "y": 3841.8
+            "y": 3795.8
           },
           {
             "x": 999,
-            "y": 3841.8
+            "y": 3795.8
           },
           {
-            "x": 1062.4,
-            "y": 3822.8
+            "x": 1031,
+            "y": 3792.3
           }
         ]
       },
@@ -7047,8 +7025,8 @@
         "id": "ExoWiringBlock→TExoMachineSettler",
         "points": [
           {
-            "x": 469.4,
-            "y": 1328
+            "x": 469.8,
+            "y": 1281
           },
           {
             "x": 642,
@@ -7072,40 +7050,40 @@
         "id": "ExoWiringBlock→TExoMachineTarget",
         "points": [
           {
-            "x": 466.7,
-            "y": 1505
+            "x": 466.9,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 3100
+            "y": 3025.3
           },
           {
             "x": 820.5,
-            "y": 3100
+            "y": 3025.3
           },
           {
             "x": 999,
-            "y": 3100
+            "y": 3025.3
           },
           {
             "x": 1177.5,
-            "y": 3100
+            "y": 3025.3
           },
           {
             "x": 1356,
-            "y": 3100
+            "y": 3025.3
           },
           {
             "x": 1547,
-            "y": 3100
+            "y": 3025.3
           },
           {
             "x": 1738,
-            "y": 3100
+            "y": 3025.3
           },
           {
             "x": 1835.5,
-            "y": 3058.5
+            "y": 2983.8
           }
         ]
       },
@@ -7113,24 +7091,24 @@
         "id": "ExoWiringBlock→TExoWiringSite",
         "points": [
           {
-            "x": 466.4,
-            "y": 1505
+            "x": 466.5,
+            "y": 1458
           },
           {
             "x": 642,
-            "y": 3161.8
+            "y": 3087
           },
           {
             "x": 820.5,
-            "y": 3161.8
+            "y": 3087
           },
           {
             "x": 999,
-            "y": 3161.8
+            "y": 3087
           },
           {
             "x": 1031,
-            "y": 3174.8
+            "y": 3097.5
           }
         ]
       },
@@ -7138,16 +7116,16 @@
         "id": "fillExoMachineDerivations→TExoCommitNode",
         "points": [
           {
-            "x": 1551.9,
-            "y": 1585.8
+            "x": 1552,
+            "y": 1531.8
           },
           {
             "x": 1738,
-            "y": 282.3
+            "y": 255.3
           },
           {
-            "x": 1884.7,
-            "y": 441.5
+            "x": 1881.8,
+            "y": 398.3
           }
         ]
       },
@@ -7155,16 +7133,16 @@
         "id": "fillExoMachineDerivations→TExoMachineProgram",
         "points": [
           {
-            "x": 1557.9,
-            "y": 1654.8
+            "x": 1558.2,
+            "y": 1600.8
           },
           {
             "x": 1738,
-            "y": 2226
+            "y": 2152
           },
           {
-            "x": 1770,
-            "y": 2225
+            "x": 1840.7,
+            "y": 2280
           }
         ]
       },
@@ -7180,8 +7158,8 @@
             "y": 193.3
           },
           {
-            "x": 1894.7,
-            "y": 441.5
+            "x": 1890.8,
+            "y": 398.3
           }
         ]
       },
@@ -7189,16 +7167,16 @@
         "id": "runExoMachineSlots→TExoCommitNode",
         "points": [
           {
-            "x": 1551.9,
-            "y": 1488.8
+            "x": 1552.2,
+            "y": 1414.8
           },
           {
             "x": 1738,
             "y": 169.8
           },
           {
-            "x": 1896.4,
-            "y": 441.5
+            "x": 1893.1,
+            "y": 398.3
           }
         ]
       },
@@ -7207,15 +7185,15 @@
         "points": [
           {
             "x": 1556.7,
-            "y": 1557.8
+            "y": 1483.8
           },
           {
             "x": 1738,
-            "y": 2206
+            "y": 2132
           },
           {
-            "x": 1770,
-            "y": 2208.6
+            "x": 1846.9,
+            "y": 2280
           }
         ]
       },
@@ -7224,32 +7202,15 @@
         "points": [
           {
             "x": 903,
-            "y": 1125.8
+            "y": 1051.8
           },
           {
             "x": 999,
-            "y": 1125.8
+            "y": 1051.8
           },
           {
-            "x": 1050.5,
-            "y": 1128.6
-          }
-        ]
-      },
-      {
-        "id": "TExoComputedBuilder→TExoComputedMachine",
-        "points": [
-          {
-            "x": 832.9,
-            "y": 3268.5
-          },
-          {
-            "x": 999,
-            "y": 2206
-          },
-          {
-            "x": 1050.5,
-            "y": 2192
+            "x": 1069,
+            "y": 1029.5
           }
         ]
       },
@@ -7257,24 +7218,24 @@
         "id": "TExoComputedBuilder→TExoMachineFieldHandle",
         "points": [
           {
-            "x": 842.1,
-            "y": 3427.5
+            "x": 860.8,
+            "y": 3537
           },
           {
             "x": 999,
-            "y": 4003.8
+            "y": 3835
           },
           {
             "x": 1177.5,
-            "y": 4003.8
+            "y": 3835
           },
           {
             "x": 1356,
-            "y": 4003.8
+            "y": 3835
           },
           {
-            "x": 1489,
-            "y": 3907.5
+            "x": 1478.1,
+            "y": 3760.5
           }
         ]
       },
@@ -7282,16 +7243,16 @@
         "id": "TExoComputedBuilder→TExoMachineReads",
         "points": [
           {
-            "x": 854.2,
-            "y": 3427.5
+            "x": 877.4,
+            "y": 3537
           },
           {
             "x": 999,
-            "y": 3769
+            "y": 3723
           },
           {
-            "x": 1031,
-            "y": 3772.5
+            "x": 1062.4,
+            "y": 3742
           }
         ]
       },
@@ -7299,32 +7260,32 @@
         "id": "TExoComputedBuilder→TExoMachineTarget",
         "points": [
           {
-            "x": 873.5,
-            "y": 3268.5
+            "x": 855.4,
+            "y": 3363
           },
           {
             "x": 999,
-            "y": 3080
+            "y": 3005.3
           },
           {
             "x": 1177.5,
-            "y": 3080
+            "y": 3005.3
           },
           {
             "x": 1356,
-            "y": 3080
+            "y": 3005.3
           },
           {
             "x": 1547,
-            "y": 3080
+            "y": 3005.3
           },
           {
             "x": 1738,
-            "y": 3080
+            "y": 3005.3
           },
           {
             "x": 1806.5,
-            "y": 3058.5
+            "y": 2983.8
           }
         ]
       },
@@ -7333,15 +7294,15 @@
         "points": [
           {
             "x": 1693.5,
-            "y": 3014
+            "y": 2939.3
           },
           {
             "x": 1738,
-            "y": 3014
+            "y": 2939.3
           },
           {
             "x": 1770,
-            "y": 3015.8
+            "y": 2941
           }
         ]
       },
@@ -7349,24 +7310,16 @@
         "id": "TExoComputedMachine→TExoMachineProgram",
         "points": [
           {
-            "x": 1324,
-            "y": 2157.5
-          },
-          {
-            "x": 1356,
-            "y": 2157.5
-          },
-          {
-            "x": 1547,
-            "y": 2157.5
+            "x": 1693.5,
+            "y": 2015.8
           },
           {
             "x": 1738,
-            "y": 2157.5
+            "y": 2015.8
           },
           {
-            "x": 1770,
-            "y": 2168.8
+            "x": 1869.5,
+            "y": 2280
           }
         ]
       },
@@ -7374,8 +7327,8 @@
         "id": "TExoHoldApi→TExoCommitNode",
         "points": [
           {
-            "x": 1182.3,
-            "y": 1395.5
+            "x": 1182.6,
+            "y": 1321.5
           },
           {
             "x": 1356,
@@ -7390,8 +7343,8 @@
             "y": 146.3
           },
           {
-            "x": 1897.8,
-            "y": 441.5
+            "x": 1895,
+            "y": 398.3
           }
         ]
       },
@@ -7399,16 +7352,16 @@
         "id": "TExoHoldApi→TExoMachineDeclared",
         "points": [
           {
-            "x": 1189,
-            "y": 1464.5
+            "x": 1189.2,
+            "y": 1390.5
           },
           {
             "x": 1356,
-            "y": 1963.5
+            "y": 1880.3
           },
           {
             "x": 1400.5,
-            "y": 1972.5
+            "y": 1889.2
           }
         ]
       },
@@ -7417,23 +7370,23 @@
         "points": [
           {
             "x": 1693.5,
-            "y": 4083.8
+            "y": 3915
           },
           {
             "x": 1738,
-            "y": 4083.8
+            "y": 3915
           },
           {
             "x": 1916.5,
-            "y": 4083.8
+            "y": 3915
           },
           {
             "x": 2095,
-            "y": 4083.8
+            "y": 3915
           },
           {
-            "x": 2182.3,
-            "y": 4145.5
+            "x": 2157.8,
+            "y": 3950
           }
         ]
       },
@@ -7441,16 +7394,16 @@
         "id": "TExoMachineDeclaration→TExoMachineBody",
         "points": [
           {
-            "x": 1245.8,
-            "y": 3979.8
+            "x": 1220.9,
+            "y": 3714
           },
           {
             "x": 1356,
-            "y": 4083.8
+            "y": 3915
           },
           {
             "x": 1400.5,
-            "y": 4083.8
+            "y": 3915
           }
         ]
       },
@@ -7458,16 +7411,16 @@
         "id": "TExoMachineDeclaration→TExoMachineDerivation",
         "points": [
           {
-            "x": 1214.1,
-            "y": 3850.8
+            "x": 1227.1,
+            "y": 3585
           },
           {
             "x": 1356,
-            "y": 3600.3
+            "y": 3417.5
           },
           {
             "x": 1400.5,
-            "y": 3588.3
+            "y": 3404.2
           }
         ]
       },
@@ -7476,15 +7429,15 @@
         "points": [
           {
             "x": 1693.5,
-            "y": 2002
+            "y": 1918.8
           },
           {
             "x": 1738,
-            "y": 2002
+            "y": 1918.8
           },
           {
-            "x": 1839.3,
-            "y": 2126
+            "x": 1879.5,
+            "y": 2280
           }
         ]
       },
@@ -7492,24 +7445,24 @@
         "id": "TExoMachineDerivation→TExoMachineField",
         "points": [
           {
-            "x": 1569.9,
-            "y": 3605.8
+            "x": 1569,
+            "y": 3417.5
           },
           {
             "x": 1738,
-            "y": 4024
+            "y": 3855.3
           },
           {
             "x": 1916.5,
-            "y": 4024
+            "y": 3855.3
           },
           {
             "x": 2095,
-            "y": 4024
+            "y": 3855.3
           },
           {
-            "x": 2211.6,
-            "y": 4145.5
+            "x": 2201.2,
+            "y": 3950
           }
         ]
       },
@@ -7517,16 +7470,16 @@
         "id": "TExoMachineDerivation→TExoMachineTarget",
         "points": [
           {
-            "x": 1566.2,
-            "y": 3491.8
+            "x": 1571,
+            "y": 3303.5
           },
           {
             "x": 1738,
-            "y": 2981
+            "y": 2906.3
           },
           {
             "x": 1773.3,
-            "y": 2989.5
+            "y": 2914.8
           }
         ]
       },
@@ -7535,23 +7488,23 @@
         "points": [
           {
             "x": 1684,
-            "y": 3865.5
+            "y": 3718.5
           },
           {
             "x": 1738,
-            "y": 3865.5
+            "y": 3718.5
           },
           {
             "x": 1916.5,
-            "y": 3865.5
+            "y": 3718.5
           },
           {
             "x": 2095,
-            "y": 3865.5
+            "y": 3718.5
           },
           {
-            "x": 2240.1,
-            "y": 4145.5
+            "x": 2234.6,
+            "y": 3950
           }
         ]
       },
@@ -7560,15 +7513,15 @@
         "points": [
           {
             "x": 1324,
-            "y": 3788.3
+            "y": 3776.5
           },
           {
             "x": 1356,
-            "y": 3788.3
+            "y": 3776.5
           },
           {
-            "x": 1443.2,
-            "y": 3823.5
+            "x": 1410,
+            "y": 3760.1
           }
         ]
       },
@@ -7592,8 +7545,8 @@
             "y": 117
           },
           {
-            "x": 1899.3,
-            "y": 441.5
+            "x": 1897,
+            "y": 398.3
           }
         ]
       },
@@ -7602,15 +7555,15 @@
         "points": [
           {
             "x": 2063,
-            "y": 3024
+            "y": 2949.3
           },
           {
             "x": 2095,
-            "y": 3024
+            "y": 2949.3
           },
           {
-            "x": 2263.8,
-            "y": 4145.5
+            "x": 2262.7,
+            "y": 3950
           }
         ]
       },
@@ -7626,8 +7579,8 @@
             "y": 58.5
           },
           {
-            "x": 1901.7,
-            "y": 441.5
+            "x": 1900,
+            "y": 398.3
           }
         ]
       },
@@ -7635,16 +7588,16 @@
         "id": "TExoWiringSite→TExoMachineBody",
         "points": [
           {
-            "x": 1194.6,
-            "y": 3314
+            "x": 1196.4,
+            "y": 3225.3
           },
           {
             "x": 1356,
-            "y": 4063.8
+            "y": 3895
           },
           {
             "x": 1400.5,
-            "y": 4068.4
+            "y": 3899.7
           }
         ]
       },
@@ -7652,16 +7605,16 @@
         "id": "TExoWiringSite→TExoMachineDerivation",
         "points": [
           {
-            "x": 1219.8,
-            "y": 3314
+            "x": 1236.3,
+            "y": 3225.3
           },
           {
             "x": 1356,
-            "y": 3569.8
+            "y": 3387
           },
           {
             "x": 1400.5,
-            "y": 3564.9
+            "y": 3380.8
           }
         ]
       },
@@ -7670,15 +7623,15 @@
         "points": [
           {
             "x": 1204.6,
-            "y": 3314
+            "y": 3225.3
           },
           {
             "x": 1356,
-            "y": 3759
+            "y": 3668.8
           },
           {
-            "x": 1471.7,
-            "y": 3823.5
+            "x": 1410,
+            "y": 3682.8
           }
         ]
       },
@@ -7686,24 +7639,24 @@
         "id": "TExoWiringSite→TExoMachineProgram",
         "points": [
           {
-            "x": 1187.7,
-            "y": 3155
+            "x": 1187.8,
+            "y": 3066.3
           },
           {
             "x": 1356,
-            "y": 1846.5
+            "y": 1763.3
           },
           {
             "x": 1547,
-            "y": 1846.5
+            "y": 1763.3
           },
           {
             "x": 1738,
-            "y": 1846.5
+            "y": 1763.3
           },
           {
-            "x": 1871.4,
-            "y": 2126
+            "x": 1888.9,
+            "y": 2280
           }
         ]
       },
@@ -7711,24 +7664,24 @@
         "id": "withExoComputedMachine→chainExoMachineWakes",
         "points": [
           {
-            "x": 464.4,
-            "y": 1822.3
+            "x": 465,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 2655.5
+            "y": 2560.8
           },
           {
             "x": 820.5,
-            "y": 2655.5
+            "y": 2560.8
           },
           {
             "x": 999,
-            "y": 2655.5
+            "y": 2560.8
           },
           {
             "x": 1060,
-            "y": 2655.5
+            "y": 2560.8
           }
         ]
       },
@@ -7736,16 +7689,16 @@
         "id": "withExoComputedMachine→compileExoMachine",
         "points": [
           {
-            "x": 475.7,
-            "y": 1822.3
+            "x": 503,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 2129
+            "y": 1898.8
           },
           {
             "x": 712.5,
-            "y": 2136.6
+            "y": 1891.1
           }
         ]
       },
@@ -7753,8 +7706,8 @@
         "id": "withExoComputedMachine→EXO_MOUNTED",
         "points": [
           {
-            "x": 461.3,
-            "y": 1753.3
+            "x": 461.4,
+            "y": 1725.5
           },
           {
             "x": 642,
@@ -7770,16 +7723,16 @@
         "id": "withExoComputedMachine→exoFieldBit",
         "points": [
           {
-            "x": 461,
-            "y": 1753.3
+            "x": 461.3,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 184
+            "y": 259.5
           },
           {
             "x": 754,
-            "y": 210.8
+            "y": 239
           }
         ]
       },
@@ -7787,24 +7740,24 @@
         "id": "withExoComputedMachine→exoMachineSettle",
         "points": [
           {
-            "x": 565,
-            "y": 1764.1
+            "x": 523.5,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 1747.3
+            "y": 1664
           },
           {
             "x": 820.5,
-            "y": 1747.3
+            "y": 1664
           },
           {
             "x": 999,
-            "y": 1747.3
+            "y": 1664
           },
           {
             "x": 1060,
-            "y": 1754.1
+            "y": 1670.8
           }
         ]
       },
@@ -7812,16 +7765,16 @@
         "id": "withExoComputedMachine→exoTransition",
         "points": [
           {
-            "x": 521.5,
-            "y": 1753.3
+            "x": 489.9,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 1688.8
+            "y": 1566.3
           },
           {
             "x": 696.5,
-            "y": 1688.8
+            "y": 1566.3
           }
         ]
       },
@@ -7829,32 +7782,32 @@
         "id": "withExoComputedMachine→fillExoMachineDerivations",
         "points": [
           {
-            "x": 488,
-            "y": 1753.3
+            "x": 482.3,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 1581.8
+            "y": 1507.8
           },
           {
             "x": 820.5,
-            "y": 1581.8
+            "y": 1507.8
           },
           {
             "x": 999,
-            "y": 1581.8
+            "y": 1507.8
           },
           {
             "x": 1177.5,
-            "y": 1581.8
+            "y": 1507.8
           },
           {
             "x": 1356,
-            "y": 1581.8
+            "y": 1507.8
           },
           {
             "x": 1455,
-            "y": 1601.7
+            "y": 1538.1
           }
         ]
       },
@@ -7862,24 +7815,24 @@
         "id": "withExoComputedMachine→HERE",
         "points": [
           {
-            "x": 462.1,
-            "y": 1753.3
+            "x": 462,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 525.3
+            "y": 471.3
           },
           {
             "x": 820.5,
-            "y": 525.3
+            "y": 471.3
           },
           {
             "x": 999,
-            "y": 525.3
+            "y": 471.3
           },
           {
-            "x": 1149.9,
-            "y": 651.3
+            "x": 1144.8,
+            "y": 573.8
           }
         ]
       },
@@ -7887,32 +7840,32 @@
         "id": "withExoComputedMachine→refuse",
         "points": [
           {
-            "x": 463.8,
-            "y": 1753.3
+            "x": 468.5,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 853.3
+            "y": 1205.8
           },
           {
             "x": 820.5,
-            "y": 853.3
+            "y": 1205.8
           },
           {
             "x": 999,
-            "y": 853.3
+            "y": 1205.8
           },
           {
             "x": 1177.5,
-            "y": 853.3
+            "y": 1205.8
           },
           {
             "x": 1356,
-            "y": 853.3
+            "y": 1205.8
           },
           {
-            "x": 1529.4,
-            "y": 1193.3
+            "x": 1458,
+            "y": 1230.8
           }
         ]
       },
@@ -7920,16 +7873,16 @@
         "id": "withExoComputedMachine→seatExoManagedRows",
         "points": [
           {
-            "x": 466.4,
-            "y": 1753.3
+            "x": 466.3,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 1106.5
+            "y": 1071
           },
           {
             "x": 738,
-            "y": 1116.9
+            "y": 1060.6
           }
         ]
       },
@@ -7937,16 +7890,16 @@
         "id": "withExoComputedMachine→TExoComputedBuilder",
         "points": [
           {
-            "x": 461.1,
-            "y": 1822.3
+            "x": 460.8,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 3348
+            "y": 3450
           },
           {
             "x": 674,
-            "y": 3348
+            "y": 3450
           }
         ]
       },
@@ -7954,16 +7907,16 @@
         "id": "withExoComputedMachine→TExoComputedLive",
         "points": [
           {
-            "x": 464.1,
-            "y": 1753.3
+            "x": 464.4,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 892.5
+            "y": 896.3
           },
           {
             "x": 715.5,
-            "y": 900.4
+            "y": 880.4
           }
         ]
       },
@@ -7971,24 +7924,32 @@
         "id": "withExoComputedMachine→TExoComputedMachine",
         "points": [
           {
-            "x": 478.1,
-            "y": 1822.3
+            "x": 482,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 2089.8
+            "y": 2015.8
           },
           {
             "x": 820.5,
-            "y": 2089.8
+            "y": 2015.8
           },
           {
             "x": 999,
-            "y": 2089.8
+            "y": 2015.8
           },
           {
-            "x": 1086.6,
-            "y": 2123
+            "x": 1177.5,
+            "y": 2015.8
+          },
+          {
+            "x": 1356,
+            "y": 2015.8
+          },
+          {
+            "x": 1400.5,
+            "y": 2015.8
           }
         ]
       },
@@ -7996,24 +7957,24 @@
         "id": "withExoComputedMachine→TExoComputedMachineNode",
         "points": [
           {
-            "x": 465.9,
-            "y": 1753.3
+            "x": 463.6,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 1067.3
+            "y": 799.3
           },
           {
             "x": 820.5,
-            "y": 1067.3
+            "y": 799.3
           },
           {
             "x": 999,
-            "y": 1067.3
+            "y": 799.3
           },
           {
-            "x": 1087.6,
-            "y": 1101.3
+            "x": 1146,
+            "y": 960.5
           }
         ]
       },
@@ -8021,16 +7982,16 @@
         "id": "withExoComputedMachine→TExoComputedSettleCell",
         "points": [
           {
-            "x": 465.2,
-            "y": 1753.3
+            "x": 464.9,
+            "y": 1725.5
           },
           {
             "x": 642,
-            "y": 1008.8
+            "y": 954.8
           },
           {
             "x": 674,
-            "y": 1008.8
+            "y": 954.8
           }
         ]
       },
@@ -8038,32 +7999,32 @@
         "id": "withExoComputedMachine→TExoMachineBody",
         "points": [
           {
-            "x": 459.8,
-            "y": 1822.3
+            "x": 460,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 4043.8
+            "y": 3875
           },
           {
             "x": 820.5,
-            "y": 4043.8
+            "y": 3875
           },
           {
             "x": 999,
-            "y": 4043.8
+            "y": 3875
           },
           {
             "x": 1177.5,
-            "y": 4043.8
+            "y": 3875
           },
           {
             "x": 1356,
-            "y": 4043.8
+            "y": 3875
           },
           {
             "x": 1400.5,
-            "y": 4053.1
+            "y": 3884.3
           }
         ]
       },
@@ -8071,32 +8032,32 @@
         "id": "withExoComputedMachine→TExoMachineDerivation",
         "points": [
           {
-            "x": 460.7,
-            "y": 1822.3
+            "x": 461.1,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 3502
+            "y": 3299.8
           },
           {
             "x": 820.5,
-            "y": 3502
+            "y": 3299.8
           },
           {
             "x": 999,
-            "y": 3502
+            "y": 3299.8
           },
           {
             "x": 1177.5,
-            "y": 3502
+            "y": 3299.8
           },
           {
             "x": 1356,
-            "y": 3502
+            "y": 3299.8
           },
           {
             "x": 1400.5,
-            "y": 3512.9
+            "y": 3313.9
           }
         ]
       },
@@ -8104,32 +8065,32 @@
         "id": "withExoComputedMachine→TExoMachineFieldHandle",
         "points": [
           {
-            "x": 460.3,
-            "y": 1822.3
+            "x": 460.5,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 3729.8
+            "y": 3561
           },
           {
             "x": 820.5,
-            "y": 3729.8
+            "y": 3561
           },
           {
             "x": 999,
-            "y": 3729.8
+            "y": 3561
           },
           {
             "x": 1177.5,
-            "y": 3729.8
+            "y": 3561
           },
           {
             "x": 1356,
-            "y": 3729.8
+            "y": 3561
           },
           {
-            "x": 1487.9,
-            "y": 3823.5
+            "x": 1496.1,
+            "y": 3676.5
           }
         ]
       },
@@ -8137,40 +8098,40 @@
         "id": "withExoComputedMachine→TExoMachineProgram",
         "points": [
           {
-            "x": 565,
-            "y": 1810.4
+            "x": 603.5,
+            "y": 1746.7
           },
           {
             "x": 642,
-            "y": 1826.5
+            "y": 1743.3
           },
           {
             "x": 820.5,
-            "y": 1826.5
+            "y": 1743.3
           },
           {
             "x": 999,
-            "y": 1826.5
+            "y": 1743.3
           },
           {
             "x": 1177.5,
-            "y": 1826.5
+            "y": 1743.3
           },
           {
             "x": 1356,
-            "y": 1826.5
+            "y": 1743.3
           },
           {
             "x": 1547,
-            "y": 1826.5
+            "y": 1743.3
           },
           {
             "x": 1738,
-            "y": 1826.5
+            "y": 1743.3
           },
           {
-            "x": 1873.7,
-            "y": 2126
+            "x": 1889.8,
+            "y": 2280
           }
         ]
       },
@@ -8178,40 +8139,40 @@
         "id": "withExoComputedMachine→TExoMachineTarget",
         "points": [
           {
-            "x": 462.5,
-            "y": 1822.3
+            "x": 462.7,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 2948
+            "y": 2873.3
           },
           {
             "x": 820.5,
-            "y": 2948
+            "y": 2873.3
           },
           {
             "x": 999,
-            "y": 2948
+            "y": 2873.3
           },
           {
             "x": 1177.5,
-            "y": 2948
+            "y": 2873.3
           },
           {
             "x": 1356,
-            "y": 2948
+            "y": 2873.3
           },
           {
             "x": 1547,
-            "y": 2948
+            "y": 2873.3
           },
           {
             "x": 1738,
-            "y": 2948
+            "y": 2873.3
           },
           {
             "x": 1835.5,
-            "y": 2989.5
+            "y": 2914.8
           }
         ]
       },
@@ -8219,40 +8180,40 @@
         "id": "withExoComputedMachine→TExoMachineWake",
         "points": [
           {
-            "x": 460.8,
-            "y": 1822.3
+            "x": 461.3,
+            "y": 1794.5
           },
           {
             "x": 642,
-            "y": 3451.5
+            "y": 3249.3
           },
           {
             "x": 820.5,
-            "y": 3451.5
+            "y": 3249.3
           },
           {
             "x": 999,
-            "y": 3451.5
+            "y": 3249.3
           },
           {
             "x": 1177.5,
-            "y": 3451.5
+            "y": 3249.3
           },
           {
             "x": 1356,
-            "y": 3451.5
+            "y": 3249.3
           },
           {
             "x": 1547,
-            "y": 3451.5
+            "y": 3249.3
           },
           {
             "x": 1738,
-            "y": 3451.5
+            "y": 3249.3
           },
           {
-            "x": 1866.3,
-            "y": 3539.8
+            "x": 1862.2,
+            "y": 3328.3
           }
         ]
       }

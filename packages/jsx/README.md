@@ -74,7 +74,7 @@ export const cardSchema = exoJsx<TCardPorts>(($) => (
 - `data-id={$.id}` — an attribute port, filled with `c.attr(CardPorts.id, value)`.
 - `{$.title}` as an element's **only** child — a text port, filled with `c.text`.
 - `onClick={$.open}` (tail lowercased) or `on:dblclick={$.edit}` (name as written)
-  — an event port, handled with `cardBuilder.on(CardPorts.open, handler)`.
+  — an event port, handled with `on(CardPorts.open, handler)` inside `withExoHandlers`.
 - `ref={$.box}` — a ref port: a reference to the element and no way to write it.
 - `unsafeHtml={$.body}` — a children port standing for the element's whole
   content, filled with unescaped markup by `c.unsafeHtml`; nothing sanitises it.

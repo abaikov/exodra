@@ -67,7 +67,7 @@ export const withExoHydration = <TBase extends TExoDomApi>(
                 const root = requireExoElement(parent.firstElementChild, 'a top-level instance');
                 let child: TExoDomChild | null = null;
                 const ambient = exoTeardownScope(() => {
-                    child = buildAdoptedExoChild(schema, root, machine, 0, null, params);
+                    child = buildAdoptedExoChild(schema, root, machine, null, params);
                 });
                 const adopted = child as unknown as TExoDomChild;
                 exoOnTeardown(adopted, ambient);

@@ -35,11 +35,14 @@ function createStore<TValue>(value: TValue) {
 import {
     EXO_PORT_CHILDREN,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoEffects,
+    withExoTransitions,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -55,11 +58,14 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
         li.textPort(RowPorts.label);
     });
 });
-const rowBuilder = createExoMachineBuilder<TExoDomNode>(rowSchema);
-const showItem = rowBuilder.transition((row: TExoDomNode, item: TItem) => {
-    row.text(RowPorts.label, item.label);
-});
-const Row = rowBuilder.done();
+const rowMachine = composeExoMachine(createExoMachine<TExoDomNode>(rowSchema), (m) =>
+    withExoTransitions(m, {
+        showItem: (row, item: TItem) => {
+            row.text(RowPorts.label, item.label);
+        },
+    })
+);
+const { showItem } = rowMachine.transitions;
 
 const items = createStore<readonly TItem[]>([{ id: 'a', label: 'First' }]);
 
@@ -73,23 +79,30 @@ const listSchema = createExoSchema(ListPorts, (b) => {
 
 type TListState = { rows: TExoChildList; shown: TItem[] };
 
-const listBuilder = createExoMachineBuilder<TExoDomNode, unknown, TListState>(listSchema);
-listBuilder.createInitialState((c) => ({ rows: c.childList(ListPorts.rows), shown: [] }));
-function showItems(c: TExoMachineBuilderNode<typeof listBuilder>): void {
+const listBase = createExoMachine(listSchema, {
+    createInitialState: (c: TExoDomNode, _params: unknown): TListState => ({
+        rows: c.childList(ListPorts.rows),
+        shown: [],
+    }),
+});
+function showItems(c: TExoMachineNodeOf<typeof listBase>): void {
     const want = items.getValue();
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-        const row = c.build(Row, i);
+    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item) => {
+        const row = c.build(rowMachine);
         showItem(row, item);
         return row;
     });
 }
-listBuilder.effect((c) => {
-    showItems(c);
-    return items.onChange(() => showItems(c));
-});
-const List = listBuilder.done();
+const listMachine = composeExoMachine(listBase, (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            showItems(c);
+            return items.onChange(() => showItems(c));
+        });
+    })
+);
 
-backend.render(List, document.body);
+backend.render(listMachine, document.body);
 items.setValue([...items.getValue(), { id: 'b', label: 'Second' }]);
 ```
 
@@ -100,14 +113,15 @@ built. A backend without it throws [EXO0109](../errors.md#exo0109) at the first
 
 Three pieces, each in one place:
 
-- **`createInitialState`** opens the child list once and keeps it, with the order
+- **`createInitialState`**, the base machine's option, opens the child list once and keeps it, with the order
   currently shown, in the machine's state. It is the only place a child list may be
   opened.
 - **The draw** (`showItems`) is "state → rows": it reads what should be shown and hands
   `reconcileExoOrder(kids, shown, keys, want, build)` the order shown and the order
   wanted. For an identity list `keys` and `want` are the same array. It returns the
   new shown order. Nothing outside the list calls it, so it is a plain function; the
-  row's `showItem` is a transition because the list fires it on each row it builds.
+  row's `showItem` is a transition — declared with `withExoTransitions` and read off
+  `rowMachine.transitions` — because the list fires it on each row it builds.
 - **The effect** draws first, synchronously, then subscribes and returns the
   unsubscribe. On a hydrated page the first draw is what adopts the server's rows,
   and it must happen while the instance is being armed — which is where effects
@@ -120,13 +134,13 @@ Three levels are available, and the cheapest one that fits is the one to use:
 
 | Call | When |
 | --- | --- |
-| `c.list(port, component, count)` | the contents **cannot** change — rendered once, no row records, no diff, no teardown |
+| `c.list(port, component, rows)` | the contents **cannot** change — rendered once, no row records, no diff, no teardown |
 | `reconcileExoOrder(c.state.rows, c.state.shown, items, items, build)` where the data changes | the ordinary reactive list, reconciled by item identity |
 | `c.keyedList(port, keyOf, build, update)` → `{ reconcile(items) }` | rows with no stable identity, reconciled by key |
 
 The second one **is** the open one. The two halves it is written over —
 `c.childList(port)`, which hands back the port's live children, and
-`c.build(component, index)`, which makes a child and places it nowhere — are both
+`c.build(component, params?)`, which makes a child and places it nowhere — are both
 doors on the exonode. A caller who wants a different reuse policy writes a
 different function over the same two doors, with no reconciler to subclass and
 nothing to opt out of; the keyed policy is exactly that, already written:
@@ -170,7 +184,7 @@ the bodies:
   every instance a page builds; adoption is depth-first and synchronous, so the cell is
   saved and restored around each instance's wiring.
 
-A build callback that names a *component* (`(item, i) => c.build(Row, i)`) takes the
+A build callback that names a *component* (`(item) => c.build(rowMachine, item)`) takes the
 same cursor by the same `build`, and nothing above is special to it. **How much a list of
 caller-built nodes costs on a hydrated page has never been measured** — a build callback
 that hands back a node it did not get from `c.build`. It is a real option on a hydrated
@@ -214,7 +228,7 @@ The fix is not a renderer feature, it is keeping the item objects stable:
   [`@oimdb/*`](https://oimdb.org/llms.txt) are built this way — a
   row's identity is the entity's permanent slot, not a projection made per read.
 - A field edit should reach the row through the row's **own** effect, not
-  through a new list. Subscribe to the field inside `Row` and a change to it writes
+  through a new list. Subscribe to the field inside `rowMachine` and a change to it writes
   one attribute; it never reaches the reconciler at all.
 - If a projection is unavoidable (a filter, a sort), either cache the projected
   objects by their stable id so that re-running the projection yields the same
@@ -238,12 +252,15 @@ DOM backend it stands on `withExoChildList` too:
 import {
     EXO_PORT_CHILDREN,
     EXO_PORT_TEXT,
+    composeExoMachine,
     composeExoPlugins,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoEffects,
+    withExoTransitions,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { EXO_KEYED_LIST_VOCABULARY } from '@exodra/list-reconcile';
@@ -263,11 +280,14 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
         li.textPort(RowPorts.name);
     });
 });
-const rowBuilder = createExoMachineBuilder<TExoDomNode>(rowSchema);
-const setUser = rowBuilder.transition((row: TExoDomNode, user: TUser) => {
-    row.text(RowPorts.name, user.name);
-});
-const Row = rowBuilder.done();
+const rowMachine = composeExoMachine(createExoMachine<TExoDomNode>(rowSchema), (m) =>
+    withExoTransitions(m, {
+        setUser: (row, user: TUser) => {
+            row.text(RowPorts.name, user.name);
+        },
+    })
+);
+const { setUser } = rowMachine.transitions;
 
 const users = createStore<readonly TUser[]>([
     { id: 1, name: 'ada' },
@@ -281,33 +301,36 @@ const listSchema = createExoSchema(ListPorts, (b) => {
         ul.childrenPort(ListPorts.rows);
     });
 });
-const listBuilder = createExoMachineBuilder<
-    TExoDomNode & TExoKeyedListApi,
-    unknown,
-    { users: TExoKeyedList<TUser> }
->(listSchema);
-listBuilder.createInitialState((c) => ({
-    users: c.keyedList(
-        ListPorts.rows,
-        (user: TUser) => user.id,
-        (user, i) => {
-            const row = c.build(Row, i);
-            setUser(row, user);
-            return row;
-        },
-        setUser
-    ),
-}));
-function showUsers(c: TExoMachineBuilderNode<typeof listBuilder>): void {
+const listBase = createExoMachine(listSchema, {
+    createInitialState: (
+        c: TExoDomNode & TExoKeyedListApi,
+        _params: unknown
+    ): { users: TExoKeyedList<TUser> } => ({
+        users: c.keyedList(
+            ListPorts.rows,
+            (user: TUser) => user.id,
+            (user) => {
+                const row = c.build(rowMachine);
+                setUser(row, user);
+                return row;
+            },
+            setUser
+        ),
+    }),
+});
+function showUsers(c: TExoMachineNodeOf<typeof listBase>): void {
     c.state.users.reconcile(users.getValue());
 }
-listBuilder.effect((c) => {
-    showUsers(c);
-    return users.onChange(() => showUsers(c));
-});
-const List = listBuilder.done();
+const listMachine = composeExoMachine(listBase, (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            showUsers(c);
+            return users.onChange(() => showUsers(c));
+        });
+    })
+);
 
-backend.render(List, document.body);
+backend.render(listMachine, document.body);
 users.setValue([
     { id: 2, name: 'bob' },
     { id: 1, name: 'ada lovelace' },
@@ -351,7 +374,14 @@ the teardown against the child being wired. It ends when that row leaves,
 subscription cost is `O(visible)` rather than `O(total)`:
 
 ```ts
-import { EXO_PORT_ATTR, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoTransitions,
+} from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
 type TItem = { readonly id: string };
@@ -367,12 +397,15 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
         li.attrPort(RowPorts.id, 'data-id');
     });
 });
-const rowBuilder = createExoMachineBuilder<TExoDomNode>(rowSchema);
-export const showItem = rowBuilder.transition((row: TExoDomNode, item: TItem) => {
-    row.attr(RowPorts.id, item.id);
-    row.onTeardown(store.subscribeOnKey(item.id, () => {}));
-});
-export const Row = rowBuilder.done();
+export const rowMachine = composeExoMachine(createExoMachine<TExoDomNode>(rowSchema), (m) =>
+    withExoTransitions(m, {
+        showItem: (row, item: TItem) => {
+            row.attr(RowPorts.id, item.id);
+            row.onTeardown(store.subscribeOnKey(item.id, () => {}));
+        },
+    })
+);
+export const { showItem } = rowMachine.transitions;
 ```
 
 An effect's returned unsubscribe is already owned by the instance —
@@ -383,19 +416,19 @@ with nothing to end it is refused rather than left to outlive the page that made
 it.
 
 **Both examples above build on a DOM-only exonode type
-(`createExoMachineBuilder<TExoDomNode>`), and that is the honest type for them.** `c.nodes`, `c.schema`, `c.openChildList` and
+(`createExoMachine<TExoDomNode>`), and that is the honest type for them.** `c.nodes`, `c.schema`, `c.openChildList` and
 `c.childListEndNode` are fields and methods of the DOM and hydration exonodes;
 `TExoStrNode` has none of them, and has nothing for them to be about — it
 writes strings into an array. A machine built over `TExoWiring` from
 `@exodra/core` is what makes one component serve, render and hydrate. A machine
 that reaches past the shared surface is browser-only, and
-`createExoMachineBuilder<TExoDomNode>` is how it says so.
+`createExoMachine<TExoDomNode>` is how it says so.
 
 ## Choosing
 
 | You have… | Use |
 |---|---|
-| contents that cannot change | `c.list(port, Row, count)` |
+| contents that cannot change | `c.list(port, rowMachine, rows)` |
 | "the current set of items" from a store | `reconcileExoOrder(c.state.rows, c.state.shown, items, items, build)` where the data changes — identity-stable items |
 | rows with no stable identity (freshly parsed JSON per refetch) | `c.keyedList(port, keyOf, build, update)` from `EXO_KEYED_LIST_VOCABULARY`, kept in state, `reconcile(items)` where the data changes |
 | a producer that knows the exact mutation, or a reuse policy of your own | `c.childList(port)` and its `insert`/`move`/`remove`, driven by hand |

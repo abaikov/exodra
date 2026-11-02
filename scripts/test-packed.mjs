@@ -254,11 +254,13 @@ module.exports = {
  */
 const APP_TSX = `
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoHandlers } from '@exodra/core';
 import type { TExoAttrPort, TExoChildrenPort, TExoEventPort, TExoTextPort } from '@exodra/core';
 
-const ROW_IDS: readonly string[] = ['r1', 'r2'];
-const ROW_LABELS: readonly string[] = ['Alpha & Omega', 'Beta'];
+const ROWS: readonly { id: string; label: string }[] = [
+    { id: 'r1', label: 'Alpha & Omega' },
+    { id: 'r2', label: 'Beta' },
+];
 
 const heading = 'Packed';
 export const clicks = { count: 0 };
@@ -273,21 +275,21 @@ const ROW_SCHEMA = exoJsx<{ id: TExoAttrPort; label: TExoTextPort }>(($) => (
         <span class="row__label">{$.label}</span>
     </li>
 ));
-const mRow = createExoMachineBuilder(ROW_SCHEMA);
-mRow.createInitialState((c, i) => {
-    c.attr(ROW_SCHEMA.ports.id, ROW_IDS[i]);
-    c.text(ROW_SCHEMA.ports.label, ROW_LABELS[i]);
-    return null;
+const ROW = createExoMachine(ROW_SCHEMA, {
+    createInitialState: (c, row: { id: string; label: string }) => {
+        c.attr(ROW_SCHEMA.ports.id, row.id);
+        c.text(ROW_SCHEMA.ports.label, row.label);
+        return null;
+    },
 });
-const ROW = mRow.done();
 
 const BADGE_SCHEMA = exoJsx<{ text: TExoTextPort }>(($) => <em class="badge">{$.text}</em>);
-const mBadge = createExoMachineBuilder(BADGE_SCHEMA);
-mBadge.createInitialState((c) => {
-    c.text(BADGE_SCHEMA.ports.text, badgeText);
-    return null;
+const BADGE = createExoMachine(BADGE_SCHEMA, {
+    createInitialState: (c) => {
+        c.text(BADGE_SCHEMA.ports.text, badgeText);
+        return null;
+    },
 });
-const BADGE = mBadge.done();
 
 const APP_SCHEMA = exoJsx<{
     heading: TExoTextPort;
@@ -304,16 +306,18 @@ const APP_SCHEMA = exoJsx<{
     </section>
 ));
 const P = APP_SCHEMA.ports;
-const mApp = createExoMachineBuilder(APP_SCHEMA);
-mApp.createInitialState((c) => {
-    c.text(P.heading, heading);
-    c.one(P.badge, BADGE);
-    c.list(P.rows, ROW, ROW_IDS.length);
-    c.on(P.bump, bump);
-    c.text(P.count, clicks.count);
-    return null;
-});
-export const APP = mApp.done();
+export const APP = composeExoMachine(
+    createExoMachine(APP_SCHEMA, {
+        createInitialState: (c) => {
+            c.text(P.heading, heading);
+            c.one(P.badge, BADGE);
+            c.list(P.rows, ROW, ROWS);
+            c.text(P.count, clicks.count);
+            return null;
+        },
+    }),
+    (m) => withExoHandlers(m, (on) => on(P.bump, () => bump())),
+);
 `;
 
 /**
@@ -345,7 +349,7 @@ import { pathToFileURL } from 'node:url';
 // construct. Either way the gate could not have passed against any source in this repository,
 // and \`npm run release\` ran unguarded. A missing name here is a resolution error at module
 // evaluation, which is why the imports are named rather than namespace imports.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { composeExoMachine, createExoMachine, createExoSchema, withExoHandlers } from '@exodra/core';
 import { exoStyle } from '@exodra/core/style';
 import { ExoStrBackend } from '@exodra/string';
 import { ExoDomBackend, withExoCompiler, withExoHydration } from '@exodra/dom';
@@ -376,7 +380,8 @@ const assert = (condition, message) => {
 // ───────────────────────────────────────────── 5. every packed package, through its bare name
 
 assert(typeof createExoSchema === 'function', '@exodra/core exports createExoSchema');
-assert(typeof createExoMachineBuilder === 'function', '@exodra/core exports createExoMachineBuilder');
+assert(typeof createExoMachine === 'function', '@exodra/core exports createExoMachine');
+assert(typeof composeExoMachine === 'function', '@exodra/core exports composeExoMachine');
 
 // ───────────────────── the two backends, as CLASSES, composed ONCE for the whole of this fixture
 //
@@ -709,23 +714,24 @@ const PAGE_SCHEMA = createExoSchema(b => {
     });
     return { title, count, click };
 });
-const mPage = createExoMachineBuilder(PAGE_SCHEMA);
-mPage.createInitialState((c, i) => {
-    const P = PAGE_SCHEMA.ports;
-    const ssr = c.inject(EXO_SSR_RESPONSE);
-    if (ssr !== undefined) {
-        ssr.setStatus(201);
-        ssr.setHeader('cache-control', 'no-store');
-        ssr.addHead('<title>Packed</title>');
-        ssr.setState('user', 'ada');
-    }
-    c.text(P.title, 'Page ' + i);
-    c.attr(P.count, i);
-    c.on(P.click, () => {
+const PAGE = composeExoMachine(
+    createExoMachine(PAGE_SCHEMA, {
+        createInitialState: c => {
+            const ssr = c.inject(EXO_SSR_RESPONSE);
+            if (ssr !== undefined) {
+                ssr.setStatus(201);
+                ssr.setHeader('cache-control', 'no-store');
+                ssr.addHead('<title>Packed</title>');
+                ssr.setState('user', 'ada');
+            }
+            c.text(PAGE_SCHEMA.ports.title, 'Page');
+            c.attr(PAGE_SCHEMA.ports.count, 0);
+        },
+    }),
+    m => withExoHandlers(m, on => on(PAGE_SCHEMA.ports.click, () => {
         pageClicks += 1;
-    });
-});
-const PAGE = mPage.done();
+    })),
+);
 
 // NO COUNT: a page is ONE instance, and the second parameter is the options object. It used to be
 // \`renderExoPage(PAGE, 1, {…})\`, which put \`1\` where the options go and dropped the head entry the
@@ -797,11 +803,11 @@ const ISLAND_SCHEMA = createExoSchema(b => {
     });
     return { host };
 });
-const mIsland = createExoMachineBuilder(ISLAND_SCHEMA);
-mIsland.createInitialState(c => {
-    reactIsland(c, ISLAND_SCHEMA.ports.host, ReactLabel, { value: 7 });
+const ISLAND = createExoMachine(ISLAND_SCHEMA, {
+    createInitialState: c => {
+        reactIsland(c, ISLAND_SCHEMA.ports.host, ReactLabel, { value: 7 });
+    },
 });
-const ISLAND = mIsland.done();
 const islandHtml = EXO_STR.render(ISLAND);
 assert(
     islandHtml.includes('react-val') && islandHtml.includes('v=7'),

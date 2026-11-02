@@ -20,7 +20,7 @@ npm install @exodra/context
 ## Example
 
 ```ts
-import { EXO_PORT_ATTR, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_ATTR, createExoMachine, createExoSchema, exoPorts, withExoWire } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { exoContextToken, nextExoId } from '@exodra/context';
 
@@ -39,14 +39,14 @@ const fieldSchema = createExoSchema(FieldPorts, (b) => {
         });
     });
 });
-const fieldBuilder = createExoMachineBuilder<TExoMachineNode, unknown, string>(fieldSchema);
-fieldBuilder.createInitialState((c) => nextExoId(c));
-fieldBuilder.wire((c) => {
+const fieldBase = createExoMachine(fieldSchema, {
+    createInitialState: (c: TExoMachineNode) => nextExoId(c),
+});
+export const Field = withExoWire(fieldBase, (c) => {
     c.attr(FieldPorts.cls, 'field field--' + (c.inject(THEME) ?? 'light'));
     c.attr(FieldPorts.labelFor, c.state);
     c.attr(FieldPorts.inputId, c.state);
 });
-export const Field = fieldBuilder.done();
 ```
 
 The root provides both, in its `createInitialState`, on the server and in the

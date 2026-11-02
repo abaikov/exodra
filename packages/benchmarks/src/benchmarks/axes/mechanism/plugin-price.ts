@@ -141,7 +141,7 @@
 // ── THE NULL, WHICH THIS SUITE HAS PUBLISHED TABLES WITHOUT AND SHOULD NOT HAVE ─────────────
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 //
-// A `·twin` ROW IS A SECOND, SEPARATELY DECLARED, IDENTICAL PARTICIPANT — its own `createExoMachineBuilder`
+// A `·twin` ROW IS A SECOND, SEPARATELY DECLARED, IDENTICAL PARTICIPANT — its own `createExoMachine`
 // calls, therefore its own declarations and its own compiled schemas, or its own backend instance
 // where that is what the measured rows differ in. Its true difference from its original is ZERO, so
 // whatever a run reports between the two is what that run CANNOT TELL APART FROM NOTHING, and every
@@ -221,7 +221,12 @@ import { gateMarkup, markupOf } from '../../gates/markup-gate';
 import { el } from '../../shared/todo-spec';
 import { emitRecordedRows, type Scenario } from '../../../harness';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 
 // eslint-disable-next-line no-console
 const line = (s: string): void => console.log(`✅ ${s}`);
@@ -379,8 +384,7 @@ type TRowSource = TExoBenchSource<readonly TExoPriceRow[]>;
 /**
  * THE ONE INDIRECTION EVERY EXODRA ROW PAYS, and it is paid ONCE, at mount, by all of them equally.
  *
- * A shell's wire cannot be handed a source — there are no props anywhere in this library, and a wire
- * receives its INDEX and nothing else — so the source is a module-level variable, rewritten untimed
+ * A shell is rendered with no params, so the source is a module-level variable, rewritten untimed
  * immediately before a render. This is `one-and-static`'s arrangement for the same reason, and it is
  * a module read per LIST, never per row and never per update.
  *
@@ -511,8 +515,8 @@ function createSlotStore(): TExoSlotStore {
 }
 
 /**
- * THE STORE THE SHELL'S WIRE READS, for the reason `SOURCE` is a module variable: a wire is handed
- * a connector and its index and nothing else. Rewritten untimed immediately before a render.
+ * THE STORE THE SHELL'S WIRE READS, for the reason `SOURCE` is a module variable: the shell is
+ * rendered with no params. Rewritten untimed immediately before a render.
  */
 let STORE: TExoSlotStore = createSlotStore();
 
@@ -525,16 +529,6 @@ function seedStore(): TExoSlotStore {
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 // THE SUBJECTS — declared at module load, so every schema is compiled in the warm-up
 // ═══════════════════════════════════════════════════════════════════════════════════════════
-
-/**
- * WHAT A ROW READS, BY INDEX.
- *
- * A wire is handed its POSITION and nothing else, so the item a row stands for is written here by
- * the build callback an instant before `c.build` arms the row. A row keeps what it was built with for life,
- * which is the point: nothing re-wires a row the reconciler merely moved.
- */
-const BUILDING_ROW: TExoPriceRow[] = [];
-const BUILDING_SLOT: TExoSlotEntity[] = [];
 
 /** `<li class="row"><span class="name">…</span><span class="meta">…</span></li>`. */
 const rowStamped = () => {
@@ -551,13 +545,13 @@ const rowStamped = () => {
         });
         return { name, meta };
     });
-    const mMachine = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA);
-    mMachine.createInitialState((c, i) => {
-        const row = BUILDING_ROW[i];
-        c.text(MACHINE_SCHEMA.ports.name, ID_TEXT[row.id]);
-        c.text(MACHINE_SCHEMA.ports.meta, row.label);
+    const mMachine = createExoMachine<TExoDomNode, TExoPriceRow>(MACHINE_SCHEMA, {
+        createInitialState: (c, row) => {
+            c.text(MACHINE_SCHEMA.ports.name, ID_TEXT[row.id]);
+            c.text(MACHINE_SCHEMA.ports.meta, row.label);
+        },
     });
-    return mMachine.done();
+    return mMachine;
 };
 
 const ROW = rowStamped();
@@ -596,32 +590,44 @@ const listBound = (row: TExoDomMachine): TExoDomMachine => {
         readonly source: TRowSource;
         shown: TExoPriceRow[];
     };
-    const mMachine2 = createExoMachineBuilder<TExoDomNode, unknown, TListState>(MACHINE_SCHEMA2);
-    mMachine2.createInitialState(
-        (c): TListState => ({
+    const mMachine2 = createExoMachine<TExoDomNode, unknown, TListState>(MACHINE_SCHEMA2, {
+        createInitialState: (c): TListState => ({
             rows: c.childList(MACHINE_SCHEMA2.ports.rows),
             source: SOURCE,
             shown: [],
-        })
+        }),
+    });
+    const machine = composeExoMachine(
+        mMachine2,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = c.state.source.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(row, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return c.state.source.onChange(() => showRows(c));
+                });
+            })
     );
-    const showRows = mMachine2.transition((c) => {
-        const want = c.state.source.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            BUILDING_ROW[i] = item;
-            return c.build(row, i);
-        });
-    });
-    mMachine2.effect((c) => {
-        showRows(c);
-        return c.state.source.onChange(() => showRows(c));
-    });
-    return mMachine2.done();
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 const LIST_BOUND = listBound(ROW);
 
 /**
- * THE NULL'S SHELL — a SECOND `createExoMachineBuilder` call over a SECOND row component.
+ * THE NULL'S SHELL — a SECOND `createExoMachine` call over a SECOND row component.
  *
  * Two rows of the tables below therefore share NOTHING but the source variable and the backend, and
  * their true difference is zero.
@@ -663,22 +669,33 @@ const rowBound = () => {
         });
         return { name, meta };
     });
-    const mMachine3 = createExoMachineBuilder<TExoDomNode, unknown, TExoSlotEntity>(
-        MACHINE_SCHEMA3
+    const mMachine3 = createExoMachine<TExoDomNode, TExoSlotEntity, TExoSlotEntity>(
+        MACHINE_SCHEMA3,
+        {
+            createInitialState: (c, row): TExoSlotEntity => {
+                c.text(MACHINE_SCHEMA3.ports.name, ID_TEXT[row.id]);
+                return row;
+            },
+        }
     );
-    mMachine3.createInitialState((c, i): TExoSlotEntity => {
-        const row = BUILDING_SLOT[i];
-        c.text(MACHINE_SCHEMA3.ports.name, ID_TEXT[row.id]);
-        return row;
-    });
-    const showLabel = mMachine3.transition((c) => {
-        c.text(MACHINE_SCHEMA3.ports.meta, c.state.label.getValue());
-    });
-    mMachine3.effect((c) => {
-        showLabel(c);
-        return c.state.label.onChange(() => showLabel(c));
-    });
-    return mMachine3.done();
+    const machine = composeExoMachine(
+        mMachine3,
+        (m) =>
+            withExoTransitions(m, {
+                showLabel: (c) => {
+                    c.text(MACHINE_SCHEMA3.ports.meta, c.state.label.getValue());
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showLabel(c);
+                    return c.state.label.onChange(() => showLabel(c));
+                });
+            })
+    );
+    const { showLabel } = machine.transitions;
+    return machine;
 };
 
 const ROW_BOUND = rowBound();
@@ -706,34 +723,44 @@ const listStore = (row: TExoDomMachine): TExoDomMachine => {
         readonly source: TExoBenchSource<readonly TExoSlotEntity[]>;
         shown: TExoSlotEntity[];
     };
-    const mMachine4 = createExoMachineBuilder<TExoDomNode, unknown, TStoreListState>(
-        MACHINE_SCHEMA4
-    );
-    mMachine4.createInitialState(
-        (c): TStoreListState => ({
+    const mMachine4 = createExoMachine<TExoDomNode, unknown, TStoreListState>(MACHINE_SCHEMA4, {
+        createInitialState: (c): TStoreListState => ({
             rows: c.childList(MACHINE_SCHEMA4.ports.rows),
             source: STORE.rows,
             shown: [],
-        })
+        }),
+    });
+    const machine = composeExoMachine(
+        mMachine4,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = c.state.source.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(row, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return c.state.source.onChange(() => showRows(c));
+                });
+            })
     );
-    const showRows = mMachine4.transition((c) => {
-        const want = c.state.source.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            BUILDING_SLOT[i] = item;
-            return c.build(row, i);
-        });
-    });
-    mMachine4.effect((c) => {
-        showRows(c);
-        return c.state.source.onChange(() => showRows(c));
-    });
-    return mMachine4.done();
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 const LIST_STORE = listStore(ROW_BOUND);
 
 /**
- * THE FAST GROUP'S NULL SHELL — a SECOND `createExoMachineBuilder` call over the SECOND bound row.
+ * THE FAST GROUP'S NULL SHELL — a SECOND `createExoMachine` call over the SECOND bound row.
  *
  * `store·bound·twin` renders this, seeds its OWN store exactly as `store·bound` does, and runs the
  * identical edit at the identical round count. Its true difference from `store·bound` is zero, so
@@ -810,13 +837,14 @@ const TEXT_CELLS_SCHEMA = createExoSchema((b) => {
     });
     return { cells };
 });
-const mTEXT_CELLS = createExoMachineBuilder<TExoDomNode>(TEXT_CELLS_SCHEMA);
-mTEXT_CELLS.createInitialState((c) => {
-    const first = WRITE_TEXT[0];
-    for (let i = 0; i < WRITE_PORTS; i++) c.text(TEXT_CELLS_SCHEMA.ports.cells[i], first[i]);
-    WRITE_DOORS = c.fillDoors();
+const mTEXT_CELLS = createExoMachine<TExoDomNode>(TEXT_CELLS_SCHEMA, {
+    createInitialState: (c) => {
+        const first = WRITE_TEXT[0];
+        for (let i = 0; i < WRITE_PORTS; i++) c.text(TEXT_CELLS_SCHEMA.ports.cells[i], first[i]);
+        WRITE_DOORS = c.fillDoors();
+    },
 });
-const TEXT_CELLS = mTEXT_CELLS.done();
+const TEXT_CELLS = mTEXT_CELLS;
 
 /** The ports, hoisted once, so a round does no property load the floor does not also do. */
 const WRITE_CELL_PORTS: readonly TExoTextPort[] = TEXT_CELLS_SCHEMA.ports.cells;

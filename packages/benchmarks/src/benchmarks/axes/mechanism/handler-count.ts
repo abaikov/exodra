@@ -33,7 +33,7 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 //
 // IT WAS ORDERED ON A CLAIM THAT WAS FALSE WHEN IT WAS MADE: that a machine allocates zero closures
-// per instance for its handlers. It did not. `createExoMachineBuilder`'s wire built one closure per declared
+// per instance for its handlers. It did not. The machine's wire built one closure per declared
 // `m.on` per instance, with the author's handler taken into a `const` inside the loop body and
 // captured, so the instance also paid a context per iteration. An agent read the lines and refused
 // to build the axis, and the refusal was the right answer: at that shape both arms allocate N
@@ -94,7 +94,7 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 //
 //   `machine·nN`   THE IMPERATIVE MACHINE. N handlers declared ONCE PER COMPONENT at module load
 //                  through `m.on`, so they reach the instance through `done()`'s router and the
-//                  subject slot. State is the CACHE — `m.createInitialState(() => ({ v0: 0, … }))`, ONE
+//                  subject slot. State is the CACHE — `createExoMachine(schema, { createInitialState: () => ({ v0: 0, … }) })`, ONE
 //                  object per instance holding the N values under their own names, read with
 //                  `c.readState(K)` and written with an ordinary property store. Ports are
 //                  written with `c.text(port, value)`. Per instance: a ONE-SLOT
@@ -476,7 +476,9 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 // is what the clock refusal asks for by name. `@exodra/*` resolve to their BUILT dists, so
 // `npm run build:all` at the repository root has to have run or every framework row is old code.
 import {
-    createExoMachineBuilder,
+    createExoMachine,
+    composeExoMachine,
+    withExoHandlers,
     createExoSchema,
     type TExoEventPort,
     type TExoPort,
@@ -1061,52 +1063,57 @@ interface TKeep16 {
     v15: number;
 }
 
-const mA1 = createExoMachineBuilder<TExoDomNode>(S_A1);
-const KA1 = mA1.createInitialState((): TKeep1 => ({ v0: 0 }));
+const mA1 = createExoMachine<TExoDomNode>(S_A1, { createInitialState: (): TKeep1 => ({ v0: 0 }) });
 const MA1_0 = (c: TM): void => {
-    const s = c.readState(KA1);
+    const s = c.readState<TKeep1>();
     const v = STEP0(s.v0);
     s.v0 = v;
     c.text(A1O[0], LABELS[v]);
 };
-mA1.on(A1C[0], MA1_0);
-const MACHINE_A1 = mA1.done();
+const MACHINE_A1 = composeExoMachine(mA1, (m) =>
+    withExoHandlers(m, (on) => {
+        on(A1C[0], MA1_0);
+    })
+);
 
-const mA4 = createExoMachineBuilder<TExoDomNode>(S_A4);
-const KA4 = mA4.createInitialState((): TKeep4 => ({ v0: 0, v1: 0, v2: 0, v3: 0 }));
+const mA4 = createExoMachine<TExoDomNode>(S_A4, {
+    createInitialState: (): TKeep4 => ({ v0: 0, v1: 0, v2: 0, v3: 0 }),
+});
 const MA4_0 = (c: TM): void => {
-    const s = c.readState(KA4);
+    const s = c.readState<TKeep4>();
     const v = STEP0(s.v0);
     s.v0 = v;
     c.text(A4O[0], LABELS[v]);
 };
 const MA4_1 = (c: TM): void => {
-    const s = c.readState(KA4);
+    const s = c.readState<TKeep4>();
     const v = STEP1(s.v1);
     s.v1 = v;
     c.text(A4O[1], LABELS[v]);
 };
 const MA4_2 = (c: TM): void => {
-    const s = c.readState(KA4);
+    const s = c.readState<TKeep4>();
     const v = STEP2(s.v2);
     s.v2 = v;
     c.text(A4O[2], LABELS[v]);
 };
 const MA4_3 = (c: TM): void => {
-    const s = c.readState(KA4);
+    const s = c.readState<TKeep4>();
     const v = STEP3(s.v3);
     s.v3 = v;
     c.text(A4O[3], LABELS[v]);
 };
-mA4.on(A4C[0], MA4_0);
-mA4.on(A4C[1], MA4_1);
-mA4.on(A4C[2], MA4_2);
-mA4.on(A4C[3], MA4_3);
-const MACHINE_A4 = mA4.done();
+const MACHINE_A4 = composeExoMachine(mA4, (m) =>
+    withExoHandlers(m, (on) => {
+        on(A4C[0], MA4_0);
+        on(A4C[1], MA4_1);
+        on(A4C[2], MA4_2);
+        on(A4C[3], MA4_3);
+    })
+);
 
-const mA16 = createExoMachineBuilder<TExoDomNode>(S_A16);
-const KA16 = mA16.createInitialState(
-    (): TKeep16 => ({
+const mA16 = createExoMachine<TExoDomNode>(S_A16, {
+    createInitialState: (): TKeep16 => ({
         v0: 0,
         v1: 0,
         v2: 0,
@@ -1123,171 +1130,179 @@ const KA16 = mA16.createInitialState(
         v13: 0,
         v14: 0,
         v15: 0,
-    })
-);
+    }),
+});
 const MA16_0 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP0(s.v0);
     s.v0 = v;
     c.text(A16O[0], LABELS[v]);
 };
 const MA16_1 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP1(s.v1);
     s.v1 = v;
     c.text(A16O[1], LABELS[v]);
 };
 const MA16_2 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP2(s.v2);
     s.v2 = v;
     c.text(A16O[2], LABELS[v]);
 };
 const MA16_3 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP3(s.v3);
     s.v3 = v;
     c.text(A16O[3], LABELS[v]);
 };
 const MA16_4 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP4(s.v4);
     s.v4 = v;
     c.text(A16O[4], LABELS[v]);
 };
 const MA16_5 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP5(s.v5);
     s.v5 = v;
     c.text(A16O[5], LABELS[v]);
 };
 const MA16_6 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP6(s.v6);
     s.v6 = v;
     c.text(A16O[6], LABELS[v]);
 };
 const MA16_7 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP7(s.v7);
     s.v7 = v;
     c.text(A16O[7], LABELS[v]);
 };
 const MA16_8 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP8(s.v8);
     s.v8 = v;
     c.text(A16O[8], LABELS[v]);
 };
 const MA16_9 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP9(s.v9);
     s.v9 = v;
     c.text(A16O[9], LABELS[v]);
 };
 const MA16_10 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP10(s.v10);
     s.v10 = v;
     c.text(A16O[10], LABELS[v]);
 };
 const MA16_11 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP11(s.v11);
     s.v11 = v;
     c.text(A16O[11], LABELS[v]);
 };
 const MA16_12 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP12(s.v12);
     s.v12 = v;
     c.text(A16O[12], LABELS[v]);
 };
 const MA16_13 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP13(s.v13);
     s.v13 = v;
     c.text(A16O[13], LABELS[v]);
 };
 const MA16_14 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP14(s.v14);
     s.v14 = v;
     c.text(A16O[14], LABELS[v]);
 };
 const MA16_15 = (c: TM): void => {
-    const s = c.readState(KA16);
+    const s = c.readState<TKeep16>();
     const v = STEP15(s.v15);
     s.v15 = v;
     c.text(A16O[15], LABELS[v]);
 };
-mA16.on(A16C[0], MA16_0);
-mA16.on(A16C[1], MA16_1);
-mA16.on(A16C[2], MA16_2);
-mA16.on(A16C[3], MA16_3);
-mA16.on(A16C[4], MA16_4);
-mA16.on(A16C[5], MA16_5);
-mA16.on(A16C[6], MA16_6);
-mA16.on(A16C[7], MA16_7);
-mA16.on(A16C[8], MA16_8);
-mA16.on(A16C[9], MA16_9);
-mA16.on(A16C[10], MA16_10);
-mA16.on(A16C[11], MA16_11);
-mA16.on(A16C[12], MA16_12);
-mA16.on(A16C[13], MA16_13);
-mA16.on(A16C[14], MA16_14);
-mA16.on(A16C[15], MA16_15);
-const MACHINE_A16 = mA16.done();
+const MACHINE_A16 = composeExoMachine(mA16, (m) =>
+    withExoHandlers(m, (on) => {
+        on(A16C[0], MA16_0);
+        on(A16C[1], MA16_1);
+        on(A16C[2], MA16_2);
+        on(A16C[3], MA16_3);
+        on(A16C[4], MA16_4);
+        on(A16C[5], MA16_5);
+        on(A16C[6], MA16_6);
+        on(A16C[7], MA16_7);
+        on(A16C[8], MA16_8);
+        on(A16C[9], MA16_9);
+        on(A16C[10], MA16_10);
+        on(A16C[11], MA16_11);
+        on(A16C[12], MA16_12);
+        on(A16C[13], MA16_13);
+        on(A16C[14], MA16_14);
+        on(A16C[15], MA16_15);
+    })
+);
 
 // ── THE MACHINE'S TWIN. Its own schema, its own machine, its own keep, its own sixteen bodies.
 // True difference from the family above: ZERO. ────────────────────────────────────────────────
 
-const mB1 = createExoMachineBuilder<TExoDomNode>(S_B1);
-const KB1 = mB1.createInitialState((): TKeep1 => ({ v0: 0 }));
+const mB1 = createExoMachine<TExoDomNode>(S_B1, { createInitialState: (): TKeep1 => ({ v0: 0 }) });
 const MB1_0 = (c: TM): void => {
-    const s = c.readState(KB1);
+    const s = c.readState<TKeep1>();
     const v = STEP0(s.v0);
     s.v0 = v;
     c.text(B1O[0], LABELS[v]);
 };
-mB1.on(B1C[0], MB1_0);
-const MACHINE_B1 = mB1.done();
+const MACHINE_B1 = composeExoMachine(mB1, (m) =>
+    withExoHandlers(m, (on) => {
+        on(B1C[0], MB1_0);
+    })
+);
 
-const mB4 = createExoMachineBuilder<TExoDomNode>(S_B4);
-const KB4 = mB4.createInitialState((): TKeep4 => ({ v0: 0, v1: 0, v2: 0, v3: 0 }));
+const mB4 = createExoMachine<TExoDomNode>(S_B4, {
+    createInitialState: (): TKeep4 => ({ v0: 0, v1: 0, v2: 0, v3: 0 }),
+});
 const MB4_0 = (c: TM): void => {
-    const s = c.readState(KB4);
+    const s = c.readState<TKeep4>();
     const v = STEP0(s.v0);
     s.v0 = v;
     c.text(B4O[0], LABELS[v]);
 };
 const MB4_1 = (c: TM): void => {
-    const s = c.readState(KB4);
+    const s = c.readState<TKeep4>();
     const v = STEP1(s.v1);
     s.v1 = v;
     c.text(B4O[1], LABELS[v]);
 };
 const MB4_2 = (c: TM): void => {
-    const s = c.readState(KB4);
+    const s = c.readState<TKeep4>();
     const v = STEP2(s.v2);
     s.v2 = v;
     c.text(B4O[2], LABELS[v]);
 };
 const MB4_3 = (c: TM): void => {
-    const s = c.readState(KB4);
+    const s = c.readState<TKeep4>();
     const v = STEP3(s.v3);
     s.v3 = v;
     c.text(B4O[3], LABELS[v]);
 };
-mB4.on(B4C[0], MB4_0);
-mB4.on(B4C[1], MB4_1);
-mB4.on(B4C[2], MB4_2);
-mB4.on(B4C[3], MB4_3);
-const MACHINE_B4 = mB4.done();
+const MACHINE_B4 = composeExoMachine(mB4, (m) =>
+    withExoHandlers(m, (on) => {
+        on(B4C[0], MB4_0);
+        on(B4C[1], MB4_1);
+        on(B4C[2], MB4_2);
+        on(B4C[3], MB4_3);
+    })
+);
 
-const mB16 = createExoMachineBuilder<TExoDomNode>(S_B16);
-const KB16 = mB16.createInitialState(
-    (): TKeep16 => ({
+const mB16 = createExoMachine<TExoDomNode>(S_B16, {
+    createInitialState: (): TKeep16 => ({
         v0: 0,
         v1: 0,
         v2: 0,
@@ -1304,121 +1319,124 @@ const KB16 = mB16.createInitialState(
         v13: 0,
         v14: 0,
         v15: 0,
-    })
-);
+    }),
+});
 const MB16_0 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP0(s.v0);
     s.v0 = v;
     c.text(B16O[0], LABELS[v]);
 };
 const MB16_1 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP1(s.v1);
     s.v1 = v;
     c.text(B16O[1], LABELS[v]);
 };
 const MB16_2 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP2(s.v2);
     s.v2 = v;
     c.text(B16O[2], LABELS[v]);
 };
 const MB16_3 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP3(s.v3);
     s.v3 = v;
     c.text(B16O[3], LABELS[v]);
 };
 const MB16_4 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP4(s.v4);
     s.v4 = v;
     c.text(B16O[4], LABELS[v]);
 };
 const MB16_5 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP5(s.v5);
     s.v5 = v;
     c.text(B16O[5], LABELS[v]);
 };
 const MB16_6 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP6(s.v6);
     s.v6 = v;
     c.text(B16O[6], LABELS[v]);
 };
 const MB16_7 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP7(s.v7);
     s.v7 = v;
     c.text(B16O[7], LABELS[v]);
 };
 const MB16_8 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP8(s.v8);
     s.v8 = v;
     c.text(B16O[8], LABELS[v]);
 };
 const MB16_9 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP9(s.v9);
     s.v9 = v;
     c.text(B16O[9], LABELS[v]);
 };
 const MB16_10 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP10(s.v10);
     s.v10 = v;
     c.text(B16O[10], LABELS[v]);
 };
 const MB16_11 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP11(s.v11);
     s.v11 = v;
     c.text(B16O[11], LABELS[v]);
 };
 const MB16_12 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP12(s.v12);
     s.v12 = v;
     c.text(B16O[12], LABELS[v]);
 };
 const MB16_13 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP13(s.v13);
     s.v13 = v;
     c.text(B16O[13], LABELS[v]);
 };
 const MB16_14 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP14(s.v14);
     s.v14 = v;
     c.text(B16O[14], LABELS[v]);
 };
 const MB16_15 = (c: TM): void => {
-    const s = c.readState(KB16);
+    const s = c.readState<TKeep16>();
     const v = STEP15(s.v15);
     s.v15 = v;
     c.text(B16O[15], LABELS[v]);
 };
-mB16.on(B16C[0], MB16_0);
-mB16.on(B16C[1], MB16_1);
-mB16.on(B16C[2], MB16_2);
-mB16.on(B16C[3], MB16_3);
-mB16.on(B16C[4], MB16_4);
-mB16.on(B16C[5], MB16_5);
-mB16.on(B16C[6], MB16_6);
-mB16.on(B16C[7], MB16_7);
-mB16.on(B16C[8], MB16_8);
-mB16.on(B16C[9], MB16_9);
-mB16.on(B16C[10], MB16_10);
-mB16.on(B16C[11], MB16_11);
-mB16.on(B16C[12], MB16_12);
-mB16.on(B16C[13], MB16_13);
-mB16.on(B16C[14], MB16_14);
-mB16.on(B16C[15], MB16_15);
-const MACHINE_B16 = mB16.done();
+const MACHINE_B16 = composeExoMachine(mB16, (m) =>
+    withExoHandlers(m, (on) => {
+        on(B16C[0], MB16_0);
+        on(B16C[1], MB16_1);
+        on(B16C[2], MB16_2);
+        on(B16C[3], MB16_3);
+        on(B16C[4], MB16_4);
+        on(B16C[5], MB16_5);
+        on(B16C[6], MB16_6);
+        on(B16C[7], MB16_7);
+        on(B16C[8], MB16_8);
+        on(B16C[9], MB16_9);
+        on(B16C[10], MB16_10);
+        on(B16C[11], MB16_11);
+        on(B16C[12], MB16_12);
+        on(B16C[13], MB16_13);
+        on(B16C[14], MB16_14);
+        on(B16C[15], MB16_15);
+    })
+);
 
 // ---------------------------------------------------------------------------------------
 // THE FLOOR'S PROTOTYPES. Parsed once at module load out of a `<template>` and LEFT WHERE THE
@@ -2503,8 +2521,8 @@ function gatePremise(): void {
         refuse(
             'handler-count: THE PREMISE IS FALSE IN THE CODE THAT WILL RUN. Two instances of one ' +
                 'machine component hold TWO DIFFERENT function objects in their click slots, so ' +
-                'the machine is allocating one closure PER INSTANCE — which is what `createExoMachineBuilder` ' +
-                'did before `done()` built one router per handler per COMPONENT ' +
+                'the machine is allocating one closure PER INSTANCE — which is what the machine ' +
+                'did before `withExoHandlers` built one router per handler per COMPONENT ' +
                 '(exo-machine.ts:629-635). The built `@exodra/core` this page loaded predates that ' +
                 'change. Run `npm run build:all` at the repository root and re-run; nothing below ' +
                 'would have measured what this axis is for.'

@@ -1,4 +1,11 @@
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoHandlers,
+    createExoSchema,
+} from '@exodra/core';
 import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 
 const APP_SCHEMA = createExoSchema((b) => {
@@ -24,20 +31,28 @@ const APP_SCHEMA = createExoSchema((b) => {
 });
 const P = APP_SCHEMA.ports;
 
-const mApp = createExoMachineBuilder<TExoMachineNode, unknown, { clicks: number }>(APP_SCHEMA);
-mApp.createInitialState(() => ({ clicks: 0 }));
-
-const showCount = mApp.transition((c) => {
-    c.text(P.count, c.state.clicks);
+const mApp = createExoMachine<TExoMachineNode, unknown, { clicks: number }>(APP_SCHEMA, {
+    createInitialState: () => ({ clicks: 0 }),
 });
 
-mApp.wire((c) => {
-    showCount(c);
-});
-
-mApp.on(P.click, (c) => {
-    c.state.clicks++;
-    showCount(c);
-});
-
-export const APP = mApp.done();
+export const APP = composeExoMachine(
+    mApp,
+    (m) =>
+        withExoTransitions(m, {
+            showCount: (c) => {
+                c.text(P.count, c.state.clicks);
+            },
+        }),
+    (m) =>
+        withExoWire(m, (c) => {
+            showCount(c);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(P.click, (c) => {
+                c.state.clicks++;
+                showCount(c);
+            });
+        })
+);
+const { showCount } = APP.transitions;

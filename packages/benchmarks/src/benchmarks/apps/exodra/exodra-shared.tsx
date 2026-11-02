@@ -5,7 +5,13 @@
 // changed the data fires it. What that costs the application is the walk in `exodra.tsx`'s
 // `advance`, and showing that cost is the point of the row.
 import type { TExoTransitionOverrides } from '@exodra/core';
-import { createExoMachineBuilder, type TExoChildrenPort, type TExoNode } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    type TExoChildrenPort,
+    type TExoNode,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import type { TExoChildrenWiring, TExoTextPort } from '@exodra/core';
 import type { TExoPlacedChildren } from '@exodra/list-reconcile';
@@ -44,16 +50,19 @@ const TAG_SCHEMA = createExoSchema((b) => {
     return { label };
 });
 
-const mTag = createExoMachineBuilder<TExoMachineNode>(TAG_SCHEMA);
+const mTag = createExoMachine<TExoMachineNode>(TAG_SCHEMA);
 const PT = TAG_SCHEMA.ports;
 
-/** THE ONE DOOR A TAG'S TEXT IS WRITTEN THROUGH, on its first fill and on every later one — a
- *  machine takes no props, so the value arrives as a transition argument. */
-export const writeTagLabel = mTag.transition((c: TExoMachineNode, text: string) => {
-    c.text(PT.label, text);
-});
-
-export const TAG = mTag.done();
+export const TAG = composeExoMachine(mTag, (m) =>
+    withExoTransitions(m, {
+        /** THE ONE DOOR A TAG'S TEXT IS WRITTEN THROUGH, on its first fill and on every later one — a
+         *  machine takes no props, so the value arrives as a transition argument. */
+        writeTagLabel: (c: TExoMachineNode, text: string) => {
+            c.text(PT.label, text);
+        },
+    })
+);
+export const { writeTagLabel } = TAG.transitions;
 
 /** The conditional block. NO PORTS AND NO STATE: every byte of it is known at declaration, so the
  *  machine is bare — a component still carries both halves, even when the second has no work.
@@ -66,4 +75,4 @@ const DETAILS_SCHEMA = createExoSchema((b) => {
     return {};
 });
 
-export const DETAILS = createExoMachineBuilder<TExoMachineNode>(DETAILS_SCHEMA).done();
+export const DETAILS = createExoMachine<TExoMachineNode>(DETAILS_SCHEMA);

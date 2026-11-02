@@ -30,7 +30,7 @@ export type Prepare = () => Scenario;
 // every axis measures, and the field is whatever third-party participants that axis lists
 // alongside it.
 //
-// `exodra` MEANS THE SCHEMA CORE — `createExoMachineBuilder` from `@exodra/core` rendered by
+// `exodra` MEANS THE SCHEMA CORE — `createExoMachine` from `@exodra/core` rendered by
 // `ExoDomBackend.render` from `@exodra/dom`. It is the only Exodra renderer in the repository. The
 // three-props renderer that used to hold this name has been deleted; a row labelled `exodra`
 // in any output of this suite is the schema core and nothing else.

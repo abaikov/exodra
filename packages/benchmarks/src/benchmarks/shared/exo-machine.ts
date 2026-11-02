@@ -14,7 +14,7 @@
 //     derivation is a pure function of the state, the port its result goes into, and the OR of the
 //     field bits it reads.
 //         { name: 'label', mask: F_NAME | F_OPEN, port: P.label, compute: (s) => … }
-//  3. AN INSTANCE IS A STATE OBJECT, A PORT HANDLE AND AN INTEGER. `createExoMachineBuilder` builds it and runs
+//  3. AN INSTANCE IS A STATE OBJECT, A PORT HANDLE AND AN INTEGER. `createExoMachine` builds it and runs
 //     every derivation once, which is the initial fill.
 //  4. A TRANSITION WRITES FIELDS AND ORs THEIR BITS. It is a plain function the component author
 //     writes; nothing here is a base class and nothing here is subscribed to.
@@ -146,7 +146,7 @@ export interface TExoBenchMachine<TState> {
  * 11% mount regression from growing per-instance objects field by field instead of letting V8 size
  * them in place.
  */
-export function createExoMachineBuilder<TState>(
+export function createExoMachine<TState>(
     state: TState,
     ports: TExoFillDoors,
     derivations: readonly TExoDerivation<TState>[]

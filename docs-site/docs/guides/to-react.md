@@ -36,12 +36,13 @@ The helpers are plain React and depend on nothing from Exodra: `buildExoChild`,
 
 ## What a machine becomes
 
-One machine — `createExoMachineBuilder(SCHEMA)` through `m.done()` — becomes one
+One machine — a `createExoMachine(schema, options?)` base, alone or composed with
+`composeExoMachine(base, …decorators)` — becomes one
 function component, exported under a PascalCase name and under the machine's
 original constant name:
 
 ```tsx no-check
-export function Counter({ index = 0, params }: { index?: number; params?: unknown }) { … }
+export function Counter({ params }: { params?: unknown }) { … }
 export const COUNTER = Counter;
 ```
 
@@ -50,11 +51,11 @@ export const COUNTER = Counter;
 | every attribute, text, children and html port | a `useState` pair |
 | a ref port | a `useRef` |
 | the machine state | a `useRef` |
-| `m.transition(fn)` | an inner function of the component |
-| `m.on(port, fn)` | the handler prop on the element that declared the event port |
-| `m.createInitialState(fn)` | a `useLayoutEffect` that runs once |
-| `m.wire(fn)` | a `useLayoutEffect` that re-runs when `params` changes |
-| `m.effect(fn)` | a `useEffect` that runs once |
+| each entry of `withExoTransitions(m, { name: fn })`, called through `machine.transitions` | an inner function of the component |
+| `on(port, fn)` inside `withExoHandlers` | the handler prop on the element that declared the event port |
+| the `createInitialState` option | a `useLayoutEffect` that runs once, handed `params` |
+| `withExoWire(m, fn)` | a `useLayoutEffect` that re-runs when `params` changes |
+| `effect(fn)` inside `withExoEffects` | a `useEffect` that runs once |
 | `c.onTeardown(off)` | collected and called on unmount |
 
 Inside those functions:
@@ -65,8 +66,9 @@ Inside those functions:
 | `c.on(port, handler)` | stores the handler in state |
 | `c.state`, `c.readState()` | the state ref's `current` |
 | `c.childList(port)` | `createExoChildren(setter)` |
-| `c.build(MACHINE, index, params)` | `buildExoChild(Component, index, params)` |
-| `c.one`, `c.list` | the port's state setter with built children |
+| `c.build(MACHINE, params)` | `buildExoChild(Component, params)` |
+| `c.one(port, MACHINE, params)` | the port's state setter with one built child |
+| `c.list(port, MACHINE, rows)` | the port's state setter with `rows.map((rowParams) => buildExoChild(Component, rowParams).element)` |
 | `wireExoNode(node, MACHINE, params)` | `wireExoChild(child, Component, params)` — the row re-renders with the new `params` |
 | `reconcileExoOrder(…)` from `@exodra/list-reconcile` | the helper of the same name and signature; a row that survives keeps its React key, so React keeps its DOM element |
 
@@ -82,8 +84,12 @@ Everything below lands in `unsupported` instead of in wrong code:
 
 - a schema written with `createExoSchema` (the cursor form); only `exoJsx` is read;
 - an `exoJsx` body that is not one returned element;
-- any machine step other than `createInitialState`, `wire`, `effect`, `on`,
-  `transition` and `done` — `transitionOverrides` among them;
+- any `createExoMachine` option other than `createInitialState`, and any
+  `composeExoMachine` step other than one call of `withExoTransitions`,
+  `withExoWire`, `withExoHandlers` or `withExoEffects`;
+- any use of a machine other than destructuring `machine.transitions` —
+  `machine.overrides(…)` among them — an exported transition, and an effect handle
+  kept in a variable;
 - any connector call outside the tables above;
 - an exonode passed around as a value, other than to the calls above;
 - a machine whose schema is not declared in the same file.

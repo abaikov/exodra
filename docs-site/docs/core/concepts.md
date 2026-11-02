@@ -28,11 +28,16 @@ element plus one indirect call per port. Nothing is diffed and nothing is walked
 at render time.
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoWire,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
-
-/** The row's own datum, by index. A view is handed its index and nothing else. */
-const BUILDING: string[] = [];
 
 const RowPorts = exoPorts({ id: EXO_PORT_ATTR, label: EXO_PORT_TEXT });
 
@@ -44,14 +49,18 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
         });
     });
 });
-const rowBuilder = createExoMachineBuilder<TExoMachineNode, unknown, string>(rowSchema);
-rowBuilder.createInitialState((_c, index) => BUILDING[index]);
-rowBuilder.wire((c) => {
-    const name = c.state;
-    c.attr(RowPorts.id, name);
-    c.text(RowPorts.label, name.toUpperCase());
-});
-const Row = rowBuilder.done();
+// A view is handed its params and nothing else: here, the row's own datum.
+const rowMachine = composeExoMachine(
+    createExoMachine(rowSchema, {
+        createInitialState: (_c: TExoMachineNode, name: string) => name,
+    }),
+    (m) =>
+        withExoWire(m, (c) => {
+            const name = c.state;
+            c.attr(RowPorts.id, name);
+            c.text(RowPorts.label, name.toUpperCase());
+        })
+);
 ```
 
 ## Ports
@@ -122,7 +131,7 @@ what is unchanged, mint a new one for what changed. React hides identity and
 hands you `key` / `memo` as escape hatches; Exodra makes identity first-class.
 
 Underneath the reconciler, a child is a value you can hold: `c.build(component,
-index)` returns one, and `c.childList(port)` is the placement door — `insert`,
+params)` returns one, and `c.childList(port)` is the placement door — `insert`,
 `move`, `remove` — that holds whatever is put in it. Whoever drives that door
 decides everything else — which item reuses which child, and what a key would mean
 if you wanted one. See
@@ -130,14 +139,26 @@ if you wanted one. See
 
 ## State, transitions and effects
 
-A machine's state is what `createInitialState` returns, once per instance; it is
-`c.state` from then on. A **transition** — `counterBuilder.transition((c) => …)` —
+A machine is a base from `createExoMachine(schema, options?)` with parts added by
+decorators — `withExoWire`, `withExoHandlers`, `withExoEffects`, `withExoTransitions` —
+each returning a new machine, applied in order by `composeExoMachine`. Its state is what
+the base's `createInitialState` option returns, once per instance; it is
+`c.state` from then on. A **transition** — `withExoTransitions(m, { showCount: (c) => … })`,
+called through `counterMachine.transitions.showCount` —
 is one named place that turns state into port writes: the wire, the handlers and
 the effects can all call it, and so can code outside the machine. Data that lives **outside** the instance is followed by an
 **effect** that draws first, then subscribes, and returns the unsubscribe:
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoEffects,
+    withExoTransitions,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 
 const count = {
@@ -165,15 +186,23 @@ const counterSchema = createExoSchema(CounterPorts, (b) => {
         output.textPort(CounterPorts.text);
     });
 });
-const counterBuilder = createExoMachineBuilder<TExoMachineNode>(counterSchema);
-const showCount = counterBuilder.transition((c) => {
-    c.text(CounterPorts.text, count.getValue());
-});
-counterBuilder.effect((c) => {
-    showCount(c);
-    return count.onChange(() => showCount(c));
-});
-const Counter = counterBuilder.done();
+const counterMachine = composeExoMachine(
+    createExoMachine<TExoMachineNode>(counterSchema),
+    (m) =>
+        withExoTransitions(m, {
+            showCount: (c) => {
+                c.text(CounterPorts.text, count.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showCount(c);
+                return count.onChange(() => showCount(c));
+            });
+        })
+);
+const { showCount } = counterMachine.transitions;
 ```
 
 The source is anything with a read and a subscription — a store, an
@@ -187,8 +216,8 @@ calls, and the difference between them is how much may change later:
 
 | Call | What it puts in the port |
 | --- | --- |
-| `c.one(port, component)` | one instance, built now |
-| `c.list(port, component, count)` | a fixed list of `count` instances — rendered once, never reconciled |
+| `c.one(port, component, params?)` | one instance, built now |
+| `c.list(port, component, rows)` | a fixed list, one instance per element of `rows`, each handed its element as params — rendered once, never reconciled |
 | `reconcileExoOrder(c.state.rows, c.state.shown, want, want, build)` over `c.childList(port)` | a live list, reconciled by object identity |
 
 A children port **is a child**: it renders exactly where `childrenPort(Ports.x)` was
@@ -197,7 +226,7 @@ called, so it may stand between static siblings.
 ```ts
 import {
     EXO_PORT_CHILDREN,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     createExoStatic,
     exoPorts,
@@ -217,11 +246,11 @@ const pageSchema = createExoSchema(PagePorts, (b) => {
         div.el('main', null, (m) => { m.text('…'); });
     });
 });
-const pageBuilder = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(pageSchema);
-pageBuilder.createInitialState((c) => {
-    c.one(PagePorts.head, Masthead);
+const pageMachine = createExoMachine(pageSchema, {
+    createInitialState: (c: TExoChildrenWiring & TExoMachineNode, _params: unknown) => {
+        c.one(PagePorts.head, Masthead);
+    },
 });
-const Page = pageBuilder.done();
 ```
 
 ## Cleanup

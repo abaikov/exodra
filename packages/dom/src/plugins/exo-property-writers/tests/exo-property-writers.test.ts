@@ -22,7 +22,13 @@
 // AND THE COST GUARD IS THE LAST CASE, because the saving hydration exists for is that the first
 // write is skipped where it would change nothing: a port this pack DELEGATES must adopt exactly as
 // it did before, writing nothing.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoAttrPort,
@@ -59,15 +65,25 @@ const badgeBoundTo = (tag: string, name: string, src: TSource) => {
         });
         return { x: p };
     });
-    const m = createExoMachineBuilder<TExoMachineNode>(schema);
-    const show = m.transition((c) => {
-        c.attr(schema.ports.x, src.getValue());
-    });
-    m.effect((c) => {
-        show(c);
-        return src.onChange(() => show(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode>(schema);
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => {
+                    c.attr(schema.ports.x, src.getValue());
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return src.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = machine.transitions;
+    return machine;
 };
 
 /** The same, with the port FILLED rather than bound — the other half of the silenced table. */

@@ -61,7 +61,7 @@ function that throws, because an element in that dialect is compiled away into a
 `b.el(…)` line inside a schema and a `c.text(…)` / `c.attr(…)` line inside a
 machine's `wire`, and no runtime can interpret one. On a page with no
 compiler you write those two halves yourself — `exoPorts({ … })` with
-`createExoSchema(ports, build)`, and `createExoMachineBuilder(schema)` — which is
+`createExoSchema(ports, build)`, and `createExoMachine(schema)` with its decorators — which is
 what every example below does.
 
 ## ES modules (recommended)
@@ -91,7 +91,16 @@ what resolves it, and it pins every version in one place as a bonus:
 }}
 </script>
 <script type="module">
-  import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+  import {
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoHandlers,
+    withExoWire,
+  } from '@exodra/core';
   import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
   const backend = withExoCompiler(new ExoDomBackend());
@@ -107,18 +116,22 @@ what resolves it, and it pins every version in one place as a bonus:
       div.el('span', null, span => { span.textPort(CounterPorts.text); });
     });
   });
-  const counterBuilder = createExoMachineBuilder(counterSchema);
-  counterBuilder.createInitialState(() => ({ count: 0 }));
-  counterBuilder.wire(c => {
-    c.text(CounterPorts.text, `Count: ${c.state.count}`);
-  });
-  counterBuilder.on(CounterPorts.click, c => {
-    c.state.count++;
-    c.text(CounterPorts.text, `Count: ${c.state.count}`);
-  });
-  const Counter = counterBuilder.done();
+  const counterMachine = composeExoMachine(
+    createExoMachine(counterSchema, {
+      createInitialState: () => ({ count: 0 }),
+    }),
+    m => withExoWire(m, c => {
+      c.text(CounterPorts.text, `Count: ${c.state.count}`);
+    }),
+    m => withExoHandlers(m, on => {
+      on(CounterPorts.click, c => {
+        c.state.count++;
+        c.text(CounterPorts.text, `Count: ${c.state.count}`);
+      });
+    }),
+  );
 
-  backend.render(Counter, document.body);
+  backend.render(counterMachine, document.body);
 </script>
 ```
 
@@ -199,7 +212,16 @@ internet into `Uncaught SyntaxError: Unexpected token 'export'`.
 <script src="https://cdn.jsdelivr.net/npm/@exodra/core@0.3"></script>
 <script src="https://cdn.jsdelivr.net/npm/@exodra/dom@0.3"></script>
 <script>
-  const { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } = Exodra.core;
+  const {
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoHandlers,
+    withExoWire,
+  } = Exodra.core;
   const { ExoDomBackend, withExoCompiler } = Exodra.dom;
 
   const backend = withExoCompiler(new ExoDomBackend());
@@ -215,18 +237,22 @@ internet into `Uncaught SyntaxError: Unexpected token 'export'`.
       div.el('span', null, span => { span.textPort(CounterPorts.text); });
     });
   });
-  const counterBuilder = createExoMachineBuilder(counterSchema);
-  counterBuilder.createInitialState(() => ({ count: 0 }));
-  counterBuilder.wire(c => {
-    c.text(CounterPorts.text, `Count: ${c.state.count}`);
-  });
-  counterBuilder.on(CounterPorts.click, c => {
-    c.state.count++;
-    c.text(CounterPorts.text, `Count: ${c.state.count}`);
-  });
-  const Counter = counterBuilder.done();
+  const counterMachine = composeExoMachine(
+    createExoMachine(counterSchema, {
+      createInitialState: () => ({ count: 0 }),
+    }),
+    m => withExoWire(m, c => {
+      c.text(CounterPorts.text, `Count: ${c.state.count}`);
+    }),
+    m => withExoHandlers(m, on => {
+      on(CounterPorts.click, c => {
+        c.state.count++;
+        c.text(CounterPorts.text, `Count: ${c.state.count}`);
+      });
+    }),
+  );
 
-  backend.render(Counter, document.body);
+  backend.render(counterMachine, document.body);
 </script>
 ```
 
@@ -251,7 +277,7 @@ What each namespace holds:
 
 | package | global |
 | --- | --- |
-| `@exodra/core` | `Exodra.core` — `createExoSchema`, `createExoMachineBuilder`, `createExoNamedSchema`, `createExoStatic`, `exoPorts`, the `EXO_PORT_*` kinds, `withExoSchemaAsserts`, `composeExoPlugins` |
+| `@exodra/core` | `Exodra.core` — `createExoSchema`, `createExoMachine`, `withExoTransitions`, `withExoWire`, `withExoHandlers`, `withExoEffects`, `composeExoMachine`, `createExoNamedSchema`, `createExoStatic`, `exoPorts`, the `EXO_PORT_*` kinds, `withExoSchemaAsserts`, `composeExoPlugins` |
 | `@exodra/dom` | `Exodra.dom` — `ExoDomBackend`, `withExoCompiler`, `withExoHydration`, `exoForeignNode` |
 | `@exodra/router` | `Exodra.router` — `createExoRouter`, `createExoBrowserHistory`, `provideExoRouter`, `injectExoRouter`, `ExoOutlet`, `exoOutlet`, `ExoLink` |
 | `@exodra/list-reconcile` | `Exodra.listReconcile` — `reconcileExoOrder`, `createExoKeyedList`, `EXO_KEYED_LIST_VOCABULARY` |

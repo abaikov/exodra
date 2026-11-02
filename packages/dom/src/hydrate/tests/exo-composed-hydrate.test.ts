@@ -134,7 +134,11 @@ const listComponent = (count: number) =>
         buildList,
         (P): TExoMachineInitialState<TExoChildrenWiring<Event, Element>> =>
             (c) => {
-                c.list(P.rows, ROW, count);
+                c.list(
+                    P.rows,
+                    ROW,
+                    Array.from({ length: count }, (_, i) => i)
+                );
             }
     );
 
@@ -356,7 +360,11 @@ describe('a backend that composes ONLY its events, leaving every other implement
             buildList,
             (P): TExoMachineInitialState<TExoChildrenWiring<Event, Element>> =>
                 (c) => {
-                    c.list(P.rows, CLICKABLE, count);
+                    c.list(
+                        P.rows,
+                        CLICKABLE,
+                        Array.from({ length: count }, (_, i) => i)
+                    );
                 }
         );
         return { CLICKABLE, GROUP };

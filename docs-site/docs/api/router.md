@@ -238,8 +238,16 @@ A component that follows the URL subscribes with `onChange` from a machine
 teardown ends it:
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoEffects,
+    withExoWire,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { injectExoRouter } from '@exodra/router';
 
 const WherePorts = exoPorts({ path: EXO_PORT_TEXT });
@@ -249,18 +257,23 @@ const whereSchema = createExoSchema(WherePorts, (b) => {
         p.textPort(WherePorts.path);
     });
 });
-const whereBuilder = createExoMachineBuilder<TExoMachineNode>(whereSchema);
+const whereBaseMachine = createExoMachine(whereSchema);
 
-function showPath(c: TExoMachineBuilderNode<typeof whereBuilder>): void {
+function showPath(c: TExoMachineNodeOf<typeof whereBaseMachine>): void {
     c.text(WherePorts.path, injectExoRouter(c).getLocation().pathname);
 }
 
-whereBuilder.wire((c) => showPath(c));
-whereBuilder.effect((c) => {
-    showPath(c);
-    return injectExoRouter(c).onChange(() => showPath(c));
-});
-const Where = whereBuilder.done();
+export const whereMachine = composeExoMachine(
+    whereBaseMachine,
+    (m) => withExoWire(m, (c) => showPath(c)),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showPath(c);
+                return injectExoRouter(c).onChange(() => showPath(c));
+            });
+        })
+);
 ```
 
 `onChange` runs after every commit and every navigation-state change, and only
@@ -385,8 +398,8 @@ live URL?) that never existed. Rename `readExoSearch` → `parseExoQuery` and
 Three things make a routed page, and none of them is a JSX element:
 
 - **A page is a machine**, and the match that selected it arrives as the
-  **params of its wire**: `createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(pageSchema)`,
-  then `pageBuilder.wire((c, match) => …)`.
+  **params of its wire**: `createExoMachine<TExoMachineNode, TExoRouteMatch>(pageSchema)`,
+  then `withExoWire(m, (c, match) => …)`.
 - **A route boundary is a machine.** `ExoOutlet` (a `<div>`) or `exoOutlet(tag, attrs)`,
   placed with `c.one(port, ExoOutlet)`; its one child is the page the URL selects.
 - **The router travels in the context.** `provideExoRouter(c, router)` above,
@@ -421,9 +434,11 @@ const ROUTES: readonly TExoRoute[] = [
 import {
   EXO_PORT_CHILDREN,
   EXO_PORT_TEXT,
-  createExoMachineBuilder,
+  composeExoMachine,
+  createExoMachine,
   createExoSchema,
   exoPorts,
+  withExoWire,
 } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
@@ -444,13 +459,15 @@ const userPageSchema = createExoSchema(UserPagePorts, (b) => {
     h.textPort(UserPagePorts.name);
   });
 });
-const userPageBuilder = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(userPageSchema);
-userPageBuilder.wire((c, match) => {
-  c.text(UserPagePorts.name, match.params.id);
-});
-const UserPage = userPageBuilder.done();
+const userPageMachine = composeExoMachine(
+  createExoMachine<TExoMachineNode, TExoRouteMatch>(userPageSchema),
+  (m) =>
+    withExoWire(m, (c, match) => {
+      c.text(UserPagePorts.name, match.params.id);
+    })
+);
 
-const ROUTES: readonly TExoRoute[] = [{ path: '/users/:id', component: UserPage }];
+const ROUTES: readonly TExoRoute[] = [{ path: '/users/:id', component: userPageMachine }];
 
 const router = createExoRouter(ROUTES, { history: createExoBrowserHistory() });
 
@@ -466,16 +483,16 @@ const appSchema = createExoSchema(AppPorts, (b) => {
     });
   });
 });
-const appBuilder = createExoMachineBuilder<TExoDomNode>(appSchema);
-appBuilder.createInitialState((c) => {
-  provideExoRouter(c, router);
-  c.one(AppPorts.nav, ExoLink, { to: '/users/1', label: 'First user' });
-  c.one(AppPorts.page, ExoOutlet);
+const appMachine = createExoMachine(appSchema, {
+  createInitialState: (c: TExoDomNode) => {
+    provideExoRouter(c, router);
+    c.one(AppPorts.nav, ExoLink, { to: '/users/1', label: 'First user' });
+    c.one(AppPorts.page, ExoOutlet);
+  },
 });
-const App = appBuilder.done();
 
 const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
-backend.render(App, document.getElementById('root') as HTMLElement);
+backend.render(appMachine, document.getElementById('root') as HTMLElement);
 ```
 
 `TExoDomNode` types the app against the browser. A machine that has to run on the
@@ -531,7 +548,7 @@ would rebuild and re-plan a shape that has not changed.
 A layout is a route with `children`, and its page places its own `ExoOutlet`:
 
 ```ts
-import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachine, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode } from '@exodra/core';
 import { ExoOutlet } from '@exodra/router';
 
@@ -546,11 +563,11 @@ const layoutSchema = createExoSchema(LayoutPorts, (b) => {
     s.childrenPort(LayoutPorts.page);
   });
 });
-const layoutBuilder = createExoMachineBuilder<TNestingNode>(layoutSchema);
-layoutBuilder.createInitialState((c) => {
-  c.one(LayoutPorts.page, ExoOutlet);
+const layoutMachine = createExoMachine(layoutSchema, {
+  createInitialState: (c: TNestingNode) => {
+    c.one(LayoutPorts.page, ExoOutlet);
+  },
 });
-const Layout = layoutBuilder.done();
 ```
 
 Depth is automatic: the nested boundary finds its parent boundary through the
@@ -575,9 +592,8 @@ arriving layout, and never into the layout that is leaving.
 
 A page's wire may only **write ports**. Placing children (`childList`, `one`,
 `list`) in a wire throws `EXO0103` when the wire is re-run. Place children in
-`createInitialState`, which can read its match with
-`injectExoRouter(c).getMatches()[index]` — `index` is the boundary depth it was
-built at.
+`createInitialState`, which receives the page's match as its `params` — the
+same value the first run of the wire is handed.
 
 ## ExoLink
 
@@ -598,7 +614,7 @@ type TExoLinkParams = {
 ```
 
 ```ts
-import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachine, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoLink } from '@exodra/router';
 
@@ -609,13 +625,13 @@ const navSchema = createExoSchema(NavPorts, (b) => {
     n.childrenPort(NavPorts.items);
   });
 });
-const navBuilder = createExoMachineBuilder<TExoDomNode>(navSchema);
-navBuilder.createInitialState((c) => {
-  const items = c.childList(NavPorts.items);
-  items.insert(c.build(ExoLink, 0, { to: '/', label: 'Home', currentWhen: 'exact' }));
-  items.insert(c.build(ExoLink, 1, { to: '/about', label: 'About', currentWhen: 'prefix' }));
+const navMachine = createExoMachine(navSchema, {
+  createInitialState: (c: TExoDomNode) => {
+    const items = c.childList(NavPorts.items);
+    items.insert(c.build(ExoLink, { to: '/', label: 'Home', currentWhen: 'exact' }));
+    items.insert(c.build(ExoLink, { to: '/about', label: 'About', currentWhen: 'prefix' }));
+  },
 });
-const Nav = navBuilder.done();
 ```
 
 `ExoLink` injects the router itself, and it renders on the **server** too — the
@@ -671,8 +687,8 @@ A loader that resolves to something that is not a page is refused by
 subscriber an hour later, with no call stack pointing at the table.
 
 `isExoPageMachine(component)` is the test underneath: a page is a machine — an
-object carrying `declaration` and `handlers`, which `createExoMachineBuilder(…).done()`
-returns — and a loader or a plain function is not one.
+object carrying `declaration` and `handlers`, which `createExoMachine` and every decorator
+over it return — and a loader or a plain function is not one.
 
 ## Context tokens
 

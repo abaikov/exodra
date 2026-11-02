@@ -6,7 +6,10 @@ import { createExoSchema } from '../../schema/factories/createExoSchema';
 import { armExoNode } from '../armExoNode';
 import { connectExoNode } from '../connectExoNode';
 import { disconnectExoNode } from '../disconnectExoNode';
-import { createExoMachineBuilder } from '../factories/createExoMachineBuilder';
+import { createExoMachine } from '../factories/createExoMachine';
+import { composeExoMachine } from '../composeExoMachine';
+import { withExoEffects } from '../withExoEffects';
+import type { TExoMachineEffect } from '../types/TExoMachineEffect';
 import { stopExoEffects } from '../stopExoEffects';
 import type { TExoSchemaCursor } from '../../schema/cursor/types/TExoSchemaCursor';
 import type { TExoBaseNodeFields } from '../../wiring/types/TExoBaseNodeFields';
@@ -45,20 +48,23 @@ function buildRow(b: TExoSchemaCursor): { label: TExoAttrPort } {
 }
 
 function rowWithTwoEffects(log: string[]) {
-    const m = createExoMachineBuilder<TRow>(createExoSchema(buildRow));
+    const m = createExoMachine<TRow>(createExoSchema(buildRow));
     let a = 0;
     let b = 0;
-    m.effect(() => {
-        const at = a++;
-        log.push(`a on ${at}`);
-        return () => log.push(`a off ${at}`);
-    });
-    m.effect(() => {
-        const at = b++;
-        log.push(`b on ${at}`);
-        return () => log.push(`b off ${at}`);
-    });
-    return m.done();
+    return composeExoMachine(m, (m) =>
+        withExoEffects(m, (effect) => {
+            effect(() => {
+                const at = a++;
+                log.push(`a on ${at}`);
+                return () => log.push(`a off ${at}`);
+            });
+            effect(() => {
+                const at = b++;
+                log.push(`b on ${at}`);
+                return () => log.push(`b off ${at}`);
+            });
+        })
+    );
 }
 
 describe('disconnectExoNode / connectExoNode', () => {
@@ -80,13 +86,16 @@ describe('disconnectExoNode / connectExoNode', () => {
     });
 
     it('does not let a disposer bring an effect back up in the middle of a disconnect', () => {
-        const m = createExoMachineBuilder<TRow>(createExoSchema(buildRow));
         let starts = 0;
-        const handle = m.effect((c) => {
-            starts++;
-            return () => c.restartEffect(handle);
-        });
-        const ROW = m.done();
+        let handle!: TExoMachineEffect<TRow>;
+        const ROW = composeExoMachine(createExoMachine<TRow>(createExoSchema(buildRow)), (m) =>
+            withExoEffects(m, (effect) => {
+                handle = effect((c) => {
+                    starts++;
+                    return () => c.restartEffect(handle);
+                });
+            })
+        );
         const row = nodeOf();
         armExoNode(row, ROW);
 
@@ -115,18 +124,22 @@ describe('disconnectExoNode / connectExoNode', () => {
 
 describe('stopEffect', () => {
     function rowWithHandles(log: string[]) {
-        const m = createExoMachineBuilder<TRow>(createExoSchema(buildRow));
         let a = 0;
-        const first = m.effect(() => {
-            const at = a++;
-            log.push(`a on ${at}`);
-            return () => log.push(`a off ${at}`);
-        });
-        m.effect(() => {
-            log.push('b on');
-            return () => log.push('b off');
-        });
-        return { ROW: m.done(), first };
+        let first!: TExoMachineEffect<TRow>;
+        const ROW = composeExoMachine(createExoMachine<TRow>(createExoSchema(buildRow)), (m) =>
+            withExoEffects(m, (effect) => {
+                first = effect(() => {
+                    const at = a++;
+                    log.push(`a on ${at}`);
+                    return () => log.push(`a off ${at}`);
+                });
+                effect(() => {
+                    log.push('b on');
+                    return () => log.push('b off');
+                });
+            })
+        );
+        return { ROW, first };
     }
 
     it('ends one effect, leaves the others running, and restartEffect brings it back', () => {
@@ -157,18 +170,21 @@ describe('stopEffect', () => {
     });
 
     it('leaves the effect off even when its own stop restarts it', () => {
-        const m = createExoMachineBuilder<TRow>(createExoSchema(buildRow));
         const log: string[] = [];
         let n = 0;
-        const handle = m.effect((c) => {
-            const at = n++;
-            log.push(`on ${at}`);
-            return () => {
-                log.push(`off ${at}`);
-                if (at === 0) c.restartEffect(handle);
-            };
-        });
-        const ROW = m.done();
+        let handle!: TExoMachineEffect<TRow>;
+        const ROW = composeExoMachine(createExoMachine<TRow>(createExoSchema(buildRow)), (m) =>
+            withExoEffects(m, (effect) => {
+                handle = effect((c) => {
+                    const at = n++;
+                    log.push(`on ${at}`);
+                    return () => {
+                        log.push(`off ${at}`);
+                        if (at === 0) c.restartEffect(handle);
+                    };
+                });
+            })
+        );
         const row = nodeOf();
         armExoNode(row, ROW);
 

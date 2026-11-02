@@ -698,7 +698,13 @@ import { ExoStrBackend, exoStrSchemaOf, renderExoStrInstance } from '@exodra/str
 import type { TExoStrSchema, TExoStrWriter } from '@exodra/string';
 import type { Scenario } from '../../../harness';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoHandlers,
+} from '@exodra/core';
 
 /**
  * THE SERVER BACKEND, BUILT ONCE AT MODULE LOAD — what the library rows render through, and the
@@ -815,15 +821,16 @@ function buildRow(b: TExoSchemaCursor): RowPorts {
  * upper rungs and that row are running the same wire against the same schema, which is the point.
  */
 const ROW_SCHEMA = createExoSchema(buildRow);
-const mROW = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(ROW_SCHEMA);
-mROW.createInitialState((c, i) => {
-    c.attr(ROW_SCHEMA.ports.id, i);
-    c.attr(ROW_SCHEMA.ports.href, '/i/' + i);
-    c.text(ROW_SCHEMA.ports.title, 'Task ' + i);
-    c.text(ROW_SCHEMA.ports.author, AUTHORS[i & 7]);
-    c.on(ROW_SCHEMA.ports.fav, NOOP);
+const mROW = createExoMachine<TExoChildrenWiring & TExoMachineNode, number>(ROW_SCHEMA, {
+    createInitialState: (c, i) => {
+        c.attr(ROW_SCHEMA.ports.id, i);
+        c.attr(ROW_SCHEMA.ports.href, '/i/' + i);
+        c.text(ROW_SCHEMA.ports.title, 'Task ' + i);
+        c.text(ROW_SCHEMA.ports.author, AUTHORS[i & 7]);
+        c.on(ROW_SCHEMA.ports.fav, NOOP);
+    },
 });
-const ROW = mROW.done();
+const ROW = mROW;
 
 /**
  * THE LIBRARY'S NULL — the identical shape and the identical wire, declared again, so its
@@ -838,15 +845,16 @@ const ROW = mROW.done();
  * package's source.
  */
 const ROW_TWIN_SCHEMA = createExoSchema(buildRow);
-const mROW_TWIN = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(ROW_TWIN_SCHEMA);
-mROW_TWIN.createInitialState((c, i) => {
-    c.attr(ROW_TWIN_SCHEMA.ports.id, i);
-    c.attr(ROW_TWIN_SCHEMA.ports.href, '/i/' + i);
-    c.text(ROW_TWIN_SCHEMA.ports.title, 'Task ' + i);
-    c.text(ROW_TWIN_SCHEMA.ports.author, AUTHORS[i & 7]);
-    c.on(ROW_TWIN_SCHEMA.ports.fav, NOOP);
+const mROW_TWIN = createExoMachine<TExoChildrenWiring & TExoMachineNode, number>(ROW_TWIN_SCHEMA, {
+    createInitialState: (c, i) => {
+        c.attr(ROW_TWIN_SCHEMA.ports.id, i);
+        c.attr(ROW_TWIN_SCHEMA.ports.href, '/i/' + i);
+        c.text(ROW_TWIN_SCHEMA.ports.title, 'Task ' + i);
+        c.text(ROW_TWIN_SCHEMA.ports.author, AUTHORS[i & 7]);
+        c.on(ROW_TWIN_SCHEMA.ports.fav, NOOP);
+    },
 });
-const ROW_TWIN = mROW_TWIN.done();
+const ROW_TWIN = mROW_TWIN;
 
 /**
  * THE REAL ROW — a per-row state object holding the title, a transition that writes it, and a
@@ -858,26 +866,35 @@ const ROW_TWIN = mROW_TWIN.done();
 type TRowLiveState = { readonly i: number; title: string };
 
 const ROW_LIVE_SCHEMA = createExoSchema(buildRow);
-const mROW_LIVE = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(ROW_LIVE_SCHEMA);
-const K_ROW_LIVE = mROW_LIVE.createInitialState(
-    (_c, i): TRowLiveState => ({ i, title: 'Task ' + i })
+const mROW_LIVE = createExoMachine<TExoChildrenWiring & TExoMachineNode, number>(ROW_LIVE_SCHEMA, {
+    createInitialState: (_c, i): TRowLiveState => ({ i, title: 'Task ' + i }),
+});
+const ROW_LIVE = composeExoMachine(
+    mROW_LIVE,
+    (m) =>
+        withExoTransitions(m, {
+            showRowLiveTitle: (c: TExoChildrenWiring & TExoMachineNode) => {
+                c.text(ROW_LIVE_SCHEMA.ports.title, c.readState<TRowLiveState>().title);
+            },
+        }),
+    (m) =>
+        withExoWire(m, (c) => {
+            const i = c.readState<TRowLiveState>().i;
+            c.attr(ROW_LIVE_SCHEMA.ports.id, i);
+            c.attr(ROW_LIVE_SCHEMA.ports.href, '/i/' + i);
+            showRowLiveTitle(c);
+            c.text(ROW_LIVE_SCHEMA.ports.author, AUTHORS[i & 7]);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(ROW_LIVE_SCHEMA.ports.fav, (c) => {
+                const state = c.readState<TRowLiveState>();
+                state.title = state.title + '!';
+                showRowLiveTitle(c);
+            });
+        })
 );
-const showRowLiveTitle = mROW_LIVE.transition((c: TExoChildrenWiring & TExoMachineNode) => {
-    c.text(ROW_LIVE_SCHEMA.ports.title, c.readState(K_ROW_LIVE).title);
-});
-mROW_LIVE.wire((c) => {
-    const i = c.readState(K_ROW_LIVE).i;
-    c.attr(ROW_LIVE_SCHEMA.ports.id, i);
-    c.attr(ROW_LIVE_SCHEMA.ports.href, '/i/' + i);
-    showRowLiveTitle(c);
-    c.text(ROW_LIVE_SCHEMA.ports.author, AUTHORS[i & 7]);
-});
-mROW_LIVE.on(ROW_LIVE_SCHEMA.ports.fav, (c) => {
-    const state = c.readState(K_ROW_LIVE);
-    state.title = state.title + '!';
-    showRowLiveTitle(c);
-});
-const ROW_LIVE = mROW_LIVE.done();
+const { showRowLiveTitle } = ROW_LIVE.transitions;
 
 // ---------------------------------------------------------------------------------------
 // THE SECOND CENSUS — THE SAME JOB ON DATA THAT ACTUALLY NEEDS ESCAPING.
@@ -907,15 +924,19 @@ const AUTHORS_DIRTY: readonly string[] = [
 ];
 
 const ROW_DIRTY_SCHEMA = createExoSchema(buildRow);
-const mROW_DIRTY = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(ROW_DIRTY_SCHEMA);
-mROW_DIRTY.createInitialState((c, i) => {
-    c.attr(ROW_DIRTY_SCHEMA.ports.id, i);
-    c.attr(ROW_DIRTY_SCHEMA.ports.href, '/i/' + i + '?a=1&b=2');
-    c.text(ROW_DIRTY_SCHEMA.ports.title, 'Task <' + i + '> & co');
-    c.text(ROW_DIRTY_SCHEMA.ports.author, AUTHORS_DIRTY[i & 7]);
-    c.on(ROW_DIRTY_SCHEMA.ports.fav, NOOP);
-});
-const ROW_DIRTY = mROW_DIRTY.done();
+const mROW_DIRTY = createExoMachine<TExoChildrenWiring & TExoMachineNode, number>(
+    ROW_DIRTY_SCHEMA,
+    {
+        createInitialState: (c, i) => {
+            c.attr(ROW_DIRTY_SCHEMA.ports.id, i);
+            c.attr(ROW_DIRTY_SCHEMA.ports.href, '/i/' + i + '?a=1&b=2');
+            c.text(ROW_DIRTY_SCHEMA.ports.title, 'Task <' + i + '> & co');
+            c.text(ROW_DIRTY_SCHEMA.ports.author, AUTHORS_DIRTY[i & 7]);
+            c.on(ROW_DIRTY_SCHEMA.ports.fav, NOOP);
+        },
+    }
+);
+const ROW_DIRTY = mROW_DIRTY;
 
 // ---------------------------------------------------------------------------------------
 // THE SHIPPED OBJECTS THE LADDER CLIMBS THROUGH, AND WHERE EACH ONE COMES FROM — stated per name
@@ -925,15 +946,14 @@ const ROW_DIRTY = mROW_DIRTY.done();
 //
 //   `exoStrSchemaOf`, `renderExoStrInstance`, `ExoStrBackend`, `TExoStrSchema`, `TExoStrWriter`
 //                            exports of `@exodra/string`, on its index.
-//   `escapeExoText`, `escapeExoAttributeValue`, `createExoSchema`, `createExoMachineBuilder`
+//   `escapeExoText`, `escapeExoAttributeValue`, `createExoSchema`, `createExoMachine`
 //   and every port and wiring type here
 //                            exports of `@exodra/core`.
 //   `PLAN.writers`, `PLAN.fillMarkup`, `PLAN.createInstance`, `ROW.declaration.portList`
 //                            fields of those shipped objects, read and not re-implemented.
 //   `ROW.wire`
-//                            WHERE A WIRE LIVES. `createExoMachineBuilder` returns `{schema, machine}`
-//                            and puts the wire in the machine's one prepared transition; there is
-//                            no `component.wire`.
+//                            WHERE A WIRE LIVES. `withExoWire` returns a new machine with the wire
+//                            in its `wire` field; there is no `component.wire`.
 //
 // Nothing here re-implements a schema, a writer or a filler.
 // ---------------------------------------------------------------------------------------
@@ -978,7 +998,7 @@ const MAKE_NODE = PLAN.createInstance;
  * The component's real wire — the same function object the entry point drives.
  *
  * IT IS REACHED THROUGH `machine.wire` because a wire IS a machine's one prepared
- * transition: `createExoMachineBuilder` puts it there and `renderExoStrInstance` reaches it through
+ * transition: `withExoWire` puts it there and `renderExoStrInstance` reaches it through
  * `armExoNode`. There is no `component.wire` field to take it off.
  *
  * THE REFUSAL IS NOT DEFENSIVE NOISE. `TExoMachine.wire` is nullable because a
@@ -1430,7 +1450,7 @@ function ladderWire(): string {
     let html = UL_OPEN;
     for (let i = 0; i < N; i++) {
         const c = MAKE_NODE(PLAN, null);
-        WIRE(c, i, undefined);
+        WIRE(c, i);
         html += FILL(c.values);
     }
     return html + UL_CLOSE;
@@ -1446,7 +1466,7 @@ function ladderWire(): string {
 
 function ladderCall(): string {
     let html = UL_OPEN;
-    for (let i = 0; i < N; i++) html += renderExoStrInstance(PLAN, ROW, i);
+    for (let i = 0; i < N; i++) html += renderExoStrInstance(PLAN, ROW, null, i);
     return html + UL_CLOSE;
 }
 
@@ -1455,24 +1475,22 @@ function ladderCall(): string {
 //
 // ═══ ONE CALL, A LIST INSIDE IT — AND WHY THE AXIS IS SHAPED THIS WAY ═══
 //
-// `ExoStrBackend.render(component, context)` RENDERS ONE INSTANCE. There is no count argument, and
-// the loop that used to live inside the entry point does not come back as a loop of N calls at the
-// call site: `render(ROW)` arms its instance at index `0`, so N calls would be N copies
-// of row 0 while every ladder rung below renders rows 0…N-1. The byte gate caught exactly that and
-// refused, which is what it is for.
+// `ExoStrBackend.render(component, context, params)` RENDERS ONE INSTANCE. There is no count
+// argument, and the loop that used to live inside the entry point does not come back as a loop of N
+// calls at the call site: N calls of `render(ROW)` with the same params would be N copies of one row
+// while every ladder rung below renders rows 0…N-1. The byte gate caught exactly that and refused,
+// which is what it is for.
 //
 // SO THE LIBRARY ROW IS A LIST, and that is not a workaround — it is how an application produces a
-// thousand DIFFERENT rows. `c.list(port, ROW, N)` arms the instance standing at `i` with the INDEX
-// `i`, which is where the per-row number comes from once the entry point stops inventing one. The
+// thousand DIFFERENT rows. `c.list(port, ROW, ROW_NUMBERS)` arms the instance standing at `i` with
+// the params `ROW_NUMBERS[i]`, which is `i`, and that is where the per-row number comes from. The
 // four library programs are one `render` call each, over a component whose children port holds N
 // rows.
 //
-// THE COUNT USED TO BE AN ARRAY, AND THE DIFFERENCE IS ONE LOAD PER ROW THAT THE LIBRARY NO LONGER
-// MAKES. `c.list` took `ITEMS` — `[0, 1, … N-1]` — and handed `ITEMS[i]` to the wire as props;
-// it now takes `N` and hands `i`. The JOB is unchanged and the bytes are identical, but the
-// indexed load is gone from the library's side of every comparison in this file. It is named here
-// because it makes the library rows marginally cheaper than the recorded ones for a reason that is
-// nothing to do with this axis.
+// THE LIBRARY SIDE PAYS ONE INDEXED LOAD PER ROW THAT THE HAND-WRITTEN PROGRAMS DO NOT: they use
+// their loop counter, the list reads `ROW_NUMBERS[i]`. The JOB is unchanged and the bytes are
+// identical; the load is named here because it makes the library rows marginally dearer for a
+// reason that is nothing to do with this axis.
 //
 // EVERY PROGRAM ON THIS AXIS THEREFORE CARRIES THE SAME `<ul>`, floor included. The list needs a
 // root to hang its children port on — a schema is ONE element and this core has no fragment — so
@@ -1490,6 +1508,8 @@ function ladderCall(): string {
 // change.
 // ---------------------------------------------------------------------------------------
 
+const ROW_NUMBERS: readonly number[] = Array.from({ length: N }, (_, i) => i);
+
 /** The wrapper's markup, as the two hand-written halves must write it. Gated, not assumed. */
 const UL_OPEN = '<ul>';
 const UL_CLOSE = '</ul>';
@@ -1502,7 +1522,7 @@ const UL_CLOSE = '</ul>';
  * rows ask for the same thing.
  */
 function listOf(
-    row: TExoMachine<TExoChildrenWiring & TExoMachineNode>
+    row: TExoMachine<TExoChildrenWiring & TExoMachineNode, unknown, number>
 ): TExoMachine<TExoChildrenWiring & TExoMachineNode> {
     const MACHINE_SCHEMA = createExoSchema((b: TExoSchemaCursor) => {
         let rows!: TExoChildrenPort;
@@ -1511,11 +1531,12 @@ function listOf(
         });
         return { rows };
     });
-    const mMachine = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(MACHINE_SCHEMA);
-    mMachine.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA.ports.rows, row, N);
+    const mMachine = createExoMachine<TExoChildrenWiring & TExoMachineNode>(MACHINE_SCHEMA, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA.ports.rows, row, ROW_NUMBERS);
+        },
     });
-    return mMachine.done();
+    return mMachine;
 }
 
 const LIST = listOf(ROW);
@@ -1891,7 +1912,7 @@ function gateShape(): string[] {
     lines.push(
         `  ports                   ${PORTS.map((p) => `${p.index}:${p.name ?? '—'}`).join('  ')}`
     );
-    lines.push(`  one row                 ${EXO_STR.render(ROW)}`);
+    lines.push(`  one row                 ${EXO_STR.render(ROW, null, 0)}`);
     return lines;
 }
 

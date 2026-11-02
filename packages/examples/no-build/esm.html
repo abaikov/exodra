@@ -61,7 +61,14 @@
 }
 </script>
 <script type="module">
-    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import {
+        composeExoMachine,
+        createExoMachine,
+        createExoSchema,
+        withExoEffects,
+        withExoHandlers,
+        withExoWire,
+    } from '@exodra/core';
     import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
     import { reconcileExoOrder } from '@exodra/list-reconcile';
 
@@ -75,7 +82,8 @@
     // dialect is compiled away into a `b.el(…)` line inside a schema and machine
     // code that writes ports; no runtime can interpret one. So a page with no build
     // step writes those two halves itself, which is exactly what
-    // `createExoSchema(build)` and `createExoMachineBuilder(schema)` take.
+    // `createExoSchema(build)` and `createExoMachine(schema)` with its `withExo*`
+    // decorators take.
     //
     // EVERY `createExoSchema` CALL IS AT THE TOP LEVEL OF THIS SCRIPT, ON PURPOSE.
     // See "The one trap" in README.md: a schema built inside a function is a
@@ -132,18 +140,21 @@
     // The wire writes the label once; `showValue` is the one place the value is written, and the
     // effect runs it now and again on every change.
     const statMachine = stat => {
-        const mStat = createExoMachineBuilder(STAT_SCHEMA);
-        mStat.wire(c => {
-            c.text(STAT_SCHEMA.ports.label, stat.label);
-        });
-        const showValue = mStat.transition(c => {
+        const showValue = c => {
             c.text(STAT_SCHEMA.ports.value, stat.read(board.getValue()));
-        });
-        mStat.effect(c => {
-            showValue(c);
-            return board.onChange(() => showValue(c));
-        });
-        return mStat.done();
+        };
+        return composeExoMachine(
+            createExoMachine(STAT_SCHEMA),
+            m => withExoWire(m, c => {
+                c.text(STAT_SCHEMA.ports.label, stat.label);
+            }),
+            m => withExoEffects(m, effect => {
+                effect(c => {
+                    showValue(c);
+                    return board.onChange(() => showValue(c));
+                });
+            }),
+        );
     };
     const STAT_OPEN = statMachine({ label: 'open', read: data => data.tasks.length });
     const STAT_CLEARED = statMachine({ label: 'cleared', read: data => data.cleared });
@@ -164,16 +175,21 @@
             return { seq, title, clear };
         }
     );
-    const mTask = createExoMachineBuilder(TASK_SCHEMA);
-    mTask.createInitialState(() => ({ stamp: ++built, item: null }));
-    // The item arrives as the wire's params: `c.build(TASK, at, item)`.
-    mTask.wire((c, item) => {
-        c.state.item = item;
-        c.text(TASK_SCHEMA.ports.seq, '#' + c.state.stamp);
-        c.text(TASK_SCHEMA.ports.title, item.title);
+    const taskBase = createExoMachine(TASK_SCHEMA, {
+        createInitialState: () => ({ stamp: ++built, item: null }),
     });
-    mTask.on(TASK_SCHEMA.ports.clear, c => clearTask(c.state.item));
-    const TASK = mTask.done();
+    const TASK = composeExoMachine(
+        taskBase,
+        // The item arrives as the wire's params: `c.build(TASK, item)`.
+        m => withExoWire(m, (c, item) => {
+            c.state.item = item;
+            c.text(TASK_SCHEMA.ports.seq, '#' + c.state.stamp);
+            c.text(TASK_SCHEMA.ports.title, item.title);
+        }),
+        m => withExoHandlers(m, on => {
+            on(TASK_SCHEMA.ports.clear, c => clearTask(c.state.item));
+        }),
+    );
 
     // ── the application ──────────────────────────────────────────────────────
 
@@ -205,26 +221,33 @@
             return { openSlot, clearedSlot, rows, add, rotate };
         }
     );
-    const mApp = createExoMachineBuilder(APP_SCHEMA);
     // Children ports are opened ONCE, here; the returned object is this instance's state.
-    mApp.createInitialState(c => {
-        c.one(APP_SCHEMA.ports.openSlot, STAT_OPEN);
-        c.one(APP_SCHEMA.ports.clearedSlot, STAT_CLEARED);
-        return { rows: c.childList(APP_SCHEMA.ports.rows), shown: [] };
+    const appBase = createExoMachine(APP_SCHEMA, {
+        createInitialState: c => {
+            c.one(APP_SCHEMA.ports.openSlot, STAT_OPEN);
+            c.one(APP_SCHEMA.ports.clearedSlot, STAT_CLEARED);
+            return { rows: c.childList(APP_SCHEMA.ports.rows), shown: [] };
+        },
     });
-    const showRows = mApp.transition(c => {
+    const showRows = c => {
         const want = board.getValue().tasks;
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, at) =>
-            c.build(TASK, at, item)
+        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, item =>
+            c.build(TASK, item)
         );
-    });
-    mApp.effect(c => {
-        showRows(c);
-        return board.onChange(() => showRows(c));
-    });
-    mApp.on(APP_SCHEMA.ports.add, addTask);
-    mApp.on(APP_SCHEMA.ports.rotate, rotateTasks);
-    const APP = mApp.done();
+    };
+    const APP = composeExoMachine(
+        appBase,
+        m => withExoEffects(m, effect => {
+            effect(c => {
+                showRows(c);
+                return board.onChange(() => showRows(c));
+            });
+        }),
+        m => withExoHandlers(m, on => {
+            on(APP_SCHEMA.ports.add, addTask);
+            on(APP_SCHEMA.ports.rotate, rotateTasks);
+        }),
+    );
 
     // ── the handlers ─────────────────────────────────────────────────────────
     //

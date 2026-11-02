@@ -164,9 +164,9 @@ examples and benchmarks:
 
 | where | reorders | tells the child list the move |
 |---|---|---|
-| `packages/benchmarks/src/benchmarks/axes/list/reconcile.tsx:329` | yes — 30 shuffles of 200 rows per batch | no (a new array) |
-| `packages/benchmarks/src/benchmarks/axes/list/list-reconcile.tsx:665` | yes — one run move per cycle | no (the plain array the diffing rows share) |
-| `packages/benchmarks/src/benchmarks/axes/floors/update-floor.ts:1568-1570` | yes — the `REORDER` transition | no |
+| `packages/benchmarks/src/benchmarks/axes/list/reconcile.tsx:340` | yes — 30 shuffles of 200 rows per batch | no (a new array) |
+| `packages/benchmarks/src/benchmarks/axes/list/list-reconcile.tsx:673` | yes — one run move per cycle | no (the plain array the diffing rows share) |
+| `packages/benchmarks/src/benchmarks/axes/floors/update-floor.ts:1676-1678` | yes — the `REORDER` transition | no |
 | `packages/examples/no-build/global.html` | yes — rotate | no — the rotated array goes to `reconcileExoOrder` |
 | `packages/examples/no-build/esm.html` | yes — rotate | no — the rotated array goes to `reconcileExoOrder` |
 | every other list in the examples | no | — |

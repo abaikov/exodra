@@ -67,7 +67,7 @@
         "label": "core",
         "kind": "runtime",
         "layer": 2,
-        "moduleCount": 157,
+        "moduleCount": 163,
         "published": true,
         "violations": []
       },
@@ -1243,6 +1243,12 @@
             "kind": "type-only"
           },
           {
+            "from": "packages/computed/src/computed/types/TExoComputedLive.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
             "from": "packages/computed/src/computed/types/TExoComputedMachine.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
@@ -1250,12 +1256,6 @@
           },
           {
             "from": "packages/computed/src/machine/types/TExoMachineProgram.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/computed/src/computed/types/TExoComputedLive.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"

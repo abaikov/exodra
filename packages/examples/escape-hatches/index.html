@@ -68,7 +68,14 @@
 }
 </script>
 <script type="module">
-    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import {
+        composeExoMachine,
+        createExoMachine,
+        createExoSchema,
+        withExoEffects,
+        withExoHandlers,
+        withExoWire,
+    } from '@exodra/core';
     import { reconcileExoOrder } from '@exodra/list-reconcile';
     // A NAMESPACE IMPORT, ON PURPOSE, and the only unusual line in this file. `dist/` is a
     // COMPILED artifact that is older than the source whenever nobody has rebuilt it, and a
@@ -158,7 +165,7 @@
         logLines.setValue(lines.length > 10 ? lines.slice(lines.length - 10) : lines);
     }
 
-    // A ROW'S DATA ARRIVES AS ITS WIRE'S PARAMS: `c.build(LOG_ROW, at, entry)`.
+    // A ROW'S DATA ARRIVES AS ITS WIRE'S PARAMS: `c.build(LOG_ROW, entry)`.
     const LOG_ROW_SCHEMA = createExoSchema(
         b => {
             let text;
@@ -166,9 +173,9 @@
             return { text };
         }
     );
-    const mLogRow = createExoMachineBuilder(LOG_ROW_SCHEMA);
-    mLogRow.wire((c, entry) => { c.text(LOG_ROW_SCHEMA.ports.text, entry.text); });
-    const LOG_ROW = mLogRow.done();
+    const LOG_ROW = withExoWire(createExoMachine(LOG_ROW_SCHEMA), (c, entry) => {
+        c.text(LOG_ROW_SCHEMA.ports.text, entry.text);
+    });
 
     // ── 1. A VANILLA HOT SPOT ────────────────────────────────────────────────
 
@@ -194,13 +201,13 @@
             return { seq, title };
         }
     );
-    const mTask = createExoMachineBuilder(TASK_SCHEMA);
-    mTask.createInitialState(() => ({ stamp: ++stamped }));
-    mTask.wire((c, title) => {
+    const taskBase = createExoMachine(TASK_SCHEMA, {
+        createInitialState: () => ({ stamp: ++stamped }),
+    });
+    const TASK = withExoWire(taskBase, (c, title) => {
         c.text(TASK_SCHEMA.ports.seq, '#' + c.state.stamp);
         c.text(TASK_SCHEMA.ports.title, title);
     });
-    const TASK = mTask.done();
 
     /**
      * THE HOT SPOT. No schema, no ports, no machine — `document.createElement`,
@@ -367,9 +374,9 @@
             return { title };
         }
     );
-    const mCard = createExoMachineBuilder(CARD_SCHEMA);
-    mCard.wire((c, title) => { c.text(CARD_SCHEMA.ports.title, title); });
-    const CARD = mCard.done();
+    const CARD = withExoWire(createExoMachine(CARD_SCHEMA), (c, title) => {
+        c.text(CARD_SCHEMA.ports.title, title);
+    });
 
     // ── the two children arrays ──────────────────────────────────────────────
     //
@@ -446,81 +453,87 @@
             return { rows, cards, frames, mounts, log, rotate, cycle, remove, restore };
         }
     );
-    const mApp = createExoMachineBuilder(APP_SCHEMA);
-    mApp.createInitialState(c => {
-        // Panel 1 — three schema rows and one hand-built one, in ONE array of children. THE FIRST
-        // ROW IS BUILT FIRST, on its own line, because the stamp is taken at BUILD and the panel's
-        // note promises the numbers start out ascending.
-        const firstRow = c.build(TASK, 0, TASK_TITLES[0]);
-        vanillaNode = makeVanillaRow(c);
-        rowChildren.setValue([firstRow, vanillaNode, c.build(TASK, 1, TASK_TITLES[1]), c.build(TASK, 2, TASK_TITLES[2])]);
+    const appBase = createExoMachine(APP_SCHEMA, {
+        createInitialState: c => {
+            // Panel 1 — three schema rows and one hand-built one, in ONE array of children. THE FIRST
+            // ROW IS BUILT FIRST, on its own line, because the stamp is taken at BUILD and the panel's
+            // note promises the numbers start out ascending.
+            const firstRow = c.build(TASK, TASK_TITLES[0]);
+            vanillaNode = makeVanillaRow(c);
+            rowChildren.setValue([firstRow, vanillaNode, c.build(TASK, TASK_TITLES[1]), c.build(TASK, TASK_TITLES[2])]);
 
-        // Panel 2 — two schema cards with a foreign renderer between them.
-        pulseNode = makePulseNode(c);
-        cardChildren.setValue([c.build(CARD, 0, CARD_TITLES[0]), pulseNode, c.build(CARD, 1, CARD_TITLES[1])]);
+            // Panel 2 — two schema cards with a foreign renderer between them.
+            pulseNode = makePulseNode(c);
+            cardChildren.setValue([c.build(CARD, CARD_TITLES[0]), pulseNode, c.build(CARD, CARD_TITLES[1])]);
 
-        // A list is a COMPOSITION: `c.childList(port)` is the backend's half — it holds whatever is
-        // put in it — and `reconcileExoOrder` is the strategy over it, from a package the backend
-        // does not import. Children ports are opened here, once.
-        return {
-            log: c.childList(APP_SCHEMA.ports.log),
-            logShown: [],
-            rows: c.childList(APP_SCHEMA.ports.rows),
-            rowsShown: [],
-            cards: c.childList(APP_SCHEMA.ports.cards),
-            cardsShown: []
-        };
+            // A list is a COMPOSITION: `c.childList(port)` is the backend's half — it holds whatever is
+            // put in it — and `reconcileExoOrder` is the strategy over it, from a package the backend
+            // does not import. Children ports are opened here, once.
+            return {
+                log: c.childList(APP_SCHEMA.ports.log),
+                logShown: [],
+                rows: c.childList(APP_SCHEMA.ports.rows),
+                rowsShown: [],
+                cards: c.childList(APP_SCHEMA.ports.cards),
+                cardsShown: []
+            };
+        },
     });
 
-    const showLog = mApp.transition(c => {
+    const showLog = c => {
         const want = logLines.getValue();
-        c.state.logShown = reconcileExoOrder(c.state.log, c.state.logShown, want, want, (entry, at) =>
-            c.build(LOG_ROW, at, entry)
+        c.state.logShown = reconcileExoOrder(c.state.log, c.state.logShown, want, want, entry =>
+            c.build(LOG_ROW, entry)
         );
-    });
+    };
     // THE ITEMS ARE ALREADY NODES, so the build step is the identity.
-    const showRows = mApp.transition(c => {
+    const showRows = c => {
         const want = rowChildren.getValue();
         c.state.rowsShown = reconcileExoOrder(c.state.rows, c.state.rowsShown, want, want, node => node);
-    });
-    const showCards = mApp.transition(c => {
+    };
+    const showCards = c => {
         const want = cardChildren.getValue();
         c.state.cardsShown = reconcileExoOrder(c.state.cards, c.state.cardsShown, want, want, node => node);
-    });
-    const showPulse = mApp.transition(c => {
+    };
+    const showPulse = c => {
         c.text(APP_SCHEMA.ports.frames, pulseFrames.getValue());
         c.text(APP_SCHEMA.ports.mounts, pulseMounts.getValue());
-    });
+    };
 
-    // THE LOG FIRST: effects start in the order they are declared, so the mount hooks that fire
-    // when the two lists below are first placed already have a subscriber to be seen through.
-    mApp.effect(c => {
-        showLog(c);
-        return logLines.onChange(() => showLog(c));
-    });
-    mApp.effect(c => {
-        showRows(c);
-        return rowChildren.onChange(() => showRows(c));
-    });
-    mApp.effect(c => {
-        showCards(c);
-        return cardChildren.onChange(() => showCards(c));
-    });
-    mApp.effect(c => {
-        showPulse(c);
-        const offFrames = pulseFrames.onChange(() => showPulse(c));
-        const offMounts = pulseMounts.onChange(() => showPulse(c));
-        return () => {
-            offFrames();
-            offMounts();
-        };
-    });
-
-    mApp.on(APP_SCHEMA.ports.rotate, rotateRows);
-    mApp.on(APP_SCHEMA.ports.cycle, cyclePulse);
-    mApp.on(APP_SCHEMA.ports.remove, removeBoth);
-    mApp.on(APP_SCHEMA.ports.restore, restoreBoth);
-    const APP = mApp.done();
+    const APP = composeExoMachine(
+        appBase,
+        // THE LOG FIRST: effects start in the order they are declared, so the mount hooks that fire
+        // when the two lists below are first placed already have a subscriber to be seen through.
+        m => withExoEffects(m, effect => {
+            effect(c => {
+                showLog(c);
+                return logLines.onChange(() => showLog(c));
+            });
+            effect(c => {
+                showRows(c);
+                return rowChildren.onChange(() => showRows(c));
+            });
+            effect(c => {
+                showCards(c);
+                return cardChildren.onChange(() => showCards(c));
+            });
+            effect(c => {
+                showPulse(c);
+                const offFrames = pulseFrames.onChange(() => showPulse(c));
+                const offMounts = pulseMounts.onChange(() => showPulse(c));
+                return () => {
+                    offFrames();
+                    offMounts();
+                };
+            });
+        }),
+        m => withExoHandlers(m, on => {
+            on(APP_SCHEMA.ports.rotate, rotateRows);
+            on(APP_SCHEMA.ports.cycle, cyclePulse);
+            on(APP_SCHEMA.ports.remove, removeBoth);
+            on(APP_SCHEMA.ports.restore, restoreBoth);
+        }),
+    );
 
     // ── the handlers ─────────────────────────────────────────────────────────
     //

@@ -40,7 +40,10 @@
 // `checked=""` for `''` and `checked="0"` for `0`, both of which tick the box.
 import {
     EXO_DOM_PROPERTIES,
-    createExoMachineBuilder,
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
     createExoSchema,
     withExoSchemaAsserts,
 } from '@exodra/core';
@@ -496,15 +499,24 @@ describe('the boolean/string split the server has to know about', () => {
             });
             return { x: p };
         });
-        const m = createExoMachineBuilder<TExoMachineNode>(schema);
-        const show = m.transition((c) => {
-            c.attr(schema.ports.x, model.getValue());
-        });
-        m.effect((c) => {
-            show(c);
-            return model.onChange(() => show(c));
-        });
-        const FIELD = m.done();
+        const m = createExoMachine<TExoMachineNode>(schema);
+        const FIELD = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    show: (c) => {
+                        c.attr(schema.ports.x, model.getValue());
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        show(c);
+                        return model.onChange(() => show(c));
+                    });
+                })
+        );
+        const { show } = FIELD.transitions;
 
         const parent = host();
         EXO_BACKEND.render(FIELD, parent);

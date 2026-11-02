@@ -10,7 +10,13 @@
 // `c.bindList` and its registry keyed by the item object. `reconcileExoOrder` keeps its order as
 // an array and never looks a row up by identity, so the second position gets its own row and the
 // duplicate is not silently dropped.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachineNode,
     TExoSchemaCursor,
@@ -36,9 +42,6 @@ type TReconciling = TExoChildrenWiring &
 
 type TListState = { readonly rows: TExoPlacedChildren<TExoNode>; shown: TItem[] };
 
-/** What a row reads, by INDEX: the build callback writes it an instant before the wire runs. */
-const BUILDING: TItem[] = [];
-
 const ROW = createExoTestMachine(
     (b: TExoSchemaCursor) => {
         let text!: TExoTextPort;
@@ -48,8 +51,8 @@ const ROW = createExoTestMachine(
         return { text };
     },
     (P) =>
-        (c: TExoChildrenWiring, index: number): void => {
-            c.text(P.text, BUILDING[index].label);
+        (c: TExoChildrenWiring, item: unknown): void => {
+            c.text(P.text, (item as TItem).label);
         }
 );
 
@@ -66,20 +69,33 @@ const boundList = (initial: readonly TItem[]) => {
         });
         return { rows };
     });
-    const m = createExoMachineBuilder<TReconciling, unknown, TListState>(schema);
-    m.createInitialState((c) => ({ rows: c.childList(schema.ports.rows), shown: [] as TItem[] }));
-    const showRows = m.transition((c) => {
-        const want = items.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            BUILDING[i] = item;
-            return c.build(ROW, i);
-        });
+    const m = createExoMachine<TReconciling, unknown, TListState>(schema, {
+        createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] as TItem[] }),
     });
-    m.effect((c) => {
-        showRows(c);
-        return items.onChange(() => showRows(c));
-    });
-    const component = m.done();
+    const component = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = items.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(ROW, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return items.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = component.transitions;
     return { component, items };
 };
 

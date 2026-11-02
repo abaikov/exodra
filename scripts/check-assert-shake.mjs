@@ -60,7 +60,7 @@ const CONTROL = 'packages/core/src/schema/cursor/ExoAssertingSchemaCursor.ts';
 
 const page = (decorate, imports) => `
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 ${imports}
 
 const BACKEND = withExoCompiler(new ExoDomBackend());
@@ -76,11 +76,11 @@ const SCHEMA = createExoSchema(
         return { label };
     }${decorate}
 );
-const m = createExoMachineBuilder(SCHEMA);
-m.createInitialState((c) => {
-    c.text(SCHEMA.ports.label, 'hello');
+export const APP = createExoMachine(SCHEMA, {
+    createInitialState: (c) => {
+        c.text(SCHEMA.ports.label, 'hello');
+    },
 });
-export const APP = m.done();
 
 export const start = (root) => BACKEND.render(APP, root);
 `;

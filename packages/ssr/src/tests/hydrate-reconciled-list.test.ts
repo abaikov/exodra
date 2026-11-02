@@ -24,7 +24,13 @@
 // one in front, and a count is the only thing that could tell them apart — which a reconciled list
 // does not have when it opens.
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachineNode,
     TExoSchemaCursor,
@@ -46,8 +52,8 @@ const EXO_STR = new ExoStrBackend();
 
 type TItem = { readonly label: string };
 
-/** NO PROPS: a row reads its item out of here, written an instant before `c.build` is called. */
-const ROW_ITEMS: TItem[] = [];
+/** NO PROPS: a row is handed its item and its position as params by `c.build`. */
+type TRowParams = { readonly item: TItem; readonly at: number };
 
 type TRowSurface = {
     attr(port: TExoAttrPort, value: unknown): void;
@@ -67,15 +73,16 @@ const ROW = createExoTestMachine(
         return { id, label };
     },
     (P): TExoMachineInitialState<TRowSurface> =>
-        (c, i) => {
-            c.attr(P.id, i);
-            c.text(P.label, ROW_ITEMS[i].label);
+        (c, params) => {
+            const row = params as TRowParams;
+            c.attr(P.id, row.at);
+            c.text(P.label, row.item.label);
         }
 );
 
 type TShellSurface = TExoMachineNode & {
     childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode<unknown>>;
-    build(component: typeof ROW, index: number): TExoNode<unknown>;
+    build(component: typeof ROW, params?: unknown): TExoNode<unknown>;
 };
 
 type TShellState = {
@@ -121,26 +128,34 @@ type TBuild = typeof buildOwned;
 const shellOver = (build: TBuild, items: TExoTestSource<readonly TItem[]>) => {
     const schema = createExoSchema(build);
     const P = schema.ports;
-    const m = createExoMachineBuilder<TShellSurface, unknown, TShellState>(schema);
-    m.createInitialState((c) => ({ rows: c.childList(P.rows), shown: [] as TItem[] }));
-    const showRows = m.transition((c) => {
-        const want = items.getValue();
-        c.state.shown = reconcileExoOrder(
-            c.state.rows,
-            c.state.shown,
-            want,
-            want,
-            (item, index) => {
-                ROW_ITEMS[index] = item;
-                return c.build(ROW, index);
-            }
-        );
+    const m = createExoMachine<TShellSurface, unknown, TShellState>(schema, {
+        createInitialState: (c) => ({ rows: c.childList(P.rows), shown: [] as TItem[] }),
     });
-    m.effect((c) => {
-        showRows(c);
-        return items.onChange(() => showRows(c));
-    });
-    return m.done();
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = items.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(ROW, { item, at: want.indexOf(item) })
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return items.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 const itemsOf = (...labels: string[]): TItem[] => labels.map((label) => ({ label }));

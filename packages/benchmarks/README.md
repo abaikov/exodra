@@ -271,22 +271,22 @@ runtime.** Counted off the tree:
 | deleted name | files still importing it | what it is now |
 |---|---|---|
 | `withExoBinding` | 26 | nothing — following data is a transition writing the `attr`/`text`/`unsafeHtml` doors a bare backend already answers, run by an effect that draws first and then subscribes to the data source |
-| `TExoDomWire` | 23 | `createExoMachineBuilder<TExoDomNode>`, from `@exodra/core` |
+| `TExoDomWire` | 23 | `createExoMachine<TExoDomNode>`, from `@exodra/core` |
 | `TExoBindingApi` | 10 | nothing — there is no binding pack to intersect into an exonode type |
 | `TExoBindingWiring` | 3 | nothing, same reason |
 | `withExoNodeBank` | 2 | nothing — the node bank is gone, which the `toggle` row already says |
-| `TExoStrWire` | 1 | `createExoMachineBuilder<TExoStrNode>` |
+| `TExoStrWire` | 1 | `createExoMachine<TExoStrNode>` |
 | `withExoChildrenWalk`, `withExoKeyedList`, `attachExoKeyedList` | 1 each | `withExoChildrenWalk`: nothing; the keyed list is `EXO_KEYED_LIST_VOCABULARY` / `createExoKeyedList` in `@exodra/list-reconcile` |
 
 `c.bindList`, `c.bindChildren`, `c.bindOne`, `c.bindMany` and `c.set` are gone with them: the write
-doors are `attr`, `text`, `html` and `on`, a fixed list is `c.list(port, C, count)` taking a
-**count**, and a reactive list is `c.childList(port)` opened in the initial state and handed to
-`reconcileExoOrder(kids, shown, keys, want, build)` from `@exodra/list-reconcile` by a transition. An initial state is `(enode, index)` and there are no props anywhere.
+doors are `attr`, `text`, `html` and `on`, a fixed list is `c.list(port, C, rows)` taking an
+**array** whose entry i is row i's params, and a reactive list is `c.childList(port)` opened in the initial state and handed to
+`reconcileExoOrder(kids, shown, keys, want, build)` from `@exodra/list-reconcile` by a transition. An initial state is `(enode, params)` and there are no props anywhere.
 
 **Repairing the sources is a separate piece of work and this README is not it.** Until it is done,
 treat the axis table below as a description of what each axis WAS WRITTEN TO ASK, not of something
 you can run today, and treat every number in `measurements/` as a recording of a renderer whose
-source no longer compiles. `createExoSchema` and `createExoMachineBuilder` from `@exodra/core`,
+source no longer compiles. `createExoSchema` and `createExoMachine` from `@exodra/core`,
 `createExoStatic` and `createExoOne` have already landed in several axis files, so the repair is partly done and partial
 in a way that cannot be read off a file name.
 
@@ -295,7 +295,7 @@ a per-schema helper `@exodra/string` does not export, and five rungs calling `c.
 which the string exonode does not have. **Neither reason holds against the file on disk**, and
 nothing in it calls `reset`. It is nevertheless in the table above: it imports `TExoStrWire`, which
 `@exodra/string` no longer exports. Its other imports are real — `escapeExoAttributeValue` and
-`escapeExoText`, `createExoSchema` and `createExoMachineBuilder` from `@exodra/core`,
+`escapeExoText`, `createExoSchema` and `createExoMachine` from `@exodra/core`,
 and `ExoStrBackend`, `exoStrSchemaOf`, `renderExoStrInstance`
 from `@exodra/string`. That is read off the source, not from a run; the axis has not been
 re-recorded since, so
@@ -304,7 +304,7 @@ re-recorded since, so
 ## The one Exodra participant
 
 There is exactly ONE Exodra renderer in this suite: the SCHEMA CORE — machines built with
-`createExoSchema` and `createExoMachineBuilder` from `@exodra/core`, rendered by `ExoDomBackend.render` from `@exodra/dom` and by
+`createExoSchema` and `createExoMachine` with its `withExo*` decorators from `@exodra/core`, rendered by `ExoDomBackend.render` from `@exodra/dom` and by
 `ExoStrBackend.render` from `@exodra/string` on the server. A backend is
 built ONCE, at module level, in every participant: it is the schema cache key and is compared by
 pointer, so one built inside a timed loop would recompile every declaration on every iteration and

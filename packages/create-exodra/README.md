@@ -3,8 +3,9 @@
 Scaffold a new Exodra application. The CLI asks at a prompt (Next.js style): run it and
 answer a few questions, or pass flags to skip the prompts.
 
-Everything it writes is the **schema core**: a schema and a machine built with
-`createExoMachineBuilder` from `@exodra/core`. The default (Vite) scaffold declares its
+Everything it writes is the **schema core**: a schema and a machine made with
+`createExoMachine` from `@exodra/core` and composed with `composeExoMachine` and the
+`withExo*` decorators. The default (Vite) scaffold declares its
 schemas with `exoJsx` from `@exodra/jsx`, which `@exodra/vite-plugin` compiles away; the
 `--ssr` scaffold and everything the `exodra` CLI generates build schemas with
 `createExoSchema` and contain no JSX, so they compile without a JSX transform.
@@ -82,20 +83,27 @@ Common options for `component` / `page`: `-d, --dir <path>`, `-t, --typescript`,
 scaffold writes — so a generated page drops straight into the generated route
 table. A page is a machine **default-exported** from its module; a
 component is a named machine export, filled by its parent with
-`c.one(ParentPorts.slot, Name)` or repeated with `c.list(ParentPorts.slot, Name, count)`. Neither
+`c.one(ParentPorts.slot, Name, params)` or repeated with `c.list(ParentPorts.slot, Name, rows)`. Neither
 contains JSX, so neither needs the Babel plugin to compile. With `-t` the files
 carry type annotations; without it they are the same code with the types dropped.
 
-**There are no props.** `createInitialState` is `(exonode, index, params) => state`: an instance is
-handed its position and the params of its wire, nothing else, so the data it shows is read by index from
-somewhere the caller put it — which is why the component generator emits an array
-beside the component — and the machine's `wire` writes the ports from that state. A page
-receives the match that selected it as the params of its wire.
+**There are no props.** `createInitialState` is `(exonode, params) => state`, handed to
+`createExoMachine` as an option — `createExoMachine(schema, { createInitialState })`: an instance is
+handed the params its parent passed to `c.one`, `c.list` (row i gets `rows[i]`) or `c.build`, and
+nothing else — which is why the generated component declares a `{ label }` params type — and the
+wire `withExoWire` adds writes the ports from that state. A page receives the match that selected it as
+the params of its wire.
 
 ```tsx
 // src/pages/Home.tsx, from `npx exodra page Home -t`
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineNode } from '@exodra/core';
+import {
+  EXO_PORT_TEXT,
+  composeExoMachine,
+  createExoMachine,
+  createExoSchema,
+  exoPorts,
+  withExoWire,
+} from '@exodra/core';
 
 const PagePorts = exoPorts({ heading: EXO_PORT_TEXT });
 
@@ -107,11 +115,12 @@ const pageSchema = createExoSchema(PagePorts, b => {
     d.el('p', null, p => p.text('Welcome to the Home page.'));
   });
 });
-const pageBuilder = createExoMachineBuilder<TExoMachineNode>(pageSchema);
-pageBuilder.wire(c => {
-  c.text(PagePorts.heading, 'Home');
-});
-export default pageBuilder.done();
+const pageBase = createExoMachine(pageSchema);
+export default composeExoMachine(pageBase, m =>
+  withExoWire(m, c => {
+    c.text(PagePorts.heading, 'Home');
+  })
+);
 ```
 
 ## What gets generated
@@ -131,7 +140,7 @@ as `virtual:exodra-routes`. `src/router.ts` constructs the router and nothing el
 so a page can import it without importing the module that renders the app. `src/main`
 provides the router with `provideExoRouter(c, router)`, places the route boundary with
 `c.one(port, ExoOutlet)`, and builds the nav as `ExoLink` machines —
-`links.insert(c.build(ExoLink, i, { to, label, currentWhen: 'exact' }))` — real
+`links.insert(c.build(ExoLink, { to, label, currentWhen: 'exact' }))` — real
 `<a href>` markup that the router takes over on a plain left click, while a
 modifier-click or a new-tab click stays the browser's. A page receives the match that
 selected it as the params of its wire.
@@ -149,18 +158,21 @@ adopters into its bundle.
 ## Writing Exodra components
 
 A component is one value with two halves: a **schema** built once at module load,
-and a **machine**. `createInitialState` runs once per instance and returns the state
-the instance keeps; the wire turns that state into port writes; handlers change it.
+and a **machine**. `createInitialState`, an option of `createExoMachine`, runs once per
+instance and returns the state the instance keeps; the wire (`withExoWire`) turns that state into port writes; handlers (`withExoHandlers`) change it.
 
 ```ts
 import {
   EXO_PORT_EVENT,
   EXO_PORT_TEXT,
-  createExoMachineBuilder,
+  composeExoMachine,
+  createExoMachine,
   createExoSchema,
   exoPorts,
+  withExoHandlers,
+  withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
+import type { TExoMachineNode, TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
 const backend = withExoCompiler(new ExoDomBackend());
@@ -178,19 +190,23 @@ const counterSchema = createExoSchema(CounterPorts, (b) => {
     });
   });
 });
-const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
-  counterSchema
-);
-counterBuilder.createInitialState(() => ({ count: 0 }));
-function show(c: TExoMachineBuilderNode<typeof counterBuilder>): void {
+const counterBase = createExoMachine(counterSchema, {
+  createInitialState: (_c: TExoMachineNode) => ({ count: 0 }),
+});
+function show(c: TExoMachineNodeOf<typeof counterBase>): void {
   c.text(CounterPorts.caption, `Count: ${c.state.count}`);
 }
-counterBuilder.wire((c) => show(c));
-counterBuilder.on(CounterPorts.click, (c) => {
-  c.state.count += 1;
-  show(c);
-});
-const Counter = counterBuilder.done();
+const Counter = composeExoMachine(
+  counterBase,
+  (m) => withExoWire(m, (c) => show(c)),
+  (m) =>
+    withExoHandlers(m, (on) => {
+      on(CounterPorts.click, (c) => {
+        c.state.count += 1;
+        show(c);
+      });
+    })
+);
 
 backend.render(Counter, document.getElementById('app') as HTMLElement);
 ```
@@ -199,13 +215,13 @@ The write doors are the whole set: `c.attr(port, value)` fills an attribute port
 `c.text(port, value)` a text port, `c.unsafeHtml(port, markup)` raw markup, and
 `c.on(port, handler)` attaches a listener. Following data that lives outside the
 machine is an **effect** that draws and subscribes, returning
-the unsubscribe: `counterBuilder.effect((c) => { show(c); return store.subscribe(() => show(c)); })`.
+the unsubscribe: `withExoEffects(m, (effect) => { effect((c) => { show(c); return store.subscribe(() => show(c)); }); })`.
 
 Children are placed by the calls that take a component: `c.one(port, C)` for one
-instance, `c.list(port, C, count)` for a fixed number of them — a **count**, not an
-array — and, for a list that changes, a child list opened with `c.childList(port)` in
+instance, `c.list(port, C, rows)` for a fixed run of them — row i armed with `rows[i]` as
+its params — and, for a list that changes, a child list opened with `c.childList(port)` in
 `createInitialState` and reconciled, wherever the items change, with
-`reconcileExoOrder(rows, shown, items, items, (item, i) => c.build(C, i))` from
+`reconcileExoOrder(rows, shown, items, items, (item) => c.build(C, item))` from
 `@exodra/list-reconcile`, by the identity of the item objects. Nothing scaffolded here
 uses the reconciler, so `@exodra/list-reconcile` is not among the generated
 dependencies — add it when a list has to grow. A reconciled list hydrates: the served

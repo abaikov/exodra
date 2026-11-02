@@ -24,7 +24,7 @@
 //
 // The reported number is a BUNDLE SIZE — what an application importing exactly these names
 // ships.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { composeExoMachine, createExoMachine, createExoSchema, withExoHandlers } from '@exodra/core';
 
 export const DEFAULT_N = 1000;
 
@@ -66,20 +66,22 @@ const ROW_SCHEMA = createExoSchema((b) => {
     return { id, label, mark, click, count };
 });
 const R = ROW_SCHEMA.ports;
-const mRow = createExoMachineBuilder(ROW_SCHEMA);
-mRow.createInitialState((c, i) => {
-    c.text(R.count, 0);
-    c.attr(R.id, i);
-    c.attr(R.mark, i);
-    c.text(R.label, 'Item ' + i);
-    return { count: 0 };
-});
-const counted = mRow.transition((c) => {
+function counted(c) {
     c.state.count += 1;
     c.text(R.count, c.state.count);
-});
-mRow.on(R.click, (c) => counted(c));
-export const ROW = mRow.done();
+}
+export const ROW = composeExoMachine(
+    createExoMachine(ROW_SCHEMA, {
+        createInitialState: (c, i) => {
+            c.text(R.count, 0);
+            c.attr(R.id, i);
+            c.attr(R.mark, i);
+            c.text(R.label, 'Item ' + i);
+            return { count: 0 };
+        },
+    }),
+    (m) => withExoHandlers(m, (on) => on(R.click, (c) => counted(c))),
+);
 
 /**
  * THE LIST — the `<ul class="list">` as a MACHINE rather than a string the server wrote around
@@ -97,11 +99,11 @@ const LIST_SCHEMA = createExoSchema((b) => {
     });
     return { rows };
 });
-const mList = createExoMachineBuilder(LIST_SCHEMA);
-mList.createInitialState((c) => {
-    c.list(LIST_SCHEMA.ports.rows, ROW, rowCount());
+export const LIST = createExoMachine(LIST_SCHEMA, {
+    createInitialState: (c) => {
+        c.list(LIST_SCHEMA.ports.rows, ROW, Array.from({ length: rowCount() }, (_, i) => i));
+    },
 });
-export const LIST = mList.done();
 
 /**
  * How many rows to render or adopt.

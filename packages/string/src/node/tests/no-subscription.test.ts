@@ -12,7 +12,13 @@
 // The second claim is `on`'s: it accepts `c.on(port, handler, subject)` and must read nothing off
 // the subject, since that would touch the row's data for a listener about to be serialised away. A
 // subject whose properties are getters is the only way to ask that.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoEventHandler,
@@ -55,15 +61,22 @@ const BOUND_SCHEMA = createExoSchema((b: TExoSchemaCursor) => {
     });
     return { label };
 });
-const mBound = createExoMachineBuilder<TExoStrNode>(BOUND_SCHEMA);
-const showLabel = mBound.transition((c) =>
-    c.text(BOUND_SCHEMA.ports.label, BOUND_SOURCE.getValue())
+const mBound = createExoMachine<TExoStrNode>(BOUND_SCHEMA);
+const BOUND = composeExoMachine(
+    mBound,
+    (m) =>
+        withExoTransitions(m, {
+            showLabel: (c) => c.text(BOUND_SCHEMA.ports.label, BOUND_SOURCE.getValue()),
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showLabel(c);
+                return BOUND_SOURCE.onChange(() => showLabel(c));
+            });
+        })
 );
-mBound.effect((c) => {
-    showLabel(c);
-    return BOUND_SOURCE.onChange(() => showLabel(c));
-});
-const BOUND: TExoStrMachine = mBound.done();
+const { showLabel } = BOUND.transitions;
 
 describe('a server render takes no subscription past the response', () => {
     it('reads the source, subscribes once, and the render drops it', () => {

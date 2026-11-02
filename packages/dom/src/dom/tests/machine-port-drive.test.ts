@@ -12,7 +12,13 @@
 // (`c.effectStops`, plus the single `c.onTeardown(() => c.stopEffects())` that ends it with the element),
 // and the re-establishment — a BODY slot of the program runs `c.restartEffect` against an effect
 // handle declared beside it.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import type {
     TExoSchemaCursor,
@@ -129,8 +135,8 @@ function makeCard(): {
                 s.managedState[LABEL_ROW] = label;
                 mark(s, MARK);
             });
-            return (c, index) => {
-                c.managedState = [0, `row-${index}`];
+            return (c, at) => {
+                c.managedState = [0, `row-${at}`];
                 instances.push(c);
                 tables.push(c.portTable());
                 writes.push(c.portNodeWriter());
@@ -152,7 +158,7 @@ const makeShell = (row: TExoMachine<TMachineDriving>): TExoDomMachine =>
         },
         (P): TExoMachineInitialState<TExoDomNode> =>
             (c) => {
-                c.list(P.rows, row, 2);
+                c.list(P.rows, row, [0, 1]);
             }
     );
 
@@ -160,7 +166,7 @@ describe('a machine driving a component`s ports', () => {
     it('fills at the mount, and the fill is not swept back over', () => {
         const card = makeCard();
         const parent = host();
-        EXO_BACKEND.render(card.component, parent);
+        EXO_BACKEND.render(card.component, parent, 0);
         const el = parent.firstElementChild as Element;
         expect(el.getAttribute('data-a')).toBe('row-0');
         expect(el.hasAttribute('data-b')).toBe(false);
@@ -170,7 +176,7 @@ describe('a machine driving a component`s ports', () => {
     it('updates through the schema`s write after the wire has returned', () => {
         const card = makeCard();
         const parent = host();
-        EXO_BACKEND.render(card.component, parent);
+        EXO_BACKEND.render(card.component, parent, 0);
         const el = parent.firstElementChild as Element;
         card.setLabel(card.instances[0], 'later');
         expect(el.getAttribute('data-a')).toBe('later');
@@ -284,8 +290,8 @@ function makeStoreRow(store: SyncStore): {
                 s.managedState[ID_ROW] = id;
                 mark(s, program.fieldMarks[0]);
             });
-            return (c, index) => {
-                c.managedState = [0, BUILDING[index].id, 'unset'];
+            return (c, item) => {
+                c.managedState = [0, (item as TItem).id, 'unset'];
                 c.effectStops = new Array<(() => void) | null>(1).fill(null);
                 instances.push(c);
                 // BEFORE THE FIRST SUBSCRIPTION EXISTS, so a `start` that throws still leaves what it
@@ -302,10 +308,6 @@ function makeStoreRow(store: SyncStore): {
     return { component, instances, setId };
 }
 
-/** The item a row stands for, by INDEX — written by the build callback an instant before the wire
- *  runs, which is how a row is handed its item now that a wire takes no props. */
-const BUILDING: TItem[] = [];
-
 const ROW_LIST_SCHEMA = createExoSchema((b) => {
     let rows!: TExoChildrenPort;
     b.el('ul', null, (ul) => {
@@ -318,27 +320,40 @@ const makeRowList = (
     row: TExoMachine<TMachineDriving>,
     src: TExoTestSource<readonly TItem[]>
 ): TExoDomMachine => {
-    const m = createExoMachineBuilder<
-        TExoDomNode,
-        unknown,
-        { rows: TExoChildList; shown: TItem[] }
-    >(ROW_LIST_SCHEMA);
-    m.createInitialState((c) => ({
-        rows: c.childList(ROW_LIST_SCHEMA.ports.rows),
-        shown: [],
-    }));
-    const showRows = m.transition((c) => {
-        const want = src.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            BUILDING[i] = item;
-            return c.build(row, i);
-        });
-    });
-    m.effect((c) => {
-        showRows(c);
-        return src.onChange(() => showRows(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoDomNode, unknown, { rows: TExoChildList; shown: TItem[] }>(
+        ROW_LIST_SCHEMA,
+        {
+            createInitialState: (c) => ({
+                rows: c.childList(ROW_LIST_SCHEMA.ports.rows),
+                shown: [],
+            }),
+        }
+    );
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = src.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(row, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return src.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 describe('an effect whose store answers from inside subscribe', () => {

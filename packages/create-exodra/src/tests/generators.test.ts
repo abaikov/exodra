@@ -15,7 +15,7 @@
 //
 // AND THAT THE EMITTED CODE NAMES LIVE DOORS. The write doors are `attr`/`text`/
 // `unsafeHtml`/`on`; there is no `set` and no `bind*` call on any backend, and
-// `createInitialState` takes `(exonode, index)` with no props. A generator emitting the old
+// `createInitialState` takes `(exonode, params)` with no props. A generator emitting the old
 // spelling produces a file that throws on its first instance, which the mounting
 // cases below are what catch.
 
@@ -23,7 +23,7 @@ import { describe, it, expect } from 'vitest';
 import { transformSync } from '@babel/core';
 import * as exodraCore from '@exodra/core';
 import * as exodraDom from '@exodra/dom';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort } from '@exodra/core';
 
 import type { TExoDomMachine, TExoDomNode } from '@exodra/dom';
@@ -68,11 +68,10 @@ function freshContainer(): HTMLElement {
 
 /**
  * Mount one instance of a generated component the way an application does: from a
- * parent's `wire`, through a children port. There is no props argument — `index` is the
- * whole of what an instance is handed, so the data it shows was put where it could
- * reach it before this ran.
+ * parent's `createInitialState`, through a children port. There is no props argument — the
+ * params passed here are the whole of what an instance is handed.
  */
-function mountOne(component: TExoDomMachine, container: HTMLElement): () => void {
+function mountOne(component: TExoDomMachine, container: HTMLElement, params?: unknown): () => void {
     const HOST_SCHEMA = createExoSchema((b) => {
         let slot!: TExoChildrenPort;
         b.el('section', null, (s) => {
@@ -80,11 +79,12 @@ function mountOne(component: TExoDomMachine, container: HTMLElement): () => void
         });
         return { slot };
     });
-    const mHost = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA);
-    mHost.createInitialState((c) => {
-        c.one(HOST_SCHEMA.ports.slot, component);
+    const mHost = createExoMachine(HOST_SCHEMA, {
+        createInitialState: (c: TExoDomNode) => {
+            c.one(HOST_SCHEMA.ports.slot, component, params);
+        },
     });
-    return EXO_BACKEND.render(mHost.done(), container);
+    return EXO_BACKEND.render(mHost, container);
 }
 
 describe('component generator', () => {
@@ -93,7 +93,7 @@ describe('component generator', () => {
 
     it('emits a schema-core component, not the previous runtime', () => {
         expect(ts).toContain(
-            "import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core'"
+            "import {\n  EXO_PORT_TEXT,\n  composeExoMachine,\n  createExoMachine,\n  createExoSchema,\n  exoPorts,\n  withExoWire,\n} from '@exodra/core'"
         );
         expect(ts).not.toContain('@exodra/wire');
         expect(ts).not.toContain('@exodra/jsx');
@@ -101,9 +101,12 @@ describe('component generator', () => {
         // generator used to emit, and which the current router refuses.
         expect(ts).not.toContain('Legacy');
         expect(ts).toContain('d.textPort(ButtonPorts.label)');
-        expect(ts).toContain('createInitialState((_c, i) => ({ label: ButtonLabels[i] }))');
+        expect(ts).toContain(
+            'createInitialState: (_c: TExoMachineNode, params: TButtonParams) => ({ label: params.label })'
+        );
         expect(ts).toContain('c.text(ButtonPorts.label, c.state.label)');
-        expect(ts).toContain('export const Button = buttonBuilder.done();');
+        expect(ts).toContain('export const Button = composeExoMachine(buttonBase, m =>');
+        expect(ts).toContain('withExoWire(m, c => {');
     });
 
     it('names only doors that still exist', () => {
@@ -117,11 +120,13 @@ describe('component generator', () => {
         }
     });
 
-    it('takes no props: createInitialState is handed its position', () => {
-        // `createInitialState` is `(enode, index) => TValue`. `props` does not exist on any
+    it('takes no props: createInitialState is handed its params', () => {
+        // `createInitialState` is `(enode, params) => TValue`. `props` does not exist on any
         // backend, so a generated machine that read one would be reading `undefined`.
+        expect(js).toContain('createInitialState: (_c, params) => ({ label: params.label })');
         for (const source of [ts, js]) {
-            expect(source).toContain('createInitialState((_c, i) =>');
+            expect(source).not.toContain('Labels');
+            expect(source).not.toMatch(/createInitialState\(\(/);
             expect(source).not.toMatch(/\(c,\s*props\)/);
             expect(source).not.toMatch(/props\./);
         }
@@ -132,12 +137,11 @@ describe('component generator', () => {
         // The port's holder is declared before the call that mints it — a port escapes a nested
         // closure — so the scaffold has to SPELL the port's type, and it spells the named one.
         expect(ts).toContain('const ButtonPorts = exoPorts({ label: EXO_PORT_TEXT });');
-        expect(ts).toContain('export const ButtonLabels: string[] = [];');
+        expect(ts).toContain('export type TButtonParams = { readonly label: string };');
         expect(js).not.toContain('import type');
         expect(js).not.toContain('TExoMachineNode');
-        expect(js).toContain('createExoMachineBuilder(buttonSchema)');
+        expect(js).toContain('createExoMachine(buttonSchema, {');
         expect(js).toContain('createExoSchema(ButtonPorts, b =>');
-        expect(js).toContain('export const ButtonLabels = [];');
     });
 
     it('types the machine against the SHARED surface, not against a backend', () => {
@@ -147,9 +151,7 @@ describe('component generator', () => {
         // scaffolded that way can never be served by `@exodra/string` or hydrated. Asserted in
         // both directions, because "contains the right thing" is also satisfied by a file that
         // contains the wrong one beside it.
-        expect(ts).toContain(
-            'createExoMachineBuilder<TExoMachineNode, unknown, { label: string }>(buttonSchema)'
-        );
+        expect(ts).toContain('createInitialState: (_c: TExoMachineNode, params: TButtonParams)');
         expect(ts).not.toContain('TExoDomNode');
         expect(ts).not.toContain("from '@exodra/dom'");
     });
@@ -160,12 +162,10 @@ describe('component generator', () => {
     ] as const) {
         it(`compiles and mounts to real DOM (${variant})`, () => {
             const mod = evalModule(source);
-            const labels = mod.ButtonLabels as string[];
             const Button = mod.Button as TExoDomMachine;
             const container = freshContainer();
 
-            labels.push('Click me');
-            const dispose = mountOne(Button, container);
+            const dispose = mountOne(Button, container, { label: 'Click me' });
 
             const root = container.querySelector('.button');
             expect(root).not.toBeNull();
@@ -178,63 +178,55 @@ describe('component generator', () => {
 });
 
 describe('page generator', () => {
-    const ts = generatePageFile('Home', true);
-    const js = generatePageFile('Home', false);
+    const source = generatePageFile('Home');
 
     it('emits a default-exported schema-core page', () => {
-        expect(ts).toContain(
-            "import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core'"
+        expect(source).toContain(
+            "import {\n  EXO_PORT_TEXT,\n  composeExoMachine,\n  createExoMachine,\n  createExoSchema,\n  exoPorts,\n  withExoWire,\n} from '@exodra/core'"
         );
-        expect(ts).toContain('export default pageBuilder.done();');
-        expect(ts).not.toContain('@exodra/wire');
-        expect(ts).not.toContain('@exodra/jsx');
-        expect(ts).not.toContain('Legacy');
+        expect(source).toContain('export default composeExoMachine(pageBase, m =>');
+        expect(source).not.toContain('@exodra/wire');
+        expect(source).not.toContain('@exodra/jsx');
+        expect(source).not.toContain('Legacy');
     });
 
     it('types the page against the SHARED surface and takes no props', () => {
-        expect(ts).toContain('createExoMachineBuilder<TExoMachineNode>(pageSchema)');
+        expect(source).toContain('const pageBase = createExoMachine(pageSchema);');
         // Not `TExoDomNode` — a page typed against the browser exonode cannot be
         // rendered by `@exodra/string`, which is the whole of what an SSR'd route is. See the
         // component generator's own case for the argument.
-        expect(ts).not.toContain('TExoDomNode');
+        expect(source).not.toContain('TExoDomNode');
         // The route match used to arrive as props. There are none: a page reads it from the
         // router it was given, so the page module imports nothing from `@exodra/router` and the
         // test shim below would throw if it did.
-        for (const source of [ts, js]) {
-            expect(source).not.toContain("from '@exodra/router'");
-            expect(source).not.toMatch(/\(c,\s*props\)/);
-            expect(source).not.toMatch(/props\./);
-            expect(source).not.toMatch(/\bc\.set\(/);
-        }
-        expect(js).not.toContain('import type');
+        expect(source).not.toContain("from '@exodra/router'");
+        expect(source).not.toMatch(/\(c,\s*props\)/);
+        expect(source).not.toMatch(/props\./);
+        expect(source).not.toMatch(/\bc\.set\(/);
+        expect(source).not.toContain('import type');
     });
 
     it('exports something the router will actually mount', () => {
         // The router refuses anything that is not a `{ schema, machine }` pair, so this is the
         // assertion that a generated page can be routed at all.
-        const mod = evalModule(ts);
+        const mod = evalModule(source);
         expect(isExoPageMachine(mod.default as TExoRouteMachine)).toBe(true);
     });
 
-    for (const [variant, source] of [
-        ['typescript', ts],
-        ['javascript', js],
-    ] as const) {
-        it(`compiles and mounts, rendering heading + copy (${variant})`, () => {
-            const mod = evalModule(source);
-            const Page = mod.default as TExoDomMachine;
-            const container = freshContainer();
+    it('compiles and mounts, rendering heading + copy', () => {
+        const mod = evalModule(source);
+        const Page = mod.default as TExoDomMachine;
+        const container = freshContainer();
 
-            const dispose = mountOne(Page, container);
+        const dispose = mountOne(Page, container);
 
-            const page = container.querySelector('.page');
-            expect(page).not.toBeNull();
-            expect(page?.querySelector('h1')?.textContent).toBe('Home');
-            expect(page?.querySelector('p')?.textContent).toContain('Welcome to the Home page.');
+        const page = container.querySelector('.page');
+        expect(page).not.toBeNull();
+        expect(page?.querySelector('h1')?.textContent).toBe('Home');
+        expect(page?.querySelector('p')?.textContent).toContain('Welcome to the Home page.');
 
-            dispose();
-        });
-    }
+        dispose();
+    });
 });
 
 describe('api generator', () => {

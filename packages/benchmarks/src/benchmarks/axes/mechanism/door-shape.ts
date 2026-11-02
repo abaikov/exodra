@@ -826,18 +826,18 @@ function makeListSchema(): TExoCursorDeclaration<TListPorts> {
  * THE LIST WRAPPER — one `<ul>`, one children port, one `c.list`.
  *
  * A NEW DECLARATION PER CALL, so no two programs share the wrapper's schema or its connector. The row
- * number arrives as the INDEX: `c.list` takes a COUNT and numbers its rows 0…count-1, handing each
- * wire its own number as the second argument, so nothing here reads a module counter and nothing
- * allocates an items array the rows would only index by position anyway.
+ * number arrives as the row's PARAMS: `c.list` arms row `k` with `numbers[k]`, which is `k`, so
+ * nothing here reads a module counter. The array is built once per wrapper, not per render.
  */
 function listOver(row: TExoStrMachine): TExoStrMachine {
     const schema = makeListSchema();
     const port = schema.ports.rows;
+    const numbers = Array.from({ length: ROWS }, (_, k) => k);
     return {
         declaration: schema,
         forms: [],
         createInitialState: (c: TExoStrNode): void => {
-            c.list(port, row, ROWS);
+            c.list(port, row, numbers);
         },
         effects: EXO_NO_EFFECTS,
         handlers: EXO_NO_HANDLERS,
@@ -923,7 +923,8 @@ function floorB(): string {
 // — one integer per program — understates half of its writes by one frame.
 // ---------------------------------------------------------------------------------------
 
-const WALK_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const WALK_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     c.attr(PA.id, i);
     c.attr(PA.kind, KINDS_A[i & 3]);
     c.attr(PA.href, '/i/' + i);
@@ -934,7 +935,8 @@ const WALK_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     c.text(PA.tail, 'ok ' + i);
 };
 
-const WALK_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const WALK_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     c.attr(PB.id, i);
     c.attr(PB.kind, KINDS_B[i & 3]);
     c.attr(PB.href, '/i/' + i);
@@ -999,7 +1001,8 @@ const EXO_STR_DOOR_B = {
     },
 };
 
-const PROTOTYPE_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const PROTOTYPE_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const P = EXO_STR_DOOR_A;
     const d0 = { __proto__: P, slots, write: WA_ID, at: IA_ID } as unknown as TExoStrDoor;
@@ -1020,7 +1023,8 @@ const PROTOTYPE_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     d7.set('ok ' + i);
 };
 
-const PROTOTYPE_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const PROTOTYPE_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const P = EXO_STR_DOOR_B;
     const d0 = { __proto__: P, slots, write: WB_ID, at: IB_ID } as unknown as TExoStrDoor;
@@ -1078,7 +1082,8 @@ class ExoStrDoorCtorB {
     }
 }
 
-const CTOR_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const CTOR_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const D = ExoStrDoorCtorA;
     const d0 = new D(slots, WA_ID, IA_ID);
@@ -1099,7 +1104,8 @@ const CTOR_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     d7.set('ok ' + i);
 };
 
-const CTOR_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const CTOR_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const D = ExoStrDoorCtorB;
     const d0 = new D(slots, WB_ID, IB_ID);
@@ -1251,7 +1257,8 @@ const R7_B = {
     at: IB_TAIL,
 } as unknown as TExoStrDoorRebound;
 
-const REBOUND_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const REBOUND_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const d0 = R0_A;
     const d1 = R1_A;
@@ -1279,7 +1286,8 @@ const REBOUND_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     d7.set('ok ' + i);
 };
 
-const REBOUND_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const REBOUND_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const d0 = R0_B;
     const d1 = R1_B;
@@ -1425,7 +1433,8 @@ const ACCESSOR_ROW_B = {
     values: NO_SLOTS_B,
 } as unknown as TExoStrAccessorRow;
 
-const ACCESSOR_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const ACCESSOR_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const row = ACCESSOR_ROW_A;
     row.values = c.portTable() as unknown as string[];
     row.id = i;
@@ -1438,7 +1447,8 @@ const ACCESSOR_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     row.tail = 'ok ' + i;
 };
 
-const ACCESSOR_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const ACCESSOR_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const row = ACCESSOR_ROW_B;
     row.values = c.portTable() as unknown as string[];
     row.id = i;
@@ -1549,7 +1559,8 @@ const PORT_ROW_B = {
     writers: NO_WRITERS_B,
 } as unknown as TExoStrPortRow;
 
-const PROTOPORT_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const PROTOPORT_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const row = PORT_ROW_A;
     row.values = c.portTable() as unknown as string[];
     row.writers = c.writers;
@@ -1563,7 +1574,8 @@ const PROTOPORT_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     row.tail('ok ' + i);
 };
 
-const PROTOPORT_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const PROTOPORT_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const row = PORT_ROW_B;
     row.values = c.portTable() as unknown as string[];
     row.writers = c.writers;
@@ -1701,7 +1713,8 @@ class ExoStrRowNodeB {
 Object.setPrototypeOf(ExoStrRowNodeA.prototype, EXO_STR_NODE_BACKEND_A);
 Object.setPrototypeOf(ExoStrRowNodeB.prototype, EXO_STR_NODE_BACKEND_B);
 
-const CLASSNODE_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const CLASSNODE_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const en = new ExoStrRowNodeA(c.portTable() as unknown as string[]);
     en.id(i);
     en.kind(KINDS_A[i & 3]);
@@ -1713,7 +1726,8 @@ const CLASSNODE_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     en.tail('ok ' + i);
 };
 
-const CLASSNODE_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const CLASSNODE_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const en = new ExoStrRowNodeB(c.portTable() as unknown as string[]);
     en.id(i);
     en.kind(KINDS_B[i & 3]);
@@ -1747,7 +1761,8 @@ const CLASSNODE_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
 // TWO FRAMES per write (the closure, then the writer).
 // ---------------------------------------------------------------------------------------
 
-const CLOSURE_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const CLOSURE_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const d0 = (v: unknown): void => {
         slots[IA_ID] = WA_ID(v);
@@ -1783,7 +1798,8 @@ const CLOSURE_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     d7('ok ' + i);
 };
 
-const CLOSURE_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const CLOSURE_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const d0 = (v: unknown): void => {
         slots[IB_ID] = WB_ID(v);
@@ -1852,7 +1868,8 @@ const ESCAPED_SINK_B: TExoStrDoorFn[] = [
     NOOP_B,
 ];
 
-const ESCAPED_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const ESCAPED_A: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const keep = ESCAPED_SINK_A;
     const d0 = (v: unknown): void => {
@@ -1897,7 +1914,8 @@ const ESCAPED_A: TExoMachineInitialState<TExoStrNode> = (c, i) => {
     d7('ok ' + i);
 };
 
-const ESCAPED_B: TExoMachineInitialState<TExoStrNode> = (c, i) => {
+const ESCAPED_B: TExoMachineInitialState<TExoStrNode> = (c, params) => {
+    const i = params as number;
     const slots = c.portTable() as unknown as string[];
     const keep = ESCAPED_SINK_B;
     const d0 = (v: unknown): void => {
@@ -2639,7 +2657,8 @@ function gateTablePerRow(): string[] {
     const probe: TExoStrMachine = {
         declaration: probeSchema,
         forms: [],
-        createInitialState: (c: TExoStrNode, i: number): void => {
+        createInitialState: (c: TExoStrNode, params: unknown): void => {
+            const i = params as number;
             seen.add(c.portTable());
             c.attr(P.id, i);
             c.attr(P.kind, KINDS_A[i & 3]);

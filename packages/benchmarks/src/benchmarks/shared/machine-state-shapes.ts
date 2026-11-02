@@ -128,7 +128,7 @@ import {
     type TExoMachineProgram,
 } from '@exodra/computed';
 import type { TExoDomMachine, TExoDomNode } from '@exodra/dom';
-import { createExoSchema, createExoMachineBuilder } from '@exodra/core';
+import { createExoSchema, createExoMachine } from '@exodra/core';
 import type { TExoMachineInitialState } from '@exodra/core';
 
 /** The connector a DOM wire is handed — named without importing the class. */
@@ -218,13 +218,6 @@ export const exoStateTableFields = <TValue>(
  */
 export interface TExoStateTablePack<THandle, TOps> {
     readonly component: TExoDomMachine;
-    /**
-     * THE HANDLES THIS COMPONENT'S ROWS READ, BY INDEX. A wire is handed its POSITION and nothing
-     * else, so the handle a row seeds itself from is looked up here. Assign UNTIMED, immediately
-     * before the render that mounts the rows; a row reads `handles[index]` inside its mount, which
-     * is the same one array load every other participant's row pays.
-     */
-    readonly setHandles: (handles: readonly THandle[]) => void;
     /** The transitions. Available after the first render; refuses before it. */
     readonly ops: () => TOps;
     /** Where field 0 lives: 0 for variant 2, the schema's node-slot count for variant 3. */
@@ -303,11 +296,10 @@ export function exoStateTablePack<TPorts, THandle, TOps>(
     const onWired = spec.onWired;
     let base = -1;
     let ops: TOps | null = null;
-    let handles: readonly THandle[] = [];
 
     const schema = createExoSchema(spec.build);
     const P = schema.ports;
-    const initialState = (): TExoMachineInitialState<TExoDomNode> => {
+    const initialState = (): TExoMachineInitialState<TExoDomNode, unknown, THandle> => {
         const compile = (at: number): TExoMachineProgram<TExoStateTableState> =>
             compileExoMachine<TExoStateTableState>({
                 fields: fields,
@@ -322,8 +314,7 @@ export function exoStateTablePack<TPorts, THandle, TOps>(
             const program = compile(0);
             const mine = spec.makeOps(0, program);
             ops = mine;
-            return (c, index) => {
-                const handle = handles[index];
+            return (c, handle) => {
                 // TWO ALLOCATIONS PER INSTANCE, and that is the shape's price: the state object,
                 // and the array of values it points at. Both are built WHOLE — the array by the
                 // caller's literal, the object by this one.
@@ -344,8 +335,7 @@ export function exoStateTablePack<TPorts, THandle, TOps>(
         // ── VARIANT 3 — THE INSTANCE'S NODE ARRAY, ONE NUMBERING FOR NODES AND STATE ────────
         let program: TExoMachineProgram<TExoStateTableState> | null = null;
         let mine: TOps | null = null;
-        return (c, index) => {
-            const handle = handles[index];
+        return (c, handle) => {
             // THE NODE TABLE ITSELF. `wireExoInstance` built it as `[root]` and appended one entry
             // per walk landing before calling this, so its length here is the schema's node-slot
             // count and is the same number for every instance of this component.
@@ -384,15 +374,13 @@ export function exoStateTablePack<TPorts, THandle, TOps>(
             if (onWired !== null) onWired(c, P, state, mine as TOps);
         };
     };
-    const machine = createExoMachineBuilder<TExoDomNode>(schema);
-    machine.createInitialState(initialState());
-    const component = machine.done();
+    const machine = createExoMachine<TExoDomNode, THandle>(schema, {
+        createInitialState: initialState(),
+    });
+    const component = machine;
 
     return {
         component,
-        setHandles: (rows: readonly THandle[]): void => {
-            handles = rows;
-        },
         ops: (): TOps => {
             if (ops === null) {
                 throw new Error(

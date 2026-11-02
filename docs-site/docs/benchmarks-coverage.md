@@ -384,7 +384,7 @@ fixture before the clock starts, is **not covered**. Coverage means the call hap
 | `events/` | **yes** — `assertExoEventPort` is, on `toggle`, and `op-click-floor` and `keystroke-floor` both fill a real event port and then drive it. `TExoEventHandler` is a type and emits nothing: what a timed region reaches is the backend's slot setter and its one `handler.call` | **yes** — `op-click-floor` and `keystroke-floor` each carry hand-written listener programs with no framework in them (`floor·per-el`, `floor·root`) | **yes** — `op-click-floor`'s `exodra·closure` / `exodra·op` / `exodra·op·deleg`, `keystroke-floor`'s `exodra·deleg` / `exodra·free` | a button is clicked and a value changes |
 | `context/` | **yes** — `exoContextFrame` and `readExoContext` both, on `context-cost` | **for the provide, yes** (`push` is the floor its own header names); **for the read, no** | **no** — this page books "hoist the read" as a GUESS | a component reads a value an ancestor provided |
 | `runtime/` | **no** — `grep 'exoRuntime('` over all of `packages/benchmarks` returns nothing outside `dist/` | **no** | **no**, and this is the sharpest absence: plugins are the design's stated point | a user adds a plugin, or swaps one |
-| root, the schema | **yes, since 2026-08-22** — `schema-build`'s timed region *is* `createExoSchema` (`APP-US/createExoSchema` 2.05 µs, `PAGE-US/createExoSchema` 19.0), with `numberPorts` isolated as its own rung (`+number`). Everywhere else it is still **no**: `createExoSchema`/`createExoMachineBuilder` sit outside every clock on all 24 other axes. `createExoStatic` and `exoOne` are timed by nothing. `ssr-floor`'s struck `+stack` rung timed a depth-indexed instance pool that `@exodra/core` no longer ships; `wire-exo-instance.ts` keeps its own inline `plan.depth++`/`plan.depth--` and never had a pool to reach | **yes for the builder** — `literal`, `+number`: hand-written schema literals, census-checked against the shape actually built | **no** | the program starts and every component's shape is declared |
+| root, the schema | **yes, since 2026-08-22** — `schema-build`'s timed region *is* `createExoSchema` (`APP-US/createExoSchema` 2.05 µs, `PAGE-US/createExoSchema` 19.0), with `numberPorts` isolated as its own rung (`+number`). Everywhere else it is still **no**: `createExoSchema`/`createExoMachine` sit outside every clock on all 24 other axes. `createExoStatic` and `exoOne` are timed by nothing. `ssr-floor`'s struck `+stack` rung timed a depth-indexed instance pool that `@exodra/core` no longer ships; `wire-exo-instance.ts` keeps its own inline `plan.depth++`/`plan.depth--` and never had a pool to reach | **yes for the builder** — `literal`, `+number`: hand-written schema literals, census-checked against the shape actually built | **no** | the program starts and every component's shape is declared |
 | root, the refusals | **yes, since 2026-08-22** — `schema-build`'s `+checks` rung and its `checks·parts` cross-check | **not definable** — a refusal fires or it does not | **no** | the same module load, now paying ten checks per builder call |
 
 ### `@exodra/list-reconcile` — measured, and the run resolved less than it looks
@@ -470,13 +470,13 @@ axis in the suite constructs a schema inside a timed region" is no longer true o
 whole. It remains true of every axis that measures rendering, and that is what the three readings
 below establish.
 
-Every `createExoSchema` / `createExoMachineBuilder` call in those axes is outside every clock:
+Every `createExoSchema` / `createExoMachine` call in those axes is outside every clock:
 
 - **Module scope**, most of them: `apps/exodra/exodra.tsx:57,105,261,290`; `ssr-floor.ts:817,840,870,909`;
   `axes/phases/clone-threshold.tsx:149,177,205,239,286,372`;
   `axes/app/component-split.tsx:242`. (`props-vs-ports.ts` stood in this list and its axis has been struck.
   `context-cost` used to stand in it and no longer belongs to it:
-  it declares no `createExoMachineBuilder` and no `createExoSchema` at all — it times `exoContextFrame` and
+  it declares no `createExoMachine` and no `createExoSchema` at all — it times `exoContextFrame` and
   `readExoContext` over a chain it builds by hand.)
 - **Setup functions**, the rest: `axes/floors/update-floor.ts:1048,1413,2127` all sit inside a
   `mount*()` whose own comment at `:1042` says "It is setup, never timed."

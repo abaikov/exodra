@@ -68,7 +68,7 @@ machine runs on the server, on a client render and through hydration.
 No compiler is involved: this is a function call.
 
 ```ts
-import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_TEXT, composeExoMachine, createExoMachine, createExoSchema, exoPorts, withExoHandlers, withExoWire } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
@@ -86,26 +86,32 @@ const counterSchema = createExoSchema(CounterPorts, (b) => {
     });
 });
 
-const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
-    counterSchema
+const counterBase = createExoMachine<TExoMachineNode, unknown, { count: number }>(counterSchema, {
+    createInitialState: () => ({ count: 0 }),
+});
+const Counter = composeExoMachine(
+    counterBase,
+    (m) =>
+        withExoWire(m, (c) => {
+            c.text(CounterPorts.text, `Count: ${c.state.count}`);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CounterPorts.click, (c) => {
+                c.state.count += 1;
+                c.text(CounterPorts.text, `Count: ${c.state.count}`);
+            });
+        })
 );
-counterBuilder.createInitialState(() => ({ count: 0 }));
-counterBuilder.wire((c) => {
-    c.text(CounterPorts.text, `Count: ${c.state.count}`);
-});
-counterBuilder.on(CounterPorts.click, (c) => {
-    c.state.count += 1;
-    c.text(CounterPorts.text, `Count: ${c.state.count}`);
-});
-const Counter = counterBuilder.done();
 
 const dispose = withExoCompiler(new ExoDomBackend()).render(Counter, document.body);
 ```
 
 `c.attr` fills an attribute port, `c.text` fills a text port, and
-`counterBuilder.on` attaches a listener that moves the state and writes the ports it
-changed. Following an outside source is an effect —
-`counterBuilder.effect((c) => source.onChange(() => update(c)))` — so a
+`withExoHandlers` attaches a listener that moves the state and writes the ports it
+changed. Each `withExo*` decorator returns a new machine and leaves its input alone;
+`composeExoMachine` applies them in order. Following an outside source is an effect —
+`withExoEffects(m, (effect) => { effect((c) => source.onChange(() => update(c))); })` — so a
 disconnected instance stops listening and a torn-down one lets go. Reconciling a
 children port is `reconcileExoOrder` from `@exodra/list-reconcile`, called from the
 machine's own code the same way. See the
@@ -124,7 +130,7 @@ imports nothing but `@exodra/core`.
 
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoHandlers, withExoWire } from '@exodra/core';
 import type { TExoAttrPort, TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 
 const personSchema = exoJsx<{
@@ -145,15 +151,20 @@ const PersonPorts = personSchema.ports;
 
 type TPerson = { id: string; name: string; role: string };
 
-const personBuilder = createExoMachineBuilder<TExoMachineNode, TPerson>(personSchema);
-personBuilder.createInitialState(() => null);
-personBuilder.wire((c, person) => {
-  c.attr(PersonPorts.id, person.id);
-  c.text(PersonPorts.name, person.name);
-  c.text(PersonPorts.role, person.role);
-});
-personBuilder.on(PersonPorts.select, () => console.log('selected'));
-export const Person = personBuilder.done();
+const personBase = createExoMachine<TExoMachineNode, TPerson>(personSchema);
+export const Person = composeExoMachine(
+  personBase,
+  (m) =>
+    withExoWire(m, (c, person) => {
+      c.attr(PersonPorts.id, person.id);
+      c.text(PersonPorts.name, person.name);
+      c.text(PersonPorts.role, person.role);
+    }),
+  (m) =>
+    withExoHandlers(m, (on) => {
+      on(PersonPorts.select, () => console.log('selected'));
+    })
+);
 ```
 
 `swc-plugin-exodra` compiles the same dialect in Rust for SWC-based toolchains.
@@ -161,17 +172,18 @@ See the [JSX guide](https://exodra.org/docs/guides/jsx).
 
 ### List Rendering
 
-A children port is filled from a machine. `c.list(port, machine, count)` builds a
-fixed run of rows, each told its index, and is done with them: no diff, no registry,
+A children port is filled from a machine. `c.list(port, machine, rows)` builds a
+fixed run of rows, row i armed with `rows[i]` as its params, and is done with them: no diff, no registry,
 nothing to pay for the possibility of changing.
 
 ```ts
 import {
     EXO_PORT_CHILDREN,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoWire,
 } from '@exodra/core';
 import type { TExoChildrenWiring, TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
@@ -187,12 +199,12 @@ const todoSchema = createExoSchema(TodoPorts, (b) => {
         li.textPort(TodoPorts.text);
     });
 });
-const todoBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TTodo>(todoSchema);
-todoBuilder.createInitialState((_c, index) => todos[index]);
-todoBuilder.wire((c) => {
+const todoBase = createExoMachine(todoSchema, {
+    createInitialState: (_c: TExoMachineNode, todo: TTodo) => todo,
+});
+const Todo = withExoWire(todoBase, (c) => {
     c.text(TodoPorts.text, c.state.text);
 });
-const Todo = todoBuilder.done();
 
 const TodoListPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
 
@@ -201,11 +213,11 @@ const todoListSchema = createExoSchema(TodoListPorts, (b) => {
         ul.childrenPort(TodoListPorts.rows);
     });
 });
-const todoListBuilder = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(todoListSchema);
-todoListBuilder.createInitialState((c) => {
-    c.list(TodoListPorts.rows, Todo, todos.length);
+const TodoList = createExoMachine<TExoChildrenWiring & TExoMachineNode>(todoListSchema, {
+    createInitialState: (c) => {
+        c.list(TodoListPorts.rows, Todo, todos);
+    },
 });
-const TodoList = todoListBuilder.done();
 
 withExoCompiler(new ExoDomBackend()).render(TodoList, document.body);
 ```
@@ -220,11 +232,13 @@ element it was; an effect draws the list first and then follows the data.
 import {
     EXO_PORT_CHILDREN,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoEffects,
+    withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -252,11 +266,10 @@ const todoSchema = createExoSchema(TodoPorts, (b) => {
         li.textPort(TodoPorts.text);
     });
 });
-const todoBuilder = createExoMachineBuilder<TExoDomNode, TTodo>(todoSchema);
-todoBuilder.wire((c, todo) => {
+const todoBase = createExoMachine<TExoDomNode, TTodo>(todoSchema);
+const Todo = withExoWire(todoBase, (c, todo) => {
     c.text(TodoPorts.text, todo.text);
 });
-const Todo = todoBuilder.done();
 
 const TodoListPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
 
@@ -266,19 +279,24 @@ const todoListSchema = createExoSchema(TodoListPorts, (b) => {
     });
 });
 type TTodoListState = { rows: TExoChildList; shown: TTodo[] };
-const todoListBuilder = createExoMachineBuilder<TExoDomNode, unknown, TTodoListState>(todoListSchema);
-todoListBuilder.createInitialState((c) => ({ rows: c.childList(TodoListPorts.rows), shown: [] }));
-function showRows(c: TExoMachineBuilderNode<typeof todoListBuilder>): void {
+const todoListBase = createExoMachine(todoListSchema, {
+    createInitialState: (c: TExoDomNode): TTodoListState => ({
+        rows: c.childList(TodoListPorts.rows),
+        shown: [],
+    }),
+});
+function showRows(c: TExoMachineNodeOf<typeof todoListBase>): void {
     const want = todos.getValue();
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (todo, i) =>
-        c.build(Todo, i, todo)
+    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (todo) =>
+        c.build(Todo, todo)
     );
 }
-todoListBuilder.effect((c) => {
-    showRows(c);
-    return todos.onChange(() => showRows(c));
+const TodoList = withExoEffects(todoListBase, (effect) => {
+    effect((c) => {
+        showRows(c);
+        return todos.onChange(() => showRows(c));
+    });
 });
-const TodoList = todoListBuilder.done();
 
 withExoChildList(withExoCompiler(new ExoDomBackend())).render(TodoList, document.body);
 todos.setValue([...todos.getValue(), { id: 2, text: 'Ship it' }]);
@@ -297,7 +315,7 @@ All `@exodra/*` packages are published under the `0.x` line.
 
 | Package                                                                  | Description                                                                                                                                              |
 | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[@exodra/core](./packages/core)**                                      | `createExoSchema`, `createExoMachineBuilder` (the machine: initial state, wire, transitions, effects), ports, contexts, event descriptors, the escapers |
+| **[@exodra/core](./packages/core)**                                      | `createExoSchema`, `createExoMachine` and its decorators `withExoTransitions`/`withExoWire`/`withExoHandlers`/`withExoEffects` (the machine: initial state, wire, transitions, effects), ports, contexts, event descriptors, the escapers |
 | **[@exodra/computed](./packages/computed)**                              | The declarative half of a machine: `withExoComputedMachine`, `exoWiring`, fields, derivations, transitions. A page that derives nothing links none of it |
 | **[@exodra/list-reconcile](./packages/list-reconcile)**                  | `reconcileExoOrder` (identity reconcile from the machine's own code), `createExoKeyedList` and the `keyedList` pack |
 | **[@exodra/dom](./packages/dom)**                                        | Browser backend: `mountExoSchema`, `withExoCompiler`'s `render`/`withExoHydration`'s `hydrate`, identity reconcile, event plugins                                                                    |

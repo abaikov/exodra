@@ -1,4 +1,10 @@
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import { EXO_ID_COUNTER, nextExoId, provideExoIds } from '@exodra/context';
 import type { TExoChildrenPort, TExoMachine } from '@exodra/core';
 import { injectExoRouter } from '../setup/injectExoRouter';
@@ -21,53 +27,65 @@ export function exoOutlet(
         });
         return { page };
     });
-    const mOutlet = createExoMachineBuilder<TExoOutletWiring, unknown, TExoOutletState>(schema);
-    const showRoute = mOutlet.transition((c) => showExoOutletRoute(c.state));
-
-    mOutlet.createInitialState((c) => {
-        const parentState = c.inject(EXO_OUTLET_STATE) ?? null;
-        const ids = c.inject(EXO_ID_COUNTER) === undefined ? null : provideExoIds(c, nextExoId(c));
-        const state: TExoOutletState = {
-            router: injectExoRouter(c),
-            depth: parentState === null ? 0 : parentState.depth + 1,
-            node: c,
-            childList: c.childList(schema.ports.page),
-            parentState,
-            nestedOutletStates: [],
-            showRoute,
-            match: undefined,
-            pageMachine: null,
-            pageNode: null,
-            lazyRouteLoader: null,
-            connected: true,
-            ids,
-        };
-        c.provide(EXO_OUTLET_STATE, state);
-        if (parentState !== null) {
-            parentState.nestedOutletStates.push(state);
-            c.onTeardown(() => {
-                const nested = parentState.nestedOutletStates;
-                const at = nested.indexOf(state);
-                if (at !== -1) nested.splice(at, 1);
-            });
-        }
-        showExoOutletRoute(state);
-        return state;
+    const mOutlet = createExoMachine<TExoOutletWiring, unknown, TExoOutletState>(schema, {
+        createInitialState: (c) => {
+            const parentState = c.inject(EXO_OUTLET_STATE) ?? null;
+            const ids =
+                c.inject(EXO_ID_COUNTER) === undefined ? null : provideExoIds(c, nextExoId(c));
+            const state: TExoOutletState = {
+                router: injectExoRouter(c),
+                depth: parentState === null ? 0 : parentState.depth + 1,
+                node: c,
+                childList: c.childList(schema.ports.page),
+                parentState,
+                nestedOutletStates: [],
+                showRoute,
+                match: undefined,
+                pageMachine: null,
+                pageNode: null,
+                lazyRouteLoader: null,
+                connected: true,
+                ids,
+            };
+            c.provide(EXO_OUTLET_STATE, state);
+            if (parentState !== null) {
+                parentState.nestedOutletStates.push(state);
+                c.onTeardown(() => {
+                    const nested = parentState.nestedOutletStates;
+                    const at = nested.indexOf(state);
+                    if (at !== -1) nested.splice(at, 1);
+                });
+            }
+            showExoOutletRoute(state);
+            return state;
+        },
     });
 
-    mOutlet.effect((c) => {
-        const state = c.state;
-        state.connected = true;
-        showRoute(c);
-        const off =
-            state.parentState === null ? onExoRouterCommit(state.router, () => showRoute(c)) : null;
-        return () => {
-            state.connected = false;
-            if (off !== null) off();
-        };
-    });
-
-    return mOutlet.done() as TExoMachine<TExoOutletWiring, { page: TExoChildrenPort }>;
+    const machine = composeExoMachine(
+        mOutlet,
+        (m) =>
+            withExoTransitions(m, {
+                showRoute: (c) => showExoOutletRoute(c.state),
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    const state = c.state;
+                    state.connected = true;
+                    showRoute(c);
+                    const off =
+                        state.parentState === null
+                            ? onExoRouterCommit(state.router, () => showRoute(c))
+                            : null;
+                    return () => {
+                        state.connected = false;
+                        if (off !== null) off();
+                    };
+                });
+            })
+    );
+    const { showRoute } = machine.transitions;
+    return machine as TExoMachine<TExoOutletWiring, { page: TExoChildrenPort }>;
 }
 
 // The `<div>` outlet, built ONCE at module load. `exoOutlet` is the factory for any other tag.

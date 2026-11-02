@@ -8,7 +8,7 @@
 //
 // The href is the other half: it is in the MARKUP, which is what a crawler follows, what the
 // browser shows on hover, and what still works while the bundle is downloading.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoNode } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
 import { describe, expect, it } from 'vitest';
@@ -25,23 +25,19 @@ import type { TExoLinkParams, TExoRoute, TExoRouter } from '../../types';
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
 interface TPlacingNode extends TExoMachineNode {
-    build<TParams>(
-        machine: TExoMachine<never, unknown, TParams>,
-        index?: number,
-        params?: TParams
-    ): TExoNode;
+    build<TParams>(machine: TExoMachine<never, unknown, TParams>, params?: TParams): TExoNode;
     childList(port: TExoChildrenPort): { insert(child: TExoNode, i?: number): void };
 }
 
 const page = (name: string) =>
-    createExoMachineBuilder(
+    createExoMachine(
         createExoSchema((b) => {
             b.el('p', { class: name }, (p) => {
                 p.text(name);
             });
             return {};
         })
-    ).done();
+    );
 
 const ROUTES: readonly TExoRoute[] = [
     { path: '/', component: page('home') },
@@ -58,13 +54,14 @@ const NAV_SCHEMA = createExoSchema((b) => {
 });
 
 const navWith = (router: TExoRouter | null, links: readonly TExoLinkParams[]) => {
-    const m = createExoMachineBuilder<TPlacingNode>(NAV_SCHEMA);
-    m.createInitialState((c) => {
-        if (router !== null) provideExoRouter(c, router);
-        const bar = c.childList(NAV_SCHEMA.ports.items);
-        for (let i = 0; i < links.length; i++) bar.insert(c.build(ExoLink, i, links[i]));
+    const m = createExoMachine<TPlacingNode>(NAV_SCHEMA, {
+        createInitialState: (c) => {
+            if (router !== null) provideExoRouter(c, router);
+            const bar = c.childList(NAV_SCHEMA.ports.items);
+            for (let i = 0; i < links.length; i++) bar.insert(c.build(ExoLink, links[i]));
+        },
     });
-    return m.done() as never;
+    return m as never;
 };
 
 const settled = (): Promise<void> =>

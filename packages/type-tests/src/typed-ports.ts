@@ -1,13 +1,14 @@
 import {
     EXO_PORT_EVENT,
     EXO_PORT_REF,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoEventPortKind,
     exoPorts,
     exoRefPortKind,
+    withExoHandlers,
 } from '@exodra/core';
-import type { TExoEventPort, TExoMachineBuilderNode, TExoRefPort } from '@exodra/core';
+import type { TExoEventPort, TExoMachineNodeOf, TExoRefPort } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
 const FieldPorts = exoPorts({
@@ -35,35 +36,35 @@ const fieldSchema = createExoSchema(FieldPorts, (b) => {
     });
 });
 
-const fieldBuilder = createExoMachineBuilder<TExoDomNode, { label: string }, { label: string }>(
-    fieldSchema
-);
-
-fieldBuilder.createInitialState((_c, _index, params) => ({ label: params.label }));
-
-fieldBuilder.on(FieldPorts.keydown, (c, event) => {
-    const key: string = event.key;
-    const input: HTMLInputElement = c.portNode(FieldPorts.field);
-    const box: Element = c.portNode(FieldPorts.box);
-    void key;
-    void input;
-    void box;
+const fieldBase = createExoMachine<TExoDomNode, { label: string }, { label: string }>(fieldSchema, {
+    createInitialState: (_c, params) => ({ label: params.label }),
 });
 
-fieldBuilder.on(FieldPorts.click, (_c, event) => {
-    const plain: Event = event;
-    // @ts-expect-error an untyped port hands the backend's Event, which has no `key`
-    void event.key;
-    void plain;
+withExoHandlers(fieldBase, (on) => {
+    on(FieldPorts.keydown, (c, event) => {
+        const key: string = event.key;
+        const input: HTMLInputElement = c.portNode(FieldPorts.field);
+        const box: Element = c.portNode(FieldPorts.box);
+        void key;
+        void input;
+        void box;
+    });
+
+    on(FieldPorts.click, (_c, event) => {
+        const plain: Event = event;
+        // @ts-expect-error an untyped port hands the backend's Event, which has no `key`
+        void event.key;
+        void plain;
+    });
+
+    // @ts-expect-error a ref port is not an event port
+    on(FieldPorts.field, () => {});
 });
 
-type TFieldNode = TExoMachineBuilderNode<typeof fieldBuilder>;
+type TFieldNode = TExoMachineNodeOf<typeof fieldBase>;
 
 function showLabel(c: TFieldNode): void {
     const label: string = c.state.label;
     void label;
 }
 void showLabel;
-
-// @ts-expect-error a ref port is not an event port
-fieldBuilder.on(FieldPorts.field, () => {});

@@ -25,7 +25,13 @@
 //     the easiest claim in this file to pass by accident: the hooks are overwritten and counted, a
 //     live source is written to while the child is OUT of the document and the detached element must
 //     still take the write, and the element that comes back must be the same OBJECT.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoChildrenPort,
     TExoNode,
@@ -49,7 +55,7 @@ const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
 /** What these wires assume about an exonode, and nothing more. */
 type TDriving = {
-    build(component: unknown, index?: number): TExoNode<TExoDomMark>;
+    build(component: unknown, params?: unknown): TExoNode<TExoDomMark>;
 };
 
 /**
@@ -87,12 +93,7 @@ const cell = (initial: string): TCell => {
     };
 };
 
-/** What the rows read, BY INDEX. A wire is handed its position and nothing else, so the labels a
- *  test wants on screen are the test's to put here first. `rowOf` turns a label back into its
- *  index, so every call below still reads as `build('a')` did. */
-const ROW_LABELS = ['a', 'b', 'c', 'z', 'x', 'y'];
-
-/** One row: `<li>` carrying its label as text. */
+/** One row: `<li>` carrying its label, its params, as text. */
 const ROW = createExoTestMachine(
     (b) => {
         let label!: TExoTextPort;
@@ -102,8 +103,8 @@ const ROW = createExoTestMachine(
         return { label };
     },
     (P): TExoMachineInitialState<{ text(port: TExoTextPort, value: unknown): void }> =>
-        (c, i) => {
-            c.text(P.label, ROW_LABELS[i]);
+        (c, label) => {
+            c.text(P.label, label);
         }
 );
 
@@ -119,22 +120,32 @@ const BOUND_ROW_SCHEMA = createExoSchema((b) => {
     });
     return { label };
 });
-const mBoundRow = createExoMachineBuilder<TExoDomNode, unknown, { cell: TCell }>(BOUND_ROW_SCHEMA);
-mBoundRow.createInitialState(() => ({ cell: BOUND_SOURCE }));
-const showBoundRow = mBoundRow.transition((c) => {
-    c.text(BOUND_ROW_SCHEMA.ports.label, c.state.cell.getValue());
+const mBoundRow = createExoMachine<TExoDomNode, unknown, { cell: TCell }>(BOUND_ROW_SCHEMA, {
+    createInitialState: () => ({ cell: BOUND_SOURCE }),
 });
-mBoundRow.effect((c) => {
-    showBoundRow(c);
-    return c.state.cell.onChange(() => showBoundRow(c));
-});
-const BOUND_ROW = mBoundRow.done();
+const BOUND_ROW = composeExoMachine(
+    mBoundRow,
+    (m) =>
+        withExoTransitions(m, {
+            showBoundRow: (c) => {
+                c.text(BOUND_ROW_SCHEMA.ports.label, c.state.cell.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showBoundRow(c);
+                return c.state.cell.onChange(() => showBoundRow(c));
+            });
+        })
+);
+const { showBoundRow } = BOUND_ROW.transitions;
 
 /** Publishes the cell, then builds the row that reads it — the two halves of handing a source to a
  *  component that is handed only a number. */
 const buildBound = (conn: TDriving, source: TCell): TExoNode<TExoDomMark> => {
     BOUND_SOURCE = source;
-    return conn.build(BOUND_ROW, 0);
+    return conn.build(BOUND_ROW);
 };
 
 /**
@@ -249,8 +260,8 @@ describe('a children port written by commands', () => {
 
         expect(labels(parent)).toEqual(['tail']);
 
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('a')));
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('b')));
+        childList.insert(conn.build(ROW, 'a'));
+        childList.insert(conn.build(ROW, 'b'));
 
         // THE ASSERTION THIS TEST EXISTS FOR: both landed BEFORE `tail`. A command written as
         // `parent.appendChild` would put them after it and the child list would have escaped.
@@ -270,9 +281,9 @@ describe('a children port written by commands', () => {
             parent
         );
 
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('a')));
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('c')));
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('b')), 1);
+        childList.insert(conn.build(ROW, 'a'));
+        childList.insert(conn.build(ROW, 'c'));
+        childList.insert(conn.build(ROW, 'b'), 1);
 
         expect(labels(parent)).toEqual(['a', 'b', 'c', 'tail']);
         // `order` MOVED WITH THE DOM: a command that shifted the nodes and not the record would pass
@@ -296,7 +307,7 @@ describe('a children port written by commands', () => {
             parent
         );
 
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, ROW_LABELS.indexOf(t)));
+        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
         const first = childList.at(0);
 
         childList.move(0, 2);
@@ -352,9 +363,9 @@ describe('a children port written by commands', () => {
         );
         EXO_BACKEND.render(OPEN, parent);
 
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('a')));
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('b')));
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('z')), 0);
+        childList.insert(conn.build(ROW, 'a'));
+        childList.insert(conn.build(ROW, 'b'));
+        childList.insert(conn.build(ROW, 'z'), 0);
 
         expect(labels(parent)).toEqual(['z', 'a', 'b']);
         expect(childList.size).toBe(3);
@@ -377,8 +388,8 @@ describe('a children port written by commands', () => {
             parent
         );
 
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('a')));
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('b')));
+        childList.insert(conn.build(ROW, 'a'));
+        childList.insert(conn.build(ROW, 'b'));
 
         let unmounted = 0;
         const doomed = childList.at(0) as unknown as TExoDomChild;
@@ -417,7 +428,7 @@ describe('a children port written by commands', () => {
             }),
             written
         );
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, ROW_LABELS.indexOf(t)));
+        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
 
         const bound = host();
         const BOUND = createExoTestMachine(
@@ -439,7 +450,7 @@ describe('a children port written by commands', () => {
                     }
                 > =>
                 (c) => {
-                    const kids = ['a', 'b', 'c'].map((t) => c.build(ROW, ROW_LABELS.indexOf(t)));
+                    const kids = ['a', 'b', 'c'].map((t) => c.build(ROW, t));
                     reconcileExoOrder(c.childList(P.rows), [], kids, kids, (child) => child);
                 }
         );
@@ -471,7 +482,7 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('hands the child back, takes its node out, and keeps `order` true', () => {
         const { childList, conn, parent } = shell();
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, ROW_LABELS.indexOf(t)));
+        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
 
         const middle = childList.at(1);
         const taken = childList.detach(1);
@@ -518,7 +529,7 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('puts the very same element back, in front of the static sibling', () => {
         const { childList, conn, parent } = shell();
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, ROW_LABELS.indexOf(t)));
+        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
         const child = childList.at(2) as TExoNode<TExoDomMark>;
         const element = nodeOf(child);
 
@@ -542,8 +553,8 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('appends when `attach` is given no index, at the child list end and not the parent end', () => {
         const { childList, conn, parent } = shell();
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('a')));
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('b')));
+        childList.insert(conn.build(ROW, 'a'));
+        childList.insert(conn.build(ROW, 'b'));
 
         const taken = childList.detach(0) as TExoNode<TExoDomMark>;
         childList.attach(taken);
@@ -554,7 +565,7 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('runs neither hook, where `remove` runs `unmount` on the same child', () => {
         const { childList, conn, parent } = shell();
-        const child = conn.build(ROW, ROW_LABELS.indexOf('a'));
+        const child = conn.build(ROW, 'a');
         const rec = child as unknown as TExoDomChild;
 
         let mounted = 0;
@@ -614,8 +625,8 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('returns `undefined` and changes nothing past the end, and below the start', () => {
         const { childList, conn, parent } = shell();
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('a')));
-        childList.insert(conn.build(ROW, ROW_LABELS.indexOf('b')));
+        childList.insert(conn.build(ROW, 'a'));
+        childList.insert(conn.build(ROW, 'b'));
         const before = parent.innerHTML;
 
         // `at`'s SHAPE AND NOT `remove`'s. `remove(5)` reads `undefined` out of `order` and throws
@@ -636,7 +647,7 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('acquires an element for a child that has never been built, without mounting it', () => {
         const { childList, conn, parent } = shell();
-        const child = conn.build(ROW, ROW_LABELS.indexOf('a'));
+        const child = conn.build(ROW, 'a');
         const rec = child as unknown as TExoDomChild;
         let mounted = 0;
         rec.mount = function (this: TExoDomChild): void {
@@ -752,7 +763,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
         size: number;
         at0: unknown;
     } => {
-        const built = ['a', 'b', 'c'].map((t) => conn.build(ROW, ROW_LABELS.indexOf(t)));
+        const built = ['a', 'b', 'c'].map((t) => conn.build(ROW, t));
         for (const child of built) childList.insert(child);
         const elements = built.map((child) => nodeOf(child));
 
@@ -804,7 +815,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
 
     it('leaves the static siblings on BOTH sides of the port standing', () => {
         const { childList, conn, parent } = drive(SANDWICH_SHELL);
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, ROW_LABELS.indexOf(t)));
+        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
         expect(labels(parent)).toEqual(['head', 'a', 'b', 'c', 'tail']);
 
         const taken = childList.detachAll();
@@ -840,8 +851,8 @@ describe('detachAll — every child out at once, and only sometimes in one call'
             parent
         );
 
-        for (const t of ['a', 'b']) front.insert(conn.build(ROW, ROW_LABELS.indexOf(t)));
-        for (const t of ['x', 'y']) back.insert(conn.build(ROW, ROW_LABELS.indexOf(t)));
+        for (const t of ['a', 'b']) front.insert(conn.build(ROW, t));
+        for (const t of ['x', 'y']) back.insert(conn.build(ROW, t));
         expect(labels(parent)).toEqual(['a', 'b', 'x', 'y']);
         const behind = [0, 1].map((i) => back.at(i) as TExoNode<TExoDomMark>);
         const behindElements = behind.map((child) => nodeOf(child));
@@ -863,7 +874,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
         // AND THE FRONT CHILD LIST'S END ANCHOR SURVIVED THE BULK CALL: a child attached back into it
         // goes in FRONT of the back child list's first row, which is the chain being walked and not a
         // stale node being remembered.
-        front.attach(conn.build(ROW, ROW_LABELS.indexOf('z')));
+        front.attach(conn.build(ROW, 'z'));
         expect(labels(parent)).toEqual(['z', 'x', 'y']);
     });
 
@@ -901,7 +912,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
             let mounted = 0;
             let unmounted = 0;
             const built = ['a', 'b', 'c'].map((t) => {
-                const child = conn.build(ROW, ROW_LABELS.indexOf(t));
+                const child = conn.build(ROW, t);
                 const rec = child as unknown as TExoDomChild;
                 const wasUnmount = rec.unmount;
                 rec.mount = function (this: TExoDomChild): void {
@@ -953,7 +964,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
 
     it('hands back an array of the caller’s own, not the child list’s live order', () => {
         const { childList, conn } = drive(OPEN_SHELL);
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, ROW_LABELS.indexOf(t)));
+        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
 
         const taken = childList.detachAll();
         // `order`'s IDENTITY IS PUBLISHED to the child list in front of this one, so it is emptied in

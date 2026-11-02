@@ -5,7 +5,8 @@ title: Testing
 # Testing
 
 A component is a **plain value** — no compiler, no transform, no runner plugin.
-`exoPorts(kinds)`, `createExoSchema(Ports, build)` and `createExoMachineBuilder(schema)` are function calls, so a test imports the
+`exoPorts(kinds)`, `createExoSchema(Ports, build)`, `createExoMachine(schema)` and
+`composeExoMachine(base, …decorators)` are function calls, so a test imports the
 component and renders it, and the whole of this page up to the last section needs
 nothing configured beyond a `document`.
 
@@ -39,8 +40,15 @@ the top of that file:
 Then render and assert:
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoEffects,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { source } from '@exodra/test-utils';
@@ -60,19 +68,22 @@ const labelSchema = createExoSchema(LabelPorts, (b) => {
         span.textPort(LabelPorts.text);
     });
 });
-const labelBuilder = createExoMachineBuilder<TExoDomNode>(labelSchema);
-function showLabel(c: TExoMachineBuilderNode<typeof labelBuilder>): void {
+const labelBase = createExoMachine<TExoDomNode>(labelSchema);
+function showLabel(c: TExoMachineNodeOf<typeof labelBase>): void {
     c.text(LabelPorts.text, label.getValue());
 }
-labelBuilder.effect((c) => {
-    showLabel(c);
-    return label.onChange(() => showLabel(c));
-});
-const Label = labelBuilder.done();
+const labelMachine = composeExoMachine(labelBase, (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            showLabel(c);
+            return label.onChange(() => showLabel(c));
+        });
+    })
+);
 
 it('updates on setValue', () => {
     const host = document.createElement('div');
-    const dispose = backend.render(Label, host);
+    const dispose = backend.render(labelMachine, host);
 
     expect(host.querySelector('span')?.textContent).toBe('a');
     label.setValue('b');
@@ -108,9 +119,11 @@ while their port numbering agrees:
 import {
     EXO_PORT_ATTR,
     EXO_PORT_CHILDREN,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoWire,
 } from '@exodra/core';
 import type { TExoChildrenWiring, TExoMachineNode } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
@@ -127,18 +140,21 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
         li.attrPort(RowPorts.id, 'data-id');
     });
 });
-const rowBuilder = createExoMachineBuilder<TExoMachineNode, unknown, number>(rowSchema);
-rowBuilder.createInitialState((_c, i) => i);
-rowBuilder.wire((c) => {
-    c.attr(RowPorts.id, c.state);
-});
-const Row = rowBuilder.done();
+const rowMachine = composeExoMachine(
+    createExoMachine(rowSchema, {
+        createInitialState: (_c: TExoMachineNode, id: number) => id,
+    }),
+    (m) =>
+        withExoWire(m, (c) => {
+            c.attr(RowPorts.id, c.state);
+        })
+);
 
 /**
  * TWO ROWS IS A LIST, NOT A COUNT ON THE ENTRY POINT. `render` mounts ONE instance
  * of its component; anything that repeats is a children port, and `c.list` is the
- * fixed form of one. Row `i` is handed the number `i` as its index, which is what
- * the initial state above reads.
+ * fixed form of one. Row `i` is handed `rows[i]` as its params, which is what
+ * the initial state above keeps.
  */
 const ListPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
 
@@ -147,14 +163,14 @@ const listSchema = createExoSchema(ListPorts, (b) => {
         ul.childrenPort(ListPorts.rows);
     });
 });
-const listBuilder = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(listSchema);
-listBuilder.createInitialState((c) => {
-    c.list(ListPorts.rows, Row, 2);
+const listMachine = createExoMachine(listSchema, {
+    createInitialState: (c: TExoChildrenWiring & TExoMachineNode, _params: unknown) => {
+        c.list(ListPorts.rows, rowMachine, [0, 1]);
+    },
 });
-const List = listBuilder.done();
 
 it('renders one li per row', () => {
-    expect(server.render(List)).toBe(
+    expect(server.render(listMachine)).toBe(
         '<ul><li class="row" data-id="0"></li><li class="row" data-id="1"></li></ul>'
     );
 });
@@ -177,7 +193,7 @@ declare const expect: (value: unknown) => { toBe(other: unknown): void };
 // three backends share; `TExoStrMachine` and `TExoDomMachine` are
 // this same generic with a backend's node TYPE in it, and a transition's node
 // parameter is contravariant, so this value satisfies both.
-declare const App: TExoMachine<TExoMachineNode>;
+declare const appMachine: TExoMachine<TExoMachineNode>;
 
 
 const server = new ExoStrBackend();
@@ -186,10 +202,10 @@ const backend = withExoHydration(withExoCompiler(new ExoDomBackend()));
 
 it('adopts its own server output without touching it', () => {
     const host = document.createElement('div');
-    host.innerHTML = server.render(App);
+    host.innerHTML = server.render(appMachine);
     const before = host.innerHTML;
 
-    backend.hydrate(App, host);
+    backend.hydrate(appMachine, host);
 
     expect(host.innerHTML).toBe(before);
 });
@@ -240,7 +256,7 @@ Then render the machine and assert against the DOM:
 
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoWire } from '@exodra/core';
 import type { TExoAttrPort, TExoChildrenPort, TExoTextPort } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
@@ -256,13 +272,16 @@ const labelSchema = exoJsx<{ n: TExoAttrPort; name: TExoTextPort }>(($) => (
   <span data-n={$.n}>{$.name}</span>
 ));
 const LabelPorts = labelSchema.ports;
-const labelBuilder = createExoMachineBuilder<TExoDomNode, unknown, number>(labelSchema);
-labelBuilder.createInitialState((_c, i) => i);
-labelBuilder.wire((c) => {
-  c.attr(LabelPorts.n, c.state);
-  c.text(LabelPorts.name, `Hi ${NAMES[c.state]}!`);
-});
-const Label = labelBuilder.done();
+const labelMachine = composeExoMachine(
+  createExoMachine(labelSchema, {
+    createInitialState: (_c: TExoDomNode, label: { n: number; name: string }) => label,
+  }),
+  (m) =>
+    withExoWire(m, (c) => {
+      c.attr(LabelPorts.n, c.state.n);
+      c.text(LabelPorts.name, `Hi ${c.state.name}!`);
+    })
+);
 
 const labelsSchema = exoJsx<{ labels: TExoChildrenPort }>(($) => (
   <div>
@@ -270,16 +289,20 @@ const labelsSchema = exoJsx<{ labels: TExoChildrenPort }>(($) => (
   </div>
 ));
 const LabelsPorts = labelsSchema.ports;
-const labelsBuilder = createExoMachineBuilder<TExoDomNode>(labelsSchema);
-labelsBuilder.createInitialState((c) => {
-  c.list(LabelsPorts.labels, Label, NAMES.length);
-  return null;
+const labelsMachine = createExoMachine(labelsSchema, {
+  createInitialState: (c: TExoDomNode, _params: unknown) => {
+    c.list(
+      LabelsPorts.labels,
+      labelMachine,
+      NAMES.map((name, n) => ({ n, name }))
+    );
+    return null;
+  },
 });
-const Labels = labelsBuilder.done();
 
-it('fills the text and attribute ports from the index', () => {
+it('fills the text and attribute ports from the params', () => {
   const host = document.createElement('div');
-  const dispose = backend.render(Labels, host);
+  const dispose = backend.render(labelsMachine, host);
 
   const spans = host.querySelectorAll('span');
   expect(spans.length).toBe(2);

@@ -144,7 +144,7 @@ describe("createExoStatic's port refusal is NOT dev-only — it ships", () => {
             'createExoStatic: this schema declared 1 port(s), and a static component has nothing to ' +
                 'fill them'
         );
-        expect(long).toContain('createExoMachineBuilder');
+        expect(long).toContain('createExoMachine and fill them');
         expect(long).not.toContain('EXO0019');
         expect(long.length).toBeGreaterThan(short.length);
     });
@@ -172,7 +172,7 @@ describe("createExoStatic's port refusal is NOT dev-only — it ships", () => {
         });
         const check = (c: TExoChildrenWiring, port: TExoPort): void => {
             // @ts-expect-error a static component fills nothing, so it takes no items
-            c.list(port, STATIC, ['a', 'b']);
+            c.list(port, STATIC, Array.from({ length: ['a', 'b'] }));
         };
         expect(typeof check).toBe('function');
     });

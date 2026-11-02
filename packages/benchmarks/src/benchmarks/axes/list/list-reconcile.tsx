@@ -149,7 +149,12 @@ import { reconcileExoOrder } from '@exodra/list-reconcile';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -383,7 +388,7 @@ function reportResolution(rows: readonly AbRow[], quantum: number, batch: number
     }
     line(
         '  BIAS is the difference of the two medians and NOISE is the median of the per-round ' +
-            '|a−b|. Each twin is a SECOND, SEPARATELY DECLARED `createExoMachineBuilder` row and shell on its ' +
+            '|a−b|. Each twin is a SECOND, SEPARATELY DECLARED `createExoMachine` row and shell on its ' +
             'own backend — its own declaration, its own port numbers, its own schema cache — fired ' +
             'by the same ops through its own source, so its true difference from the row it twins ' +
             'is zero BY CONSTRUCTION and whatever appears on that line is this instrument reading ' +
@@ -500,11 +505,6 @@ function reportResolution(rows: readonly AbRow[], quantum: number, batch: number
 // A row's text never changes here — only its POSITION does — so this is `set`, not
 // `bind`: the axis measures reconciling, and a per-row subscription nothing would ever
 // fire is work the other participants do not do either.
-// WHAT A ROW READS, BY INDEX. A wire is handed its position and nothing else, so the row the build
-// callback is about to construct writes its item here an instant before `c.build` runs the wire.
-const BUILDING: Row[] = [];
-const BUILDING_TWIN: Row[] = [];
-
 const LI_SCHEMA = createExoSchema((b) => {
     let text!: TExoTextPort;
     b.el('li', null, (li) => {
@@ -512,19 +512,20 @@ const LI_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mLI = createExoMachineBuilder<TExoDomNode>(LI_SCHEMA);
-mLI.createInitialState((c, i) => {
-    c.text(LI_SCHEMA.ports.text, BUILDING[i].text);
+const mLI = createExoMachine(LI_SCHEMA, {
+    createInitialState: (c: TExoDomNode, item: Row) => {
+        c.text(LI_SCHEMA.ports.text, item.text);
+    },
 });
-const LI = mLI.done();
+const LI = mLI;
 
 /**
- * THE NULL PAIR'S ROW — a SECOND, SEPARATELY DECLARED `createExoMachineBuilder` of the same `<li>`.
+ * THE NULL PAIR'S ROW — a SECOND, SEPARATELY DECLARED `createExoMachine` of the same `<li>`.
  *
  * It is written out again rather than aliased to `LI`, and that is the whole point: an alias would
  * share one declaration, one set of port numbers and one compiled schema, so the "two" rows would
  * be one program measured twice and their difference would be zero by SHARING rather than by
- * construction. Written out, the twin is a second trip through `createExoMachineBuilder`, a second port
+ * construction. Written out, the twin is a second trip through `createExoMachine`, a second port
  * numbering and a second schema on a second backend — everything the reference does, done again —
  * so whatever separates the two rows in the table is the instrument and nothing else.
  *
@@ -542,11 +543,12 @@ const LI_TWIN_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mLI_TWIN = createExoMachineBuilder<TExoDomNode>(LI_TWIN_SCHEMA);
-mLI_TWIN.createInitialState((c, i) => {
-    c.text(LI_TWIN_SCHEMA.ports.text, BUILDING_TWIN[i].text);
+const mLI_TWIN = createExoMachine(LI_TWIN_SCHEMA, {
+    createInitialState: (c: TExoDomNode, item: Row) => {
+        c.text(LI_TWIN_SCHEMA.ports.text, item.text);
+    },
 });
-const LI_TWIN = mLI_TWIN.done();
+const LI_TWIN = mLI_TWIN;
 
 // --- MIKADO'S ROW, TWICE ---------------------------------------------------------------------
 // Module scope, compiled exactly twice for the life of the process. Both render the identical
@@ -794,24 +796,37 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
             });
             return { rows: rowsPort };
         });
-        const mUL = createExoMachineBuilder<TExoDomNode>(UL_SCHEMA);
-        const K_UL = mUL.createInitialState((c) => ({
-            kids: c.childList(UL_SCHEMA.ports.rows),
-            shown: [] as Row[],
-        }));
-        const showRows = mUL.transition((c: TExoDomNode) => {
-            const state = c.readState(K_UL);
-            const want = rows.getValue();
-            state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item, i) => {
-                BUILDING[i] = item;
-                return c.build(LI, i);
-            });
+        const mUL = createExoMachine(UL_SCHEMA, {
+            createInitialState: (c: TExoDomNode) => ({
+                kids: c.childList(UL_SCHEMA.ports.rows),
+                shown: [] as Row[],
+            }),
         });
-        mUL.effect((c) => {
-            showRows(c);
-            return rows.onChange(() => showRows(c));
-        });
-        const UL = mUL.done();
+        const UL = composeExoMachine(
+            mUL,
+            (m) =>
+                withExoTransitions(m, {
+                    showRows: (c) => {
+                        const state = c.state;
+                        const want = rows.getValue();
+                        state.shown = reconcileExoOrder(
+                            state.kids,
+                            state.shown,
+                            want,
+                            want,
+                            (item) => c.build(LI, item)
+                        );
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        showRows(c);
+                        return rows.onChange(() => showRows(c));
+                    });
+                })
+        );
+        const { showRows } = UL.transitions;
         // ONE instance of UL; the rows are a reactive list in its children port,
         // reconciled by object IDENTITY — the Row objects are the same ones `runOps`
         // shuffles, so kept rows are recognised without a key.
@@ -835,7 +850,6 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
     // from outside, the same four index calls `mikado`'s row makes on its view. Nothing is diffed.
     const makeExodraToldList = (
         row: typeof LI,
-        building: Row[],
         backend: typeof EXO_BACKEND
     ): { scenario: Scenario; data: Row[]; c: HTMLElement } => {
         const data = seed();
@@ -847,32 +861,39 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
             });
             return { rows: rowsPort };
         });
-        const mUL_TOLD = createExoMachineBuilder<TExoDomNode>(UL_TOLD_SCHEMA);
-        const K_UL_TOLD = mUL_TOLD.createInitialState((c2) => ({
-            kids: c2.childList(UL_TOLD_SCHEMA.ports.rows),
-        }));
+        const mUL_TOLD = createExoMachine(UL_TOLD_SCHEMA, {
+            createInitialState: (c2: TExoDomNode) => ({
+                kids: c2.childList(UL_TOLD_SCHEMA.ports.rows),
+            }),
+        });
         let node!: TExoDomNode;
-        mUL_TOLD.effect((c2) => {
-            node = c2;
-            const kids = c2.readState(K_UL_TOLD).kids;
-            for (let i = 0; i < data.length; i++) {
-                building[i] = data[i];
-                kids.insert(c2.build(row, i), i);
-            }
-            return null;
-        });
-        const insertRow = mUL_TOLD.transition((c2: TExoDomNode, item: Row, at: number) => {
-            const kids = c2.readState(K_UL_TOLD).kids;
-            building[at] = item;
-            kids.insert(c2.build(row, at), at);
-        });
-        const moveRow = mUL_TOLD.transition((c2: TExoDomNode, from: number, to: number) => {
-            c2.readState(K_UL_TOLD).kids.move(from, to);
-        });
-        const removeRow = mUL_TOLD.transition((c2: TExoDomNode, at: number) => {
-            c2.readState(K_UL_TOLD).kids.remove(at);
-        });
-        const UL_TOLD = mUL_TOLD.done();
+        const UL_TOLD = composeExoMachine(
+            mUL_TOLD,
+            (m) =>
+                withExoTransitions(m, {
+                    insertRow: (c2, item: Row, at: number) => {
+                        c2.state.kids.insert(c2.build(row, item), at);
+                    },
+                    moveRow: (c2, from: number, to: number) => {
+                        c2.state.kids.move(from, to);
+                    },
+                    removeRow: (c2, at: number) => {
+                        c2.state.kids.remove(at);
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c2) => {
+                        node = c2;
+                        const kids = c2.state.kids;
+                        for (let i = 0; i < data.length; i++) {
+                            kids.insert(c2.build(row, data[i]), i);
+                        }
+                        return null;
+                    });
+                })
+        );
+        const { insertRow, moveRow, removeRow } = UL_TOLD.transitions;
         const dispose = backend.render(UL_TOLD, c);
         return {
             data,
@@ -900,9 +921,9 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
         };
     };
     const makeExodraTold = (): { scenario: Scenario; data: Row[]; c: HTMLElement } =>
-        makeExodraToldList(LI, BUILDING, EXO_BACKEND);
+        makeExodraToldList(LI, EXO_BACKEND);
     const makeExodraToldTwin = (): { scenario: Scenario; data: Row[]; c: HTMLElement } =>
-        makeExodraToldList(LI_TWIN, BUILDING_TWIN, EXO_BACKEND_TWIN);
+        makeExodraToldList(LI_TWIN, EXO_BACKEND_TWIN);
     const exodraToldPrep = (): Scenario => makeExodraTold().scenario;
     const exodraToldTwinPrep = (): Scenario => makeExodraToldTwin().scenario;
 
@@ -931,24 +952,37 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
             });
             return { rows: rowsPort };
         });
-        const mUL_TWIN = createExoMachineBuilder<TExoDomNode>(UL_TWIN_SCHEMA);
-        const K_UL_TWIN = mUL_TWIN.createInitialState((c2) => ({
-            kids: c2.childList(UL_TWIN_SCHEMA.ports.rows),
-            shown: [] as Row[],
-        }));
-        const showTwinRows = mUL_TWIN.transition((c2: TExoDomNode) => {
-            const state = c2.readState(K_UL_TWIN);
-            const want = rows.getValue();
-            state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item, i) => {
-                BUILDING_TWIN[i] = item;
-                return c2.build(LI_TWIN, i);
-            });
+        const mUL_TWIN = createExoMachine(UL_TWIN_SCHEMA, {
+            createInitialState: (c2: TExoDomNode) => ({
+                kids: c2.childList(UL_TWIN_SCHEMA.ports.rows),
+                shown: [] as Row[],
+            }),
         });
-        mUL_TWIN.effect((c2) => {
-            showTwinRows(c2);
-            return rows.onChange(() => showTwinRows(c2));
-        });
-        const UL_TWIN = mUL_TWIN.done();
+        const UL_TWIN = composeExoMachine(
+            mUL_TWIN,
+            (m) =>
+                withExoTransitions(m, {
+                    showTwinRows: (c2) => {
+                        const state = c2.state;
+                        const want = rows.getValue();
+                        state.shown = reconcileExoOrder(
+                            state.kids,
+                            state.shown,
+                            want,
+                            want,
+                            (item) => c2.build(LI_TWIN, item)
+                        );
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c2) => {
+                        showTwinRows(c2);
+                        return rows.onChange(() => showTwinRows(c2));
+                    });
+                })
+        );
+        const { showTwinRows } = UL_TWIN.transitions;
         const dispose = EXO_BACKEND_TWIN.render(UL_TWIN, c);
         return {
             data,

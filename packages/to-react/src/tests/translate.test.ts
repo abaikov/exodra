@@ -14,7 +14,7 @@ import * as exodraListReconcile from '@exodra/list-reconcile';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
 import schemaPlugin from '../../../babel-plugin-exodra-schema/src/index';
 import { translateExoToReact } from '../translateExoToReact';
-import { COUNTER_SOURCE, LIST_SOURCE } from './fixtures';
+import { COUNTER_SOURCE, FIXED_SOURCE, LIST_SOURCE } from './fixtures';
 
 type TModule = Record<string, unknown>;
 
@@ -124,13 +124,50 @@ describe('translateExoToReact', () => {
         expect(sides.react.querySelectorAll('li')[1]).toBe(first);
     });
 
-    it('names what it cannot translate instead of emitting wrong code', () => {
+    it('a fixed list and a single child built from params render the same DOM', () => {
+        const sides = mountBoth(FIXED_SOURCE, 'FIXED');
+        expect(sides.react.innerHTML).toBe(sides.exodra.innerHTML);
+        expect(sides.react.querySelectorAll('.rows li')).toHaveLength(3);
+        expect(sides.react.querySelector('.head li')?.textContent).toBe('head');
+    });
+
+    it('reads createInitialState only from the createExoMachine options', () => {
         const source = COUNTER_SOURCE.replace(
-            'export const COUNTER = m.done();',
-            'm.transitionOverrides({});\nexport const COUNTER = m.done();'
+            '    (m) =>\n        withExoHandlers(',
+            '    (m) => ({ ...m, createInitialState: (c) => ({ n: 1 }) }),\n    (m) =>\n        withExoHandlers('
         );
         expect(translateExoToReact(source).unsupported).toEqual([
-            'm.transitionOverrides(…) has no React form',
+            'COUNTER: a composeExoMachine step is not one decorator call',
+        ]);
+    });
+
+    it('names what it cannot translate instead of emitting wrong code', () => {
+        const source = COUNTER_SOURCE.replace(
+            'const { show } = COUNTER.transitions;',
+            'const { show } = COUNTER.transitions;\nconst COMPACT = COUNTER.overrides({});'
+        );
+        expect(translateExoToReact(source).unsupported).toEqual([
+            'COUNTER.overrides(…) has no React form',
+        ]);
+    });
+
+    it('refuses a second wire, as withExoWire does', () => {
+        const source = LIST_SOURCE.replace(
+            '    (m) =>\n        withExoHandlers(',
+            '    (m) => withExoWire(m, (c) => show(c)),\n    (m) =>\n        withExoHandlers('
+        );
+        expect(translateExoToReact(source).unsupported).toEqual([
+            'LIST: withExoWire(…) is applied twice; a machine has one wire',
+        ]);
+    });
+
+    it('names an effect handle kept in a variable', () => {
+        const source = COUNTER_SOURCE.replace(
+            '    (m) =>\n        withExoHandlers(',
+            '    (m) =>\n        withExoEffects(m, (effect) => {\n            const ticking = effect((c) => null);\n        }),\n    (m) =>\n        withExoHandlers('
+        );
+        expect(translateExoToReact(source).unsupported).toEqual([
+            'COUNTER: an effect handle kept in a variable has no React form',
         ]);
     });
 });

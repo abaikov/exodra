@@ -48,8 +48,8 @@ export interface TExoHydrateSurface {
     on(port: TExoEventPort, handler: TExoEventHandler<Event, Element>, subject?: unknown): void;
     /** The component-taking members name the shipped exonode (`TExoDomMachine`) and not `this`: `TExoMachine` is contravariant in its exonode, so `this` here would stop a portable component being placeable by an adopting call. */
     one(port: TExoChildrenPort, machine: TExoDomMachine): TExoHydrateNode;
-    list(port: TExoChildrenPort, machine: TExoDomMachine, count: number): void;
-    build(machine: TExoDomMachine, index?: number): TExoNode<TExoDomMark>;
+    list(port: TExoChildrenPort, machine: TExoDomMachine, params: readonly unknown[]): void;
+    build(machine: TExoDomMachine, params?: unknown): TExoNode<TExoDomMark>;
 }
 
 /**
@@ -126,7 +126,6 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
             schema,
             root,
             machine,
-            0,
             this.child,
             schema.createInstance(schema),
             this.context,
@@ -136,7 +135,7 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
         return EXO_ARMED_INSTANCE.value as TExoHydrateNode;
     },
 
-    list(port: TExoChildrenPort, machine: TExoDomMachine, count: number): void {
+    list(port: TExoChildrenPort, machine: TExoDomMachine, params: readonly unknown[]): void {
         const parent = this.nodes[this.schema.liveElem[port.index]] as Element;
         const schema = exoHydrateSchemaOf(machine, this.schema.backend);
         const ownerChild = this.child;
@@ -145,16 +144,16 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
         // so this bound is what stops the static behind the child list being wired as the last row.
         const stop = this.adoptStopNode(port);
         let at = this.adoptFromNode(port, parent);
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < params.length; i++) {
             const node = requireExoElement(at === stop ? null : at, 'a fixed list row');
             hydrateExoInstance(
                 schema,
                 node,
                 machine,
-                i,
                 ownerChild,
                 schema.createInstance(schema),
-                context
+                context,
+                params[i]
             );
             at = node.nextElementSibling;
         }
@@ -164,14 +163,13 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
     /** ADOPTS WHILE A RECONCILED CHILD LIST STILL HAS SERVED ROWS, and builds the client way once it
      * does not — which is how a list whose data grew past the markup gets its extra rows. A `build`
      * outside a child list has no cursor open and takes the second path. */
-    build(machine: TExoDomMachine, index = 0, params?: unknown): TExoNode<TExoDomMark> {
+    build(machine: TExoDomMachine, params?: unknown): TExoNode<TExoDomMark> {
         const root = takeExoAdoptedRow();
         if (root !== null) {
             return buildAdoptedExoChild(
                 exoHydrateSchemaOf(machine, this.schema.backend),
                 root,
                 machine,
-                index,
                 this.context,
                 params
             ) as unknown as TExoNode<TExoDomMark>;
@@ -179,7 +177,6 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
         return buildLiveExoChild(
             exoDomSchemaForChild(machine, this.schema.backend),
             machine,
-            index,
             this.context,
             params
         ) as unknown as TExoNode<TExoDomMark>;

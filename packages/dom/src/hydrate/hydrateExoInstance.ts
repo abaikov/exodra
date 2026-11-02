@@ -24,7 +24,6 @@ export function hydrateExoInstance(
     schema: TExoHydrateSchema,
     root: Element,
     machine: TExoDomMachine,
-    index: number,
     ownerChild: TExoDomChild | null,
     holder: TExoDomInstanceRecord,
     context: TExoContextFrame | null = null,
@@ -88,7 +87,6 @@ export function hydrateExoInstance(
         armExoNode(
             holder as unknown as Parameters<typeof armExoNode>[0],
             machine as Parameters<typeof armExoNode>[1],
-            index,
             params
         );
     } finally {

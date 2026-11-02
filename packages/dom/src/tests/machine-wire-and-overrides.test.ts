@@ -1,5 +1,15 @@
 // @vitest-environment jsdom
-import { createExoMachineBuilder, createExoSchema, wireExoNode, swapExoParams } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoHandlers,
+    withExoEffects,
+    createExoSchema,
+    wireExoNode,
+    swapExoParams,
+} from '@exodra/core';
 import type {
     TExoChildrenPort,
     TExoEventPort,
@@ -29,30 +39,39 @@ const CARD_SCHEMA = createExoSchema((b) => {
     });
     return { label, click };
 });
-const mCard = createExoMachineBuilder<TExoMachineNode, TCardParams, { presses: number }>(
-    CARD_SCHEMA
-);
+const mCard = createExoMachine<TExoMachineNode, TCardParams, { presses: number }>(CARD_SCHEMA, {
+    createInitialState: () => {
+        order.push('createInitialState');
+        return { presses: 0 };
+    },
+});
 const order: string[] = [];
-mCard.createInitialState(() => {
-    order.push('createInitialState');
-    return { presses: 0 };
-});
-const press = mCard.transition((c) => {
-    const state = c.state;
-    state.presses += 1;
-    c.text(CARD_SCHEMA.ports.label, 'pressed ' + state.presses);
-});
 const pressCompact = (c: TExoMachineNode): void => {
     c.text(CARD_SCHEMA.ports.label, 'compact');
 };
-const COMPACT = mCard.overrides([[press, pressCompact]]);
-mCard.wire((c, params) => {
-    order.push('wire');
-    c.text(CARD_SCHEMA.ports.label, params.label);
-    c.transitionOverrides = params.compact ? COMPACT : null;
-});
-mCard.on(CARD_SCHEMA.ports.click, (c) => press(c));
-const CARD = mCard.done();
+const CARD = composeExoMachine(
+    mCard,
+    (m) =>
+        withExoTransitions(m, {
+            press: (c) => {
+                const state = c.state;
+                state.presses += 1;
+                c.text(CARD_SCHEMA.ports.label, 'pressed ' + state.presses);
+            },
+        }),
+    (m) =>
+        withExoWire(m, (c, params) => {
+            order.push('wire');
+            c.text(CARD_SCHEMA.ports.label, params.label);
+            c.transitionOverrides = params.compact ? COMPACT : null;
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CARD_SCHEMA.ports.click, (c) => press(c));
+        })
+);
+const { press } = CARD.transitions;
+const COMPACT = CARD.overrides({ press: pressCompact });
 
 const BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -73,14 +92,15 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { rows };
         });
-        const mList = createExoMachineBuilder<TExoDomNode>(LIST_SCHEMA);
-        mList.createInitialState((c) => {
-            const rows = c.childList(LIST_SCHEMA.ports.rows);
-            rows.insert(c.build(CARD as never, 0, { label: 'plain', compact: false }));
-            rows.insert(c.build(CARD as never, 1, { label: 'small', compact: true }));
+        const LIST = createExoMachine<TExoDomNode>(LIST_SCHEMA, {
+            createInitialState: (c) => {
+                const rows = c.childList(LIST_SCHEMA.ports.rows);
+                rows.insert(c.build(CARD as never, { label: 'plain', compact: false }));
+                rows.insert(c.build(CARD as never, { label: 'small', compact: true }));
+            },
         });
         const parent = document.createElement('div');
-        BACKEND.render(mList.done(), parent);
+        BACKEND.render(LIST, parent);
         const [plain, small] = Array.from(parent.querySelectorAll('button'));
 
         plain.click();
@@ -98,24 +118,27 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { slot };
         });
-        const mShell = createExoMachineBuilder<TExoMachineNode & { one: TExoDomNode['one'] }>(
-            SHELL_SCHEMA
+        const SHELL = createExoMachine<TExoMachineNode & { one: TExoDomNode['one'] }>(
+            SHELL_SCHEMA,
+            {
+                createInitialState: (c) => {
+                    c.one(SHELL_SCHEMA.ports.slot, CARD as never, {
+                        label: 'served',
+                        compact: false,
+                    });
+                },
+            }
         );
-        mShell.createInitialState((c) => {
-            c.one(SHELL_SCHEMA.ports.slot, CARD as never, { label: 'served', compact: false });
-        });
-        expect(new ExoStrBackend().render(mShell.done() as never)).toBe(
+        expect(new ExoStrBackend().render(SHELL as never)).toBe(
             '<section><button>served</button></section>'
         );
     });
 
-    it('refuses a second wire and an override of a function that is not its transition', () => {
-        const m = createExoMachineBuilder<TExoMachineNode>(CARD_SCHEMA);
-        m.wire(() => undefined);
-        expect(() => m.wire(() => undefined)).toThrow(/wire\(\) was called twice/);
-        expect(() => m.overrides([[pressCompact, pressCompact]])).toThrow(
-            /not a transition of this machine/
-        );
+    it('refuses a second wire and an override of a name that is not its transition', () => {
+        const wired = withExoWire(createExoMachine<TExoMachineNode>(CARD_SCHEMA), () => undefined);
+        expect(() => withExoWire(wired, () => undefined)).toThrow(/already has a wire/);
+        const notATransition = { pressCompact } as unknown as Parameters<typeof CARD.overrides>[0];
+        expect(() => CARD.overrides(notATransition)).toThrow(/not a transition of this machine/);
     });
 
     it('re-runs the wire on a live instance, and swapExoParams lets it write only what changed', () => {
@@ -134,20 +157,22 @@ describe('a machine wire and per-instance transition overrides', () => {
         });
         type TRowParams = { readonly title: string; readonly note: string };
         const writes: string[] = [];
-        const mRow = createExoMachineBuilder<TExoMachineNode, TRowParams>(ROW_SCHEMA);
-        mRow.createInitialState(() => ({ mine: true }));
-        mRow.wire((c, params) => {
-            const previous = swapExoParams(c, params);
-            if (previous?.title !== params.title) {
-                writes.push('title');
-                c.text(ROW_SCHEMA.ports.title, params.title);
-            }
-            if (previous?.note !== params.note) {
-                writes.push('note');
-                c.text(ROW_SCHEMA.ports.note, params.note);
-            }
+        const mRow = createExoMachine<TExoMachineNode, TRowParams>(ROW_SCHEMA, {
+            createInitialState: () => ({ mine: true }),
         });
-        const ROW = mRow.done();
+        const ROW = composeExoMachine(mRow, (m) =>
+            withExoWire(m, (c, params) => {
+                const previous = swapExoParams(c, params);
+                if (previous?.title !== params.title) {
+                    writes.push('title');
+                    c.text(ROW_SCHEMA.ports.title, params.title);
+                }
+                if (previous?.note !== params.note) {
+                    writes.push('note');
+                    c.text(ROW_SCHEMA.ports.note, params.note);
+                }
+            })
+        );
 
         const HOST_SCHEMA = createExoSchema((b) => {
             let slot!: TExoChildrenPort;
@@ -157,15 +182,16 @@ describe('a machine wire and per-instance transition overrides', () => {
             return { slot };
         });
         let row!: TExoMachineNode;
-        const mHost = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA);
-        mHost.createInitialState((c) => {
-            row = c.one(HOST_SCHEMA.ports.slot, ROW as never, {
-                title: 'a',
-                note: 'n',
-            }) as unknown as TExoMachineNode;
+        const HOST = createExoMachine<TExoDomNode>(HOST_SCHEMA, {
+            createInitialState: (c) => {
+                row = c.one(HOST_SCHEMA.ports.slot, ROW as never, {
+                    title: 'a',
+                    note: 'n',
+                }) as unknown as TExoMachineNode;
+            },
         });
         const parent = document.createElement('div');
-        BACKEND.render(mHost.done(), parent);
+        BACKEND.render(HOST, parent);
         expect(writes).toEqual(['title', 'note']);
 
         writes.length = 0;
@@ -184,12 +210,13 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { name };
         });
-        const mItem = createExoMachineBuilder<TExoMachineNode, TProduct>(ITEM_SCHEMA);
-        mItem.wire((c, product) => {
-            const before = swapExoParams(c, product);
-            if (before?.name !== product.name) c.text(ITEM_SCHEMA.ports.name, product.name);
-        });
-        const ITEM = mItem.done();
+        const mItem = createExoMachine<TExoMachineNode, TProduct>(ITEM_SCHEMA);
+        const ITEM = composeExoMachine(mItem, (m) =>
+            withExoWire(m, (c, product) => {
+                const before = swapExoParams(c, product);
+                if (before?.name !== product.name) c.text(ITEM_SCHEMA.ports.name, product.name);
+            })
+        );
         const products = source<readonly TProduct[]>([
             { id: 1, name: 'Lamp' },
             { id: 2, name: 'Desk' },
@@ -201,28 +228,38 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { rows };
         });
-        const mShop = createExoMachineBuilder<
-            TExoDomNode,
-            unknown,
-            { list: TExoKeyedList<TProduct> }
-        >(SHOP_SCHEMA);
-        mShop.createInitialState((c) => ({
-            list: createExoKeyedList<TProduct, number, TExoNode<TExoDomMark>>(
-                c.childList(SHOP_SCHEMA.ports.rows),
-                (product) => product.id,
-                (product, at) => c.build(ITEM, at, product),
-                (row, product) => wireExoNode(row, ITEM, product)
-            ),
-        }));
-        const showProducts = mShop.transition((c) => {
-            c.state.list.reconcile(products.getValue());
-        });
-        mShop.effect((c) => {
-            showProducts(c);
-            return products.onChange(() => showProducts(c));
-        });
+        const mShop = createExoMachine<TExoDomNode, unknown, { list: TExoKeyedList<TProduct> }>(
+            SHOP_SCHEMA,
+            {
+                createInitialState: (c) => ({
+                    list: createExoKeyedList<TProduct, number, TExoNode<TExoDomMark>>(
+                        c.childList(SHOP_SCHEMA.ports.rows),
+                        (product) => product.id,
+                        (product) => c.build(ITEM, product),
+                        (row, product) => wireExoNode(row, ITEM, product)
+                    ),
+                }),
+            }
+        );
+        const SHOP = composeExoMachine(
+            mShop,
+            (m) =>
+                withExoTransitions(m, {
+                    showProducts: (c) => {
+                        c.state.list.reconcile(products.getValue());
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        showProducts(c);
+                        return products.onChange(() => showProducts(c));
+                    });
+                })
+        );
+        const { showProducts } = SHOP.transitions;
         const parent = document.createElement('div');
-        BACKEND.render(mShop.done(), parent);
+        BACKEND.render(SHOP, parent);
         const lamp = parent.querySelector('li');
         products.setValue([
             { id: 2, name: 'Desk!' },
@@ -240,34 +277,32 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { value };
         });
-        const mStep = createExoMachineBuilder<
+        const mStep = createExoMachine<
             TExoMachineNode,
             { by: number } | undefined,
             { value: number }
-        >(STEP_SCHEMA);
-        mStep.createInitialState(() => ({ value: 0 }));
-        const step = mStep.transition((c) => {
-            const state = c.state;
-            state.value += 1;
-            c.text(STEP_SCHEMA.ports.value, state.value);
+        >(STEP_SCHEMA, { createInitialState: () => ({ value: 0 }) });
+        const stepping = withExoTransitions(mStep, {
+            step: (c) => {
+                const state = c.state;
+                state.value += 1;
+                c.text(STEP_SCHEMA.ports.value, state.value);
+            },
         });
-        mStep.wire((c, params) => {
+        const STEP = withExoWire(stepping, (c, params) => {
             const by = params?.by;
             c.transitionOverrides =
                 by === undefined
                     ? null
-                    : mStep.overrides([
-                          [
-                              step,
-                              (node: TExoMachineNode) => {
-                                  const state = node.state as { value: number };
-                                  state.value += by;
-                                  node.text(STEP_SCHEMA.ports.value, state.value);
-                              },
-                          ],
-                      ]);
+                    : stepping.overrides({
+                          step: (node: TExoMachineNode) => {
+                              const state = node.state as { value: number };
+                              state.value += by;
+                              node.text(STEP_SCHEMA.ports.value, state.value);
+                          },
+                      });
         });
-        const STEP = mStep.done();
+        const { step } = STEP.transitions;
         const plain = document.createElement('div');
         let plainNode!: TExoMachineNode;
         let byTenNode!: TExoMachineNode;
@@ -284,14 +319,15 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { a, z };
         });
-        const mHost = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA);
-        mHost.createInitialState((c) => {
-            plainNode = c.one(HOST_SCHEMA.ports.a, STEP as never) as unknown as TExoMachineNode;
-            byTenNode = c.one(HOST_SCHEMA.ports.z, STEP as never, {
-                by: 10,
-            }) as unknown as TExoMachineNode;
+        const HOST = createExoMachine<TExoDomNode>(HOST_SCHEMA, {
+            createInitialState: (c) => {
+                plainNode = c.one(HOST_SCHEMA.ports.a, STEP as never) as unknown as TExoMachineNode;
+                byTenNode = c.one(HOST_SCHEMA.ports.z, STEP as never, {
+                    by: 10,
+                }) as unknown as TExoMachineNode;
+            },
         });
-        BACKEND.render(mHost.done(), plain);
+        BACKEND.render(HOST, plain);
         step(plainNode);
         step(byTenNode);
         expect(plain.textContent).toBe('110');
@@ -299,13 +335,19 @@ describe('a machine wire and per-instance transition overrides', () => {
 
     it('lets c.on in the wire win over the machine handler on the same port', () => {
         const fired: string[] = [];
-        const mButton = createExoMachineBuilder<TExoMachineNode>(CARD_SCHEMA);
-        mButton.on(CARD_SCHEMA.ports.click, () => fired.push('machine'));
-        mButton.wire((c) => {
-            c.on(CARD_SCHEMA.ports.click, () => fired.push('wire'));
-        });
+        const BUTTON = composeExoMachine(
+            createExoMachine<TExoMachineNode>(CARD_SCHEMA),
+            (m) =>
+                withExoHandlers(m, (on) => {
+                    on(CARD_SCHEMA.ports.click, () => fired.push('machine'));
+                }),
+            (m) =>
+                withExoWire(m, (c) => {
+                    c.on(CARD_SCHEMA.ports.click, () => fired.push('wire'));
+                })
+        );
         const parent = document.createElement('div');
-        BACKEND.render(mButton.done(), parent);
+        BACKEND.render(BUTTON, parent);
         parent.querySelector('button')?.click();
         expect(fired).toEqual(['wire']);
     });
@@ -318,17 +360,19 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { slot };
         });
-        const mBox = createExoMachineBuilder<TExoDomNode>(BOX_SCHEMA);
-        mBox.wire((c) => {
-            c.childList(BOX_SCHEMA.ports.slot);
-        });
-        const BOX = mBox.done();
+        const mBox = createExoMachine<TExoDomNode>(BOX_SCHEMA);
+        const BOX = composeExoMachine(mBox, (m) =>
+            withExoWire(m, (c) => {
+                c.childList(BOX_SCHEMA.ports.slot);
+            })
+        );
         let box!: TExoDomNode;
-        const mHost = createExoMachineBuilder<TExoDomNode>(BOX_SCHEMA);
-        mHost.createInitialState((c) => {
-            box = c.one(BOX_SCHEMA.ports.slot, BOX);
+        const HOST = createExoMachine<TExoDomNode>(BOX_SCHEMA, {
+            createInitialState: (c) => {
+                box = c.one(BOX_SCHEMA.ports.slot, BOX);
+            },
         });
-        BACKEND.render(mHost.done(), document.createElement('div'));
+        BACKEND.render(HOST, document.createElement('div'));
         expect(() => wireExoNode(box, BOX)).toThrow(/re-ran/);
     });
 
@@ -340,24 +384,28 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { slot };
         });
-        const mLeaf = createExoMachineBuilder<TExoDomNode>(BOX_SCHEMA);
-        mLeaf.createInitialState((c) => c.childList(BOX_SCHEMA.ports.slot));
-        const LEAF = mLeaf.done();
-        const mHost = createExoMachineBuilder<TExoDomNode, number>(BOX_SCHEMA);
-        mHost.createInitialState((c) => c.childList(BOX_SCHEMA.ports.slot));
-        mHost.wire((c, count) => {
-            const rows = c.state as ReturnType<TExoDomNode['childList']>;
-            while (rows.size < count) rows.insert(c.build(LEAF));
-            if (count > 1) expect(() => c.childList(BOX_SCHEMA.ports.slot)).toThrow(/re-ran/);
+        const mLeaf = createExoMachine<TExoDomNode>(BOX_SCHEMA, {
+            createInitialState: (c) => c.childList(BOX_SCHEMA.ports.slot),
         });
-        const HOST = mHost.done();
+        const LEAF = mLeaf;
+        const mHost = createExoMachine<TExoDomNode, number>(BOX_SCHEMA, {
+            createInitialState: (c) => c.childList(BOX_SCHEMA.ports.slot),
+        });
+        const HOST = composeExoMachine(mHost, (m) =>
+            withExoWire(m, (c, count) => {
+                const rows = c.state as ReturnType<TExoDomNode['childList']>;
+                while (rows.size < count) rows.insert(c.build(LEAF));
+                if (count > 1) expect(() => c.childList(BOX_SCHEMA.ports.slot)).toThrow(/re-ran/);
+            })
+        );
         let host!: TExoDomNode;
-        const mRoot = createExoMachineBuilder<TExoDomNode>(BOX_SCHEMA);
-        mRoot.createInitialState((c) => {
-            host = c.one(BOX_SCHEMA.ports.slot, HOST, 1);
+        const ROOT = createExoMachine<TExoDomNode>(BOX_SCHEMA, {
+            createInitialState: (c) => {
+                host = c.one(BOX_SCHEMA.ports.slot, HOST, 1);
+            },
         });
         const parent = document.createElement('div');
-        BACKEND.render(mRoot.done(), parent);
+        BACKEND.render(ROOT, parent);
         wireExoNode(host, HOST, 3);
         expect(parent.querySelectorAll('div > div > div > div')).toHaveLength(3);
     });

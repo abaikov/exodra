@@ -8,7 +8,7 @@
 // participant reports zero removed elements.
 //
 // `hydrate(LIST, #app)` adopts `#app`'s first element child — the `<ul class="list">` — as the LIST
-// instance, and `c.list(P.rows, ROW, rowCount())` inside its wiring adopts every `<li>` in it. The
+// instance, and `c.list(P.rows, ROW, rows)` inside its wiring adopts every `<li>` in it. The
 // row count must be the one the server rendered with, which is why both halves read it from the
 // same `rowCount()`.
 import { ExoDomBackend, withExoHydration } from '@exodra/dom';

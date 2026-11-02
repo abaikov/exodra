@@ -15,7 +15,13 @@
 // common shape, and when both are empty there is no node between them at all. These tests
 // are written before the implementation because that is the case that fails silently: the
 // markup looks right, and one child list's rows quietly land on the wrong side of the other.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachineNode,
     TExoSchemaCursor,
@@ -65,11 +71,8 @@ type TRowSurface = {
     on(port: TExoEventPort, handler: TExoEventHandler<Event, Element>, subject?: unknown): void;
 };
 
-/**
- * WHAT GOES INTO A CHILD LIST: one `<i>` carrying its own label. A wire is handed its POSITION and
- * nothing else, so what a row shows is the caller's to put where the row can reach it by index.
- */
-const itemOf = (labelAt: (i: number) => string) =>
+/** WHAT GOES INTO A CHILD LIST: one `<i>` carrying its own label, handed to it as its params. */
+const itemOf = () =>
     createExoTestMachine(
         (b: TExoSchemaCursor) => {
             let label!: TExoTextPort;
@@ -79,8 +82,8 @@ const itemOf = (labelAt: (i: number) => string) =>
             return { label };
         },
         (P): TExoMachineInitialState<TRowSurface> =>
-            (c, i) => {
-                c.text(P.label, labelAt(i));
+            (c, label) => {
+                c.text(P.label, label);
             }
     );
 
@@ -95,10 +98,7 @@ type TFollowing = {
  * the identity reconciler, opened in the initial state and drawn by `followingCard`'s effect.
  */
 const following =
-    <TItem>(
-        src: TExoTestSource<readonly TItem[]>,
-        build: (c: TPlacing, item: TItem, i: number) => TExoNode
-    ) =>
+    <TItem>(src: TExoTestSource<readonly TItem[]>, build: (c: TPlacing, item: TItem) => TExoNode) =>
     (c: TPlacing, port: TExoChildrenPort): TFollowing => {
         const kids = c.childList(port);
         let shown: TItem[] = [];
@@ -106,16 +106,15 @@ const following =
             src,
             draw: () => {
                 const want = src.getValue();
-                shown = reconcileExoOrder(kids, shown, want, want, (item, i) => build(c, item, i));
+                shown = reconcileExoOrder(kids, shown, want, want, (item) => build(c, item));
             },
         };
     };
 
-/** The rows read their label out of the very source that drives the list, so a row built at
- *  position `i` shows what position `i` holds now. */
+/** Each row is built with the label it stands for in the source that drives the list. */
 const rowsFrom = (src: TExoTestSource<readonly string[]>) => {
-    const ROW = itemOf((i) => src.getValue()[i]);
-    return following(src, (c, _item, i) => c.build(ROW, i));
+    const ROW = itemOf();
+    return following(src, (c, item) => c.build(ROW, item));
 };
 
 /** A component whose initial state opens its child lists, and whose effect draws each and follows
@@ -125,27 +124,37 @@ const followingCard = <TPorts>(
     open: (c: TPlacing, ports: TPorts) => readonly TFollowing[]
 ) => {
     const schema = createExoSchema(build);
-    const m = createExoMachineBuilder<TExoMachineNode & TPlacing, unknown, readonly TFollowing[]>(
-        schema
+    const m = createExoMachine<TExoMachineNode & TPlacing, unknown, readonly TFollowing[]>(schema, {
+        createInitialState: (c) => open(c, schema.ports),
+    });
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                draw: (_c, followed: TFollowing) => {
+                    followed.draw();
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    const all = c.state;
+                    for (const followed of all) draw(c, followed);
+                    const offs = all.map((followed) =>
+                        followed.src.onChange(() => draw(c, followed))
+                    );
+                    return () => {
+                        for (const off of offs) off();
+                    };
+                });
+            })
     );
-    m.createInitialState((c) => open(c, schema.ports));
-    const draw = m.transition<TFollowing>((_c, followed) => {
-        followed.draw();
-    });
-    m.effect((c) => {
-        const all = c.state;
-        for (const followed of all) draw(c, followed);
-        const offs = all.map((followed) => followed.src.onChange(() => draw(c, followed)));
-        return () => {
-            for (const off of offs) off();
-        };
-    });
-    return m.done();
+    const { draw } = machine.transitions;
+    return machine;
 };
 
-/** The labels the hook cases' children show. `item(label)` files one and builds a child for it. */
-const HOOK_LABELS: string[] = [];
-const HOOK_ITEM = itemOf((i) => HOOK_LABELS[i]);
+/** The row the hook cases' children are. `item(label)` builds a child showing that label. */
+const HOOK_ITEM = itemOf();
 
 /** One port with a static sibling on each side. */
 function buildOne(b: TExoSchemaCursor) {
@@ -183,12 +192,12 @@ describe('a children port among static siblings', () => {
     });
 
     it('renders its rows between the statics on the server', () => {
-        const ITEM = itemOf((i) => ['A', 'B'][i]);
+        const ITEM = itemOf();
         const CARD = createExoTestMachine(
             buildOne,
             (P): TExoMachineInitialState<TPortable> =>
                 (c) => {
-                    c.list(P.mid, ITEM, 2);
+                    c.list(P.mid, ITEM, ['A', 'B']);
                 }
         );
         expect(EXO_STR.render(CARD)).toBe(
@@ -197,12 +206,12 @@ describe('a children port among static siblings', () => {
     });
 
     it('renders an EMPTY child list as nothing at all, leaving the statics adjacent', () => {
-        const ITEM = itemOf((i) => ['A', 'B'][i]);
+        const ITEM = itemOf();
         const CARD = createExoTestMachine(
             buildOne,
             (P): TExoMachineInitialState<TPortable> =>
                 (c) => {
-                    c.list(P.mid, ITEM, 0);
+                    c.list(P.mid, ITEM, []);
                 }
         );
         expect(EXO_STR.render(CARD)).toBe(
@@ -212,12 +221,12 @@ describe('a children port among static siblings', () => {
 
     it('produces the same bytes on both backends, full and empty', () => {
         for (const labels of [['A', 'B'], []]) {
-            const ITEM = itemOf((i) => labels[i]);
+            const ITEM = itemOf();
             const CARD = createExoTestMachine(
                 buildOne,
                 (P): TExoMachineInitialState<TPortable> =>
                     (c) => {
-                        c.list(P.mid, ITEM, labels.length);
+                        c.list(P.mid, ITEM, labels);
                     }
             );
             const parent = host();
@@ -292,10 +301,10 @@ describe('two children ports side by side', () => {
         // which is a wrong tree that renders without an error.
         const first = source<readonly string[]>([]);
         const fillFirst = rowsFrom(first);
-        const FIXED = itemOf((i) => ['X', 'Y'][i]);
+        const FIXED = itemOf();
         const CARD = followingCard(buildTwo, (c, P) => {
             const followed = [fillFirst(c, P.a)];
-            c.list(P.c, FIXED, 2);
+            c.list(P.c, FIXED, ['X', 'Y']);
             return followed;
         });
         const parent = host();
@@ -366,7 +375,7 @@ describe('a child list whose neighbour fills from a `mount` hook', () => {
             second,
             card: parent.querySelector('.card') as HTMLElement,
             item: (label: string): TExoNode<TExoDomMark> =>
-                exonode.build(HOOK_ITEM, HOOK_LABELS.push(label) - 1) as TExoNode<TExoDomMark>,
+                exonode.build(HOOK_ITEM, label) as TExoNode<TExoDomMark>,
         };
     };
 
@@ -437,7 +446,7 @@ let clicked = '';
  * nothing on either backend — so every expectation above stays readable while adoption becomes
  * observable.
  */
-const clickableOf = (labelAt: (i: number) => string) =>
+const clickableOf = () =>
     createExoTestMachine(
         (b: TExoSchemaCursor) => {
             let label!: TExoTextPort;
@@ -449,10 +458,10 @@ const clickableOf = (labelAt: (i: number) => string) =>
             return { label, click };
         },
         (P): TExoMachineInitialState<TRowSurface> =>
-            (c, i) => {
-                c.text(P.label, labelAt(i));
+            (c, label) => {
+                c.text(P.label, label);
                 c.on(P.click, () => {
-                    clicked += labelAt(i);
+                    clicked += label as string;
                 });
             }
     );
@@ -491,12 +500,12 @@ function buildSeparated(b: TExoSchemaCursor) {
 describe('a child list between two statics, hydrated', () => {
     /** Serve the shape and then adopt it, handing back everything the cases assert on. */
     const serveThenHydrate = (labels: readonly string[]) => {
-        const ROW = clickableOf((i) => labels[i]);
+        const ROW = clickableOf();
         const CARD = createExoTestMachine(
             buildOne,
             (P): TExoMachineInitialState<TPortable> =>
                 (c) => {
-                    c.list(P.mid, ROW, labels.length);
+                    c.list(P.mid, ROW, labels);
                 }
         );
         const parent = host();
@@ -513,12 +522,12 @@ describe('a child list between two statics, hydrated', () => {
     };
 
     it('the server, a client render and a hydration all produce the same tree', () => {
-        const ROW = clickableOf((i) => ['A', 'B'][i]);
+        const ROW = clickableOf();
         const CARD = createExoTestMachine(
             buildOne,
             (P): TExoMachineInitialState<TPortable> =>
                 (c) => {
-                    c.list(P.mid, ROW, 2);
+                    c.list(P.mid, ROW, ['A', 'B']);
                 }
         );
         const served = EXO_STR.render(CARD);
@@ -594,12 +603,12 @@ describe('a child list between two statics, hydrated', () => {
 });
 
 describe('one() in a children port among static siblings', () => {
-    const SINGLE = clickableOf(() => 'A');
+    const SINGLE = clickableOf();
     const CARD = createExoTestMachine(
         buildOne,
         (P): TExoMachineInitialState<TPortable> =>
             (c) => {
-                c.one(P.mid, SINGLE);
+                c.one(P.mid, SINGLE, 'A');
             }
     );
     const MARKUP = '<div class="card"><h3>headline</h3><i>A</i><footer>footnote</footer></div>';
@@ -646,10 +655,10 @@ describe('one() in a children port among static siblings', () => {
         // that was already standing there.
         const first = source<readonly string[]>([]);
         const fillFirst = rowsFrom(first);
-        const ONLY = clickableOf(() => 'X');
+        const ONLY = clickableOf();
         const PAIR = followingCard(buildTwo, (c, P) => {
             const followed = [fillFirst(c, P.a)];
-            c.one(P.c, ONLY);
+            c.one(P.c, ONLY, 'X');
             return followed;
         });
         const parent = host();
@@ -664,14 +673,14 @@ describe('one() in a children port among static siblings', () => {
 describe('a child list with a static before it AND another child list after it', () => {
     /** One component over two fixed runs of rows — the form a served page and its adoption share. */
     const cardOf = (head: readonly string[], tail: readonly string[]) => {
-        const HEAD_ROW = clickableOf((i) => head[i]);
-        const TAIL_ROW = clickableOf((i) => tail[i]);
+        const HEAD_ROW = clickableOf();
+        const TAIL_ROW = clickableOf();
         return createExoTestMachine(
             buildSeparated,
             (P): TExoMachineInitialState<TPortable> =>
                 (c) => {
-                    c.list(P.head, HEAD_ROW, head.length);
-                    c.list(P.tail, TAIL_ROW, tail.length);
+                    c.list(P.head, HEAD_ROW, head);
+                    c.list(P.tail, TAIL_ROW, tail);
                 }
         );
     };
@@ -778,14 +787,14 @@ describe('a child list with a static before it AND another child list after it',
         // and nothing in the design orders these calls. The MARKUP is identical either way —
         // the server fills a value array indexed by port, not a stream — so the only way to
         // notice is at adoption, and the only honest thing to do is say so by name.
-        const HEAD_ROW = clickableOf(() => 'A');
-        const TAIL_ROW = clickableOf(() => 'B');
+        const HEAD_ROW = clickableOf();
+        const TAIL_ROW = clickableOf();
         const CARD = createExoTestMachine(
             buildSeparated,
             (P): TExoMachineInitialState<TPortable> =>
                 (c) => {
-                    c.list(P.tail, TAIL_ROW, 1);
-                    c.list(P.head, HEAD_ROW, 1);
+                    c.list(P.tail, TAIL_ROW, ['B']);
+                    c.list(P.head, HEAD_ROW, ['A']);
                 }
         );
         const parent = host();
@@ -806,16 +815,16 @@ describe('a child list with a static before it AND another child list after it',
 
 describe('THREE child lists in one element, separated by two statics', () => {
     const cardOf = (head: readonly string[], mid: readonly string[], tail: readonly string[]) => {
-        const HEAD_ROW = clickableOf((i) => head[i]);
-        const MID_ROW = clickableOf((i) => mid[i]);
-        const TAIL_ROW = clickableOf((i) => tail[i]);
+        const HEAD_ROW = clickableOf();
+        const MID_ROW = clickableOf();
+        const TAIL_ROW = clickableOf();
         return createExoTestMachine(
             buildTriple,
             (P): TExoMachineInitialState<TPortable> =>
                 (c) => {
-                    c.list(P.head, HEAD_ROW, head.length);
-                    c.list(P.mid, MID_ROW, mid.length);
-                    c.list(P.tail, TAIL_ROW, tail.length);
+                    c.list(P.head, HEAD_ROW, head);
+                    c.list(P.mid, MID_ROW, mid);
+                    c.list(P.tail, TAIL_ROW, tail);
                 }
         );
     };
@@ -968,24 +977,34 @@ describe('ports on the statics AROUND a child list, hydrated', () => {
     /** One component over one source and one fixed run of rows — served, then adopted. */
     const card = (labels: readonly string[], foot: string) => {
         const label = source(foot);
-        const ROW = clickableOf((i) => labels[i]);
+        const ROW = clickableOf();
         const schema = createExoSchema(buildPortedStatics);
-        const m = createExoMachineBuilder<TExoMachineNode & TPortable>(schema);
-        m.createInitialState((c) => {
-            c.text(schema.ports.heading, 'headline');
-            c.list(schema.ports.mid, ROW, labels.length);
-            c.on(schema.ports.footerClick, () => {
-                clicked += 'F';
-            });
+        const m = createExoMachine<TExoMachineNode & TPortable>(schema, {
+            createInitialState: (c) => {
+                c.text(schema.ports.heading, 'headline');
+                c.list(schema.ports.mid, ROW, labels);
+                c.on(schema.ports.footerClick, () => {
+                    clicked += 'F';
+                });
+            },
         });
-        const showFooter = m.transition((c) => {
-            c.text(schema.ports.footer, label.getValue());
-        });
-        m.effect((c) => {
-            showFooter(c);
-            return label.onChange(() => showFooter(c));
-        });
-        const CARD = m.done();
+        const CARD = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    showFooter: (c) => {
+                        c.text(schema.ports.footer, label.getValue());
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        showFooter(c);
+                        return label.onChange(() => showFooter(c));
+                    });
+                })
+        );
+        const { showFooter } = CARD.transitions;
         return { label, CARD };
     };
 
@@ -1116,15 +1135,15 @@ function buildPortedSeparator(b: TExoSchemaCursor) {
 }
 
 describe('a PORT on the static between two child lists', () => {
-    const HEAD_ROW = clickableOf(() => 'A');
-    const TAIL_ROW = clickableOf(() => 'B');
+    const HEAD_ROW = clickableOf();
+    const TAIL_ROW = clickableOf();
     const CARD = createExoTestMachine(
         buildPortedSeparator,
         (P): TExoMachineInitialState<TPortable> =>
             (c) => {
                 c.attr(P.seam, 'seam');
-                c.list(P.head, HEAD_ROW, 1);
-                c.list(P.tail, TAIL_ROW, 1);
+                c.list(P.head, HEAD_ROW, ['A']);
+                c.list(P.tail, TAIL_ROW, ['B']);
             }
     );
     const MARKUP =

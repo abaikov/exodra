@@ -63,12 +63,11 @@ The table is exposed as the virtual module `virtual:exodra-routes`. Each entry i
 `{ path, component: exoLazy(() => import(file)) }` (plus `catchAll` /
 `optionalCatchAll`), and a page file's **default export** is its machine. A page
 receives its match as the params of its wire:
-`createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(pageSchema)` and
-`pageBuilder.wire((c, match) => ...)`.
+`withExoWire(createExoMachine<TExoMachineNode, TExoRouteMatch>(pageSchema), (c, match) => ...)`.
 
 ```ts no-check
 // main.ts
-import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachine, createExoSchema, exoPorts } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { createExoBrowserHistory, createExoRouter, exoOutlet, provideExoRouter } from '@exodra/router';
@@ -84,12 +83,12 @@ const appSchema = createExoSchema(AppPorts, (b) => {
         d.childrenPort(AppPorts.body);
     });
 });
-const appBuilder = createExoMachineBuilder<TExoDomNode>(appSchema);
-appBuilder.createInitialState((c) => {
-    provideExoRouter(c, router);
-    c.one(AppPorts.body, Routed);
+const App = createExoMachine(appSchema, {
+    createInitialState: (c: TExoDomNode) => {
+        provideExoRouter(c, router);
+        c.one(AppPorts.body, Routed);
+    },
 });
-const App = appBuilder.done();
 
 const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
 backend.render(App, document.getElementById('app') as HTMLElement);

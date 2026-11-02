@@ -14,7 +14,7 @@
 // preloaded it" and "is server-rendered after preloadExoPage, and the browser adopts it"
 // unaskable here. `preloadExoPage` still remembers the component, and
 // `route-component-surface.test.ts` asserts that through a synchronous browser render.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, composeExoMachine, withExoWire, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -52,11 +52,12 @@ const page = (name: string) => {
         });
         return { label };
     });
-    const m = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(schema);
-    m.wire((c, match) => {
-        c.text(schema.ports.label, name + ' at ' + match.pathname);
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode, TExoRouteMatch>(schema);
+    return composeExoMachine(m, (m) =>
+        withExoWire(m, (c, match) => {
+            c.text(schema.ports.label, name + ' at ' + match.pathname);
+        })
+    );
 };
 
 const HOME = page('home');
@@ -72,12 +73,13 @@ const shellFor = (router: TExoRouter) => {
         });
         return { body };
     });
-    const m = createExoMachineBuilder<TNestingNode>(schema);
-    m.createInitialState((c) => {
-        provideExoRouter(c, router);
-        c.one(schema.ports.body, OUTLET);
+    const m = createExoMachine<TNestingNode>(schema, {
+        createInitialState: (c) => {
+            provideExoRouter(c, router);
+            c.one(schema.ports.body, OUTLET);
+        },
     });
-    return m.done() as never;
+    return m as never;
 };
 
 const routerOver = (routes: readonly TExoRoute[], at: string): TExoRouter =>

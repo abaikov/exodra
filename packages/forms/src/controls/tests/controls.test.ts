@@ -1,5 +1,13 @@
 // @vitest-environment jsdom
-import { createExoMachineBuilder, createExoSchema, wireExoNode } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoWire,
+    withExoHandlers,
+    withExoEffects,
+    createExoSchema,
+    wireExoNode,
+} from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenPort,
@@ -54,16 +62,17 @@ describe('one listener on a container, any control inside it', () => {
 
     const mount = () => {
         const seen: Record<string, TExoControlValue | undefined> = {};
-        const m = createExoMachineBuilder<TExoDomNode>(PANEL);
         const record = (c: TExoDomNode, event: Event): void => {
             const target = event.target as HTMLInputElement;
             seen[target.name] = readExoControlValue(target);
             c.text(PANEL.ports.echo, target.name);
         };
-        m.on(PANEL.ports.input, record);
-        m.on(PANEL.ports.change, record);
+        const Panel = withExoHandlers(createExoMachine<TExoDomNode>(PANEL), (on) => {
+            on(PANEL.ports.input, record);
+            on(PANEL.ports.change, record);
+        });
         const parent = host();
-        EXO_BACKEND.render(m.done(), parent);
+        EXO_BACKEND.render(Panel, parent);
         const control = <T extends Element>(name: string): T =>
             parent.querySelector(`[name="${name}"]`) as T;
         return { seen, parent, control };
@@ -122,18 +131,27 @@ describe('a single input, with its listener on itself', () => {
             });
             return { input };
         });
-        const m = createExoMachineBuilder<TExoDomNode, unknown, { value: string }>(schema);
-        m.createInitialState(() => ({ value: '' }));
-        m.on(schema.ports.input, (c, event) => {
-            c.state.value = readExoControlValue(event.target) as string;
-        });
         const states: { value: string }[] = [];
-        m.effect((c) => {
-            states.push(c.state);
-            return null;
-        });
+        const Input = composeExoMachine(
+            createExoMachine<TExoDomNode, unknown, { value: string }>(schema, {
+                createInitialState: () => ({ value: '' }),
+            }),
+            (m) =>
+                withExoHandlers(m, (on) => {
+                    on(schema.ports.input, (c, event) => {
+                        c.state.value = readExoControlValue(event.target) as string;
+                    });
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        states.push(c.state);
+                        return null;
+                    });
+                })
+        );
         const parent = host();
-        EXO_BACKEND.render(m.done(), parent);
+        EXO_BACKEND.render(Input, parent);
 
         typeInto(parent.querySelector('input') as HTMLInputElement, 'solo');
 
@@ -161,13 +179,14 @@ describe('readExoControlValues — the controls behind ref ports, read when aske
 
     it('reads what is in the controls at the moment it is called', () => {
         const submitted: (TExoControlValue | undefined)[][] = [];
-        const m = createExoMachineBuilder<TExoDomNode>(FORM);
-        m.on(FORM.ports.submit, (c, event) => {
-            event.preventDefault();
-            submitted.push(readExoControlValues(c, FIELDS));
+        const Form = withExoHandlers(createExoMachine<TExoDomNode>(FORM), (on) => {
+            on(FORM.ports.submit, (c, event) => {
+                event.preventDefault();
+                submitted.push(readExoControlValues(c, FIELDS));
+            });
         });
         const parent = host();
-        EXO_BACKEND.render(m.done(), parent);
+        EXO_BACKEND.render(Form, parent);
         const [name, age] = Array.from(parent.querySelectorAll('input'));
         name.value = 'Ada';
         age.value = '36';
@@ -181,11 +200,12 @@ describe('readExoControlValues — the controls behind ref ports, read when aske
 
     it('answers undefined for every control on a backend with no document', () => {
         const read: (TExoControlValue | undefined)[][] = [];
-        const m = createExoMachineBuilder<TExoStrNode>(FORM);
-        m.createInitialState((c) => {
-            read.push(readExoControlValues(c, FIELDS));
+        const Form = createExoMachine<TExoStrNode>(FORM, {
+            createInitialState: (c) => {
+                read.push(readExoControlValues(c, FIELDS));
+            },
         });
-        new ExoStrBackend().render(m.done());
+        new ExoStrBackend().render(Form);
         expect(read).toEqual([[undefined, undefined]]);
     });
 });
@@ -206,12 +226,13 @@ describe('readExoControlValues over a radio group', () => {
             return { radios, change };
         });
         const read: (TExoControlValue | undefined)[][] = [];
-        const m = createExoMachineBuilder<TExoDomNode>(GROUP);
-        m.on(GROUP.ports.change, (c) => {
-            read.push(readExoControlValues(c, GROUP.ports.radios));
+        const Group = withExoHandlers(createExoMachine<TExoDomNode>(GROUP), (on) => {
+            on(GROUP.ports.change, (c) => {
+                read.push(readExoControlValues(c, GROUP.ports.radios));
+            });
         });
         const parent = host();
-        EXO_BACKEND.render(m.done(), parent);
+        EXO_BACKEND.render(Group, parent);
 
         (parent.querySelectorAll('input')[1] as HTMLInputElement).click();
 
@@ -232,11 +253,12 @@ describe('writeExoChoice — the checked or selected mark of a group, keyed by v
         });
         return { radios };
     });
-    const mGroup = createExoMachineBuilder<TExoMachineNode, string>(GROUP);
-    mGroup.wire((c, chosen) => {
-        writeExoChoice(c, GROUP.ports.radios, SIZES, chosen);
-    });
-    const SIZE_GROUP = mGroup.done();
+    const mGroup = createExoMachine<TExoMachineNode, string>(GROUP);
+    const SIZE_GROUP = composeExoMachine(mGroup, (m) =>
+        withExoWire(m, (c, chosen) => {
+            writeExoChoice(c, GROUP.ports.radios, SIZES, chosen);
+        })
+    );
 
     const SHELL = createExoSchema((b) => {
         let slot!: TExoChildrenPort;
@@ -248,24 +270,26 @@ describe('writeExoChoice — the checked or selected mark of a group, keyed by v
 
     const mount = (start: string) => {
         const held: TExoNode[] = [];
-        const m = createExoMachineBuilder<TExoDomNode>(SHELL);
-        m.createInitialState((c) => {
-            const group = c.build(SIZE_GROUP, 0, start);
-            held.push(group);
-            c.childList(SHELL.ports.slot).insert(group);
+        const Shell = createExoMachine<TExoDomNode>(SHELL, {
+            createInitialState: (c) => {
+                const group = c.build(SIZE_GROUP, start);
+                held.push(group);
+                c.childList(SHELL.ports.slot).insert(group);
+            },
         });
         const parent = host();
-        EXO_BACKEND.render(m.done(), parent);
+        EXO_BACKEND.render(Shell, parent);
         const radios = Array.from(parent.querySelectorAll('input')) as HTMLInputElement[];
         return { group: held[0], radios };
     };
 
     it('serves the starting mark from the server', () => {
-        const m = createExoMachineBuilder<TExoStrNode>(GROUP);
-        m.createInitialState((c) => {
-            writeExoChoice(c, GROUP.ports.radios, SIZES, 'm');
+        const Group = createExoMachine<TExoStrNode>(GROUP, {
+            createInitialState: (c) => {
+                writeExoChoice(c, GROUP.ports.radios, SIZES, 'm');
+            },
         });
-        expect(new ExoStrBackend().render(m.done())).toBe(
+        expect(new ExoStrBackend().render(Group)).toBe(
             '<fieldset><input type="radio" name="size" value="s">' +
                 '<input type="radio" name="size" value="m" checked="">' +
                 '<input type="radio" name="size" value="l"></fieldset>'

@@ -120,7 +120,7 @@ describe('driving a port by hand', () => {
             },
             (P): TExoMachineInitialState<TExoDomNode> =>
                 (c) => {
-                    c.list(P.rows, COMP, 2);
+                    c.list(P.rows, COMP, [0, 1]);
                 }
         );
 

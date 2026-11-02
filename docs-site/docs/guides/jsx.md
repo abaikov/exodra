@@ -13,7 +13,7 @@ around the declaration.
 
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoHandlers } from '@exodra/core';
 import type { TExoAttrPort, TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 
 interface TCounterPorts {
@@ -34,19 +34,22 @@ const CounterPorts = counterSchema.ports;
 
 type TCounterState = { n: number };
 
-const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TCounterState>(
-    counterSchema
+export const counterMachine = composeExoMachine(
+    createExoMachine(counterSchema, {
+        createInitialState: (c: TExoMachineNode, _params: unknown): TCounterState => {
+            c.attr(CounterPorts.step, 1);
+            c.text(CounterPorts.count, 0);
+            return { n: 0 };
+        },
+    }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CounterPorts.increment, (c) => {
+                c.state.n += 1;
+                c.text(CounterPorts.count, c.state.n);
+            });
+        })
 );
-counterBuilder.createInitialState((c): TCounterState => {
-    c.attr(CounterPorts.step, 1);
-    c.text(CounterPorts.count, 0);
-    return { n: 0 };
-});
-counterBuilder.on(CounterPorts.increment, (c) => {
-    c.state.n += 1;
-    c.text(CounterPorts.count, c.state.n);
-});
-export const Counter = counterBuilder.done();
 ```
 
 `@exodra/babel-plugin-schema` compiles the `exoJsx(…)` call away. What it
@@ -90,11 +93,11 @@ The machine is an ordinary machine, so it goes straight into a backend:
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomMachine } from '@exodra/dom';
 
-declare const Counter: TExoDomMachine;
+declare const counterMachine: TExoDomMachine;
 
 const backend = withExoCompiler(new ExoDomBackend());
 
-backend.render(Counter, document.body);
+backend.render(counterMachine, document.body);
 ```
 
 ## The dialect
@@ -108,8 +111,8 @@ maps to exactly one schema call:
 | plain text between tags | markup | `text('…')` | — |
 | `data-id={$.id}` | attribute port `id` | `port('data-id', 'id')` | `c.attr(RowPorts.id, value)` |
 | `<span>{$.label}</span>` | text port `label` | `textPort('label')` | `c.text(RowPorts.label, value)` |
-| `onClick={$.toggle}` | event port `toggle`, event `click` | `eventPort('click', 'toggle')` | `rowBuilder.on(RowPorts.toggle, handler)` |
-| `on:dblclick={$.edit}` | event port `edit`, event `dblclick` | `eventPort('dblclick', 'edit')` | `rowBuilder.on(RowPorts.edit, handler)` |
+| `onClick={$.toggle}` | event port `toggle`, event `click` | `eventPort('click', 'toggle')` | `withExoHandlers(m, (on) => on(RowPorts.toggle, handler))` |
+| `on:dblclick={$.edit}` | event port `edit`, event `dblclick` | `eventPort('dblclick', 'edit')` | `withExoHandlers(m, (on) => on(RowPorts.edit, handler))` |
 | `ref={$.box}` | ref port `box` | `refPort('box')` | read, never written |
 | `<div unsafeHtml={$.body} />` | children port `body` | `childrenPort('body')` | `c.unsafeHtml(RowPorts.body, markup)` |
 | `<$.rows />` | children port `rows` | `childrenPort('rows')` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
@@ -158,7 +161,8 @@ for `keydown`. `on:` keeps the event name exactly as written — `on:dblclick`,
 `on:focusin`, `on:my-thing` — for a name whose case or spelling must survive.
 Both forms are typed per DOM event, so `on:clik` is a type error.
 
-The handler is attached by the machine, `rowBuilder.on(RowPorts.toggle, (c, event) => …)`: one
+The handler is attached by the machine, `on(RowPorts.toggle, (c, event) => …)` inside
+`withExoHandlers(m, (on) => …)`: one
 function for every instance, with the instance as `c`. This is also the form
 [`createExoDelegatedEvents`](../api/dom.md#events-as-a-plugin) serves with one
 root listener per event name.
@@ -200,7 +204,7 @@ three calls, and the choice is a choice of cost:
 | call | what it is | pays for diffs |
 | --- | --- | --- |
 | `c.one(PanelPorts.body, Machine, params?)` | one instance, for the life of this one | no |
-| `c.list(ListPorts.rows, Machine, count)` | a fixed number of instances, each built with its index | no |
+| `c.list(ListPorts.rows, Machine, rows)` | a fixed list, one instance per element of `rows`, each built with its element as params | no |
 | `c.childList(ListPorts.rows)` + `reconcileExoOrder` | a list that changes, reconciled by identity | yes |
 
 ## A list
@@ -212,13 +216,19 @@ that survives an update is the same element with the same instance.
 
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    composeExoMachine,
+    createExoMachine,
+    withExoEffects,
+    withExoHandlers,
+    withExoWire,
+} from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenPort,
     TExoEventPort,
-    TExoMachineBuilderNode,
     TExoMachineNode,
+    TExoMachineNodeOf,
     TExoTextPort,
 } from '@exodra/core';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
@@ -233,13 +243,16 @@ const taskSchema = exoJsx<{ id: TExoAttrPort; title: TExoTextPort }>(($) => (
 ));
 const TaskPorts = taskSchema.ports;
 
-const taskBuilder = createExoMachineBuilder<TExoMachineNode, TTask>(taskSchema);
-taskBuilder.createInitialState(() => null);
-taskBuilder.wire((c, task) => {
-    c.attr(TaskPorts.id, task.id);
-    c.text(TaskPorts.title, task.title);
-});
-const Task = taskBuilder.done();
+const taskMachine = composeExoMachine(
+    createExoMachine(taskSchema, {
+        createInitialState: (_c: TExoMachineNode, _task: TTask) => null,
+    }),
+    (m) =>
+        withExoWire(m, (c, task) => {
+            c.attr(TaskPorts.id, task.id);
+            c.text(TaskPorts.title, task.title);
+        })
+);
 
 const taskListSchema = exoJsx<{
     rows: TExoChildrenPort;
@@ -263,44 +276,48 @@ const TaskListPorts = taskListSchema.ports;
 
 type TTaskListState = { rows: TExoChildList; tasks: TTask[]; shown: TTask[] };
 
-const taskListBuilder = createExoMachineBuilder<TExoDomNode, unknown, TTaskListState>(
-    taskListSchema
-);
-taskListBuilder.createInitialState(
-    (c): TTaskListState => ({
+const taskListBase = createExoMachine(taskListSchema, {
+    createInitialState: (c: TExoDomNode, _params: unknown): TTaskListState => ({
         rows: c.childList(TaskListPorts.rows),
         tasks: [
             { id: 't1', title: 'Write the schema' },
             { id: 't2', title: 'Write the machine' },
         ],
         shown: [],
-    })
-);
+    }),
+});
 
-function showRows(c: TExoMachineBuilderNode<typeof taskListBuilder>): void {
+function showRows(c: TExoMachineNodeOf<typeof taskListBase>): void {
     const state = c.state;
-    state.shown = reconcileExoOrder(state.rows, state.shown, state.tasks, state.tasks, (task, at) =>
-        c.build(Task, at, task)
+    state.shown = reconcileExoOrder(state.rows, state.shown, state.tasks, state.tasks, (task) =>
+        c.build(taskMachine, task)
     );
 }
 
-taskListBuilder.effect((c) => {
-    showRows(c);
-    return null;
-});
-
 let nextTask = 3;
-taskListBuilder.on(TaskListPorts.add, (c) => {
-    c.state.tasks = [...c.state.tasks, { id: `t${nextTask}`, title: `Task ${nextTask}` }];
-    nextTask += 1;
-    showRows(c);
-});
-taskListBuilder.on(TaskListPorts.reverse, (c) => {
-    c.state.tasks = [...c.state.tasks].reverse();
-    showRows(c);
-});
 
-export const TaskList = taskListBuilder.done();
+export const taskListMachine = composeExoMachine(
+    taskListBase,
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showRows(c);
+                return null;
+            });
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(TaskListPorts.add, (c) => {
+                c.state.tasks = [...c.state.tasks, { id: `t${nextTask}`, title: `Task ${nextTask}` }];
+                nextTask += 1;
+                showRows(c);
+            });
+            on(TaskListPorts.reverse, (c) => {
+                c.state.tasks = [...c.state.tasks].reverse();
+                showRows(c);
+            });
+        })
+);
 ```
 
 `reconcileExoOrder(kids, shown, keys, items, build)` takes the child list, the

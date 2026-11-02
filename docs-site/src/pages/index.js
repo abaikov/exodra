@@ -1,11 +1,11 @@
 import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import { useState } from 'react';
 import Layout from '@theme/Layout';
 import { MDXProvider } from '@mdx-js/react';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import LandingSpeed from '@site/src/components/Landing/LandingSpeed';
 import LandingReact from '@site/src/components/Landing/LandingReact';
+import LandingPlugins from '@site/src/components/Landing/LandingPlugins';
 import HeroCodePre from '@site/src/components/Landing/HeroCodePre';
 import LandingAnatomy from '@site/src/components/Landing/LandingAnatomy';
 import Reveal from '@site/src/components/Landing/Reveal';
@@ -16,39 +16,28 @@ import styles from './index.module.css';
 
 const HERO_CODE_COMPONENTS = { pre: HeroCodePre };
 
-const HERO_TABS = [
-    { name: 'counter.ts', label: 'TypeScript', Code: HeroCodeTs },
-    { name: 'counter.tsx', label: 'JSX, if you want it', Code: HeroCodeJsx },
+const HERO_WINDOWS = [
+    { name: 'counter.ts', caption: null, Code: HeroCodeTs },
+    { name: 'counter.tsx', caption: 'The same machine, with its schema declared in JSX:', Code: HeroCodeJsx },
 ];
 
 function HeroWindow() {
-    const [tabAt, setTabAt] = useState(0);
-    const { name, Code } = HERO_TABS[tabAt];
     return (
         <Reveal className={styles.windowWrap}>
-            <div className={styles.window}>
-                <div className={styles.windowBar}>
-                    <span /><span /><span />
-                    <em>{name}</em>
-                    <div className={styles.windowTabs} role="tablist">
-                        {HERO_TABS.map((tab, at) => (
-                            <button
-                                key={tab.name}
-                                type="button"
-                                role="tab"
-                                aria-selected={at === tabAt}
-                                className={at === tabAt ? styles.windowTabActive : styles.windowTab}
-                                onClick={() => setTabAt(at)}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
+            {HERO_WINDOWS.map(({ name, caption, Code }) => (
+                <div key={name}>
+                    {caption === null ? null : <p className={styles.windowCaption}>{caption}</p>}
+                    <div className={styles.window}>
+                        <div className={styles.windowBar}>
+                            <span /><span /><span />
+                            <em>{name}</em>
+                        </div>
+                        <MDXProvider components={HERO_CODE_COMPONENTS}>
+                            <Code />
+                        </MDXProvider>
                     </div>
                 </div>
-                <MDXProvider components={HERO_CODE_COMPONENTS}>
-                    <Code />
-                </MDXProvider>
-            </div>
+            ))}
         </Reveal>
     );
 }
@@ -158,6 +147,7 @@ export default function Home() {
                 <LandingAnatomy />
                 <LandingSpeed />
                 <LandingReact />
+                <LandingPlugins />
                 <ClosingSection />
             </main>
         </Layout>

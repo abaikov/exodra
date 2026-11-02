@@ -332,18 +332,14 @@ async function createProjectFiles(
         // the machine's `wire` fills its ports.
         const pageModule = (heading: string, paragraph: string) => {
             const typeImports = useTypeScript
-                ? `import type { TExoMachineNode, TExoTextPort } from '@exodra/core';\n`
+                ? `import type { TExoTextPort } from '@exodra/core';\n`
                 : '';
             const portsType = useTypeScript ? '<{ heading: TExoTextPort }>' : '';
-            // THE SHARED SURFACE, NOT A BACKEND — a machine's exonode parameter is contravariant, so
-            // a page typed against `TExoDomNode` can never be rendered by `@exodra/string` or
-            // hydrated. This one calls `c.text` and nothing else.
-            const builderType = useTypeScript ? '<TExoMachineNode>' : '';
-            return `import { createExoMachineBuilder } from '@exodra/core';
+            return `import { composeExoMachine, createExoMachine, withExoWire } from '@exodra/core';
 ${typeImports}import { exoJsx } from '@exodra/jsx';
 
 // A page takes no props: the match that selected it arrives as the params of its wire —
-// \`pageBuilder.wire((c, match) => …)\` — and \`match.params\` and \`match.pathname\` are what it needs.
+// \`withExoWire(m, (c, match) => …)\` — and \`match.params\` and \`match.pathname\` are what it needs.
 const pageSchema = exoJsx${portsType}(($) => (
   <div class="container">
     <h1>{$.heading}</h1>
@@ -352,11 +348,12 @@ const pageSchema = exoJsx${portsType}(($) => (
 ));
 const PagePorts = pageSchema.ports;
 
-const pageBuilder = createExoMachineBuilder${builderType}(pageSchema);
-pageBuilder.wire(c => {
-  c.text(PagePorts.heading, '${heading}');
-});
-export default pageBuilder.done();
+const pageBase = createExoMachine(pageSchema);
+export default composeExoMachine(pageBase, m =>
+  withExoWire(m, c => {
+    c.text(PagePorts.heading, '${heading}');
+  })
+);
 `;
         };
 
@@ -410,13 +407,13 @@ export const router = createExoRouter(routes, { history: createExoBrowserHistory
         const appPortsType = useTypeScript
             ? '<{ nav: TExoChildrenPort; body: TExoChildrenPort }>'
             : '';
-        // `<TExoDomNode>` because `childList` hands out element positions, which `@exodra/core`
+        // `TExoDomNode` because `childList` hands out element positions, which `@exodra/core`
         // has no word for; this is the browser entry point, DOM-bound anyway.
-        const appBuilderType = useTypeScript ? '<TExoDomNode>' : '';
+        const appInitialStateArg = useTypeScript ? '(c: TExoDomNode)' : 'c';
         const root = useTypeScript
             ? "document.getElementById('app') as HTMLElement"
             : "document.getElementById('app')";
-        appContent = `import { createExoMachineBuilder } from '@exodra/core';
+        appContent = `import { createExoMachine } from '@exodra/core';
 ${
     useTypeScript ? "import type { TExoChildrenPort } from '@exodra/core';\n" : ''
 }import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
@@ -441,17 +438,17 @@ const appSchema = exoJsx${appPortsType}(($) => (
 ));
 const AppPorts = appSchema.ports;
 
-const appBuilder = createExoMachineBuilder${appBuilderType}(appSchema);
-appBuilder.createInitialState(c => {
-  provideExoRouter(c, router);
-  // A real \`<a href>\` each; a plain left click navigates, every other click is the browser's.
-  const links = c.childList(AppPorts.nav);
-  links.insert(c.build(ExoLink, 0, { to: '/', label: 'Home', currentWhen: 'exact' }));
-  links.insert(c.build(ExoLink, 1, { to: '/about', label: 'About', currentWhen: 'exact' }));
-  // The route boundary: the page the URL matches stands inside it.
-  c.one(AppPorts.body, ExoOutlet);
+const App = createExoMachine(appSchema, {
+  createInitialState: ${appInitialStateArg} => {
+    provideExoRouter(c, router);
+    // A real \`<a href>\` each; a plain left click navigates, every other click is the browser's.
+    const links = c.childList(AppPorts.nav);
+    links.insert(c.build(ExoLink, { to: '/', label: 'Home', currentWhen: 'exact' }));
+    links.insert(c.build(ExoLink, { to: '/about', label: 'About', currentWhen: 'exact' }));
+    // The route boundary: the page the URL matches stands inside it.
+    c.one(AppPorts.body, ExoOutlet);
+  },
 });
-const App = appBuilder.done();
 
 EXO_BACKEND.render(App, ${root});
 `;
@@ -459,7 +456,6 @@ EXO_BACKEND.render(App, ${root});
         // No router: one component, rendered once. Same shape as a page — the schema is
         // declared with `exoJsx` and built when the module loads, `wire` fills its ports.
         const soloPortsType = useTypeScript ? '<{ heading: TExoTextPort }>' : '';
-        const soloBuilderType = useTypeScript ? '<TExoMachineNode>' : '';
         const soloRoot = useTypeScript
             ? "document.getElementById('app') as HTMLElement"
             : "document.getElementById('app')";
@@ -468,11 +464,11 @@ EXO_BACKEND.render(App, ${root});
             ? ' class="text-4xl font-bold text-center mb-4"'
             : '';
         const soloCopyClass = options.tailwind ? ' class="text-lg text-center text-gray-600"' : '';
-        appContent = `import { createExoMachineBuilder } from '@exodra/core';
+        appContent = `import { composeExoMachine, createExoMachine, withExoWire } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { exoJsx } from '@exodra/jsx';
 
-${useTypeScript ? "import type { TExoMachineNode, TExoTextPort } from '@exodra/core';\n" : ''}${
+${useTypeScript ? "import type { TExoTextPort } from '@exodra/core';\n" : ''}${
             options.tailwind ? "import './styles.css';\n" : ''
         }
 // THE BACKEND IS BUILT ONCE, HERE, AND THAT IS NOT A STYLE CHOICE. A backend is the
@@ -490,11 +486,12 @@ const appSchema = exoJsx${soloPortsType}(($) => (
 ));
 const AppPorts = appSchema.ports;
 
-const appBuilder = createExoMachineBuilder${soloBuilderType}(appSchema);
-appBuilder.wire(c => {
-  c.text(AppPorts.heading, 'Welcome to ${projectName}');
-});
-const App = appBuilder.done();
+const appBase = createExoMachine(appSchema);
+const App = composeExoMachine(appBase, m =>
+  withExoWire(m, c => {
+    c.text(AppPorts.heading, 'Welcome to ${projectName}');
+  })
+);
 
 EXO_BACKEND.render(App, ${soloRoot});
 `;
@@ -671,11 +668,14 @@ async function createSsrFiles(projectPath: string, projectName: string) {
         `import {
     EXO_PORT_EVENT,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoHandlers,
+    withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
+import type { TExoMachineNode, TExoMachineNodeOf } from '@exodra/core';
 import { EXO_SSR_RESPONSE } from '@exodra/ssr';
 
 // What the page starts from. The server hands it to \`renderExoPage\` as params; the client
@@ -703,26 +703,33 @@ const appSchema = createExoSchema(AppPorts, b => {
 // ONE VALUE, TWO BACKENDS — and this is the scaffold where that has to be literally
 // true: \`entry-server\` hands this very machine to \`renderExoPage\` and \`entry-client\`
 // hands it to \`withExoHydration(withExoCompiler(new ExoDomBackend())).hydrate(App, root)\`.
-// A machine's exonode parameter is contravariant, so built as \`createExoMachineBuilder<TExoDomNode>\`
+// A machine's exonode parameter is contravariant, so built against \`TExoDomNode\`
 // this could not have been passed to the server's renderer at all.
-const appBuilder = createExoMachineBuilder<TExoMachineNode, TAppParams, TAppState>(appSchema);
-appBuilder.createInitialState(() => ({ count: 0 }));
+const appBase = createExoMachine(appSchema, {
+    createInitialState: (_c: TExoMachineNode, _params: TAppParams): TAppState => ({ count: 0 }),
+});
 
-function showCount(c: TExoMachineBuilderNode<typeof appBuilder>): void {
+function showCount(c: TExoMachineNodeOf<typeof appBase>): void {
     c.text(AppPorts.clicks, 'Clicked ' + c.state.count + ' times');
 }
 
-appBuilder.wire((c, params) => {
-    c.state.count = params.count;
-    // On the server this writes the state script; in the browser there is no request to talk to.
-    c.inject(EXO_SSR_RESPONSE)?.setState('count', params.count);
-    showCount(c);
-});
-appBuilder.on(AppPorts.bump, c => {
-    c.state.count += 1;
-    showCount(c);
-});
-export const App = appBuilder.done();
+export const App = composeExoMachine(
+    appBase,
+    m =>
+        withExoWire(m, (c, params) => {
+            c.state.count = params.count;
+            // On the server this writes the state script; in the browser there is no request to talk to.
+            c.inject(EXO_SSR_RESPONSE)?.setState('count', params.count);
+            showCount(c);
+        }),
+    m =>
+        withExoHandlers(m, on => {
+            on(AppPorts.bump, c => {
+                c.state.count += 1;
+                showCount(c);
+            });
+        })
+);
 `
     );
 

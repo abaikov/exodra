@@ -31,7 +31,13 @@
 // These cases provide plain strings deliberately, because that is what keeps the non-reactivity
 // visible.
 import { exoContextToken, readExoContext } from '@exodra/context';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenPort,
@@ -71,7 +77,7 @@ type TWiring = {
     provide<TValue>(key: TExoContextToken<TValue>, value: TValue): void;
     inject<TValue>(key: TExoContextToken<TValue>): TValue | undefined;
     one(port: TExoPort, component: TExoMachine<never>): void;
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 /**
@@ -198,8 +204,8 @@ const ROW = createExoTestMachine(
         return { label, slot };
     },
     (P): TExoMachineInitialState<TWiring> =>
-        (c, i) => {
-            const row = ROWS[i];
+        (c, params) => {
+            const row = params as TRow;
             if (row.shadow !== undefined) c.provide(THEME, row.shadow);
             c.text(P.label, c.inject(THEME) ?? 'none');
             c.one(P.slot, LEAF);
@@ -222,7 +228,7 @@ const SHADOWING = createExoTestMachine(
             // Row 0 shadows; row 1 must see the OUTER value again. On the server that is the
             // frame being restored; in the browser it is one chain per instance, which a
             // sibling's provide never touched.
-            c.list(P.rows, ROW, ROWS.length);
+            c.list(P.rows, ROW, ROWS);
         }
 );
 
@@ -284,9 +290,6 @@ describe('a wire that throws leaves no frame standing (server)', () => {
 /** A row that stamps whatever it injected onto itself — visible in the DOM, per row. */
 type TItem = { readonly id: string };
 
-/** What the stamped rows read, BY INDEX. */
-const STAMPED_ITEMS: TItem[] = [];
-
 const STAMPED = createExoTestMachine(
     (b) => {
         let id!: TExoAttrPort;
@@ -298,8 +301,8 @@ const STAMPED = createExoTestMachine(
         return { id, theme };
     },
     (P): TExoMachineInitialState<TWiring> =>
-        (c, i) => {
-            c.attr(P.id, STAMPED_ITEMS[i].id);
+        (c, item) => {
+            c.attr(P.id, (item as TItem).id);
             c.attr(P.theme, c.inject(THEME) ?? 'none');
         }
 );
@@ -321,9 +324,7 @@ const servedAppOf = (items: readonly TItem[]) =>
         (P): TExoMachineInitialState<TWiring> =>
             (c) => {
                 c.provide(THEME, 'dark');
-                STAMPED_ITEMS.length = 0;
-                STAMPED_ITEMS.push(...items);
-                c.list(P.rows, STAMPED, STAMPED_ITEMS.length);
+                c.list(P.rows, STAMPED, items);
             }
     );
 
@@ -339,31 +340,45 @@ const appOf = (src: { getValue(): readonly TItem[]; onChange(cb: () => void): ()
         });
         return { rows };
     });
-    const m = createExoMachineBuilder<
-        TExoDomNode,
-        unknown,
-        { rows: TExoChildList; shown: TItem[] }
-    >(schema);
-    m.createInitialState((c) => {
-        c.provide(THEME, 'dark');
-        return { rows: c.childList(schema.ports.rows), shown: [] };
-    });
-    // THE LIST IS THE RECONCILER'S, not the backend's, and that is what makes the question askable
-    // at all: a row built an hour later is built by a layer over `build` + `childList`, from inside
-    // the source's subscriber, with no render on the stack. `c.list` could not grow and so could not
-    // ask.
-    const showRows = m.transition((c) => {
-        const want = src.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            STAMPED_ITEMS[i] = item;
-            return c.build(STAMPED, i);
-        });
-    });
-    m.effect((c) => {
-        showRows(c);
-        return src.onChange(() => showRows(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoDomNode, unknown, { rows: TExoChildList; shown: TItem[] }>(
+        schema,
+        {
+            createInitialState: (c) => {
+                c.provide(THEME, 'dark');
+                return { rows: c.childList(schema.ports.rows), shown: [] };
+            },
+        }
+    );
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                // THE LIST IS THE RECONCILER'S, not the backend's, and that is what makes the question askable
+                // at all: a row built an hour later is built by a layer over `build` + `childList`, from inside
+                // the source's subscriber, with no render on the stack. `c.list` could not grow and so could not
+                // ask.
+
+                showRows: (c) => {
+                    const want = src.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(STAMPED, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return src.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 const themes = (parent: Element): (string | null)[] =>

@@ -115,16 +115,22 @@ imports it that way), and it takes no props — the match that selected it arriv
 as the params of its wire, whose `params` and `pathname` are what a page
 needs. The outlet mounts a machine and nothing else. A component is a named machine
 export, filled from its parent with `c.one(port, Name)` or repeated with
-`c.list(port, Name, count)`. With `-t` the files carry type annotations; without
+`c.list(port, Name, rows)`, each row armed with its own entry of `rows` as its params. With `-t` the files carry type annotations; without
 it they are the same code with the types dropped.
 
 ```tsx
 // src/pages/Home.tsx, from `npx exodra page Home -t`
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineNode } from '@exodra/core';
+import {
+  EXO_PORT_TEXT,
+  composeExoMachine,
+  createExoMachine,
+  createExoSchema,
+  exoPorts,
+  withExoWire,
+} from '@exodra/core';
 
 // A page takes no props — the match that selected it arrives as the params of its wire,
-// `pageBuilder.wire((c, match) => …)`, whose `params` and `pathname` are what a page needs. It is
+// `withExoWire(m, (c, match) => …)`, whose `params` and `pathname` are what a page needs. It is
 // default-exported because the route table imports it that way.
 const PagePorts = exoPorts({ heading: EXO_PORT_TEXT });
 
@@ -136,11 +142,12 @@ const pageSchema = createExoSchema(PagePorts, b => {
     d.el('p', null, p => p.text('Welcome to the Home page.'));
   });
 });
-const pageBuilder = createExoMachineBuilder<TExoMachineNode>(pageSchema);
-pageBuilder.wire(c => {
-  c.text(PagePorts.heading, 'Home');
-});
-export default pageBuilder.done();
+const pageBase = createExoMachine(pageSchema);
+export default composeExoMachine(pageBase, m =>
+  withExoWire(m, c => {
+    c.text(PagePorts.heading, 'Home');
+  })
+);
 ```
 
 `api` emits a module with `GET` and `POST` handlers: request/response code that
@@ -148,7 +155,7 @@ touches no renderer.
 
 ## Writing Exodra components
 
-State lives in the machine. `createInitialState` runs once per instance and returns
+State lives in the machine. The `createInitialState` option runs once per instance and returns
 it; one function is the one place that turns that state into port writes; the
 wire and the handlers call it. A port written with `c.text` / `c.attr`
 holds that value until the next write — there is no source attached to it.
@@ -157,11 +164,14 @@ holds that value until the next write — there is no source attached to it.
 import {
   EXO_PORT_EVENT,
   EXO_PORT_TEXT,
-  createExoMachineBuilder,
+  composeExoMachine,
+  createExoMachine,
   createExoSchema,
   exoPorts,
+  withExoHandlers,
+  withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -180,35 +190,43 @@ const counterSchema = createExoSchema(CounterPorts, b => {
     });
   });
 });
-const counterBuilder = createExoMachineBuilder<TExoDomNode, unknown, { count: number }>(counterSchema);
-counterBuilder.createInitialState(() => ({ count: 0 }));
-function showCount(c: TExoMachineBuilderNode<typeof counterBuilder>): void {
+const counterBaseMachine = createExoMachine(counterSchema, {
+  createInitialState: (_c: TExoDomNode) => ({ count: 0 }),
+});
+function showCount(c: TExoMachineNodeOf<typeof counterBaseMachine>): void {
   c.text(CounterPorts.text, `Count: ${c.state.count}`);
 }
-counterBuilder.wire(c => showCount(c));
-counterBuilder.on(CounterPorts.click, c => {
-  c.state.count++;
-  showCount(c);
-});
-const Counter = counterBuilder.done();
+const counterMachine = composeExoMachine(
+  counterBaseMachine,
+  m => withExoWire(m, c => showCount(c)),
+  m =>
+    withExoHandlers(m, on => {
+      on(CounterPorts.click, c => {
+        c.state.count++;
+        showCount(c);
+      });
+    })
+);
 
-backend.render(Counter, document.getElementById('app') as HTMLElement);
+backend.render(counterMachine, document.getElementById('app') as HTMLElement);
 ```
 
 Data that lives **outside** the instance — a store several components follow — is
 read the same way, from an effect that draws first and then subscribes:
 
 ```ts no-check
-function showTotal(c: TExoMachineBuilderNode<typeof counterBuilder>): void {
+function showTotal(c: TExoMachineNodeOf<typeof counterBaseMachine>): void {
   c.text(CounterPorts.text, `Total: ${store.getValue()}`);
 }
-counterBuilder.effect(c => {
-  showTotal(c);
-  return store.onChange(() => showTotal(c));
+const totalMachine = withExoEffects(counterBaseMachine, effect => {
+  effect(c => {
+    showTotal(c);
+    return store.onChange(() => showTotal(c));
+  });
 });
 ```
 
-The [Components guide](../guides/components.md) covers the builder and the
+The [Components guide](../guides/components.md) covers the machine and the
 connector in full; the [JSX guide](../guides/jsx.md) covers the compiled dialect
 that produces the same pair from markup.
 

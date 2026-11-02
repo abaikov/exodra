@@ -60,7 +60,7 @@ What it reports, per file:
   inside a function is not a slower program but a different one. `exoJsx` is
   exempt, because the compiler hoists it to module scope wherever it was written.
 - **Counts** (`analysis.performance`):
-  - `components` — calls to `createExoMachineBuilder` and `createExoStatic`;
+  - `components` — calls to `createExoMachine` and `createExoStatic`;
   - `complexity` — control-flow statements plus one, with a `high-complexity`
     warning above 20.
 

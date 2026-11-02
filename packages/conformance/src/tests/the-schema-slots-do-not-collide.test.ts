@@ -18,8 +18,8 @@ function freshCard() {
             return { title };
         },
         (P) =>
-            (c: TExoChildrenWiring, row: number): void => {
-                c.text(P.title, `card ${row}`);
+            (c: TExoChildrenWiring): void => {
+                c.text(P.title, 'card');
             }
     );
 }

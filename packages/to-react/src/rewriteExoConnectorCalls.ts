@@ -41,11 +41,7 @@ function rewriteConnectorCall(
         return call(context.setterOf(port), [
             t.arrayExpression([
                 t.memberExpression(
-                    call('buildExoChild', [
-                        args[1],
-                        t.numericLiteral(0),
-                        ...(args[2] ? [args[2]] : []),
-                    ]),
+                    call('buildExoChild', [args[1], ...(args[2] ? [args[2]] : [])]),
                     t.identifier('element')
                 ),
             ]),
@@ -54,12 +50,11 @@ function rewriteConnectorCall(
     if (method === 'list' && port !== null) {
         context.runtime.add('buildExoChild');
         return call(context.setterOf(port), [
-            t.callExpression(t.memberExpression(t.identifier('Array'), t.identifier('from')), [
-                t.objectExpression([t.objectProperty(t.identifier('length'), args[2])]),
+            t.callExpression(t.memberExpression(args[2], t.identifier('map')), [
                 t.arrowFunctionExpression(
-                    [t.identifier('_'), t.identifier('i')],
+                    [t.identifier('rowParams')],
                     t.memberExpression(
-                        call('buildExoChild', [args[1], t.identifier('i')]),
+                        call('buildExoChild', [args[1], t.identifier('rowParams')]),
                         t.identifier('element')
                     )
                 ),

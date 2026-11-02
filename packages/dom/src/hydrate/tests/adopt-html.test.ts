@@ -23,7 +23,13 @@
 // wherever it is possible, because the property that matters is not "hydration produces this
 // markup" but "a hydrated page is the page a client render would have drawn". A string constant
 // in a test can be edited to agree with a regression; the other backend cannot.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachine,
     TExoMachineNode,
@@ -98,19 +104,28 @@ const htmlFollowing = <TPorts extends { html: TExoChildrenPort }>(
     make?: (ports: TPorts) => TExoMachineInitialState<TFilling>
 ): TExoMachine<TFilling> => {
     const schema = createExoSchema(build);
-    const m = createExoMachineBuilder<TExoMachineNode & TFilling>(schema);
-    if (make !== undefined) {
-        const fill = make(schema.ports);
-        m.createInitialState((c, i, params) => fill(c, i, params));
-    }
-    const draw = m.transition((c) => {
-        c.unsafeHtml(schema.ports.html, body.getValue());
-    });
-    m.effect((c) => {
-        draw(c);
-        return body.onChange(() => draw(c));
-    });
-    return m.done() as unknown as TExoMachine<TFilling>;
+    const fill = make === undefined ? undefined : make(schema.ports);
+    const following = composeExoMachine(
+        createExoMachine<TExoMachineNode & TFilling>(
+            schema,
+            fill === undefined ? undefined : { createInitialState: (c, params) => fill(c, params) }
+        ),
+        (m) =>
+            withExoTransitions(m, {
+                draw: (c) => {
+                    c.unsafeHtml(schema.ports.html, body.getValue());
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    draw(c);
+                    return body.onChange(() => draw(c));
+                });
+            })
+    );
+    const { draw } = following.transitions;
+    return following as unknown as TExoMachine<TFilling>;
 };
 
 /**

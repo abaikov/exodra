@@ -42,13 +42,13 @@ type TSetting = {
 
 /** The same, for the wires below that build a LIST of instances rather than filling one. */
 type TListing = {
-    list(port: TExoChildrenPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoChildrenPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 /**
  * `n` INSTANCES OF ONE COMPONENT, AS A LIST — which is how an application makes several instances
- * of one, and therefore how the cases below make them. `c.list` hands instance `i` the number `i`
- * as its index, which is what the wires above read as `i`.
+ * of one, and therefore how the cases below make them. Instance `i` is handed the number `i` as
+ * its params, which is what the wires above read as `i`.
  *
  * The `<div>` is the element the children port lives on, and it is the same wrapper on every
  * backend, so a case that compares two backends' markup still compares like with like.
@@ -64,7 +64,11 @@ const listOf = <TPorts>(component: TExoMachine<TSetting, TPorts>, n: number) => 
         },
         (P): TExoMachineInitialState<TListing> =>
             (c) => {
-                c.list(P.slots, component, n);
+                c.list(
+                    P.slots,
+                    component,
+                    Array.from({ length: n }, (_, i) => i)
+                );
             }
     );
 };

@@ -17,7 +17,13 @@
 // AND AT DEPTH, because that is where an error multiplies rather than adds: a nested instance's own
 // wire places children of its own, through a record carrying ITS schema, and the backend has to
 // travel with the nesting for the second level to be adopted at all.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachineNode,
     TExoSchemaCursor,
@@ -44,10 +50,6 @@ type TPageSurface = {
     on(port: TExoEventPort, handler: TExoEventHandler<Event, Element>, subject?: unknown): void;
 };
 
-/** What a nested wire is told is its POSITION, so the title it shows is the caller's to put where
- *  the component can reach it. `one` hands its instance `0`, always. */
-const PAGE_TITLES: string[] = [];
-
 /** Where a click landed, so "the listener is on the SERVER's element" is testable. */
 let clicked = '';
 /** Every title a page's wire ran for, in order — one entry per run. */
@@ -67,8 +69,8 @@ const PAGE = createExoTestMachine(
         return { title, click };
     },
     (P): TExoMachineInitialState<TPageSurface> =>
-        (c, i) => {
-            const title = PAGE_TITLES[i];
+        (c, params) => {
+            const title = params as string;
             wired.push(title);
             c.text(P.title, title);
             c.on(P.click, () => {
@@ -86,15 +88,24 @@ const PAGE_BOUND_SCHEMA = createExoSchema((b: TExoSchemaCursor) => {
     });
     return { text };
 });
-const mPageBound = createExoMachineBuilder<TExoMachineNode>(PAGE_BOUND_SCHEMA);
-const showPageBound = mPageBound.transition((c) => {
-    c.text(PAGE_BOUND_SCHEMA.ports.text, BOUND_TEXT.getValue());
-});
-mPageBound.effect((c) => {
-    showPageBound(c);
-    return BOUND_TEXT.onChange(() => showPageBound(c));
-});
-const PAGE_BOUND = mPageBound.done() as unknown as TExoMachine<TExoChildrenWiring<Event, Element>>;
+const PAGE_BOUND_MACHINE = composeExoMachine(
+    createExoMachine<TExoMachineNode>(PAGE_BOUND_SCHEMA),
+    (m) =>
+        withExoTransitions(m, {
+            showPageBound: (c) => {
+                c.text(PAGE_BOUND_SCHEMA.ports.text, BOUND_TEXT.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showPageBound(c);
+                return BOUND_TEXT.onChange(() => showPageBound(c));
+            });
+        })
+);
+const { showPageBound } = PAGE_BOUND_MACHINE.transitions;
+const PAGE_BOUND = PAGE_BOUND_MACHINE as unknown as TExoMachine<TExoChildrenWiring<Event, Element>>;
 
 /** Every id an INNER row's wire ran for, in order — the evidence for the cost at depth. */
 let innerWired: string[] = [];
@@ -109,9 +120,9 @@ const INNER = createExoTestMachine(
         return { id };
     },
     (P): TExoMachineInitialState<TPageSurface> =>
-        (c, i) => {
-            innerWired.push('inner' + i);
-            c.text(P.id, 'inner' + i);
+        (c, at) => {
+            innerWired.push('inner' + at);
+            c.text(P.id, 'inner' + at);
         }
 );
 
@@ -134,7 +145,7 @@ const PANEL = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TExoChildrenWiring<Event, Element>> =>
         (c) => {
-            c.list(P.kids, INNER, 2);
+            c.list(P.kids, INNER, [0, 1]);
         }
 );
 
@@ -177,12 +188,16 @@ type TBuild = typeof buildOutlet;
  * narrower surfaces: that direction is free, because a wire's exonode parameter is contravariant,
  * and it is what lets a page that fills two ports be nested by a page that places children.
  */
-const shellOf = (build: TBuild, component: TExoMachine<TExoChildrenWiring<Event, Element>>) =>
+const shellOf = (
+    build: TBuild,
+    component: TExoMachine<TExoChildrenWiring<Event, Element>>,
+    params?: unknown
+) =>
     createExoTestMachine(
         build,
         (P): TExoMachineInitialState<TExoChildrenWiring<Event, Element>> =>
             (c) => {
-                c.one(P.slot, component);
+                c.one(P.slot, component, params);
             }
     );
 
@@ -219,8 +234,7 @@ describe('one() adopting the instance the server rendered', () => {
         // strings, and "we rebuilt it and it happened to look the same" is exactly the outcome
         // hydration exists to avoid — the listener below would be on a different element, and
         // anything the user had typed or focused inside would be gone.
-        PAGE_TITLES[0] = 'first';
-        const SHELL = shellOf(buildOutlet, PAGE);
+        const SHELL = shellOf(buildOutlet, PAGE, 'first');
         const parent = serve(SHELL);
         const before = parent.innerHTML;
         const served = parent.querySelector('section.a') as HTMLElement;
@@ -238,8 +252,7 @@ describe('one() adopting the instance the server rendered', () => {
         // One element on the page, one wire run. A second run per adopted position is what an
         // adoption that built a clone and then repointed it looked like from here, and it means a
         // component author's side effect fires twice on a hydrated page and once on a client one.
-        PAGE_TITLES[0] = 'once';
-        const SHELL = shellOf(buildOutlet, PAGE);
+        const SHELL = shellOf(buildOutlet, PAGE, 'once');
         const parent = serve(SHELL);
 
         EXO_BACKEND.hydrate(SHELL, parent);
@@ -248,8 +261,7 @@ describe('one() adopting the instance the server rendered', () => {
     });
 
     it('adopts through a static that comes AFTER it', () => {
-        PAGE_TITLES[0] = 'before the footnote';
-        const SHELL = shellOf(buildTrailing, PAGE);
+        const SHELL = shellOf(buildTrailing, PAGE, 'before the footnote');
         const parent = serve(SHELL);
         const served = parent.querySelector('section.a') as HTMLElement;
         const footer = parent.querySelector('footer') as HTMLElement;
@@ -266,8 +278,7 @@ describe('one() adopting the instance the server rendered', () => {
         // Without `childListStartSlot` adoption begins at the parent's first element, which in this
         // shape is the HEADING: the nested instance's schema is replayed over an `<h3>` and its
         // listener attaches to the heading, with nothing in the markup to see.
-        PAGE_TITLES[0] = 'between';
-        const SHELL = shellOf(buildLeading, PAGE);
+        const SHELL = shellOf(buildLeading, PAGE, 'between');
         const parent = serve(SHELL);
         const before = parent.innerHTML;
         const heading = parent.querySelector('h3') as HTMLElement;

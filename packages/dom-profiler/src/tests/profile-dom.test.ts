@@ -4,7 +4,14 @@
 // wiring function talks to, `profilePorts` wraps one schema's compiled setter table.
 
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoAttrPort,
@@ -60,14 +67,24 @@ const followingRow = <TValue>(
     show: (c: TExoMachineNode, ports: ReturnType<typeof buildRow>, value: TValue) => void
 ) => {
     const schema = createExoSchema(buildRow);
-    const m = createExoMachineBuilder<TExoMachineNode>(schema);
-    const draw = m.transition((c) => show(c, schema.ports, data.getValue()));
-    m.wire((c) => fill(c, schema.ports));
-    m.effect((c) => {
-        draw(c);
-        return data.onChange(() => draw(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode>(schema);
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                draw: (c) => show(c, schema.ports, data.getValue()),
+            }),
+        (m) => withExoWire(m, (c) => fill(c, schema.ports)),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    draw(c);
+                    return data.onChange(() => draw(c));
+                });
+            })
+    );
+    const { draw } = machine.transitions;
+    return machine;
 };
 
 describe('profileDom', () => {

@@ -38,7 +38,7 @@ this one still accepts a variadic list of plugins, merged after the connector
 surface.
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_TEXT, composeExoMachine, createExoMachine, createExoSchema, exoPorts, withExoWire } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
 import type { TExoStrNode } from '@exodra/string';
 
@@ -54,24 +54,24 @@ const cardSchema = createExoSchema(CardPorts, (b) => {
         });
     });
 });
-const cardBuilder = createExoMachineBuilder<TExoStrNode>(cardSchema);
-cardBuilder.wire((c) => {
-    c.text(CardPorts.title, 'Card');
-    c.text(CardPorts.body, 'Welcome to Exodra');
-});
-const Card = cardBuilder.done();
+const cardMachine = composeExoMachine(createExoMachine<TExoStrNode>(cardSchema), (m) =>
+    withExoWire(m, (c) => {
+        c.text(CardPorts.title, 'Card');
+        c.text(CardPorts.body, 'Welcome to Exodra');
+    })
+);
 
 const backend = new ExoStrBackend();
 
-const html = backend.render(Card);
+const html = backend.render(cardMachine);
 // <article class="card"><h2>Card</h2><p>Welcome to Exodra</p></article>
 ```
 
 `render` prints **one** instance and takes **no count**, exactly as the browser
-backend mounts one. `createInitialState` receives `0` as its index, because a
-lone root has nothing else to be about. Rows that vary are a **list** — `list` /
-`one` on the exonode, which hand each row its own position as its index through
-the same signature.
+backend mounts one. `createInitialState` receives the optional `params` of
+`render` and nothing else, because a lone root has nothing else to be about.
+Rows that vary are a **list** — `list` / `one` on the exonode, which hand each
+row its own params through the same signature.
 
 ### What it does not have, stated rather than discovered
 
@@ -106,9 +106,9 @@ and it must not be able to tell which backend it is filling.
 | `on(port, handler, subject?)` | Accepted in **both** forms and printed as nothing. The slot is still written. |
 | `onTeardown(off)` | Filed, and run at the end of the render — after the markup has been taken. |
 | `provide(token, value)` / `inject(token)` | The same chain and the same lookup rule the browser uses. |
-| `one(port, component)` | Render one nested instance into the port. |
-| `list(port, component, count)` | `count` instances, concatenated. |
-| `build(component, index?)` | Render one child and hand it back as a value. |
+| `one(port, component, params?)` | Render one nested instance into the port. |
+| `list(port, component, rows)` | One instance per entry of `rows`, armed with it as its params, concatenated. |
+| `build(component, params?)` | Render one child and hand it back as a value. |
 | `childList(port)` | The port's children, for a caller to place into. |
 
 Two of those are worth spelling out, because they look like omissions:
@@ -167,7 +167,7 @@ a counterpart in the DOM package.
 | --- | --- |
 | `exoStrSchemaOf(machine, backend)` | `exoDomSchemaOf` |
 | `compileExoStrSchema(declaration, backend)` | `compileExoDomSchema` |
-| `renderExoStrInstance(schema, machine, index, context?, params?)` | `mountExoInstance` |
+| `renderExoStrInstance(schema, machine, context?, params?)` | `mountExoInstance` |
 | `EXO_STR_WRITERS` | *(none in the barrel — see below)* |
 
 The `backend` parameter is **not optional and not defaulted**: it is the plan cache
@@ -188,7 +188,7 @@ shape that produces a hydration mismatch on every conditional attribute.
 | `TExoStrSchema` | A schema compiled for this backend: cut into prepared strings, with a writer per port. |
 | `TExoStrWriter` | The per-port function that escapes a value for its position. |
 | `TExoStrMarkupFiller` | The prepared markup with a hole per port — hand it an instance's values, get the instance's markup. |
-| `TExoStrMachine` | `TExoMachine` with this backend's exonode in it — what `createExoMachineBuilder<TExoStrNode>(schema).done()` returns. |
+| `TExoStrMachine` | `TExoMachine` with this backend's exonode in it — what `createExoMachine<TExoStrNode>(schema)` returns. |
 
 There is **no** `renderToStream`.
 

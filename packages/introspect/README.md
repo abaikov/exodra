@@ -47,7 +47,7 @@ Per file it reports:
   closed, so one built per call is a different program, not a slower one. `exoJsx`
   is exempt: the Babel plugin hoists it to module scope.
 - **Counts** (`analysis.performance`):
-  - `components` — calls to `createExoMachineBuilder` and `createExoStatic`.
+  - `components` — calls to `createExoMachine` and `createExoStatic`.
   - `complexity` — `if` / `while` / `for` / `switch` count plus one, with a
     `high-complexity` warning above 20.
 

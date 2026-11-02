@@ -11,16 +11,16 @@
 //
 // NOTHING HERE NEEDS A DOM.
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import { exoLazy, fetchExoRouteChunk, isExoLazyLoader, resolveExoRouteMachine } from '../../index';
 import type { TExoRouteMachine, TExoRouteMatch } from '../../types';
 
-const dashboard = createExoMachineBuilder(
+const dashboard = createExoMachine(
     createExoSchema((b) => {
         b.el('p', { class: 'dashboard' });
         return {};
     })
-).done();
+);
 
 describe('a route component that is a function', () => {
     // IF THIS FAILS: the router calls the application's own function with no arguments and installs

@@ -35,7 +35,7 @@ const listOf = (row: TExoStrMachine, items: readonly number[]): TExoStrMachine =
         buildList,
         (P): TExoMachineInitialState<TExoStrNode> =>
             (c) => {
-                c.list(P.slot, row, items.length);
+                c.list(P.slot, row, items);
             }
     );
 

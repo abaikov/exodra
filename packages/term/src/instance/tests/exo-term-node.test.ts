@@ -6,7 +6,14 @@
 // `TExoTermNode`, for the same reason the fixtures are: a test that types its wires against the
 // backend it is testing proves nothing about portability.
 import { exoContextToken } from '@exodra/context';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoChildrenWiring,
@@ -37,11 +44,6 @@ import { createExoTestMachine, source } from '@exodra/test-utils';
  */
 const BACKEND = new ExoTermBackend();
 
-/** What the rows below read, by INDEX: a wire is handed its position and nothing else, so the data
- *  a row shows is the caller's to put where the row can reach it. */
-const LEAF_TEXTS: string[] = [];
-const OTHER_TEXTS: string[] = [];
-
 const LEAF = createExoTestMachine(
     (b) => {
         let text!: TExoTextPort;
@@ -51,8 +53,8 @@ const LEAF = createExoTestMachine(
         return { text };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, i) => {
-            c.text(P.text, LEAF_TEXTS[i]);
+        (c, text) => {
+            c.text(P.text, text);
         }
 );
 
@@ -65,8 +67,8 @@ const OTHER = createExoTestMachine(
         return { text };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, i) => {
-            c.text(P.text, OTHER_TEXTS[i]);
+        (c, text) => {
+            c.text(P.text, text);
         }
 );
 
@@ -88,19 +90,29 @@ const LIVE_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mLive = createExoMachineBuilder<TExoFollowing>(LIVE_SCHEMA);
-mLive.createInitialState((c, i) => {
-    c.onTeardown(() => {
-        DISPOSED.push('live' + i);
-    });
-    return null;
+const mLive = createExoMachine<TExoFollowing>(LIVE_SCHEMA, {
+    createInitialState: (c) => {
+        c.onTeardown(() => {
+            DISPOSED.push('live');
+        });
+        return null;
+    },
 });
-const showLive = mLive.transition((c) => c.text(LIVE_SCHEMA.ports.text, LIVE_TEXT.getValue()));
-mLive.effect((c) => {
-    showLive(c);
-    return LIVE_TEXT.onChange(() => showLive(c));
-});
-const LIVE = mLive.done();
+const LIVE = composeExoMachine(
+    mLive,
+    (m) =>
+        withExoTransitions(m, {
+            showLive: (c) => c.text(LIVE_SCHEMA.ports.text, LIVE_TEXT.getValue()),
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showLive(c);
+                return LIVE_TEXT.onChange(() => showLive(c));
+            });
+        })
+);
+const { showLive } = LIVE.transitions;
 
 /**
  * WHAT A WIRE THAT PLACES CHILDREN BY HAND ASSUMES. `childList` is each backend's own door — it
@@ -161,9 +173,8 @@ describe('a row whose wire throws', () => {
 
 describe('the children half of the surface', () => {
     it('one() mounts a single nested instance', () => {
-        LEAF_TEXTS[0] = 'nested';
         const PAGE = shell((P) => (c) => {
-            c.one(P.slot, LEAF);
+            c.one(P.slot, LEAF, 'nested');
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(['div', '  span class="leaf" "nested"'].join('\n'));
@@ -171,10 +182,8 @@ describe('the children half of the surface', () => {
     });
 
     it('list() mounts a fixed list and never reconciles it', () => {
-        LEAF_TEXTS[0] = 'a';
-        LEAF_TEXTS[1] = 'b';
         const PAGE = shell((P) => (c) => {
-            c.list(P.slot, LEAF, 2);
+            c.list(P.slot, LEAF, ['a', 'b']);
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(
@@ -184,13 +193,11 @@ describe('the children half of the surface', () => {
     });
 
     it('move() keeps the instances it reorders — a move is not a rebuild', () => {
-        LEAF_TEXTS[0] = 'a';
-        LEAF_TEXTS[1] = 'b';
         let rows!: TExoPlacedChildren;
         const PAGE = shell((P) => (c) => {
             rows = c.childList(P.slot);
-            rows.insert(c.build(LEAF, 0));
-            rows.insert(c.build(LEAF, 1));
+            rows.insert(c.build(LEAF, 'a'));
+            rows.insert(c.build(LEAF, 'b'));
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(
@@ -214,14 +221,12 @@ describe('the children half of the surface', () => {
     });
 
     it('swaps WHICH COMPONENT stands in a position, and takes the position away', () => {
-        LEAF_TEXTS[0] = 'first';
-        OTHER_TEXTS[0] = 'second';
         let node!: TExoPlacing;
         let slot!: TExoPlacedChildren;
         const PAGE = shell((P) => (c) => {
             node = c;
             slot = c.childList(P.slot);
-            slot.insert(c.build(LEAF, 0));
+            slot.insert(c.build(LEAF, 'first'));
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(['div', '  span class="leaf" "first"'].join('\n'));
@@ -229,7 +234,7 @@ describe('the children half of the surface', () => {
         // A POSITION IS NOT TYPED BY A COMPONENT: the port takes whatever `build` returns, so
         // changing which component stands there is two commands and no reconciler.
         slot.remove(0);
-        slot.insert(node.build(OTHER, 0));
+        slot.insert(node.build(OTHER, 'second'));
         expect(screen.text()).toBe(['div', '  em "second"'].join('\n'));
 
         slot.remove(0);
@@ -238,36 +243,32 @@ describe('the children half of the surface', () => {
     });
 
     it('takes children of DIFFERENT components in one port, in insertion order', () => {
-        LEAF_TEXTS[0] = 'one';
-        OTHER_TEXTS[0] = 'two';
-        OTHER_TEXTS[1] = 'only';
         let node!: TExoPlacing;
         let slot!: TExoPlacedChildren;
         const PAGE = shell((P) => (c) => {
             node = c;
             slot = c.childList(P.slot);
-            slot.insert(c.build(OTHER, 0));
-            slot.insert(c.build(LEAF, 0), 0);
+            slot.insert(c.build(OTHER, 'two'));
+            slot.insert(c.build(LEAF, 'one'), 0);
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(['div', '  span class="leaf" "one"', '  em "two"'].join('\n'));
 
         slot.remove(1);
         slot.remove(0);
-        slot.insert(node.build(OTHER, 1));
+        slot.insert(node.build(OTHER, 'only'));
         expect(screen.text()).toBe(['div', '  em "only"'].join('\n'));
         screen.dispose();
     });
 
     it('detach() takes a child out without telling it, so its subscriptions stay live', () => {
-        LEAF_TEXTS[0] = 'kept';
         LIVE_TEXT.setValue('before');
         DISPOSED.length = 0;
         let slot!: TExoPlacedChildren;
         const PAGE = shell((P) => (c) => {
             slot = c.childList(P.slot);
-            slot.insert(c.build(LEAF, 0));
-            slot.insert(c.build(LIVE, 0));
+            slot.insert(c.build(LEAF, 'kept'));
+            slot.insert(c.build(LIVE));
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(
@@ -292,13 +293,13 @@ describe('the children half of the surface', () => {
         let slot!: TExoPlacedChildren;
         const PAGE = shell((P) => (c) => {
             slot = c.childList(P.slot);
-            slot.insert(c.build(LIVE, 0));
+            slot.insert(c.build(LIVE));
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(['div', '  i "here"'].join('\n'));
 
         slot.remove(0);
-        expect(DISPOSED).toEqual(['live0']);
+        expect(DISPOSED).toEqual(['live']);
         expect(screen.text()).toBe('div');
         screen.dispose();
     });
@@ -306,7 +307,6 @@ describe('the children half of the surface', () => {
 
 describe('contexts on a RETAINED backend', () => {
     const THEME = exoContextToken<string>('exo.term.test.theme');
-    const THEMED_TEXTS: string[] = [];
 
     const THEMED_ROW = createExoTestMachine(
         (b) => {
@@ -317,14 +317,12 @@ describe('contexts on a RETAINED backend', () => {
             return { text };
         },
         (P): TExoMachineInitialState<TExoWiring> =>
-            (c, i) => {
-                c.text(P.text, THEMED_TEXTS[i] + ':' + (c.inject(THEME) ?? 'none'));
+            (c, text) => {
+                c.text(P.text, String(text) + ':' + (c.inject(THEME) ?? 'none'));
             }
     );
 
     it('a row added AFTER the first render still sees what its parent provided', () => {
-        THEMED_TEXTS[0] = 'a';
-        THEMED_TEXTS[1] = 'b';
         let node!: TExoPlacing;
         let rows!: TExoPlacedChildren;
         const PAGE = createExoTestMachine(
@@ -340,7 +338,7 @@ describe('contexts on a RETAINED backend', () => {
                     c.provide(THEME, 'dark');
                     node = c;
                     rows = c.childList(P.slot);
-                    rows.insert(c.build(THEMED_ROW, 0));
+                    rows.insert(c.build(THEMED_ROW, 'a'));
                 }
         );
 
@@ -351,7 +349,7 @@ describe('contexts on a RETAINED backend', () => {
         // returned, at a moment when the module-level context head is back to null. A backend
         // that kept only a module-level head — which is all `@exodra/string` needs — prints
         // `b:none` here.
-        rows.insert(node.build(THEMED_ROW, 1));
+        rows.insert(node.build(THEMED_ROW, 'b'));
         expect(screen.text()).toBe(['ul', '  li "a:dark"', '  li "b:dark"'].join('\n'));
         screen.dispose();
     });
@@ -391,13 +389,22 @@ describe('attributes, events, and what this backend refuses', () => {
             });
             return { flag };
         });
-        const m = createExoMachineBuilder<TExoFollowing>(schema);
-        const show = m.transition((c) => c.attr(schema.ports.flag, values.getValue()));
-        m.effect((c) => {
-            show(c);
-            return values.onChange(() => show(c));
-        });
-        const PAGE = m.done();
+        const m = createExoMachine<TExoFollowing>(schema);
+        const PAGE = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    show: (c) => c.attr(schema.ports.flag, values.getValue()),
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        show(c);
+                        return values.onChange(() => show(c));
+                    });
+                })
+        );
+        const { show } = PAGE.transitions;
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe('div');
         values.setValue(true);
@@ -423,16 +430,26 @@ describe('attributes, events, and what this backend refuses', () => {
             });
             return { click, text };
         });
-        const m = createExoMachineBuilder<TExoFollowing>(schema);
-        const show = m.transition((c) => c.text(schema.ports.text, done.getValue()));
-        m.wire((c) => {
-            c.on(schema.ports.click, TOGGLE_DONE, subject);
-        });
-        m.effect((c) => {
-            show(c);
-            return done.onChange(() => show(c));
-        });
-        const PAGE = m.done();
+        const m = createExoMachine<TExoFollowing>(schema);
+        const PAGE = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    show: (c) => c.text(schema.ports.text, done.getValue()),
+                }),
+            (m) =>
+                withExoWire(m, (c) => {
+                    c.on(schema.ports.click, TOGGLE_DONE, subject);
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        show(c);
+                        return done.onChange(() => show(c));
+                    });
+                })
+        );
+        const { show } = PAGE.transitions;
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe('button on:click "false"');
         exoTermFire(screen.roots[0], 'click');
@@ -464,16 +481,18 @@ describe('attributes, events, and what this backend refuses', () => {
                 return { click };
             },
             (P): TExoMachineInitialState<TExoWiring<TExoTermEvent, TExoTermElement>> =>
-                (c, i) => {
-                    c.on(P.click, RECORD, rows[i]);
+                (c, row) => {
+                    c.on(P.click, RECORD, row);
                 }
         );
-        const screen = BACKEND.renderScreen(PAGE, 2);
-        exoTermFire(screen.roots[1], 'click');
-        exoTermFire(screen.roots[0], 'click');
+        const first = BACKEND.renderScreen(PAGE, 1, rows[0]);
+        const second = BACKEND.renderScreen(PAGE, 1, rows[1]);
+        exoTermFire(second.roots[0], 'click');
+        exoTermFire(first.roots[0], 'click');
         // BY IDENTITY: each row's own subject, out of the record its own fill wrote.
         expect(told).toEqual([rows[1], rows[0]]);
-        screen.dispose();
+        first.dispose();
+        second.dispose();
     });
 
     it('html() refuses a children port, naming the call that works', () => {
@@ -537,16 +556,15 @@ describe('attributes, events, and what this backend refuses', () => {
             },
             (P): TExoMachineInitialState<TExoChildrenWiring> =>
                 (c) => {
-                    c.list(P.slot, LEAF, 0);
+                    c.list(P.slot, LEAF, []);
                 }
         );
         expect(() => BACKEND.renderScreen(BAD, 1)).toThrow(/children port/);
     });
 
     it('finds nodes through regions, which a naive walk of kids would step over', () => {
-        OTHER_TEXTS[0] = 'deep';
         const PAGE = shell((P) => (c) => {
-            c.one(P.slot, OTHER);
+            c.one(P.slot, OTHER, 'deep');
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(exoTermFind(screen.roots[0], 'em')?.text).toBe('deep');
@@ -617,14 +635,14 @@ describe('driving a port by hand', () => {
                 return { cls };
             },
             (P): TExoMachineInitialState<TDriving> =>
-                (c, i) => {
+                (c, cls) => {
                     const p = c.fillDoors();
-                    p.attr(P.cls, CLASSES[i]);
+                    p.attr(P.cls, cls);
                     seen.push(p);
                 }
         );
         const PAGE = shell((P) => (c) => {
-            c.list(P.slot, ROW, 2);
+            c.list(P.slot, ROW, CLASSES);
         });
 
         const screen = BACKEND.renderScreen(PAGE, 1);

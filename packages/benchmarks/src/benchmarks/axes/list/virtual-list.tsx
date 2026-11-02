@@ -25,19 +25,23 @@ import { createElement as rc, useState } from 'react';
 import { abBench, type Scenario } from '../../../harness';
 import { markupOf } from '../../gates/markup-gate';
 // Package specifiers — the schema core is measured out of its `dist`, never out of src.
-import { type TExoChildrenPort, type TExoEventPort, type TExoTextPort } from '@exodra/core';
+import {
+    type TExoChildrenPort,
+    type TExoEventPort,
+    type TExoMachine,
+    type TExoTextPort,
+} from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
-import {
-    ExoDomBackend,
-    type TExoDomMachine,
-    type TExoDomNode,
-    withExoChildList,
-    withExoCompiler,
-} from '@exodra/dom';
+import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -52,12 +56,6 @@ const DATA: Item[] = Array.from({ length: ITEMS }, (_, i) => ({ id: i, text: `ro
 // THE ITEM IS THE ROW'S DATA and the row's identity at once, which is the whole reason this
 // core needs no key: `DATA[i]` is one permanent object, so "the same row" is a `===`.
 //
-// A wire is handed its POSITION and nothing else, so the item a row stands for is written into one
-// of these two arrays by the reconciler's build callback an instant before `c.build` runs the wire.
-// Two arrays because the two rows take different item types; one `unknown[]` would need a cast.
-const BUILDING_PLAIN: Item[] = [];
-const BUILDING_RICH: TRichItem[] = [];
-
 const ROW_SCHEMA = createExoSchema((b) => {
     let text!: TExoTextPort;
     b.el('li', { class: 'row' }, (li) => {
@@ -65,11 +63,12 @@ const ROW_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mROW = createExoMachineBuilder<TExoDomNode>(ROW_SCHEMA);
-mROW.createInitialState((c, i) => {
-    c.text(ROW_SCHEMA.ports.text, BUILDING_PLAIN[i].text);
+const mROW = createExoMachine(ROW_SCHEMA, {
+    createInitialState: (c: TExoDomNode, item: Item) => {
+        c.text(ROW_SCHEMA.ports.text, item.text);
+    },
 });
-const ROW = mROW.done();
+const ROW = mROW;
 
 /** The rich row's item: the same row, plus the source its text is bound to. */
 type TRichItem = { id: number; sig: TExoBenchSource<string> };
@@ -87,19 +86,29 @@ const RICH_ROW_SCHEMA = createExoSchema((b) => {
     });
     return { click, text };
 });
-const mRICH_ROW = createExoMachineBuilder<TExoDomNode>(RICH_ROW_SCHEMA);
-const K_RICH_ROW = mRICH_ROW.createInitialState((c, i) => {
-    c.on(RICH_ROW_SCHEMA.ports.click, () => {});
-    return BUILDING_RICH[i].sig;
+const mRICH_ROW = createExoMachine(RICH_ROW_SCHEMA, {
+    createInitialState: (c: TExoDomNode, item: TRichItem) => {
+        c.on(RICH_ROW_SCHEMA.ports.click, () => {});
+        return item.sig;
+    },
 });
-const showRichText = mRICH_ROW.transition((c: TExoDomNode) => {
-    c.text(RICH_ROW_SCHEMA.ports.text, c.readState(K_RICH_ROW).getValue());
-});
-mRICH_ROW.effect((c) => {
-    showRichText(c);
-    return c.readState(K_RICH_ROW).onChange(() => showRichText(c));
-});
-const RICH_ROW = mRICH_ROW.done();
+const RICH_ROW = composeExoMachine(
+    mRICH_ROW,
+    (m) =>
+        withExoTransitions(m, {
+            showRichText: (c) => {
+                c.text(RICH_ROW_SCHEMA.ports.text, c.state.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showRichText(c);
+                return c.state.onChange(() => showRichText(c));
+            });
+        })
+);
+const { showRichText } = RICH_ROW.transitions;
 
 /**
  * The `<ul>` whose single children port holds the window.
@@ -109,9 +118,8 @@ const RICH_ROW = mRICH_ROW.done();
  */
 function mountExodraWindow<TItem>(
     c: HTMLElement,
-    component: TExoDomMachine,
-    visible: TExoBenchSource<readonly TItem[]>,
-    building: TItem[]
+    component: TExoMachine<TExoDomNode, unknown, TItem>,
+    visible: TExoBenchSource<readonly TItem[]>
 ): () => void {
     const UL_SCHEMA = createExoSchema((b) => {
         let rows!: TExoChildrenPort;
@@ -120,24 +128,33 @@ function mountExodraWindow<TItem>(
         });
         return { rows };
     });
-    const mUL = createExoMachineBuilder<TExoDomNode>(UL_SCHEMA);
-    const K_UL = mUL.createInitialState((cc) => ({
-        kids: cc.childList(UL_SCHEMA.ports.rows),
-        shown: [] as TItem[],
-    }));
-    const showWindow = mUL.transition((cc: TExoDomNode) => {
-        const state = cc.readState(K_UL);
-        const want = visible.getValue();
-        state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item, i) => {
-            building[i] = item;
-            return cc.build(component, i);
-        });
+    const mUL = createExoMachine(UL_SCHEMA, {
+        createInitialState: (cc: TExoDomNode) => ({
+            kids: cc.childList(UL_SCHEMA.ports.rows),
+            shown: [] as TItem[],
+        }),
     });
-    mUL.effect((cc) => {
-        showWindow(cc);
-        return visible.onChange(() => showWindow(cc));
-    });
-    const UL = mUL.done();
+    const UL = composeExoMachine(
+        mUL,
+        (m) =>
+            withExoTransitions(m, {
+                showWindow: (cc) => {
+                    const state = cc.state;
+                    const want = visible.getValue();
+                    state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item) =>
+                        cc.build(component, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((cc) => {
+                    showWindow(cc);
+                    return visible.onChange(() => showWindow(cc));
+                });
+            })
+    );
+    const { showWindow } = UL.transitions;
     return EXO_BACKEND.render(UL, c);
 }
 
@@ -238,7 +255,7 @@ export async function benchmarkVirtualList(rounds = 50, batch = 1): Promise<void
             }));
             const c = el();
             const visible = createExoBenchSource<readonly TRichItem[]>(items.slice(0, WINDOW));
-            const dispose = mountExodraWindow(c, RICH_ROW, visible, BUILDING_RICH);
+            const dispose = mountExodraWindow(c, RICH_ROW, visible);
             return {
                 measure: () => {
                     for (let f = 0; f < frames.length; f++) {
@@ -312,7 +329,7 @@ export async function benchmarkVirtualList(rounds = 50, batch = 1): Promise<void
         const exodraPrep = (): Scenario => {
             const c = el();
             const visible = createExoBenchSource<readonly Item[]>(DATA.slice(0, WINDOW));
-            const dispose = mountExodraWindow(c, ROW, visible, BUILDING_PLAIN);
+            const dispose = mountExodraWindow(c, ROW, visible);
             return {
                 measure: () => {
                     for (let f = 0; f < frames.length; f++) {
@@ -339,7 +356,7 @@ export async function benchmarkVirtualList(rounds = 50, batch = 1): Promise<void
     {
         const schC = el();
         const visible = createExoBenchSource<readonly Item[]>(DATA.slice(0, WINDOW));
-        const dispose = mountExodraWindow(schC, ROW, visible, BUILDING_PLAIN);
+        const dispose = mountExodraWindow(schC, ROW, visible);
 
         // The bytes a window starting at `s` MUST serialise to. Written out here rather than
         // taken from another renderer, so this gate depends on nothing that can drift.
@@ -406,7 +423,7 @@ export async function benchmarkVirtualList(rounds = 50, batch = 1): Promise<void
         }));
         const schC = el();
         const visible = createExoBenchSource<readonly TRichItem[]>(items.slice(0, WINDOW));
-        const dispose = mountExodraWindow(schC, RICH_ROW, visible, BUILDING_RICH);
+        const dispose = mountExodraWindow(schC, RICH_ROW, visible);
 
         const check = (want: string, stage: string): void => {
             const got = markupOf(schC);

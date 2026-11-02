@@ -31,7 +31,15 @@ once, at definition time, so filling a port at render time is one array load and
 one indirect call.
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoWire,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 
 type TRow = { readonly id: string; readonly title: string };
@@ -47,13 +55,16 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
     });
 });
 
-const rowBuilder = createExoMachineBuilder<TExoMachineNode, TRow, TRow>(rowSchema);
-rowBuilder.createInitialState((_c, _index, row) => row);
-rowBuilder.wire((c) => {
-    c.attr(RowPorts.id, c.state.id);
-    c.text(RowPorts.label, c.state.title);
-});
-export const Row = rowBuilder.done();
+export const rowMachine = composeExoMachine(
+    createExoMachine(rowSchema, {
+        createInitialState: (_c: TExoMachineNode, row: TRow) => row,
+    }),
+    (m) =>
+        withExoWire(m, (c) => {
+            c.attr(RowPorts.id, c.state.id);
+            c.text(RowPorts.label, c.state.title);
+        })
+);
 ```
 
 The ports object is the component's API: the machine names `RowPorts.id`, never
@@ -122,7 +133,7 @@ One callback may not both name a port and return a record; that is refused
 rather than merged.
 
 The schema half. A component is made from it by handing it to
-`createExoMachineBuilder` — see [Machines](#machines) — and the plan compilers,
+`createExoMachine` — see [Machines](#machines) — and the plan compilers,
 which know nothing about filling, read it alone.
 
 Call it **once, at module level**. It is not a render; it produces the thing
@@ -219,15 +230,14 @@ of it.
 ```ts no-check
 type TExoMachineInitialState<TWiring, TValue = unknown, TParams = unknown> = (
     enode: TWiring,
-    index: number,
     params: TParams
 ) => TValue;
 ```
 
-`m.createInitialState(make)` declares it: it runs once per instance, and what it returns is
-what the instance keeps, read back with `c.readState()`. It receives the same `params` the
+`createExoMachine(schema, { createInitialState: make })` declares it: it runs once per
+instance, and what it returns is what the instance keeps, read back as `c.state`. It receives the same `params` the
 instance is built with, so a row bound to one record for its whole life keeps that record in
-its state from the start instead of waiting for the wire. `m.wire((c, params) => …)` declares
+its state from the start instead of waiting for the wire. `withExoWire(m, (c, params) => …)` declares
 the other half — a transition that writes ports only and may run again with new `params`.
 
 **One declaration, three backends.** It is generic over the connector and
@@ -246,10 +256,9 @@ only ever be run by something assignable to `TExoDomNode`, which carries
 not, and never will be. Reach for it only when the wire genuinely touches those
 members, as a plugin reading `c.nodes[c.schema.elem[port.index]]` does.
 
--   `index` is **the position at build time and nothing more**. A row keeps the
-    number it was built with even after the rows around it move — the reconciler
-    moves nodes, it does not re-run wiring. A component that needs a live position
-    must bind one, not capture this.
+-   There is **no position argument**. A row knows what its `params` told it and
+    nothing more; the reconciler moves nodes, it does not re-run wiring. A component
+    that needs a live position must be told it through its params or a transition.
 
 ## The shared surface
 
@@ -271,9 +280,17 @@ interface TExoWiring<TEvent = unknown, TNode = unknown>
 
 interface TExoChildrenWiring<TEvent = unknown, TNode = unknown>
     extends TExoWiring<TEvent, TNode> {
-    build(component: TExoMachine<this>, index?: number): TExoNode;
-    one(port: TExoChildrenPort, component: TExoMachine<this>): void;
-    list(port: TExoChildrenPort, component: TExoMachine<this>, count: number): void;
+    build<TParams>(machine: TExoMachine<this, unknown, TParams>, params?: TParams): TExoNode;
+    one<TParams>(
+        port: TExoChildrenPort,
+        machine: TExoMachine<this, unknown, TParams>,
+        params?: TParams
+    ): void;
+    list<TParams>(
+        port: TExoChildrenPort,
+        machine: TExoMachine<this, unknown, TParams>,
+        params: readonly TParams[]
+    ): void;
 }
 ```
 
@@ -365,15 +382,17 @@ const FieldPorts = exoPorts({
     field: exoRefPortKind<HTMLInputElement>(),
 });
 
-fieldBuilder.on(FieldPorts.keydown, (c, event) => {
-    if (event.key === 'Enter') c.portNode(FieldPorts.field).focus();
+const fieldMachine = withExoHandlers(createExoMachine<TExoDomNode>(fieldSchema), (on) => {
+    on(FieldPorts.keydown, (c, event) => {
+        if (event.key === 'Enter') c.portNode(FieldPorts.field).focus();
+    });
 });
 ```
 
 A handler on a typed event port receives that event type; on a plain `EXO_PORT_EVENT` it
-receives the backend's own event type, as before. A function written outside the builder
-names the instance it is handed as `TExoMachineBuilderNode<typeof fieldBuilder>`: the
-builder's node type with its `state`.
+receives the backend's own event type. A function written outside the machine's decorators
+names the instance it is handed as `TExoMachineNodeOf<typeof baseMachine>`, where
+`baseMachine` is what `createExoMachine` returned: the machine's node type with its `state`.
 
 ## Contexts
 
@@ -394,8 +413,7 @@ only while a wiring is running, and a method cannot be called without a
 connector.
 
 ```ts
-import { EXO_PORT_ATTR, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineNode } from '@exodra/core';
+import { EXO_PORT_ATTR, composeExoMachine, createExoMachine, createExoSchema, exoPorts, withExoWire } from '@exodra/core';
 import { exoContextToken } from '@exodra/context';
 
 export const THEME = exoContextToken<string>('theme');
@@ -407,11 +425,11 @@ const badgeSchema = createExoSchema(BadgePorts, (b) => {
         span.attrPort(BadgePorts.cls, 'class');
     });
 });
-const badgeBuilder = createExoMachineBuilder<TExoMachineNode>(badgeSchema);
-badgeBuilder.wire((c) => {
-    c.attr(BadgePorts.cls, 'badge badge--' + (c.inject(THEME) ?? 'light'));
-});
-export const Badge = badgeBuilder.done();
+export const badgeMachine = composeExoMachine(createExoMachine(badgeSchema), (m) =>
+    withExoWire(m, (c) => {
+        c.attr(BadgePorts.cls, 'badge badge--' + (c.inject(THEME) ?? 'light'));
+    })
+);
 ```
 
 `c.inject(THEME)` is `undefined` when nobody above provided it — not a throw.
@@ -433,7 +451,7 @@ than three. The types are `TExoContextToken<TValue>` and `TExoContextFrame`.
 prints and hydration finds again. `@exodra/context` counts them per render:
 
 ```ts
-import { EXO_PORT_ATTR, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_ATTR, composeExoMachine, createExoMachine, createExoSchema, exoPorts, withExoWire } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { nextExoId, provideExoIds } from '@exodra/context';
 
@@ -449,13 +467,16 @@ const fieldSchema = createExoSchema(FieldPorts, (b) => {
         });
     });
 });
-const fieldBuilder = createExoMachineBuilder<TExoMachineNode, unknown, string>(fieldSchema);
-fieldBuilder.createInitialState((c) => nextExoId(c));
-fieldBuilder.wire((c) => {
-    c.attr(FieldPorts.labelFor, c.state);
-    c.attr(FieldPorts.inputId, c.state);
-});
-export const Field = fieldBuilder.done();
+export const fieldMachine = composeExoMachine(
+    createExoMachine(fieldSchema, {
+        createInitialState: (c: TExoMachineNode) => nextExoId(c),
+    }),
+    (m) =>
+        withExoWire(m, (c) => {
+            c.attr(FieldPorts.labelFor, c.state);
+            c.attr(FieldPorts.inputId, c.state);
+        })
+);
 ```
 
 `nextExoId(c)` hands out `'app-0'`, `'app-1'`, … once the root's
@@ -536,7 +557,15 @@ The handler type lives here rather than in `@exodra/dom` because a wiring
 function that fills an event port is the same module on the server.
 
 ```ts
-import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoWire,
+} from '@exodra/core';
 import type { TExoEventHandler, TExoMachineNode } from '@exodra/core';
 
 type TCell<T> = { getValue(): T; setValue(next: T): void };
@@ -557,13 +586,16 @@ const todoSchema = createExoSchema(TodoPorts, (b) => {
         });
     });
 });
-const todoBuilder = createExoMachineBuilder<TExoMachineNode, TTodo, TTodo>(todoSchema);
-todoBuilder.createInitialState((_c, _index, todo) => todo);
-todoBuilder.wire((c) => {
-    c.text(TodoPorts.label, c.state.title);
-    c.on(TodoPorts.click, toggleDone, c.state);
-});
-export const Todo = todoBuilder.done();
+export const todoMachine = composeExoMachine(
+    createExoMachine(todoSchema, {
+        createInitialState: (_c: TExoMachineNode, todo: TTodo) => todo,
+    }),
+    (m) =>
+        withExoWire(m, (c) => {
+            c.text(TodoPorts.label, c.state.title);
+            c.on(TodoPorts.click, toggleDone, c.state);
+        })
+);
 ```
 
 `toggleDone` is one function for every row of this template. The subject is what
@@ -572,7 +604,7 @@ told which.
 
 ## Nodes
 
-`TExoNode` is the value `c.build(machine, index, params)` hands back and the
+`TExoNode` is the value `c.build(machine, params)` hands back and the
 only thing a `childList(port)` will insert — whatever the backend produced for
 that position. It is nominal and opaque on purpose: what it
 is made of is the backend's business (a DOM node on the client, a string on the
@@ -585,13 +617,24 @@ element behind one.
 
 ## Machines
 
-A component is a machine. `createExoMachineBuilder(schema)` hands you a
-builder you declare against **once, at module load**, so a handler is one
+A component is a machine. `createExoMachine(schema, { createInitialState })` makes the
+bare machine, and the decorators `withExoTransitions`, `withExoWire`, `withExoHandlers` and
+`withExoEffects` each return a new machine with one more part. `composeExoMachine(base, …steps)`
+threads the machine through them in order. It all runs **once, at module load**, so a handler is one
 function object for the whole component instead of one per row, and per-instance
-state is a numbered slot rather than a captured variable.
+state lives on the instance as `c.state` rather than in a captured variable.
 
 ```typescript
-import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoHandlers,
+    withExoTransitions,
+} from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
 const CounterButtonPorts = exoPorts({ label: EXO_PORT_TEXT, click: EXO_PORT_EVENT });
@@ -603,52 +646,65 @@ const counterButtonSchema = createExoSchema(CounterButtonPorts, (b) => {
     });
 });
 
-const counterButtonBuilder = createExoMachineBuilder<TExoDomNode>(counterButtonSchema);
-
-const COUNT = counterButtonBuilder.createInitialState(() => ({ n: 0 }));
-
-counterButtonBuilder.on(CounterButtonPorts.click, (c) => {
-    const state = c.readState(COUNT);
-    state.n += 1;
-    c.text(CounterButtonPorts.label, `${state.n}`);
-});
-
-export const CounterButton = counterButtonBuilder.done();
+export const counterButtonMachine = composeExoMachine(
+    createExoMachine(counterButtonSchema, {
+        createInitialState: (_c: TExoDomNode) => ({ n: 0 }),
+    }),
+    (m) =>
+        withExoTransitions(m, {
+            add: (c, by: number) => {
+                c.state.n += by;
+                c.text(CounterButtonPorts.label, `${c.state.n}`);
+            },
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CounterButtonPorts.click, (c) => {
+                add(c, 1);
+            });
+        })
+);
+export const { add } = counterButtonMachine.transitions;
 ```
 
-`COUNT` is a slot, numbered where it is declared and seeded once per instance —
-never shared between two. The handler is one function object for the whole
-component; the instance arrives as its argument.
+`{ n: 0 }` is made once per instance — never shared between two — and its type
+is what `c.state` is typed as in every handler, effect, wire and transition. The
+handler is one function object for the whole component; the instance arrives as
+its argument. A decorator never changes the machine it is handed: it returns a new one,
+and the input stays usable as it was.
 
-| Method              | What it declares                                                                                                                                                                                                                                                   | Hands back                       |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
-| `createInitialState(make)` | A numbered slot, seeded by `make(instance, index, params)` once per instance, taking its row in declaration order. `make` must be a **function**: a value handed here would be one object shared by every instance, each seeing every other's writes, so the builder refuses one. | `TExoMachineStateHandle<TValue>` |
-| `effect(start)`     | An effect. `start(instance)` returns its own stop function or `null`, and the instance re-runs one through `restartEffect(handle)`.                                                                                                                                | `TExoMachineEffect<TWiring>`     |
-| `on(port, handler)` | A listener on an event port. You write `handler(instance, event)`; the builder transposes it once per component into the `(event, subject)` shape a dispatcher calls, so nothing is allocated per row.                                                             | nothing                          |
-| `done()`            | Compiles and seals the machine.                                                                                                                                                                                                                                    | `TExoMachine<TWiring>`  |
+| Call | What it declares | Hands back |
+| ---- | ---------------- | ---------- |
+| `createExoMachine(schema, { createInitialState: make })` | The bare machine. `make(instance, params)` makes the instance's state once per instance. `make` must be a **function**: a value handed here would be one object shared by every instance, each seeing every other's writes, so it is refused ([`EXO0026`](../errors.md#exo0026)). | `TExoMachine` (`c.state`) |
+| `withExoTransitions(m, { name: (c, a?, b?) => … })` | Named transitions, at most two data arguments each. They are reached through `machine.transitions.name(node, …)`, with a node or the opaque `TExoNode` from `build`, and replaced per instance by assigning `machine.overrides({ name: alt })` to `c.transitionOverrides`; a name the machine does not have is refused ([`EXO0102`](../errors.md#exo0102)). | the machine plus `transitions` and `overrides` |
+| `withExoWire(m, (c, params) => …)` | The wire: a transition that writes ports and may run again with new `params` through `wireExoNode`. A machine has one; a second is refused ([`EXO0101`](../errors.md#exo0101)). | the machine with `wire` |
+| `withExoHandlers(m, (on) => { on(port, handler) })` | Listeners on event ports. You write `handler(instance, event)`; the decorator transposes it once per component into the `(event, subject)` shape a dispatcher calls, so nothing is allocated per row. | the machine with `handlers` |
+| `withExoEffects(m, (effect) => { effect(start) })` | Effects. `start(instance)` returns its own stop function or `null`; `effect` hands back the handle the instance re-runs through `restartEffect(handle)`. | the machine with `effects` |
 
-`done()` may be called once and nothing may be declared after it. Both are
-refusals carrying a named message rather than a silent no-op.
+A function written outside the decorators names the instance it is handed as
+`TExoMachineNodeOf<typeof baseMachine>`, where `baseMachine` is the machine `createExoMachine`
+returned — not the composed one, whose type the function would otherwise have to name inside
+its own definition.
 
 The object a seeder, a handler and an effect all receive is the **exonode** —
 one per instance. `kept`, `onTeardown`, `inject`, `restartEffect` and `stopEffects` are
 `EXO_BASE_NODE_VOCABULARY`'s bodies, merged onto every node; `set` and `on` are the
 backend's.
 
-A component that declares no slot gets `EXO_NO_STATE`, the shared empty table,
-and no branch — so the machine form costs a component that keeps nothing
+A component with no `createInitialState` gets `EXO_NO_STATE`, the shared empty
+value, and no branch — so the machine form costs a component that keeps nothing
 nothing.
 
-A machine takes **no props and no seed**. Its declared start is
-`builder.createInitialState(make)`, which runs once per instance while the instance is
-being armed and is the only thing that writes `state`; `c.readState(handle)`
-reads it back.
+A machine takes **no props and no seed**. Its declared start is the
+`createInitialState` option, which runs once per instance while the instance is
+being armed and is the only thing that writes `state`; `c.state` (or
+`c.readState()`) reads it back.
 
 Anything that belongs to ONE instance arrives instead as a **transition
 argument**. `c.build(component)` arms the machine and hands back the exonode
 with no element in the document, which is the moment a caller fires an init
 transition at it before placing it — and an init transition is, in substance,
-what `builder.wire((c, params) => …)` declares once for the whole machine: a transition that writes
+what `withExoWire(m, (c, params) => …)` declares once for the whole machine: a transition that writes
 ports only and may run again with new `params`.
 
 ## Placement primitives — not here
@@ -674,18 +730,19 @@ are for, and the withdrawn move counts are in
 seventeen types that spell them are **`@exodra/computed`**, and this package
 exports none of them.
 
-What stays here is the **imperative** builder of
-[the section above](#machines): `createExoMachineBuilder`,
+What stays here is the **imperative** machine of
+[the section above](#machines): `createExoMachine`, `withExoTransitions`, `withExoWire`,
+`withExoHandlers`, `withExoEffects`, `composeExoMachine`,
 `armExoNode`, `stopExoEffects`, `disconnectExoNode`,
 `connectExoNode` (effects off and on again on a kept instance — see
-`packages/core/README.md`), and `TExoMachineBuilder`,
-`TExoMachine`, `TExoMachineEffect`, `TExoFillDoors`,
-`TExoMachineStateHandle`, `TExoMachineNode`, `TExoMachineHandler`,
-`TExoMachineInitialState`, `TExoTransitionOverrides` and `TExoWire`. A handler on one of those reads a slot
+`packages/core/README.md`), and `TExoMachine`, `TExoMachineNodeOf`,
+`TExoMachineTransitions`, `TExoMachineEffect`, `TExoFillDoors`,
+`TExoMachineOptions`, `TExoMachineNode`, `TExoMachineHandler`,
+`TExoMachineInitialState`, `TExoTransitionOverrides` and `TExoWire`. A handler on one of those reads its state
 and writes a port; nothing is derived, so there is no field, no pending word
 and no commit walk.
 
-The split is the price, made choosable. Saying `builder.derive(port, [field], by)`
+The split is the price, made choosable. Saying `b.derive(port, [field], by)`
 instead of writing the port yourself buys the inversion table, the chain of
 wakes and the commit — and a page that derives nothing must not pay for them.
 `npm run check:computed-shake` is the gate that keeps that true, module by

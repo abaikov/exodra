@@ -20,7 +20,13 @@
 // the server printed `checked="false"`, which is a TICKED box, so the page was wrong before
 // hydration had anything to repair. Both halves matter — the first is what a reader of the
 // served page sees, the second is what survives the hydration.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoAttrPort,
@@ -49,7 +55,7 @@ type TSource = { getValue(): unknown; onChange(cb: (...event: never[]) => void):
  * `bindList`.
  */
 type TFixedList = {
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 /** One control, one bound property port — the whole component, so nothing else can explain it. */
@@ -66,15 +72,25 @@ const controlBoundTo = (
         });
         return { x: p };
     });
-    const m = createExoMachineBuilder<TExoMachineNode>(schema);
-    const show = m.transition((c) => {
-        c.attr(schema.ports.x, src.getValue());
-    });
-    m.effect((c) => {
-        show(c);
-        return src.onChange(() => show(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode>(schema);
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => {
+                    c.attr(schema.ports.x, src.getValue());
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return src.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = machine.transitions;
+    return machine;
 };
 
 describe('hydrating a control whose source moved since the response', () => {
@@ -156,19 +172,29 @@ describe('hydrating a control whose source moved since the response', () => {
             });
             return { x: p };
         });
-        const mOption = createExoMachineBuilder<TExoMachineNode, unknown, { option: number }>(
-            optionSchema
+        const mOption = createExoMachine<TExoMachineNode, number, { option: number }>(
+            optionSchema,
+            { createInitialState: (_c, option) => ({ option }) }
         );
-        mOption.createInitialState((_c, option) => ({ option }));
-        // The group's selection expressed the way an application expresses it, one boolean per option.
-        const showOption = mOption.transition((c) => {
-            c.attr(optionSchema.ports.x, chosen.getValue() === c.state.option);
-        });
-        mOption.effect((c) => {
-            showOption(c);
-            return chosen.onChange(() => showOption(c));
-        });
-        const OPTION = mOption.done();
+        const OPTION = composeExoMachine(
+            mOption,
+            (m) =>
+                withExoTransitions(m, {
+                    // The group's selection expressed the way an application expresses it, one boolean per option.
+
+                    showOption: (c) => {
+                        c.attr(optionSchema.ports.x, chosen.getValue() === c.state.option);
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        showOption(c);
+                        return chosen.onChange(() => showOption(c));
+                    });
+                })
+        );
+        const { showOption } = OPTION.transitions;
         const GROUP = createExoTestMachine(
             (b: TExoSchemaCursor) => {
                 let options!: TExoChildrenPort;
@@ -181,7 +207,7 @@ describe('hydrating a control whose source moved since the response', () => {
                 (c) => {
                     // FIXED, not reactive: a group's options do not come and go, and `list` is what
                     // says so — no registry, no diff, and the same call adopts on a hydrated page.
-                    c.list(P.options, OPTION, 3);
+                    c.list(P.options, OPTION, [0, 1, 2]);
                 }
         );
 

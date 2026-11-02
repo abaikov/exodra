@@ -75,7 +75,7 @@ program
         }
 
         const pageName = formatComponentName(name, naming);
-        const content = generatePageFile(pageName, Boolean(options.typescript));
+        const content = generatePageFile(pageName);
         await fs.writeFile(filePath, content);
 
         // Update router if exists

@@ -50,7 +50,7 @@
 // THE TWO WAYS.
 //
 //   `clone`  — the SHIPPED path, entered where an application enters it: `ExoDomBackend.render`
-//              with a real `createExoMachineBuilder`. Per instance that is one `cloneNode(true)`, the walk
+//              with a real `createExoMachine`. Per instance that is one `cloneNode(true)`, the walk
 //              replay that resolves the port's element, and the wire's one `c.set`.
 //   `manual` — the identical DOM built straight-line with `document.createElement`,
 //              `setAttribute`, `appendChild` and `textContent`, hand-written per shape below.
@@ -91,7 +91,7 @@ import { type TExoTextPort } from '@exodra/core';
 import { ExoDomBackend, type TExoDomMachine, type TExoDomNode, withExoCompiler } from '@exodra/dom';
 import { abBench, type Scenario } from '../../../harness';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import { createExoMachine } from '@exodra/core';
 
 /**
  * THE ONE BACKEND THIS FILE RENDERS THROUGH, built at module level because a backend is the schema
@@ -153,11 +153,12 @@ const SHAPE_1_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSHAPE_1 = createExoMachineBuilder<TExoDomNode>(SHAPE_1_SCHEMA);
-mSHAPE_1.createInitialState((c, index) => {
-    c.text(SHAPE_1_SCHEMA.ports.text, textOf(index));
+const mSHAPE_1 = createExoMachine<TExoDomNode>(SHAPE_1_SCHEMA, {
+    createInitialState: (c) => {
+        c.text(SHAPE_1_SCHEMA.ports.text, textOf(0));
+    },
 });
-const SHAPE_1 = mSHAPE_1.done();
+const SHAPE_1 = mSHAPE_1;
 
 // `setAttribute('class', …)` and not `className = …` throughout, even though the property is
 // the faster of the two. This side is the baseline for a strategy the COMPILER would emit, and
@@ -183,11 +184,12 @@ const SHAPE_2_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSHAPE_2 = createExoMachineBuilder<TExoDomNode>(SHAPE_2_SCHEMA);
-mSHAPE_2.createInitialState((c, index) => {
-    c.text(SHAPE_2_SCHEMA.ports.text, textOf(index));
+const mSHAPE_2 = createExoMachine<TExoDomNode>(SHAPE_2_SCHEMA, {
+    createInitialState: (c) => {
+        c.text(SHAPE_2_SCHEMA.ports.text, textOf(0));
+    },
 });
-const SHAPE_2 = mSHAPE_2.done();
+const SHAPE_2 = mSHAPE_2;
 
 function manual2(parent: Element, index: number): void {
     const li = document.createElement('li');
@@ -214,11 +216,12 @@ const SHAPE_3_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSHAPE_3 = createExoMachineBuilder<TExoDomNode>(SHAPE_3_SCHEMA);
-mSHAPE_3.createInitialState((c, index) => {
-    c.text(SHAPE_3_SCHEMA.ports.text, textOf(index));
+const mSHAPE_3 = createExoMachine<TExoDomNode>(SHAPE_3_SCHEMA, {
+    createInitialState: (c) => {
+        c.text(SHAPE_3_SCHEMA.ports.text, textOf(0));
+    },
 });
-const SHAPE_3 = mSHAPE_3.done();
+const SHAPE_3 = mSHAPE_3;
 
 function manual3(parent: Element, index: number): void {
     const li = document.createElement('li');
@@ -253,11 +256,12 @@ const SHAPE_5_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSHAPE_5 = createExoMachineBuilder<TExoDomNode>(SHAPE_5_SCHEMA);
-mSHAPE_5.createInitialState((c, index) => {
-    c.text(SHAPE_5_SCHEMA.ports.text, textOf(index));
+const mSHAPE_5 = createExoMachine<TExoDomNode>(SHAPE_5_SCHEMA, {
+    createInitialState: (c) => {
+        c.text(SHAPE_5_SCHEMA.ports.text, textOf(0));
+    },
 });
-const SHAPE_5 = mSHAPE_5.done();
+const SHAPE_5 = mSHAPE_5;
 
 function manual5(parent: Element, index: number): void {
     const li = document.createElement('li');
@@ -313,11 +317,12 @@ const SHAPE_10_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSHAPE_10 = createExoMachineBuilder<TExoDomNode>(SHAPE_10_SCHEMA);
-mSHAPE_10.createInitialState((c, index) => {
-    c.text(SHAPE_10_SCHEMA.ports.text, textOf(index));
+const mSHAPE_10 = createExoMachine<TExoDomNode>(SHAPE_10_SCHEMA, {
+    createInitialState: (c) => {
+        c.text(SHAPE_10_SCHEMA.ports.text, textOf(0));
+    },
 });
-const SHAPE_10 = mSHAPE_10.done();
+const SHAPE_10 = mSHAPE_10;
 
 function manual10(parent: Element, index: number): void {
     const li = document.createElement('li');
@@ -437,11 +442,12 @@ const SHAPE_25_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSHAPE_25 = createExoMachineBuilder<TExoDomNode>(SHAPE_25_SCHEMA);
-mSHAPE_25.createInitialState((c, index) => {
-    c.text(SHAPE_25_SCHEMA.ports.text, textOf(index));
+const mSHAPE_25 = createExoMachine<TExoDomNode>(SHAPE_25_SCHEMA, {
+    createInitialState: (c) => {
+        c.text(SHAPE_25_SCHEMA.ports.text, textOf(0));
+    },
 });
-const SHAPE_25 = mSHAPE_25.done();
+const SHAPE_25 = mSHAPE_25;
 
 function manual25(parent: Element, index: number): void {
     const li = document.createElement('li');
@@ -581,7 +587,7 @@ function el(): HTMLElement {
 // argument for it is specific to what is being measured here — it is NOT a precedent.
 //
 // `ssr-floor`, `one-and-static` and `hydrate-floor` all met the same fact (`render` mounts one
-// instance and hands it `0`) and all three answered it the same way: give the component a real
+// instance and hands it no per-instance input) and all three answered it the same way: give the component a real
 // per-row source, a list, because their numbers are ABOUT per-row content. Making their floors
 // stop counting would have been making the floor lie.
 //
@@ -603,8 +609,8 @@ function gateShape(shape: TShape): void {
         for (const off of offs) off();
     };
     const made = el();
-    // INDEX `0` ON BOTH SIDES, AND THE AXIS CHANGED SHAPE HERE. `render` mounts ONE instance and
-    // hands it `0` as both its props and its index, so the N instances this loop builds are now
+    // `row 0` ON BOTH SIDES, AND THE AXIS CHANGED SHAPE HERE. `render` mounts ONE instance and
+    // hands it no params, so every shape writes `textOf(0)` and the N instances this loop builds are now
     // IDENTICAL where they used to read the entry point's per-instance number and say "row 0",
     // "row 1", … The straight-line side is passed `0` for the same reason, unchanged in every
     // other respect: if it kept counting, the two ways would build different bytes and the gate

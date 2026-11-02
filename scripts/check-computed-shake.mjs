@@ -132,7 +132,7 @@ const COMPUTED = {
     'EXO_HOLD_VOCABULARY.ts': 'batching by PARKING the wake table — there is nothing to park otherwise',
     'exoTransition.ts': 'a transition exists to SPEND the pending word; an imperative one has none',
     'EXO_MACHINE_LIMIT.ts': 'the 31-bit ceiling OF THE PENDING WORD',
-    'EXO_MOUNTED.ts': "the name of `m.mounted()`, which is a FIELD",
+    'EXO_MOUNTED.ts': "the name of `b.mounted()`, which is a FIELD",
     'ExoWiringBlock.ts': 'the same declarations made per instance, inside a wire',
     'exoWiring.ts': 'the door onto that block',
 };
@@ -140,7 +140,7 @@ const COMPUTED = {
 /**
  * THE MODULES OF `@exodra/computed` THAT THE COMPUTED PAGE NEVER NAMES — assertion 3, and the one
  * question in this file that the package boundary does not already answer. The page imports
- * `withExoComputedMachine` and `exoTransition`; everything reachable from those two is expected in
+ * `withExoComputedMachine`; everything reachable from it is expected in
  * its bundle and is not listed here. These four are reachable only from the BARREL, so their
  * presence would mean the barrel stopped shaking — a side effect on a module, or one of them
  * wired into the default path.
@@ -158,13 +158,15 @@ const UNNAMED_BY_THE_PAGE = {
  * artefact is this file.
  *
  * THE IMPERATIVE PAGE NAMES NOT ONE THING FROM THE LIST ABOVE. That is the whole fixture: no
- * `m.field`, no `m.derive`, no `m.fill`, no `m.mounted`, no dependency list. Its transitions write
+ * `b.field`, no `b.derive`, no `b.fill`, no `b.mounted`, no dependency list. Its transitions write
  * their port directly and its state is the cache slot.
  */
 const IMPERATIVE = `
 import {
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
-    createExoMachineBuilder,
+    withExoHandlers,
 } from '@exodra/core';
 
 const SCHEMA = createExoSchema((b) => {
@@ -178,34 +180,32 @@ const SCHEMA = createExoSchema((b) => {
 });
 const P = SCHEMA.ports;
 
-const m = createExoMachineBuilder(SCHEMA);
-const K = m.createInitialState(() => ({ n: 0 }));
-m.on(P.click, (c) => bump(c));
-export const APP = m.done();
-
 export const bump = (c) => {
-    const kept = c.readState(K);
-    kept.n += 1;
-    c.text(P.label, String(kept.n));
+    c.state.n += 1;
+    c.text(P.label, String(c.state.n));
 };
+
+export const APP = composeExoMachine(
+    createExoMachine(SCHEMA, { createInitialState: () => ({ n: 0 }) }),
+    (m) => withExoHandlers(m, (on) => on(P.click, (c) => bump(c))),
+);
 `;
 
 /**
  * THE COMPUTED PAGE — the same component said the other way, so the printed delta is the price of
  * the system rather than the price of two unrelated programs.
  *
- * IT NAMES `m.effectOn` so that the delta below carries the slot runner and the engine's re-run
+ * IT NAMES `b.effectOn` so that the delta below carries the slot runner and the engine's re-run
  * door rather than the derivation walk alone.
  */
 const COMPUTED_PAGE = `
 import {
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
-    createExoMachineBuilder,
+    withExoHandlers,
 } from '@exodra/core';
-import {
-    withExoComputedMachine,
-    exoTransition,
-} from '@exodra/computed';
+import { withExoComputedMachine } from '@exodra/computed';
 
 const SCHEMA = createExoSchema((b) => {
     let label;
@@ -218,18 +218,23 @@ const SCHEMA = createExoSchema((b) => {
 });
 const P = SCHEMA.ports;
 
-const m = withExoComputedMachine(createExoMachineBuilder(SCHEMA));
-const n = m.field(0);
-const live = m.mounted();
-m.derive(P.label, [n, live], (n, live) => (live ? String(n) : ''));
-m.effectOn([n], (c) => {
-    const id = setTimeout(() => bump(c), n.get(c));
-    return () => clearTimeout(id);
-});
-m.on(P.click, (c) => bump(c));
-export const APP = m.done();
+export const APP = composeExoMachine(
+    createExoMachine(SCHEMA),
+    (m) => withExoComputedMachine(m, (b) => {
+        const n = b.field(0);
+        const live = b.mounted();
+        b.derive(P.label, [n, live], (n, live) => (live ? String(n) : ''));
+        const bump = b.transition((c) => n.set(c, n.get(c) + 1));
+        b.effectOn([n], (c) => {
+            const id = setTimeout(() => bump(c), n.get(c));
+            return () => clearTimeout(id);
+        });
+        return { bump };
+    }),
+    (m) => withExoHandlers(m, (on) => on(P.click, (c) => m.transitions.bump(c))),
+);
 
-export const bump = exoTransition(APP, (c) => n.set(c, n.get(c) + 1));
+export const { bump } = APP.transitions;
 `;
 
 const dir = mkdtempSync(join(tmpdir(), 'exo-shake-'));

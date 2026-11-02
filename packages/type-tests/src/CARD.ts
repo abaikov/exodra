@@ -66,7 +66,7 @@ dom.on(P.rows, handler);
 // @ts-expect-error one() takes a children port; this one is text
 dom.one(P.title, LEAF);
 // @ts-expect-error list() takes a children port; this one is an attribute
-dom.list(P.cls, LEAF, 1);
+dom.list(P.cls, LEAF, Array.from({ length: 1 }));
 // @ts-expect-error childList() takes a children port; this one is text
 dom.childList(P.title);
 
@@ -77,7 +77,7 @@ dom.on(P.click as TExoPort, handler);
 
 dom.on(P.click, handler);
 dom.one(P.rows, LEAF);
-dom.list(P.rows, LEAF, 2);
+dom.list(P.rows, LEAF, Array.from({ length: 2 }));
 dom.childList(P.rows);
 
 // The wire a page annotates, and not the exonode read straight out of the package.
@@ -100,4 +100,4 @@ declare const portable: TExoChildrenWiring<Event, Element>;
 // @ts-expect-error the portable surface refuses it too
 portable.on(P.title, handler);
 // @ts-expect-error the portable surface refuses it too
-portable.list(P.cls, LEAF, 1);
+portable.list(P.cls, LEAF, Array.from({ length: 1 }));

@@ -16,7 +16,7 @@ browser:
 Both arrive through one function, `exoForeignNode(c, element, hooks?)` from
 `@exodra/dom` (`packages/dom/src/foreign/exoForeignNode.ts`), and both are
 placed by `reconcileExoOrder` from `@exodra/list-reconcile` over a
-`c.childList(port)`, called from a transition with the identity as its build
+`c.childList(port)`, called from an effect with the identity as its build
 step — the items are already nodes, so there is nothing to build them from.
 
 The page exists because a capability is proven by something that runs. Nothing in
@@ -224,7 +224,7 @@ A child list hydrates through its adoption cursor, so reconciling one by hand ov
 standing directly behind another with no static element between them: where the first
 list ends cannot be read off the markup, and `openChildList` throws `EXO0035`
 (`packages/dom/src/hydrate/asserts/assertExoPluginChildList.ts:4`). Put a static
-element between them, use `c.list(port, component, count)`, or render that component
+element between them, use `c.list(port, component, rows)`, or render that component
 on the client.
 
 ## What it costs

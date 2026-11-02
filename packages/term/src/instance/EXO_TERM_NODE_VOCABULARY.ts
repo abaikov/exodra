@@ -78,7 +78,6 @@ export interface TExoTermNodeApi {
     ): void;
     build<TParams>(
         machine: TExoMachine<this, unknown, TParams>,
-        index?: number,
         params?: TParams
     ): TExoNode<TExoTermMark>;
     one<TParams>(
@@ -86,7 +85,11 @@ export interface TExoTermNodeApi {
         machine: TExoMachine<this, unknown, TParams>,
         params?: TParams
     ): void;
-    list(port: TExoChildrenPort, machine: TExoMachine<this>, count: number): void;
+    list<TParams>(
+        port: TExoChildrenPort,
+        machine: TExoMachine<this, unknown, TParams>,
+        params: readonly TParams[]
+    ): void;
     childList(port: TExoChildrenPort): TExoTermChildList;
 }
 
@@ -165,11 +168,10 @@ const EXO_TERM_NODE_METHODS: TExoTermNodeApi & ThisType<TExoTermNode> = {
 
     // A CHILD BUILT AND NEVER PLACED IS THE CALLER'S LEAK: nothing in the exported surface can
     // express ownership of a `TExoNode`, so it keeps its subscriptions until its source dies.
-    build(machine: TExoTermMachine, index = 0, params?: unknown): TExoNode<TExoTermMark> {
+    build(machine: TExoTermMachine, params?: unknown): TExoNode<TExoTermMark> {
         return renderExoTermInstance(
             exoTermSchemaOf(machine, this.schema.backend),
             machine,
-            index,
             this.context,
             params
         ) as unknown as TExoNode<TExoTermMark>;
@@ -182,21 +184,21 @@ const EXO_TERM_NODE_METHODS: TExoTermNodeApi & ThisType<TExoTermNode> = {
             renderExoTermInstance(
                 exoTermSchemaOf(machine, this.schema.backend),
                 machine,
-                0,
                 this.context,
                 params
             ),
         ];
     },
 
-    list(port: TExoChildrenPort, machine: TExoTermMachine, count: number): void {
+    list(port: TExoChildrenPort, machine: TExoTermMachine, params: readonly unknown[]): void {
         assertExoArming('list');
         const region = requireExoTermRegion(this.regions, port, 'list');
         const schema = exoTermSchemaOf(machine, this.schema.backend);
         const context = this.context;
-        const built: TExoTermChild[] = new Array(count);
-        for (let i = 0; i < count; i++)
-            built[i] = renderExoTermInstance(schema, machine, i, context);
+        const built: TExoTermChild[] = new Array(params.length);
+        for (let i = 0; i < params.length; i++) {
+            built[i] = renderExoTermInstance(schema, machine, context, params[i]);
+        }
         region.children = built;
     },
 

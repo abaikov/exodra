@@ -8,7 +8,13 @@
 // `EXO_SCOPE` in `scope/` is a context-provider pack and has nothing to do with teardown; the
 // two are public and must not be confused.
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type { TExoAttrPort, TExoChildrenPort, TExoMachineInitialState } from '@exodra/core';
 import { exoTeardownScope, exoOnTeardown } from '../exoTeardownScope';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
@@ -37,15 +43,24 @@ const ROW_SCHEMA = createExoSchema((b) => {
     });
     return { id };
 });
-const mRow = createExoMachineBuilder<TExoDomNode>(ROW_SCHEMA);
-const showRow = mRow.transition((c) => {
-    c.attr(ROW_SCHEMA.ports.id, value.getValue());
-});
-mRow.effect((c) => {
-    showRow(c);
-    return value.onChange(() => showRow(c));
-});
-const ROW = mRow.done();
+const mRow = createExoMachine<TExoDomNode>(ROW_SCHEMA);
+const ROW = composeExoMachine(
+    mRow,
+    (m) =>
+        withExoTransitions(m, {
+            showRow: (c) => {
+                c.attr(ROW_SCHEMA.ports.id, value.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showRow(c);
+                return value.onChange(() => showRow(c));
+            });
+        })
+);
+const { showRow } = ROW.transitions;
 
 /**
  * TWO ROWS FROM ONE RENDER, which is what makes the disposer's job visible: a scope that ended
@@ -62,7 +77,7 @@ const LIST = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TExoDomNode> =>
         (c) => {
-            c.list(P.rows, ROW, 2);
+            c.list(P.rows, ROW, Array.from({ length: 2 }));
         }
 );
 

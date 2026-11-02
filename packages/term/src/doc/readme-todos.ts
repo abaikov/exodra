@@ -5,9 +5,10 @@
 import {
     EXO_PORT_CHILDREN,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoWire,
 } from '@exodra/core';
 import type { TExoChildrenWiring, TExoMachineNode } from '@exodra/core';
 
@@ -22,12 +23,12 @@ const todoSchema = createExoSchema(TodoPorts, (b) => {
         li.textPort(TodoPorts.text);
     });
 });
-const todoBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TTodo>(todoSchema);
-todoBuilder.createInitialState((_c, index) => todos[index]);
-todoBuilder.wire((c) => {
+const todoBase = createExoMachine(todoSchema, {
+    createInitialState: (_c: TExoMachineNode, todo: TTodo) => todo,
+});
+const Todo = withExoWire(todoBase, (c) => {
     c.text(TodoPorts.text, c.state.text);
 });
-const Todo = todoBuilder.done();
 
 const TodoListPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
 
@@ -36,11 +37,11 @@ const todoListSchema = createExoSchema(TodoListPorts, (b) => {
         ul.childrenPort(TodoListPorts.rows);
     });
 });
-const todoListBuilder = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(todoListSchema);
-todoListBuilder.createInitialState((c) => {
-    c.list(TodoListPorts.rows, Todo, todos.length);
+const TodoList = createExoMachine<TExoChildrenWiring & TExoMachineNode>(todoListSchema, {
+    createInitialState: (c) => {
+        c.list(TodoListPorts.rows, Todo, todos);
+    },
 });
-const TodoList = todoListBuilder.done();
 // <<< END VERBATIM
 
 export { Todo, TodoList, todos };

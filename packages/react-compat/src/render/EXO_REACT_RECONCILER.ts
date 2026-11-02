@@ -355,7 +355,6 @@ function placeElement(pass: TExoReactPass, key: string, element: TExoReactElemen
         const slot = makeSlot(range, 'host', type, key, element);
         slot.node = range.owner.build(
             type as unknown as Parameters<typeof range.owner.build>[0],
-            0,
             element
         );
         pass.next.push(slot);

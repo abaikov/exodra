@@ -6,7 +6,7 @@ export type TExoPortStore<TState extends TExoCommitNode> = (enode: TState, value
 function refuse(what: string, instead: string): never {
     throw new Error(
         typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-            ? `createExoMachineBuilder: a derivation cannot fill ${what} — use ${instead}.`
+            ? `withExoComputedMachine: a derivation cannot fill ${what} — use ${instead}.`
             : 'EXO0081'
     );
 }

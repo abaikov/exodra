@@ -13,7 +13,13 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { createElement } from 'react';
 import { act } from 'react-dom/test-utils';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type { TExoChildrenPort, TExoMachineNode } from '@exodra/core';
 import { source } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
@@ -58,17 +64,28 @@ function island(
         });
         return { host };
     });
-    const m = createExoMachineBuilder<TExoReactWiring & TExoMachineNode, unknown, TIslandState>(
-        schema
+    const base = createExoMachine<TExoReactWiring & TExoMachineNode, unknown, TIslandState>(
+        schema,
+        {
+            createInitialState: (c) => ({
+                island: reactIsland(c, schema.ports.host, Label, props, options),
+            }),
+        }
     );
-    m.createInitialState((c) => ({
-        island: reactIsland(c, schema.ports.host, Label, props, options),
-    }));
-    if (follow !== undefined) {
-        const show = m.transition((c) => c.state.island.render(follow.getValue()));
-        m.effect((c) => follow.onChange(() => show(c)));
-    }
-    return m.done();
+    if (follow === undefined) return base;
+    const following = composeExoMachine(
+        base,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => c.state.island.render(follow.getValue()),
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => follow.onChange(() => show(c)));
+            })
+    );
+    const { show } = following.transitions;
+    return following;
 }
 
 function freshContainer(): HTMLElement {
@@ -123,14 +140,15 @@ describe('reactIsland — the browser', () => {
             });
             return { host };
         });
-        const m = createExoMachineBuilder<TExoReactWiring & TExoMachineNode>(schema);
-        m.createInitialState((c) => {
-            kept = reactIsland(c, schema.ports.host, Label, { value: 1 });
-            return null;
+        const Island = createExoMachine<TExoReactWiring & TExoMachineNode>(schema, {
+            createInitialState: (c) => {
+                kept = reactIsland(c, schema.ports.host, Label, { value: 1 });
+                return null;
+            },
         });
         let dispose!: () => void;
         act(() => {
-            dispose = EXO_BACKEND.render(m.done(), container);
+            dispose = EXO_BACKEND.render(Island, container);
         });
         act(() => dispose());
 

@@ -6,7 +6,13 @@
 // runs FIRST and the data moves after — the only order in which the two answers differ.
 // The two excused backends are excused for DIFFERENT reasons: `term` has a live tree and updates
 // it, but holds text in a FIELD, so the exposure does not exist rather than being survived.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type { TExoMachineNode, TExoSchemaCursor, TExoTextPort, TExoWiring } from '@exodra/core';
 import { source } from '@exodra/test-utils';
 import { describe, it } from 'vitest';
@@ -27,13 +33,22 @@ const paragraphBoundTo = () => {
         });
         return { text };
     });
-    const m = createExoMachineBuilder<TExoWiring & TExoMachineNode>(schema);
-    const show = m.transition((c) => c.text(schema.ports.text, label.getValue()));
-    m.effect((c) => {
-        show(c);
-        return label.onChange(() => show(c));
-    });
-    return { component: m.done(), label };
+    const component = composeExoMachine(
+        createExoMachine<TExoWiring & TExoMachineNode>(schema),
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => c.text(schema.ports.text, label.getValue()),
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return label.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = component.transitions;
+    return { component, label };
 };
 
 describe('a translator extension replaces the text node, and then the data moves', () => {

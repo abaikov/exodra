@@ -1,6 +1,6 @@
-// The declarative half of a machine. `@exodra/core` builds the imperative one — `createExoMachineBuilder(SCHEMA)`
-// with `keep`, `effect`, `on`, `done` — and this decorates it with fields, derivations and
-// transitions. The direction is one way: nothing in core names anything here.
+// The declarative half of a machine. `@exodra/core` builds the imperative one — `createExoMachine(SCHEMA)`
+// composed with `withExoWire`, `withExoHandlers`, `withExoEffects` — and this decorates it with fields,
+// derivations and transitions. The direction is one way: nothing in core names anything here.
 export { withExoComputedMachine } from './computed/withExoComputedMachine';
 export { exoTransition } from './transitions/exoTransition';
 export { EXO_HOLD_VOCABULARY } from './wiring/constants/EXO_HOLD_VOCABULARY';
@@ -41,9 +41,9 @@ export { exoWiring } from './wiring/exoWiring';
 export { ExoWiringBlock } from './wiring/ExoWiringBlock';
 export type { TExoWiringSite } from './wiring/types/TExoWiringSite';
 
-// NOT RE-EXPORTED, AND THAT IS DELIBERATE: `TExoMachineBuilder`, `TExoMachine`,
-// `TExoMachineNode`, `TExoMachineEffect`, `TExoMachineStateHandle`,
-// `TExoFillDoors` and `TExoInstanceWork` are `@exodra/core`'s. Four of them are named in this
+// NOT RE-EXPORTED, AND THAT IS DELIBERATE: `TExoMachine`,
+// `TExoMachineNode`, `TExoMachineEffect`,
+// `TExoFillDoors` and `TExoInstanceWork` are `@exodra/core`'s. Some of them are named in this
 // package's own signatures and would re-export cleanly, but `kept()` and `restartEffect()` are
 // methods on EVERY node (`packages/core/src/plugins/constants/EXO_BASE_NODE_VOCABULARY.ts`), so the types belong where the
 // implementation is. Two spellings of one type is a second accessor; import them from

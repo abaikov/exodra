@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, composeExoMachine, withExoWire, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
 import { ExoDomBackend, withExoCompiler, withExoHydration, withExoChildList } from '@exodra/dom';
@@ -21,11 +21,12 @@ const USER_SCHEMA = createExoSchema((b) => {
     });
     return { title };
 });
-const mUser = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(USER_SCHEMA);
-mUser.wire((c, match) => {
-    c.text(USER_SCHEMA.ports.title, 'user ' + match.params.id);
-});
-const USER = mUser.done();
+const mUser = createExoMachine<TExoMachineNode, TExoRouteMatch>(USER_SCHEMA);
+const USER = composeExoMachine(mUser, (m) =>
+    withExoWire(m, (c, match) => {
+        c.text(USER_SCHEMA.ports.title, 'user ' + match.params.id);
+    })
+);
 
 const PAGE_OUTLET = exoOutlet('div');
 
@@ -37,11 +38,12 @@ const LAYOUT_SCHEMA = createExoSchema((b) => {
     });
     return { page };
 });
-const mLayout = createExoMachineBuilder<TNestingNode>(LAYOUT_SCHEMA);
-mLayout.createInitialState((c) => {
-    c.one(LAYOUT_SCHEMA.ports.page, PAGE_OUTLET);
+const mLayout = createExoMachine<TNestingNode>(LAYOUT_SCHEMA, {
+    createInitialState: (c) => {
+        c.one(LAYOUT_SCHEMA.ports.page, PAGE_OUTLET);
+    },
 });
-const LAYOUT = mLayout.done();
+const LAYOUT = mLayout;
 
 const appAt = (path: string) => {
     const router = createExoRouter(
@@ -55,12 +57,13 @@ const appAt = (path: string) => {
         });
         return { outlet };
     });
-    const mApp = createExoMachineBuilder<TNestingNode>(APP_SCHEMA);
-    mApp.createInitialState((c) => {
-        provideExoRouter(c, router);
-        c.one(APP_SCHEMA.ports.outlet, PAGE_OUTLET);
+    const app = createExoMachine<TNestingNode>(APP_SCHEMA, {
+        createInitialState: (c) => {
+            provideExoRouter(c, router);
+            c.one(APP_SCHEMA.ports.outlet, PAGE_OUTLET);
+        },
     });
-    return { app: mApp.done(), router };
+    return { app, router };
 };
 
 const NESTED = '<main><div><section>layout<div><h1>user 7</h1></div></section></div></main>';

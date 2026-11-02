@@ -7,17 +7,17 @@
 //
 // NOTHING HERE RENDERS.
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import { createExoMemoryHistory, createExoRouter } from '../../index';
 import type { TExoRoute } from '../../types';
 
 const page = (name: string) =>
-    createExoMachineBuilder(
+    createExoMachine(
         createExoSchema((b) => {
             b.el('p', { class: name });
             return {};
         })
-    ).done();
+    );
 
 const ROUTES: readonly TExoRoute[] = [
     { path: '/', component: page('home') },

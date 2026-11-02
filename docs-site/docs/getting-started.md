@@ -29,7 +29,14 @@ no Babel plugin and no JSX transform is required**.
 ## Your first component
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoWire,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
@@ -46,14 +53,16 @@ const helloSchema = createExoSchema(HelloPorts, (b) => {
     });
 });
 
-// The MACHINE: its wire writes the ports, naming them by identity. A machine that keeps
-// state declares it with createInitialState, which is handed the exonode, its INDEX
-// among its siblings and the wire params — there are no props.
-const helloBuilder = createExoMachineBuilder<TExoMachineNode>(helloSchema);
-helloBuilder.wire((c) => {
-    c.text(HelloPorts.who, 'world');
-});
-const Hello = helloBuilder.done();
+// The MACHINE: createExoMachine makes the base, and each decorator composeExoMachine
+// applies adds one part — here withExoWire, whose wire writes the ports by identity. A
+// machine that keeps state declares it with the createInitialState option of
+// createExoMachine, which is handed the exonode and the params it was built with — there
+// are no props.
+const helloMachine = composeExoMachine(createExoMachine<TExoMachineNode>(helloSchema), (m) =>
+    withExoWire(m, (c) => {
+        c.text(HelloPorts.who, 'world');
+    })
+);
 
 // ONE backend for the whole application, built at module level. A backend is what
 // you render FROM, and it is also the plan cache key — see below. `render` exists
@@ -62,18 +71,18 @@ const Hello = helloBuilder.done();
 const backend = withExoCompiler(new ExoDomBackend());
 
 const root = document.getElementById('app') as HTMLElement;
-const dispose = backend.render(Hello, root);
+const dispose = backend.render(helloMachine, root);
 
 // Tearing the render down stops everything it started:
 dispose();
 ```
 
 `backend.render` mounts **one** instance and appends it to whatever the parent
-already holds. It takes **no count**: the initial state receives `0` as its index,
-because a lone root has nothing else to be about. Rows that vary are a **list** — a
-children port filled by `c.list` (fixed) or by the machine calling
-`reconcileExoOrder` over `c.childList(port)` (live), and each row reads its data
-by its index.
+already holds. It takes **no count**: a lone root has nothing else to be about.
+Rows that vary are a **list** — a children port filled by `c.list` (fixed, one row
+per element of the array it is handed) or by the machine calling
+`reconcileExoOrder` over `c.childList(port)` (live), and each row is handed its
+item as its params.
 
 **Build the backend once, at module level.** It is the key a compiled schema plan
 is cached under, and it is compared by pointer — a backend constructed inside a
@@ -93,14 +102,24 @@ Three ideas do most of the work:
 
 ## A counter
 
-State that belongs to the instance is **machine state**: `createInitialState`
-returns it once per instance, a handler changes it, and `showCount` — a plain
+State that belongs to the instance is **machine state**: the `createInitialState`
+option of `createExoMachine` returns it once per instance, a handler changes it, and `showCount` — a plain
 function over the instance — writes it to the ports. The wire calls it once for
-the first paint.
+the first paint. `withExoWire` and `withExoHandlers` each add one part to the base
+machine, and `composeExoMachine` applies them in the order written.
 
 ```ts
-import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import {
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoHandlers,
+    withExoWire,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -123,25 +142,32 @@ const counterSchema = createExoSchema(CounterPorts, (b) => {
         });
     });
 });
-const counterBuilder = createExoMachineBuilder<TExoDomNode, unknown, { count: number }>(counterSchema);
-counterBuilder.createInitialState(() => ({ count: 0 }));
-function showCount(c: TExoMachineBuilderNode<typeof counterBuilder>): void {
+const counterBase = createExoMachine(counterSchema, {
+    createInitialState: (_c: TExoDomNode, _params: unknown) => ({ count: 0 }),
+});
+function showCount(c: TExoMachineNodeOf<typeof counterBase>): void {
     c.text(CounterPorts.text, c.state.count);
 }
-counterBuilder.wire((c) => {
-    showCount(c);
-});
-counterBuilder.on(CounterPorts.dec, (c) => {
-    c.state.count--;
-    showCount(c);
-});
-counterBuilder.on(CounterPorts.inc, (c) => {
-    c.state.count++;
-    showCount(c);
-});
-const Counter = counterBuilder.done();
+const counterMachine = composeExoMachine(
+    counterBase,
+    (m) =>
+        withExoWire(m, (c) => {
+            showCount(c);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CounterPorts.dec, (c) => {
+                c.state.count--;
+                showCount(c);
+            });
+            on(CounterPorts.inc, (c) => {
+                c.state.count++;
+                showCount(c);
+            });
+        })
+);
 
-backend.render(Counter, document.getElementById('app') as HTMLElement);
+backend.render(counterMachine, document.getElementById('app') as HTMLElement);
 ```
 
 Data that lives **outside** the instance — a store, a socket, a database — is
@@ -167,11 +193,15 @@ import {
     EXO_PORT_CHILDREN,
     EXO_PORT_EVENT,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoEffects,
+    withExoHandlers,
+    withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -198,8 +228,8 @@ const todos = {
     },
 };
 
-// A MACHINE IS HANDED A NUMBER, NOT PROPS — its position among its siblings. A row reads the
-// item at that position out of the same array the list is reconciling.
+// A MACHINE IS HANDED PARAMS, NOT PROPS — here the item itself, which the build callback
+// passes and the row keeps as its state.
 const TodoPorts = exoPorts({ toggle: EXO_PORT_EVENT, checked: EXO_PORT_ATTR, text: EXO_PORT_TEXT });
 
 const todoSchema = createExoSchema(TodoPorts, (b) => {
@@ -213,20 +243,27 @@ const todoSchema = createExoSchema(TodoPorts, (b) => {
         });
     });
 });
-const todoBuilder = createExoMachineBuilder<TExoDomNode, unknown, TTodo>(todoSchema);
-todoBuilder.createInitialState((_c, at) => todos.getValue()[at]);
-function showDone(c: TExoMachineBuilderNode<typeof todoBuilder>): void {
+const todoBase = createExoMachine(todoSchema, {
+    createInitialState: (_c: TExoDomNode, todo: TTodo) => todo,
+});
+function showDone(c: TExoMachineNodeOf<typeof todoBase>): void {
     c.attr(TodoPorts.checked, c.state.done);
 }
-todoBuilder.wire((c) => {
-    c.text(TodoPorts.text, c.state.text);
-    showDone(c);
-});
-todoBuilder.on(TodoPorts.toggle, (c) => {
-    c.state.done = !c.state.done;
-    showDone(c);
-});
-const Todo = todoBuilder.done();
+const todoMachine = composeExoMachine(
+    todoBase,
+    (m) =>
+        withExoWire(m, (c) => {
+            c.text(TodoPorts.text, c.state.text);
+            showDone(c);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(TodoPorts.toggle, (c) => {
+                c.state.done = !c.state.done;
+                showDone(c);
+            });
+        })
+);
 
 // A LIVE LIST IS A COMPOSITION, not a door. `c.childList(port)` is the backend's half —
 // it holds whatever is put in it — and `reconcileExoOrder` is the strategy over it, from a
@@ -241,30 +278,36 @@ const todoAppSchema = createExoSchema(TodoAppPorts, (b) => {
     });
 });
 type TTodoAppState = { rows: TExoChildList; shown: TTodo[] };
-const todoAppBuilder = createExoMachineBuilder<TExoDomNode, unknown, TTodoAppState>(todoAppSchema);
-todoAppBuilder.createInitialState((c) => ({
-    rows: c.childList(TodoAppPorts.rows),
-    shown: [],
-}));
-function showRows(c: TExoMachineBuilderNode<typeof todoAppBuilder>): void {
+const todoAppBase = createExoMachine(todoAppSchema, {
+    createInitialState: (c: TExoDomNode, _params: unknown): TTodoAppState => ({
+        rows: c.childList(TodoAppPorts.rows),
+        shown: [],
+    }),
+});
+function showRows(c: TExoMachineNodeOf<typeof todoAppBase>): void {
     const want = todos.getValue();
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (_todo, at) =>
-        c.build(Todo, at)
+    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (todo) =>
+        c.build(todoMachine, todo)
     );
 }
-todoAppBuilder.effect((c) => {
-    showRows(c);
-    return todos.onChange(() => showRows(c));
-});
-const TodoApp = todoAppBuilder.done();
+const todoAppMachine = composeExoMachine(todoAppBase, (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            showRows(c);
+            return todos.onChange(() => showRows(c));
+        });
+    })
+);
 
-backend.render(TodoApp, document.getElementById('app') as HTMLElement);
+backend.render(todoAppMachine, document.getElementById('app') as HTMLElement);
 
 // Changing the data reconciles the rows in place.
 todos.add('Write the docs');
 ```
 
 The child list is opened in `createInitialState`, which runs once per instance.
+The build callback is handed the item, and `c.build(todoMachine, todo)` passes it to the
+row as its params.
 `reconcileExoOrder(kids, shown, keys, want, build)` is handed the order on screen
 and the order wanted, and returns the new order on screen for the machine to
 keep. For a filtered view, hand it the subset: rows are matched by the item
@@ -285,15 +328,15 @@ import type { TExoMachine, TExoMachineNode } from '@exodra/core';
 // `TExoStrMachine` and a `TExoDomMachine` — both of those are
 // this same generic with a backend's node TYPE in it, and a transition's node
 // parameter is contravariant.
-declare const App: TExoMachine<TExoMachineNode>;
+declare const appMachine: TExoMachine<TExoMachineNode>;
 
 // server:
-const html = new ExoStrBackend().render(App);
+const html = new ExoStrBackend().render(appMachine);
 
 // browser: `hydrate` exists only on a backend composed with the hydration plugin.
 const backend = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const root = document.getElementById('app') as HTMLElement;
-const dispose = backend.hydrate(App, root);
+const dispose = backend.hydrate(appMachine, root);
 ```
 
 The two backends have the same shape, so a page switches sides by switching which
@@ -332,7 +375,8 @@ alias** — and each has a matching flag (`--typescript`, `--tailwind`, `--eslin
 `--src-dir`, `--ssr`, `--app`, `--import-alias <alias>`) so you can skip the
 questions in CI.
 
-What it writes is the code above: `createExoSchema` plus `createExoMachineBuilder`, no JSX,
+What it writes is the code above: `createExoSchema` plus `createExoMachine` and
+`composeExoMachine`, no JSX,
 and therefore no compiler in the loop.
 
 ## The JSX path
@@ -348,7 +392,7 @@ the schema's `.ports` (`counterSchema.ports` below). A declaration holds no valu
 | `class="row"`, `tabindex={0}`, `disabled` | markup, folded into the schema |
 | `data-id={$.id}` | attribute port `id`, filled with `c.attr` |
 | `<span>{$.title}</span>` | text port `title` — the element's only child — filled with `c.text` |
-| `onClick={$.toggle}`, `on:dblclick={$.edit}` | event port, handled with `builder.on` |
+| `onClick={$.toggle}`, `on:dblclick={$.edit}` | event port, handled with `on` inside `withExoHandlers` |
 | `ref={$.box}` | ref port |
 | `unsafeHtml={$.body}` | children port filled with `c.unsafeHtml` |
 | `<$.rows />` | children port, filled with `c.one`, `c.list` or `c.childList` + `reconcileExoOrder` |
@@ -379,7 +423,7 @@ A counter with its schema written in JSX:
 
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoHandlers, withExoWire } from '@exodra/core';
 import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 
 const counterSchema = exoJsx<{ count: TExoTextPort; increment: TExoEventPort }>(($) => (
@@ -391,16 +435,22 @@ const CounterPorts = counterSchema.ports;
 
 type TCounterState = { n: number };
 
-const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TCounterState>(counterSchema);
-counterBuilder.createInitialState((): TCounterState => ({ n: 0 }));
-counterBuilder.wire((c) => {
-  c.text(CounterPorts.count, c.state.n);
-});
-counterBuilder.on(CounterPorts.increment, (c) => {
-  c.state.n += 1;
-  c.text(CounterPorts.count, c.state.n);
-});
-export const Counter = counterBuilder.done();
+export const counterMachine = composeExoMachine(
+  createExoMachine(counterSchema, {
+    createInitialState: (_c: TExoMachineNode, _params: unknown): TCounterState => ({ n: 0 }),
+  }),
+  (m) =>
+    withExoWire(m, (c) => {
+      c.text(CounterPorts.count, c.state.n);
+    }),
+  (m) =>
+    withExoHandlers(m, (on) => {
+      on(CounterPorts.increment, (c) => {
+        c.state.n += 1;
+        c.text(CounterPorts.count, c.state.n);
+      });
+    })
+);
 ```
 
 See the [JSX guide](./guides/jsx.md) for the whole dialect, a list reconciled with

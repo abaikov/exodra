@@ -34,6 +34,6 @@
 //     spelling. `hydrateExoRows` is therefore NOT re-exported under another name and nothing here
 //     stands in for it: a call that adopted row 0 and let the page report n rows hydrated would be
 //     worse than the missing export.
-export { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+export { createExoMachine, createExoSchema } from '@exodra/core';
 export { ExoDomBackend, exoDomSchemaOf, mountExoInstance } from '@exodra/dom';
 export { ExoStrBackend, exoStrSchemaOf, renderExoStrInstance } from '@exodra/string';

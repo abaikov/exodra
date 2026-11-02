@@ -4,7 +4,14 @@
 // strings, so "we rebuilt the page and it happened to look the same" passes every markup assertion
 // and is exactly what a kept page exists to avoid: every listener on a different element, and
 // anything the user had typed or focused gone.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoWire,
+    withExoHandlers,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoChildrenPort,
     TExoEventPort,
@@ -41,14 +48,20 @@ const HOME_SCHEMA = createExoSchema((b) => {
     });
     return { title, click };
 });
-const mHome = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(HOME_SCHEMA);
-mHome.on(HOME_SCHEMA.ports.click, () => {
-    clicked = 'home';
-});
-mHome.wire((c, match) => {
-    c.text(HOME_SCHEMA.ports.title, 'home at ' + match.pathname);
-});
-const HOME = mHome.done();
+const mHome = createExoMachine<TExoMachineNode, TExoRouteMatch>(HOME_SCHEMA);
+const HOME = composeExoMachine(
+    mHome,
+    (m) =>
+        withExoWire(m, (c, match) => {
+            c.text(HOME_SCHEMA.ports.title, 'home at ' + match.pathname);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(HOME_SCHEMA.ports.click, () => {
+                clicked = 'home';
+            });
+        })
+);
 
 const ABOUT_SCHEMA = createExoSchema((b) => {
     let body!: TExoTextPort;
@@ -61,14 +74,20 @@ const ABOUT_SCHEMA = createExoSchema((b) => {
     });
     return { body, click };
 });
-const mAbout = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(ABOUT_SCHEMA);
-mAbout.on(ABOUT_SCHEMA.ports.click, () => {
-    clicked = 'about';
-});
-mAbout.wire((c, match) => {
-    c.text(ABOUT_SCHEMA.ports.body, 'about ' + match.params.topic);
-});
-const ABOUT = mAbout.done();
+const mAbout = createExoMachine<TExoMachineNode, TExoRouteMatch>(ABOUT_SCHEMA);
+const ABOUT = composeExoMachine(
+    mAbout,
+    (m) =>
+        withExoWire(m, (c, match) => {
+            c.text(ABOUT_SCHEMA.ports.body, 'about ' + match.params.topic);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(ABOUT_SCHEMA.ports.click, () => {
+                clicked = 'about';
+            });
+        })
+);
 
 const WATCHED = source('alive');
 const WATCHED_SCHEMA = createExoSchema((b) => {
@@ -78,12 +97,17 @@ const WATCHED_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mWatched = createExoMachineBuilder<TExoMachineNode>(WATCHED_SCHEMA);
-mWatched.effect((c) => {
-    c.text(WATCHED_SCHEMA.ports.text, String(WATCHED.getValue()));
-    return WATCHED.onChange(() => c.text(WATCHED_SCHEMA.ports.text, String(WATCHED.getValue())));
-});
-const WATCHED_PAGE = mWatched.done();
+const mWatched = createExoMachine<TExoMachineNode>(WATCHED_SCHEMA);
+const WATCHED_PAGE = composeExoMachine(mWatched, (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            c.text(WATCHED_SCHEMA.ports.text, String(WATCHED.getValue()));
+            return WATCHED.onChange(() =>
+                c.text(WATCHED_SCHEMA.ports.text, String(WATCHED.getValue()))
+            );
+        });
+    })
+);
 
 const ROUTES: readonly TExoRoute[] = [
     { path: '/', component: HOME },
@@ -101,12 +125,13 @@ const shellFor = (router: TExoRouter) => {
         });
         return { body };
     });
-    const m = createExoMachineBuilder<TNestingNode>(schema);
-    m.createInitialState((c) => {
-        provideExoRouter(c, router);
-        c.one(schema.ports.body, OUTLET);
+    const m = createExoMachine<TNestingNode>(schema, {
+        createInitialState: (c) => {
+            provideExoRouter(c, router);
+            c.one(schema.ports.body, OUTLET);
+        },
     });
-    return m.done() as never;
+    return m as never;
 };
 
 const routerAt = (path: string): TExoRouter =>

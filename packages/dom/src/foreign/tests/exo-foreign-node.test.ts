@@ -73,10 +73,6 @@ const placeExoChildrenFrom = (
     c.onTeardown(src.onChange(apply));
 };
 
-/** The id each row shows, by INDEX. A wire is handed its position and nothing else, so `buildRow`
- *  files the id an instant before `c.build` runs the wire. */
-const BUILDING: string[] = [];
-
 /** An ordinary child, so a foreign one always has neighbours built the normal way. */
 const ROW = createExoTestMachine(
     (b) => {
@@ -87,17 +83,16 @@ const ROW = createExoTestMachine(
         return { id };
     },
     (P): TExoMachineInitialState<TExoDomNode> =>
-        (c, index) => {
-            c.attr(P.id, BUILDING[index]);
+        (c, id) => {
+            c.attr(P.id, id);
         }
 );
 
 const buildRow = (
-    c: { build(component: typeof ROW, index?: number): TExoNode<TExoDomMark> },
+    c: { build(component: typeof ROW, params?: unknown): TExoNode<TExoDomMark> },
     id: string
 ): TExoNode<TExoDomMark> => {
-    BUILDING.push(id);
-    return c.build(ROW, BUILDING.length - 1);
+    return c.build(ROW, id);
 };
 
 /**

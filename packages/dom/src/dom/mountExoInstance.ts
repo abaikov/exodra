@@ -12,7 +12,6 @@ import type { TExoDomMachine } from './types/TExoDomMachine';
 export function mountExoInstance(
     schema: TExoDomSchema,
     machine: TExoDomMachine,
-    index: number,
     parent: Element,
     before: Node | null,
     ownerChild: TExoDomChild | null,
@@ -25,7 +24,7 @@ export function mountExoInstance(
     // Through the COMPOSITION'S factory: a record is built by one constructor per shape, and a slot
     // added afterwards would grow the object past its in-object store.
     const record = schema.createInstance(schema);
-    createExoNode(schema, root, machine, index, ownerChild, record, context, params);
+    createExoNode(schema, root, machine, ownerChild, record, context, params);
     // EVERY INSTANCE THIS FUNCTION MAKES HAS A RECORD THAT IS NOT ITS OWN CHILD, so the dispose
     // walk — which reads `effectStops` off the child it is handed — can never reach these. The
     // field read covers the path where the two are one object (`materialiseExoChild`), which is

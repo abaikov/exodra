@@ -7,18 +7,18 @@
 // NOTHING HERE RENDERS — these cases read the router object, so a memory history and a table of
 // pages that are never drawn is the whole rig.
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import { createExoMemoryHistory, createExoRouter } from '../../index';
 import type { TExoHistory, TExoRoute, TExoRouteMatch, TExoRouter } from '../../types';
 
 /** A page that is never drawn — every case here reads the MATCH, never the markup. */
 const page = (name: string) =>
-    createExoMachineBuilder(
+    createExoMachine(
         createExoSchema((b) => {
             b.el('p', { class: name });
             return {};
         })
-    ).done();
+    );
 
 const ROUTES: readonly TExoRoute[] = [
     { path: '/', component: page('home') },

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import type { TExoAttrPort, TExoChildrenPort, TExoMachine, TExoMachineNode } from '@exodra/core';
 import { nextExoId, provideExoIds } from '@exodra/context';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
@@ -26,11 +26,12 @@ const idTaker = (tag: string) => {
         });
         return { id };
     });
-    const m = createExoMachineBuilder<TExoMachineNode>(schema);
-    m.createInitialState((c) => {
-        c.attr(schema.ports.id, nextExoId(c));
+    const m = createExoMachine<TExoMachineNode>(schema, {
+        createInitialState: (c) => {
+            c.attr(schema.ports.id, nextExoId(c));
+        },
     });
-    return m.done();
+    return m;
 };
 
 const PAGE = idTaker('article');
@@ -50,14 +51,15 @@ const shellFor = (router: TExoRouter) => {
         });
         return { outlet, footer };
     });
-    const m = createExoMachineBuilder<TShellNode>(schema);
-    m.createInitialState((c) => {
-        provideExoIds(c, 'app');
-        provideExoRouter(c, router);
-        c.one(schema.ports.outlet, ExoOutlet as never);
-        c.one(schema.ports.footer, FOOTER as never);
+    const m = createExoMachine<TShellNode>(schema, {
+        createInitialState: (c) => {
+            provideExoIds(c, 'app');
+            provideExoRouter(c, router);
+            c.one(schema.ports.outlet, ExoOutlet as never);
+            c.one(schema.ports.footer, FOOTER as never);
+        },
     });
-    return m.done();
+    return m;
 };
 
 const mount = (routes: readonly TExoRoute[], at: string) => {

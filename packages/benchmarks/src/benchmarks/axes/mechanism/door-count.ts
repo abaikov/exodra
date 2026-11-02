@@ -49,24 +49,27 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 //       d0();
 //       d1();
 //
-//   IN A MACHINE they are TRANSITIONS DECLARED ON THE BUILDER, once per component at module load,
-//   and each one takes the instance:
+//   IN A MACHINE they are TRANSITIONS DECLARED WITH `withExoTransitions`, once per component at module
+//   load, and each one takes the instance:
 //
-//       const DOOR_0 = m.transition((c: TMS): void => {
-//           const s = c.readState(K);                         // ← the state comes off the instance
-//           s.k = (s.k * 7 + 13) % 10000;
+//       withExoTransitions(m, {
+//           DOOR_0: (c: TMS): void => {
+//               const s = c.readState<TDoorState>();          // ← the state comes off the instance
+//               s.k = (s.k * 7 + 13) % 10000;
+//           },
 //       });
 //       DOOR_0(c);                                       // ← nothing allocated per DOOR
 //
-// `m.transition` IS WHY THE DOOR TAKES THE INSTANCE AND NOT THE STATE, and it is the one thing that
-// settles the shape rather than arguing for it. A transition's subject is the exonode
-// (`TExoMachineBuilder.transition`), so a door declared as one must reach its values through
-// `c.kept` — the passed form named further down is not merely unmeasured here, it is not spellable
+// `withExoTransitions` IS WHY THE DOOR TAKES THE INSTANCE AND NOT THE STATE, and it is the one thing
+// that settles the shape rather than arguing for it. A transition's subject is the exonode
+// (`TExoMachineTransitions`), so a door declared as one must reach its values through
+// `c.readState` — the passed form named further down is not merely unmeasured here, it is not spellable
 // as a transition at all.
 //
-// ON A PLAIN `createExoMachineBuilder` A TRANSITION IS ITS OWN BODY. `createExoMachineBuilder.ts` hands `apply` straight back:
-// there is no program to settle, because nothing here derives. So declaring the doors this way costs
-// the run NOTHING and buys the file a structural fact where it used to carry an argument — and the
+// ON A PLAIN `createExoMachine` A TRANSITION IS ITS OWN BODY BEHIND ONE NULL TEST. `withExoTransitions`
+// wraps `apply` in one `transitionOverrides === null` test and calls it: there is no program to settle,
+// because nothing here derives. So declaring the doors this way costs the run one field load and one
+// null test per door call, allocates nothing per call, and buys the file a structural fact where it used to carry an argument — and the
 // identity gate that used to check that fact is struck, its note standing above `gateShapes`.
 // Composing `withExoComputedMachine` would be the dear spelling and is still refused: it would put a
 // second engine effect and a compiled program on every one of the 1000 instances per render to
@@ -119,8 +122,8 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 //                  with the shipped escapers on the five dynamic values. Byte-identical output.
 //   wire·n⟨N⟩      `@exodra/string` rendering a component whose wire builds N closures per instance
 //                  and calls them.
-//   machine·n⟨N⟩   the IMPERATIVE machine: one `createExoMachineBuilder` per component, its state in the cache
-//                  slot (`m.keep`), N doors declared once per component as TRANSITIONS, and ZERO
+//   machine·n⟨N⟩   the IMPERATIVE machine: one `createExoMachine` per component, its state in
+//                  `c.state` (`createInitialState`), N doors declared once per component as TRANSITIONS, and ZERO
 //                  function objects PER DOOR. It allocates ONE function per INSTANCE and not per
 //                  door — the teardown closure `armExoNode` files for the mount effect below
 //                  — which is a constant addend at every rung and is what this arm pays for being
@@ -324,8 +327,8 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 //    one instance, and the commit path (`commitExoMachine`, the mark word, the inversion, the wake
 //    chains) is on NO path in this file — these machines declare no `m.derive` and no `m.fill`, and
 //    the ONE `m.effect` each declares is the mount paint, which returns `null` and is never
-//    restarted. A transition declared on a plain `createExoMachineBuilder` IS its body, so no door carries a
-//    settle either.
+//    restarted. A transition declared on a plain `createExoMachine` IS its body behind one
+//    `transitionOverrides === null` test, so no door carries a settle either.
 //  * NOTHING ABOUT STATE WIDTH. Every rung carries ONE accumulator and one row number, whatever N
 //    is; `machine-state-shapes.ts` is the axis that varies the state and not the doors.
 //  * NOTHING ABOUT WHAT A DOOR DOES. Sixteen arithmetic bodies of one statement each. A door that
@@ -374,7 +377,10 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 import {
     escapeExoAttributeValue,
     escapeExoText,
-    createExoMachineBuilder,
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
     createExoSchema,
 } from '@exodra/core';
 import type {
@@ -636,7 +642,7 @@ function listOver<TItem>(row: TExoStrMachine, items: readonly TItem[]): TExoStrM
         forms: [],
         createInitialState: (c: TExoStrNode): void => {
             NEXT_ROW = 0;
-            c.list(port, row, items.length);
+            c.list(port, row, items);
         },
         effects: EXO_NO_EFFECTS,
         handlers: EXO_NO_HANDLERS,
@@ -1193,17 +1199,18 @@ const ITEMS: readonly number[] = new Array<number>(ROWS).fill(0);
 // ARM 3 — THE IMPERATIVE MACHINE. N doors declared ONCE PER COMPONENT as TRANSITIONS, the state in
 // the cache slot, ZERO function objects PER DOOR.
 //
-// FOUR DECLARATIONS PER COMPONENT AND THEY ARE ALL THERE IS: one `m.keep` (the state), N
-// `m.transition`s (the doors), one `m.effect` (the mount paint), and `done()`. No `m.derive`, no
-// `m.fill`, no handler, no props and NO WIRE — a machine is a schema and a plan, which is why
-// nothing in this arm can be handed a row number.
+// FOUR DECLARATIONS PER COMPONENT AND THEY ARE ALL THERE IS: one `createExoMachine` with its
+// `createInitialState` (the state), one `withExoTransitions` with N doors, one `withExoEffects` with one
+// effect (the mount paint), and the `composeExoMachine` over them. No derivation, no fill, no handler,
+// no props and NO WIRE — a machine is a schema and a plan, which is why nothing in this arm can be
+// handed a row number.
 //
-// EACH ORDER IS FORCED: `done()` SEALS the builder, so every transition and the effect are declared
-// above it, and `createExoMachineBuilder.ts` throws by name on a declaration that arrives after.
+// EACH DECORATOR RETURNS A NEW MACHINE and leaves its input unchanged, so the doors and the effect
+// are on `MACHINE_*` and the bare `m*` it was composed from has neither.
 //
 // THE BODIES ARE WRITTEN OUT AND ARE DISTINCT, exactly as the wire's are, and each one fetches the
-// cache itself through `c.kept` — which is what a door fired from an event would have to do, what
-// `handler-count`'s machine arm does, and, since `m.transition`'s subject is the exonode, the only
+// cache itself through `c.readState` — which is what a door fired from an event would have to do, what
+// `handler-count`'s machine arm does, and, since a transition's subject is the exonode, the only
 // thing a door CAN do. The alternative (fetch once, pass it in) is the rung named in the header and
 // not built.
 //
@@ -1226,341 +1233,435 @@ const ITEMS: readonly number[] = new Array<number>(ROWS).fill(0);
  *  `TExoStrNode`. */
 type TMS = TExoStrNode;
 
-const mA1 = createExoMachineBuilder<TExoStrNode>(S_A1);
-const KA1 = mA1.createInitialState((): TDoorState => ({ i: 0, k: 0 }));
-const DOOR_A1_0 = mA1.transition((c: TMS): void => {
-    C_MA1[0]++;
-    const s = c.readState(KA1);
-    s.k = (s.k * 7 + 13) % 10000;
+const mA1 = createExoMachine<TExoStrNode>(S_A1, {
+    createInitialState: (): TDoorState => ({ i: 0, k: 0 }),
 });
-mA1.effect((c: TMS): null => {
-    const s = c.readState(KA1);
-    s.i = NEXT_ROW++;
-    DOOR_A1_0(c);
-    c.attr(PA1.id, s.i);
-    c.attr(PA1.href, '/i/' + s.i);
-    c.text(PA1.title, 'Task ' + s.i);
-    c.text(PA1.by, AUTHORS_A[s.i & 7]);
-    c.text(PA1.k, 10000 + s.k);
-    return null;
-});
-const MACHINE_A1 = mA1.done();
+const MACHINE_A1 = composeExoMachine(
+    mA1,
+    (m) =>
+        withExoTransitions(m, {
+            DOOR_A1_0: (c: TMS): void => {
+                C_MA1[0]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 7 + 13) % 10000;
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c: TMS): null => {
+                const s = c.readState<TDoorState>();
+                s.i = NEXT_ROW++;
+                DOOR_A1_0(c);
+                c.attr(PA1.id, s.i);
+                c.attr(PA1.href, '/i/' + s.i);
+                c.text(PA1.title, 'Task ' + s.i);
+                c.text(PA1.by, AUTHORS_A[s.i & 7]);
+                c.text(PA1.k, 10000 + s.k);
+                return null;
+            });
+        })
+);
+const { DOOR_A1_0 } = MACHINE_A1.transitions;
 
-const mA4 = createExoMachineBuilder<TExoStrNode>(S_A4);
-const KA4 = mA4.createInitialState((): TDoorState => ({ i: 0, k: 0 }));
-const DOOR_A4_0 = mA4.transition((c: TMS): void => {
-    C_MA4[0]++;
-    const s = c.readState(KA4);
-    s.k = (s.k * 7 + 13) % 10000;
+const mA4 = createExoMachine<TExoStrNode>(S_A4, {
+    createInitialState: (): TDoorState => ({ i: 0, k: 0 }),
 });
-const DOOR_A4_1 = mA4.transition((c: TMS): void => {
-    C_MA4[1]++;
-    const s = c.readState(KA4);
-    s.k = (s.k + s.i * 3) % 10000;
-});
-const DOOR_A4_2 = mA4.transition((c: TMS): void => {
-    C_MA4[2]++;
-    const s = c.readState(KA4);
-    s.k = (s.k ^ 685) % 10000;
-});
-const DOOR_A4_3 = mA4.transition((c: TMS): void => {
-    C_MA4[3]++;
-    const s = c.readState(KA4);
-    s.k = (s.k * 3 + 1) % 10000;
-});
-mA4.effect((c: TMS): null => {
-    const s = c.readState(KA4);
-    s.i = NEXT_ROW++;
-    DOOR_A4_0(c);
-    DOOR_A4_1(c);
-    DOOR_A4_2(c);
-    DOOR_A4_3(c);
-    c.attr(PA4.id, s.i);
-    c.attr(PA4.href, '/i/' + s.i);
-    c.text(PA4.title, 'Task ' + s.i);
-    c.text(PA4.by, AUTHORS_A[s.i & 7]);
-    c.text(PA4.k, 10000 + s.k);
-    return null;
-});
-const MACHINE_A4 = mA4.done();
+const MACHINE_A4 = composeExoMachine(
+    mA4,
+    (m) =>
+        withExoTransitions(m, {
+            DOOR_A4_0: (c: TMS): void => {
+                C_MA4[0]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 7 + 13) % 10000;
+            },
+            DOOR_A4_1: (c: TMS): void => {
+                C_MA4[1]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + s.i * 3) % 10000;
+            },
+            DOOR_A4_2: (c: TMS): void => {
+                C_MA4[2]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k ^ 685) % 10000;
+            },
+            DOOR_A4_3: (c: TMS): void => {
+                C_MA4[3]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 3 + 1) % 10000;
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c: TMS): null => {
+                const s = c.readState<TDoorState>();
+                s.i = NEXT_ROW++;
+                DOOR_A4_0(c);
+                DOOR_A4_1(c);
+                DOOR_A4_2(c);
+                DOOR_A4_3(c);
+                c.attr(PA4.id, s.i);
+                c.attr(PA4.href, '/i/' + s.i);
+                c.text(PA4.title, 'Task ' + s.i);
+                c.text(PA4.by, AUTHORS_A[s.i & 7]);
+                c.text(PA4.k, 10000 + s.k);
+                return null;
+            });
+        })
+);
+const { DOOR_A4_0, DOOR_A4_1, DOOR_A4_2, DOOR_A4_3 } = MACHINE_A4.transitions;
 
-const mA16 = createExoMachineBuilder<TExoStrNode>(S_A16);
-const KA16 = mA16.createInitialState((): TDoorState => ({ i: 0, k: 0 }));
-const DOOR_A16_0 = mA16.transition((c: TMS): void => {
-    C_MA16[0]++;
-    const s = c.readState(KA16);
-    s.k = (s.k * 7 + 13) % 10000;
+const mA16 = createExoMachine<TExoStrNode>(S_A16, {
+    createInitialState: (): TDoorState => ({ i: 0, k: 0 }),
 });
-const DOOR_A16_1 = mA16.transition((c: TMS): void => {
-    C_MA16[1]++;
-    const s = c.readState(KA16);
-    s.k = (s.k + s.i * 3) % 10000;
-});
-const DOOR_A16_2 = mA16.transition((c: TMS): void => {
-    C_MA16[2]++;
-    const s = c.readState(KA16);
-    s.k = (s.k ^ 685) % 10000;
-});
-const DOOR_A16_3 = mA16.transition((c: TMS): void => {
-    C_MA16[3]++;
-    const s = c.readState(KA16);
-    s.k = (s.k * 3 + 1) % 10000;
-});
-const DOOR_A16_4 = mA16.transition((c: TMS): void => {
-    C_MA16[4]++;
-    const s = c.readState(KA16);
-    s.k = (9999 - s.k) % 10000;
-});
-const DOOR_A16_5 = mA16.transition((c: TMS): void => {
-    C_MA16[5]++;
-    const s = c.readState(KA16);
-    s.k = (s.k + (s.k >> 3)) % 10000;
-});
-const DOOR_A16_6 = mA16.transition((c: TMS): void => {
-    C_MA16[6]++;
-    const s = c.readState(KA16);
-    s.k = (s.k * 11 + s.i) % 10000;
-});
-const DOOR_A16_7 = mA16.transition((c: TMS): void => {
-    C_MA16[7]++;
-    const s = c.readState(KA16);
-    s.k = (s.k ^ (s.k >> 5)) % 10000;
-});
-const DOOR_A16_8 = mA16.transition((c: TMS): void => {
-    C_MA16[8]++;
-    const s = c.readState(KA16);
-    s.k = (s.k + 4321) % 10000;
-});
-const DOOR_A16_9 = mA16.transition((c: TMS): void => {
-    C_MA16[9]++;
-    const s = c.readState(KA16);
-    s.k = (s.k * 5 + 2) % 10000;
-});
-const DOOR_A16_10 = mA16.transition((c: TMS): void => {
-    C_MA16[10]++;
-    const s = c.readState(KA16);
-    s.k = (s.k | 1) % 10000;
-});
-const DOOR_A16_11 = mA16.transition((c: TMS): void => {
-    C_MA16[11]++;
-    const s = c.readState(KA16);
-    s.k = (s.k * 2 + (s.i & 7)) % 10000;
-});
-const DOOR_A16_12 = mA16.transition((c: TMS): void => {
-    C_MA16[12]++;
-    const s = c.readState(KA16);
-    s.k = (s.k + 1234) % 10000;
-});
-const DOOR_A16_13 = mA16.transition((c: TMS): void => {
-    C_MA16[13]++;
-    const s = c.readState(KA16);
-    s.k = (s.k * 13 + 7) % 10000;
-});
-const DOOR_A16_14 = mA16.transition((c: TMS): void => {
-    C_MA16[14]++;
-    const s = c.readState(KA16);
-    s.k = (s.k ^ 1365) % 10000;
-});
-const DOOR_A16_15 = mA16.transition((c: TMS): void => {
-    C_MA16[15]++;
-    const s = c.readState(KA16);
-    s.k = (s.k * 3 + (s.i >> 2)) % 10000;
-});
-mA16.effect((c: TMS): null => {
-    const s = c.readState(KA16);
-    s.i = NEXT_ROW++;
-    DOOR_A16_0(c);
-    DOOR_A16_1(c);
-    DOOR_A16_2(c);
-    DOOR_A16_3(c);
-    DOOR_A16_4(c);
-    DOOR_A16_5(c);
-    DOOR_A16_6(c);
-    DOOR_A16_7(c);
-    DOOR_A16_8(c);
-    DOOR_A16_9(c);
-    DOOR_A16_10(c);
-    DOOR_A16_11(c);
-    DOOR_A16_12(c);
-    DOOR_A16_13(c);
-    DOOR_A16_14(c);
-    DOOR_A16_15(c);
-    c.attr(PA16.id, s.i);
-    c.attr(PA16.href, '/i/' + s.i);
-    c.text(PA16.title, 'Task ' + s.i);
-    c.text(PA16.by, AUTHORS_A[s.i & 7]);
-    c.text(PA16.k, 10000 + s.k);
-    return null;
-});
-const MACHINE_A16 = mA16.done();
+const MACHINE_A16 = composeExoMachine(
+    mA16,
+    (m) =>
+        withExoTransitions(m, {
+            DOOR_A16_0: (c: TMS): void => {
+                C_MA16[0]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 7 + 13) % 10000;
+            },
+            DOOR_A16_1: (c: TMS): void => {
+                C_MA16[1]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + s.i * 3) % 10000;
+            },
+            DOOR_A16_2: (c: TMS): void => {
+                C_MA16[2]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k ^ 685) % 10000;
+            },
+            DOOR_A16_3: (c: TMS): void => {
+                C_MA16[3]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 3 + 1) % 10000;
+            },
+            DOOR_A16_4: (c: TMS): void => {
+                C_MA16[4]++;
+                const s = c.readState<TDoorState>();
+                s.k = (9999 - s.k) % 10000;
+            },
+            DOOR_A16_5: (c: TMS): void => {
+                C_MA16[5]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + (s.k >> 3)) % 10000;
+            },
+            DOOR_A16_6: (c: TMS): void => {
+                C_MA16[6]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 11 + s.i) % 10000;
+            },
+            DOOR_A16_7: (c: TMS): void => {
+                C_MA16[7]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k ^ (s.k >> 5)) % 10000;
+            },
+            DOOR_A16_8: (c: TMS): void => {
+                C_MA16[8]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + 4321) % 10000;
+            },
+            DOOR_A16_9: (c: TMS): void => {
+                C_MA16[9]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 5 + 2) % 10000;
+            },
+            DOOR_A16_10: (c: TMS): void => {
+                C_MA16[10]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k | 1) % 10000;
+            },
+            DOOR_A16_11: (c: TMS): void => {
+                C_MA16[11]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 2 + (s.i & 7)) % 10000;
+            },
+            DOOR_A16_12: (c: TMS): void => {
+                C_MA16[12]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + 1234) % 10000;
+            },
+            DOOR_A16_13: (c: TMS): void => {
+                C_MA16[13]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 13 + 7) % 10000;
+            },
+            DOOR_A16_14: (c: TMS): void => {
+                C_MA16[14]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k ^ 1365) % 10000;
+            },
+            DOOR_A16_15: (c: TMS): void => {
+                C_MA16[15]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 3 + (s.i >> 2)) % 10000;
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c: TMS): null => {
+                const s = c.readState<TDoorState>();
+                s.i = NEXT_ROW++;
+                DOOR_A16_0(c);
+                DOOR_A16_1(c);
+                DOOR_A16_2(c);
+                DOOR_A16_3(c);
+                DOOR_A16_4(c);
+                DOOR_A16_5(c);
+                DOOR_A16_6(c);
+                DOOR_A16_7(c);
+                DOOR_A16_8(c);
+                DOOR_A16_9(c);
+                DOOR_A16_10(c);
+                DOOR_A16_11(c);
+                DOOR_A16_12(c);
+                DOOR_A16_13(c);
+                DOOR_A16_14(c);
+                DOOR_A16_15(c);
+                c.attr(PA16.id, s.i);
+                c.attr(PA16.href, '/i/' + s.i);
+                c.text(PA16.title, 'Task ' + s.i);
+                c.text(PA16.by, AUTHORS_A[s.i & 7]);
+                c.text(PA16.k, 10000 + s.k);
+                return null;
+            });
+        })
+);
+const {
+    DOOR_A16_0,
+    DOOR_A16_1,
+    DOOR_A16_2,
+    DOOR_A16_3,
+    DOOR_A16_4,
+    DOOR_A16_5,
+    DOOR_A16_6,
+    DOOR_A16_7,
+    DOOR_A16_8,
+    DOOR_A16_9,
+    DOOR_A16_10,
+    DOOR_A16_11,
+    DOOR_A16_12,
+    DOOR_A16_13,
+    DOOR_A16_14,
+    DOOR_A16_15,
+} = MACHINE_A16.transitions;
 
-const mB1 = createExoMachineBuilder<TExoStrNode>(S_B1);
-const KB1 = mB1.createInitialState((): TDoorState => ({ i: 0, k: 0 }));
-const DOOR_B1_0 = mB1.transition((c: TMS): void => {
-    C_MB1[0]++;
-    const s = c.readState(KB1);
-    s.k = (s.k * 7 + 13) % 10000;
+const mB1 = createExoMachine<TExoStrNode>(S_B1, {
+    createInitialState: (): TDoorState => ({ i: 0, k: 0 }),
 });
-mB1.effect((c: TMS): null => {
-    const s = c.readState(KB1);
-    s.i = NEXT_ROW++;
-    DOOR_B1_0(c);
-    c.attr(PB1.id, s.i);
-    c.attr(PB1.href, '/i/' + s.i);
-    c.text(PB1.title, 'Task ' + s.i);
-    c.text(PB1.by, AUTHORS_B[s.i & 7]);
-    c.text(PB1.k, 10000 + s.k);
-    return null;
-});
-const MACHINE_B1 = mB1.done();
+const MACHINE_B1 = composeExoMachine(
+    mB1,
+    (m) =>
+        withExoTransitions(m, {
+            DOOR_B1_0: (c: TMS): void => {
+                C_MB1[0]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 7 + 13) % 10000;
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c: TMS): null => {
+                const s = c.readState<TDoorState>();
+                s.i = NEXT_ROW++;
+                DOOR_B1_0(c);
+                c.attr(PB1.id, s.i);
+                c.attr(PB1.href, '/i/' + s.i);
+                c.text(PB1.title, 'Task ' + s.i);
+                c.text(PB1.by, AUTHORS_B[s.i & 7]);
+                c.text(PB1.k, 10000 + s.k);
+                return null;
+            });
+        })
+);
+const { DOOR_B1_0 } = MACHINE_B1.transitions;
 
-const mB4 = createExoMachineBuilder<TExoStrNode>(S_B4);
-const KB4 = mB4.createInitialState((): TDoorState => ({ i: 0, k: 0 }));
-const DOOR_B4_0 = mB4.transition((c: TMS): void => {
-    C_MB4[0]++;
-    const s = c.readState(KB4);
-    s.k = (s.k * 7 + 13) % 10000;
+const mB4 = createExoMachine<TExoStrNode>(S_B4, {
+    createInitialState: (): TDoorState => ({ i: 0, k: 0 }),
 });
-const DOOR_B4_1 = mB4.transition((c: TMS): void => {
-    C_MB4[1]++;
-    const s = c.readState(KB4);
-    s.k = (s.k + s.i * 3) % 10000;
-});
-const DOOR_B4_2 = mB4.transition((c: TMS): void => {
-    C_MB4[2]++;
-    const s = c.readState(KB4);
-    s.k = (s.k ^ 685) % 10000;
-});
-const DOOR_B4_3 = mB4.transition((c: TMS): void => {
-    C_MB4[3]++;
-    const s = c.readState(KB4);
-    s.k = (s.k * 3 + 1) % 10000;
-});
-mB4.effect((c: TMS): null => {
-    const s = c.readState(KB4);
-    s.i = NEXT_ROW++;
-    DOOR_B4_0(c);
-    DOOR_B4_1(c);
-    DOOR_B4_2(c);
-    DOOR_B4_3(c);
-    c.attr(PB4.id, s.i);
-    c.attr(PB4.href, '/i/' + s.i);
-    c.text(PB4.title, 'Task ' + s.i);
-    c.text(PB4.by, AUTHORS_B[s.i & 7]);
-    c.text(PB4.k, 10000 + s.k);
-    return null;
-});
-const MACHINE_B4 = mB4.done();
+const MACHINE_B4 = composeExoMachine(
+    mB4,
+    (m) =>
+        withExoTransitions(m, {
+            DOOR_B4_0: (c: TMS): void => {
+                C_MB4[0]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 7 + 13) % 10000;
+            },
+            DOOR_B4_1: (c: TMS): void => {
+                C_MB4[1]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + s.i * 3) % 10000;
+            },
+            DOOR_B4_2: (c: TMS): void => {
+                C_MB4[2]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k ^ 685) % 10000;
+            },
+            DOOR_B4_3: (c: TMS): void => {
+                C_MB4[3]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 3 + 1) % 10000;
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c: TMS): null => {
+                const s = c.readState<TDoorState>();
+                s.i = NEXT_ROW++;
+                DOOR_B4_0(c);
+                DOOR_B4_1(c);
+                DOOR_B4_2(c);
+                DOOR_B4_3(c);
+                c.attr(PB4.id, s.i);
+                c.attr(PB4.href, '/i/' + s.i);
+                c.text(PB4.title, 'Task ' + s.i);
+                c.text(PB4.by, AUTHORS_B[s.i & 7]);
+                c.text(PB4.k, 10000 + s.k);
+                return null;
+            });
+        })
+);
+const { DOOR_B4_0, DOOR_B4_1, DOOR_B4_2, DOOR_B4_3 } = MACHINE_B4.transitions;
 
-const mB16 = createExoMachineBuilder<TExoStrNode>(S_B16);
-const KB16 = mB16.createInitialState((): TDoorState => ({ i: 0, k: 0 }));
-const DOOR_B16_0 = mB16.transition((c: TMS): void => {
-    C_MB16[0]++;
-    const s = c.readState(KB16);
-    s.k = (s.k * 7 + 13) % 10000;
+const mB16 = createExoMachine<TExoStrNode>(S_B16, {
+    createInitialState: (): TDoorState => ({ i: 0, k: 0 }),
 });
-const DOOR_B16_1 = mB16.transition((c: TMS): void => {
-    C_MB16[1]++;
-    const s = c.readState(KB16);
-    s.k = (s.k + s.i * 3) % 10000;
-});
-const DOOR_B16_2 = mB16.transition((c: TMS): void => {
-    C_MB16[2]++;
-    const s = c.readState(KB16);
-    s.k = (s.k ^ 685) % 10000;
-});
-const DOOR_B16_3 = mB16.transition((c: TMS): void => {
-    C_MB16[3]++;
-    const s = c.readState(KB16);
-    s.k = (s.k * 3 + 1) % 10000;
-});
-const DOOR_B16_4 = mB16.transition((c: TMS): void => {
-    C_MB16[4]++;
-    const s = c.readState(KB16);
-    s.k = (9999 - s.k) % 10000;
-});
-const DOOR_B16_5 = mB16.transition((c: TMS): void => {
-    C_MB16[5]++;
-    const s = c.readState(KB16);
-    s.k = (s.k + (s.k >> 3)) % 10000;
-});
-const DOOR_B16_6 = mB16.transition((c: TMS): void => {
-    C_MB16[6]++;
-    const s = c.readState(KB16);
-    s.k = (s.k * 11 + s.i) % 10000;
-});
-const DOOR_B16_7 = mB16.transition((c: TMS): void => {
-    C_MB16[7]++;
-    const s = c.readState(KB16);
-    s.k = (s.k ^ (s.k >> 5)) % 10000;
-});
-const DOOR_B16_8 = mB16.transition((c: TMS): void => {
-    C_MB16[8]++;
-    const s = c.readState(KB16);
-    s.k = (s.k + 4321) % 10000;
-});
-const DOOR_B16_9 = mB16.transition((c: TMS): void => {
-    C_MB16[9]++;
-    const s = c.readState(KB16);
-    s.k = (s.k * 5 + 2) % 10000;
-});
-const DOOR_B16_10 = mB16.transition((c: TMS): void => {
-    C_MB16[10]++;
-    const s = c.readState(KB16);
-    s.k = (s.k | 1) % 10000;
-});
-const DOOR_B16_11 = mB16.transition((c: TMS): void => {
-    C_MB16[11]++;
-    const s = c.readState(KB16);
-    s.k = (s.k * 2 + (s.i & 7)) % 10000;
-});
-const DOOR_B16_12 = mB16.transition((c: TMS): void => {
-    C_MB16[12]++;
-    const s = c.readState(KB16);
-    s.k = (s.k + 1234) % 10000;
-});
-const DOOR_B16_13 = mB16.transition((c: TMS): void => {
-    C_MB16[13]++;
-    const s = c.readState(KB16);
-    s.k = (s.k * 13 + 7) % 10000;
-});
-const DOOR_B16_14 = mB16.transition((c: TMS): void => {
-    C_MB16[14]++;
-    const s = c.readState(KB16);
-    s.k = (s.k ^ 1365) % 10000;
-});
-const DOOR_B16_15 = mB16.transition((c: TMS): void => {
-    C_MB16[15]++;
-    const s = c.readState(KB16);
-    s.k = (s.k * 3 + (s.i >> 2)) % 10000;
-});
-mB16.effect((c: TMS): null => {
-    const s = c.readState(KB16);
-    s.i = NEXT_ROW++;
-    DOOR_B16_0(c);
-    DOOR_B16_1(c);
-    DOOR_B16_2(c);
-    DOOR_B16_3(c);
-    DOOR_B16_4(c);
-    DOOR_B16_5(c);
-    DOOR_B16_6(c);
-    DOOR_B16_7(c);
-    DOOR_B16_8(c);
-    DOOR_B16_9(c);
-    DOOR_B16_10(c);
-    DOOR_B16_11(c);
-    DOOR_B16_12(c);
-    DOOR_B16_13(c);
-    DOOR_B16_14(c);
-    DOOR_B16_15(c);
-    c.attr(PB16.id, s.i);
-    c.attr(PB16.href, '/i/' + s.i);
-    c.text(PB16.title, 'Task ' + s.i);
-    c.text(PB16.by, AUTHORS_B[s.i & 7]);
-    c.text(PB16.k, 10000 + s.k);
-    return null;
-});
-const MACHINE_B16 = mB16.done();
+const MACHINE_B16 = composeExoMachine(
+    mB16,
+    (m) =>
+        withExoTransitions(m, {
+            DOOR_B16_0: (c: TMS): void => {
+                C_MB16[0]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 7 + 13) % 10000;
+            },
+            DOOR_B16_1: (c: TMS): void => {
+                C_MB16[1]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + s.i * 3) % 10000;
+            },
+            DOOR_B16_2: (c: TMS): void => {
+                C_MB16[2]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k ^ 685) % 10000;
+            },
+            DOOR_B16_3: (c: TMS): void => {
+                C_MB16[3]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 3 + 1) % 10000;
+            },
+            DOOR_B16_4: (c: TMS): void => {
+                C_MB16[4]++;
+                const s = c.readState<TDoorState>();
+                s.k = (9999 - s.k) % 10000;
+            },
+            DOOR_B16_5: (c: TMS): void => {
+                C_MB16[5]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + (s.k >> 3)) % 10000;
+            },
+            DOOR_B16_6: (c: TMS): void => {
+                C_MB16[6]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 11 + s.i) % 10000;
+            },
+            DOOR_B16_7: (c: TMS): void => {
+                C_MB16[7]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k ^ (s.k >> 5)) % 10000;
+            },
+            DOOR_B16_8: (c: TMS): void => {
+                C_MB16[8]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + 4321) % 10000;
+            },
+            DOOR_B16_9: (c: TMS): void => {
+                C_MB16[9]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 5 + 2) % 10000;
+            },
+            DOOR_B16_10: (c: TMS): void => {
+                C_MB16[10]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k | 1) % 10000;
+            },
+            DOOR_B16_11: (c: TMS): void => {
+                C_MB16[11]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 2 + (s.i & 7)) % 10000;
+            },
+            DOOR_B16_12: (c: TMS): void => {
+                C_MB16[12]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k + 1234) % 10000;
+            },
+            DOOR_B16_13: (c: TMS): void => {
+                C_MB16[13]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 13 + 7) % 10000;
+            },
+            DOOR_B16_14: (c: TMS): void => {
+                C_MB16[14]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k ^ 1365) % 10000;
+            },
+            DOOR_B16_15: (c: TMS): void => {
+                C_MB16[15]++;
+                const s = c.readState<TDoorState>();
+                s.k = (s.k * 3 + (s.i >> 2)) % 10000;
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c: TMS): null => {
+                const s = c.readState<TDoorState>();
+                s.i = NEXT_ROW++;
+                DOOR_B16_0(c);
+                DOOR_B16_1(c);
+                DOOR_B16_2(c);
+                DOOR_B16_3(c);
+                DOOR_B16_4(c);
+                DOOR_B16_5(c);
+                DOOR_B16_6(c);
+                DOOR_B16_7(c);
+                DOOR_B16_8(c);
+                DOOR_B16_9(c);
+                DOOR_B16_10(c);
+                DOOR_B16_11(c);
+                DOOR_B16_12(c);
+                DOOR_B16_13(c);
+                DOOR_B16_14(c);
+                DOOR_B16_15(c);
+                c.attr(PB16.id, s.i);
+                c.attr(PB16.href, '/i/' + s.i);
+                c.text(PB16.title, 'Task ' + s.i);
+                c.text(PB16.by, AUTHORS_B[s.i & 7]);
+                c.text(PB16.k, 10000 + s.k);
+                return null;
+            });
+        })
+);
+const {
+    DOOR_B16_0,
+    DOOR_B16_1,
+    DOOR_B16_2,
+    DOOR_B16_3,
+    DOOR_B16_4,
+    DOOR_B16_5,
+    DOOR_B16_6,
+    DOOR_B16_7,
+    DOOR_B16_8,
+    DOOR_B16_9,
+    DOOR_B16_10,
+    DOOR_B16_11,
+    DOOR_B16_12,
+    DOOR_B16_13,
+    DOOR_B16_14,
+    DOOR_B16_15,
+} = MACHINE_B16.transitions;
 
 // ---------------------------------------------------------------------------------------
 // THE EIGHTEEN PROGRAMS. Each one produces the whole page.
@@ -1811,10 +1912,11 @@ function gateBytes(who: string, reference: string, got: string): void {
  * and no effect, `exoTransition.ts:22-25` returns `apply` untouched, and that specialisation was
  * what made the machine arm allocate nothing per door call.
  *
- * THE DOORS ARE NOW DECLARED THROUGH `m.transition` AND THE QUESTION IS SETTLED BY CONSTRUCTION.
- * On a plain `createExoMachineBuilder` there is no program to settle and `createExoMachineBuilder.ts` hands `apply` straight
- * back, so the door a rung fires IS the body written beside it — not a wrapper that happens to be
- * elided. A gate cannot check what the declaration already is.
+ * THE DOORS ARE NOW DECLARED THROUGH `withExoTransitions` AND THE QUESTION IS SETTLED BY
+ * CONSTRUCTION. On a plain `createExoMachine` there is no program to settle and `withExoTransitions`
+ * puts one `transitionOverrides === null` test in front of `apply`, so the door a rung fires is the
+ * body written beside it behind that one test — not a settle. A gate cannot check what the
+ * declaration already is.
  *
  * WHAT IS LOST WITH IT: if the machine arm ever grows a SETTLED transition — which needs
  * `withExoComputedMachine`, a compiled program and therefore a derivation — nothing in this file
@@ -1822,14 +1924,14 @@ function gateBytes(who: string, reference: string, got: string): void {
  */
 function gateDoors(): string[] {
     return [
-        '  doors                   42, every one declared with `m.transition` — on a plain createExoMachineBuilder ' +
-            'a transition IS its body, so the machine arm fires the function written beside it ' +
+        '  doors                   42, every one declared with `withExoTransitions` — on a plain createExoMachine ' +
+            'a transition IS its body behind one null test, so the machine arm fires the function written beside it ' +
             '(the identity gate that used to check this is struck; see its note above)',
         '  mount paint             6, one `m.effect` per machine — the only per-instance hook a ' +
             'SERVER machine has, because `enode.state` is installed after the last keep-seeder and ' +
             '`c.kept` is what every door reads',
         '  source lines, rung 16   floor 51 · wire 90 · machine 109 — the ladder costs the machine ' +
-            'arm the most to WRITE (a keep, sixteen transitions, an effect and a done() against the ' +
+            'arm the most to WRITE (a createInitialState, sixteen transitions, an effect and a composeExoMachine against the ' +
             "wire's one function), counted off this file's own declarations",
     ];
 }

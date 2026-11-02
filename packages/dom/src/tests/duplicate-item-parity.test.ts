@@ -36,10 +36,6 @@ const EXO_STR = new ExoStrBackend();
 
 type TItem = { label: string };
 
-/** What the rows read, BY INDEX: a wire is handed its position and nothing else, so the labels a
- *  list shows are the caller's to put where its rows can reach them. */
-const SHOWN: TItem[] = [];
-
 const ROW = createExoTestMachine(
     (b: TExoSchemaCursor) => {
         let text!: TExoTextPort;
@@ -49,14 +45,12 @@ const ROW = createExoTestMachine(
         return { text };
     },
     (P): TExoMachineInitialState<{ text(port: TExoTextPort, value: unknown): void }> =>
-        (c, i) => {
-            c.text(P.text, SHOWN[i].label);
+        (c, item) => {
+            c.text(P.text, (item as TItem).label);
         }
 );
 
 const listOf = (items: readonly TItem[]) => {
-    SHOWN.length = 0;
-    SHOWN.push(...items);
     return createExoTestMachine(
         (b: TExoSchemaCursor) => {
             let rows!: TExoChildrenPort;
@@ -67,7 +61,7 @@ const listOf = (items: readonly TItem[]) => {
         },
         (P): TExoMachineInitialState<TExoChildrenWiring> =>
             (c) => {
-                c.list(P.rows, ROW, items.length);
+                c.list(P.rows, ROW, items);
             }
     );
 };

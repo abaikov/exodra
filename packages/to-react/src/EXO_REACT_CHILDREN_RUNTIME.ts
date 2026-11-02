@@ -1,12 +1,11 @@
 export const EXO_REACT_CHILDREN_RUNTIME = `import { createElement } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 
-type TExoChildProps = { index: number; params: unknown };
+type TExoChildProps = { params: unknown };
 
 export type TExoChild = {
     readonly key: number;
     readonly component: ComponentType<TExoChildProps>;
-    readonly index: number;
     params: unknown;
     element: ReactNode;
     list: TExoChildren | null;
@@ -27,23 +26,21 @@ let nextKey = 0;
 
 export function buildExoChild(
     component: ComponentType<TExoChildProps>,
-    index = 0,
     params?: unknown
 ): TExoChild {
     const key = nextKey++;
     return {
         key,
         component,
-        index,
         params,
-        element: createElement(component, { key, index, params }),
+        element: createElement(component, { key, params }),
         list: null,
     };
 }
 
 export function wireExoChild(child: TExoChild, _component: unknown, params?: unknown): void {
     child.params = params;
-    child.element = createElement(child.component, { key: child.key, index: child.index, params });
+    child.element = createElement(child.component, { key: child.key, params });
     if (child.list !== null) child.list.publish();
 }
 
@@ -106,7 +103,7 @@ export function reconcileExoOrder<TKey, TItem>(
     shown: TKey[],
     keys: readonly TKey[],
     want: readonly TItem[],
-    build: (item: TItem, index: number) => TExoChild
+    build: (item: TItem) => TExoChild
 ): TKey[] {
     const kept = new Map<TKey, TExoChild>();
     for (let i = 0; i < shown.length; i++) {
@@ -120,7 +117,7 @@ export function reconcileExoOrder<TKey, TItem>(
             kept.delete(keys[i]);
             next.push(child);
         } else {
-            next.push(build(want[i], i));
+            next.push(build(want[i]));
         }
     }
     kids.replace(next);

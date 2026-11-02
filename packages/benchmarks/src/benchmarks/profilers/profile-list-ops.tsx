@@ -21,7 +21,12 @@ import { type TExoChildrenPort, type TExoTextPort } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -34,10 +39,6 @@ const ROWS = 300;
 const OP_ROUNDS = 200;
 type Row = { id: number; text: string };
 
-// A wire is handed its POSITION and nothing else, so the row the reconciler is about to build
-// writes its item here an instant before `c.build` runs the wire.
-const BUILDING: Row[] = [];
-
 const LI_SCHEMA = createExoSchema((b) => {
     let text!: TExoTextPort;
     b.el('li', null, (li) => {
@@ -45,11 +46,12 @@ const LI_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mLI = createExoMachineBuilder<TExoDomNode>(LI_SCHEMA);
-mLI.createInitialState((c, i) => {
-    c.text(LI_SCHEMA.ports.text, BUILDING[i].text);
+const mLI = createExoMachine(LI_SCHEMA, {
+    createInitialState: (c: TExoDomNode, item: Row) => {
+        c.text(LI_SCHEMA.ports.text, item.text);
+    },
 });
-const LI = mLI.done();
+const LI = mLI;
 
 const el = (): HTMLElement => {
     const c = document.createElement('div');
@@ -85,24 +87,37 @@ export async function profileListOpsExodra(times = 20): Promise<void> {
             });
             return { rows: rowsPort };
         });
-        const mUL = createExoMachineBuilder<TExoDomNode>(UL_SCHEMA);
-        const K_UL = mUL.createInitialState((conn) => ({
-            kids: conn.childList(UL_SCHEMA.ports.rows),
-            shown: [] as Row[],
-        }));
-        const showRows = mUL.transition((conn: TExoDomNode) => {
-            const state = conn.readState(K_UL);
-            const want = rows.getValue();
-            state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item, i) => {
-                BUILDING[i] = item;
-                return conn.build(LI, i);
-            });
+        const mUL = createExoMachine(UL_SCHEMA, {
+            createInitialState: (conn: TExoDomNode) => ({
+                kids: conn.childList(UL_SCHEMA.ports.rows),
+                shown: [] as Row[],
+            }),
         });
-        mUL.effect((conn) => {
-            showRows(conn);
-            return rows.onChange(() => showRows(conn));
-        });
-        const UL = mUL.done();
+        const UL = composeExoMachine(
+            mUL,
+            (m) =>
+                withExoTransitions(m, {
+                    showRows: (conn) => {
+                        const state = conn.state;
+                        const want = rows.getValue();
+                        state.shown = reconcileExoOrder(
+                            state.kids,
+                            state.shown,
+                            want,
+                            want,
+                            (item) => conn.build(LI, item)
+                        );
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((conn) => {
+                        showRows(conn);
+                        return rows.onChange(() => showRows(conn));
+                    });
+                })
+        );
+        const { showRows } = UL.transitions;
         const dispose = EXO_BACKEND.render(UL, c);
         for (let r = 0; r < OP_ROUNDS; r++) {
             items.splice(150, 0, items.splice(0, 1)[0]);

@@ -32,21 +32,21 @@ React app needs nothing.)
 ```tsx setup
 /** @jsxImportSource react */
 import { ExoMount } from '@exodra/react-mount';
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachine, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 
 // Built ONCE, at module load — this is what a component is in this core. There are no props
-// anywhere: an initial state is `(exonode, index, params) => …`, and a mounted root is handed `0` as its
-// index. The EXONODE is typed `TExoMachineNode` — the surface all three backends share — rather
+// anywhere: an initial state is `(exonode, params) => …`, and a mounted root is handed the params
+// `ExoMount` was given. The EXONODE is typed `TExoMachineNode` — the surface all three backends share — rather
 // than `@exodra/dom`'s `TExoDomNode`, which would tie the component to the browser for no
 // reason.
 const ChartPorts = exoPorts({ label: EXO_PORT_TEXT });
 const chartSchema = createExoSchema(ChartPorts, b => {
   b.el('div', { class: 'chart' }, div => { div.textPort(ChartPorts.label); });
 });
-const chartBuilder = createExoMachineBuilder<TExoMachineNode>(chartSchema);
-chartBuilder.createInitialState(c => { c.text(ChartPorts.label, 'rendered by Exodra'); });
-const Chart = chartBuilder.done();
+const Chart = createExoMachine(chartSchema, {
+  createInitialState: (c: TExoMachineNode) => { c.text(ChartPorts.label, 'rendered by Exodra'); },
+});
 
 function Panel() {
   return (
@@ -108,20 +108,21 @@ refuses a re-run with `EXO0103`.
 ### More than one instance
 
 There is no `count`, and there never can be one: `backend.buildRoot` builds a single
-instance and hands its initial state `0` as its index. Rows that vary are a
+instance and hands its initial state the mount's params. Rows that vary are a
 **list**, which is a property of the component rather than of the mount — a
-children port filled with `c.list(port, Row, count)` for a fixed number of them, or
+children port filled with `c.list(port, Row, rows)` for a fixed run of them, or
 a child list opened in `createInitialState` and driven by
-`reconcileExoOrder(rows, shown, items, items, (item, i) => c.build(Row, i, { item }))`
+`reconcileExoOrder(rows, shown, items, items, (item) => c.build(Row, { item }))`
 from `@exodra/list-reconcile` in a transition, for a list that follows a source. Each
-row gets its index and, as the third argument, the params its `wire` reads.
+row gets, as its params, what its initial state and its `wire` read: `rows[i]` from
+`c.list`, the second argument of `c.build`.
 
 So mount one component that owns the list:
 
 ```tsx
 declare const Board: typeof Chart;
 // Board's initial state opens c.childList(BoardPorts.rows); an effect does
-//   c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => c.build(Row, i))
+//   c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item) => c.build(Row, item))
 <ExoMount component={Board} />
 ```
 
@@ -137,9 +138,11 @@ does not re-render, and does not need to know:
 ```tsx
 declare const status: { get(): string; subscribe(listener: () => void): () => void };
 // in the machine:
-//   statusBuilder.effect((c) => {
-//       c.text(StatusPorts.text, status.get());
-//       return status.subscribe(() => c.text(StatusPorts.text, status.get()));
+//   withExoEffects(statusBase, (effect) => {
+//       effect((c) => {
+//           c.text(StatusPorts.text, status.get());
+//           return status.subscribe(() => c.text(StatusPorts.text, status.get()));
+//       });
 //   });
 // — an effect that draws and subscribes; there is no `c.bind`.
 // When `status` changes, the text updates; React never re-rendered.

@@ -2,7 +2,13 @@
 // `mounted` ON EVERY PATH AN INSTANCE ARRIVES BY — a root mount, a `c.one`, a row of a fixed
 // `c.list`, a reconciled child, an adopted one, and a teardown. It is a FIELD, so every machine here
 // is a DECORATED one; the engine under it never touches the lifecycle slot.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import type { TExoPlacedChildren } from '@exodra/list-reconcile';
 import type {
@@ -14,7 +20,7 @@ import type {
     TExoPort,
     TExoMachineInitialState,
 } from '@exodra/core';
-import { exoTransition, withExoComputedMachine } from '@exodra/computed';
+import { withExoComputedMachine } from '@exodra/computed';
 import type { TExoComputedMachine, TExoComputedMachineNode } from '@exodra/computed';
 import { describe, expect, it } from 'vitest';
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
@@ -43,29 +49,29 @@ function buildHolder(b: TExoSchemaCursor): { slot: TExoChildrenPort } {
 
 function makeCard(log: string[]): TExoComputedMachine<TExoComputedMachineNode> {
     const schema = createExoSchema(buildCard);
-    const m = withExoComputedMachine(createExoMachineBuilder<TExoComputedMachineNode>(schema));
-    const mounted = m.mounted();
-    m.derive(schema.ports.live, [mounted], (on) => (on ? 'yes' : 'no'));
-    m.effectOn([mounted], (c) => {
-        const on = mounted.get(c);
-        log.push(`start ${on}`);
-        return (): void => {
-            log.push(`stop ${on}`);
-        };
+    return withExoComputedMachine(createExoMachine<TExoComputedMachineNode>(schema), (b) => {
+        const mounted = b.mounted();
+        b.derive(schema.ports.live, [mounted], (on) => (on ? 'yes' : 'no'));
+        b.effectOn([mounted], (c) => {
+            const on = mounted.get(c);
+            log.push(`start ${on}`);
+            return (): void => {
+                log.push(`stop ${on}`);
+            };
+        });
     });
-    return m.done();
 }
 
 type TFixedOne = {
     one(port: TExoPort, component: TExoMachine<never>): void;
 };
 type TFixedList = {
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 // A RECONCILED list is a composition, not a door: what the wire needs is the placement door and
 // `build`, and the reconciler is handed both.
 type TReactiveList = TExoMachineNode & {
-    build(component: TExoMachine<never>, index?: number): TExoNode<TExoDomMark>;
+    build(component: TExoMachine<never>, params?: unknown): TExoNode<TExoDomMark>;
     childList(port: TExoPort): TExoPlacedChildren<TExoNode<TExoDomMark>>;
 };
 
@@ -109,7 +115,7 @@ describe('mounted, on every path an instance arrives by', () => {
             buildHolder,
             (P): TExoMachineInitialState<TFixedList> =>
                 (c) => {
-                    c.list(P.slot, CARD, 2);
+                    c.list(P.slot, CARD, Array.from({ length: 2 }));
                 }
         );
         const parent = host();
@@ -123,23 +129,37 @@ describe('mounted, on every path an instance arrives by', () => {
         const CARD = makeCard(log);
         const src = source<readonly number[]>([1]);
         const holder = createExoSchema(buildHolder);
-        const m = createExoMachineBuilder<
+        const m = createExoMachine<
             TReactiveList,
             unknown,
             { rows: TExoPlacedChildren<TExoNode<TExoDomMark>>; shown: number[] }
-        >(holder);
-        m.createInitialState((c) => ({ rows: c.childList(holder.ports.slot), shown: [] }));
-        const showRows = m.transition((c) => {
-            const want = src.getValue();
-            c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (_item, i) =>
-                c.build(CARD, i)
-            );
+        >(holder, {
+            createInitialState: (c) => ({ rows: c.childList(holder.ports.slot), shown: [] }),
         });
-        m.effect((c) => {
-            showRows(c);
-            return src.onChange(() => showRows(c));
-        });
-        const PARENT = m.done();
+        const PARENT = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    showRows: (c) => {
+                        const want = src.getValue();
+                        c.state.shown = reconcileExoOrder(
+                            c.state.rows,
+                            c.state.shown,
+                            want,
+                            want,
+                            () => c.build(CARD)
+                        );
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        showRows(c);
+                        return src.onChange(() => showRows(c));
+                    });
+                })
+        );
+        const { showRows } = PARENT.transitions;
         const parent = host();
         EXO_BACKEND.render(PARENT, parent);
         expect(log).toEqual(WIRED_THEN_PLACED);
@@ -187,23 +207,28 @@ describe('mounted, on every path an instance arrives by', () => {
             });
             return { live, label };
         });
-        const m = withExoComputedMachine(createExoMachineBuilder<TExoComputedMachineNode>(schema));
-        const mounted = m.mounted();
-        const name = m.field('');
         const seen: string[] = [];
         const parent = host();
-        m.derive(schema.ports.live, [mounted], (on) => (on ? 'yes' : 'no'));
-        m.derive(schema.ports.label, [name], (value) => value);
-        m.effectOn([mounted], (c) => {
-            if (!mounted.get(c)) return null;
-            const el = parent.querySelector('li');
-            seen.push(`${el?.isConnected} ${el?.getAttribute('data-label')}`);
-            return null;
-        });
-        const CARD = m.done();
-        const setName = exoTransition<TExoComputedMachineNode, string>(CARD, (c, value) => {
-            name.set(c, value);
-        });
+        const CARD = withExoComputedMachine(
+            createExoMachine<TExoComputedMachineNode>(schema),
+            (b) => {
+                const mounted = b.mounted();
+                const name = b.field('');
+                b.derive(schema.ports.live, [mounted], (on) => (on ? 'yes' : 'no'));
+                b.derive(schema.ports.label, [name], (value) => value);
+                b.effectOn([mounted], (c) => {
+                    if (!mounted.get(c)) return null;
+                    const el = parent.querySelector('li');
+                    seen.push(`${el?.isConnected} ${el?.getAttribute('data-label')}`);
+                    return null;
+                });
+                const setName = b.transition<string, void>((c, value) => {
+                    name.set(c, value);
+                });
+                return { setName };
+            }
+        );
+        const { setName } = CARD.transitions;
 
         // `c.build` IS THE ONLY DOOR THAT LEAVES A LINE BETWEEN ARMING AND PLACEMENT, which is the
         // line this case needs: the machine is armed and standing on a detached element, the init
@@ -230,10 +255,13 @@ describe('mounted, on every path an instance arrives by', () => {
 
     it('a component that declares no mounted() never fills the exonode`s live slot', () => {
         const plain = createExoSchema(buildCard);
-        const m = withExoComputedMachine(createExoMachineBuilder<TExoComputedMachineNode>(plain));
-        const tick = m.field(0);
-        m.derive(plain.ports.live, [tick], (value) => `${value}`);
-        const PLAIN = m.done();
+        const PLAIN = withExoComputedMachine(
+            createExoMachine<TExoComputedMachineNode>(plain),
+            (b) => {
+                const tick = b.field(0);
+                b.derive(plain.ports.live, [tick], (value) => `${value}`);
+            }
+        );
         const parent = host();
         EXO_BACKEND.render(PLAIN, parent);
         expect(liveIn(parent)).toBe('0');

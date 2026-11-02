@@ -1,5 +1,11 @@
 // @vitest-environment jsdom
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachine,
     TExoMachineNode,
@@ -64,27 +70,36 @@ const rowWith = (
 ): TExoMachine<TSurface, TRowPorts> => {
     if (follow === undefined) return createExoTestMachine(buildRow, make);
     const schema = createExoSchema(buildRow);
-    const m = createExoMachineBuilder<TExoMachineNode & TSurface>(schema);
     const fill = make(schema.ports);
-    m.createInitialState((c, i, params) => fill(c, i, params));
     const following = follow(schema.ports);
-    const draw = m.transition((c) => following.draw(c));
-    m.effect((c) => {
-        draw(c);
-        const offs = following.sources.map((followed) => followed.onChange(() => draw(c)));
-        return () => {
-            for (const off of offs) off();
-        };
-    });
-    return m.done() as unknown as TExoMachine<TSurface, TRowPorts>;
+    const row = composeExoMachine(
+        createExoMachine<TExoMachineNode & TSurface>(schema, {
+            createInitialState: (c, params) => fill(c, params),
+        }),
+        (m) => withExoTransitions(m, { draw: (c) => following.draw(c) }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    draw(c);
+                    const offs = following.sources.map((followed) =>
+                        followed.onChange(() => draw(c))
+                    );
+                    return () => {
+                        for (const off of offs) off();
+                    };
+                });
+            })
+    );
+    const { draw } = row.transitions;
+    return row as unknown as TExoMachine<TSurface, TRowPorts>;
 };
 
 /**
  * N ROWS OF ONE SHAPE, INSIDE A `<ul>` — which is where an application keeps its multiplicity.
  *
  * `c.list` is the FIXED form: no registry, no diff and no subscription of its own, and the one
- * children call that adopts several rows of one schema. It hands instance `i` the number `i`, which
- * is the whole of what a wire is told about its position.
+ * children call that adopts several rows of one schema. Instance `at` is handed the number `at` as
+ * its params, which is the whole of what a wire is told about its position.
  */
 const listOf = (
     make: (ports: TRowPorts) => TExoMachineInitialState<TSurface>,
@@ -102,7 +117,11 @@ const listOf = (
         },
         (P): TExoMachineInitialState<TExoChildrenWiring<Event, Element>> =>
             (c) => {
-                c.list(P.rows, ROW, n);
+                c.list(
+                    P.rows,
+                    ROW,
+                    Array.from({ length: n }, (_, at) => at)
+                );
             }
     );
 };
@@ -118,9 +137,9 @@ describe('ExoDomBackend.hydrate', () => {
         // compare and fail this. "Creates, moves and removes nothing" is the claim, so
         // nothing is what gets asserted.
         const LIST = listOf(
-            (P) => (c, i) => {
-                c.attr(P.id, i);
-                c.text(P.label, 'Item ' + i);
+            (P) => (c, at) => {
+                c.attr(P.id, at);
+                c.text(P.label, 'Item ' + at);
                 c.on(P.click, () => undefined);
             },
             4
@@ -154,11 +173,11 @@ describe('ExoDomBackend.hydrate', () => {
         // markup; a listener has no markup form, so it is the whole remaining work.
         let clicked = -1;
         const LIST = listOf(
-            (P) => (c, i) => {
-                c.attr(P.id, i);
-                c.text(P.label, 'Item ' + i);
+            (P) => (c, at) => {
+                c.attr(P.id, at);
+                c.text(P.label, 'Item ' + at);
                 c.on(P.click, () => {
-                    clicked = i;
+                    clicked = at as number;
                 });
             },
             3
@@ -278,11 +297,11 @@ describe('ExoDomBackend.hydrate', () => {
         // crash: it is listeners on the wrong elements.
         let clicked = -1;
         const LIST = listOf(
-            (P) => (c, i) => {
-                c.attr(P.id, i);
-                c.text(P.label, 'Item ' + i);
+            (P) => (c, at) => {
+                c.attr(P.id, at);
+                c.text(P.label, 'Item ' + at);
                 c.on(P.click, () => {
-                    clicked = i;
+                    clicked = at as number;
                 });
             },
             3
@@ -345,9 +364,9 @@ describe('driving an adopted port by hand', () => {
         const ROW = createExoTestMachine(
             buildRow,
             (P): TExoMachineInitialState<TDrivingSurface> =>
-                (c, i) => {
-                    c.attr(P.id, i);
-                    c.text(P.label, 'Item ' + i);
+                (c, at) => {
+                    c.attr(P.id, at);
+                    c.text(P.label, 'Item ' + at);
                     c.on(P.click, () => undefined);
                     // TAKEN ON EVERY PASS, so this holds the SERVER's value after the render below
                     // and the HYDRATION exonode's after the adoption — which is the one the test
@@ -358,12 +377,12 @@ describe('driving an adopted port by hand', () => {
         );
 
         const parent = host();
-        parent.innerHTML = EXO_STR.render(ROW);
+        parent.innerHTML = EXO_STR.render(ROW, null, 0);
         const li = parent.querySelector('li')!;
         // The server printed the value, which is the premise of everything below.
         expect(li.getAttribute('data-id')).toBe('0');
 
-        EXO_BACKEND.hydrate(ROW, parent);
+        EXO_BACKEND.hydrate(ROW, parent, 0);
 
         held.attr(id, 'written');
 

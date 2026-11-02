@@ -33,7 +33,14 @@ Packages involved:
 ## The two entry points are the same call, on two backends
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoWire,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 
 const PagePorts = exoPorts({ title: EXO_PORT_TEXT });
@@ -45,11 +52,11 @@ const pageSchema = createExoSchema(PagePorts, (b) => {
         });
     });
 });
-const pageBuilder = createExoMachineBuilder<TExoMachineNode>(pageSchema);
-pageBuilder.wire((c) => {
-    c.text(PagePorts.title, 'Hello SSR');
-});
-export const Page = pageBuilder.done();
+export const pageMachine = composeExoMachine(createExoMachine<TExoMachineNode>(pageSchema), (m) =>
+    withExoWire(m, (c) => {
+        c.text(PagePorts.title, 'Hello SSR');
+    })
+);
 ```
 
 On the server:
@@ -58,12 +65,12 @@ On the server:
 import { ExoStrBackend } from '@exodra/string';
 import type { TExoStrMachine } from '@exodra/string';
 
-declare const Page: TExoStrMachine;
+declare const pageMachine: TExoStrMachine;
 
 /** ONE backend for the process, at module level — it is the plan cache key. */
 const server = new ExoStrBackend();
 
-const html = server.render(Page);
+const html = server.render(pageMachine);
 // → '<main class="page"><h1>Hello SSR</h1></main>'
 ```
 
@@ -73,13 +80,13 @@ On the client:
 import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
 import type { TExoDomMachine } from '@exodra/dom';
 
-declare const Page: TExoDomMachine;
+declare const pageMachine: TExoDomMachine;
 
 /** `hydrate` exists only on a backend composed with the hydration pack. */
 const backend = withExoHydration(withExoCompiler(new ExoDomBackend()));
 
 const root = document.getElementById('app') as HTMLElement;
-const dispose = backend.hydrate(Page, root);
+const dispose = backend.hydrate(pageMachine, root);
 ```
 
 Same component, same argument order, same disposer. A page switches sides by
@@ -88,7 +95,7 @@ convention — and the return value is the difference: one hands back markup, th
 other hands back a way to tear it down.
 
 **Neither call takes an instance count.** `render` and `hydrate` each deal in
-**one** instance, handed `0` as its index, because no library
+**one** instance, handed the params it is given, because no library
 asks an application how many copies of its root to make. Anything that repeats
 inside the page is a **list** — a children port filled by `c.list` or by
 `reconcileExoOrder` over `c.childList` — and that is true on both sides, which is exactly why the two agree
@@ -97,28 +104,37 @@ about how many rows there are without either being told.
 **Type the machine against the shared exonode surface, or none of that is true.**
 `TExoStrMachine` and `TExoDomMachine` are both `TExoMachine<C>`
 with a backend's exonode type in `C`, and a machine's exonode parameter is
-contravariant — so a component built with `createExoMachineBuilder<TExoDomNode>` is not a value
+contravariant — so a component built with `createExoMachine<TExoDomNode>` is not a value
 `@exodra/string` will accept, and no cast makes it one honestly. Say what the machine
 actually needs instead:
 
 ```ts no-check
-import { createExoMachineBuilder } from '@exodra/core';
-import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoEffects, withExoHandlers } from '@exodra/core';
+import type { TExoMachineNode, TExoMachineNodeOf } from '@exodra/core';
 
 // A machine that only fills values takes `TExoMachineNode`; one that also nests
 // components takes `TExoChildrenWiring & TExoMachineNode`, which adds `one` / `list` / `build`.
 // Following data adds nothing to this list: a fill writes through the fill doors and
 // an effect subscribes to the data layer, so a machine that follows data still names the
 // narrowest surface it actually uses.
-const pageBuilder = createExoMachineBuilder<TExoMachineNode>(pageSchema);
-function showTitle(c: TExoMachineBuilderNode<typeof pageBuilder>): void {
+const pageBase = createExoMachine<TExoMachineNode>(pageSchema);
+function showTitle(c: TExoMachineNodeOf<typeof pageBase>): void {
     c.text(PagePorts.title, title.getValue());
 }
-pageBuilder.effect((c) => {
-    showTitle(c);
-    return title.onChange(() => showTitle(c));
-});
-pageBuilder.on(PagePorts.click, onClick);
+export const pageMachine = composeExoMachine(
+    pageBase,
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showTitle(c);
+                return title.onChange(() => showTitle(c));
+            });
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(PagePorts.click, onClick);
+        })
+);
 ```
 
 One value then satisfies `TExoStrMachine`, `TExoDomMachine`
@@ -180,7 +196,7 @@ Two consequences:
   import { ExoDomBackend, createExoDelegatedEvents, withExoHydration } from '@exodra/dom';
   import type { TExoDomMachine } from '@exodra/dom';
 
-  declare const Page: TExoDomMachine;
+  declare const pageMachine: TExoDomMachine;
 
   /** ONE pack and ONE backend for the application, both at module level. */
   const DELEGATED = createExoDelegatedEvents(['click', 'input']);
@@ -191,7 +207,7 @@ Two consequences:
   const root = document.getElementById('app') as HTMLElement;
 
   // The same object serves both, so the two can never be composed differently:
-  backend.hydrate(Page, root);
+  backend.hydrate(pageMachine, root);
   ```
 
   `createExoDelegatedEvents` returns a `TExoEventsApi` — a value for the `events` field,
@@ -235,7 +251,14 @@ it with `renderExoPage(machine, { params })`, the wire records the params as sta
 and the client hands the same object to `hydrate`.
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoWire,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { EXO_SSR_RESPONSE, renderExoPage } from '@exodra/ssr';
 
@@ -248,14 +271,16 @@ const greetingSchema = createExoSchema(GreetingPorts, (b) => {
         h1.textPort(GreetingPorts.name);
     });
 });
-const greetingBuilder = createExoMachineBuilder<TExoMachineNode, TGreeting>(greetingSchema);
-greetingBuilder.wire((c, greeting) => {
-    c.inject(EXO_SSR_RESPONSE)?.setState('greeting', greeting);
-    c.text(GreetingPorts.name, greeting.name);
-});
-export const Greeting = greetingBuilder.done();
+export const greetingMachine = composeExoMachine(
+    createExoMachine<TExoMachineNode, TGreeting>(greetingSchema),
+    (m) =>
+        withExoWire(m, (c, greeting) => {
+            c.inject(EXO_SSR_RESPONSE)?.setState('greeting', greeting);
+            c.text(GreetingPorts.name, greeting.name);
+        })
+);
 
-const page = renderExoPage(Greeting, { params: { name: 'Ada' } });
+const page = renderExoPage(greetingMachine, { params: { name: 'Ada' } });
 const documentHtml = page.renderDocument({ rootId: 'app' });
 ```
 
@@ -267,12 +292,12 @@ import { readExoStateScript } from '@exodra/ssr';
 
 type TGreeting = { readonly name: string };
 
-declare const Greeting: TExoMachine<TExoDomNode, unknown, TGreeting>;
+declare const greetingMachine: TExoMachine<TExoDomNode, unknown, TGreeting>;
 
 const backend = withExoHydration(withExoCompiler(new ExoDomBackend()));
 
 const greeting = readExoStateScript()?.greeting as TGreeting;
-backend.hydrate(Greeting, document.getElementById('app') as HTMLElement, greeting);
+backend.hydrate(greetingMachine, document.getElementById('app') as HTMLElement, greeting);
 ```
 
 `c.inject(EXO_SSR_RESPONSE)` is `undefined` in the browser, so the same wire runs on
@@ -297,9 +322,9 @@ wiring said about the response:
 import { renderExoPage } from '@exodra/ssr';
 import type { TExoStrMachine } from '@exodra/string';
 
-declare const Page: TExoStrMachine;
+declare const pageMachine: TExoStrMachine;
 
-const page = renderExoPage(Page, { head: '<meta charset="utf-8">' });
+const page = renderExoPage(pageMachine, { head: '<meta charset="utf-8">' });
 
 page.html;                               // just the instances — what goes in the container
 page.status;                             // what the page asked for, or 200
@@ -332,7 +357,14 @@ The request is an ordinary context, so there is nothing new to learn: any initia
 state under `renderExoPage` injects `EXO_SSR_RESPONSE` and gets a `TExoSsrResponse`.
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoWire,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { EXO_SSR_RESPONSE } from '@exodra/ssr';
 
@@ -347,18 +379,21 @@ const notFoundSchema = createExoSchema(NotFoundPorts, (b) => {
         });
     });
 });
-const notFoundBuilder = createExoMachineBuilder<TExoMachineNode>(notFoundSchema);
-notFoundBuilder.createInitialState((c) => {
-    const ssr = c.inject(EXO_SSR_RESPONSE);
-    ssr?.setStatus(404);
-    ssr?.setHeader('cache-control', 'no-store');
-    ssr?.addHead('<title>Not found</title>');
-    ssr?.setState('user', user);
-});
-notFoundBuilder.wire((c) => {
-    c.text(NotFoundPorts.heading, 'Not found');
-});
-export const NotFound = notFoundBuilder.done();
+export const notFoundMachine = composeExoMachine(
+    createExoMachine(notFoundSchema, {
+        createInitialState: (c: TExoMachineNode, _params: unknown) => {
+            const ssr = c.inject(EXO_SSR_RESPONSE);
+            ssr?.setStatus(404);
+            ssr?.setHeader('cache-control', 'no-store');
+            ssr?.addHead('<title>Not found</title>');
+            ssr?.setState('user', user);
+        },
+    }),
+    (m) =>
+        withExoWire(m, (c) => {
+            c.text(NotFoundPorts.heading, 'Not found');
+        })
+);
 ```
 
 | Method | What it does |

@@ -34,7 +34,14 @@ from the machine's initial state, and keep the handle it returns. `render(props)
 on that handle re-renders the island; a transition or an effect calls it.
 
 ```ts
-import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_CHILDREN,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoEffects,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { reactIsland } from '@exodra/react';
 import type { TExoReactIsland } from '@exodra/react';
@@ -69,20 +76,24 @@ const chartSchema = createExoSchema(ChartPorts, (b) => {
         div.childrenPort(ChartPorts.host);
     });
 });
-const chartBuilder = createExoMachineBuilder<
-    TExoMachineNode,
-    unknown,
-    { island: TExoReactIsland<TChartProps> }
->(chartSchema);
-chartBuilder.createInitialState((c) => ({
-    island: reactIsland(c, ChartPorts.host, FancyChart, chartProps.getValue()),
-}));
-chartBuilder.effect((c) =>
-    chartProps.onChange(() => {
-        c.state.island.render(chartProps.getValue());
-    })
+export const chartMachine = composeExoMachine(
+    createExoMachine(chartSchema, {
+        createInitialState: (
+            c: TExoMachineNode,
+            _params: unknown
+        ): { island: TExoReactIsland<TChartProps> } => ({
+            island: reactIsland(c, ChartPorts.host, FancyChart, chartProps.getValue()),
+        }),
+    }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) =>
+                chartProps.onChange(() => {
+                    c.state.island.render(chartProps.getValue());
+                })
+            );
+        })
 );
-const Chart = chartBuilder.done();
 
 // Later — one change re-renders the island with the latest props:
 chartProps.setValue({ series: [1, 2, 3], theme: 'light' });

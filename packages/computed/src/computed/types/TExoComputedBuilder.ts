@@ -1,5 +1,4 @@
-import type { TExoMachineBuilder, TExoMachineNode } from '@exodra/core';
-import type { TExoComputedMachine } from './TExoComputedMachine';
+import type { TExoMachineEffect, TExoMachineNode } from '@exodra/core';
 import type { TExoMachineFieldHandle } from '../../fields/types/TExoMachineFieldHandle';
 import type { TExoMachineReads } from '../../fields/types/TExoMachineReads';
 import type { TExoMachineTarget } from '../../machine/types/TExoMachineTarget';
@@ -9,8 +8,7 @@ import type { TExoMachineTarget } from '../../machine/types/TExoMachineTarget';
  * `effectOn` it is the wake set ALONE — each is handed the INSTANCE, so an author can read a field
  * he did not declare, that slot then does not wake when it moves, and nothing says so.
  */
-export interface TExoComputedBuilder<TWiring extends TExoMachineNode>
-    extends TExoMachineBuilder<TWiring> {
+export interface TExoComputedBuilder<TWiring extends TExoMachineNode> {
     field<TValue>(seed: (enode: TWiring) => TValue): TExoMachineFieldHandle<TWiring, TValue>;
     field<TValue>(seed: TValue): TExoMachineFieldHandle<TWiring, TValue>;
     mounted(): TExoMachineFieldHandle<TWiring, boolean>;
@@ -33,5 +31,8 @@ export interface TExoComputedBuilder<TWiring extends TExoMachineNode>
         from: readonly TExoMachineFieldHandle<TWiring, unknown>[],
         start: (c: TWiring) => (() => void) | null
     ): void;
-    done(): TExoComputedMachine<TWiring>;
+    effect(start: (c: TWiring) => (() => void) | null): TExoMachineEffect<TWiring>;
+    transition<TFirst = undefined, TSecond = undefined>(
+        apply: (enode: TWiring, first: TFirst, second: TSecond) => void
+    ): (enode: TWiring, first: TFirst, second: TSecond) => void;
 }

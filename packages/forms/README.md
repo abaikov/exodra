@@ -32,11 +32,14 @@ import {
     EXO_PORT_ATTR,
     EXO_PORT_EVENT,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoHandlers,
+    withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
@@ -68,32 +71,40 @@ const signupSchema = createExoSchema(SignupPorts, (b) => {
 
 type TSignup = { name: string; age: number };
 
-const signupBuilder = createExoMachineBuilder<TExoDomNode, unknown, TSignup>(signupSchema);
-signupBuilder.createInitialState(() => ({ name: '', age: Number.NaN }));
-signupBuilder.wire((c) => {
-    c.attr(SignupPorts.send, true);
+const signupBase = createExoMachine(signupSchema, {
+    createInitialState: (_c: TExoDomNode): TSignup => ({ name: '', age: Number.NaN }),
 });
 
-function takeName(c: TExoMachineBuilderNode<typeof signupBuilder>, name: string): void {
+function takeName(c: TExoMachineNodeOf<typeof signupBase>, name: string): void {
     c.state.name = name;
     c.text(SignupPorts.greeting, name === '' ? '' : `Hello, ${name}`);
     c.attr(SignupPorts.send, name === '' || Number.isNaN(c.state.age));
 }
 
-function takeAge(c: TExoMachineBuilderNode<typeof signupBuilder>, age: number): void {
+function takeAge(c: TExoMachineNodeOf<typeof signupBase>, age: number): void {
     c.state.age = age;
     c.text(SignupPorts.error, Number.isNaN(age) ? 'Age has to be a number' : '');
     c.attr(SignupPorts.send, c.state.name === '' || Number.isNaN(age));
 }
 
-signupBuilder.on(SignupPorts.input, (c, event) => {
-    const field = event.target as HTMLInputElement;
-    if (field.name === 'name') takeName(c, readExoControlValue(field) as string);
-    else if (field.name === 'age') takeAge(c, readExoControlValue(field) as number);
-});
+const Signup = composeExoMachine(
+    signupBase,
+    (m) =>
+        withExoWire(m, (c) => {
+            c.attr(SignupPorts.send, true);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(SignupPorts.input, (c, event) => {
+                const field = event.target as HTMLInputElement;
+                if (field.name === 'name') takeName(c, readExoControlValue(field) as string);
+                else if (field.name === 'age') takeAge(c, readExoControlValue(field) as number);
+            });
+        })
+);
 
 const backend = withExoCompiler(new ExoDomBackend());
-backend.render(signupBuilder.done(), document.getElementById('root') as HTMLElement);
+backend.render(Signup, document.getElementById('root') as HTMLElement);
 ```
 
 What this shape decides:
@@ -106,12 +117,12 @@ What this shape decides:
   person typed; writing it again on every keystroke is a DOM write that changes nothing.
   The machine writes only what *depends* on the value: a read-out, an error text, a
   `disabled` flag.
-- **The value lives in `c.state`** when something else needs it later — the third type
-  argument of `createExoMachineBuilder` is its type, and `createInitialState` returns the
-  starting value. When nothing needs it later, keep no state at all.
-- **A function the handler calls is typed by the builder**:
-  `TExoMachineBuilderNode<typeof signupBuilder>` is the exonode with its `state`. A
-  `signupBuilder.transition(…)` is for the case where something outside the machine fires it.
+- **The value lives in `c.state`** when something else needs it later — the
+  `createInitialState` option of `createExoMachine` returns the starting value, and its
+  return type is the state's type. When nothing needs it later, keep no state at all.
+- **A function the handler calls is typed by the base machine**:
+  `TExoMachineNodeOf<typeof signupBase>` is the exonode with its `state`. A transition
+  declared with `withExoTransitions` is for the case where something outside the machine fires it.
 
 ### Which field fired
 
@@ -126,10 +137,11 @@ Two ways to tell, and both cost nothing per field:
 import {
     EXO_PORT_EVENT,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
     exoRefPortKind,
+    withExoHandlers,
 } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
@@ -153,19 +165,22 @@ const loginSchema = createExoSchema(LoginPorts, (b) => {
     });
 });
 
-const loginBuilder = createExoMachineBuilder<TExoDomNode, unknown, { email: HTMLInputElement }>(
-    loginSchema
-);
-loginBuilder.createInitialState((c) => ({
-    email: c.portNode(LoginPorts.email),
-}));
-loginBuilder.on(LoginPorts.input, (c, event) => {
-    if (event.target === c.state.email) {
-        const email = readExoControlValue(event.target) as string;
-        c.text(LoginPorts.hint, email.includes('@') ? '' : 'An address has an @ in it');
+const loginBase = createExoMachine<TExoDomNode, unknown, { email: HTMLInputElement }>(
+    loginSchema,
+    {
+        createInitialState: (c) => ({
+            email: c.portNode(LoginPorts.email),
+        }),
     }
+);
+export const Login = withExoHandlers(loginBase, (on) => {
+    on(LoginPorts.input, (c, event) => {
+        if (event.target === c.state.email) {
+            const email = readExoControlValue(event.target) as string;
+            c.text(LoginPorts.hint, email.includes('@') ? '' : 'An address has an @ in it');
+        }
+    });
 });
-export const Login = loginBuilder.done();
 ```
 
 ### Validate when a field is left
@@ -179,9 +194,11 @@ b.el('form', null, (f) => {
     // …the fields
 });
 
-formBuilder.on(FormPorts.leave, (c, event) => {
-    const field = event.target as HTMLInputElement;
-    if (field.name === 'email') checkEmail(c, readExoControlValue(field) as string);
+const formMachine = withExoHandlers(formBase, (on) => {
+    on(FormPorts.leave, (c, event) => {
+        const field = event.target as HTMLInputElement;
+        if (field.name === 'email') checkEmail(c, readExoControlValue(field) as string);
+    });
 });
 ```
 
@@ -192,7 +209,7 @@ it: a "clear" button, a loaded record, a suggestion picked from a list. That is 
 write, to a `value` port:
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachine, createExoSchema, exoPorts, withExoHandlers } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
 const SearchPorts = exoPorts({ value: EXO_PORT_ATTR, clear: EXO_PORT_EVENT });
@@ -209,11 +226,12 @@ const searchSchema = createExoSchema(SearchPorts, (b) => {
     });
 });
 
-const searchBuilder = createExoMachineBuilder<TExoDomNode>(searchSchema);
-searchBuilder.on(SearchPorts.clear, (c) => {
-    c.attr(SearchPorts.value, '');
+const searchBase = createExoMachine<TExoDomNode>(searchSchema);
+export const Search = withExoHandlers(searchBase, (on) => {
+    on(SearchPorts.clear, (c) => {
+        c.attr(SearchPorts.value, '');
+    });
 });
-export const Search = searchBuilder.done();
 ```
 
 `value`, `checked` and `selected` ports are written as DOM **properties**, decided when the
@@ -227,7 +245,7 @@ A form that needs its values once, when it is sent, registers nothing per field.
 port on each control and read them all in the submit handler:
 
 ```ts
-import { EXO_PORT_EVENT, EXO_PORT_REF, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_REF, createExoMachine, createExoSchema, exoPorts, withExoHandlers } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValues } from '@exodra/forms';
 
@@ -255,13 +273,14 @@ const contactSchema = createExoSchema(ContactPorts, (b) => {
 });
 const CONTACT_FIELDS = [ContactPorts.name, ContactPorts.age, ContactPorts.subscribe];
 
-const contactBuilder = createExoMachineBuilder<TExoDomNode>(contactSchema);
-contactBuilder.on(ContactPorts.submit, (c, event) => {
-    event.preventDefault();
-    const [name, age, subscribe] = readExoControlValues(c, CONTACT_FIELDS);
-    console.log({ name, age, subscribe });
+const contactBase = createExoMachine<TExoDomNode>(contactSchema);
+export const Contact = withExoHandlers(contactBase, (on) => {
+    on(ContactPorts.submit, (c, event) => {
+        event.preventDefault();
+        const [name, age, subscribe] = readExoControlValues(c, CONTACT_FIELDS);
+        console.log({ name, age, subscribe });
+    });
 });
-export const Contact = contactBuilder.done();
 ```
 
 The values come back in the order of the ports. A radio reads as its `value` only while it
@@ -288,7 +307,7 @@ It is used in two places:
   mark natively; there is nothing to write for it.
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachine, createExoSchema, exoPorts, withExoHandlers } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { writeExoChoice } from '@exodra/forms';
 
@@ -330,16 +349,18 @@ const sizeSchema = createExoSchema(SizePorts, (b) => {
     });
 });
 
-const sizeBuilder = createExoMachineBuilder<TExoDomNode>(sizeSchema);
-sizeBuilder.createInitialState((c) => {
-    writeExoChoice(c, SIZE_RADIOS, SIZES, 'm');
-    writeExoChoice(c, SIZE_OPTIONS, SIZES, 'm');
+const sizeBase = createExoMachine(sizeSchema, {
+    createInitialState: (c: TExoDomNode) => {
+        writeExoChoice(c, SIZE_RADIOS, SIZES, 'm');
+        writeExoChoice(c, SIZE_OPTIONS, SIZES, 'm');
+    },
 });
-sizeBuilder.on(SizePorts.reset, (c) => {
-    writeExoChoice(c, SIZE_RADIOS, SIZES, 'm');
-    writeExoChoice(c, SIZE_OPTIONS, SIZES, 'm');
+export const Size = withExoHandlers(sizeBase, (on) => {
+    on(SizePorts.reset, (c) => {
+        writeExoChoice(c, SIZE_RADIOS, SIZES, 'm');
+        writeExoChoice(c, SIZE_OPTIONS, SIZES, 'm');
+    });
 });
-export const Size = sizeBuilder.done();
 ```
 
 ### A group whose value comes from a parent
@@ -353,10 +374,12 @@ import {
     EXO_PORT_ATTR,
     EXO_PORT_CHILDREN,
     EXO_PORT_EVENT,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
     wireExoNode,
+    withExoHandlers,
+    withExoWire,
 } from '@exodra/core';
 import type { TExoMachineNode, TExoNode } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
@@ -383,11 +406,10 @@ const planGroupSchema = createExoSchema(PlanGroupPorts, (b) => {
         });
     });
 });
-const planGroupBuilder = createExoMachineBuilder<TExoMachineNode, string>(planGroupSchema);
-planGroupBuilder.wire((c, chosen) => {
+const planGroupBase = createExoMachine<TExoMachineNode, string>(planGroupSchema);
+const PlanGroup = withExoWire(planGroupBase, (c, chosen) => {
     writeExoChoice(c, PLAN_RADIOS, PLANS, chosen);
 });
-const PlanGroup = planGroupBuilder.done();
 
 const AccountPorts = exoPorts({ slot: EXO_PORT_CHILDREN, downgrade: EXO_PORT_EVENT });
 
@@ -401,18 +423,21 @@ const accountSchema = createExoSchema(AccountPorts, (b) => {
     });
 });
 
-const accountBuilder = createExoMachineBuilder<TExoDomNode, unknown, { group: TExoNode }>(
-    accountSchema
+const accountBase = createExoMachine<TExoDomNode, unknown, { group: TExoNode }>(
+    accountSchema,
+    {
+        createInitialState: (c) => {
+            const group = c.build(PlanGroup, 'team');
+            c.childList(AccountPorts.slot).insert(group);
+            return { group };
+        },
+    }
 );
-accountBuilder.createInitialState((c) => {
-    const group = c.build(PlanGroup, 0, 'team');
-    c.childList(AccountPorts.slot).insert(group);
-    return { group };
+export const Account = withExoHandlers(accountBase, (on) => {
+    on(AccountPorts.downgrade, (c) => {
+        wireExoNode(c.state.group, PlanGroup, 'free');
+    });
 });
-accountBuilder.on(AccountPorts.downgrade, (c) => {
-    wireExoNode(c.state.group, PlanGroup, 'free');
-});
-export const Account = accountBuilder.done();
 ```
 
 `writeExoChoice` relies on the browser's exclusivity, so it is **not** for a group of
@@ -436,12 +461,15 @@ import {
     EXO_PORT_CHILDREN,
     EXO_PORT_EVENT,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
     wireExoNode,
+    withExoHandlers,
+    withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode, TExoMachineNode, TExoNode } from '@exodra/core';
+import type { TExoMachineNode, TExoMachineNodeOf, TExoNode } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
 
@@ -460,15 +488,15 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
     });
 });
 
-type TRowParams = { readonly price: number; readonly quantity: number };
+type TRowParams = { readonly at: number; readonly price: number; readonly quantity: number };
 
-const rowBuilder = createExoMachineBuilder<TExoMachineNode, TRowParams, number>(rowSchema);
-rowBuilder.createInitialState((_c, index) => index);
-rowBuilder.wire((c, row) => {
+const rowBase = createExoMachine(rowSchema, {
+    createInitialState: (_c: TExoMachineNode, row: TRowParams) => row.at,
+});
+const Row = withExoWire(rowBase, (c, row) => {
     c.attr(RowPorts.at, c.state);
     c.text(RowPorts.total, Number.isNaN(row.quantity) ? '–' : row.price * row.quantity);
 });
-const Row = rowBuilder.done();
 
 const CartPorts = exoPorts({ input: EXO_PORT_EVENT, rows: EXO_PORT_CHILDREN, sum: EXO_PORT_TEXT });
 
@@ -489,38 +517,44 @@ type TCart = { quantities: number[]; rows: TExoNode[] };
 const sumOf = (quantities: readonly number[]): number =>
     quantities.reduce((sum, quantity, i) => sum + (Number.isNaN(quantity) ? 0 : quantity * PRICES[i]), 0);
 
-const cartBuilder = createExoMachineBuilder<TExoDomNode, unknown, TCart>(cartSchema);
-cartBuilder.createInitialState((c) => {
-    const list = c.childList(CartPorts.rows);
-    const quantities = PRICES.map(() => 1);
-    const rows = PRICES.map((price, i) => {
-        const row = c.build(Row, i, { price, quantity: quantities[i] });
-        list.insert(row);
-        return row;
-    });
-    return { quantities, rows };
+const cartBase = createExoMachine<TExoDomNode, unknown, TCart>(cartSchema, {
+    createInitialState: (c) => {
+        const list = c.childList(CartPorts.rows);
+        const quantities = PRICES.map(() => 1);
+        const rows = PRICES.map((price, i) => {
+            const row = c.build(Row, { at: i, price, quantity: quantities[i] });
+            list.insert(row);
+            return row;
+        });
+        return { quantities, rows };
+    },
 });
 
-function showSum(c: TExoMachineBuilderNode<typeof cartBuilder>): void {
+function showSum(c: TExoMachineNodeOf<typeof cartBase>): void {
     c.text(CartPorts.sum, sumOf(c.state.quantities));
 }
 
 function setQuantity(
-    c: TExoMachineBuilderNode<typeof cartBuilder>,
+    c: TExoMachineNodeOf<typeof cartBase>,
     at: number,
     quantity: number
 ): void {
     c.state.quantities[at] = quantity;
-    wireExoNode(c.state.rows[at], Row, { price: PRICES[at], quantity });
+    wireExoNode(c.state.rows[at], Row, { at, price: PRICES[at], quantity });
     showSum(c);
 }
 
-cartBuilder.wire((c) => showSum(c));
-cartBuilder.on(CartPorts.input, (c, event) => {
-    const field = event.target as HTMLInputElement;
-    setQuantity(c, Number(field.dataset.row), readExoControlValue(field) as number);
-});
-export const Cart = cartBuilder.done();
+export const Cart = composeExoMachine(
+    cartBase,
+    (m) => withExoWire(m, (c) => showSum(c)),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CartPorts.input, (c, event) => {
+                const field = event.target as HTMLInputElement;
+                setQuantity(c, Number(field.dataset.row), readExoControlValue(field) as number);
+            });
+        })
+);
 ```
 
 The field's starting value is a static `value` attribute in the schema, so it is markup the

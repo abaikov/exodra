@@ -16,7 +16,7 @@ npm install @exodra/string @exodra/core
 ## Rendering
 
 ```typescript
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachine, createExoSchema, exoPorts, withExoWire } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
 import type { TExoStrNode } from '@exodra/string';
 
@@ -32,12 +32,11 @@ const cardSchema = createExoSchema(CardPorts, (b) => {
         });
     });
 });
-const cardBuilder = createExoMachineBuilder<TExoStrNode>(cardSchema);
-cardBuilder.wire((c) => {
+const cardBase = createExoMachine<TExoStrNode>(cardSchema);
+const Card = withExoWire(cardBase, (c) => {
     c.text(CardPorts.title, 'Card');
     c.text(CardPorts.body, 'Welcome to Exodra');
 });
-const Card = cardBuilder.done();
 
 // ONE backend, at module level.
 const backend = new ExoStrBackend();
@@ -51,13 +50,12 @@ constructor, same `render(component, …)` method name — on purpose: a page sw
 sides by switching which backend it holds rather than by learning a second calling
 convention, and the return value is the difference.
 
-**It renders ONE instance and takes no count.** The initial state receives `0` as its index,
-because a lone root has nothing else to be about — and an index is all it receives:
-**there are no props anywhere**, so a row reads its datum out of state keyed by the
-position it was armed with. Rows that vary are a **list** — a children port filled with
-`c.list(port, C, count)` for a fixed number of them, or a child list opened with
-`c.childList(port)` in `createInitialState` and driven by
-`reconcileExoOrder(rows, shown, items, items, (item, i) => c.build(C, i))` from
+**It renders ONE instance and takes no count.** **There are no props anywhere**: an
+instance is handed its params and nothing else, so a row's datum arrives as the params it was
+armed with. Rows that vary are a **list** — a children port filled with
+`c.list(port, C, rows)` for a fixed run of them (row i armed with `rows[i]`), or a child list
+opened with `c.childList(port)` in `createInitialState` and driven by
+`reconcileExoOrder(rows, shown, items, items, (item) => c.build(C, item))` from
 `@exodra/list-reconcile` in a transition, through the same door on this backend as in the
 browser. A request only ever needs the reconciler's first pass, which is insert-only.
 
@@ -91,8 +89,8 @@ declaration on the page.
 | `text(port, value)` / `html(port, markup)` | the same slot write, through the port's own writer |
 | `on(port, handler, subject?)` | accepted in **both** forms and printed as nothing; the slot is still written |
 | `provide(token, value)` / `inject(token)` | the same chain and lookup rule the browser uses |
-| `one(port, C)` / `list(port, C, count)` | render nested instances into a children port |
-| `build(component, index?)` | render one child and hand it back as a value |
+| `one(port, C, params?)` / `list(port, C, rows)` | render nested instances into a children port |
+| `build(component, params?)` | render one child and hand it back as a value |
 | `childList(port)` | the placement door a reconciler drives, over this port's slot |
 | `onTeardown(off)` | file a disposer; `render` runs them when it returns |
 

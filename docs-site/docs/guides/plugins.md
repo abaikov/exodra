@@ -141,10 +141,12 @@ expression an application writes:
 ```ts
 import {
     EXO_PORT_TEXT,
+    composeExoMachine,
     composeExoPlugins,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoWire,
 } from '@exodra/core';
 import {
     ExoDomBackend,
@@ -161,11 +163,11 @@ const greetingSchema = createExoSchema(GreetingPorts, (b) => {
         h1.textPort(GreetingPorts.label);
     });
 });
-const greetingBuilder = createExoMachineBuilder<TExoDomNode>(greetingSchema);
-greetingBuilder.wire((c) => {
-    c.text(GreetingPorts.label, 'Hello');
-});
-const Greeting = greetingBuilder.done();
+const greetingMachine = composeExoMachine(createExoMachine<TExoDomNode>(greetingSchema), (m) =>
+    withExoWire(m, (c) => {
+        c.text(GreetingPorts.label, 'Hello');
+    })
+);
 
 /** ONE pack per application, at module level: it keys the schema cache with the backend. */
 const DELEGATED = createExoDelegatedEvents(['click', 'input']);
@@ -178,7 +180,7 @@ const backend = withExoCompiler(
     )
 );
 
-const dispose = backend.render(Greeting, document.getElementById('app') as Element);
+const dispose = backend.render(greetingMachine, document.getElementById('app') as Element);
 ```
 
 `backend.render` mounts **one** instance and takes no count. A page of rows is a

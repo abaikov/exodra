@@ -92,7 +92,7 @@
 // IT USED TO HAVE ONE, and losing it is the price of cutting the Exodra field to two rows. The pair
 // was `exodra` ↔ `exodra·twin`: the BINDABLE app — a cell per card per varying thing, `c.bindList`
 // for the details block and for the tag list, a click writing a cell — and a SECOND, SEPARATELY
-// DECLARED copy of it inside this file, own `createExoMachineBuilder` calls, own declarations, own compiled
+// DECLARED copy of it inside this file, own `createExoMachine` calls, own declarations, own compiled
 // schemas, own backend, so that its true difference from the row it bounded was ZERO BY CONSTRUCTION.
 // What the run returned between the two was what this instrument returns when nothing is there, and
 // it was printed after the table as the RESOLUTION FLOOR that every gap was read against.

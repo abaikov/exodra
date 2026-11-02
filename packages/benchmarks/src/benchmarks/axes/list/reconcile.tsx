@@ -76,7 +76,12 @@ import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
 import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -109,10 +114,6 @@ const IDS = Array.from({ length: N }, (_, i) => i);
 type TShuffleRow = { readonly id: number };
 const SHUFFLE_ROWS: readonly TShuffleRow[] = IDS.map((id) => ({ id }));
 
-// A wire is handed its POSITION and nothing else, so the row the reconciler is about to build writes
-// its item here an instant before `c.build` runs the wire.
-const BUILDING: TShuffleRow[] = [];
-
 const SHUFFLE_ROW_SCHEMA = createExoSchema((b) => {
     let text!: TExoTextPort;
     b.el('li', { class: 'row' }, (li) => {
@@ -120,11 +121,12 @@ const SHUFFLE_ROW_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSHUFFLE_ROW = createExoMachineBuilder<TExoDomNode>(SHUFFLE_ROW_SCHEMA);
-mSHUFFLE_ROW.createInitialState((c, i) => {
-    c.text(SHUFFLE_ROW_SCHEMA.ports.text, `#${BUILDING[i].id}`);
+const mSHUFFLE_ROW = createExoMachine(SHUFFLE_ROW_SCHEMA, {
+    createInitialState: (c: TExoDomNode, row: TShuffleRow) => {
+        c.text(SHUFFLE_ROW_SCHEMA.ports.text, `#${row.id}`);
+    },
 });
-const SHUFFLE_ROW = mSHUFFLE_ROW.done();
+const SHUFFLE_ROW = mSHUFFLE_ROW;
 
 // --- MIKADO'S ROW ----------------------------------------------------------------------------
 /**
@@ -162,24 +164,33 @@ function mountExodraRows(
         });
         return { rows: port };
     });
-    const mUL = createExoMachineBuilder<TExoDomNode>(UL_SCHEMA);
-    const K_UL = mUL.createInitialState((cc) => ({
-        kids: cc.childList(UL_SCHEMA.ports.rows),
-        shown: [] as TShuffleRow[],
-    }));
-    const showRows = mUL.transition((cc: TExoDomNode) => {
-        const state = cc.readState(K_UL);
-        const want = rows.getValue();
-        state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item, i) => {
-            BUILDING[i] = item;
-            return cc.build(SHUFFLE_ROW, i);
-        });
+    const mUL = createExoMachine(UL_SCHEMA, {
+        createInitialState: (cc: TExoDomNode) => ({
+            kids: cc.childList(UL_SCHEMA.ports.rows),
+            shown: [] as TShuffleRow[],
+        }),
     });
-    mUL.effect((cc) => {
-        showRows(cc);
-        return rows.onChange(() => showRows(cc));
-    });
-    const UL = mUL.done();
+    const UL = composeExoMachine(
+        mUL,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (cc) => {
+                    const state = cc.state;
+                    const want = rows.getValue();
+                    state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item) =>
+                        cc.build(SHUFFLE_ROW, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((cc) => {
+                    showRows(cc);
+                    return rows.onChange(() => showRows(cc));
+                });
+            })
+    );
+    const { showRows } = UL.transitions;
     return EXO_BACKEND.render(UL, c);
 }
 

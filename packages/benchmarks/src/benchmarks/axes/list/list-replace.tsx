@@ -74,7 +74,12 @@ import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
 import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -424,20 +429,16 @@ function rowSchema(b: TExoSchemaCursor): { name: TExoTextPort; meta: TExoTextPor
  * allocated, so on BOTH axes it recognises nothing and rebuilds all N rows. That is not a bug being
  * measured: it is the cost of reconciling by identity when the data layer did not preserve identity,
  * and naming that cost is what makes the positional row below a STRATEGY rather than a consolation.
- *
- * THE ROW IS HANDED ITS INDEX AND NOTHING ELSE, so the item it stands for is written into
- * `BUILDING_ITEMS` by the reconciler's build callback an instant before `c.build` runs this wire.
  */
-const BUILDING_ITEMS: TRow[] = [];
 
 const ITEM_ROW_SCHEMA = createExoSchema((b) => rowSchema(b));
-const mITEM_ROW = createExoMachineBuilder<TExoDomNode>(ITEM_ROW_SCHEMA);
-mITEM_ROW.createInitialState((c, i) => {
-    const row = BUILDING_ITEMS[i];
-    c.text(ITEM_ROW_SCHEMA.ports.name, row.name);
-    c.text(ITEM_ROW_SCHEMA.ports.meta, row.meta);
+const mITEM_ROW = createExoMachine(ITEM_ROW_SCHEMA, {
+    createInitialState: (c: TExoDomNode, row: TRow) => {
+        c.text(ITEM_ROW_SCHEMA.ports.name, row.name);
+        c.text(ITEM_ROW_SCHEMA.ports.meta, row.meta);
+    },
 });
-const ITEM_ROW = mITEM_ROW.done();
+const ITEM_ROW = mITEM_ROW;
 
 /**
  * THE POSITIONAL STRATEGY, written with today's API and nothing added to the library.
@@ -456,27 +457,34 @@ type TSlot = {
     readonly meta: TExoBenchSource<string>;
 };
 
-/** The slots the fixed list is standing on, published by the shell before `c.list` builds a row. */
-let POSITION_SLOTS: readonly TSlot[] = [];
-
 const SLOT_ROW_SCHEMA = createExoSchema((b) => rowSchema(b));
-const mSLOT_ROW = createExoMachineBuilder<TExoDomNode>(SLOT_ROW_SCHEMA);
-const K_SLOT_ROW = mSLOT_ROW.createInitialState((_c, i) => POSITION_SLOTS[i]);
-const showSlotName = mSLOT_ROW.transition((c: TExoDomNode) => {
-    c.text(SLOT_ROW_SCHEMA.ports.name, c.readState(K_SLOT_ROW).name.getValue());
+const mSLOT_ROW = createExoMachine(SLOT_ROW_SCHEMA, {
+    createInitialState: (_c: TExoDomNode, slot: TSlot) => slot,
 });
-const showSlotMeta = mSLOT_ROW.transition((c: TExoDomNode) => {
-    c.text(SLOT_ROW_SCHEMA.ports.meta, c.readState(K_SLOT_ROW).meta.getValue());
-});
-mSLOT_ROW.effect((c) => {
-    showSlotName(c);
-    return c.readState(K_SLOT_ROW).name.onChange(() => showSlotName(c));
-});
-mSLOT_ROW.effect((c) => {
-    showSlotMeta(c);
-    return c.readState(K_SLOT_ROW).meta.onChange(() => showSlotMeta(c));
-});
-const SLOT_ROW = mSLOT_ROW.done();
+const SLOT_ROW = composeExoMachine(
+    mSLOT_ROW,
+    (m) =>
+        withExoTransitions(m, {
+            showSlotName: (c) => {
+                c.text(SLOT_ROW_SCHEMA.ports.name, c.state.name.getValue());
+            },
+            showSlotMeta: (c) => {
+                c.text(SLOT_ROW_SCHEMA.ports.meta, c.state.meta.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showSlotName(c);
+                return c.state.name.onChange(() => showSlotName(c));
+            });
+            effect((c) => {
+                showSlotMeta(c);
+                return c.state.meta.onChange(() => showSlotMeta(c));
+            });
+        })
+);
+const { showSlotName, showSlotMeta } = SLOT_ROW.transitions;
 
 // ── THE AXIS BODY, shared by both exported benchmarks ─────────────────────────────────────────
 
@@ -588,24 +596,37 @@ async function runListReplace(
                 });
                 return { rows: port };
             });
-            const mUL = createExoMachineBuilder<TExoDomNode>(UL_SCHEMA);
-            const K_UL = mUL.createInitialState((cc) => ({
-                kids: cc.childList(UL_SCHEMA.ports.rows),
-                shown: [] as TRow[],
-            }));
-            const showRows = mUL.transition((cc: TExoDomNode) => {
-                const state = cc.readState(K_UL);
-                const want = rows.getValue();
-                state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item, i) => {
-                    BUILDING_ITEMS[i] = item;
-                    return cc.build(ITEM_ROW, i);
-                });
+            const mUL = createExoMachine(UL_SCHEMA, {
+                createInitialState: (cc: TExoDomNode) => ({
+                    kids: cc.childList(UL_SCHEMA.ports.rows),
+                    shown: [] as TRow[],
+                }),
             });
-            mUL.effect((cc) => {
-                showRows(cc);
-                return rows.onChange(() => showRows(cc));
-            });
-            const UL = mUL.done();
+            const UL = composeExoMachine(
+                mUL,
+                (m) =>
+                    withExoTransitions(m, {
+                        showRows: (cc) => {
+                            const state = cc.state;
+                            const want = rows.getValue();
+                            state.shown = reconcileExoOrder(
+                                state.kids,
+                                state.shown,
+                                want,
+                                want,
+                                (item) => cc.build(ITEM_ROW, item)
+                            );
+                        },
+                    }),
+                (m) =>
+                    withExoEffects(m, (effect) => {
+                        effect((cc) => {
+                            showRows(cc);
+                            return rows.onChange(() => showRows(cc));
+                        });
+                    })
+            );
+            const { showRows } = UL.transitions;
             return EXO_BACKEND.render(UL, host);
         };
 
@@ -634,12 +655,12 @@ async function runListReplace(
                 });
                 return { rows: port };
             });
-            const mUL2 = createExoMachineBuilder<TExoDomNode>(UL_SCHEMA2);
-            mUL2.createInitialState((cc) => {
-                POSITION_SLOTS = slots;
-                cc.list(UL_SCHEMA2.ports.rows, SLOT_ROW, slots.length);
+            const mUL2 = createExoMachine<TExoDomNode>(UL_SCHEMA2, {
+                createInitialState: (cc) => {
+                    cc.list(UL_SCHEMA2.ports.rows, SLOT_ROW, slots);
+                },
             });
-            const UL = mUL2.done();
+            const UL = mUL2;
             return EXO_BACKEND.render(UL, host);
         };
 

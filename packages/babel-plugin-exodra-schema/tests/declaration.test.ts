@@ -2,7 +2,12 @@
 import { describe, expect, it } from 'vitest';
 import * as babel from '@babel/core';
 import syntaxJsx from '@babel/plugin-syntax-jsx';
-import { createExoMachineBuilder, createExoNamedSchema } from '@exodra/core';
+import {
+    composeExoMachine,
+    createExoMachine,
+    createExoNamedSchema,
+    withExoHandlers,
+} from '@exodra/core';
 import type { TExoCursorDeclaration, TExoEventPort, TExoTextPort } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
@@ -83,18 +88,24 @@ describe('exoJsx compiles to a named schema declaration', () => {
             `)
         );
         const P = declaration.ports as { count: TExoTextPort; increment: TExoEventPort };
-        const m = createExoMachineBuilder<TExoDomNode, unknown, { n: number }>(declaration);
-        m.createInitialState((c) => {
-            c.text(P.count, 0);
-            return { n: 0 };
-        });
-        m.on(P.increment, (c) => {
-            const state = c.state as { n: number };
-            state.n++;
-            c.text(P.count, state.n);
-        });
+        const Counter = composeExoMachine(
+            createExoMachine<TExoDomNode, unknown, { n: number }>(declaration, {
+                createInitialState: (c) => {
+                    c.text(P.count, 0);
+                    return { n: 0 };
+                },
+            }),
+            (m) =>
+                withExoHandlers(m, (on) => {
+                    on(P.increment, (c) => {
+                        const state = c.state as { n: number };
+                        state.n++;
+                        c.text(P.count, state.n);
+                    });
+                })
+        );
         const parent = document.createElement('div');
-        withExoCompiler(new ExoDomBackend()).render(m.done(), parent);
+        withExoCompiler(new ExoDomBackend()).render(Counter, parent);
         expect(parent.innerHTML).toBe(
             '<p class="count"><b>0</b><button type="button">+</button></p>'
         );

@@ -21,7 +21,7 @@ imperative hot spot, done almost vanilla**.
 ```ts no-check
 import { exoNodeDom, exoOnTeardown } from '@exodra/dom';
 
-const panel = c.build(Details, i);
+const panel = c.build(Details);
 
 const element = exoNodeDom(panel).node;   // the real Element, right now
 exoOnTeardown(exoNodeDom(panel), () => socket.close());   // run this when it leaves
@@ -59,7 +59,7 @@ children are inserted and mounted — and inserts the whole clone into the page
 ```ts no-check
 // packages/dom/src/dom/mountExoInstance.ts:23-47, cut to the four lines that matter
 const root = schema.acquireNode(schema);
-createExoNode(schema, root, machine, index, ownerChild, record, context);
+createExoNode(schema, root, machine, ownerChild, record, context, params);
 if (before === null) parent.appendChild(root);
 else parent.insertBefore(root, before);
 ```
@@ -84,7 +84,7 @@ The same machine runs on `@exodra/string`, where a `TExoNode` **is** a string of
 markup. `c.build` there hands back markup, so `exoNodeDom` refuses with *"this
 node was not built by c.build(...)"* — during the **server render**, before the
 browser is anywhere near it. The type system says so first: a machine built with
-`createExoMachineBuilder<TExoDomNode>` is not one `ExoStrBackend.render` accepts, and the
+`createExoMachine<TExoDomNode>` is not one `ExoStrBackend.render` accepts, and the
 case that pins the runtime half casts past that on purpose
 (`packages/conformance/src/tests/an-element-wire-is-client-only.test.ts`).
 
@@ -126,7 +126,7 @@ The right shape is the imperative one: **one element you own, repainted.**
 ### The code
 
 ```ts no-check
-import { EXO_PORT_CHILDREN, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_CHILDREN, EXO_PORT_EVENT, createExoMachine, createExoSchema, exoPorts, withExoHandlers } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoDomBackend, exoForeignNode, withExoChildList, withExoCompiler } from '@exodra/dom';
 
@@ -217,19 +217,21 @@ const readerSchema = createExoSchema(ReaderPorts, (b) => {
         });
     });
 });
-const readerBuilder = createExoMachineBuilder<TExoDomNode>(readerSchema);
-readerBuilder.createInitialState((c) => {
-    // ONE CHILD THAT NEVER CHANGES, built by the CALLER and placed through the
-    // child list's own `insert` — there is no order to reconcile.
-    c.childList(ReaderPorts.body).insert(highlightedText(c, ARTICLE));
+const readerBaseMachine = createExoMachine(readerSchema, {
+    createInitialState: (c: TExoDomNode) => {
+        // ONE CHILD THAT NEVER CHANGES, built by the CALLER and placed through the
+        // child list's own `insert` — there is no order to reconcile.
+        c.childList(ReaderPorts.body).insert(highlightedText(c, ARTICLE));
+    },
 });
-readerBuilder.on(ReaderPorts.field, (c, event) => {
-    query.setValue((event.currentTarget as HTMLInputElement).value);
+const readerMachine = withExoHandlers(readerBaseMachine, (on) => {
+    on(ReaderPorts.field, (c, event) => {
+        query.setValue((event.currentTarget as HTMLInputElement).value);
+    });
 });
-const Reader = readerBuilder.done();
 
 const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
-backend.render(Reader, document.getElementById('root') as Element);
+backend.render(readerMachine, document.getElementById('root') as Element);
 ```
 
 This matches the idiom in `packages/examples/escape-hatches/index.html`, which

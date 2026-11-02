@@ -37,7 +37,7 @@ function replacePage(
     state.pageMachine = pageMachine;
     if (pageMachine === null) return;
     if (state.ids !== null) state.ids.next = 0;
-    const pageNode = state.node.build(pageMachine, state.depth, match);
+    const pageNode = state.node.build(pageMachine, match);
     state.pageNode = pageNode;
     state.childList.insert(pageNode);
 }
@@ -78,7 +78,7 @@ function pageMachineOf(state: TExoOutletState, match: TExoRouteMatch): TExoPageM
     throw new Error(
         typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
             ? `Exodra router: the route "${match.route.path}" has a component the schema core ` +
-              'cannot render. A page here is a machine — the value createExoMachineBuilder(…).done() ' +
+              'cannot render. A page here is a machine — the value createExoMachine(…) ' +
               'returns — or an exoLazy() loader that resolves to one.'
             : `EXO0074 "${match.route.path}"`
     );

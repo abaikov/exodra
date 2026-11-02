@@ -24,7 +24,14 @@ and does not look anything up.
 ## The smallest component
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoWire,
+} from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
@@ -46,16 +53,18 @@ const greetingSchema = createExoSchema(GreetingPorts, (b) => {
 });
 
 // ── the machine: its wire writes the ports of each instance ─────────
-const greetingBuilder = createExoMachineBuilder<TExoMachineNode>(greetingSchema);
-greetingBuilder.wire((c) => {
-    c.text(GreetingPorts.name, 'world');
-});
-const Greeting = greetingBuilder.done();
+const greetingMachine = composeExoMachine(
+    createExoMachine<TExoMachineNode>(greetingSchema),
+    (m) =>
+        withExoWire(m, (c) => {
+            c.text(GreetingPorts.name, 'world');
+        })
+);
 
-backend.render(Greeting, document.body);
+backend.render(greetingMachine, document.body);
 ```
 
-`backend.render` mounts **one** instance and hands it `0` as its **index**.
+`backend.render` mounts **one** instance, handed the params it is given.
 There is no instance count, because a lone root has nothing else to be about and
 no library asks an application how many copies of its root to make. Rows that
 vary are a **list** — a children port filled by `c.list` (fixed) or by
@@ -64,30 +73,47 @@ participant is doing when a benchmark says "render 1000 rows": the count belongs
 to the list, never to the mount.
 
 **There are no props, anywhere.** The initial state's second argument is the
-instance's **index**, and that is the whole of what a view is told about itself. A row
-reads its own datum by that index, from wherever the caller put it — the build
-callback that constructs the row is the place that knows both, so it writes the
-datum down and then builds. Props would have to be *serviced*: stored per
-instance, compared on every update, and turned into a decision about which
-transitions to re-run. An index costs a number.
+instance's **params**, and that is the whole of what a view is told about itself. A row
+is handed its own datum as its params by whoever builds it — the build callback that
+constructs the row is the place that knows the item, so it passes it to `c.build`.
+Params are read once, when the instance is armed, and again only when `wireExoNode`
+re-runs the wire. Props would have to be *serviced*: stored per instance, compared on
+every update, and turned into a decision about which transitions to re-run. Params
+cost one argument.
 
-Read `createExoMachineBuilder<TWiring>` by its type argument. **`TWiring`** is what
+A machine is put together in two moves. `createExoMachine(schema, options?)` makes
+the **base machine**: the schema, plus the `createInitialState` option when the
+instance keeps state. Each **decorator** then adds one part and returns a new
+machine, leaving its input untouched — `withExoWire` the wire, `withExoHandlers`
+the event handlers, `withExoEffects` the effects, `withExoTransitions` the named
+transitions callable from outside, read back as `machine.transitions`.
+`composeExoMachine(base, …steps)` passes the base
+through the steps in order, so a machine reads top to bottom: what it keeps, what
+it can be told, what it writes, what it listens to, what it follows. A machine has
+one wire; `withExoWire` on a machine that already has one throws (`EXO0101`).
+
+Read `createExoMachine<TWiring>` by its type argument — written out, or
+inferred from the exonode annotation of the `createInitialState` option when the
+base machine is handed one. **`TWiring`** is what
 every wire, handler, effect and transition may assume about the exonode it is handed: `TExoMachineNode` from
 `@exodra/core` is the surface all backends share — `attr`, `text`, `on`,
 `provide`, `inject` — so a component naming it is served, client-rendered and
 hydrated as one value. A machine that also nests components takes
 `TExoChildrenWiring & TExoMachineNode`, which adds `one`, `list` and `build`. Naming
-one backend's exonode instead — `createExoMachineBuilder<TExoDomNode>` — types the
+one backend's exonode instead — `createExoMachine<TExoDomNode>` — types the
 component against the browser alone, because a machine's exonode parameter is
 contravariant. What the initial state **returns** is what the instance keeps: the
-value lands in `enode.state` and is read back with `readState()`. A machine that
-only fills ports returns nothing.
+value lands in `enode.state`, typed as the return type in every wire, handler, effect and
+transition. A machine that only fills ports returns nothing. A plain function that
+works on the exonode takes `TExoMachineNodeOf<typeof base>`: the base machine's
+exonode type with its `state`, which is why such a machine keeps its base in a
+constant of its own (`timerBase` below).
 
 Two details are worth reading twice:
 
 - **The ports are a value before the schema is, and the schema before the machine.**
   `exoPorts` declares the component's port interface, `createExoSchema` places each
-  port in the markup once, at module load, and `createExoMachineBuilder` is handed
+  port in the markup once, at module load, and `createExoMachine` is handed
   the result, so the ports are named once as `GreetingPorts` (the same object as
   `greetingSchema.ports`) rather than passed to every instance. It also makes the
   order structural: a wire cannot be written before the ports it fills exist.
@@ -120,7 +146,7 @@ a silent wrong page rather than an error.
 
 An attribute whose value **varies** is not an attribute here. It is a port.
 
-## The builder
+## The schema builder
 
 | Call | Declares |
 | --- | --- |
@@ -141,16 +167,16 @@ awkward one.
 ## The wiring function
 
 ```ts no-check
-(connector, index) => state
+(connector, params) => state
 ```
 
-- `index` is the **only** thing this instance is told. A row of `c.list` gets its
-  position in the run, `c.build(component, index)` passes whatever the caller
-  hands it, and an instance placed by `one()` or mounted by `backend.render`
-  gets `0`.
-- It is the position **at build time and nothing more**. When rows move,
-  the reconciler moves nodes — it does not re-run wiring — so a component that
-  needs a live position must be handed it by a transition, not capture this.
+- `params` is the **only** thing this instance is told. A row of `c.list` gets its
+  element of the array the list was handed, `c.build(component, params)` and
+  `c.one(port, component, params)` pass whatever the caller hands them, and
+  `backend.render(component, parent, params)` passes its third argument.
+- It is what the instance was handed **at build time and nothing more**. When rows
+  move, the reconciler moves nodes — it does not re-run wiring — so a component that
+  needs a live position must be handed it by a transition, not capture it here.
 
 What the connector offers:
 
@@ -160,17 +186,18 @@ What the connector offers:
 | `c.text(port, value)` | write an element's whole text, once |
 | `c.unsafeHtml(port, markup)` | write raw markup into a children port |
 | `c.on(port, handler, subject?)` | a listener |
-| `c.one(port, component)` | one nested instance |
-| `c.list(port, component, count)` | a fixed run of `count` instances |
-| `c.build(component, index?)` | a child as a value, placed nowhere |
+| `c.one(port, component, params?)` | one nested instance |
+| `c.list(port, component, rows)` | a fixed run, one instance per element of `rows`, each handed its element as params |
+| `c.build(component, params?)` | a child as a value, placed nowhere |
 | `c.childList(port)` | the port's live children, for a reconciler to drive |
 | `c.onTeardown(off)` | hand the instance a disposer to run when it goes |
 | `c.provide(token, value)` / `c.inject(token)` | contexts |
 
 **Nothing in that table watches a source, and that is the design.** A machine
 writes "state → ports" in its wire, its handlers and its effects, and in a
-**transition** — `toggleBuilder.transition((c) => …)` — when that one place must
-also be fired or overridden from outside the machine. Following data that lives outside
+**transition** — `withExoTransitions(m, { show: (c) => … })`, called through
+`toggleMachine.transitions.show` — when that one place must also be fired or
+overridden from outside the machine. Following data that lives outside
 the instance is an **effect** that writes the ports once, then subscribes, and
 returns the unsubscribe. Keeping a child list in step is a call to
 `reconcileExoOrder` from `@exodra/list-reconcile` over `c.childList(port)`. A door
@@ -185,8 +212,8 @@ accept it with no cast.
 
 ## State and transitions
 
-State that belongs to one instance is **machine state**: `createInitialState`
-returns it once per instance, a handler changes it, and a transition writes it to
+State that belongs to one instance is **machine state**: the `createInitialState`
+option of the base machine returns it once per instance, a handler changes it, and a transition writes it to
 the ports.
 
 ```ts
@@ -194,9 +221,13 @@ import {
     EXO_PORT_ATTR,
     EXO_PORT_EVENT,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoHandlers,
+    withExoTransitions,
+    withExoWire,
 } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
@@ -215,26 +246,38 @@ const toggleSchema = createExoSchema(TogglePorts, (b) => {
     });
 });
 
-const toggleBuilder = createExoMachineBuilder<TExoDomNode, unknown, { on: boolean }>(toggleSchema);
-toggleBuilder.createInitialState(() => ({ on: false }));
-const show = toggleBuilder.transition((c) => {
-    c.attr(TogglePorts.rootClass, c.state.on ? 'toggle toggle--active' : 'toggle');
-    c.text(TogglePorts.text, c.state.on ? 'ON' : 'OFF');
-});
-toggleBuilder.wire((c) => {
-    show(c);
-});
-toggleBuilder.on(TogglePorts.click, (c) => {
-    c.state.on = !c.state.on;
-    show(c);
-});
-const Toggle = toggleBuilder.done();
+const toggleMachine = composeExoMachine(
+    createExoMachine(toggleSchema, {
+        createInitialState: (_c: TExoDomNode, _params: unknown) => ({ on: false }),
+    }),
+    (m) =>
+        withExoTransitions(m, {
+            show: (c) => {
+                c.attr(TogglePorts.rootClass, c.state.on ? 'toggle toggle--active' : 'toggle');
+                c.text(TogglePorts.text, c.state.on ? 'ON' : 'OFF');
+            },
+        }),
+    (m) =>
+        withExoWire(m, (c) => {
+            show(c);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(TogglePorts.click, (c) => {
+                c.state.on = !c.state.on;
+                show(c);
+            });
+        })
+);
+const { show } = toggleMachine.transitions;
 
-backend.render(Toggle, document.body);
+backend.render(toggleMachine, document.body);
 ```
 
 A derived value is computed **in the transition** — the label and the class above
-are both read off one boolean at the moment they are written.
+are both read off one boolean at the moment they are written. `show` is taken off
+`toggleMachine.transitions` after the machine is composed; the wire and the handler
+only call it once an instance runs, by which time it exists.
 
 :::caution The one rule that has no exception
 A connector is **reused**: one of them serves every row of a list. A callback
@@ -249,16 +292,18 @@ hand anywhere else, capture the node, never the connector.
 ## Composition
 
 Components nest through a **children port**. `one` puts a single instance in it.
-It takes the port and the component, and nothing else — the child is not handed
-data, it goes and reads it.
+It takes the port, the component and optional params — here there are none: the
+child is not handed data, it goes and reads it.
 
 ```ts
 import {
     EXO_PORT_CHILDREN,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoEffects,
 } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -290,15 +335,17 @@ const avatarSchema = createExoSchema(AvatarPorts, (b) => {
         span.textPort(AvatarPorts.initials);
     });
 });
-const avatarBuilder = createExoMachineBuilder<TExoDomNode>(avatarSchema);
-avatarBuilder.effect((c) => {
-    const showInitial = () => {
-        c.text(AvatarPorts.initials, user.getValue().name.slice(0, 1).toUpperCase());
-    };
-    showInitial();
-    return user.onChange(showInitial);
-});
-const Avatar = avatarBuilder.done();
+const avatarMachine = composeExoMachine(createExoMachine<TExoDomNode>(avatarSchema), (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            const showInitial = () => {
+                c.text(AvatarPorts.initials, user.getValue().name.slice(0, 1).toUpperCase());
+            };
+            showInitial();
+            return user.onChange(showInitial);
+        });
+    })
+);
 
 const UserCardPorts = exoPorts({ slot: EXO_PORT_CHILDREN, name: EXO_PORT_TEXT, role: EXO_PORT_TEXT });
 
@@ -316,36 +363,41 @@ const userCardSchema = createExoSchema(UserCardPorts, (b) => {
         });
     });
 });
-const userCardBuilder = createExoMachineBuilder<TExoDomNode>(userCardSchema);
-userCardBuilder.createInitialState((c) => {
-    c.one(UserCardPorts.slot, Avatar);
-});
-userCardBuilder.effect((c) => {
-    const showUser = () => {
-        const { name, role } = user.getValue();
-        c.text(UserCardPorts.name, name);
-        c.text(UserCardPorts.role, role);
-    };
-    showUser();
-    return user.onChange(showUser);
-});
-const UserCard = userCardBuilder.done();
+const userCardMachine = composeExoMachine(
+    createExoMachine(userCardSchema, {
+        createInitialState: (c: TExoDomNode, _params: unknown) => {
+            c.one(UserCardPorts.slot, avatarMachine);
+        },
+    }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                const showUser = () => {
+                    const { name, role } = user.getValue();
+                    c.text(UserCardPorts.name, name);
+                    c.text(UserCardPorts.role, role);
+                };
+                showUser();
+                return user.onChange(showUser);
+            });
+        })
+);
 ```
 
 The effect draws **first** and subscribes second, synchronously: hydration adopts
 the server's markup only while the instance is being armed, which is when effects
 start. What it returns is its stop, run when the instance leaves.
 
-`Avatar` names the source it reads. That is the trade the no-props design makes
+`avatarMachine` names the source it reads. That is the trade the no-props design makes
 and it is worth stating plainly: a component is **not** a function of arguments
 you can call with anything — it is wired to where its data lives. Reuse comes
 from the data layer, not from the parameter list: the same component over a
 different user is a different source, and the same component over a thousand
-rows reads a **slot by its index**, which is what the build callback of a
-reconciled list writes before it builds. See
+rows is handed **each row's item as its params**, which is what the build callback
+of a reconciled list passes to `c.build`. See
 [Rendering](./rendering.md#where-children-come-from).
 
-`backend.render` is for the top of a page, where the index is `0` — so the root
+`backend.render` is for the top of a page, where there is no row to be about — so the root
 component is the one that goes and *gets* the data, which is what every
 component here does.
 
@@ -375,9 +427,12 @@ import {
     EXO_PORT_ATTR,
     EXO_PORT_CHILDREN,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoEffects,
+    withExoWire,
 } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
@@ -404,9 +459,6 @@ function createStore<TValue>(value: TValue) {
 
 type TItem = { readonly id: string; readonly label: string };
 
-/** Where a row's item waits for it. The build callback writes it, then builds. */
-const BUILDING: TItem[] = [];
-
 const RowPorts = exoPorts({ id: EXO_PORT_ATTR, label: EXO_PORT_TEXT });
 
 const rowSchema = createExoSchema(RowPorts, (b) => {
@@ -415,14 +467,17 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
         li.textPort(RowPorts.label);
     });
 });
-const rowBuilder = createExoMachineBuilder<TExoDomNode, unknown, TItem>(rowSchema);
-rowBuilder.createInitialState((_c, index) => BUILDING[index]);
-rowBuilder.wire((c) => {
-    const item = c.state;
-    c.attr(RowPorts.id, item.id);
-    c.text(RowPorts.label, item.label);
-});
-const Row = rowBuilder.done();
+const rowMachine = composeExoMachine(
+    createExoMachine(rowSchema, {
+        createInitialState: (_c: TExoDomNode, item: TItem) => item,
+    }),
+    (m) =>
+        withExoWire(m, (c) => {
+            const item = c.state;
+            c.attr(RowPorts.id, item.id);
+            c.text(RowPorts.label, item.label);
+        })
+);
 
 const items = createStore<readonly TItem[]>([
     { id: 'a', label: 'First' },
@@ -437,22 +492,29 @@ const listSchema = createExoSchema(ListPorts, (b) => {
     });
 });
 type TListState = { rows: TExoChildList; shown: TItem[] };
-const listBuilder = createExoMachineBuilder<TExoDomNode, unknown, TListState>(listSchema);
-listBuilder.createInitialState((c) => ({ rows: c.childList(ListPorts.rows), shown: [] }));
-listBuilder.effect((c) => {
-    const showRows = () => {
-        const want = items.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            BUILDING[i] = item;
-            return c.build(Row, i);
-        });
-    };
-    showRows();
-    return items.onChange(showRows);
-});
-const List = listBuilder.done();
+const listMachine = composeExoMachine(
+    createExoMachine(listSchema, {
+        createInitialState: (c: TExoDomNode, _params: unknown): TListState => ({
+            rows: c.childList(ListPorts.rows),
+            shown: [],
+        }),
+    }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                const showRows = () => {
+                    const want = items.getValue();
+                    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item) =>
+                        c.build(rowMachine, item)
+                    );
+                };
+                showRows();
+                return items.onChange(showRows);
+            });
+        })
+);
 
-backend.render(List, document.body);
+backend.render(listMachine, document.body);
 
 items.setValue([...items.getValue(), { id: 'c', label: 'Third' }]);
 ```
@@ -460,7 +522,7 @@ items.setValue([...items.getValue(), { id: 'c', label: 'Third' }]);
 The child list is opened in `createInitialState`, which runs once per instance; a
 wire can run again, and opening a children port there is refused.
 
-When the contents cannot change, use `c.list(port, component, count)` instead: a
+When the contents cannot change, use `c.list(port, component, rows)` instead: a
 fixed list pays for no row records, no diff and no teardown.
 
 For a filtered view, compute the subset before the call and hand that as
@@ -475,8 +537,16 @@ at once. Anything started outside an effect is registered with `c.onTeardown`,
 against the child the exonode is currently wiring:
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoEffects,
+    withExoWire,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -489,24 +559,31 @@ const timerSchema = createExoSchema(TimerPorts, (b) => {
         div.textPort(TimerPorts.text);
     });
 });
-const timerBuilder = createExoMachineBuilder<TExoDomNode, unknown, { seconds: number }>(timerSchema);
-timerBuilder.createInitialState(() => ({ seconds: 0 }));
-function show(c: TExoMachineBuilderNode<typeof timerBuilder>): void {
+const timerBase = createExoMachine(timerSchema, {
+    createInitialState: (_c: TExoDomNode, _params: unknown) => ({ seconds: 0 }),
+});
+function show(c: TExoMachineNodeOf<typeof timerBase>): void {
     c.text(TimerPorts.text, `Time: ${c.state.seconds}s`);
 }
-timerBuilder.wire((c) => {
-    show(c);
-});
-timerBuilder.effect((c) => {
-    const id = setInterval(() => {
-        c.state.seconds++;
-        show(c);
-    }, 1000);
-    return () => clearInterval(id);
-});
-const Timer = timerBuilder.done();
+const timerMachine = composeExoMachine(
+    timerBase,
+    (m) =>
+        withExoWire(m, (c) => {
+            show(c);
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                const id = setInterval(() => {
+                    c.state.seconds++;
+                    show(c);
+                }, 1000);
+                return () => clearInterval(id);
+            });
+        })
+);
 
-const dispose = backend.render(Timer, document.body);
+const dispose = backend.render(timerMachine, document.body);
 
 // Stops the interval along with every other effect this render started.
 dispose();
@@ -535,9 +612,11 @@ to import to use them, because a context exists only while a wiring is running.
 import {
     EXO_PORT_ATTR,
     EXO_PORT_CHILDREN,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoWire,
 } from '@exodra/core';
 import type { TExoChildrenWiring, TExoMachineNode } from '@exodra/core';
 import { exoContextToken } from '@exodra/context';
@@ -554,12 +633,12 @@ const labelSchema = createExoSchema(LabelPorts, (b) => {
         span.attrPort(LabelPorts.cls, 'class');
     });
 });
-const labelBuilder = createExoMachineBuilder<TExoMachineNode>(labelSchema);
-labelBuilder.wire((c) => {
-    // `undefined` when nobody provided it — not a throw.
-    c.attr(LabelPorts.cls, 'label label--' + (c.inject(THEME) ?? 'light'));
-});
-const Label = labelBuilder.done();
+const labelMachine = composeExoMachine(createExoMachine<TExoMachineNode>(labelSchema), (m) =>
+    withExoWire(m, (c) => {
+        // `undefined` when nobody provided it — not a throw.
+        c.attr(LabelPorts.cls, 'label label--' + (c.inject(THEME) ?? 'light'));
+    })
+);
 
 const ShellPorts = exoPorts({ slot: EXO_PORT_CHILDREN });
 
@@ -568,14 +647,14 @@ const shellSchema = createExoSchema(ShellPorts, (b) => {
         div.childrenPort(ShellPorts.slot);
     });
 });
-const shellBuilder = createExoMachineBuilder<TExoChildrenWiring & TExoMachineNode>(shellSchema);
-shellBuilder.createInitialState((c) => {
-    c.provide(THEME, 'dark');
-    c.one(ShellPorts.slot, Label);
+const shellMachine = createExoMachine(shellSchema, {
+    createInitialState: (c: TExoChildrenWiring & TExoMachineNode, _params: unknown) => {
+        c.provide(THEME, 'dark');
+        c.one(ShellPorts.slot, labelMachine);
+    },
 });
-const Shell = shellBuilder.done();
 
-backend.render(Shell, document.body);
+backend.render(shellMachine, document.body);
 ```
 
 The chain `provide` returns travels downwards as an ordinary **value**: it goes on

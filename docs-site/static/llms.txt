@@ -21,62 +21,78 @@ prototype and runs the machine. The *same* machine runs on the server, on a clie
 render and through hydration.
 
 ```ts
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoTextPort } from '@exodra/core';
+import {
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoHandlers,
+    withExoTransitions,
+    withExoWire,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
-const COUNTER_SCHEMA = createExoSchema((b) => {
-    let count!: TExoTextPort;
-    let increment!: TExoEventPort;
+const CounterPorts = exoPorts({ COUNT: EXO_PORT_TEXT, INCREMENT: EXO_PORT_EVENT });
+
+const CounterSchema = createExoSchema(CounterPorts, (b) => {
     b.el('div', { class: 'counter' }, (div) => {
-        div.el('span', null, (span) => {
-            count = span.textPort();
-        });
+        div.el('span', null, (span) => span.textPort(CounterPorts.COUNT));
         div.el('button', { class: 'btn', type: 'button' }, (button) => {
-            increment = button.eventPort('click');
+            button.eventPort(CounterPorts.INCREMENT, 'click');
             button.text('Increment');
         });
     });
-    return { count, increment };
 });
-const P = COUNTER_SCHEMA.ports;
 
-const m = createExoMachineBuilder<TExoDomNode, unknown, { n: number }>(COUNTER_SCHEMA);
-m.createInitialState(() => ({ n: 0 }));
-const showCount = m.transition((c) => {
-    c.text(P.count, c.state.n);
+const counterBase = createExoMachine(CounterSchema, {
+    createInitialState: (c: TExoDomNode) => ({ n: 0 }),
 });
-m.wire((c) => {
-    showCount(c);
-});
-m.on(P.increment, (c) => {
-    c.state.n += 1;
-    showCount(c);
-});
-export const COUNTER = m.done();
+
+function showCount(c: TExoMachineNodeOf<typeof counterBase>): void {
+    c.text(CounterPorts.COUNT, c.state.n);
+}
+
+export const counterMachine = composeExoMachine(
+    counterBase,
+    (m) => withExoTransitions(m, {
+        increment: (c) => {
+            c.state.n += 1;
+            showCount(c);
+        },
+    }),
+    (m) => withExoWire(m, (c) => showCount(c)),
+    (m) => withExoHandlers(m, (on) => on(CounterPorts.INCREMENT, (c) => increment(c))),
+);
+export const { increment } = counterMachine.transitions;
 
 const backend = withExoCompiler(new ExoDomBackend());
-const dispose = backend.render(COUNTER, document.body);
+const dispose = backend.render(counterMachine, document.body);
 ```
 
-**Schema cursor** (`b`): `el(tag, attrs?, fn?)` and `text(value)` declare what
-never changes; `port(name)`, `textPort()`, `eventPort(name)`, `refPort()` and
-`childrenPort()` declare a **place**.
+**Schema emitter** (`b`): `el(tag, attrs?, fn?)` and `text(value)` declare what
+never changes; `attrPort(port, name)`, `textPort(port)`, `eventPort(port, name)`,
+`refPort(port)` and `childrenPort(port)` put a port declared in `exoPorts` at a
+**place**.
 
-**Machine builder** (`m`):
+**Machine** — `createExoMachine(schema, { createInitialState })`, then decorators
+composed with `composeExoMachine(base, ...steps)`; each step returns a new machine:
 
-- `createInitialState((c) => state)` runs **once** per instance and **returns the
-  state**. It is also where children ports are opened (`c.childList`, `c.one`,
-  `c.list`, `c.keyedList`). It does not write ports.
-- `transition((c, …args) => …)` — "state → ports" in one place. Returns a function
-  the wire, handlers and effects call.
-- `wire((c, params) => …)` writes ports from params; it re-runs through
-  `wireExoNode(node, MACHINE, params)`.
-- `on(port, (c, event) => …)` — an event handler.
-- `effect((c) => unsubscribe | null)` — follows outside data while the instance is
-  live.
-- `done()` → the machine value.
+- `createInitialState: (c, params) => state` runs **once** per instance and
+  **returns the state**. It is also where children ports are opened
+  (`c.childList`, `c.one`, `c.list`, `c.keyedList`).
+- `withExoTransitions(m, { name: (c, …args) => … })` — a dictionary of transitions;
+  the machine exposes them as `machine.transitions.name` and swaps them with
+  `machine.overrides({ name: alt })`. Code the machine only calls itself is a plain
+  function over `TExoMachineNodeOf<typeof base>`.
+- `withExoWire(m, (c, params) => …)` writes ports from params; it re-runs through
+  `wireExoNode(node, machine, params)`.
+- `withExoHandlers(m, (on) => on(port, (c, event) => …))` — event handlers.
+- `withExoEffects(m, (effect) => effect((c) => unsubscribe | null))` — follows
+  outside data while the instance is live.
 
 **Exonode** (`c`): `text(port, v)`, `attr(port, v)`, `unsafeHtml(port, markup)`,
 `state`, `provide` / `inject`, `onTeardown(fn)`, and the children calls below.
@@ -87,13 +103,18 @@ There is no reactive-value package, no `.value`, no `bind`. Outside data is foll
 by an **effect** that draws first, then subscribes, and returns the unsubscribe:
 
 ```ts no-check
-const show = m.transition((c) => {
-    c.text(P.label, store.getValue());
-});
-m.effect((c) => {
-    show(c);
-    return store.onChange(() => show(c));
-});
+function show(c: TExoMachineNodeOf<typeof labelBase>): void {
+    c.text(LabelPorts.LABEL, store.getValue());
+}
+export const labelMachine = composeExoMachine(
+    labelBase,
+    (m) => withExoEffects(m, (effect) => {
+        effect((c) => {
+            show(c);
+            return store.onChange(() => show(c));
+        });
+    }),
+);
 ```
 
 `store` is whatever your data layer is — an `@oimdb/*` collection
@@ -112,11 +133,11 @@ A children port renders exactly where `childrenPort()` was called, so it can sta
 | Call | What stands there | Changes later? |
 | --- | --- | --- |
 | `c.one(port, machine, params)` | one instance | no |
-| `c.list(port, machine, count)` | `count` instances, each told its index | no |
+| `c.list(port, machine, rows)` | one instance per entry, `rows[i]` as its params | no |
 | `c.childList(port)` | a placed-children handle you drive yourself | yes |
 | `c.keyedList(port, keyOf, build, update)` | a keyed list (plugin) | yes |
 
-`c.build(machine, index, params)` returns a complete, wired, detached child.
+`c.build(machine, params)` returns a complete, wired, detached child.
 
 ## Lists and identity
 
@@ -126,17 +147,27 @@ built, a missing key is removed. Pass the items themselves as `keys` and identit
 is the item reference:
 
 ```ts no-check
-m.createInitialState((c) => ({ rows: c.childList(P.rows), shown: [] as TItem[] }));
-const showRows = m.transition((c) => {
+const listBase = createExoMachine(ListSchema, {
+    createInitialState: (c: TExoDomNode) => ({
+        rows: c.childList(ListPorts.ROWS),
+        shown: [] as TItem[],
+    }),
+});
+function showRows(c: TExoMachineNodeOf<typeof listBase>): void {
     const want = items.getValue();
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) =>
-        c.build(ROW, i, item)
+    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item) =>
+        c.build(rowMachine, item)
     );
-});
-m.effect((c) => {
-    showRows(c);
-    return items.onChange(() => showRows(c));
-});
+}
+export const listMachine = composeExoMachine(
+    listBase,
+    (m) => withExoEffects(m, (effect) => {
+        effect((c) => {
+            showRows(c);
+            return items.onChange(() => showRows(c));
+        });
+    }),
+);
 ```
 
 **So a row keeps its DOM node, its focus and its scroll position only if you hand
@@ -152,7 +183,7 @@ changed. The free-function form is `createExoKeyedList(kids, keyOf, build, updat
 
 ## Events
 
-`m.on(port, handler)`. How a listener reaches the DOM is the backend's `events`
+`withExoHandlers(m, (on) => on(port, handler))`. How a listener reaches the DOM is the backend's `events`
 field: `EXO_DIRECT_EVENTS` (one listener per element) is the default;
 `createExoDelegatedEvents(names, options?)` attaches one root listener per event
 name. Compose it with
@@ -195,44 +226,47 @@ JSX declares a **schema** and nothing else: markup plus named ports.
 `createExoNamedSchema()` call; the value is a schema declaration whose `.ports` are
 named. It emits imports from `@exodra/core` only. There is **no runtime**: JSX that
 reaches the runtime uncompiled throws, and there is no `Fragment`. There are no props
-and no wire in a declaration — the machine (`createExoMachineBuilder(SCHEMA)`) fills
-the ports.
+and no wire in a declaration — the machine (`createExoMachine(Schema)` plus its decorators)
+fills the ports.
 
 | Written | Compiles to | Filled by the machine with |
 | --- | --- | --- |
 | `class="row"`, `tabindex={0}`, `disabled` | markup folded into the schema | — |
 | `data-id={$.id}` | `port('data-id', 'id')` | `c.attr(P.id, v)` |
 | `<b>{$.label}</b>` (the element's ONLY child) | `textPort('label')` | `c.text(P.label, v)` |
-| `onClick={$.toggle}`, `on:dblclick={$.edit}` | `eventPort('click', 'toggle')` — `onX` lowers the tail, `on:` keeps the name | `m.on(P.toggle, handler)` |
+| `onClick={$.toggle}`, `on:dblclick={$.edit}` | `eventPort('click', 'toggle')` — `onX` lowers the tail, `on:` keeps the name | `on(P.toggle, handler)` in `withExoHandlers` |
 | `ref={$.box}` | `refPort('box')` | — |
 | `unsafeHtml={$.body}` | `childrenPort('body')` | `c.unsafeHtml(P.body, html)` — nothing escapes |
 | `<$.rows />` | `childrenPort('rows')`, may stand among static siblings | `c.one` / `c.list` / `c.childList` + `reconcileExoOrder` |
 
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
-import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoHandlers, withExoWire } from '@exodra/core';
+import type { TExoEventPort, TExoMachineNode, TExoMachineNodeOf, TExoTextPort } from '@exodra/core';
 
-const COUNTER_SCHEMA = exoJsx<{ count: TExoTextPort; increment: TExoEventPort }>(($) => (
+const CounterSchema = exoJsx<{ count: TExoTextPort; increment: TExoEventPort }>(($) => (
   <button type="button" onClick={$.increment}>
     <span>{$.count}</span>
   </button>
 ));
-const P = COUNTER_SCHEMA.ports;
+const P = CounterSchema.ports;
 
-const m = createExoMachineBuilder<TExoMachineNode, unknown, { n: number }>(COUNTER_SCHEMA);
-m.createInitialState(() => ({ n: 0 }));
-const showCount = m.transition((c) => {
+const counterBase = createExoMachine(CounterSchema, {
+  createInitialState: (c: TExoMachineNode) => ({ n: 0 }),
+});
+
+function showCount(c: TExoMachineNodeOf<typeof counterBase>): void {
   c.text(P.count, c.state.n);
-});
-m.wire((c) => {
-  showCount(c);
-});
-m.on(P.increment, (c) => {
-  c.state.n += 1;
-  showCount(c);
-});
-export const COUNTER = m.done();
+}
+
+export const counterMachine = composeExoMachine(
+  counterBase,
+  (m) => withExoWire(m, (c) => showCount(c)),
+  (m) => withExoHandlers(m, (on) => on(P.increment, (c) => {
+    c.state.n += 1;
+    showCount(c);
+  })),
+);
 ```
 
 Refused at compile time, each naming the element and the fix: any expression other
@@ -253,8 +287,9 @@ receive them.
 
 ## Packages
 
-- `@exodra/core` — schemas, ports, the machine builder (`createExoMachineBuilder`,
-  `wireExoNode`), `createExoStatic`, `composeExoPlugins`, the shared escapers.
+- `@exodra/core` — schemas, ports, the machine (`createExoMachine`,
+  `composeExoMachine`, `withExoTransitions`, `withExoWire`, `withExoHandlers`,
+  `withExoEffects`, `wireExoNode`), `createExoStatic`, `composeExoPlugins`, the shared escapers.
 - `@exodra/context` — `exoContextToken`, context frames, ids.
 - `@exodra/computed` — the declarative machine form (`withExoComputedMachine`).
 - `@exodra/dom` — the browser backend: `ExoDomBackend`, `withExoCompiler`,

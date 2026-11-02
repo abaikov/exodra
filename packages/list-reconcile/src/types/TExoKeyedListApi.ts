@@ -11,7 +11,7 @@ export interface TExoKeyedListApi {
         this: TSelf,
         port: TPort,
         keyOf: (item: TItem) => TKey,
-        build: (item: TItem, index: number) => TSelf,
+        build: (item: TItem) => TSelf,
         update: (node: TSelf, item: TItem) => void
     ): TExoKeyedList<TItem>;
 }

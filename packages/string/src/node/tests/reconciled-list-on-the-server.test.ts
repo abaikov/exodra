@@ -9,7 +9,13 @@
 // a browser version and a server version. The bytes below come from the same wiring function the
 // DOM runs, and they are compared against the FIXED list's bytes, which is the form that was
 // portable before this door existed.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoChildrenPort,
     TExoTextPort,
@@ -30,9 +36,6 @@ const EXO_STR = new ExoStrBackend();
 
 type TItem = { readonly label: string };
 
-/** What the rows read, BY INDEX: a wire is handed its position and nothing else. */
-const SHOWN: TItem[] = [];
-
 const ROW = createExoTestMachine(
     (b) => {
         let label!: TExoTextPort;
@@ -42,8 +45,8 @@ const ROW = createExoTestMachine(
         return { label };
     },
     (P): TExoMachineInitialState<{ text(port: TExoTextPort, value: unknown): void }> =>
-        (c, i) => {
-            c.text(P.label, SHOWN[i].label);
+        (c, item) => {
+            c.text(P.label, (item as TItem).label);
         }
 );
 
@@ -73,8 +76,6 @@ const frozen = (items: readonly TItem[]) => ({
 type TListState = { readonly rows: TExoStrChildList; shown: TItem[] };
 
 const reconciledListOf = (items: readonly TItem[]): TExoStrMachine => {
-    SHOWN.length = 0;
-    SHOWN.push(...items);
     const source = frozen(items);
     const schema = createExoSchema((b) => {
         let rows!: TExoChildrenPort;
@@ -83,28 +84,41 @@ const reconciledListOf = (items: readonly TItem[]): TExoStrMachine => {
         });
         return { rows };
     });
-    const m = createExoMachineBuilder<TExoStrNode, unknown, TListState>(schema);
-    m.createInitialState((c) => ({ rows: c.childList(schema.ports.rows), shown: [] as TItem[] }));
-    const showRows = m.transition((c) => {
-        const want = source.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (_item, i) =>
-            c.build(ROW, i)
-        );
+    const m = createExoMachine<TExoStrNode, unknown, TListState>(schema, {
+        createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] as TItem[] }),
     });
-    m.effect((c) => {
-        showRows(c);
-        return source.onChange(() => showRows(c));
-    });
-    return m.done();
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = source.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(ROW, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return source.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 const fixedListOf = (items: readonly TItem[]) => {
-    SHOWN.length = 0;
-    SHOWN.push(...items);
     return shell(
         (P) =>
             ((c: TExoChildrenWiring) => {
-                c.list(P.rows, ROW, items.length);
+                c.list(P.rows, ROW, items);
             }) as unknown as TExoMachineInitialState<never>
     );
 };
@@ -138,13 +152,11 @@ describe('a component that reconciles its children, rendered by @exodra/string',
     });
 
     it('hands back a live instance from build, printed only when it is inserted', () => {
-        SHOWN.length = 0;
-        SHOWN.push(A);
         const LABEL = ROW.declaration.ports.label as TExoTextPort;
         const LIST = shell(
             (P) =>
                 ((c: TPlacing & TExoChildrenWiring) => {
-                    const row = c.build(ROW, 0) as unknown as {
+                    const row = c.build(ROW, A) as unknown as {
                         text(port: TExoTextPort, value: unknown): void;
                     };
                     row.text(LABEL, 'driven before insert');

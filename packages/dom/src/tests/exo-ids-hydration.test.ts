@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import type { TExoAttrPort, TExoChildrenPort, TExoMachineNode } from '@exodra/core';
 import { nextExoId, provideExoIds } from '@exodra/context';
 import { ExoStrBackend } from '@exodra/string';
@@ -22,13 +22,14 @@ const FIELD_SCHEMA = createExoSchema((b) => {
     });
     return { labelFor, inputId };
 });
-const mField = createExoMachineBuilder<TExoMachineNode>(FIELD_SCHEMA);
-mField.createInitialState((c) => {
-    const id = nextExoId(c);
-    c.attr(FIELD_SCHEMA.ports.labelFor, id);
-    c.attr(FIELD_SCHEMA.ports.inputId, id);
+const mField = createExoMachine<TExoMachineNode>(FIELD_SCHEMA, {
+    createInitialState: (c) => {
+        const id = nextExoId(c);
+        c.attr(FIELD_SCHEMA.ports.labelFor, id);
+        c.attr(FIELD_SCHEMA.ports.inputId, id);
+    },
 });
-const FIELD = mField.done();
+const FIELD = mField;
 
 const FORM_SCHEMA = createExoSchema((b) => {
     let fields!: TExoChildrenPort;
@@ -37,12 +38,13 @@ const FORM_SCHEMA = createExoSchema((b) => {
     });
     return { fields };
 });
-const mForm = createExoMachineBuilder<TExoDomNode>(FORM_SCHEMA);
-mForm.createInitialState((c) => {
-    provideExoIds(c, 'form');
-    c.list(FORM_SCHEMA.ports.fields, FIELD as never, 3);
+const mForm = createExoMachine<TExoDomNode>(FORM_SCHEMA, {
+    createInitialState: (c) => {
+        provideExoIds(c, 'form');
+        c.list(FORM_SCHEMA.ports.fields, FIELD as never, Array.from({ length: 3 }));
+    },
 });
-const FORM = mForm.done();
+const FORM = mForm;
 
 const BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 

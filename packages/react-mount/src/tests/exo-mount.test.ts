@@ -8,7 +8,15 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { createElement, StrictMode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { act } from 'react-dom/test-utils';
-import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    composeExoPlugins,
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoAttrPort,
@@ -73,14 +81,24 @@ const staticLine = (label: string) =>
 /** A label that follows a source: drawn by an effect, which subscribes and returns the unsubscribe. */
 const followingLine = (label: TExoTestSource<string>) => {
     const schema = createExoSchema(buildLine);
-    const m = createExoMachineBuilder<TExoMachineNode>(schema);
-    const show = m.transition((c) => c.text(schema.ports.text, label.getValue()));
-    m.wire((c) => c.attr(schema.ports.cls, 'island'));
-    m.effect((c) => {
-        show(c);
-        return label.onChange(() => show(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode>(schema);
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => c.text(schema.ports.text, label.getValue()),
+            }),
+        (m) => withExoWire(m, (c) => c.attr(schema.ports.cls, 'island')),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return label.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = machine.transitions;
+    return machine;
 };
 
 type TListState<TItem> = { readonly rows: ReturnType<TExoDomNode['childList']>; shown: TItem[] };
@@ -88,7 +106,7 @@ type TListState<TItem> = { readonly rows: ReturnType<TExoDomNode['childList']>; 
 /** A `<ul>` whose children port follows a source through `reconcileExoOrder`. */
 const reconciledList = <TItem>(
     items: TExoTestSource<readonly TItem[]>,
-    row: (c: TExoDomNode, index: number) => ReturnType<TExoDomNode['build']>
+    row: (c: TExoDomNode, item: TItem) => ReturnType<TExoDomNode['build']>
 ) => {
     const schema = createExoSchema((b: TExoSchemaCursor) => {
         let kids!: TExoChildrenPort;
@@ -97,19 +115,34 @@ const reconciledList = <TItem>(
         });
         return { kids };
     });
-    const m = createExoMachineBuilder<TExoDomNode, unknown, TListState<TItem>>(schema);
-    m.createInitialState((c) => ({ rows: c.childList(schema.ports.kids), shown: [] as TItem[] }));
-    const showRows = m.transition((c) => {
-        const want = items.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (_item, i) =>
-            row(c, i)
-        );
+    const m = createExoMachine<TExoDomNode, unknown, TListState<TItem>>(schema, {
+        createInitialState: (c) => ({ rows: c.childList(schema.ports.kids), shown: [] as TItem[] }),
     });
-    m.effect((c) => {
-        showRows(c);
-        return items.onChange(() => showRows(c));
-    });
-    return m.done();
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = items.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => row(c, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return items.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 function render(element: ReturnType<typeof createElement>): {
@@ -223,13 +256,13 @@ describe('ExoMount', () => {
         const ROW = createExoTestMachine(
             buildLine,
             (P): TExoMachineInitialState<TExoDomNode> =>
-                (c, i) => {
+                (c, n) => {
                     c.attr(P.cls, 'row');
-                    c.text(P.text, 'row ' + i);
+                    c.text(P.text, 'row ' + String(n));
                 }
         );
         const rows = source<readonly number[]>([0, 1, 2]);
-        const LIST = reconciledList(rows, (c, i) => c.build(ROW, i));
+        const LIST = reconciledList(rows, (c, n) => c.build(ROW, n));
         const { host, root } = render(createElement(ExoMount, { component: LIST }));
 
         expect(Array.from(host.querySelectorAll('p')).map((n) => n.textContent)).toEqual([
@@ -327,8 +360,8 @@ describe('ExoMount and the composition', () => {
         }),
     });
 
-    /** A row reads its own item out of the list's source, by the index it was armed at. */
-    const rowOf = (rows: TExoTestSource<readonly TRow[]>) =>
+    /** A row reads its own item from the params it was built with. */
+    const rowOf = () =>
         createExoTestMachine(
             (b) => {
                 let id!: TExoAttrPort;
@@ -338,15 +371,15 @@ describe('ExoMount and the composition', () => {
                 return { id };
             },
             (P): TExoMachineInitialState<TExoDomNode> =>
-                (c, index) => {
-                    c.attr(P.id, rows.getValue()[index].id);
+                (c, row) => {
+                    c.attr(P.id, (row as TRow).id);
                 }
         );
 
     /** A `<ul>` whose children port is a reactive list — the only shape a reconciler shows up in. */
     const listIsland = (rows: TExoTestSource<readonly TRow[]>) => {
-        const ROW = rowOf(rows);
-        return reconciledList(rows, (c, i) => c.build(ROW, i));
+        const ROW = rowOf();
+        return reconciledList(rows, (c, row) => c.build(ROW, row));
     };
 
     it('renders the list through the shipped defaults when no backend is named', () => {
@@ -396,22 +429,31 @@ const GREETING_SCHEMA = createExoSchema((b) => {
     return { text };
 });
 const greetingLog: string[] = [];
-const mGreeting = createExoMachineBuilder<TExoMachineNode, TGreetingParams, { shouts: number }>(
-    GREETING_SCHEMA
+const mGreeting = createExoMachine<TExoMachineNode, TGreetingParams, { shouts: number }>(
+    GREETING_SCHEMA,
+    {
+        createInitialState: () => {
+            greetingLog.push('createInitialState');
+            return { shouts: 0 };
+        },
+    }
 );
-mGreeting.createInitialState(() => {
-    greetingLog.push('createInitialState');
-    return { shouts: 0 };
-});
-const shout = mGreeting.transition((c) => {
-    c.state.shouts += 1;
-    c.text(GREETING_SCHEMA.ports.text, 'shouted ' + c.state.shouts);
-});
-mGreeting.wire((c, params) => {
-    greetingLog.push('wire ' + params.name);
-    c.text(GREETING_SCHEMA.ports.text, 'hello ' + params.name);
-});
-const GREETING = mGreeting.done();
+const GREETING = composeExoMachine(
+    mGreeting,
+    (m) =>
+        withExoTransitions(m, {
+            shout: (c) => {
+                c.state.shouts += 1;
+                c.text(GREETING_SCHEMA.ports.text, 'shouted ' + c.state.shouts);
+            },
+        }),
+    (m) =>
+        withExoWire(m, (c, params) => {
+            greetingLog.push('wire ' + params.name);
+            c.text(GREETING_SCHEMA.ports.text, 'hello ' + params.name);
+        })
+);
+const { shout } = GREETING.transitions;
 
 describe('params', () => {
     it('a params change re-runs the wire on the same instance instead of re-mounting', () => {

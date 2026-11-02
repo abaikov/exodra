@@ -89,9 +89,18 @@ and writes it — the value that reaches the DOM is still a plain string, so
 nothing about the renderer knows the style was an object:
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_EVENT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoHandlers,
+    withExoWire,
+} from '@exodra/core';
 import { exoStyle } from '@exodra/core/style';
-import type { TExoMachineBuilderNode, TExoMachineNode } from '@exodra/core';
+import type { TExoMachineNode, TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
 const backend = withExoCompiler(new ExoDomBackend());
@@ -104,22 +113,28 @@ const cardSchema = createExoSchema(CardPorts, (b) => {
         div.eventPort(CardPorts.toggle, 'click');
     });
 });
-const cardBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { active: boolean }>(cardSchema);
-cardBuilder.createInitialState(() => ({ active: false }));
-const show = (c: TExoMachineBuilderNode<typeof cardBuilder>): void => {
+const cardBaseMachine = createExoMachine(cardSchema, {
+    createInitialState: (_c: TExoMachineNode) => ({ active: false }),
+});
+const show = (c: TExoMachineNodeOf<typeof cardBaseMachine>): void => {
     c.attr(
         CardPorts.boxStyle,
         exoStyle({ padding: 16, borderRadius: 8, background: c.state.active ? '#eef' : '#fff' })
     );
 };
-cardBuilder.wire((c) => show(c));
-cardBuilder.on(CardPorts.toggle, (c) => {
-    c.state.active = !c.state.active;
-    show(c);
-});
-const Card = cardBuilder.done();
+const cardMachine = composeExoMachine(
+    cardBaseMachine,
+    (m) => withExoWire(m, (c) => show(c)),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CardPorts.toggle, (c) => {
+                c.state.active = !c.state.active;
+                show(c);
+            });
+        })
+);
 
-backend.render(Card, document.body);
+backend.render(cardMachine, document.body);
 ```
 
 In the [JSX dialect](../guides/jsx.md) a string literal (`style="padding:16px"`)

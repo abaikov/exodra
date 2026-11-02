@@ -10,7 +10,7 @@ function reconcileExoMiddle<TKey, TItem, TNode>(
     keys: readonly TKey[],
     want: readonly TItem[],
     wantEnd: number,
-    build: (item: TItem, index: number) => TNode
+    build: (item: TItem) => TNode
 ): void {
     const shownLength = shownEnd - start;
     const wantLength = wantEnd - start;
@@ -54,13 +54,13 @@ function reconcileExoMiddle<TKey, TItem, TNode>(
     }
     if (inOrder) {
         for (let k = 0; k < wantLength; k++) {
-            if (old[k] === 0) kids.insert(build(want[start + k], start + k), start + k);
+            if (old[k] === 0) kids.insert(build(want[start + k]), start + k);
         }
         return;
     }
     const built: (TNode | undefined)[] = new Array<TNode | undefined>(wantLength);
     for (let k = 0; k < wantLength; k++) {
-        if (old[k] === 0) built[k] = build(want[start + k], start + k);
+        if (old[k] === 0) built[k] = build(want[start + k]);
     }
     const stay = new Uint8Array(wantLength);
     const sequence = getExoSequence(old);
@@ -96,7 +96,7 @@ export function reconcileExoOrder<TKey, TItem, TNode>(
     shown: TKey[],
     keys: readonly TKey[],
     want: readonly TItem[],
-    build: (item: TItem, index: number) => TNode
+    build: (item: TItem) => TNode
 ): TKey[] {
     const wantLength = keys.length;
     if (wantLength === 0) {
@@ -116,7 +116,7 @@ export function reconcileExoOrder<TKey, TItem, TNode>(
     }
     if (start === shownEnd) {
         for (let k = start; k < wantEnd; k++) {
-            kids.insert(build(want[k], k), k);
+            kids.insert(build(want[k]), k);
             shown.splice(k, 0, keys[k]);
         }
         return shown;

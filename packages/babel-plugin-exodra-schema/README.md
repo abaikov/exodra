@@ -7,7 +7,7 @@ TypeScript around it.
 
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoHandlers, withExoWire } from '@exodra/core';
 import type { TExoAttrPort, TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 
 const rowSchema = exoJsx<{ id: TExoAttrPort; label: TExoTextPort; toggle: TExoEventPort }>(
@@ -22,14 +22,19 @@ const RowPorts = rowSchema.ports;
 
 type TRow = { id: string; label: string; done: boolean };
 
-const rowBuilder = createExoMachineBuilder<TExoMachineNode, TRow>(rowSchema);
-rowBuilder.createInitialState(() => null);
-rowBuilder.wire((c, row) => {
-    c.attr(RowPorts.id, row.id);
-    c.text(RowPorts.label, row.label);
-});
-rowBuilder.on(RowPorts.toggle, () => console.log('toggled'));
-export const Row = rowBuilder.done();
+const rowBase = createExoMachine<TExoMachineNode, TRow>(rowSchema);
+export const Row = composeExoMachine(
+    rowBase,
+    (m) =>
+        withExoWire(m, (c, row) => {
+            c.attr(RowPorts.id, row.id);
+            c.text(RowPorts.label, row.label);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(RowPorts.toggle, () => console.log('toggled'));
+        })
+);
 ```
 
 The `exoJsx(…)` call becomes:
@@ -112,8 +117,8 @@ For TypeScript, point JSX at the dialect's types:
 | plain text | `text('…')` | — |
 | `data-id={$.id}` | `port('data-id', 'id')` | `c.attr(RowPorts.id, value)` |
 | `<span>{$.label}</span>` | `textPort('label')` | `c.text(RowPorts.label, value)` |
-| `onClick={$.toggle}` | `eventPort('click', 'toggle')` | `rowBuilder.on(RowPorts.toggle, handler)` |
-| `on:dblclick={$.edit}` | `eventPort('dblclick', 'edit')` | `rowBuilder.on(RowPorts.edit, handler)` |
+| `onClick={$.toggle}` | `eventPort('click', 'toggle')` | `on(RowPorts.toggle, handler)` in `withExoHandlers` |
+| `on:dblclick={$.edit}` | `eventPort('dblclick', 'edit')` | `on(RowPorts.edit, handler)` in `withExoHandlers` |
 | `ref={$.box}` | `refPort('box')` | — |
 | `unsafeHtml={$.body}` | `childrenPort('body')` | `c.unsafeHtml(RowPorts.body, markup)` |
 | `<$.rows />` | `childrenPort('rows')` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
@@ -151,7 +156,7 @@ nothing.
 
 ## Related
 
-- `@exodra/core` — `createExoNamedSchema`, the port types and `createExoMachineBuilder`.
+- `@exodra/core` — `createExoNamedSchema`, the port types, `createExoMachine` and its `withExo*` decorators.
 - `@exodra/jsx` — `exoJsx` and the TypeScript types for this dialect
   (`jsxImportSource: "@exodra/jsx/schema"`).
 - `@exodra/list-reconcile` — `reconcileExoOrder`, for a children port whose list changes.

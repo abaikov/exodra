@@ -5,7 +5,7 @@
 // that only ever built its own outlet would not notice a shared instance going wrong, and "the
 // second router's outlet shows the first router's page" is the shape that failure takes.
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, composeExoMachine, withExoWire, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { host } from '@exodra/test-utils';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
@@ -32,11 +32,12 @@ const page = (name: string) => {
         });
         return { label };
     });
-    const m = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(schema);
-    m.wire((c, match) => {
-        c.text(schema.ports.label, name + ' at ' + match.pathname);
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode, TExoRouteMatch>(schema);
+    return composeExoMachine(m, (m) =>
+        withExoWire(m, (c, match) => {
+            c.text(schema.ports.label, name + ' at ' + match.pathname);
+        })
+    );
 };
 
 const ROUTES: readonly TExoRoute[] = [
@@ -55,12 +56,13 @@ const shellAround = (router: TExoRouter, boundary: TExoMachine<never>) => {
         });
         return { body };
     });
-    const m = createExoMachineBuilder<TNestingNode>(schema);
-    m.createInitialState((c) => {
-        provideExoRouter(c, router);
-        c.one(schema.ports.body, boundary);
+    const m = createExoMachine<TNestingNode>(schema, {
+        createInitialState: (c) => {
+            provideExoRouter(c, router);
+            c.one(schema.ports.body, boundary);
+        },
     });
-    return m.done();
+    return m;
 };
 
 const markupOf = (component: TExoMachine<never>): string => {

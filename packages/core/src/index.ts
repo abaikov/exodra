@@ -109,7 +109,12 @@ export {
     swapExoParams,
     assertExoArming,
     connectExoNode,
-    createExoMachineBuilder,
+    createExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoHandlers,
+    withExoEffects,
+    composeExoMachine,
     disconnectExoNode,
     stopExoEffects,
 } from './machine';
@@ -122,10 +127,11 @@ export { EXO_XMLNS_NS } from './schema/markup/constants/EXO_XMLNS_NS';
 export { assertExoParserStableChild } from './schema/markup/asserts/assertExoParserStableChild';
 export { assertExoParserStableText } from './schema/markup/asserts/assertExoParserStableText';
 export type {
-    TExoMachineStateHandle,
+    TExoMachineOptions,
+    TExoMachineNodeOf,
+    TExoMachineTransitions,
+    TExoTransitionArgs,
     TExoMachineEffect,
-    TExoMachineBuilder,
-    TExoMachineBuilderNode,
     TExoMachineHandler,
     TExoMachineInitialState,
     TExoMachineNode,
@@ -135,5 +141,5 @@ export type {
 // THE DECLARATIVE HALF IS NOT HERE. `withExoComputedMachine`, `exoTransition`, `exoWiring`,
 // the compiled program and its passes, and the seventeen types that spell them are
 // `@exodra/computed`. The direction is `computed` → `core` and never back: that package names
-// `TExoMachineBuilder`, `TExoMachine`, `TExoMachineNode` and `TExoMachineEffect` from
+// `TExoMachine`, `TExoMachineNode` and `TExoMachineEffect` from
 // the block above, and nothing in this package names anything of its.

@@ -12,13 +12,12 @@ import type { TExoTermMachine } from '../instance/types/TExoTermMachine';
 export function renderExoTermInstance(
     schema: TExoTermSchema,
     machine: TExoTermMachine,
-    index: number,
     context: TExoContextFrame | null = null,
     params?: unknown
 ): TExoTermChild {
     const node = schema.createInstance(schema, context);
     try {
-        armExoNode<TExoTermNode>(node, machine, index, params);
+        armExoNode<TExoTermNode>(node, machine, params);
     } catch (error) {
         disposeExoTermChild(node);
         throw error;

@@ -23,7 +23,7 @@ A component is a **machine**: a schema (markup with numbered ports) plus the
 initial state, wire, transitions, handlers and effects that fill those ports.
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachine, createExoSchema, exoPorts, withExoWire } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -34,11 +34,10 @@ const greetingSchema = createExoSchema(GreetingPorts, (b) => {
         h1.textPort(GreetingPorts.label);
     });
 });
-const greetingBuilder = createExoMachineBuilder<TExoDomNode>(greetingSchema);
-greetingBuilder.wire((c) => {
+const greetingBase = createExoMachine<TExoDomNode>(greetingSchema);
+const Greeting = withExoWire(greetingBase, (c) => {
     c.text(GreetingPorts.label, 'Hello');
 });
-const Greeting = greetingBuilder.done();
 
 const backend = withExoCompiler(new ExoDomBackend());
 
@@ -64,11 +63,11 @@ With `babel-preset-exodra` (or `@exodra/vite-plugin`) and
 
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoHandlers, withExoWire } from '@exodra/core';
 import type {
     TExoEventPort,
-    TExoMachineBuilderNode,
     TExoMachineNode,
+    TExoMachineNodeOf,
     TExoTextPort,
 } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
@@ -82,17 +81,23 @@ const CounterPorts = counterSchema.ports;
 
 type TCounterState = { n: number };
 
-const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TCounterState>(counterSchema);
-counterBuilder.createInitialState((): TCounterState => ({ n: 0 }));
-function show(c: TExoMachineBuilderNode<typeof counterBuilder>): void {
+const counterBase = createExoMachine(counterSchema, {
+    createInitialState: (_c: TExoMachineNode): TCounterState => ({ n: 0 }),
+});
+function show(c: TExoMachineNodeOf<typeof counterBase>): void {
     c.text(CounterPorts.count, c.state.n);
 }
-counterBuilder.wire((c) => show(c));
-counterBuilder.on(CounterPorts.increment, (c) => {
-    c.state.n += 1;
-    show(c);
-});
-const Counter = counterBuilder.done();
+const Counter = composeExoMachine(
+    counterBase,
+    (m) => withExoWire(m, (c) => show(c)),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CounterPorts.increment, (c) => {
+                c.state.n += 1;
+                show(c);
+            });
+        })
+);
 
 const backend = withExoCompiler(new ExoDomBackend());
 backend.render(Counter, document.getElementById('root') as HTMLElement);
@@ -150,8 +155,8 @@ order.
 | `unsafeHtml(port, markup)` | fill a children port with raw markup (not escaped) |
 | `on(port, handler, subject?)` | put a handler in an event port |
 | `one(port, machine, params?)` | place one child instance in a children port; returns the child's exonode |
-| `list(port, machine, count)` | place a fixed list of `count` rows, never reconciled |
-| `build(machine, index?, params?)` | build one child, placed nowhere; returns its exonode |
+| `list(port, machine, rows)` | place a fixed list, one row per entry of `rows` (row i armed with `rows[i]` as its params), never reconciled |
+| `build(machine, params?)` | build one child, placed nowhere; returns its exonode |
 | `childList(port)` | the child list of a children port (`withExoChildList`) |
 | `provide(token, value)` / `inject(token)` | contexts, see [`@exodra/context`](https://exodra.org/docs/api/core#contexts) |
 | `onTeardown(off)` | run `off` when the instance is disposed |
@@ -164,11 +169,14 @@ handler changes it and writes it to ports:
 import {
     EXO_PORT_ATTR,
     EXO_PORT_EVENT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoHandlers,
+    withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -183,17 +191,23 @@ const panelSchema = createExoSchema(PanelPorts, (b) => {
         });
     });
 });
-const panelBuilder = createExoMachineBuilder<TExoDomNode, unknown, { open: boolean }>(panelSchema);
-panelBuilder.createInitialState(() => ({ open: false }));
-function showPanel(c: TExoMachineBuilderNode<typeof panelBuilder>): void {
+const panelBase = createExoMachine(panelSchema, {
+    createInitialState: (_c: TExoDomNode) => ({ open: false }),
+});
+function showPanel(c: TExoMachineNodeOf<typeof panelBase>): void {
     c.attr(PanelPorts.panelClass, c.state.open ? 'panel panel--open' : 'panel');
 }
-panelBuilder.wire((c) => showPanel(c));
-panelBuilder.on(PanelPorts.click, (c) => {
-    c.state.open = !c.state.open;
-    showPanel(c);
-});
-const Panel = panelBuilder.done();
+const Panel = composeExoMachine(
+    panelBase,
+    (m) => withExoWire(m, (c) => showPanel(c)),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(PanelPorts.click, (c) => {
+                c.state.open = !c.state.open;
+                showPanel(c);
+            });
+        })
+);
 
 withExoCompiler(new ExoDomBackend()).render(Panel, document.body);
 ```
@@ -203,9 +217,11 @@ subscribes to your data layer, and returns the unsubscribe. The instance stops i
 on dispose.
 
 ```ts no-check
-labelBuilder.effect((c) => {
-    showLabel(c);
-    return store.onChange(() => showLabel(c));
+const labelMachine = withExoEffects(labelBase, (effect) => {
+    effect((c) => {
+        showLabel(c);
+        return store.onChange(() => showLabel(c));
+    });
 });
 ```
 
@@ -223,11 +239,13 @@ import {
     EXO_PORT_ATTR,
     EXO_PORT_CHILDREN,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoEffects,
+    withExoWire,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -249,12 +267,11 @@ const taskSchema = createExoSchema(TaskPorts, (b) => {
         li.textPort(TaskPorts.title);
     });
 });
-const taskBuilder = createExoMachineBuilder<TExoDomNode, TTask>(taskSchema);
-taskBuilder.wire((c, task) => {
+const taskBase = createExoMachine<TExoDomNode, TTask>(taskSchema);
+const Task = withExoWire(taskBase, (c, task) => {
     c.attr(TaskPorts.id, task.id);
     c.text(TaskPorts.title, task.title);
 });
-const Task = taskBuilder.done();
 
 const BoardPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
 
@@ -264,22 +281,27 @@ const boardSchema = createExoSchema(BoardPorts, (b) => {
     });
 });
 type TBoardState = { rows: TExoChildList; shown: TTask[] };
-const boardBuilder = createExoMachineBuilder<TExoDomNode, unknown, TBoardState>(boardSchema);
-boardBuilder.createInitialState((c) => ({ rows: c.childList(BoardPorts.rows), shown: [] }));
-function showTasks(c: TExoMachineBuilderNode<typeof boardBuilder>): void {
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, tasks, tasks, (task, at) =>
-        c.build(Task, at, task)
+const boardBase = createExoMachine(boardSchema, {
+    createInitialState: (c: TExoDomNode): TBoardState => ({
+        rows: c.childList(BoardPorts.rows),
+        shown: [],
+    }),
+});
+function showTasks(c: TExoMachineNodeOf<typeof boardBase>): void {
+    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, tasks, tasks, (task) =>
+        c.build(Task, task)
     );
 }
-boardBuilder.effect((c) => {
-    showTasks(c);
-    const listener = (): void => showTasks(c);
-    taskListeners.add(listener);
-    return () => {
-        taskListeners.delete(listener);
-    };
+const Board = withExoEffects(boardBase, (effect) => {
+    effect((c) => {
+        showTasks(c);
+        const listener = (): void => showTasks(c);
+        taskListeners.add(listener);
+        return () => {
+            taskListeners.delete(listener);
+        };
+    });
 });
-const Board = boardBuilder.done();
 
 const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
 backend.render(Board, document.body);
@@ -291,7 +313,7 @@ Rows are reconciled by **object identity**: a row that survives an update keeps
 its element and subscriptions, and a row that leaves is disposed. For data without
 stable identity, the keyed list (`EXO_KEYED_LIST_VOCABULARY`, `c.keyedList`) in
 `@exodra/list-reconcile` reconciles by key. A list whose contents never change is
-`c.list(port, machine, count)`, which pays for no diff and no row records. See the
+`c.list(port, machine, rows)`, which pays for no diff and no row records. See the
 [Lists guide](https://exodra.org/docs/guides/lists).
 
 `TExoChildList` is `insert`, `move`, `remove`, `removeAll`, `at`, `size`, and the
@@ -307,10 +329,11 @@ public:
 ```ts
 import {
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
     wireExoNode,
+    withExoWire,
 } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
@@ -322,11 +345,10 @@ const titleSchema = createExoSchema(TitlePorts, (b) => {
         h1.textPort(TitlePorts.text);
     });
 });
-const titleBuilder = createExoMachineBuilder<TExoDomNode, string>(titleSchema);
-titleBuilder.wire((c, title) => {
+const titleBase = createExoMachine<TExoDomNode, string>(titleSchema);
+const Title = withExoWire(titleBase, (c, title) => {
     c.text(TitlePorts.text, title);
 });
-const Title = titleBuilder.done();
 
 const backend = withExoCompiler(new ExoDomBackend());
 const node = backend.buildRoot(Title, 'Draft');
@@ -461,7 +483,7 @@ code that mounts instances by hand with `mountExoInstance`.
 - **When hydrating, a port on a static element between two children ports is
   refused at compile time**, and children ports separated by a static must be
   filled in document order. A client render accepts both.
-- **`c.list` on an adopted page takes exactly `count` rows.** If the markup holds
+- **`c.list(port, machine, rows)` on an adopted page takes exactly `rows.length` rows.** If the markup holds
   fewer it throws; extra served rows are left in place.
 - **Two components with the same element skeleton are indistinguishable** to
   hydration: if the server printed the other one, its static text stays and every
@@ -517,8 +539,8 @@ Schemas, for custom entry points:
 - `exoDomSchemaOf(machine, backend): TExoDomSchema` — compiled on first use, cached per backend
 - `exoDomJsonDeclaration(schema): TExoDomJsonDeclaration` and `createExoDomSchema(declaration, backend): TExoDomSchema` — ship schemas from a build and load them without the compiler
 - `mountExoSchema(schema, machine, parent, backend, params?): () => void`
-- `mountExoInstance(schema, machine, index, parent, before, ownerChild, context?, params?): Element`
-- `createExoNode(schema, root, machine, index, ownerChild, holder, context?, params?): void`
+- `mountExoInstance(schema, machine, parent, before, ownerChild, context?, params?): Element`
+- `createExoNode(schema, root, machine, ownerChild, holder, context?, params?): void`
 - `cloneExoNode(schema): Element`
 - `EXO_WALK_FIRST_CHILD`, `EXO_WALK_NEXT_SIBLING`, `EXO_WALK_FROM_END` — walk operations
 - types `TExoDomSchema`, `TExoDomSetter`, `TExoDomJsonDeclaration`

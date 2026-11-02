@@ -19,7 +19,7 @@ export default defineConfig([
     tsconfig: 'tsconfig.tsup.json',
   },
   // A CDN PAIR, because this package is composed BY THE PAGE —
-  // `withExoComputedMachine(createExoMachineBuilder(SCHEMA))` is application code, so a no-build
+  // `withExoComputedMachine(createExoMachine(SCHEMA), (b) => …)` is application code, so a no-build
   // page with `m.field` / `m.derive` needs a browser artifact to load.
   //
   // CORE IS EXTERNAL IN BOTH, for the reason `packages/browser-tsup.mjs` gives: a second core on a

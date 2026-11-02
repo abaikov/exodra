@@ -10,7 +10,7 @@
 // page of blocks is not. Neither can hold two different schemas side by side, and neither can be
 // told later.
 //
-// AND IT IS NOT A CALL. `c.childList(port)` holds whatever `c.build(component, index)` hands it, so
+// AND IT IS NOT A CALL. `c.childList(port)` holds whatever `c.build(component, params)` hands it, so
 // a position is not typed by a component and a port full of different schemas needs nothing the
 // engine does not already have. What makes it a LIST is `reconcileExoOrder` from
 // `@exodra/list-reconcile`, a layer over `build` and the placement door that reconciles by the
@@ -28,7 +28,14 @@
 // heterogeneous child list has NO server expression, one component cannot drive both backends
 // through one, and the byte-identity that makes an SSR'd page of blocks adoptable is unmeasurable
 // from here until the server gets a placement door.
-import { createExoMachineBuilder, createExoSchema, createExoStatic } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+    createExoStatic,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoChildrenPort,
@@ -58,16 +65,16 @@ type TExoPlacing = TExoChildrenWiring & {
     childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
 };
 
-/** ONE POSITION'S WORTH OF A MIXED LIST: which component stands there, and which row of that
- *  component's data its instance reads. Props are gone — a wire is handed a NUMBER. */
+/** ONE POSITION'S WORTH OF A MIXED LIST: which component stands there, and the text its instance
+ *  is handed as params. */
 type TStanding = {
     readonly component: TExoMachine<TExoChildrenWiring>;
-    readonly index: number;
+    readonly text: string;
 };
 
-const standing = (component: TExoMachine<TExoChildrenWiring>, index = 0): TStanding => ({
+const standing = (component: TExoMachine<TExoChildrenWiring>, text = ''): TStanding => ({
     component,
-    index,
+    text,
 });
 
 type TBlockSource = {
@@ -85,35 +92,43 @@ const placingShell = <TPorts>(
     openRest?: (c: TExoPlacing, ports: TPorts) => void
 ) => {
     const schema = createExoSchema(build);
-    const m = createExoMachineBuilder<
+    const m = createExoMachine<
         TExoMachineNode & TExoPlacing,
         unknown,
         { blocks: TExoPlacedChildren<TExoNode>; shown: TStanding[] }
-    >(schema);
-    m.createInitialState((c) => {
-        const blocks = c.childList(blocksOf(schema.ports));
-        if (openRest !== undefined) openRest(c, schema.ports);
-        return { blocks, shown: [] };
+    >(schema, {
+        createInitialState: (c) => {
+            const blocks = c.childList(blocksOf(schema.ports));
+            if (openRest !== undefined) openRest(c, schema.ports);
+            return { blocks, shown: [] };
+        },
     });
-    const placeBlocks = m.transition((c) => {
-        const want = src.getValue();
-        c.state.shown = reconcileExoOrder(c.state.blocks, c.state.shown, want, want, (item) =>
-            c.build(item.component, item.index)
-        );
-    });
-    m.effect((c) => {
-        placeBlocks(c);
-        return src.onChange(() => placeBlocks(c));
-    });
-    return m.done();
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                placeBlocks: (c) => {
+                    const want = src.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.blocks,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(item.component, item.text)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    placeBlocks(c);
+                    return src.onChange(() => placeBlocks(c));
+                });
+            })
+    );
+    const { placeBlocks } = machine.transitions;
+    return machine;
 };
-
-/** What each block reads, BY INDEX: a wire is handed its position and nothing else, so the text a
- *  block shows is the caller's to put where the block can reach it. */
-const A_TITLES: string[] = [];
-const B_BODIES: string[] = [];
-/** What a row in the neighbouring child list reads, by the same rule. */
-const ROW_LABELS: string[] = [];
 
 /** ONE BLOCK — `<section class="a"><h1>…</h1></section>`. */
 const BLOCK_A = createExoTestMachine(
@@ -127,8 +142,8 @@ const BLOCK_A = createExoTestMachine(
         return { title };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, i) => {
-            c.text(P.title, A_TITLES[i]);
+        (c, title) => {
+            c.text(P.title, title);
         }
 );
 
@@ -144,8 +159,8 @@ const BLOCK_B = createExoTestMachine(
         return { body };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, i) => {
-            c.text(P.body, B_BODIES[i]);
+        (c, body) => {
+            c.text(P.body, body);
         }
 );
 
@@ -170,15 +185,24 @@ const BLOCK_BOUND_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mBlockBound = createExoMachineBuilder<TExoMachineNode>(BLOCK_BOUND_SCHEMA);
-const showBlockBound = mBlockBound.transition((c) => {
-    c.text(BLOCK_BOUND_SCHEMA.ports.text, BOUND.getValue());
-});
-mBlockBound.effect((c) => {
-    showBlockBound(c);
-    return BOUND.onChange(() => showBlockBound(c));
-});
-const BLOCK_BOUND = mBlockBound.done() as unknown as TExoMachine<TExoChildrenWiring>;
+const BLOCK_BOUND_MACHINE = composeExoMachine(
+    createExoMachine<TExoMachineNode>(BLOCK_BOUND_SCHEMA),
+    (m) =>
+        withExoTransitions(m, {
+            showBlockBound: (c) => {
+                c.text(BLOCK_BOUND_SCHEMA.ports.text, BOUND.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showBlockBound(c);
+                return BOUND.onChange(() => showBlockBound(c));
+            });
+        })
+);
+const { showBlockBound } = BLOCK_BOUND_MACHINE.transitions;
+const BLOCK_BOUND = BLOCK_BOUND_MACHINE as unknown as TExoMachine<TExoChildrenWiring>;
 
 /** What goes into the child list BESIDE a mixed list: one element carrying its own label. */
 const ITEM = createExoTestMachine(
@@ -190,8 +214,8 @@ const ITEM = createExoTestMachine(
         return { label };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, i) => {
-            c.text(P.label, ROW_LABELS[i]);
+        (c, label) => {
+            c.text(P.label, label);
         }
 );
 
@@ -241,11 +265,9 @@ describe('a mixed child list', () => {
     it('renders THREE DIFFERENT COMPONENTS in one port, in order', () => {
         // THE CASE THE WHOLE SHAPE EXISTS FOR. Three schemas, three wires, one port — and one of
         // them has no ports at all.
-        A_TITLES[0] = 'primary';
-        B_BODIES[0] = 'secondary';
         const src = source<readonly TStanding[]>([
-            standing(BLOCK_A, 0),
-            standing(BLOCK_B, 0),
+            standing(BLOCK_A, 'primary'),
+            standing(BLOCK_B, 'secondary'),
             standing(BLOCK_C),
         ]);
         const parent = host();
@@ -255,13 +277,12 @@ describe('a mixed child list', () => {
 
     it('starts empty when the source starts empty, and fills afterwards', () => {
         // A list says "nothing here" by being EMPTY — there is no absent value to publish.
-        B_BODIES[0] = 'later';
         const src = source<readonly TStanding[]>([]);
         const parent = host();
         EXO_BACKEND.render(shellWith(src), parent);
         expect(parent.innerHTML).toBe('<main></main>');
 
-        src.setValue([standing(BLOCK_B, 0)]);
+        src.setValue([standing(BLOCK_B, 'later')]);
         expect(parent.innerHTML).toBe(`<main>${B('later')}</main>`);
     });
 
@@ -270,12 +291,10 @@ describe('a mixed child list', () => {
         // one kind, and each is its own instance reading its own row of the component's data. A
         // value keyed on the component-and-data pair made two identical positions one entry in an
         // index — two places asking for one child, which no engine can honour.
-        A_TITLES[0] = 'left';
-        A_TITLES[1] = 'right';
         const src = source<readonly TStanding[]>([
-            standing(BLOCK_A, 0),
+            standing(BLOCK_A, 'left'),
             standing(BLOCK_C),
-            standing(BLOCK_A, 1),
+            standing(BLOCK_A, 'right'),
             standing(BLOCK_C),
         ]);
         const parent = host();
@@ -289,10 +308,8 @@ describe('a mixed child list', () => {
         // THE IDENTITY RULE, ASSERTED. The array is rebuilt on every read by any source that derives
         // it, so it cannot be the identity; the ITEMS are, and a survivor keeps its DOM, its
         // listeners and anything focused inside it. Nothing compares a component or a number here.
-        A_TITLES[0] = 'primary';
-        B_BODIES[0] = 'secondary';
-        const first = standing(BLOCK_A, 0);
-        const second = standing(BLOCK_B, 0);
+        const first = standing(BLOCK_A, 'primary');
+        const second = standing(BLOCK_B, 'secondary');
         const src = source<readonly TStanding[]>([first, second]);
         const parent = host();
         EXO_BACKEND.render(shellWith(src), parent);
@@ -306,19 +323,16 @@ describe('a mixed child list', () => {
 
     it('REBUILDS one position when a new item takes it, and leaves its neighbours alone', () => {
         // The other half of the identity rule. A wire runs ONCE, when its instance is built, and
-        // reads its data by the number it was handed — so a position showing another row of the same
+        // reads its data from the params it was handed — so a position showing another row of the same
         // component's data is a new instance, and only that position is touched.
-        A_TITLES[0] = 'primary';
-        B_BODIES[0] = 'secondary';
-        B_BODIES[1] = 'other';
-        const first = standing(BLOCK_A, 0);
-        const src = source<readonly TStanding[]>([first, standing(BLOCK_B, 0)]);
+        const first = standing(BLOCK_A, 'primary');
+        const src = source<readonly TStanding[]>([first, standing(BLOCK_B, 'secondary')]);
         const parent = host();
         EXO_BACKEND.render(shellWith(src), parent);
         const a = parent.querySelector('section');
         const b = parent.querySelector('article');
 
-        src.setValue([first, standing(BLOCK_B, 1)]);
+        src.setValue([first, standing(BLOCK_B, 'other')]);
         expect(parent.innerHTML).toBe(`<main>${A('primary')}${B('other')}</main>`);
         expect(parent.querySelector('section')).toBe(a);
         expect(parent.querySelector('article')).not.toBe(b);
@@ -330,17 +344,14 @@ describe('a mixed child list', () => {
         // component tells them apart, and a reconciler that called the position unchanged would
         // leave a `<section>` standing where an `<article>` belongs — a page that renders without an
         // error and shows the wrong block.
-        A_TITLES[0] = 'shared';
-        B_BODIES[0] = 'shared';
-        B_BODIES[1] = 'neighbour';
-        const neighbour = standing(BLOCK_B, 1);
-        const src = source<readonly TStanding[]>([standing(BLOCK_A, 0), neighbour]);
+        const neighbour = standing(BLOCK_B, 'neighbour');
+        const src = source<readonly TStanding[]>([standing(BLOCK_A, 'shared'), neighbour]);
         const parent = host();
         EXO_BACKEND.render(shellWith(src), parent);
         expect(parent.innerHTML).toBe(`<main>${A('shared')}${B('neighbour')}</main>`);
         const kept = parent.querySelector('article');
 
-        src.setValue([standing(BLOCK_B, 0), neighbour]);
+        src.setValue([standing(BLOCK_B, 'shared'), neighbour]);
         expect(parent.innerHTML).toBe(`<main>${B('shared')}${B('neighbour')}</main>`);
         expect(parent.querySelectorAll('section')).toHaveLength(0);
         // The position that did not change kept its child, which is what says the rebuild was scoped
@@ -353,12 +364,9 @@ describe('a mixed child list', () => {
         // item that moves keeps the child it had and the child list moves one node. Asserted by node
         // IDENTITY, because a rebuilt list looks identical as markup and is not the same page —
         // every listener would be on a different element.
-        A_TITLES[0] = 'one';
-        A_TITLES[1] = 'three';
-        B_BODIES[0] = 'two';
-        const one = standing(BLOCK_A, 0);
-        const two = standing(BLOCK_B, 0);
-        const three = standing(BLOCK_A, 1);
+        const one = standing(BLOCK_A, 'one');
+        const two = standing(BLOCK_B, 'two');
+        const three = standing(BLOCK_A, 'three');
         const src = source<readonly TStanding[]>([one, two, three]);
         const parent = host();
         EXO_BACKEND.render(shellWith(src), parent);
@@ -381,9 +389,8 @@ describe('a mixed child list', () => {
         // which is what ends its subscriptions. Miss this and every block a page has ever shown
         // keeps its bindings alive, holding the detached elements they write to — a leak nothing
         // reports until the page has been used a while.
-        A_TITLES[0] = 'primary';
-        const kept = standing(BLOCK_A, 0);
-        const src = source<readonly TStanding[]>([kept, standing(BLOCK_BOUND, 0)]);
+        const kept = standing(BLOCK_A, 'primary');
+        const src = source<readonly TStanding[]>([kept, standing(BLOCK_BOUND)]);
         const parent = host();
         EXO_BACKEND.render(shellWith(src), parent);
         expect(BOUND.subscribers()).toBe(1);
@@ -397,7 +404,7 @@ describe('a mixed child list', () => {
         // A survivor is never dropped by the reconciler — nothing happened to it — so the blocks
         // still standing when the render goes away are ended by `openChildList`'s own teardown, and
         // the subscription the composition's effect took goes with them.
-        const src = source<readonly TStanding[]>([standing(BLOCK_BOUND, 0)]);
+        const src = source<readonly TStanding[]>([standing(BLOCK_BOUND)]);
         const parent = host();
         const dispose = EXO_BACKEND.render(shellWith(src), parent);
         expect(src.subscribers()).toBe(1);
@@ -415,14 +422,13 @@ describe('a mixed child list among static siblings', () => {
         // put its blocks after the footer. Plausible enough in the markup that only an ordering
         // assertion catches it. The emptying is the other path: a port among statics may not reach
         // for the parent's contents, so it takes out exactly the children it holds.
-        A_TITLES[0] = 'between';
         const src = source<readonly TStanding[]>([]);
         const parent = host();
         EXO_BACKEND.render(shellWith(src, buildCard), parent);
         const card = parent.querySelector('.card') as HTMLElement;
         expect(card.innerHTML).toBe('<h3>headline</h3><footer>footnote</footer>');
 
-        src.setValue([standing(BLOCK_A, 0), standing(BLOCK_C)]);
+        src.setValue([standing(BLOCK_A, 'between'), standing(BLOCK_C)]);
         expect(card.innerHTML).toBe(
             `<h3>headline</h3>${A('between')}${C}<footer>footnote</footer>`
         );
@@ -460,11 +466,9 @@ describe('a mixed child list next to another child list', () => {
         // child list resolves its end by asking the next one for its first node — and a child list
         // that never PUBLISHED looks empty, so the walk steps over it and anchors on the footer. A
         // mixed list found in that hole renders without an error and shows a wrong tree.
-        A_TITLES[0] = 'primary';
-        ROW_LABELS[0] = 'A';
         const { blocks, node, rows, card } = mountTwo();
-        blocks.setValue([standing(BLOCK_A, 0)]);
-        rows.insert(node.build(ITEM, 0));
+        blocks.setValue([standing(BLOCK_A, 'primary')]);
+        rows.insert(node.build(ITEM, 'A'));
         expect(card.innerHTML).toBe(
             `<h3>headline</h3>${A('primary')}<i>A</i><footer>footnote</footer>`
         );
@@ -473,46 +477,37 @@ describe('a mixed child list next to another child list', () => {
     it('the ROWS fill first and the blocks after them — the blocks still land in front', () => {
         // The direction that fails when the mixed list does not consult the chain: with rows already
         // there, "insert before the footer" puts the blocks behind them.
-        A_TITLES[0] = 'primary';
-        ROW_LABELS[0] = 'A';
-        ROW_LABELS[1] = 'B';
         const { blocks, node, rows, card } = mountTwo();
-        rows.insert(node.build(ITEM, 0));
-        rows.insert(node.build(ITEM, 1));
-        blocks.setValue([standing(BLOCK_A, 0), standing(BLOCK_C)]);
+        rows.insert(node.build(ITEM, 'A'));
+        rows.insert(node.build(ITEM, 'B'));
+        blocks.setValue([standing(BLOCK_A, 'primary'), standing(BLOCK_C)]);
         expect(card.innerHTML).toBe(
             `<h3>headline</h3>${A('primary')}${C}<i>A</i><i>B</i><footer>footnote</footer>`
         );
     });
 
     it('emptying the blocks leaves the rows exactly where they were, and they can still grow', () => {
-        A_TITLES[0] = 'primary';
-        ROW_LABELS[0] = 'A';
-        ROW_LABELS[1] = 'B';
         const { blocks, node, rows, card } = mountTwo();
-        blocks.setValue([standing(BLOCK_A, 0)]);
-        rows.insert(node.build(ITEM, 0));
+        blocks.setValue([standing(BLOCK_A, 'primary')]);
+        rows.insert(node.build(ITEM, 'A'));
         blocks.setValue([]);
         expect(card.innerHTML).toBe('<h3>headline</h3><i>A</i><footer>footnote</footer>');
         // The blocks' published order is emptied IN PLACE and never replaced, so the rows' own
         // anchoring still reads the live array rather than a wiring-time snapshot.
-        rows.insert(node.build(ITEM, 1));
+        rows.insert(node.build(ITEM, 'B'));
         expect(card.innerHTML).toBe('<h3>headline</h3><i>A</i><i>B</i><footer>footnote</footer>');
     });
 
     it("a mixed list in front of a FIXED list anchors on the fixed list's first row", () => {
         // `c.list` publishes one entry for its first row and nothing else; the child list in front of
         // it has to end there rather than at the footer.
-        A_TITLES[0] = 'primary';
-        ROW_LABELS[0] = 'X';
-        ROW_LABELS[1] = 'Y';
         const blocks = source<readonly TStanding[]>([]);
         const CARD = placingShell(
             buildTwo,
             (P) => P.blocks,
             blocks,
             (c, P) => {
-                c.list(P.rows, ITEM, 2);
+                c.list(P.rows, ITEM, ['X', 'Y']);
             }
         );
         const parent = host();
@@ -520,7 +515,7 @@ describe('a mixed child list next to another child list', () => {
         const card = parent.querySelector('.card') as HTMLElement;
         expect(card.innerHTML).toBe('<h3>headline</h3><i>X</i><i>Y</i><footer>footnote</footer>');
 
-        blocks.setValue([standing(BLOCK_A, 0)]);
+        blocks.setValue([standing(BLOCK_A, 'primary')]);
         expect(card.innerHTML).toBe(
             `<h3>headline</h3>${A('primary')}<i>X</i><i>Y</i><footer>footnote</footer>`
         );

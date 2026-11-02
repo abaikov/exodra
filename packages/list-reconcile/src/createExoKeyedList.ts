@@ -6,7 +6,7 @@ import type { TExoPlacedChildren } from './types/TExoPlacedChildren';
 export function createExoKeyedList<TItem, TKey, TNode>(
     kids: TExoPlacedChildren<TNode>,
     keyOf: (item: TItem) => TKey,
-    build: (item: TItem, index: number) => TNode,
+    build: (item: TItem) => TNode,
     update: (node: TNode, item: TItem) => void
 ): TExoKeyedList<TItem> {
     let shown: TKey[] = [];

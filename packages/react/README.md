@@ -23,7 +23,7 @@ inside it, and the machine's initial state hands that port to React and keeps th
 handle it gets back.
 
 ```tsx setup
-import { EXO_PORT_CHILDREN, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_CHILDREN, createExoMachine, createExoSchema, exoPorts, withExoEffects } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { reactIsland } from '@exodra/react';
@@ -50,14 +50,17 @@ const panelSchema = createExoSchema(PanelPorts, (b) => {
     });
 });
 type TPanelState = { readonly chart: TExoReactIsland<TChartProps> };
-const panelBuilder = createExoMachineBuilder<TExoReactWiring & TExoMachineNode, unknown, TPanelState>(
-    panelSchema
+const panelBase = createExoMachine<TExoReactWiring & TExoMachineNode, unknown, TPanelState>(
+    panelSchema,
+    {
+        createInitialState: (c) => ({
+            chart: reactIsland(c, PanelPorts.host, FancyChart, chartStore.get()),
+        }),
+    }
 );
-panelBuilder.createInitialState((c) => ({
-    chart: reactIsland(c, PanelPorts.host, FancyChart, chartStore.get()),
-}));
-panelBuilder.effect((c) => chartStore.subscribe(() => c.state.chart.render(chartStore.get())));
-const Panel = panelBuilder.done();
+const Panel = withExoEffects(panelBase, (effect) => {
+    effect((c) => chartStore.subscribe(() => c.state.chart.render(chartStore.get())));
+});
 
 withExoCompiler(new ExoDomBackend()).render(Panel, document.getElementById('root')!);
 ```

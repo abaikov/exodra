@@ -58,7 +58,6 @@ export const REACT_AXES = [
         rows: [
             { name: 'React code on Exodra, compiled', value: 0.82, kind: 'ours' },
             { name: 'React code on Exodra, no compiler', value: 0.92, kind: 'strategy' },
-            { name: 'React code on Exodra, templates off', value: 1.31, kind: 'rival' },
             { name: 'React 19', value: 0.98, kind: 'rival' },
         ],
     },
@@ -72,7 +71,6 @@ export const REACT_AXES = [
         rows: [
             { name: 'React code on Exodra, compiled', value: 8.4, kind: 'ours' },
             { name: 'React code on Exodra, no compiler', value: 9.5, kind: 'strategy' },
-            { name: 'React code on Exodra, templates off', value: 13.8, kind: 'rival' },
             { name: 'React 19', value: 11.0, kind: 'rival' },
         ],
     },

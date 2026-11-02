@@ -533,7 +533,7 @@ import type { TExoStrNode, TExoStrSchema } from '@exodra/string';
 import { escape, renderToString, ssr, ssrAttribute } from 'solid-js/web/dist/server.js';
 import type { Scenario } from '../../../harness';
 import type { TExoMachineInitialState } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import { createExoMachine } from '@exodra/core';
 
 const machineOf = (declaration: TExoCursorDeclaration<unknown>): TExoMachine<never> => ({
     declaration,
@@ -621,18 +621,6 @@ const DATA_B: TCardData = {
     v5: '12,881',
     count: '7 fields',
 };
-
-/**
- * WHAT A CARD READS INSTEAD OF A PROPS PARAMETER, BY INDEX. A wire is handed its POSITION and
- * nothing else, so every build function here files its datum at the position it is about to build —
- * always 0, because every row in this file builds one top-level card — an instant before the
- * builder runs the wire. The idiom is `reconcile-exo-children.test.ts`'s `BUILDING`.
- *
- * WHAT IT COSTS THE EXODRA ROWS AGAINST THE FLOOR, so the tables are read knowing it: ONE array
- * store before the call and ONE array load inside the wire, per BUILD — not per port. The floor and
- * the rivals take their datum as an argument and pay neither.
- */
-const BUILDING: TCardData[] = [DATA];
 
 /** Six, and the same six in every spelling — the repeated region, written out rather than looped
  *  through anybody's list engine. See the header's note on why. */
@@ -1214,8 +1202,8 @@ const exoShape = (b: TExoSchemaCursor): TCardPorts => {
  */
 const exoWireOf =
     (P: TCardPorts): TExoMachineInitialState<TExoDomNode> =>
-    (c, i) => {
-        const d = BUILDING[i];
+    (c, params) => {
+        const d = params as TCardData;
         c.attr(P.id, d.id);
         c.text(P.title, d.title);
         c.text(P.subtitle, d.subtitle);
@@ -1238,10 +1226,11 @@ const exoWireOf =
 const EXO_BACKEND = new ExoDomBackend();
 
 const EXO_CARD_SCHEMA = createExoSchema(exoShape);
-const mEXO_CARD = createExoMachineBuilder<TExoDomNode>(EXO_CARD_SCHEMA);
-mEXO_CARD.createInitialState(exoWireOf(EXO_CARD_SCHEMA.ports));
-const EXO_CARD = mEXO_CARD.done();
-/** `createExoMachineBuilder` hands the schema's ports to the wire FACTORY, and keeps them on the schema; the
+const mEXO_CARD = createExoMachine<TExoDomNode>(EXO_CARD_SCHEMA, {
+    createInitialState: exoWireOf(EXO_CARD_SCHEMA.ports),
+});
+const EXO_CARD = mEXO_CARD;
+/** `exoWireOf` is handed the schema's ports for `createInitialState`, and they stay on the schema; the
  *  update rows fill through the same fifteen objects the wire does, by the same numbers. */
 const EXO_PORTS: TCardPorts = EXO_CARD_SCHEMA.ports;
 const EXO_PLAN: TExoDomSchema = exoDomSchemaOf(EXO_CARD, EXO_BACKEND);
@@ -1257,10 +1246,9 @@ function exodraCompile(token: string): TExoDomSchema {
  * that bounds it.
  */
 function exodraBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EXO_PLAN.acquireNode(EXO_PLAN);
     const record = EXO_PLAN.createInstance(EXO_PLAN);
-    createExoNode(EXO_PLAN, root, EXO_CARD, 0, null, record, null);
+    createExoNode(EXO_PLAN, root, EXO_CARD, null, record, null, d);
     return root;
 }
 
@@ -1287,17 +1275,14 @@ function exodraBuild(d: TCardData): Element {
 const EXO_HYDRATE_BACKEND = withExoHydration(new ExoDomBackend());
 
 /**
- * THE API LIMIT THIS ROW ONCE RAN INTO IS GONE, AND SO IS THE ASYMMETRY IT CREATED. There are no
- * props anywhere: a wire's only argument is its index, so `hydrate(component, parent)` hands a wire
- * exactly what a build hands it, and every exodra row in this file — not just the adopted one — now
- * reaches its data through that index. This wire is kept separate from `exoWireOf` only because it
- * picks its datum by PARITY rather than out of `BUILDING`, which is what lets one served string be
- * adopted without a build having filed anything.
+ * `hydrate(component, parent, DATA)` hands the wire its datum as params, exactly as a build does.
+ * This wire is a separate function from `exoWireOf` so that the adopted row's call sites do not
+ * share inline caches with the built rows.
  */
-const exoIndexWireOf =
+const exoHydrateWireOf =
     (P: TCardPorts): TExoMachineInitialState<TExoDomNode> =>
-    (c, i) => {
-        const d = i & 1 ? DATA_B : DATA;
+    (c, params) => {
+        const d = params as TCardData;
         c.attr(P.id, d.id);
         c.text(P.title, d.title);
         c.text(P.subtitle, d.subtitle);
@@ -1316,9 +1301,10 @@ const exoIndexWireOf =
     };
 
 const EXO_HYDRATE_CARD_SCHEMA = createExoSchema(exoShape);
-const mEXO_HYDRATE_CARD = createExoMachineBuilder<TExoDomNode>(EXO_HYDRATE_CARD_SCHEMA);
-mEXO_HYDRATE_CARD.createInitialState(exoIndexWireOf(EXO_HYDRATE_CARD_SCHEMA.ports));
-const EXO_HYDRATE_CARD = mEXO_HYDRATE_CARD.done();
+const mEXO_HYDRATE_CARD = createExoMachine<TExoDomNode>(EXO_HYDRATE_CARD_SCHEMA, {
+    createInitialState: exoHydrateWireOf(EXO_HYDRATE_CARD_SCHEMA.ports),
+});
+const EXO_HYDRATE_CARD = mEXO_HYDRATE_CARD;
 
 /**
  * THE FLOOR FOR ADOPTION — the same walk `floorKeepBuild` performs, with the clone and the fifteen
@@ -1429,7 +1415,7 @@ function floorAdoptTwin(root: Element, into: TFloorRefs[]): void {
 /** `hydrate` adopts `parent.firstElementChild` — ONE top-level instance, which is why every
  *  container below holds exactly one card. */
 function exodraAdopt(container: Element): () => void {
-    return EXO_HYDRATE_BACKEND.hydrate(EXO_HYDRATE_CARD, container);
+    return EXO_HYDRATE_BACKEND.hydrate(EXO_HYDRATE_CARD, container, DATA);
 }
 
 /**
@@ -1569,10 +1555,9 @@ function exodraDeclaredCompile(token: string): TExoDomSchema {
 }
 
 function exodraDeclaredBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EXO_DECLARED_PLAN.acquireNode(EXO_DECLARED_PLAN);
     const record = EXO_DECLARED_PLAN.createInstance(EXO_DECLARED_PLAN);
-    createExoNode(EXO_DECLARED_PLAN, root, EXO_DECLARED_CARD, 0, null, record, null);
+    createExoNode(EXO_DECLARED_PLAN, root, EXO_DECLARED_CARD, null, record, null, d);
     return root;
 }
 
@@ -1617,10 +1602,9 @@ interface TExodraKept {
 }
 
 function exodraKeepBuild(d: TCardData): TExodraKept {
-    BUILDING[0] = d;
     const root = EXO_PLAN.acquireNode(EXO_PLAN);
     const record = EXO_PLAN.createInstance(EXO_PLAN);
-    createExoNode(EXO_PLAN, root, EXO_CARD, 0, null, record, null);
+    createExoNode(EXO_PLAN, root, EXO_CARD, null, record, null, d);
     return { node: root, doors: (record as unknown as TExoDomNode).fillDoors() };
 }
 
@@ -1670,8 +1654,7 @@ function exodraCloneRecord(): Element {
 
 /** The shipped entry point, insertion included — the row the replica above is checked against. */
 function exodraMount(d: TCardData, parent: Element): Element {
-    BUILDING[0] = d;
-    return mountExoInstance(EXO_PLAN, EXO_CARD, 0, parent, null, null, null);
+    return mountExoInstance(EXO_PLAN, EXO_CARD, parent, null, null, null, d);
 }
 
 // =========================================================================================
@@ -2011,14 +1994,15 @@ const tinyShape = (b: TExoSchemaCursor): TTinyPorts => {
 
 const tinyWireOf =
     (P: TTinyPorts): TExoMachineInitialState<TExoDomNode> =>
-    (c, i) => {
-        c.text(P.count, BUILDING[i].count);
+    (c, params) => {
+        c.text(P.count, (params as TCardData).count);
     };
 
 const TINY_CARD_SCHEMA = createExoSchema(tinyShape);
-const mTINY_CARD = createExoMachineBuilder<TExoDomNode>(TINY_CARD_SCHEMA);
-mTINY_CARD.createInitialState(tinyWireOf(TINY_CARD_SCHEMA.ports));
-const TINY_CARD = mTINY_CARD.done();
+const mTINY_CARD = createExoMachine<TExoDomNode>(TINY_CARD_SCHEMA, {
+    createInitialState: tinyWireOf(TINY_CARD_SCHEMA.ports),
+});
+const TINY_CARD = mTINY_CARD;
 const TINY_PLAN: TExoDomSchema = exoDomSchemaOf(TINY_CARD, EXO_BACKEND);
 
 function tinyExodraCompile(token: string): TExoDomSchema {
@@ -2027,10 +2011,9 @@ function tinyExodraCompile(token: string): TExoDomSchema {
 }
 
 function tinyExodraBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = TINY_PLAN.acquireNode(TINY_PLAN);
     const record = TINY_PLAN.createInstance(TINY_PLAN);
-    createExoNode(TINY_PLAN, root, TINY_CARD, 0, null, record, null);
+    createExoNode(TINY_PLAN, root, TINY_CARD, null, record, null, d);
     return root;
 }
 
@@ -2071,10 +2054,9 @@ function tinyDeclaredCompile(token: string): TExoDomSchema {
 }
 
 function tinyDeclaredBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = TINY_DECLARED_PLAN.acquireNode(TINY_DECLARED_PLAN);
     const record = TINY_DECLARED_PLAN.createInstance(TINY_DECLARED_PLAN);
-    createExoNode(TINY_DECLARED_PLAN, root, TINY_DECLARED_CARD, 0, null, record, null);
+    createExoNode(TINY_DECLARED_PLAN, root, TINY_DECLARED_CARD, null, record, null, d);
     return root;
 }
 
@@ -2303,8 +2285,8 @@ const deepShape = (b: TExoSchemaCursor): TDeepPorts => {
 
 const deepWireOf =
     (P: TDeepPorts): TExoMachineInitialState<TExoDomNode> =>
-    (c, i) => {
-        const d = BUILDING[i];
+    (c, params) => {
+        const d = params as TCardData;
         c.attr(P.deep, d.id);
         c.text(P.v0, d.v0);
         c.text(P.v1, d.v1);
@@ -2312,9 +2294,10 @@ const deepWireOf =
     };
 
 const DEEP_CARD_SCHEMA = createExoSchema(deepShape);
-const mDEEP_CARD = createExoMachineBuilder<TExoDomNode>(DEEP_CARD_SCHEMA);
-mDEEP_CARD.createInitialState(deepWireOf(DEEP_CARD_SCHEMA.ports));
-const DEEP_CARD = mDEEP_CARD.done();
+const mDEEP_CARD = createExoMachine<TExoDomNode>(DEEP_CARD_SCHEMA, {
+    createInitialState: deepWireOf(DEEP_CARD_SCHEMA.ports),
+});
+const DEEP_CARD = mDEEP_CARD;
 const DEEP_PLAN: TExoDomSchema = exoDomSchemaOf(DEEP_CARD, EXO_BACKEND);
 
 function deepExodraCompile(token: string): TExoDomSchema {
@@ -2323,10 +2306,9 @@ function deepExodraCompile(token: string): TExoDomSchema {
 }
 
 function deepExodraBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = DEEP_PLAN.acquireNode(DEEP_PLAN);
     const record = DEEP_PLAN.createInstance(DEEP_PLAN);
-    createExoNode(DEEP_PLAN, root, DEEP_CARD, 0, null, record, null);
+    createExoNode(DEEP_PLAN, root, DEEP_CARD, null, record, null, d);
     return root;
 }
 
@@ -2389,10 +2371,9 @@ function deepDeclaredCompile(token: string): TExoDomSchema {
 }
 
 function deepDeclaredBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = DEEP_DECLARED_PLAN.acquireNode(DEEP_DECLARED_PLAN);
     const record = DEEP_DECLARED_PLAN.createInstance(DEEP_DECLARED_PLAN);
-    createExoNode(DEEP_DECLARED_PLAN, root, DEEP_DECLARED_CARD, 0, null, record, null);
+    createExoNode(DEEP_DECLARED_PLAN, root, DEEP_DECLARED_CARD, null, record, null, d);
     return root;
 }
 
@@ -2965,8 +2946,8 @@ const denseShape = (b: TExoSchemaCursor): TDensePorts => {
 const denseWireOf = (P: TDensePorts): TExoMachineInitialState<TExoDomNode> => {
     const a = P.a;
     const t = P.t;
-    return (c, i) => {
-        const d = BUILDING[i];
+    return (c, params) => {
+        const d = params as TCardData;
         c.attr(a[0], d.id);
         c.attr(a[1], d.state);
         c.text(t[0], d.title);
@@ -3003,9 +2984,10 @@ const denseWireOf = (P: TDensePorts): TExoMachineInitialState<TExoDomNode> => {
 };
 
 const DENSE_CARD_SCHEMA = createExoSchema(denseShape);
-const mDENSE_CARD = createExoMachineBuilder<TExoDomNode>(DENSE_CARD_SCHEMA);
-mDENSE_CARD.createInitialState(denseWireOf(DENSE_CARD_SCHEMA.ports));
-const DENSE_CARD = mDENSE_CARD.done();
+const mDENSE_CARD = createExoMachine<TExoDomNode>(DENSE_CARD_SCHEMA, {
+    createInitialState: denseWireOf(DENSE_CARD_SCHEMA.ports),
+});
+const DENSE_CARD = mDENSE_CARD;
 const DENSE_PLAN: TExoDomSchema = exoDomSchemaOf(DENSE_CARD, EXO_BACKEND);
 
 function denseExodraCompile(token: string): TExoDomSchema {
@@ -3014,10 +2996,9 @@ function denseExodraCompile(token: string): TExoDomSchema {
 }
 
 function denseExodraBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = DENSE_PLAN.acquireNode(DENSE_PLAN);
     const record = DENSE_PLAN.createInstance(DENSE_PLAN);
-    createExoNode(DENSE_PLAN, root, DENSE_CARD, 0, null, record, null);
+    createExoNode(DENSE_PLAN, root, DENSE_CARD, null, record, null, d);
     return root;
 }
 
@@ -3176,10 +3157,9 @@ function denseDeclaredCompile(token: string): TExoDomSchema {
 }
 
 function denseDeclaredBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = DENSE_DECLARED_PLAN.acquireNode(DENSE_DECLARED_PLAN);
     const record = DENSE_DECLARED_PLAN.createInstance(DENSE_DECLARED_PLAN);
-    createExoNode(DENSE_DECLARED_PLAN, root, DENSE_DECLARED_CARD, 0, null, record, null);
+    createExoNode(DENSE_DECLARED_PLAN, root, DENSE_DECLARED_CARD, null, record, null, d);
     return root;
 }
 
@@ -3734,8 +3714,8 @@ const eventShape = (b: TExoSchemaCursor): TEventPorts => {
  *  the pack behind it — which is the claim a strategy plugin makes, tested rather than repeated. */
 const eventWireOf =
     (P: TEventPorts): TExoMachineInitialState<TExoDomNode> =>
-    (c, i) => {
-        const d = BUILDING[i];
+    (c, params) => {
+        const d = params as TCardData;
         c.attr(P.id, d.id);
         c.text(P.title, d.title);
         c.text(P.subtitle, d.subtitle);
@@ -3760,9 +3740,10 @@ const eventWireOf =
     };
 
 const EVENT_CARD_SCHEMA = createExoSchema(eventShape);
-const mEVENT_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_CARD_SCHEMA);
-mEVENT_CARD.createInitialState(eventWireOf(EVENT_CARD_SCHEMA.ports));
-const EVENT_CARD = mEVENT_CARD.done();
+const mEVENT_CARD = createExoMachine<TExoDomNode>(EVENT_CARD_SCHEMA, {
+    createInitialState: eventWireOf(EVENT_CARD_SCHEMA.ports),
+});
+const EVENT_CARD = mEVENT_CARD;
 
 /**
  * THE DELEGATED PACK AND THE BACKEND THAT CARRIES IT, one for the process. A pack built per
@@ -3777,9 +3758,10 @@ const EVENT_DELEGATED_BACKEND = composeExoPlugins(new ExoDomBackend(), {
 
 const EVENT_DIRECT_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_CARD, EXO_BACKEND);
 const EVENT_DELEGATED_CARD_SCHEMA = createExoSchema(eventShape);
-const mEVENT_DELEGATED_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_DELEGATED_CARD_SCHEMA);
-mEVENT_DELEGATED_CARD.createInitialState(eventWireOf(EVENT_DELEGATED_CARD_SCHEMA.ports));
-const EVENT_DELEGATED_CARD = mEVENT_DELEGATED_CARD.done();
+const mEVENT_DELEGATED_CARD = createExoMachine<TExoDomNode>(EVENT_DELEGATED_CARD_SCHEMA, {
+    createInitialState: eventWireOf(EVENT_DELEGATED_CARD_SCHEMA.ports),
+});
+const EVENT_DELEGATED_CARD = mEVENT_DELEGATED_CARD;
 const EVENT_DELEGATED_PLAN: TExoDomSchema = exoDomSchemaOf(
     EVENT_DELEGATED_CARD,
     EVENT_DELEGATED_BACKEND
@@ -3796,18 +3778,16 @@ function eventDelegatedCompile(token: string): TExoDomSchema {
 }
 
 function eventDirectBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_DIRECT_PLAN.acquireNode(EVENT_DIRECT_PLAN);
     const record = EVENT_DIRECT_PLAN.createInstance(EVENT_DIRECT_PLAN);
-    createExoNode(EVENT_DIRECT_PLAN, root, EVENT_CARD, 0, null, record, null);
+    createExoNode(EVENT_DIRECT_PLAN, root, EVENT_CARD, null, record, null, d);
     return root;
 }
 
 function eventDelegatedBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_DELEGATED_PLAN.acquireNode(EVENT_DELEGATED_PLAN);
     const record = EVENT_DELEGATED_PLAN.createInstance(EVENT_DELEGATED_PLAN);
-    createExoNode(EVENT_DELEGATED_PLAN, root, EVENT_DELEGATED_CARD, 0, null, record, null);
+    createExoNode(EVENT_DELEGATED_PLAN, root, EVENT_DELEGATED_CARD, null, record, null, d);
     return root;
 }
 
@@ -4248,16 +4228,16 @@ const EVENT_NOWRITE_BACKEND = composeExoPlugins(new ExoDomBackend(), {
     events: () => EVENT_NULL_PACK,
 });
 const EVENT_NOWRITE_CARD_SCHEMA = createExoSchema(eventShape);
-const mEVENT_NOWRITE_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_NOWRITE_CARD_SCHEMA);
-mEVENT_NOWRITE_CARD.createInitialState(eventWireOf(EVENT_NOWRITE_CARD_SCHEMA.ports));
-const EVENT_NOWRITE_CARD = mEVENT_NOWRITE_CARD.done();
+const mEVENT_NOWRITE_CARD = createExoMachine<TExoDomNode>(EVENT_NOWRITE_CARD_SCHEMA, {
+    createInitialState: eventWireOf(EVENT_NOWRITE_CARD_SCHEMA.ports),
+});
+const EVENT_NOWRITE_CARD = mEVENT_NOWRITE_CARD;
 const EVENT_NOWRITE_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_NOWRITE_CARD, EVENT_NOWRITE_BACKEND);
 
 function eventNoWriteBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_NOWRITE_PLAN.acquireNode(EVENT_NOWRITE_PLAN);
     const record = EVENT_NOWRITE_PLAN.createInstance(EVENT_NOWRITE_PLAN);
-    createExoNode(EVENT_NOWRITE_PLAN, root, EVENT_NOWRITE_CARD, 0, null, record, null);
+    createExoNode(EVENT_NOWRITE_PLAN, root, EVENT_NOWRITE_CARD, null, record, null, d);
     return root;
 }
 
@@ -4304,16 +4284,16 @@ const EVENT_MERGED_BACKEND = composeExoPlugins(new ExoDomBackend(), {
         },
 });
 const EVENT_MERGED_CARD_SCHEMA = createExoSchema(eventShape);
-const mEVENT_MERGED_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_MERGED_CARD_SCHEMA);
-mEVENT_MERGED_CARD.createInitialState(eventWireOf(EVENT_MERGED_CARD_SCHEMA.ports));
-const EVENT_MERGED_CARD = mEVENT_MERGED_CARD.done();
+const mEVENT_MERGED_CARD = createExoMachine<TExoDomNode>(EVENT_MERGED_CARD_SCHEMA, {
+    createInitialState: eventWireOf(EVENT_MERGED_CARD_SCHEMA.ports),
+});
+const EVENT_MERGED_CARD = mEVENT_MERGED_CARD;
 const EVENT_MERGED_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_MERGED_CARD, EVENT_MERGED_BACKEND);
 
 function eventMergedBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_MERGED_PLAN.acquireNode(EVENT_MERGED_PLAN);
     const record = EVENT_MERGED_PLAN.createInstance(EVENT_MERGED_PLAN);
-    createExoNode(EVENT_MERGED_PLAN, root, EVENT_MERGED_CARD, 0, null, record, null);
+    createExoNode(EVENT_MERGED_PLAN, root, EVENT_MERGED_CARD, null, record, null, d);
     return root;
 }
 
@@ -4365,8 +4345,8 @@ function eventOnCopy(
 
 const eventOnCopyWireOf =
     (P: TEventPorts): TExoMachineInitialState<TExoDomNode> =>
-    (c, i) => {
-        const d = BUILDING[i];
+    (c, params) => {
+        const d = params as TCardData;
         c.attr(P.id, d.id);
         c.text(P.title, d.title);
         c.text(P.subtitle, d.subtitle);
@@ -4395,32 +4375,32 @@ const eventOnCopyWireOf =
 const eventPortsWireOf = (P: TEventPorts): TExoMachineInitialState<TExoDomNode> => exoWireOf(P);
 
 const EVENT_ONCOPY_CARD_SCHEMA = createExoSchema(eventShape);
-const mEVENT_ONCOPY_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_ONCOPY_CARD_SCHEMA);
-mEVENT_ONCOPY_CARD.createInitialState(eventOnCopyWireOf(EVENT_ONCOPY_CARD_SCHEMA.ports));
-const EVENT_ONCOPY_CARD = mEVENT_ONCOPY_CARD.done();
+const mEVENT_ONCOPY_CARD = createExoMachine<TExoDomNode>(EVENT_ONCOPY_CARD_SCHEMA, {
+    createInitialState: eventOnCopyWireOf(EVENT_ONCOPY_CARD_SCHEMA.ports),
+});
+const EVENT_ONCOPY_CARD = mEVENT_ONCOPY_CARD;
 const EVENT_ONCOPY_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_ONCOPY_CARD, EVENT_NOWRITE_BACKEND);
 /** On `EXO_BACKEND` and not on the no-write one: the row it is subtracted from is
  *  `exodra·noports`, so the backend — and with it the record shape and the writers — must be that
  *  row's, leaving the SCHEMA as the only difference. */
 const EVENT_PORTS_CARD_SCHEMA = createExoSchema(eventShape);
-const mEVENT_PORTS_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_PORTS_CARD_SCHEMA);
-mEVENT_PORTS_CARD.createInitialState(eventPortsWireOf(EVENT_PORTS_CARD_SCHEMA.ports));
-const EVENT_PORTS_CARD = mEVENT_PORTS_CARD.done();
+const mEVENT_PORTS_CARD = createExoMachine<TExoDomNode>(EVENT_PORTS_CARD_SCHEMA, {
+    createInitialState: eventPortsWireOf(EVENT_PORTS_CARD_SCHEMA.ports),
+});
+const EVENT_PORTS_CARD = mEVENT_PORTS_CARD;
 const EVENT_PORTS_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_PORTS_CARD, EXO_BACKEND);
 
 function eventOnCopyBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_ONCOPY_PLAN.acquireNode(EVENT_ONCOPY_PLAN);
     const record = EVENT_ONCOPY_PLAN.createInstance(EVENT_ONCOPY_PLAN);
-    createExoNode(EVENT_ONCOPY_PLAN, root, EVENT_ONCOPY_CARD, 0, null, record, null);
+    createExoNode(EVENT_ONCOPY_PLAN, root, EVENT_ONCOPY_CARD, null, record, null, d);
     return root;
 }
 
 function eventPortsBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_PORTS_PLAN.acquireNode(EVENT_PORTS_PLAN);
     const record = EVENT_PORTS_PLAN.createInstance(EVENT_PORTS_PLAN);
-    createExoNode(EVENT_PORTS_PLAN, root, EVENT_PORTS_CARD, 0, null, record, null);
+    createExoNode(EVENT_PORTS_PLAN, root, EVENT_PORTS_CARD, null, record, null, d);
     return root;
 }
 
@@ -4565,59 +4545,59 @@ const TWO_EVENT_PORTS: readonly string[] = ['click', 'pointerdown'];
 const FOUR_EVENT_PORTS: readonly string[] = ['click', 'pointerdown', 'mouseover', 'focusin'];
 
 const EXO_TWIN_CARD_SCHEMA = createExoSchema(exoPortFanShape(NO_EVENT_PORTS, NO_EVENT_PORTS));
-const mEXO_TWIN_CARD = createExoMachineBuilder<TExoDomNode>(EXO_TWIN_CARD_SCHEMA);
-mEXO_TWIN_CARD.createInitialState(exoWireOf(EXO_TWIN_CARD_SCHEMA.ports));
-const EXO_TWIN_CARD = mEXO_TWIN_CARD.done();
+const mEXO_TWIN_CARD = createExoMachine<TExoDomNode>(EXO_TWIN_CARD_SCHEMA, {
+    createInitialState: exoWireOf(EXO_TWIN_CARD_SCHEMA.ports),
+});
+const EXO_TWIN_CARD = mEXO_TWIN_CARD;
 const EXO_TWIN_PLAN: TExoDomSchema = exoDomSchemaOf(EXO_TWIN_CARD, EXO_BACKEND);
 const EVENT_PORTS12_CARD_SCHEMA = createExoSchema(exoPortFanShape(TWO_EVENT_PORTS, NO_EVENT_PORTS));
-const mEVENT_PORTS12_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_PORTS12_CARD_SCHEMA);
-mEVENT_PORTS12_CARD.createInitialState(exoWireOf(EVENT_PORTS12_CARD_SCHEMA.ports));
-const EVENT_PORTS12_CARD = mEVENT_PORTS12_CARD.done();
+const mEVENT_PORTS12_CARD = createExoMachine<TExoDomNode>(EVENT_PORTS12_CARD_SCHEMA, {
+    createInitialState: exoWireOf(EVENT_PORTS12_CARD_SCHEMA.ports),
+});
+const EVENT_PORTS12_CARD = mEVENT_PORTS12_CARD;
 const EVENT_PORTS12_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_PORTS12_CARD, EXO_BACKEND);
 const EVENT_PORTS24_CARD_SCHEMA = createExoSchema(
     exoPortFanShape(FOUR_EVENT_PORTS, NO_EVENT_PORTS)
 );
-const mEVENT_PORTS24_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_PORTS24_CARD_SCHEMA);
-mEVENT_PORTS24_CARD.createInitialState(exoWireOf(EVENT_PORTS24_CARD_SCHEMA.ports));
-const EVENT_PORTS24_CARD = mEVENT_PORTS24_CARD.done();
+const mEVENT_PORTS24_CARD = createExoMachine<TExoDomNode>(EVENT_PORTS24_CARD_SCHEMA, {
+    createInitialState: exoWireOf(EVENT_PORTS24_CARD_SCHEMA.ports),
+});
+const EVENT_PORTS24_CARD = mEVENT_PORTS24_CARD;
 const EVENT_PORTS24_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_PORTS24_CARD, EXO_BACKEND);
 const EVENT_PORTS_TAIL_CARD_SCHEMA = createExoSchema(
     exoPortFanShape(NO_EVENT_PORTS, TAIL_EVENT_PORTS)
 );
-const mEVENT_PORTS_TAIL_CARD = createExoMachineBuilder<TExoDomNode>(EVENT_PORTS_TAIL_CARD_SCHEMA);
-mEVENT_PORTS_TAIL_CARD.createInitialState(exoWireOf(EVENT_PORTS_TAIL_CARD_SCHEMA.ports));
-const EVENT_PORTS_TAIL_CARD = mEVENT_PORTS_TAIL_CARD.done();
+const mEVENT_PORTS_TAIL_CARD = createExoMachine<TExoDomNode>(EVENT_PORTS_TAIL_CARD_SCHEMA, {
+    createInitialState: exoWireOf(EVENT_PORTS_TAIL_CARD_SCHEMA.ports),
+});
+const EVENT_PORTS_TAIL_CARD = mEVENT_PORTS_TAIL_CARD;
 const EVENT_PORTS_TAIL_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_PORTS_TAIL_CARD, EXO_BACKEND);
 
 function exodraTwinBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EXO_TWIN_PLAN.acquireNode(EXO_TWIN_PLAN);
     const record = EXO_TWIN_PLAN.createInstance(EXO_TWIN_PLAN);
-    createExoNode(EXO_TWIN_PLAN, root, EXO_TWIN_CARD, 0, null, record, null);
+    createExoNode(EXO_TWIN_PLAN, root, EXO_TWIN_CARD, null, record, null, d);
     return root;
 }
 
 function eventPorts12Build(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_PORTS12_PLAN.acquireNode(EVENT_PORTS12_PLAN);
     const record = EVENT_PORTS12_PLAN.createInstance(EVENT_PORTS12_PLAN);
-    createExoNode(EVENT_PORTS12_PLAN, root, EVENT_PORTS12_CARD, 0, null, record, null);
+    createExoNode(EVENT_PORTS12_PLAN, root, EVENT_PORTS12_CARD, null, record, null, d);
     return root;
 }
 
 function eventPorts24Build(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_PORTS24_PLAN.acquireNode(EVENT_PORTS24_PLAN);
     const record = EVENT_PORTS24_PLAN.createInstance(EVENT_PORTS24_PLAN);
-    createExoNode(EVENT_PORTS24_PLAN, root, EVENT_PORTS24_CARD, 0, null, record, null);
+    createExoNode(EVENT_PORTS24_PLAN, root, EVENT_PORTS24_CARD, null, record, null, d);
     return root;
 }
 
 function eventPortsTailBuild(d: TCardData): Element {
-    BUILDING[0] = d;
     const root = EVENT_PORTS_TAIL_PLAN.acquireNode(EVENT_PORTS_TAIL_PLAN);
     const record = EVENT_PORTS_TAIL_PLAN.createInstance(EVENT_PORTS_TAIL_PLAN);
-    createExoNode(EVENT_PORTS_TAIL_PLAN, root, EVENT_PORTS_TAIL_CARD, 0, null, record, null);
+    createExoNode(EVENT_PORTS_TAIL_PLAN, root, EVENT_PORTS_TAIL_CARD, null, record, null, d);
     return root;
 }
 
@@ -5055,8 +5035,8 @@ const EXO_STR_BACKEND = new ExoStrBackend();
 
 const exoStrWireOf =
     (P: TCardPorts): TExoMachineInitialState<TExoStrNode> =>
-    (c, i) => {
-        const d = BUILDING[i];
+    (c, params) => {
+        const d = params as TCardData;
         c.attr(P.id, d.id);
         c.text(P.title, d.title);
         c.text(P.subtitle, d.subtitle);
@@ -5075,9 +5055,10 @@ const exoStrWireOf =
     };
 
 const EXO_STR_CARD_SCHEMA = createExoSchema(exoShape);
-const mEXO_STR_CARD = createExoMachineBuilder<TExoStrNode>(EXO_STR_CARD_SCHEMA);
-mEXO_STR_CARD.createInitialState(exoStrWireOf(EXO_STR_CARD_SCHEMA.ports));
-const EXO_STR_CARD = mEXO_STR_CARD.done();
+const mEXO_STR_CARD = createExoMachine<TExoStrNode>(EXO_STR_CARD_SCHEMA, {
+    createInitialState: exoStrWireOf(EXO_STR_CARD_SCHEMA.ports),
+});
+const EXO_STR_CARD = mEXO_STR_CARD;
 const EXO_STR_PLAN: TExoStrSchema = exoStrSchemaOf(EXO_STR_CARD, EXO_STR_BACKEND);
 
 /** The pair the DOM compile row measures, with `exoDomSchemaOf` swapped for `exoStrSchemaOf`. */
@@ -5088,8 +5069,7 @@ function exodraStrCompile(token: string): TExoStrSchema {
 
 /** The shipped per-instance render: allocate, wire, fill, sweep. */
 function exodraAssemble(d: TCardData): string {
-    BUILDING[0] = d;
-    return renderExoStrInstance(EXO_STR_PLAN, EXO_STR_CARD, 0, null);
+    return renderExoStrInstance(EXO_STR_PLAN, EXO_STR_CARD, null, d);
 }
 
 // ---------------------------------------------------------------------------------------

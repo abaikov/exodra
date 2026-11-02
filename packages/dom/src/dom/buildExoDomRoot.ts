@@ -14,7 +14,7 @@ export function buildExoDomRoot(
 ): TExoDomNodeApi & TExoNode<TExoDomMark> {
     let child: TExoDomChild | null = null;
     const ambient = exoTeardownScope(() => {
-        child = buildLiveExoChild(schema, machine, 0, null, params);
+        child = buildLiveExoChild(schema, machine, null, params);
     });
     const root = child as unknown as TExoDomChild;
     exoOnTeardown(root, ambient);

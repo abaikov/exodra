@@ -115,7 +115,7 @@ type TNode = {
 
 /** The same, for the one wire here that builds a LIST of rows rather than filling one. */
 type TListing = {
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 function buildRow(b: TExoSchemaCursor) {
@@ -137,7 +137,7 @@ const rowWith = (make: (ports: TRowPorts) => TExoMachineInitialState<TNode>) =>
 
 /**
  * `n` INSTANCES OF ONE ROW, AS A LIST — how an application makes several instances of a component,
- * so it is how the case below makes them. `c.list` hands row `i` the number `i` as its index, and
+ * so it is how the case below makes them. Row `at` is handed the number `at` as its params, and
  * the `<ul>` is the element the children port lives on: it sits INSIDE the pack's root, so the
  * walk from a button to that root is the same one it was.
  */
@@ -152,7 +152,11 @@ const listOf = <TPorts>(row: TExoMachine<TNode, TPorts>, n: number) => {
         },
         (P): TExoMachineInitialState<TListing> =>
             (c) => {
-                c.list(P.rows, row, n);
+                c.list(
+                    P.rows,
+                    row,
+                    Array.from({ length: n }, (_, at) => at)
+                );
             }
     );
 };
@@ -186,9 +190,9 @@ describe('a pack written outside this package', () => {
     it('renders and dispatches with no privileged access', () => {
         const BACKEND = backendOf(hybridPack(['click']));
         const items = [item(), item(), item()];
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, TOGGLE_DONE, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, TOGGLE_DONE, items[at as number]);
         });
         const parent = host();
         const dispose = BACKEND.render(listOf(ROW, 3), parent);

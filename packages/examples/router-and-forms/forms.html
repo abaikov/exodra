@@ -14,7 +14,7 @@
         One machine. The <code>&lt;form&gt;</code> carries one <code>input</code> event port,
         and every field inside it reports through it — text, number, checkbox, radio and select
         all fire <code>input</code>:
-        <code>readExoControlValue(event.target)</code> reads the field, and a transition writes
+        <code>readExoControlValue(event.target)</code> reads the field, and a function the handler calls writes
         the read-out on the right. Nothing writes a field's value back while you type — the
         browser already holds it.
         <br>
@@ -32,7 +32,7 @@
             <code>NaN</code>, not <code>0</code>. Press <strong>Send</strong>: the submit read-out
             comes from <code>readExoControlValues</code> over the ref ports, read at that moment,
             not from the live state. <strong>Fill from code</strong> and <strong>Clear from
-            code</strong> are the programmatic direction: a transition writes the
+            code</strong> are the programmatic direction: a function the handler calls writes the
             <code>value</code> and <code>checked</code> ports, and <code>writeExoChoice</code> puts
             the radio and option marks on the chosen value in one write each — the browser clears
             the rest of the group. The submit read-out also reads the two radios through their ref
@@ -62,7 +62,7 @@
 }
 </script>
 <script type="module">
-    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import { createExoMachine, createExoSchema, withExoHandlers } from '@exodra/core';
     import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
     import * as exoForms from '@exodra/forms';
 
@@ -170,7 +170,7 @@
             panels.el('section', { class: 'panel' }, (panel) => {
                 panel.el('h2', { class: 'panel-title' }, (h) => h.text('Live read-out'));
                 panel.el('p', { class: 'panel-note' }, (p) =>
-                    p.text('c.state, written by the transitions the form events call.')
+                    p.text('c.state, written by the functions the form events call.')
                 );
                 panel.el('pre', { class: 'readout' }, (pre) => {
                     live = pre.textPort();
@@ -225,17 +225,18 @@
         '\ncolour  ' + JSON.stringify(state.colour) +
         '\nsize    ' + JSON.stringify(state.size);
 
-    const mForm = createExoMachineBuilder(FORM_SCHEMA);
-    mForm.createInitialState((c) => {
-        const state = { name: '', age: Number.NaN, agreed: false, colour: 'green', size: 'm' };
-        writeExoChoice(c, P.colours, COLOURS, state.colour);
-        writeExoChoice(c, P.sizes, SIZES, state.size);
-        c.text(P.live, describe(state));
-        c.text(P.sent, 'nothing sent yet');
-        return state;
+    const formBase = createExoMachine(FORM_SCHEMA, {
+        createInitialState: (c) => {
+            const state = { name: '', age: Number.NaN, agreed: false, colour: 'green', size: 'm' };
+            writeExoChoice(c, P.colours, COLOURS, state.colour);
+            writeExoChoice(c, P.sizes, SIZES, state.size);
+            c.text(P.live, describe(state));
+            c.text(P.sent, 'nothing sent yet');
+            return state;
+        },
     });
 
-    const take = mForm.transition((c, field) => {
+    const take = (c, field) => {
         const value = readExoControlValue(field);
         if (field.name === 'name') c.state.name = value;
         else if (field.name === 'age') c.state.age = value;
@@ -244,9 +245,9 @@
         else if (field.name === 'size') c.state.size = value;
         else return;
         c.text(P.live, describe(c.state));
-    });
+    };
 
-    const setFromCode = mForm.transition((c, next) => {
+    const setFromCode = (c, next) => {
         c.attr(P.nameValue, next.name);
         c.attr(P.ageValue, Number.isNaN(next.age) ? '' : next.age);
         c.attr(P.agreedChecked, next.agreed);
@@ -254,9 +255,9 @@
         writeExoChoice(c, P.sizes, SIZES, next.size);
         Object.assign(c.state, next);
         c.text(P.live, describe(c.state));
-    });
+    };
 
-    const showSent = mForm.transition((c, values) => {
+    const showSent = (c, values) => {
         const [name, age, agreed, size, red, green] = values;
         c.text(
             P.sent,
@@ -267,20 +268,21 @@
                 '\ngreen   ' + JSON.stringify(green) +
                 '\nsize    ' + JSON.stringify(size)
         );
-    });
+    };
 
-    mForm.on(P.input, (c, event) => take(c, event.target));
-    mForm.on(P.submit, (c, event) => {
-        event.preventDefault();
-        showSent(c, readExoControlValues(c, SUBMITTED_FIELDS));
+    const FORM = withExoHandlers(formBase, (on) => {
+        on(P.input, (c, event) => take(c, event.target));
+        on(P.submit, (c, event) => {
+            event.preventDefault();
+            showSent(c, readExoControlValues(c, SUBMITTED_FIELDS));
+        });
+        on(P.fill, (c) =>
+            setFromCode(c, { name: 'Andrei', age: 41, agreed: true, colour: 'red', size: 'l' })
+        );
+        on(P.clear, (c) =>
+            setFromCode(c, { name: '', age: Number.NaN, agreed: false, colour: 'green', size: 's' })
+        );
     });
-    mForm.on(P.fill, (c) =>
-        setFromCode(c, { name: 'Andrei', age: 41, agreed: true, colour: 'red', size: 'l' })
-    );
-    mForm.on(P.clear, (c) =>
-        setFromCode(c, { name: '', age: Number.NaN, agreed: false, colour: 'green', size: 's' })
-    );
-    const FORM = mForm.done();
 
     const backend = withExoCompiler(new ExoDomBackend());
     backend.render(FORM, document.getElementById('app'));

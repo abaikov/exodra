@@ -7,15 +7,15 @@ import type { TExoChildrenPort } from '../../schema/ports/types/TExoChildrenPort
 // to and then degrades to `any`, after which every parameter accepts everything with no diagnostic.
 export interface TExoChildrenWiring<TEvent = unknown, TNode = unknown>
     extends TExoWiring<TEvent, TNode> {
-    build<TParams>(
-        machine: TExoMachine<this, unknown, TParams>,
-        index?: number,
-        params?: TParams
-    ): TExoNode;
+    build<TParams>(machine: TExoMachine<this, unknown, TParams>, params?: TParams): TExoNode;
     one<TParams>(
         port: TExoChildrenPort,
         machine: TExoMachine<this, unknown, TParams>,
         params?: TParams
     ): void;
-    list(port: TExoChildrenPort, machine: TExoMachine<this>, count: number): void;
+    list<TParams>(
+        port: TExoChildrenPort,
+        machine: TExoMachine<this, unknown, TParams>,
+        params: readonly TParams[]
+    ): void;
 }

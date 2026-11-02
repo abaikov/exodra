@@ -3,7 +3,7 @@
 // of the block are absent, and both are the ENTRY POINT, which is a backend's by definition.
 // NOTHING ELSE IS ADAPTED: no cast, no wrapper, no shim, no local type.
 // >>> BEGIN VERBATIM — README.md, "A component is one value"
-import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_TEXT, composeExoMachine, createExoMachine, createExoSchema, exoPorts, withExoHandlers, withExoWire } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 
 const CounterPorts = exoPorts({ text: EXO_PORT_TEXT, click: EXO_PORT_EVENT });
@@ -20,18 +20,23 @@ const counterSchema = createExoSchema(CounterPorts, (b) => {
     });
 });
 
-const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(
-    counterSchema
+const counterBase = createExoMachine<TExoMachineNode, unknown, { count: number }>(counterSchema, {
+    createInitialState: () => ({ count: 0 }),
+});
+const Counter = composeExoMachine(
+    counterBase,
+    (m) =>
+        withExoWire(m, (c) => {
+            c.text(CounterPorts.text, `Count: ${c.state.count}`);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(CounterPorts.click, (c) => {
+                c.state.count += 1;
+                c.text(CounterPorts.text, `Count: ${c.state.count}`);
+            });
+        })
 );
-counterBuilder.createInitialState(() => ({ count: 0 }));
-counterBuilder.wire((c) => {
-    c.text(CounterPorts.text, `Count: ${c.state.count}`);
-});
-counterBuilder.on(CounterPorts.click, (c) => {
-    c.state.count += 1;
-    c.text(CounterPorts.text, `Count: ${c.state.count}`);
-});
-const Counter = counterBuilder.done();
 // <<< END VERBATIM
 
 export { Counter };

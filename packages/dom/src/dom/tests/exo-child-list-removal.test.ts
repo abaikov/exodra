@@ -13,7 +13,14 @@ import type {
     TExoTextPort,
     TExoMachineInitialState,
 } from '@exodra/core';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
@@ -26,17 +33,6 @@ import type { TExoDomMark } from '../types/TExoDomMark';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
-/** What the rows read, BY INDEX: a wire is handed its position and nothing else, so the id a row
- *  shows is this file's to put where the row can reach it. */
-const ROW_IDS: string[] = [];
-
-const rowIndex = (id: string): number => {
-    const at = ROW_IDS.indexOf(id);
-    if (at >= 0) return at;
-    ROW_IDS.push(id);
-    return ROW_IDS.length - 1;
-};
-
 const ROW = createExoTestMachine(
     (b) => {
         let id!: TExoAttrPort;
@@ -46,8 +42,8 @@ const ROW = createExoTestMachine(
         return { id };
     },
     (P): TExoMachineInitialState<TExoDomNode> =>
-        (c, i) => {
-            c.attr(P.id, ROW_IDS[i]);
+        (c, id) => {
+            c.attr(P.id, id);
         }
 );
 
@@ -69,19 +65,31 @@ const BOUND_ROW_SCHEMA = createExoSchema((b) => {
 });
 
 const boundRow = (value: TExoTestSource<string>) => {
-    const m = createExoMachineBuilder<TExoDomNode, unknown, { id: string }>(BOUND_ROW_SCHEMA);
-    m.createInitialState((_c, i) => ({ id: ROW_IDS[i] }));
-    m.wire((c) => {
-        c.attr(BOUND_ROW_SCHEMA.ports.id, c.state.id);
+    const m = createExoMachine<TExoDomNode, string, { id: string }>(BOUND_ROW_SCHEMA, {
+        createInitialState: (_c, id) => ({ id }),
     });
-    const show = m.transition((c) => {
-        c.text(BOUND_ROW_SCHEMA.ports.label, value.getValue());
-    });
-    m.effect((c) => {
-        show(c);
-        return value.onChange(() => show(c));
-    });
-    return m.done();
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => {
+                    c.text(BOUND_ROW_SCHEMA.ports.label, value.getValue());
+                },
+            }),
+        (m) =>
+            withExoWire(m, (c) => {
+                c.attr(BOUND_ROW_SCHEMA.ports.id, c.state.id);
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return value.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = machine.transitions;
+    return machine;
 };
 
 type TBoundRow = ReturnType<typeof boundRow>;
@@ -122,9 +130,9 @@ const mountOwned = () => {
         ul,
         kids,
         startAnchor: (): Node | null => exonode.childListStartNode(port),
-        build: (id: string): TExoNode<TExoDomMark> => exonode.build(ROW, rowIndex(id)),
+        build: (id: string): TExoNode<TExoDomMark> => exonode.build(ROW, id),
         boundBuild: (component: TBoundRow, id: string): TExoNode<TExoDomMark> =>
-            exonode.build(component, rowIndex(id)),
+            exonode.build(component, id),
         shown: (): string =>
             Array.from(ul.children)
                 .map((el) => el.getAttribute('data-id'))
@@ -168,7 +176,7 @@ const mountShared = () => {
         kids,
         startAnchor: (): Node | null => exonode.childListStartNode(port),
         endAnchor: (): Node | null | (() => Node | null) => exonode.childListEndNode(port),
-        build: (id: string): TExoNode<TExoDomMark> => exonode.build(ROW, rowIndex(id)),
+        build: (id: string): TExoNode<TExoDomMark> => exonode.build(ROW, id),
         tags: (): string[] => Array.from(div.children).map((el) => el.tagName),
     };
 };

@@ -76,12 +76,12 @@ function withoutEntryPoint(block: string): { kept: string; dropped: string[] } {
 describe('the doc components this backend runs are the README’s, character for character', () => {
     it('finds both blocks in README.md', () => {
         const blocks = tsBlocks(README);
-        expect(blocks.some((b) => b.includes('const Counter = counterBuilder.done();'))).toBe(true);
-        expect(blocks.some((b) => b.includes('const TodoList = todoListBuilder.done();'))).toBe(true);
+        expect(blocks.some((b) => b.includes('const Counter = composeExoMachine('))).toBe(true);
+        expect(blocks.some((b) => b.includes('const TodoList = createExoMachine<TExoChildrenWiring & TExoMachineNode>(todoListSchema, {'))).toBe(true);
     });
 
     it('the counter fixture is the README block minus its two entry-point lines', () => {
-        const block = tsBlocks(README).find((b) => b.includes('const Counter = counterBuilder.done();'));
+        const block = tsBlocks(README).find((b) => b.includes('const Counter = composeExoMachine('));
         expect(block).toBeDefined();
         const { kept, dropped } = withoutEntryPoint(block as string);
 
@@ -93,7 +93,7 @@ describe('the doc components this backend runs are the README’s, character for
     });
 
     it('the todo-list fixture is the README block minus its entry point', () => {
-        const block = tsBlocks(README).find((b) => b.includes('const TodoList = todoListBuilder.done();'));
+        const block = tsBlocks(README).find((b) => b.includes('const TodoList = createExoMachine<TExoChildrenWiring & TExoMachineNode>(todoListSchema, {'));
         expect(block).toBeDefined();
         const { kept, dropped } = withoutEntryPoint(block as string);
 

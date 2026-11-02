@@ -39,7 +39,7 @@ const EXO_STR = new ExoStrBackend();
 
 /** The reconciling form: the placement door on top of `build`, which is what a reactive list is now. */
 type TReconciling = {
-    build(component: TExoMachine<never>, index?: number): TExoNode;
+    build(component: TExoMachine<never>, params?: unknown): TExoNode;
     childList(port: TExoPort): TExoPlacedChildren<TExoNode>;
 };
 
@@ -87,22 +87,22 @@ const RECONCILED_LIST = createExoTestMachine(
     buildAttrPort,
     (P): TExoMachineInitialState<TReconciling> =>
         (c) => {
-            reconcileExoOrder(c.childList(P.slot), [], [0], [0], (_item, i) => c.build(LEAF, i));
+            reconcileExoOrder(c.childList(P.slot), [], [0], [0], (item) => c.build(LEAF, item));
         }
 );
 
 /** What `one` and `list` cost an UNTYPED caller now that their compare is gone. A cast is the only
  * way in — `TExoChildrenPort` is what both name — and the two backends part company past it. */
 type TCastPlacing = {
-    one(port: TExoPort, component: TExoMachine<never>): void;
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    one(port: TExoPort, component: TExoMachine<never>, params?: unknown): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 const CAST_ONE = createExoTestMachine(
     buildAttrPort,
     (P): TExoMachineInitialState<TCastPlacing> =>
         (c) => {
-            c.one(P.slot, LEAF);
+            c.one(P.slot, LEAF, 0);
         }
 );
 
@@ -110,7 +110,7 @@ const CAST_LIST = createExoTestMachine(
     buildAttrPort,
     (P): TExoMachineInitialState<TCastPlacing> =>
         (c) => {
-            c.list(P.slot, LEAF, 2);
+            c.list(P.slot, LEAF, [0, 1]);
         }
 );
 

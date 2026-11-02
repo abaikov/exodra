@@ -1,5 +1,9 @@
 import {
-    createExoMachineBuilder,
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoHandlers,
+    withExoEffects,
     createExoSchema,
     type TExoAttrPort,
     type TExoChildrenPort,
@@ -99,7 +103,16 @@ const P = CARD_SCHEMA.ports;
 // values the direct row holds in its closure, and every port write is made by a transition body — the
 // same statements the wire makes inline. What separates the two rows is therefore only WHERE the
 // state lives and how the update path is reached, which is the question this axis is asked.
-const m = createExoMachineBuilder<TCard>(CARD_SCHEMA);
+const m = createExoMachine<TCard>(CARD_SCHEMA, {
+    createInitialState: (c): TCardState => ({
+        open: false,
+        count: 0,
+        title: '',
+        pool: NO_TAGS,
+        details: c.childList(P.details),
+        tags: c.childList(P.tags),
+    }),
+});
 
 /** The empty pool every card starts with and no card keeps — one array for the process, replaced by
  *  `seedCard` on every instance. A tag row carries the CELL its text is clipped by, and that cell
@@ -127,27 +140,9 @@ type TCardState = {
 // COMPUTED machine, where a mark has to address them. The two regions are taken HERE and not in a
 // transition — `c.childList` resolves the port against the exonode's node table and RECORDS the
 // port as filled, and both are only true while this instance is being armed.
-export const K_CARD = m.createInitialState(
-    (c): TCardState => ({
-        open: false,
-        count: 0,
-        title: '',
-        pool: NO_TAGS,
-        details: c.childList(P.details),
-        tags: c.childList(P.tags),
-    })
-);
 
 // `attachExoChildren` registers exactly this against what a LIST builds, and a REGION has no owner —
 // so a directly written region has to say it, or this row does LESS than the row beside it.
-m.effect((c) => {
-    const details = c.readState(K_CARD).details;
-    const tags = c.readState(K_CARD).tags;
-    return () => {
-        for (let k = tags.size - 1; k >= 0; k--) exoNodeDom(tags.at(k)!).unmount();
-        for (let k = details.size - 1; k >= 0; k--) exoNodeDom(details.at(k)!).unmount();
-    };
-});
 
 type TCard = TExoDomNode;
 
@@ -155,14 +150,14 @@ type TCard = TExoDomNode;
 // details block alive, which is a DIFFERENT JOB from the one every other participant does.
 // REMOVAL RUNS FROM THE END DOWNWARDS — `remove(size - 1)` re-indexes nothing.
 const showDetails = (c: TCard, open: boolean): void => {
-    const region = c.readState(K_CARD).details;
+    const region = c.readState<TCardState>().details;
     const want = open === true ? 1 : 0;
-    for (let k = region.size; k < want; k++) region.insert(c.build(DETAILS, 0));
+    for (let k = region.size; k < want; k++) region.insert(c.build(DETAILS));
     for (let k = region.size - 1; k >= want; k--) region.remove(k);
 };
 
 const showTags = (c: TCard, state: TCardState): void => {
-    const region = c.readState(K_CARD).tags;
+    const region = c.readState<TCardState>().tags;
     // GROW AT THE TAIL, SHRINK FROM THE TAIL: the kept rows are untouched, which is what every app
     // axis's mutation gate requires.
     const want = state.count;
@@ -170,7 +165,7 @@ const showTags = (c: TCard, state: TCardState): void => {
         // THREE STATEMENTS AND NO SLOT: build the row, write its text through the transition, place
         // it. A machine takes no props, so the value crosses as a transition argument.
         const tag = state.pool[k];
-        const row = c.build(TAG, k);
+        const row = c.build(TAG);
         writeTagLabel(
             row as unknown as TExoMachineNode,
             tagTextOf(tag.label, tag.chars.getValue())
@@ -180,77 +175,94 @@ const showTags = (c: TCard, state: TCardState): void => {
     for (let k = region.size - 1; k >= want; k--) region.remove(k);
 };
 
-export const toggleOpen = m.transition((c: TCard) => {
-    const state = c.readState(K_CARD);
-    state.open = state.open === false;
-    c.text(P.title, headlineOf(state.title, state.open));
-    c.attr(P.expanded, expandedOf(state.open));
-    showDetails(c, state.open);
-});
-
-export const advanceTags = m.transition((c: TCard) => {
-    const state = c.readState(K_CARD);
-    state.count = nextCount(state.count);
-    c.text(P.count, tagsLabel(state.count));
-    showTags(c, state);
-});
-
-/** WHAT THIS ROW PAYS INSTEAD OF A SUBSCRIPTION PER TAG. A tag's text is clipped by a cell the card
- *  does not own, and nothing here listens to it — so when the app changes one, the app walks down and
- *  says so. The cell arrives as the argument and the rows are selected by its IDENTITY, which is why
- *  the DOM writes are exactly the ones a listener would have made: only the tags clipped by THAT
- *  cell move. The walk is the price, and it replaces two hundred subscriptions across five cells. */
-export const reclipTags = m.transition((c: TCard, cell: TExoBenchSource<number>) => {
-    const state = c.readState(K_CARD);
-    const chars = cell.getValue();
-    for (let k = state.tags.size - 1; k >= 0; k--) {
-        const tag = state.pool[k];
-        if (tag.chars !== cell) continue;
-        writeTagLabel(state.tags.at(k) as unknown as TExoMachineNode, tagTextOf(tag.label, chars));
-    }
-});
-
-/** THE ONE DOOR A FRESHLY BUILT CARD IS MOVED OFF ITS DECLARED START THROUGH. A machine takes no
- *  props, so every value that belongs to THIS instance arrives as a transition argument. */
-export const seedCard = m.transition(
-    (c: TCard, i: number, users: readonly TExoBenchSource<number>[]) => {
-        const state = c.readState(K_CARD);
-        state.open = startsOpen(i);
-        state.count = startCount(i);
-        state.title = titleOf(i);
-        state.pool = tagsOfCard(i).map((t) => ({ label: t.label, chars: users[t.user] }));
-
-        c.attr(P.index, String(i));
-        c.text(P.user, userNameOf(cardUserOf(i)));
-        c.text(P.title, headlineOf(state.title, state.open));
-        c.attr(P.expanded, expandedOf(state.open));
-        c.text(P.count, tagsLabel(state.count));
-        showDetails(c, state.open);
-        showTags(c, state);
-
-        // The two closures close over the INSTANCE, so they cannot be hoisted and would otherwise be
-        // allocated 160 per mount inside `initial-render`'s timed region — hence the guard, which is
-        // one global load and one comparison, false everywhere but `app-update`.
-        if (collectingCardOps()) {
-            noteCardOps(
-                () => {
-                    toggleOpen(c);
-                },
-                () => {
-                    advanceTags(c);
+export const CARD = composeExoMachine(
+    m,
+    (m) =>
+        withExoTransitions(m, {
+            toggleOpen: (c: TCard) => {
+                const state = c.readState<TCardState>();
+                state.open = state.open === false;
+                c.text(P.title, headlineOf(state.title, state.open));
+                c.attr(P.expanded, expandedOf(state.open));
+                showDetails(c, state.open);
+            },
+            advanceTags: (c: TCard) => {
+                const state = c.readState<TCardState>();
+                state.count = nextCount(state.count);
+                c.text(P.count, tagsLabel(state.count));
+                showTags(c, state);
+            },
+            /** WHAT THIS ROW PAYS INSTEAD OF A SUBSCRIPTION PER TAG. A tag's text is clipped by a cell the card
+             *  does not own, and nothing here listens to it — so when the app changes one, the app walks down and
+             *  says so. The cell arrives as the argument and the rows are selected by its IDENTITY, which is why
+             *  the DOM writes are exactly the ones a listener would have made: only the tags clipped by THAT
+             *  cell move. The walk is the price, and it replaces two hundred subscriptions across five cells. */
+            reclipTags: (c: TCard, cell: TExoBenchSource<number>) => {
+                const state = c.readState<TCardState>();
+                const chars = cell.getValue();
+                for (let k = state.tags.size - 1; k >= 0; k--) {
+                    const tag = state.pool[k];
+                    if (tag.chars !== cell) continue;
+                    writeTagLabel(
+                        state.tags.at(k) as unknown as TExoMachineNode,
+                        tagTextOf(tag.label, chars)
+                    );
                 }
-            );
-        }
-    }
+            },
+            /** THE ONE DOOR A FRESHLY BUILT CARD IS MOVED OFF ITS DECLARED START THROUGH. A machine takes no
+             *  props, so every value that belongs to THIS instance arrives as a transition argument. */
+            seedCard: (c: TCard, i: number, users: readonly TExoBenchSource<number>[]) => {
+                const state = c.readState<TCardState>();
+                state.open = startsOpen(i);
+                state.count = startCount(i);
+                state.title = titleOf(i);
+                state.pool = tagsOfCard(i).map((t) => ({ label: t.label, chars: users[t.user] }));
+
+                c.attr(P.index, String(i));
+                c.text(P.user, userNameOf(cardUserOf(i)));
+                c.text(P.title, headlineOf(state.title, state.open));
+                c.attr(P.expanded, expandedOf(state.open));
+                c.text(P.count, tagsLabel(state.count));
+                showDetails(c, state.open);
+                showTags(c, state);
+
+                // The two closures close over the INSTANCE, so they cannot be hoisted and would otherwise be
+                // allocated 160 per mount inside `initial-render`'s timed region — hence the guard, which is
+                // one global load and one comparison, false everywhere but `app-update`.
+                if (collectingCardOps()) {
+                    noteCardOps(
+                        () => {
+                            toggleOpen(c);
+                        },
+                        () => {
+                            advanceTags(c);
+                        }
+                    );
+                }
+            },
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(P.toggle, (c) => toggleOpen(c));
+            on(P.addTag, (c) => advanceTags(c));
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                const details = c.readState<TCardState>().details;
+                const tags = c.readState<TCardState>().tags;
+                return () => {
+                    for (let k = tags.size - 1; k >= 0; k--) exoNodeDom(tags.at(k)!).unmount();
+                    for (let k = details.size - 1; k >= 0; k--)
+                        exoNodeDom(details.at(k)!).unmount();
+                };
+            });
+        })
 );
+export const { toggleOpen, advanceTags, reclipTags, seedCard } = CARD.transitions;
 
-m.on(P.toggle, (c) => toggleOpen(c));
-m.on(P.addTag, (c) => advanceTags(c));
-
-export const CARD = m.done();
-
-/** The port records, exported because `createExoMachineBuilder` takes a `TExoCursorDeclaration<unknown>` and the
- *  component it returns cannot carry the port types a schema knows. */
+/** The port records, exported because `createExoMachine<TCard>` is given its wiring type explicitly, so its
+ *  `TPorts` is not inferred and the machine it returns does not carry the port types a schema knows. */
 export const CARD_PORTS = P;
 
 /** THE DECK'S SCHEMA — the same five ports in the same order as the reference `DECK`, character for
@@ -284,7 +296,17 @@ const DECK_SCHEMA = createExoSchema((b) => {
 
 const PD = DECK_SCHEMA.ports;
 
-const mDeck = createExoMachineBuilder<TDeck>(DECK_SCHEMA);
+const mDeck = createExoMachine<TDeck>(DECK_SCHEMA, {
+    createInitialState: (c): TDeckState => ({
+        d: 0,
+        name: 0,
+        // `deckDateOf(0)` and not a fresh `Date`: a slot has to be seated with something of the
+        // right kind, and the spec's table is module-level and frozen.
+        when: deckDateOf(0),
+        detail: 0,
+        cards: c.childList(PD.cards),
+    }),
+});
 
 /** The empty user table every deck starts with and no deck keeps — one array for the process,
  *  exactly as `NO_TAGS` is one level down. A deck drives its own cards, and a card's tags carry the
@@ -299,96 +321,89 @@ type TDeckState = {
     readonly cards: TExoChildList;
 };
 
-export const KD_DECK = mDeck.createInitialState(
-    (c): TDeckState => ({
-        d: 0,
-        name: 0,
-        // `deckDateOf(0)` and not a fresh `Date`: a slot has to be seated with something of the
-        // right kind, and the spec's table is module-level and frozen.
-        when: deckDateOf(0),
-        detail: 0,
-        cards: c.childList(PD.cards),
-    })
-);
-
 // `FD_CARDS` is seeded and never written, so the region's teardown is established once.
-mDeck.effect((c) => {
-    const region = c.readState(KD_DECK).cards;
-    return () => {
-        for (let k = region.size - 1; k >= 0; k--) exoNodeDom(region.at(k)!).unmount();
-    };
-});
 
 type TDeck = TExoDomNode;
 
-export const renameDeck = mDeck.transition((c: TDeck) => {
-    const state = c.readState(KD_DECK);
-    state.name = nextDeckName(state.name);
-    c.text(PD.name, deckNameOf(state.d, state.name));
-});
+export const DECK = composeExoMachine(
+    mDeck,
+    (m) =>
+        withExoTransitions(m, {
+            renameDeck: (c: TDeck) => {
+                const state = c.readState<TDeckState>();
+                state.name = nextDeckName(state.name);
+                c.text(PD.name, deckNameOf(state.d, state.name));
+            },
+            // `setDeckDetail` takes its value as a TRANSITION ARGUMENT rather than reading the cell itself: a
+            // transition that fetched its own input would be a component reaching back out for what it was handed.
+            setDeckDetail: (c: TDeck, detail: number) => {
+                const state = c.readState<TDeckState>();
+                state.detail = detail;
+                c.text(PD.date, dateTextOf(state.when, state.detail));
+            },
+            /** The deck's own door off its declared start — the card's `seedCard`, one level up.
+             *
+             *  THREE STATEMENTS PER ROW AND NOT ONE EXPRESSION — build, drive, place. `c.build` arms the machine
+             *  and hands back the instance with no element in the document, `seedCard` moves that instance off
+             *  its declared start, and `region.insert` is what puts the finished card in the page. */
+            seedDeck: (c: TDeck, d: number, users: readonly TExoBenchSource<number>[]) => {
+                const state = c.readState<TDeckState>();
+                const author = deckUserOf(d);
+                const chars = users[author];
+                state.d = d;
+                state.name = startDeckName(d);
+                state.when = deckDateOf(d);
+                // `getValue()` and not `startChars(author)`: the deck follows the cell it was handed,
+                // whatever a mount has already done to it.
+                state.detail = chars.getValue();
 
-// `setDeckDetail` takes its value as a TRANSITION ARGUMENT rather than reading the cell itself: a
-// transition that fetched its own input would be a component reaching back out for what it was handed.
-export const setDeckDetail = mDeck.transition((c: TDeck, detail: number) => {
-    const state = c.readState(KD_DECK);
-    state.detail = detail;
-    c.text(PD.date, dateTextOf(state.when, state.detail));
-});
+                c.text(PD.name, deckNameOf(state.d, state.name));
+                c.text(PD.author, userNameOf(author));
+                c.text(PD.date, dateTextOf(state.when, state.detail));
 
-/** The deck's own door off its declared start — the card's `seedCard`, one level up.
- *
- *  THREE STATEMENTS PER ROW AND NOT ONE EXPRESSION — build, drive, place. `c.build` arms the machine
- *  and hands back the instance with no element in the document, `seedCard` moves that instance off
- *  its declared start, and `region.insert` is what puts the finished card in the page. */
-export const seedDeck = mDeck.transition(
-    (c: TDeck, d: number, users: readonly TExoBenchSource<number>[]) => {
-        const state = c.readState(KD_DECK);
-        const author = deckUserOf(d);
-        const chars = users[author];
-        state.d = d;
-        state.name = startDeckName(d);
-        state.when = deckDateOf(d);
-        // `getValue()` and not `startChars(author)`: the deck follows the cell it was handed,
-        // whatever a mount has already done to it.
-        state.detail = chars.getValue();
-
-        c.text(PD.name, deckNameOf(state.d, state.name));
-        c.text(PD.author, userNameOf(author));
-        c.text(PD.date, dateTextOf(state.when, state.detail));
-
-        const region = c.readState(KD_DECK).cards;
-        const cards = cardsOfDeck(d);
-        for (let k = region.size; k < cards.length; k++) {
-            const row = c.build(CARD);
-            seedCard(row as unknown as TCard, cards[k], users);
-            region.insert(row);
-        }
-        c.onTeardown(
-            chars.onChange(() => {
-                setDeckDetail(c, chars.getValue());
-            })
-        );
-        if (collectingCardOps()) {
-            noteDeckOps(() => {
-                renameDeck(c);
+                const region = c.readState<TDeckState>().cards;
+                const cards = cardsOfDeck(d);
+                for (let k = region.size; k < cards.length; k++) {
+                    const row = c.build(CARD);
+                    seedCard(row as unknown as TCard, cards[k], users);
+                    region.insert(row);
+                }
+                c.onTeardown(
+                    chars.onChange(() => {
+                        setDeckDetail(c, chars.getValue());
+                    })
+                );
+                if (collectingCardOps()) {
+                    noteDeckOps(() => {
+                        renameDeck(c);
+                    });
+                }
+            },
+            /** The middle step of the walk `advance` starts: a deck hands the changed cell to each of its cards.
+             *  The deck's own date needs nothing here — it listens, because it reads ONE cell and a card reads up
+             *  to four. */
+            reclipDeckTags: (c: TDeck, cell: TExoBenchSource<number>) => {
+                const region = c.readState<TDeckState>().cards;
+                for (let k = region.size - 1; k >= 0; k--) {
+                    reclipTags(region.at(k) as unknown as TCard, cell);
+                }
+            },
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(PD.rename, (c) => renameDeck(c));
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                const region = c.readState<TDeckState>().cards;
+                return () => {
+                    for (let k = region.size - 1; k >= 0; k--) exoNodeDom(region.at(k)!).unmount();
+                };
             });
-        }
-    }
+        })
 );
-
-/** The middle step of the walk `advance` starts: a deck hands the changed cell to each of its cards.
- *  The deck's own date needs nothing here — it listens, because it reads ONE cell and a card reads up
- *  to four. */
-export const reclipDeckTags = mDeck.transition((c: TDeck, cell: TExoBenchSource<number>) => {
-    const region = c.readState(KD_DECK).cards;
-    for (let k = region.size - 1; k >= 0; k--) {
-        reclipTags(region.at(k) as unknown as TCard, cell);
-    }
-});
-
-mDeck.on(PD.rename, (c) => renameDeck(c));
-
-export const DECK = mDeck.done();
+export const { renameDeck, setDeckDetail, seedDeck, reclipDeckTags } = DECK.transitions;
 
 export const DECK_PORTS = PD;
 
@@ -414,43 +429,44 @@ export const exodraAppOf = (deckList: readonly number[]) => {
     // THE PORTABLE NARROW TYPE, not `TExoDomNode`: `hydrate-floor` renders this very shell through
     // `@exodra/string` as well, and a component that demands the browser exonode cannot be handed to
     // the server one.
-    const mApp = createExoMachineBuilder<TExoRegionWiring>(SCHEMA);
-    mApp.createInitialState((c: TExoRegionWiring) => {
-        // THE APP'S FIVE USERS AND ITS ROUND COUNTER, one set per instance — the shell is the one
-        // thing in this app there is exactly one of.
-        const users = USER_IDX.map((u) => createExoBenchSource<number>(startChars(u)));
-        let round = 0;
-        const advance = (): void => {
-            const cell = users[roundUserOf(round)];
-            round++;
-            cell.setValue(nextChars(cell.getValue()));
-            // THE WALK, AND IT IS WHY THE TAG HAS NO SUBSCRIPTION. The deck's date moved on the line
-            // above, through the one listener a deck owns; a tag's text moves here, because the app
-            // knows which cell it just wrote and the tags do not.
-            for (let k = decks.size - 1; k >= 0; k--) {
-                reclipDeckTags(decks.at(k) as unknown as TDeck, cell);
+    const mApp = createExoMachine<TExoRegionWiring>(SCHEMA, {
+        createInitialState: (c: TExoRegionWiring) => {
+            // THE APP'S FIVE USERS AND ITS ROUND COUNTER, one set per instance — the shell is the one
+            // thing in this app there is exactly one of.
+            const users = USER_IDX.map((u) => createExoBenchSource<number>(startChars(u)));
+            let round = 0;
+            const advance = (): void => {
+                const cell = users[roundUserOf(round)];
+                round++;
+                cell.setValue(nextChars(cell.getValue()));
+                // THE WALK, AND IT IS WHY THE TAG HAS NO SUBSCRIPTION. The deck's date moved on the line
+                // above, through the one listener a deck owns; a tag's text moves here, because the app
+                // knows which cell it just wrote and the tags do not.
+                for (let k = decks.size - 1; k >= 0; k--) {
+                    reclipDeckTags(decks.at(k) as unknown as TDeck, cell);
+                }
+            };
+            PENDING_ADVANCE = advance;
+
+            // THE SHELL IS DECLARED OVER THE PORTABLE NODE and the deck over the browser one, so the
+            // placement crosses here — the one seam in this app where the two meet, and the cast says so
+            // rather than widening the shell and losing the server render.
+            const decks = c.childList(Q.decks) as unknown as TExoChildList;
+            for (let k = 0; k < deckList.length; k++) {
+                const deck = c.build(DECK as unknown as Parameters<typeof c.build>[0]);
+                seedDeck(deck as unknown as TDeck, deckList[k], users);
+                decks.insert(deck as unknown as TExoNode<TExoDomMark>);
             }
-        };
-        PENDING_ADVANCE = advance;
 
-        // THE SHELL IS DECLARED OVER THE PORTABLE NODE and the deck over the browser one, so the
-        // placement crosses here — the one seam in this app where the two meet, and the cast says so
-        // rather than widening the shell and losing the server render.
-        const decks = c.childList(Q.decks) as unknown as TExoChildList;
-        for (let k = 0; k < deckList.length; k++) {
-            const deck = c.build(DECK as unknown as Parameters<typeof c.build>[0]);
-            seedDeck(deck as unknown as TDeck, deckList[k], users);
-            decks.insert(deck as unknown as TExoNode<TExoDomMark>);
-        }
-
-        // A REGION HAS NO OWNER AND REGISTERS NOTHING, so the teardown a fixed list performs for its
-        // rows is written out here — the same line the deck's own region runs.
-        c.onTeardown(() => {
-            for (let k = decks.size - 1; k >= 0; k--) exoNodeDom(decks.at(k)!).unmount();
-        });
-        return { users, advance };
+            // A REGION HAS NO OWNER AND REGISTERS NOTHING, so the teardown a fixed list performs for its
+            // rows is written out here — the same line the deck's own region runs.
+            c.onTeardown(() => {
+                for (let k = decks.size - 1; k >= 0; k--) exoNodeDom(decks.at(k)!).unmount();
+            });
+            return { users, advance };
+        },
     });
-    return mApp.done();
+    return mApp;
 };
 
 export const APP = exodraAppOf(DECK_IDX);

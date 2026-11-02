@@ -1,13 +1,19 @@
 // @vitest-environment jsdom
 //
-// `index` is the position AT BUILD TIME and nothing more: a row keeps the number it was built with
-// after the rows around it move, because the reconciler moves nodes and does not re-run wiring. A
-// reconciler that recomputes a position from a `Map` does so inside its CREATE path, and a pure
-// reorder creates nothing, so every backend lands on the same numbers however it addresses a row.
+// A row's params are what its build call handed it and nothing more: a row keeps the position it
+// was built with after the rows around it move, because the reconciler moves nodes and does not
+// re-run wiring. A pure reorder creates nothing, so every backend lands on the same numbers however
+// it addresses a row.
 //
 // The artefact cannot see that a row was REUSED rather than rebuilt, so what is asserted is the
-// only observable consequence: the number the row was wired with, written into an attribute.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+// only observable consequence: the position the row was built with, written into an attribute.
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachineNode,
     TExoSchemaCursor,
@@ -34,10 +40,7 @@ type TReconciling = TExoChildrenWiring &
 
 type TListState = { readonly rows: TExoPlacedChildren<TExoNode>; shown: TItem[] };
 
-// WHAT A ROW READS, BY INDEX, written by the build callback an instant before `c.build` runs the
-// wire — a row is handed its position and nothing else, so the item it stands for arrives this way
-// and is the row's for life.
-const BUILDING: TItem[] = [];
+type TRowParams = { readonly item: TItem; readonly at: number };
 
 const ROW = createExoTestMachine(
     (b: TExoSchemaCursor) => {
@@ -50,9 +53,10 @@ const ROW = createExoTestMachine(
         return { at, text };
     },
     (P) =>
-        (c: TExoChildrenWiring, index: number): void => {
-            c.attr(P.at, String(index));
-            c.text(P.text, BUILDING[index].label);
+        (c: TExoChildrenWiring, params: unknown): void => {
+            const row = params as TRowParams;
+            c.attr(P.at, String(row.at));
+            c.text(P.text, row.item.label);
         }
 );
 
@@ -69,24 +73,37 @@ const rotatingList = () => {
         });
         return { rows };
     });
-    const m = createExoMachineBuilder<TReconciling, unknown, TListState>(schema);
-    m.createInitialState((c) => ({ rows: c.childList(schema.ports.rows), shown: [] as TItem[] }));
-    const showRows = m.transition((c) => {
-        const want = items.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            BUILDING[i] = item;
-            return c.build(ROW, i);
-        });
+    const m = createExoMachine<TReconciling, unknown, TListState>(schema, {
+        createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] as TItem[] }),
     });
-    m.effect((c) => {
-        showRows(c);
-        return items.onChange(() => showRows(c));
-    });
-    const component = m.done();
+    const component = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = items.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(ROW, { item, at: want.indexOf(item) })
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return items.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = component.transitions;
     return { component, items };
 };
 
-describe('the index a row that only MOVED was wired with', () => {
+describe('the position a row that only MOVED was built with', () => {
     it('is the build-time one, and the question is whether all three say so', () => {
         assertExoConformanceRule({
             name: 'a bound list rotated so that every row survives and none is created',
@@ -94,7 +111,7 @@ describe('the index a row that only MOVED was wired with', () => {
             subject: () => {
                 const built = rotatingList();
                 // A ROTATION and not a reshuffle: every item survives, so no backend calls a build
-                // function and a difference in the numbers is a difference in what "index" MEANS.
+                // function and a difference in the numbers is a difference in what a row's params MEAN.
                 return {
                     component: built.component,
                     update: () => built.items.setValue([C, A, B]),
@@ -102,7 +119,7 @@ describe('the index a row that only MOVED was wired with', () => {
             },
             expect: {
                 dom: renders(),
-                // No second render, so no second answer: here the index IS the array position.
+                // No second render, so no second answer: here the built position IS the array position.
                 string: cannotExpress(EXO_CAP_UPDATE),
                 term: renders(),
                 // ADOPTS: a reconciled list on a served page takes the rows the server printed.

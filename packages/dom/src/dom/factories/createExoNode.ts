@@ -10,20 +10,10 @@ export function createExoNode(
     schema: TExoDomSchema,
     root: Element,
     machine: TExoDomMachine,
-    index: number,
     ownerChild: TExoDomChild | null,
     holder: TExoDomInstanceRecord,
     context: TExoContextFrame | null = null,
     params?: unknown
 ): void {
-    createExoMachineNode<TExoDomNode>(
-        schema,
-        root,
-        machine,
-        index,
-        ownerChild,
-        holder,
-        context,
-        params
-    );
+    createExoMachineNode<TExoDomNode>(schema, root, machine, ownerChild, holder, context, params);
 }

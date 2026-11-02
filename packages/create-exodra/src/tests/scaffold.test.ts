@@ -251,8 +251,16 @@ describe('what the scaffolded sources are written in', () => {
     it('SPA: pages declare their markup with exoJsx, typed by the schema dialect', () => {
         const page = readFileSync(join(spa(), 'src/pages/index.tsx'), 'utf8');
         expect(page).toContain("import { exoJsx } from '@exodra/jsx';");
-        expect(page).toContain('pageBuilder.wire(');
+        expect(page).toContain('withExoWire(m, c => {');
         expect(page).not.toContain('createInitialState');
+
+        const main = readFileSync(join(spa(), 'src/main.tsx'), 'utf8');
+        expect(main).toContain('const App = createExoMachine(appSchema, {');
+        expect(main).toContain('createInitialState: (c: TExoDomNode) => {');
+        expect(main).toContain(
+            "c.build(ExoLink, { to: '/', label: 'Home', currentWhen: 'exact' })"
+        );
+        expect(main).not.toContain('.createInitialState(');
 
         const tsconfig = JSON.parse(readFileSync(join(spa(), 'tsconfig.json'), 'utf8')) as {
             compilerOptions: { jsxImportSource?: string };
@@ -261,6 +269,12 @@ describe('what the scaffolded sources are written in', () => {
     });
 
     it('SSR: renders through renderExoPage and ships the state script after the container', () => {
+        const app = readFileSync(join(ssr(), 'src/app.ts'), 'utf8');
+        expect(app).toContain(
+            'createInitialState: (_c: TExoMachineNode, _params: TAppParams): TAppState => ({ count: 0 })'
+        );
+        expect(app).not.toContain('.createInitialState(');
+
         const server = readFileSync(join(ssr(), 'src/entry-server.ts'), 'utf8');
         expect(server).toContain('renderExoPage(App');
         expect(server).toContain('stateScript: page.stateScript');

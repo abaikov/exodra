@@ -9,13 +9,12 @@ import type { TExoDomSchema } from './types/TExoDomSchema';
 export function buildLiveExoChild(
     schema: TExoDomSchema,
     machine: TExoDomMachine,
-    index: number,
     context: TExoContextFrame | null = null,
     params?: unknown
 ): TExoDomChild {
     const node = schema.acquireNode(schema);
     const child = schema.createChild(schema, node, schema.childUnmount);
-    createExoNode(schema, node, machine, index, child, child, context, params);
+    createExoNode(schema, node, machine, child, child, context, params);
     holdExoInstance(child);
     return child;
 }

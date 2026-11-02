@@ -81,7 +81,7 @@ export default function LandingSpeed() {
             <div className="container">
                 <Reveal>
                     <p className={styles.eyebrow}>Benchmarks</p>
-                    <h2 className={styles.statement}>An imperative framework at the cost of a template engine.</h2>
+                    <h2 className={styles.statement}>A framework at the cost of a template engine.</h2>
                     <p className={styles.lead}>
                         Components, state and effects, and reactive when a screen wants it: <code>@exodra/computed</code>{' '}
                         derives ports from fields, and effects subscribe to your own data layer. Each axis below runs the

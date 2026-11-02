@@ -16,7 +16,14 @@
 //     leaves the frame standing hands the NEXT request a response object belonging to a user who
 //     has already been served.
 import { exoContextToken, exoContextFrame } from '@exodra/context';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachineNode,
     TExoSchemaCursor,
@@ -90,20 +97,20 @@ const pageWith = (make: (ports: TPagePorts) => TExoMachineInitialState<TWiring>)
 /** Fill the shape and do nothing else — the baseline every response case starts from. */
 const fill =
     (ports: TPagePorts): TExoMachineInitialState<TWiring> =>
-    (c, i) => {
-        c.text(ports.title, 'Page ' + i);
-        c.attr(ports.count, i);
+    (c) => {
+        c.text(ports.title, 'Page');
+        c.attr(ports.count, 0);
         c.on(ports.click, () => undefined);
     };
 
 /** Fill the shape AND say something about the response. */
-const pageSaying = (say: (ssr: TExoSsrResponse, index: number) => void) =>
+const pageSaying = (say: (ssr: TExoSsrResponse) => void) =>
     pageWith((P) => {
         const base = fill(P);
-        return (c, index, params) => {
+        return (c, params) => {
             const ssr = c.inject(EXO_SSR_RESPONSE);
-            if (ssr !== undefined) say(ssr, index);
-            base(c, index, params);
+            if (ssr !== undefined) say(ssr);
+            base(c, params);
         };
     });
 
@@ -150,13 +157,15 @@ describe('renderExoPage — the document', () => {
     it("hands params to the page machine's wire", () => {
         const schema = createExoSchema(buildPage);
         const P = schema.ports;
-        const m = createExoMachineBuilder<TWiring & TExoMachineNode, { title: string }>(schema);
-        m.wire((c, params) => {
-            c.text(P.title, params.title);
-            c.attr(P.count, 0);
-            c.on(P.click, () => undefined);
-        });
-        const page = renderExoPage(m.done(), { params: { title: 'From the request' } });
+        const Page = withExoWire(
+            createExoMachine<TWiring & TExoMachineNode, { title: string }>(schema),
+            (c, params) => {
+                c.text(P.title, params.title);
+                c.attr(P.count, 0);
+                c.on(P.click, () => undefined);
+            }
+        );
+        const page = renderExoPage(Page, { params: { title: 'From the request' } });
         expect(page.html).toContain('From the request');
     });
 
@@ -247,15 +256,16 @@ describe('renderExoPage — the request is one render long', () => {
                 return { text };
             },
             (P): TExoMachineInitialState<TWiring> =>
-                (c, index) => {
+                (c, params) => {
+                    const at = params as number;
                     const ssr = c.inject(EXO_SSR_RESPONSE);
                     seen.push(ssr);
-                    if (ssr !== undefined) ssr.setState('row' + index, index);
-                    c.text(P.text, 'row ' + index);
+                    if (ssr !== undefined) ssr.setState('row' + at, at);
+                    c.text(P.text, 'row ' + at);
                 }
         );
-        // A COUNT and not an array: a row reads its own data by the index it is handed, and this
-        // list's rows have nothing to read but that number.
+        // A row reads its own data from the params it is handed, and this list's rows have nothing
+        // to read but a number.
         const LIST: TExoStrMachine = createExoTestMachine(
             (b: TExoSchemaCursor) => {
                 let kids!: TExoChildrenPort;
@@ -266,7 +276,7 @@ describe('renderExoPage — the request is one render long', () => {
             },
             (P): TExoMachineInitialState<TExoStrNode> =>
                 (c) => {
-                    c.list(P.kids, ROW, 3);
+                    c.list(P.kids, ROW, [0, 1, 2]);
                 }
         );
 
@@ -286,9 +296,9 @@ describe('renderExoPage — the request is one render long', () => {
         const seen: (TExoSsrResponse | undefined)[] = [];
         const AFTER = pageWith((P) => {
             const base = fill(P);
-            return (c, index, params) => {
+            return (c, params) => {
                 seen.push(c.inject(EXO_SSR_RESPONSE));
-                base(c, index, params);
+                base(c, params);
             };
         });
         EXO_STR.render(AFTER);
@@ -303,9 +313,9 @@ describe('renderExoPage — the request is one render long', () => {
         const seen: (TExoSsrResponse | undefined)[] = [];
         const AFTER = pageWith((P) => {
             const base = fill(P);
-            return (c, index, params) => {
+            return (c, params) => {
                 seen.push(c.inject(EXO_SSR_RESPONSE));
-                base(c, index, params);
+                base(c, params);
             };
         });
         EXO_STR.render(AFTER);
@@ -323,19 +333,19 @@ describe('renderExoPage — the request is one render long', () => {
 
         const INNER_PAGE = pageWith((P) => {
             const base = fill(P);
-            return (c, index, params) => {
+            return (c, params) => {
                 seenInner.push(c.inject(INNER));
-                base(c, index, params);
+                base(c, params);
             };
         });
 
         const OUTER_PAGE = pageWith((P) => {
             const base = fill(P);
-            return (c, index, params) => {
+            return (c, params) => {
                 renderExoPage(INNER_PAGE, { context: exoContextFrame(null, INNER, 'inner') });
                 // READ AFTER the nested render returns: this is the line a holder got wrong.
                 seenOuter.push(c.inject(OUTER));
-                base(c, index, params);
+                base(c, params);
             };
         });
 
@@ -350,9 +360,9 @@ describe('renderExoPage — the request is one render long', () => {
         const seen: (TExoSsrResponse | undefined)[] = [];
         const PAGE = pageWith((P) => {
             const base = fill(P);
-            return (c, index, params) => {
+            return (c, params) => {
                 seen.push(c.inject(EXO_SSR_RESPONSE));
-                base(c, index, params);
+                base(c, params);
             };
         });
         EXO_STR.render(PAGE);
@@ -367,10 +377,10 @@ describe('renderExoPage — the request is one render long', () => {
         const seen: (string | undefined)[] = [];
         const PAGE = pageWith((P) => {
             const base = fill(P);
-            return (c, index, params) => {
+            return (c, params) => {
                 seen.push(c.inject(ROUTER));
                 expect(c.inject(EXO_SSR_RESPONSE)).not.toBe(undefined);
-                base(c, index, params);
+                base(c, params);
             };
         });
 
@@ -470,21 +480,22 @@ describe('the container a hydration is handed', () => {
         // listener at all — an event port's writer on that backend writes nothing — so a button
         // that answers a click here answers it because adoption attached one.
         let clicked = -1;
-        const PAGE = pageWith((P) => (c, i) => {
-            c.text(P.title, 'Page ' + i);
-            c.attr(P.count, i);
+        const PAGE = pageWith((P) => (c, params) => {
+            const n = params as number;
+            c.text(P.title, 'Page ' + n);
+            c.attr(P.count, n);
             c.on(P.click, () => {
-                clicked = i;
+                clicked = n;
             });
         });
-        const container = load(renderExoPage(PAGE).renderDocument());
-        EXO_BACKEND.hydrate(PAGE, container);
+        const container = load(renderExoPage(PAGE, { params: 7 }).renderDocument());
+        EXO_BACKEND.hydrate(PAGE, container, 7);
 
         const button = container.querySelector('button') as Element;
         button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-        // `0` is the index the instance was wired with, and `-1` is what the initialiser holds:
-        // the assertion is that the handler RAN, and that it ran with its own index.
-        expect(clicked).toBe(0);
+        // `7` is the params the instance was built with, and `-1` is what the initialiser holds:
+        // the assertion is that the handler RAN, and that it ran with its own params.
+        expect(clicked).toBe(7);
     });
 
     it('and NOT its first child — which is the failure this whole test exists for', () => {
@@ -514,17 +525,27 @@ describe('the container a hydration is handed', () => {
         const title = source('from the server');
         const schema = createExoSchema(buildPage);
         const P = schema.ports;
-        const m = createExoMachineBuilder<TWiring & TExoMachineNode>(schema);
-        const show = m.transition((c) => c.text(P.title, title.getValue()));
-        m.wire((c) => {
-            c.attr(P.count, 0);
-            c.on(P.click, () => undefined);
-        });
-        m.effect((c) => {
-            show(c);
-            return title.onChange(() => show(c));
-        });
-        const PAGE = m.done();
+        const m = createExoMachine<TWiring & TExoMachineNode>(schema);
+        const PAGE = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    show: (c) => c.text(P.title, title.getValue()),
+                }),
+            (m) =>
+                withExoWire(m, (c) => {
+                    c.attr(P.count, 0);
+                    c.on(P.click, () => undefined);
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        show(c);
+                        return title.onChange(() => show(c));
+                    });
+                })
+        );
+        const { show } = PAGE.transitions;
 
         const container = load(renderExoPage(PAGE).renderDocument());
         expect(container.querySelector('h1')?.textContent).toBe('from the server');

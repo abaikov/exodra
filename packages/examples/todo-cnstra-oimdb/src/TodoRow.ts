@@ -2,13 +2,16 @@ import {
     EXO_PORT_ATTR,
     EXO_PORT_EVENT,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    createExoMachine,
+    composeExoMachine,
+    withExoHandlers,
+    withExoEffects,
     createExoSchema,
     exoEventPortKind,
     exoPorts,
     exoRefPortKind,
 } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
 import type { TOIMColumnGroup } from '@oimdb/core';
@@ -59,20 +62,16 @@ const todoRowSchema = createExoSchema(ports, (b) => {
 const titleColumn: TOIMColumnGroup = { key: 'title', columnNames: ['title'] };
 const doneColumn: TOIMColumnGroup = { key: 'done', columnNames: ['done'] };
 
-const todoRowBuilder = createExoMachineBuilder<TExoDomNode, TTodoSlot, TTodoRowState>(
-    todoRowSchema
-);
-
-todoRowBuilder.createInitialState(
-    (c, _index, slot): TTodoRowState => ({
+const todoRowBuilder = createExoMachine<TExoDomNode, TTodoSlot, TTodoRowState>(todoRowSchema, {
+    createInitialState: (c, slot): TTodoRowState => ({
         cns: injectTodoCns(c),
         slot,
         editing: false,
         done: false,
-    })
-);
+    }),
+});
 
-function showClass(c: TExoMachineBuilderNode<typeof todoRowBuilder>): void {
+function showClass(c: TExoMachineNodeOf<typeof todoRowBuilder>): void {
     const { done, editing } = c.state;
     c.attr(
         ports.className,
@@ -80,13 +79,13 @@ function showClass(c: TExoMachineBuilderNode<typeof todoRowBuilder>): void {
     );
 }
 
-function showDone(c: TExoMachineBuilderNode<typeof todoRowBuilder>, done: boolean): void {
+function showDone(c: TExoMachineNodeOf<typeof todoRowBuilder>, done: boolean): void {
     c.state.done = done;
     c.attr(ports.done, done);
     showClass(c);
 }
 
-function startEditing(c: TExoMachineBuilderNode<typeof todoRowBuilder>): void {
+function startEditing(c: TExoMachineNodeOf<typeof todoRowBuilder>): void {
     const state = c.state;
     state.editing = true;
     c.attr(ports.draft, state.slot.entity?.title ?? '');
@@ -94,13 +93,13 @@ function startEditing(c: TExoMachineBuilderNode<typeof todoRowBuilder>): void {
     c.portNode(ports.draftField).focus();
 }
 
-function stopEditing(c: TExoMachineBuilderNode<typeof todoRowBuilder>): void {
+function stopEditing(c: TExoMachineNodeOf<typeof todoRowBuilder>): void {
     c.state.editing = false;
     showClass(c);
 }
 
 function commitEditing(
-    c: TExoMachineBuilderNode<typeof todoRowBuilder>,
+    c: TExoMachineNodeOf<typeof todoRowBuilder>,
     field: EventTarget | null
 ): void {
     const id = c.state.slot.entity?.id;
@@ -110,39 +109,41 @@ function commitEditing(
     c.state.cns.stimulate(TodoUiAxon.titleEdited.createSignal({ id, title }));
 }
 
-todoRowBuilder.effect((c) =>
-    oimdb.effect(() => {
-        const todo = c.state.slot.readEntity(titleColumn);
-        if (todo !== undefined) c.text(ports.title, todo.title);
-    })
+export const TodoRow = composeExoMachine(
+    todoRowBuilder,
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(ports.toggle, (c, event) => {
+                const id = c.state.slot.entity?.id;
+                if (id === undefined) return;
+                const done = readExoControlValue(event.target) as boolean;
+                c.state.cns.stimulate(TodoUiAxon.toggleClicked.createSignal({ id, done }));
+            });
+            on(ports.destroy, (c) => {
+                const id = c.state.slot.entity?.id;
+                if (id !== undefined)
+                    c.state.cns.stimulate(TodoUiAxon.destroyClicked.createSignal({ id }));
+            });
+            on(ports.edit, (c) => startEditing(c));
+            on(ports.draftKeydown, (c, event) => {
+                if (event.key === 'Enter') commitEditing(c, event.target);
+                else if (event.key === 'Escape') stopEditing(c);
+            });
+            on(ports.draftFocusout, (c, event) => commitEditing(c, event.target));
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) =>
+                oimdb.effect(() => {
+                    const todo = c.state.slot.readEntity(titleColumn);
+                    if (todo !== undefined) c.text(ports.title, todo.title);
+                })
+            );
+            effect((c) =>
+                oimdb.effect(() => {
+                    const todo = c.state.slot.readEntity(doneColumn);
+                    if (todo !== undefined) showDone(c, todo.done);
+                })
+            );
+        })
 );
-
-todoRowBuilder.effect((c) =>
-    oimdb.effect(() => {
-        const todo = c.state.slot.readEntity(doneColumn);
-        if (todo !== undefined) showDone(c, todo.done);
-    })
-);
-
-todoRowBuilder.on(ports.toggle, (c, event) => {
-    const id = c.state.slot.entity?.id;
-    if (id === undefined) return;
-    const done = readExoControlValue(event.target) as boolean;
-    c.state.cns.stimulate(TodoUiAxon.toggleClicked.createSignal({ id, done }));
-});
-
-todoRowBuilder.on(ports.destroy, (c) => {
-    const id = c.state.slot.entity?.id;
-    if (id !== undefined) c.state.cns.stimulate(TodoUiAxon.destroyClicked.createSignal({ id }));
-});
-
-todoRowBuilder.on(ports.edit, (c) => startEditing(c));
-
-todoRowBuilder.on(ports.draftKeydown, (c, event) => {
-    if (event.key === 'Enter') commitEditing(c, event.target);
-    else if (event.key === 'Escape') stopEditing(c);
-});
-
-todoRowBuilder.on(ports.draftFocusout, (c, event) => commitEditing(c, event.target));
-
-export const TodoRow = todoRowBuilder.done();

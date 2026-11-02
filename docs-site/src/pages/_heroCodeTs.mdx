@@ -1,31 +1,31 @@
 ```ts
-import { EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineNode } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_TEXT, composeExoMachine, createExoMachine, createExoSchema, exoPorts, withExoHandlers, withExoTransitions, withExoWire } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const CounterPorts = exoPorts({ count: EXO_PORT_TEXT, increment: EXO_PORT_EVENT });
+const CounterPorts = exoPorts({ COUNT: EXO_PORT_TEXT, INCREMENT: EXO_PORT_EVENT });
 
-const counterSchema = createExoSchema(CounterPorts, (b) => {
+const CounterSchema = createExoSchema(CounterPorts, (b) => {
     b.el('div', { class: 'counter' }, (div) => {
-        div.el('span', null, (span) => {
-            span.textPort(CounterPorts.count);
-        });
+        div.el('span', null, (span) => span.textPort(CounterPorts.COUNT));
         div.el('button', { type: 'button' }, (button) => {
-            button.eventPort(CounterPorts.increment, 'click');
+            button.eventPort(CounterPorts.INCREMENT, 'click');
             button.text('+1');
         });
     });
 });
 
-const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(counterSchema);
-counterBuilder.createInitialState(() => ({ count: 0 }));
-counterBuilder.wire((c) => {
-    c.text(CounterPorts.count, String(c.state.count));
-});
-counterBuilder.on(CounterPorts.increment, (c) => {
-    c.state.count += 1;
-    c.text(CounterPorts.count, String(c.state.count));
-});
+export const counterMachine = composeExoMachine(
+    createExoMachine(CounterSchema, { createInitialState: () => ({ count: 0 }) }),
+    (m) => withExoTransitions(m, {
+        increment: (c) => {
+            c.state.count += 1;
+            c.text(CounterPorts.COUNT, String(c.state.count));
+        },
+    }),
+    (m) => withExoWire(m, (c) => c.text(CounterPorts.COUNT, String(c.state.count))),
+    (m) => withExoHandlers(m, (on) => on(CounterPorts.INCREMENT, (c) => increment(c))),
+);
+export const { increment } = counterMachine.transitions;
 
-withExoCompiler(new ExoDomBackend()).render(counterBuilder.done(), document.body);
+withExoCompiler(new ExoDomBackend()).render(counterMachine, document.body);
 ```

@@ -4,11 +4,10 @@
 // `--app` scaffold in `index.ts` emits, so a file generated here drops into a
 // generated app and works:
 //  - a component is a MACHINE: `createExoSchema(build)` walks the shape ONCE, when the
-//    module loads; `createInitialState` runs once per instance and returns its state, and
-//    `wire` fills `schema.ports` from it.
-//  - `createInitialState` is handed `(exonode, index)`. There are no props: an instance is
-//    handed its POSITION, so the data it shows is read by index from somewhere the caller put
-//    it.
+//    module loads; `createExoMachine(schema, { createInitialState })` runs it once per instance
+//    for its state, and the wire `composeExoMachine` adds with `withExoWire` fills `schema.ports`.
+//  - `createInitialState` is handed `(exonode, params)`. There are no props: an instance is
+//    handed the params its parent passed to `c.one`, `c.list` or `c.build`.
 //  - the write doors are `attr`, `text`, `unsafeHtml` and `on`, and nothing else. Keeping a
 //    port in step with a source is an effect that draws through a transition and subscribes.
 //  - a page is DEFAULT-exported, because the route table the vite plugin generates
@@ -24,7 +23,7 @@
 
 /**
  * A standalone component, filled from a parent with `c.one(port, Name)` or repeated with
- * `c.list(port, Name, count)`.
+ * `c.list(port, Name, params)`.
  * @param componentName Exported identifier (already formatted, e.g. `UserCard`).
  * @param className CSS class applied to the root element.
  * @param useTypeScript Emit type annotations (the file is written as .tsx).
@@ -44,32 +43,41 @@ export function generateComponentFile(
     const camelName = componentName.charAt(0).toLowerCase() + componentName.slice(1);
     const portsName = `${componentName}Ports`;
     const schemaName = `${camelName}Schema`;
-    const builderName = `${camelName}Builder`;
-    const builderType = useTypeScript ? '<TExoMachineNode, unknown, { label: string }>' : '';
-    const store = useTypeScript
-        ? `export const ${componentName}Labels: string[] = [];`
-        : `export const ${componentName}Labels = [];`;
+    const baseName = `${camelName}Base`;
+    const paramsName = `T${componentName}Params`;
+    const paramsType = useTypeScript
+        ? `export type ${paramsName} = { readonly label: string };\n\n`
+        : '';
+    const initialStateArgs = useTypeScript
+        ? `_c: TExoMachineNode, params: ${paramsName}`
+        : '_c, params';
 
-    return `import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+    return `import {
+  EXO_PORT_TEXT,
+  composeExoMachine,
+  createExoMachine,
+  createExoSchema,
+  exoPorts,
+  withExoWire,
+} from '@exodra/core';
 ${typeImports}
-// The data each instance shows, read BY INDEX: an instance is handed its position, never props, so a
-// parent fills this and then names the count:
-// \`${componentName}Labels.push('${componentName}'); c.list(ParentPorts.slot, ${componentName}, 1)\`.
-${store}
-
-const ${portsName} = exoPorts({ label: EXO_PORT_TEXT });
+// Each row is handed its params, never props:
+// \`c.list(ParentPorts.slot, ${componentName}, [{ label: '${componentName}' }])\`.
+${paramsType}const ${portsName} = exoPorts({ label: EXO_PORT_TEXT });
 
 const ${schemaName} = createExoSchema(${portsName}, b => {
   b.el('div', { class: '${className}' }, d => {
     d.textPort(${portsName}.label);
   });
 });
-const ${builderName} = createExoMachineBuilder${builderType}(${schemaName});
-${builderName}.createInitialState((_c, i) => ({ label: ${componentName}Labels[i] }));
-${builderName}.wire(c => {
-  c.text(${portsName}.label, c.state.label);
+const ${baseName} = createExoMachine(${schemaName}, {
+  createInitialState: (${initialStateArgs}) => ({ label: params.label }),
 });
-export const ${componentName} = ${builderName}.done();
+export const ${componentName} = composeExoMachine(${baseName}, m =>
+  withExoWire(m, c => {
+    c.text(${portsName}.label, c.state.label);
+  })
+);
 `;
 }
 
@@ -77,18 +85,19 @@ export const ${componentName} = ${builderName}.done();
  * A page: a machine default-exported from its module, which is what the
  * generated route table resolves and what the router will mount.
  * @param pageName Exported identifier base (already formatted, e.g. `Home`).
- * @param useTypeScript Emit type annotations (the file is written as .tsx).
  */
-export function generatePageFile(pageName: string, useTypeScript: boolean): string {
-    const typeImports = useTypeScript
-        ? "import type { TExoMachineNode } from '@exodra/core';\n"
-        : '';
-    const builderType = useTypeScript ? '<TExoMachineNode>' : '';
+export function generatePageFile(pageName: string): string {
+    return `import {
+  EXO_PORT_TEXT,
+  composeExoMachine,
+  createExoMachine,
+  createExoSchema,
+  exoPorts,
+  withExoWire,
+} from '@exodra/core';
 
-    return `import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-${typeImports}
 // A page takes no props — the match that selected it arrives as the params of its wire,
-// \`pageBuilder.wire((c, match) => …)\`, whose \`params\` and \`pathname\` are what a page needs. It is
+// \`withExoWire(m, (c, match) => …)\`, whose \`params\` and \`pathname\` are what a page needs. It is
 // default-exported because the route table imports it that way.
 const PagePorts = exoPorts({ heading: EXO_PORT_TEXT });
 
@@ -100,11 +109,12 @@ const pageSchema = createExoSchema(PagePorts, b => {
     d.el('p', null, p => p.text('Welcome to the ${pageName} page.'));
   });
 });
-const pageBuilder = createExoMachineBuilder${builderType}(pageSchema);
-pageBuilder.wire(c => {
-  c.text(PagePorts.heading, '${pageName}');
-});
-export default pageBuilder.done();
+const pageBase = createExoMachine(pageSchema);
+export default composeExoMachine(pageBase, m =>
+  withExoWire(m, c => {
+    c.text(PagePorts.heading, '${pageName}');
+  })
+);
 `;
 }
 

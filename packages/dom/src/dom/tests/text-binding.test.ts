@@ -17,7 +17,13 @@
 // the update path faster, and each says what deleting it would cost. The equivalent cases for
 // the LEGACY renderer live in `src/text-binding.test.ts` and `src/translated-page.test.ts` —
 // different code, and they say nothing about this one.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type { TExoSchemaCursor, TExoTextPort, TExoMachineNode } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
@@ -63,15 +69,25 @@ const lineBoundTo = (src: {
     getValue(): unknown;
     onChange(cb: (...event: never[]) => void): () => void;
 }) => {
-    const m = createExoMachineBuilder<TExoMachineNode>(LINE_SCHEMA);
-    const show = m.transition((c) => {
-        c.text(LINE_SCHEMA.ports.label, src.getValue());
-    });
-    m.effect((c) => {
-        show(c);
-        return src.onChange(() => show(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode>(LINE_SCHEMA);
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => {
+                    c.text(LINE_SCHEMA.ports.label, src.getValue());
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return src.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = machine.transitions;
+    return machine;
 };
 
 /** Mount one instance and hand back its `<p>`, plus the render's disposer. */

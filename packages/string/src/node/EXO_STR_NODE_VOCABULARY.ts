@@ -44,9 +44,9 @@ export interface TExoStrNodeApi {
     portNodeReader(): TExoPortNodeReader<undefined>;
     on(port: TExoEventPort, handler: TExoEventHandler<Event, Element>, subject?: unknown): void;
     one(port: TExoChildrenPort, machine: TExoStrMachine, params?: unknown): void;
-    list(port: TExoChildrenPort, machine: TExoStrMachine, count: number): void;
+    list(port: TExoChildrenPort, machine: TExoStrMachine, params: readonly unknown[]): void;
     childList(port: TExoChildrenPort): TExoStrChildList;
-    build(machine: TExoStrMachine, index?: number, params?: unknown): TExoNode<TExoStrMark>;
+    build(machine: TExoStrMachine, params?: unknown): TExoNode<TExoStrMark>;
 }
 
 /**
@@ -113,7 +113,6 @@ const EXO_STR_NODE_METHODS: TExoStrNodeApi & ThisType<TExoStrNode> = {
         this.values[port.index] = renderExoStrInstance(
             exoStrSchemaOf(machine, this.schema.backend),
             machine,
-            0,
             this.context,
             params
         );
@@ -123,14 +122,16 @@ const EXO_STR_NODE_METHODS: TExoStrNodeApi & ThisType<TExoStrNode> = {
      * An empty list is still COMPILED: `compileExoStrSchema` refuses some schemas, so a component
      * whose first render had no rows would otherwise pass here and be refused a request later.
      */
-    list(port: TExoChildrenPort, machine: TExoStrMachine, count: number): void {
+    list(port: TExoChildrenPort, machine: TExoStrMachine, params: readonly unknown[]): void {
         assertExoArming('list');
         const schema = exoStrSchemaOf(machine, this.schema.backend);
         const context = this.context;
         // `+=` and not an array joined at the end: accumulating rows and joining measured SLOWER
         // (README, "Measured costs").
         let html = '';
-        for (let i = 0; i < count; i++) html += renderExoStrInstance(schema, machine, i, context);
+        for (let i = 0; i < params.length; i++) {
+            html += renderExoStrInstance(schema, machine, context, params[i]);
+        }
         this.values[port.index] = html;
     },
 
@@ -143,11 +144,10 @@ const EXO_STR_NODE_METHODS: TExoStrNodeApi & ThisType<TExoStrNode> = {
         return createExoStrChildList(this.values, port.index, []);
     },
 
-    build(machine: TExoStrMachine, index = 0, params?: unknown): TExoNode<TExoStrMark> {
+    build(machine: TExoStrMachine, params?: unknown): TExoNode<TExoStrMark> {
         return buildExoStrInstance(
             exoStrSchemaOf(machine, this.schema.backend),
             machine,
-            index,
             this.context,
             params
         ) as unknown as TExoNode<TExoStrMark>;

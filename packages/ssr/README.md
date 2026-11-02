@@ -19,7 +19,7 @@ no doctype, no `<html>`, no `<head>`, no state script, no status and no headers.
 `renderExoPage` is the rest of the response.
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_TEXT, createExoMachine, createExoSchema, exoPorts, withExoWire } from '@exodra/core';
 import { renderExoPage, EXO_SSR_RESPONSE } from '@exodra/ssr';
 import type { TExoStrNode } from '@exodra/string';
 
@@ -36,9 +36,9 @@ const appSchema = createExoSchema(AppPorts, b => {
         main.el('h1', null, h1 => { h1.textPort(AppPorts.title); });
     });
 });
-// The builder's type argument names the exonode.
-const appBuilder = createExoMachineBuilder<TExoStrNode, { title: string }>(appSchema);
-appBuilder.wire((c, params) => {
+// The machine's type argument names the exonode.
+const appBase = createExoMachine<TExoStrNode, { title: string }>(appSchema);
+const App = withExoWire(appBase, (c, params) => {
     // The request, reached the ordinary way: it is a context, provided by
     // `renderExoPage` and read with `inject`, anywhere in the tree.
     const ssr = c.inject(EXO_SSR_RESPONSE)!;
@@ -49,7 +49,6 @@ appBuilder.wire((c, params) => {
 
     c.text(AppPorts.title, params.title);
 });
-const App = appBuilder.done();
 
 // In the request handler. `renderExoPage(machine, options?)` — there is no
 // instance count: it renders ONE root, and rows that vary are a list inside it.

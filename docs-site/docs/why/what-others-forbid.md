@@ -33,7 +33,7 @@ way to write a component, so the framework's own documentation begins with a
 bundler.
 
 **Here.** A component is plain function calls —
-`createExoSchema(build)` and `createExoMachineBuilder(schema)` — so there is nothing to compile. Two pages in
+`createExoSchema(build)` and `createExoMachine(schema)` with its decorators — so there is nothing to compile. Two pages in
 `packages/examples/no-build/` run a real application with nothing installed and
 nothing bundled: `esm.html` reaches the three packages by **bare name** through
 an `importmap`, a browser feature; `global.html` loads three `<script src>` IIFE
@@ -67,7 +67,7 @@ central algorithm, and there is no interface anybody outside it can implement.
 **Here.** The reconciler is not part of the backend at all. It is a free function,
 `reconcileExoOrder(kids, shown, keys, want, build)`, which a transition calls over two
 doors every exonode has — `c.childList(port)` to place a row and
-`c.build(component, index)` to make one
+`c.build(component, params)` to make one
 (`packages/list-reconcile/src/reconcileExoOrder.ts`). It is handed the order shown
 and the order wanted and returns the new order shown, so the machine keeps that in
 its own state. A second strategy is a second function over the same doors, with no
@@ -123,7 +123,7 @@ point:
 
 ```ts no-check
 // packages/dom/src/dom/types/TExoDomChild.ts — `mount`/`unmount` are called blindly
-const block = c.build(DETAILS, i);
+const block = c.build(DETAILS);
 exoNodeDom(block).unmount = NOTHING;   // keep my subscriptions, I am coming back
 ```
 

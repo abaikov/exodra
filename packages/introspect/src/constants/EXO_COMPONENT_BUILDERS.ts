@@ -1,4 +1,1 @@
-export const EXO_COMPONENT_BUILDERS: readonly string[] = [
-    'createExoMachineBuilder',
-    'createExoStatic',
-];
+export const EXO_COMPONENT_BUILDERS: readonly string[] = ['createExoMachine', 'createExoStatic'];

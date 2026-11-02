@@ -74,11 +74,11 @@ const ROW = createExoTestMachine(
         return { id, label, click };
     },
     (P): TExoMachineInitialState<TRowSurface> =>
-        (c, i) => {
-            c.attr(P.id, i);
-            c.text(P.label, 'row ' + i);
+        (c, at) => {
+            c.attr(P.id, at);
+            c.text(P.label, 'row ' + at);
             c.on(P.click, () => {
-                clicked.push(i);
+                clicked.push(at as number);
             });
         }
 );
@@ -167,10 +167,19 @@ const shellOf = (build: TBuild, count: number, behind = 0) =>
         build,
         (P): TExoMachineInitialState<TExoChildrenWiring<Event, Element>> =>
             (c) => {
-                c.list(P.rows, ROW, count);
+                c.list(
+                    P.rows,
+                    ROW,
+                    Array.from({ length: count }, (_, at) => at)
+                );
                 // DOCUMENT ORDER: `exoChildListStartAfter` refuses by name when a child list behind
                 // another one is filled first, and an empty list is still a fill.
-                if (P.next !== null) c.list(P.next, ROW, behind);
+                if (P.next !== null)
+                    c.list(
+                        P.next,
+                        ROW,
+                        Array.from({ length: behind }, (_, at) => at)
+                    );
             }
     );
 
@@ -338,7 +347,7 @@ describe('two child lists with a static between them', () => {
         expect(parent.innerHTML).toBe(before);
         expect(parent.querySelector('hr')).toBe(hr);
         // Three rows in document order: two in front of the separator, one behind it — and the one
-        // behind it is index 0 of its OWN child list, which is what says the two were adopted
+        // behind it is position 0 of its OWN child list, which is what says the two were adopted
         // separately rather than as one run of five.
         expect(shown(parent)).toBe('0,1,0');
         const card = parent.querySelector('.card') as HTMLElement;
@@ -364,8 +373,8 @@ describe('two child lists with a static between them', () => {
             buildSeparated,
             (P): TExoMachineInitialState<TExoChildrenWiring<Event, Element>> =>
                 (c) => {
-                    c.list(P.next, ROW, 1);
-                    c.list(P.rows, ROW, 2);
+                    c.list(P.next, ROW, [0]);
+                    c.list(P.rows, ROW, [0, 1]);
                 }
         );
         const parent = serve(BACKWARDS);

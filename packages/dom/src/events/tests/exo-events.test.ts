@@ -56,7 +56,7 @@ type TNode = {
 
 /** The same, for the one wire in this file that builds a LIST of rows rather than filling one. */
 type TListing = {
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 function buildRow(b: TExoSchemaCursor) {
@@ -124,9 +124,8 @@ const rowWith = (make: (ports: TRowPorts) => TExoMachineInitialState<TNode>) =>
 
 /**
  * `n` INSTANCES OF ONE ROW, AS A LIST — which is how an application makes several instances of a
- * component, and therefore how the cases below make them. `c.list` hands row `i` the number `i` as
- * its index, so every wire here still reads its position as `i` and every case still asks its
- * question of a row that knows which one it is.
+ * component, and therefore how the cases below make them. Row `at` is handed the number `at` as
+ * its params, so every case still asks its question of a row that knows which one it is.
  *
  * THE `<ul>` IS NOT DECORATION: a children port has to live on an element. It is part of the markup
  * BOTH backends print, so the parity assertions still compare like with like — and it sits inside
@@ -143,7 +142,11 @@ const listOf = <TPorts>(row: TExoMachine<TNode, TPorts>, n: number) => {
         },
         (P): TExoMachineInitialState<TListing> =>
             (c) => {
-                c.list(P.rows, row, n);
+                c.list(
+                    P.rows,
+                    row,
+                    Array.from({ length: n }, (_, at) => at)
+                );
             }
     );
 };
@@ -182,9 +185,9 @@ const BUMP: TExoEventHandler<Event, Element> = function (_event, subject) {
 describe('handlers that read their subject', () => {
     it('serve every row from ONE object, under the direct strategy', () => {
         const items = [item(), item(), item()];
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, TOGGLE_DONE, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, TOGGLE_DONE, items[at as number]);
         });
         const parent = host();
         EXO_BACKEND.render(listOf(ROW, 3), parent);
@@ -200,9 +203,9 @@ describe('handlers that read their subject', () => {
 
     it('print nothing on the server, and leave the two backends byte-identical', () => {
         const items = [item(), item()];
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, TOGGLE_DONE, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, TOGGLE_DONE, items[at as number]);
         });
         const parent = host();
         const LIST = listOf(ROW, 2);
@@ -305,7 +308,7 @@ describe('handlers that read their subject', () => {
  * What it costs to drop it is not politeness. "A closure already knows its row" is only true of a
  * closure BUILT for that row, so every caller with per-instance handlers had to allocate one
  * function per handler per instance to carry which instance a dispatch was about —
- * `createExoMachineBuilder`'s wire said exactly that in a comment. A function that is TOLD its row can be a
+ * a machine's wire said exactly that in a comment. A function that is TOLD its row can be a
  * module-level constant.
  *
  * These cases pin the three facts a caller needs: each instance's own subject arrives, a fill
@@ -330,9 +333,9 @@ describe('a function handler', () => {
     it('is told which row it fired for, so ONE module-level function serves every row', () => {
         told.length = 0;
         const items = [item(), item(), item()];
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, RECORD, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, RECORD, items[at as number]);
         });
         const parent = host();
         EXO_BACKEND.render(listOf(ROW, 3), parent);
@@ -391,9 +394,9 @@ describe('a function handler', () => {
     it('is served the same way after hydration, out of the same setter object', () => {
         told.length = 0;
         const items = [item(), item()];
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, RECORD, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, RECORD, items[at as number]);
         });
         const LIST = listOf(ROW, 2);
         const parent = host();
@@ -413,9 +416,9 @@ describe('the delegated strategy', () => {
     it('serves a thousand rows from one listener on the root', () => {
         const items: TItem[] = [];
         for (let i = 0; i < 1000; i++) items.push(item());
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, TOGGLE_DONE, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, TOGGLE_DONE, items[at as number]);
         });
         const parent = host();
         const dispose = DELEGATED_BACKEND.render(listOf(ROW, 1000), parent);
@@ -435,9 +438,9 @@ describe('the delegated strategy', () => {
 
     it('produces the same markup as the direct strategy', () => {
         const items = [item(), item()];
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, TOGGLE_DONE, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, TOGGLE_DONE, items[at as number]);
         });
         const direct = host();
         const delegated = host();
@@ -903,9 +906,9 @@ describe('a page must behave the same under either pack', () => {
 describe('hydration', () => {
     it('attaches the delegated strategy to markup the server printed', () => {
         const items = [item(), item(), item()];
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, TOGGLE_DONE, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, TOGGLE_DONE, items[at as number]);
         });
         const parent = host();
         const LIST = listOf(ROW, 3);
@@ -923,9 +926,9 @@ describe('hydration', () => {
 
     it('attaches the direct strategy to markup the server printed', () => {
         const items = [item(), item()];
-        const ROW = rowWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, TOGGLE_DONE, items[i]);
+        const ROW = rowWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + at);
+            c.on(P.click, TOGGLE_DONE, items[at as number]);
         });
         const parent = host();
         const LIST = listOf(ROW, 2);

@@ -92,8 +92,18 @@ hears all of them. The container can be a `<form>`, a `<fieldset>` or a plain `<
 fields do not need a `<form>` — and a single field can carry its own event port.
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoHandlers,
+    withExoWire,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
@@ -125,13 +135,11 @@ const signupSchema = createExoSchema(SignupPorts, (b) => {
 
 type TSignup = { name: string; age: number };
 
-const signupBuilder = createExoMachineBuilder<TExoDomNode, unknown, TSignup>(signupSchema);
-type TSignupNode = TExoMachineBuilderNode<typeof signupBuilder>;
-
-signupBuilder.createInitialState(() => ({ name: '', age: Number.NaN }));
-signupBuilder.wire((c) => {
-    c.attr(SignupPorts.send, true);
+const signupBaseMachine = createExoMachine(signupSchema, {
+    createInitialState: (_c: TExoDomNode): TSignup => ({ name: '', age: Number.NaN }),
 });
+type TSignupNode = TExoMachineNodeOf<typeof signupBaseMachine>;
+
 const takeName = (c: TSignupNode, name: string): void => {
     c.state.name = name;
     c.text(SignupPorts.greeting, name === '' ? '' : `Hello, ${name}`);
@@ -142,14 +150,24 @@ const takeAge = (c: TSignupNode, age: number): void => {
     c.text(SignupPorts.error, Number.isNaN(age) ? 'Age has to be a number' : '');
     c.attr(SignupPorts.send, c.state.name === '' || Number.isNaN(age));
 };
-signupBuilder.on(SignupPorts.input, (c, event) => {
-    const field = event.target as HTMLInputElement;
-    if (field.name === 'name') takeName(c, readExoControlValue(field) as string);
-    else if (field.name === 'age') takeAge(c, readExoControlValue(field) as number);
-});
+const signupMachine = composeExoMachine(
+    signupBaseMachine,
+    (m) =>
+        withExoWire(m, (c) => {
+            c.attr(SignupPorts.send, true);
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(SignupPorts.input, (c, event) => {
+                const field = event.target as HTMLInputElement;
+                if (field.name === 'name') takeName(c, readExoControlValue(field) as string);
+                else if (field.name === 'age') takeAge(c, readExoControlValue(field) as number);
+            });
+        })
+);
 
 const backend = withExoCompiler(new ExoDomBackend());
-backend.render(signupBuilder.done(), document.getElementById('root') as HTMLElement);
+backend.render(signupMachine, document.getElementById('root') as HTMLElement);
 ```
 
 The rules this follows:
@@ -161,11 +179,11 @@ The rules this follows:
 - **Identify the field** by `event.target.name`, as above, or by comparing `event.target`
   with the element behind a ref port declared with `exoRefPortKind<HTMLInputElement>()`,
   read once in `createInitialState` and kept in the state: `c.portNode(SignupPorts.email)`.
-- **State lives in `c.state`**, typed by the builder's third type argument,
-  `createExoMachineBuilder<TExoDomNode, unknown, TState>`. On a builder typed with
-  `TExoDomNode` the handler's `event` is an `Event`.
-- **A function written outside the builder names its instance** as
-  `TExoMachineBuilderNode<typeof signupBuilder>`: the builder's node type with its
+- **State lives in `c.state`**, typed by what the `createInitialState` option returns
+  (or by the third type argument, `createExoMachine<TExoDomNode, unknown, TState>`).
+  On a machine typed with `TExoDomNode` the handler's `event` is an `Event`.
+- **A function written outside the decorators names its instance** as
+  `TExoMachineNodeOf<typeof signupBaseMachine>`: the machine's node type with its
   `state`, so `c.state.age` is typed there as it is inside a handler.
 - **`focus` and `blur` do not bubble.** Validate-on-leave listens for `focusout` on the
   container.
@@ -176,7 +194,7 @@ A form that needs its values only when it is sent registers nothing per field: a
 on each control, one read in the submit handler.
 
 ```ts
-import { EXO_PORT_EVENT, EXO_PORT_REF, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_EVENT, EXO_PORT_REF, createExoMachine, createExoSchema, exoPorts, withExoHandlers } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValues } from '@exodra/forms';
 
@@ -196,13 +214,13 @@ const contactSchema = createExoSchema(ContactPorts, (b) => {
 });
 const CONTACT_FIELDS = [ContactPorts.name, ContactPorts.age];
 
-const contactBuilder = createExoMachineBuilder<TExoDomNode>(contactSchema);
-contactBuilder.on(ContactPorts.submit, (c, event) => {
-    event.preventDefault();
-    const [name, age] = readExoControlValues(c, CONTACT_FIELDS);
-    console.log({ name, age });
+export const contactMachine = withExoHandlers(createExoMachine<TExoDomNode>(contactSchema), (on) => {
+    on(ContactPorts.submit, (c, event) => {
+        event.preventDefault();
+        const [name, age] = readExoControlValues(c, CONTACT_FIELDS);
+        console.log({ name, age });
+    });
 });
-export const Contact = contactBuilder.done();
 ```
 
 It reads the controls that are on the page **when it is called**. On a served page, what a
@@ -219,17 +237,17 @@ radio group or a single `<select>` itself, so nothing remembers the previous mem
 mark the person moved by hand is simply overridden. A `chosen` that is not in `values`
 writes `false` to every port.
 
-- **In `createInitialState`** it sets the starting mark, and the server prints it
+- **In the `createInitialState` option** it sets the starting mark, and the server prints it
   (`checked=""`, `selected`).
 - **In a transition** it sets the mark when the application decides. A person's own click
   moves it natively, with nothing to write.
 - **In a wire**, for a group whose value belongs to a parent: the group machine's
-  `groupBuilder.wire((c, chosen) => writeExoChoice(c, GROUP_RADIOS, VALUES, chosen))`, built by
-  the parent with `c.build(Group, i, chosen)` and re-run with `wireExoNode(node, Group, next)`. The package
+  `withExoWire(m, (c, chosen) => writeExoChoice(c, GROUP_RADIOS, VALUES, chosen))`, built by
+  the parent with `c.build(groupMachine, chosen)` and re-run with `wireExoNode(node, groupMachine, next)`. The package
   README has the complete sample.
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachine, createExoSchema, exoPorts, withExoHandlers } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { writeExoChoice } from '@exodra/forms';
 
@@ -260,14 +278,16 @@ const planSchema = createExoSchema(PlanPorts, (b) => {
     });
 });
 
-const planBuilder = createExoMachineBuilder<TExoDomNode>(planSchema);
-planBuilder.createInitialState((c) => {
-    writeExoChoice(c, PLAN_OPTIONS, PLANS, 'team');
+const planBaseMachine = createExoMachine(planSchema, {
+    createInitialState: (c: TExoDomNode) => {
+        writeExoChoice(c, PLAN_OPTIONS, PLANS, 'team');
+    },
 });
-planBuilder.on(PlanPorts.reset, (c) => {
-    writeExoChoice(c, PLAN_OPTIONS, PLANS, 'free');
+export const planMachine = withExoHandlers(planBaseMachine, (on) => {
+    on(PlanPorts.reset, (c) => {
+        writeExoChoice(c, PLAN_OPTIONS, PLANS, 'free');
+    });
 });
-export const Plan = planBuilder.done();
 ```
 
 A radio group is the same code with `attrPort(port, 'checked')` on each `<input type="radio">` sharing
@@ -290,12 +310,14 @@ const adultAge: TExoControlRule = (value) =>
     typeof value === 'number' && value >= 18 ? null : 'Must be 18 or older';
 const RULES = [requiredName, adultAge];
 
-signupBuilder.on(SignupPorts.submit, (c, event) => {
-    event.preventDefault();
-    const values = readExoControlValues(c, FIELDS);
-    const errors = checkExoControlValues(values, RULES);
-    setExoControlErrors(c, FIELDS, errors);
-    if (errors.every((error) => error === null)) send(c, values);
+const signupMachine = withExoHandlers(signupBaseMachine, (on) => {
+    on(SignupPorts.submit, (c, event) => {
+        event.preventDefault();
+        const values = readExoControlValues(c, FIELDS);
+        const errors = checkExoControlValues(values, RULES);
+        setExoControlErrors(c, FIELDS, errors);
+        if (errors.every((error) => error === null)) send(c, values);
+    });
 });
 ```
 
@@ -334,18 +356,20 @@ container listener does not hear it; give each control its own
 
 When something outside a row needs the values of fields inside the rows, the **parent**
 holds the state, listens once on the container, and passes values down as the params of the
-row's wire: `c.build(CartRow, i, params)` builds the row, and `wireExoNode(node, CartRow, params)`
+row's wire: `c.build(cartRowMachine, params)` builds the row, and `wireExoNode(node, cartRowMachine, params)`
 from `@exodra/core` re-runs its wire on the live row. A row's wire may only write ports.
 
 ```ts no-check
-const setQuantity = (c: TExoMachineBuilderNode<typeof cartBuilder>, at: number, quantity: number): void => {
+const setQuantity = (c: TExoMachineNodeOf<typeof cartBaseMachine>, at: number, quantity: number): void => {
     c.state.quantities[at] = quantity;
-    wireExoNode(c.state.rows[at], CartRow, { price: PRICES[at], quantity });
+    wireExoNode(c.state.rows[at], cartRowMachine, { price: PRICES[at], quantity });
     c.text(CartPorts.sum, sumOf(c.state.quantities));
 };
-cartBuilder.on(CartPorts.input, (c, event) => {
-    const field = event.target as HTMLInputElement;
-    setQuantity(c, Number(field.dataset.row), readExoControlValue(field) as number);
+const cartMachine = withExoHandlers(cartBaseMachine, (on) => {
+    on(CartPorts.input, (c, event) => {
+        const field = event.target as HTMLInputElement;
+        setQuantity(c, Number(field.dataset.row), readExoControlValue(field) as number);
+    });
 });
 ```
 

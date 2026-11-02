@@ -62,11 +62,11 @@ describe('renderExoStrInstance after a wire throws', () => {
             c.text(P.label, 'never seen');
             throw new Error('wire exploded');
         });
-        const OK = boxWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
+        const OK = boxWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + String(at));
         });
         const THREE: TExoStrMachine = createExoTestMachine(buildShell, (P) => (c: TExoStrNode) => {
-            c.list(P.slot, OK, 3);
+            c.list(P.slot, OK, [0, 1, 2]);
         });
 
         for (let attempt = 0; attempt < 5; attempt++) {
@@ -131,12 +131,13 @@ describe('the teardown a wire owns during a server render', () => {
 
     it('runs them for every child instance, each one only its own', () => {
         const ran: number[] = [];
-        const ROW = boxWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
-            c.onTeardown(() => ran.push(i));
+        const ROW = boxWith((P) => (c, params) => {
+            const at = params as number;
+            c.text(P.label, 'row ' + at);
+            c.onTeardown(() => ran.push(at));
         });
         const THREE: TExoStrMachine = createExoTestMachine(buildShell, (P) => (c: TExoStrNode) => {
-            c.list(P.slot, ROW, 3);
+            c.list(P.slot, ROW, [0, 1, 2]);
         });
 
         const html = EXO_STR.render(THREE);
@@ -158,19 +159,21 @@ describe('the schema and its pieces, through the package barrel', () => {
     // rather than needing a second compiler that can disagree about port numbering. Every import is
     // from `./index`, so a dropped export stops the file compiling.
     it('renders byte-identically to the entry point', () => {
-        const ROW = boxWith((P) => (c, i) => {
-            c.text(P.label, 'row ' + i);
+        const ROW = boxWith((P) => (c, at) => {
+            c.text(P.label, 'row ' + String(at));
         });
 
         // The cached schema the entry point uses, and a fresh compile of the same declaration.
         const cached = barrel.exoStrSchemaOf(ROW, EXO_STR);
         const fresh = barrel.compileExoStrSchema(ROW.declaration, EXO_STR);
 
-        // The entry point renders ONE instance and hands it index `0`.
-        expect(barrel.renderExoStrInstance(cached, ROW, 0)).toBe(EXO_STR.render(ROW));
-        // …and for a row the entry point never renders, where a second compiler's numbering parts.
-        expect(barrel.renderExoStrInstance(fresh, ROW, 1)).toBe(
-            barrel.renderExoStrInstance(cached, ROW, 1)
+        // The entry point renders ONE instance and hands it the params it was given.
+        expect(barrel.renderExoStrInstance(cached, ROW, null, 0)).toBe(
+            EXO_STR.render(ROW, null, 0)
+        );
+        // …and for params the entry point never rendered, where a second compiler's numbering parts.
+        expect(barrel.renderExoStrInstance(fresh, ROW, null, 1)).toBe(
+            barrel.renderExoStrInstance(cached, ROW, null, 1)
         );
         expect(cached.portCount).toBe(fresh.portCount);
     });
@@ -239,14 +242,14 @@ describe('driving a port by hand', () => {
         const ROW = createExoTestMachine(
             buildBox,
             (P): TExoMachineInitialState<TDriving> =>
-                (c, i) => {
+                (c, at) => {
                     const p = c.fillDoors();
-                    p.text(P.label, 'row ' + i);
+                    p.text(P.label, 'row ' + String(at));
                     seen.push(p);
                 }
         );
         const THREE: TExoStrMachine = createExoTestMachine(buildShell, (P) => (c: TExoStrNode) => {
-            c.list(P.slot, ROW, 3);
+            c.list(P.slot, ROW, [0, 1, 2]);
         });
 
         const html = EXO_STR.render(THREE);

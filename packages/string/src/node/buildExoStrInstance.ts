@@ -8,13 +8,12 @@ import type { TExoStrMachine } from './types/TExoStrMachine';
 export function buildExoStrInstance(
     schema: TExoStrSchema,
     machine: TExoStrMachine,
-    index: number,
     context: TExoContextFrame | null,
     params?: unknown
 ): TExoStrNode {
     const node = schema.createInstance(schema, context);
     try {
-        armExoNode<TExoStrNode>(node, machine, index, params);
+        armExoNode<TExoStrNode>(node, machine, params);
     } catch (error) {
         disposeExoStrInstance(node);
         throw error;

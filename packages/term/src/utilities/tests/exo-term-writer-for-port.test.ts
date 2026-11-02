@@ -8,13 +8,14 @@
 import type { TExoWiring, TExoAttrPort, TExoMachineInitialState } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 import { ExoTermBackend } from '../../backend/ExoTermBackend';
+import type { TExoTermScreen } from '../../rendering/types/TExoTermScreen';
 import { createExoTestMachine } from '@exodra/test-utils';
 
 /** ONE BACKEND FOR THE FILE, AT MODULE LOAD — the schema cache is keyed on it by pointer. */
 const BACKEND = new ExoTermBackend();
 
 /**
- * The five values a port can be handed, one per rendered row, so the whole rule prints as one
+ * The five values a port can be handed, one per rendered root, so the whole rule prints as one
  * artefact and a divergence in any case is one comparison rather than five.
  *
  * The backends this is derived from, on a `class` port:
@@ -37,8 +38,8 @@ const CLASS_PORT = createExoTestMachine(
         return { cls };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, row) => {
-            c.attr(P.cls, CASES[row]);
+        (c, value) => {
+            c.attr(P.cls, value);
         }
 );
 
@@ -52,14 +53,25 @@ const ATTR_PORT = createExoTestMachine(
         return { flag };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, row) => {
-            c.attr(P.flag, CASES[row]);
+        (c, value) => {
+            c.attr(P.flag, value);
         }
 );
 
+const renderCases = (render: (value: unknown) => TExoTermScreen): TExoTermScreen => {
+    const screens = CASES.map(render);
+    return {
+        roots: screens.map((screen) => screen.roots[0]),
+        text: (): string => screens.map((screen) => screen.text()).join('\n'),
+        dispose: (): void => {
+            for (const screen of screens) screen.dispose();
+        },
+    };
+};
+
 describe('an attribute port, filled with each of the five values a wire can hand it', () => {
     it('writes a class port the way a `className` assignment would, and never the word "null"', () => {
-        const screen = BACKEND.renderScreen(CLASS_PORT, CASES.length);
+        const screen = renderCases((value) => BACKEND.renderScreen(CLASS_PORT, 1, value));
 
         // THE THREE CASES THAT REGRESS if `class` is routed through the `setAttribute` rules:
         // `null` prints `class="null"`, `undefined` prints `class="undefined"`, `true` prints
@@ -104,7 +116,7 @@ describe('an attribute port, filled with each of the five values a wire can hand
         // The `class` writer was split out of this one, and the split is only worth anything if
         // this branch still REMOVES: `disabled="false"` is a disabled control, so `false` must
         // leave no attribute.
-        const screen = BACKEND.renderScreen(ATTR_PORT, CASES.length);
+        const screen = renderCases((value) => BACKEND.renderScreen(ATTR_PORT, 1, value));
 
         expect(screen.text()).toBe(
             ['div data-flag="card wide"', 'div', 'div', 'div', 'div data-flag=""'].join('\n')

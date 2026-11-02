@@ -28,7 +28,8 @@ npm install @exodra/core
 | the **machine** | once per instance    | the code that fills those ports, through a backend's **exonode**                      |
 
 `TExoMachine` — `{ declaration, forms, createInitialState, wire?, effects, handlers }` — is the
-whole shape and the only one. It is plain data: `createExoMachineBuilder(schema)` assembles it,
+whole shape and the only one. It is plain data: `createExoMachine(schema)` starts it, the
+`withExo*` decorators each return a new machine with one more part,
 and the JSX compiler emits the same object literal directly, with `EXO_NO_EFFECTS` and
 `EXO_NO_HANDLERS` standing in for the empty lists. `createInitialState` runs once per instance
 and what it returns is what the instance keeps; `wire` is the re-runnable transition that
@@ -66,17 +67,14 @@ and never looks anything up.
 import {
     EXO_PORT_ATTR,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    createExoMachine,
     createExoSchema,
     exoPorts,
+    withExoWire,
 } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
 
 type TRow = { readonly id: string; readonly title: string };
-
-/** What a row reads, by its POSITION. An initial state is handed an exonode and an index;
- *  there are no props anywhere, so the data is reached through the index. */
-const ROWS: TRow[] = [];
 
 const RowPorts = exoPorts({ id: EXO_PORT_ATTR, label: EXO_PORT_TEXT });
 
@@ -88,21 +86,24 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
         });
     });
 });
-const rowBuilder = createExoMachineBuilder<TExoMachineNode, unknown, TRow>(rowSchema);
-rowBuilder.createInitialState((_c, index) => ROWS[index]);
-rowBuilder.wire((c) => {
+const rowBase = createExoMachine(rowSchema, {
+    createInitialState: (_c: TExoMachineNode, row: TRow) => row,
+});
+export const Row = withExoWire(rowBase, (c) => {
     c.attr(RowPorts.id, c.state.id);
     c.text(RowPorts.label, c.state.title);
 });
-export const Row = rowBuilder.done();
 ```
 
 `exoPorts` declares the ports up front — a name and a kind each — and numbers them in
 declaration order. `createExoSchema(RowPorts, build)` hands back a schema whose `.ports`
 is that same `RowPorts` object; the build callback only places each port where it
-stands. `createExoMachineBuilder` is handed the schema, and the wire names its ports
-through `RowPorts`. That makes the order structural — a wire cannot be written before
-the ports it fills exist.
+stands. `createExoMachine` is handed the schema and, as an option, the
+`createInitialState` the row keeps its record from; its generics are inferred from that
+function, so `c.state` is a `TRow` in the wire. `withExoWire(rowBase, wire)` returns a new
+machine with that wire and leaves `rowBase` unchanged; the wire names its ports through
+`RowPorts`. That makes the order structural — a wire cannot be written before the ports it
+fills exist.
 
 The three fill doors are `attr`, `text` and `html` (`TExoFillDoors`), one per kind
 of port a value can be put in. There is no single `set`.
@@ -141,7 +142,7 @@ other; they agree because both index their prepared schemas by these numbers.
 ## `createExoSchema` and `createExoStatic`
 
 -   `createExoSchema(Ports, build)` — the schema half alone, which
-    `createExoMachineBuilder(schema)` builds a machine over; `Ports` comes from `exoPorts`
+    `createExoMachine(schema)` builds a machine over; `Ports` comes from `exoPorts`
     and the schema's `.ports` is that object. Two alternative forms take the build
     callback alone — returning a record of ports, or naming each port where it stands —
     and are shown under [Alternative forms](#alternative-forms). The return-a-record
@@ -214,39 +215,52 @@ position would make naming unusable from JavaScript.
 
 ## The initial state and the wire
 
-What runs once per instance is the machine's `createInitialState`:
+What runs once per instance is the machine's `createInitialState`, handed to
+`createExoMachine` as an option — `createExoMachine(schema, { createInitialState })`:
 
 ```ts no-check
 type TExoMachineInitialState<TWiring, TValue = unknown, TParams = unknown> = (
     enode: TWiring,
-    index: number,
     params: TParams
 ) => TValue;
 ```
 
-`builder.wire((c, params) => …)` is the other half: a transition that writes ports only and may run
-again with new `params`, so it keeps no state of its own.
+The machine's generics are inferred from it — annotate the exonode and `params` — and
+`c.state` is then typed in every decorator: `withExoWire`, `withExoHandlers`, `withExoEffects`
+and `withExoTransitions`. Writing `createExoMachine<TWiring, TParams, TState>(schema, { … })`
+still works.
+
+`withExoWire(machine, (c, params) => …)` is the other half: a transition that writes ports only
+and may run again with new `params`, so it keeps no state of its own. A machine has one wire;
+`withExoWire` on a machine that already has one throws `EXO0101`.
+
+The decorators are applied in order by `composeExoMachine(base, …steps)`, each step a
+`(m) => withExo…(m, …)`. `withExoTransitions(m, { name: (c, a, b) => … })` takes a dictionary
+of at most two data arguments per transition and puts callables on `machine.transitions`;
+`machine.overrides({ name: alternative })` builds the table a caller swaps one in with, and
+an unknown name throws `EXO0102`. A plain function over `TExoMachineNodeOf<typeof base>` is
+what a machine calls on itself.
 
 **One declaration, every backend** — generic over the exonode and nothing else.
-`createExoMachineBuilder<TWiring>` requires `TWiring extends TExoMachineNode`, so a machine
+`createExoMachine<TWiring>` requires `TWiring extends TExoMachineNode`, so a machine
 for every backend names `TExoMachineNode` (the calls every backend has: `attr`, `text`,
 `html`, `on`, `provide`, `inject`, `onTeardown`, `readState`) or
 `TExoChildrenWiring & TExoMachineNode` (that plus `one`, `list`, `build`), all exported from here.
 
-**There are no props.** The initial state takes the exonode, an `index` and the wire's
-`params` — a list row bound to one record for life can take that record there. The `index`
-is the instance's position **at arming time and nothing more** — a reconciler moves
-nodes, it does not re-arm them, so a component that needs a live position is
-told it by a transition. A row that must differ from its neighbours reads what it needs
-out of state keyed by that index.
+**There are no props.** The initial state takes the exonode and the wire's `params` —
+a list row bound to one record for life can take that record there: `c.list(port, Row, rows)`
+arms row i with `rows[i]`, and `c.build(Row, item)` arms one child with `item`. An instance is
+told no position — a reconciler moves nodes, it does not re-arm them, so a component that
+needs a live position is told it by a transition.
 
 **What an initial state RETURNS is what the instance keeps.** The value lands in
-`enode.state` and is read back with `enode.readState<T>()`. `c.one` and
+`enode.state`; `enode.readState<T>()` takes no argument and reads the same value back, so
+prefer `c.state`. `c.one` and
 `c.build` both hand back **the child's exonode**, so a parent reaches a child's
 transitions through them.
 
-**Watching a source is an effect, not a door.** `builder.effect((c) => { show(c); return
-store.subscribe(() => show(c)); })` draws through a transition, which writes with the
+**Watching a source is an effect, not a door.** `withExoEffects(m, (effect) => { effect((c) => {
+show(c); return store.subscribe(() => show(c)); }); })` draws through a transition, which writes with the
 fill doors, and returns the unsubscribe the instance runs when it ends — so one
 machine serves the browser, the server and the terminal. There is no `c.bind`, and no
 backend decides what a source is.
@@ -263,12 +277,12 @@ port is the one port adoption writes outright: attaching it is the content of
 hydration.
 
 A backend's own exonode type is what a machine names when it touches that backend
-alone: `createExoMachineBuilder<TExoDomNode>` for `@exodra/dom`, `<TExoStrNode>` for
+alone: `createExoMachine<TExoDomNode>` for `@exodra/dom`, `<TExoStrNode>` for
 `@exodra/string`, `<TExoTermNode>` for `@exodra/term`; hydration reuses
 the DOM one. Those types name **one backend's exonode** — a
 type, not a class; the object an initial state is handed IS that instance's own record, and
 the composed backend is its prototype — and `TExoMachine` is contravariant in its
-exonode, so a machine built as `createExoMachineBuilder<TExoDomNode>` is browser-only and
+exonode, so a machine built as `createExoMachine<TExoDomNode>` is browser-only and
 cannot be handed to the server's renderer. Reach for one only when the machine
 genuinely touches a member no server backend has (`c.childList`,
 `c.openChildList`, a `c.portNodeReader()` whose nodes are `Element`s).
@@ -358,10 +372,11 @@ to `constructor=""`. It is `hasOwnProperty.call` and not `Object.hasOwn` because
 
 ## Machines: the imperative half is here, the declarative half is not
 
-`createExoMachineBuilder(schema)` is here, with `armExoNode`, `stopExoEffects` and
-the `TExoMachine*` types that spell them. You call `wire`, `effect`,
-`on`, `transition` and `done` on what it returns; a handler reads its state with
-`c.readState(K)` and writes its port with `c.attr(port, value)` or
+`createExoMachine(schema)` is here, with `composeExoMachine`, `withExoTransitions`,
+`withExoWire`, `withExoHandlers`, `withExoEffects`, `armExoNode`, `stopExoEffects` and
+the `TExoMachine*` types that spell them. Each decorator takes a machine and returns a new one
+with its part added, never touching its input; a handler reads its state as
+`c.state` and writes its port with `c.attr(port, value)` or
 `c.text(port, value)`, and nothing is derived from anything. There are no props
 and no seed: a value that belongs to one instance arrives as a transition
 argument. `wire` is the re-runnable transition that writes ports from `params`.
@@ -384,21 +399,21 @@ connectExoNode(row, Row);
 Only machine effects are covered. A subscription an initial state registered through
 `c.onTeardown` lives in a closure and cannot be started again.
 
-One effect at a time: `builder.effect(...)` hands back the effect's handle, `c.stopEffect(handle)`
+One effect at a time: inside `withExoEffects`, `effect(...)` hands back the effect's handle, `c.stopEffect(handle)`
 ends that one and leaves the rest running, and `c.restartEffect(handle)` starts it again. The
 effect is off when `stopEffect` returns even if its own stop restarted it on the way out.
 
 **`withExoComputedMachine`, `exoTransition`, `exoWiring` and everything that
 compiles a field into a slot are [`@exodra/computed`](https://github.com/abaikov/exodra/blob/master/packages/computed/README.md),
-and this package exports none of them.** Say `builder.field(0)` and `builder.derive(port,
-[field], by)` instead of writing the port, and a page pays for the inversion
+and this package exports none of them.** Say `b.field(0)` and `b.derive(port,
+[field], by)` inside `withExoComputedMachine(machine, (b) => …)` instead of writing the port, and a page pays for the inversion
 table, the pending word and the commit walk — which is exactly what a page
 that never derives anything must not pay. The split is what makes that
 choosable rather than assumed; `npm run check:computed-shake` is what keeps it
 true.
 
-The direction is one way. `@exodra/computed` names `TExoMachineBuilder`,
-`TExoMachine`, `TExoMachineWiring` and `TExoMachineEffect` from here;
+The direction is one way. `@exodra/computed` names `TExoMachine`,
+`TExoMachineNode`, `TExoMachineInitialState` and `TExoMachineEffect` from here;
 nothing here names anything of its, and `.dependency-cruiser.cjs` fails the
 build if that reverses.
 

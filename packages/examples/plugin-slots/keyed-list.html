@@ -12,7 +12,7 @@
     <h1 class="page-title">"Rows are matched by key, and the key rules are ours"</h1>
     <p class="page-sub">
         Both panels render the same rows from the same data. The left one is the core's own list —
-        <code>reconcileExoOrder</code> called from a transition, which reconciles by
+        <code>reconcileExoOrder</code> called from an effect, which reconciles by
         <strong>object identity</strong>. The right one opens <code>c.keyedList</code> instead and
         matches rows by <code>item.id</code>.
         <br>
@@ -71,7 +71,15 @@
 }
 </script>
 <script type="module">
-    import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import {
+        composeExoMachine,
+        composeExoPlugins,
+        createExoMachine,
+        createExoSchema,
+        withExoEffects,
+        withExoTransitions,
+        withExoWire,
+    } from '@exodra/core';
     import { EXO_KEYED_LIST_VOCABULARY, reconcileExoOrder } from '@exodra/list-reconcile';
     import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 
@@ -135,22 +143,27 @@
             });
             return { seq, label };
         });
-        const m = createExoMachineBuilder(schema);
-        m.createInitialState(() => ({ stamp: ++panel.built }));
-        m.wire(c => {
-            c.text(schema.ports.seq, '#' + c.state.stamp + ' ');
-        });
-        const setLabel = m.transition((row, item) => {
-            row.text(schema.ports.label, item.label);
-        });
-        return { machine: m.done(), setLabel };
+        const rowMachine = composeExoMachine(
+            createExoMachine(schema, {
+                createInitialState: () => ({ stamp: ++panel.built }),
+            }),
+            m => withExoWire(m, c => {
+                c.text(schema.ports.seq, '#' + c.state.stamp + ' ');
+            }),
+            m => withExoTransitions(m, {
+                setLabel: (row, item) => {
+                    row.text(schema.ports.label, item.label);
+                },
+            }),
+        );
+        return { machine: rowMachine, setLabel: rowMachine.transitions.setLabel };
     };
 
     const IDENTITY_ROW = makeRow(panels.identity);
     const KEYED_ROW = makeRow(panels.keyed);
 
-    const buildWith = (c, ROW) => (item, i) => {
-        const row = c.build(ROW.machine, i);
+    const buildWith = (c, ROW) => item => {
+        const row = c.build(ROW.machine);
         ROW.setLabel(row, item);
         return row;
     };
@@ -164,34 +177,38 @@
         return { rows };
     });
 
-    // Each list draws FIRST and then subscribes, in an effect; the transition is the one place
+    // Each list draws FIRST and then subscribes, in an effect; the show function is the one place
     // that turns the wanted items into rows.
     const IDENTITY_SCHEMA = listSchema();
-    const mIdentity = createExoMachineBuilder(IDENTITY_SCHEMA);
-    mIdentity.createInitialState(c => ({ rows: c.childList(IDENTITY_SCHEMA.ports.rows), shown: [] }));
-    const showIdentityRows = mIdentity.transition(c => {
+    const identityBase = createExoMachine(IDENTITY_SCHEMA, {
+        createInitialState: c => ({ rows: c.childList(IDENTITY_SCHEMA.ports.rows), shown: [] }),
+    });
+    const showIdentityRows = c => {
         const want = identitySrc.getValue();
         c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, buildWith(c, IDENTITY_ROW));
+    };
+    const IDENTITY_APP = withExoEffects(identityBase, effect => {
+        effect(c => {
+            showIdentityRows(c);
+            return identitySrc.onChange(() => showIdentityRows(c));
+        });
     });
-    mIdentity.effect(c => {
-        showIdentityRows(c);
-        return identitySrc.onChange(() => showIdentityRows(c));
-    });
-    const IDENTITY_APP = mIdentity.done();
 
     const KEYED_SCHEMA = listSchema();
-    const mKeyed = createExoMachineBuilder(KEYED_SCHEMA);
-    mKeyed.createInitialState(c => ({
-        list: c.keyedList(KEYED_SCHEMA.ports.rows, item => item.id, buildWith(c, KEYED_ROW), KEYED_ROW.setLabel)
-    }));
-    const showKeyedRows = mKeyed.transition(c => {
+    const keyedBase = createExoMachine(KEYED_SCHEMA, {
+        createInitialState: c => ({
+            list: c.keyedList(KEYED_SCHEMA.ports.rows, item => item.id, buildWith(c, KEYED_ROW), KEYED_ROW.setLabel)
+        }),
+    });
+    const showKeyedRows = c => {
         c.state.list.reconcile(keyedSrc.getValue());
+    };
+    const KEYED_APP = withExoEffects(keyedBase, effect => {
+        effect(c => {
+            showKeyedRows(c);
+            return keyedSrc.onChange(() => showKeyedRows(c));
+        });
     });
-    mKeyed.effect(c => {
-        showKeyedRows(c);
-        return keyedSrc.onChange(() => showKeyedRows(c));
-    });
-    const KEYED_APP = mKeyed.done();
 
     backend.render(IDENTITY_APP, document.getElementById('identity'));
     backend.render(KEYED_APP, document.getElementById('keyed'));

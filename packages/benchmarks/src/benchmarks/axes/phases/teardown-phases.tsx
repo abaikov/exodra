@@ -247,7 +247,12 @@ import { el } from '../../shared/todo-spec';
 import type { Scenario } from '../../../harness';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
 import type { TExoChildList } from '@exodra/dom';
@@ -311,17 +316,6 @@ const NO_ROWS: readonly TPanelRow[] = [];
 const BUILT: TExoDomChild[] = [];
 
 /**
- * WHICH ROW THE PANEL BEING BUILT RIGHT NOW BELONGS TO.
- *
- * A panel is handed its POSITION and nothing else, so the host's reconcile callback writes the item
- * here an instant before `c.build` runs the initial state that reads it. It is a module array
- * indexed by position, sound for the same reason `CURRENT_ROWS` is: a render and the `setValue`
- * that fills it run start to finish synchronously, so nothing can interleave between the write and
- * the read.
- */
-const BUILDING_ROWS: TPanelRow[] = [];
-
-/**
  * THE PANEL — character for character what `toggle.tsx`'s `PANEL` is, and therefore
  * a panel with ZERO disposers: `c.text` writes a string and returns, and the direct event pack
  * registers no listener for teardown (see the header).
@@ -341,13 +335,14 @@ const PANEL_SET_SCHEMA = createExoSchema((b) => {
     });
     return { close, text };
 });
-const mPANEL_SET = createExoMachineBuilder<TExoDomNode>(PANEL_SET_SCHEMA);
-mPANEL_SET.createInitialState((c, i) => {
-    BUILT.push(c.child as TExoDomChild);
-    c.text(PANEL_SET_SCHEMA.ports.text, BUILDING_ROWS[i].text);
-    c.on(PANEL_SET_SCHEMA.ports.close, noop);
+const mPANEL_SET = createExoMachine<TExoDomNode, TPanelRow>(PANEL_SET_SCHEMA, {
+    createInitialState: (c, row) => {
+        BUILT.push(c.child as TExoDomChild);
+        c.text(PANEL_SET_SCHEMA.ports.text, row.text);
+        c.on(PANEL_SET_SCHEMA.ports.close, noop);
+    },
 });
-const PANEL_SET = mPANEL_SET.done();
+const PANEL_SET = mPANEL_SET;
 
 /**
  * WHICH SOURCE THE NEXT RENDER WIRES ITSELF TO — a module variable, read by the host's wire at the
@@ -379,26 +374,35 @@ const HOST_SET_SCHEMA = createExoSchema((b) => {
     });
     return { panels };
 });
-const mHOST_SET = createExoMachineBuilder<TExoDomNode>(HOST_SET_SCHEMA);
-const K_HOST = mHOST_SET.createInitialState((cc) => ({
-    panels: cc.childList(HOST_SET_SCHEMA.ports.panels) as TExoChildList,
-    shown: [] as TPanelRow[],
-    source: CURRENT_ROWS,
-}));
-const showRows = mHOST_SET.transition((cc: TExoDomNode) => {
-    const state = cc.readState(K_HOST);
-    const want = state.source.getValue();
-    state.shown = reconcileExoOrder(state.panels, state.shown, want, want, (row, i) => {
-        BUILDING_ROWS[i] = row;
-        return cc.build(PANEL_SET, i);
-    });
+const mHOST_SET = createExoMachine(HOST_SET_SCHEMA, {
+    createInitialState: (cc: TExoDomNode) => ({
+        panels: cc.childList(HOST_SET_SCHEMA.ports.panels) as TExoChildList,
+        shown: [] as TPanelRow[],
+        source: CURRENT_ROWS,
+    }),
 });
-mHOST_SET.effect((cc) => {
-    showRows(cc);
-    const source = cc.readState(K_HOST).source;
-    return source.onChange(() => showRows(cc));
-});
-const HOST_SET = mHOST_SET.done();
+const HOST_SET = composeExoMachine(
+    mHOST_SET,
+    (m) =>
+        withExoTransitions(m, {
+            showRows: (cc) => {
+                const state = cc.state;
+                const want = state.source.getValue();
+                state.shown = reconcileExoOrder(state.panels, state.shown, want, want, (row) =>
+                    cc.build(PANEL_SET, row)
+                );
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((cc) => {
+                showRows(cc);
+                const source = cc.state.source;
+                return source.onChange(() => showRows(cc));
+            });
+        })
+);
+const { showRows } = HOST_SET.transitions;
 
 // The SAME schema objects a render uses: `exoDomSchemaOf` caches on `machine.forms` at the
 // backend's `backendType`, and `EXO_BACKEND` below is the one this file renders from.

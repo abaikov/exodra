@@ -75,9 +75,11 @@ A shared value several machines follow, in its smallest form: `getValue` / `setV
 `onChange`, the shape a machine's effect subscribes to —
 
 ```ts no-check
-m.effect((c) => {
-    show(c);
-    return data.onChange(() => show(c));
+withExoEffects(m, (effect) => {
+    effect((c) => {
+        show(c);
+        return data.onChange(() => show(c));
+    });
 });
 ```
 

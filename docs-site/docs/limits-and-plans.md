@@ -60,7 +60,7 @@ focused:
 ```ts no-check
 import { exoNodeDom } from '@exodra/dom';
 
-const child = c.build(Select, 0, params);
+const child = c.build(Select, params);
 exoNodeDom(child).mount = function () {
     (this.node as HTMLElement & { options: unknown }).options = items;
 };
@@ -157,11 +157,10 @@ sit above their floor — `text-sweep` 1.522×, `text-one` 1.562×, `reorder`
 
 Measured on the benchmark application with production builds, in narrowed runs
 (ratios only, inside one run, `initial-render.compat8`): mounting with host
-templates, which are on by default, took 1.000 ms against React's 0.980; with
-templates switched off, 1.280. The compiled path,
+templates, which are on by default, took 1.000 ms against React's 0.980. The compiled path,
 `@exodra/babel-plugin-schema/react`, took 0.860. On `app-update`
 (`app-update.compat8`) the axis reports no resolution, so only the order is
-known: compiled, then templates, then React, then the plain runtime.
+known: compiled, then templates, then React.
 
 ### Toggling a large block rebuilds it by default
 

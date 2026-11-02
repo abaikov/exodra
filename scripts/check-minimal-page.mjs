@@ -33,8 +33,8 @@ const ALIAS = {
 };
 
 const COUNTER = `
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
-import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { composeExoMachine, createExoMachine, createExoSchema, withExoHandlers, withExoWire } from '@exodra/core';
+import type { TExoEventPort, TExoMachineNode, TExoMachineNodeOf, TExoTextPort } from '@exodra/core';
 
 const SCHEMA = createExoSchema((b) => {
     let count!: TExoTextPort;
@@ -45,21 +45,24 @@ const SCHEMA = createExoSchema((b) => {
     });
     return { count, bump };
 });
-const m = createExoMachineBuilder<TExoMachineNode, unknown, { n: number }>(SCHEMA);
-m.createInitialState(() => ({ n: 0 }));
-const show = m.transition((c) => {
+const counterBase = createExoMachine<TExoMachineNode, unknown, { n: number }>(SCHEMA, {
+    createInitialState: () => ({ n: 0 }),
+});
+function show(c: TExoMachineNodeOf<typeof counterBase>): void {
     c.text(SCHEMA.ports.count, String(c.state.n));
-});
-m.wire((c) => show(c));
-m.on(SCHEMA.ports.bump, (c) => {
-    c.state.n += 1;
-    show(c);
-});
-export const COUNTER = m.done();
+}
+export const COUNTER = composeExoMachine(
+    counterBase,
+    (m) => withExoWire(m, (c) => show(c)),
+    (m) => withExoHandlers(m, (on) => on(SCHEMA.ports.bump, (c) => {
+        c.state.n += 1;
+        show(c);
+    })),
+);
 `;
 
 const LIST = `
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { composeExoMachine, createExoMachine, createExoSchema, withExoWire } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 
@@ -70,11 +73,12 @@ const ROW_SCHEMA = createExoSchema((b) => {
     });
     return { label };
 });
-const mRow = createExoMachineBuilder<TExoMachineNode, string>(ROW_SCHEMA);
-mRow.wire((c, label) => {
-    c.text(ROW_SCHEMA.ports.label, label);
-});
-const ROW = mRow.done();
+const ROW = composeExoMachine(
+    createExoMachine<TExoMachineNode, string>(ROW_SCHEMA),
+    (m) => withExoWire(m, (c, label) => {
+        c.text(ROW_SCHEMA.ports.label, label);
+    }),
+);
 
 const LIST_SCHEMA = createExoSchema((b) => {
     let rows!: TExoChildrenPort;
@@ -84,13 +88,15 @@ const LIST_SCHEMA = createExoSchema((b) => {
     return { rows };
 });
 type TState = { rows: never; shown: string[] };
-const mList = createExoMachineBuilder<TExoMachineNode & { childList(p: TExoChildrenPort): never; build(m: unknown, i: number, p: string): never }, unknown, TState>(LIST_SCHEMA);
-mList.createInitialState((c) => ({ rows: c.childList(LIST_SCHEMA.ports.rows), shown: [] }));
-mList.wire((c) => {
-    const want = ['a', 'b', 'c'];
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => c.build(ROW, i, item));
-});
-export const LIST = mList.done();
+export const LIST = composeExoMachine(
+    createExoMachine<TExoMachineNode & { childList(p: TExoChildrenPort): never; build(m: unknown, p: string): never }, unknown, TState>(LIST_SCHEMA, {
+        createInitialState: (c) => ({ rows: c.childList(LIST_SCHEMA.ports.rows), shown: [] }),
+    }),
+    (m) => withExoWire(m, (c) => {
+        const want = ['a', 'b', 'c'];
+        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item) => c.build(ROW, item));
+    }),
+);
 `;
 
 const PAGES = {

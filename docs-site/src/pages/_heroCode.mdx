@@ -1,26 +1,29 @@
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { createExoMachineBuilder } from '@exodra/core';
-import type { TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
+import { composeExoMachine, createExoMachine, withExoHandlers, withExoTransitions, withExoWire } from '@exodra/core';
+import type { TExoEventPort, TExoTextPort } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const counterSchema = exoJsx<{ count: TExoTextPort; increment: TExoEventPort }>(($) => (
+const CounterSchema = exoJsx<{ COUNT: TExoTextPort; INCREMENT: TExoEventPort }>(($) => (
     <div class="counter">
-        <span>{$.count}</span>
-        <button type="button" onClick={$.increment}>+1</button>
+        <span>{$.COUNT}</span>
+        <button type="button" onClick={$.INCREMENT}>+1</button>
     </div>
 ));
-const CounterPorts = counterSchema.ports;
+const CounterPorts = CounterSchema.ports;
 
-const counterBuilder = createExoMachineBuilder<TExoMachineNode, unknown, { count: number }>(counterSchema);
-counterBuilder.createInitialState(() => ({ count: 0 }));
-counterBuilder.wire((c) => {
-    c.text(CounterPorts.count, String(c.state.count));
-});
-counterBuilder.on(CounterPorts.increment, (c) => {
-    c.state.count += 1;
-    c.text(CounterPorts.count, String(c.state.count));
-});
+export const counterMachine = composeExoMachine(
+    createExoMachine(CounterSchema, { createInitialState: () => ({ count: 0 }) }),
+    (m) => withExoTransitions(m, {
+        increment: (c) => {
+            c.state.count += 1;
+            c.text(CounterPorts.COUNT, String(c.state.count));
+        },
+    }),
+    (m) => withExoWire(m, (c) => c.text(CounterPorts.COUNT, String(c.state.count))),
+    (m) => withExoHandlers(m, (on) => on(CounterPorts.INCREMENT, (c) => increment(c))),
+);
+export const { increment } = counterMachine.transitions;
 
-withExoCompiler(new ExoDomBackend()).render(counterBuilder.done(), document.body);
+withExoCompiler(new ExoDomBackend()).render(counterMachine, document.body);
 ```

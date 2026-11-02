@@ -27,7 +27,14 @@ import type {
     TExoTextPort,
     TExoMachineInitialState,
 } from '@exodra/core';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
@@ -64,11 +71,11 @@ const ROW = createExoTestMachine(
         return { id, label, click };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, i) => {
-            c.attr(P.id, i);
-            c.text(P.label, 'Item ' + i);
+        (c, at) => {
+            c.attr(P.id, at);
+            c.text(P.label, 'Item ' + at);
             c.on(P.click, () => {
-                clicked = i;
+                clicked = at as number;
             });
         }
 );
@@ -80,9 +87,6 @@ const ROW = createExoTestMachine(
  * the surface is GRADED rather than one wide type: a component that fills two ports should not
  * have to declare `bindMany` to be usable.
  */
-/** What the nested leaves read, BY INDEX. */
-const LEAF_TEXTS = ['nested'];
-
 const LEAF = createExoTestMachine(
     (b) => {
         let text!: TExoTextPort;
@@ -92,8 +96,8 @@ const LEAF = createExoTestMachine(
         return { text };
     },
     (P): TExoMachineInitialState<TExoWiring> =>
-        (c, i) => {
-            c.text(P.text, LEAF_TEXTS[i]);
+        (c, text) => {
+            c.text(P.text, text);
         }
 );
 
@@ -116,7 +120,7 @@ const PAGE = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TExoChildrenWiring> =>
         (c) => {
-            c.one(P.slot, LEAF);
+            c.one(P.slot, LEAF, 'nested');
         }
 );
 
@@ -146,7 +150,7 @@ const listOf = (tag: string, component: TExoMachine<TExoChildrenWiring>, n: numb
         },
         (P): TExoMachineInitialState<TExoChildrenWiring> =>
             (c) => {
-                c.list(P.rows, component, items.length);
+                c.list(P.rows, component, items);
             }
     );
 };
@@ -218,19 +222,29 @@ const DRIFT_SCHEMA = createExoSchema((b) => {
 // ONE VALUE, THREE FILLS. Two read the cell and hand over the value; the third is an effect that
 // follows it over the same door. Everything else about them is identical, which is what makes any
 // difference in the assertions attributable to the call and to nothing else.
-const mDrift = createExoMachineBuilder<TExoMachineNode>(DRIFT_SCHEMA);
-mDrift.wire((c) => {
-    c.attr(DRIFT_SCHEMA.ports.stamped, drift.getValue());
-    c.text(DRIFT_SCHEMA.ports.label, drift.getValue());
-});
-const showDrift = mDrift.transition((c) => {
-    c.attr(DRIFT_SCHEMA.ports.bound, drift.getValue());
-});
-mDrift.effect((c) => {
-    showDrift(c);
-    return drift.onChange(() => showDrift(c));
-});
-const DRIFT = mDrift.done();
+const mDrift = createExoMachine<TExoMachineNode>(DRIFT_SCHEMA);
+const DRIFT = composeExoMachine(
+    mDrift,
+    (m) =>
+        withExoTransitions(m, {
+            showDrift: (c) => {
+                c.attr(DRIFT_SCHEMA.ports.bound, drift.getValue());
+            },
+        }),
+    (m) =>
+        withExoWire(m, (c) => {
+            c.attr(DRIFT_SCHEMA.ports.stamped, drift.getValue());
+            c.text(DRIFT_SCHEMA.ports.label, drift.getValue());
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showDrift(c);
+                return drift.onChange(() => showDrift(c));
+            });
+        })
+);
+const { showDrift } = DRIFT.transitions;
 
 describe('every fill repairs when the client disagrees with the served bytes', () => {
     it('repairs an attribute, a text port and a composed binding alike', () => {
@@ -278,7 +292,7 @@ describe('every fill repairs when the client disagrees with the served bytes', (
 
 describe('the WIDER surface — a wire that nests, on the same three backends', () => {
     it('renders and serves the same bytes for a nested instance, with no cast', () => {
-        // The same absence-of-a-cast assertion, one level up: `c.one(P.slot, LEAF)` is
+        // The same absence-of-a-cast assertion, one level up: `c.one(P.slot, LEAF, 'nested')` is
         // typed against `TExoChildrenWiring`, and `PAGE` is handed to `@exodra/string`'s
         // renderer and to this package's straight from that one declaration.
         const LIST = listOf('div', PAGE, 2);

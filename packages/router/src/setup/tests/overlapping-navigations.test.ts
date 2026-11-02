@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import { createExoMemoryHistory, createExoRouter } from '../../index';
 import type { TExoRoute } from '../../types';
 
-const page = createExoMachineBuilder(
+const page = createExoMachine(
     createExoSchema((b) => {
         b.el('p');
         return {};
     })
-).done();
+);
 
 const held = () => {
     let release!: (allowed: boolean | string) => void;

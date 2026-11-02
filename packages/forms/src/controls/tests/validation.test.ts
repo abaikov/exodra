@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema, withExoHandlers } from '@exodra/core';
 import type { TExoEventPort, TExoRefPort, TExoTextPort } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
@@ -40,17 +40,18 @@ const FIELDS = [FORM.ports.name, FORM.ports.age];
 
 function mountForm(): { parent: HTMLElement; submitted: unknown[][]; submit: () => void } {
     const submitted: unknown[][] = [];
-    const m = createExoMachineBuilder<TExoDomNode>(FORM);
-    m.on(FORM.ports.submit, (c, event) => {
-        event.preventDefault();
-        const values = readExoControlValues(c, FIELDS);
-        const errors = checkExoControlValues(values, RULES);
-        setExoControlErrors(c, FIELDS, errors);
-        c.text(FORM.ports.error, errors.filter((e) => e !== null).join(' · '));
-        if (errors.every((e) => e === null)) submitted.push(values);
+    const Form = withExoHandlers(createExoMachine<TExoDomNode>(FORM), (on) => {
+        on(FORM.ports.submit, (c, event) => {
+            event.preventDefault();
+            const values = readExoControlValues(c, FIELDS);
+            const errors = checkExoControlValues(values, RULES);
+            setExoControlErrors(c, FIELDS, errors);
+            c.text(FORM.ports.error, errors.filter((e) => e !== null).join(' · '));
+            if (errors.every((e) => e === null)) submitted.push(values);
+        });
     });
     const parent = host();
-    EXO_BACKEND.render(m.done(), parent);
+    EXO_BACKEND.render(Form, parent);
     const submit = (): void => {
         (parent.querySelector('form') as HTMLFormElement).dispatchEvent(
             new Event('submit', { bubbles: true, cancelable: true })
@@ -117,13 +118,14 @@ describe('setExoControlErrors — the errors reach the browser as the controls o
     });
 
     it('does nothing on a backend with no document', () => {
-        const m = createExoMachineBuilder<TExoStrNode>(FORM);
-        let reached = false;
-        m.createInitialState((c) => {
-            setExoControlErrors(c, FIELDS, ['Name is required', null]);
-            reached = true;
+        const Form = createExoMachine<TExoStrNode>(FORM, {
+            createInitialState: (c) => {
+                setExoControlErrors(c, FIELDS, ['Name is required', null]);
+                reached = true;
+            },
         });
-        expect(new ExoStrBackend().render(m.done())).toContain('novalidate');
+        let reached = false;
+        expect(new ExoStrBackend().render(Form)).toContain('novalidate');
         expect(reached).toBe(true);
     });
 });

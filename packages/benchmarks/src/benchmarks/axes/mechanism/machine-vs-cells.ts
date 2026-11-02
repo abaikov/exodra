@@ -342,7 +342,7 @@
 //                        `machine·array·twin`, `machine·nodes·twin`, `machine·write·twin` and
 //                        `wire·twin`. (`machine·bound·twin` was the eighth and is struck with the
 //                        row it doubled.) Each is a SECOND, SEPARATELY
-//                        DECLARED, IDENTICAL participant — its own `createExoMachineBuilder` call for the tag
+//                        DECLARED, IDENTICAL participant — its own `createExoMachine` call for the tag
 //                        AND for the shell, therefore its own declaration, its own compiled schema,
 //                        and (for every machine row) its own derivation array or compiled program.
 //                        Their true difference from the row they double is ZERO, so what the run
@@ -533,7 +533,9 @@
 //     node scripts/run-one-axis.js machine-vs-cells 100 1
 
 import {
-    createExoMachineBuilder,
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
     createExoSchema,
     type TExoSchemaCursor,
     type TExoAttrPort,
@@ -562,13 +564,13 @@ import {
     withExoCompiler,
 } from '@exodra/dom';
 // FORM B'S OWN MACHINERY, WHICH THE LIBRARY DOES NOT SHIP. Its constructor is imported under
-// `exoFormBMachine` because `@exodra/core` exports a DIFFERENT `createExoMachineBuilder` — the shipped authoring
+// `exoFormBMachine` because `@exodra/core` exports a DIFFERENT `createExoMachine` — the shipped authoring
 // layer `machine·imperative` is built on, whose name core's index calls DECIDED. Two things, two names, and
 // the one that gets renamed here is the local proposal rather than the published API.
 import {
     exoCommit,
     exoFieldMask,
-    createExoMachineBuilder as exoFormBMachine,
+    createExoMachine as exoFormBMachine,
     type TExoDerivation,
     type TExoBenchMachine,
 } from '../../shared/exo-machine';
@@ -778,7 +780,7 @@ interface TExoProgram {
 // THE DECLARATIONS — one tag cursor and one shell cursor, shared by every exodra participant
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 //
-// THE BUILD FUNCTIONS ARE SHARED AND THE COMPONENTS ARE NOT. Every `createExoMachineBuilder` call below
+// THE BUILD FUNCTIONS ARE SHARED AND THE COMPONENTS ARE NOT. Every `createExoMachine` call below
 // produces its own declaration, its own port numbering and its own compiled schema; what they
 // share is a function that runs ONCE, at module load, and contributes nothing to any per-instance
 // measurement. `plugin-price`'s `listBound` factory takes the same position for the same reason.
@@ -874,7 +876,25 @@ const B_DERIVATIONS: (readonly TExoDerivation<TExoTagState>[])[] = [];
 
 const makeMachineTag = (): TExoDomMachine => {
     const MACHINE_SCHEMA5 = createExoSchema(buildTag);
-    const mMachine5 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA5);
+    const mMachine5 = createExoMachine<TExoDomNode, TExoMachineHandle>(MACHINE_SCHEMA5, {
+        createInitialState: (c, handle) => {
+            const seed = handle.seed;
+            const state: TExoTagState = {
+                name: seed.name,
+                open: seed.open,
+                width: seed.width,
+                note: 0,
+            };
+            // `exoFormBMachine` runs every derivation once, which IS the initial fill — the same
+            // `compute` and the same `ports.set` a commit makes.
+            const machine = exoFormBMachine(state, c.fillDoors(), derivations);
+            handle.machine = machine;
+            c.on(MACHINE_SCHEMA5.ports.click, () => {
+                setOpen(machine, machine.state.open === true ? false : true);
+                exoCommit(machine);
+            });
+        },
+    });
     // DECLARED ONCE, HERE — a wire FACTORY runs at module load and never again, so this
     // array and its two objects are the whole per-COMPONENT cost of form B. Every instance
     // of this component shares them.
@@ -893,34 +913,17 @@ const makeMachineTag = (): TExoDomMachine => {
         },
     ];
     B_DERIVATIONS.push(derivations);
-    mMachine5.createInitialState((c, i) => {
-        const handle = MACHINE_DATA[i];
-        const seed = handle.seed;
-        const state: TExoTagState = {
-            name: seed.name,
-            open: seed.open,
-            width: seed.width,
-            note: 0,
-        };
-        // `exoFormBMachine` runs every derivation once, which IS the initial fill — the same
-        // `compute` and the same `ports.set` a commit makes.
-        const machine = exoFormBMachine(state, c.fillDoors(), derivations);
-        handle.machine = machine;
-        c.on(MACHINE_SCHEMA5.ports.click, () => {
-            setOpen(machine, machine.state.open === true ? false : true);
-            exoCommit(machine);
-        });
-    });
-    return mMachine5.done();
+    return mMachine5;
 };
 
 const makeMachineShell = (tag: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA6 = createExoSchema(buildShell);
-    const mMachine6 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA6);
-    mMachine6.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA6.ports.tags, tag, MACHINE_DATA.length);
+    const mMachine6 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA6, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA6.ports.tags, tag, MACHINE_DATA);
+        },
     });
-    return mMachine6.done();
+    return mMachine6;
 };
 
 const TAG_B = makeMachineTag();
@@ -1001,11 +1004,41 @@ interface TExoCompiledPack {
 let COMPILED_DATA: readonly TExoCompiledHandle[] = [];
 
 const makeCompiledPack = (): TExoCompiledPack => {
-    // Assigned by the wire FACTORY below, which `createExoMachineBuilder` calls synchronously, once, before it
-    // returns — the same moment `buildTag`'s ports are final.
+    // Assigned further down this function, once, after `createExoMachine` has returned and `buildTag`'s
+    // ports are final.
     let ops!: TExoCompiledOps;
     const component_SCHEMA = createExoSchema(buildTag);
-    const mComponent = createExoMachineBuilder<TExoDomNode>(component_SCHEMA);
+    const mComponent = createExoMachine<TExoDomNode, TExoCompiledHandle>(component_SCHEMA, {
+        createInitialState: (c, handle) => {
+            const seed = handle.seed;
+            // ONE OBJECT AND ONE ONE-SLOT TABLE PER INSTANCE, both built whole — the author's four
+            // fields, and THREE REFERENCES: this instance's port table, the schema's write and the
+            // shared `set`. None of the three is an allocation; the table is, and it is what the
+            // enode contract costs a state that has no other slot. Form B allocates its state, a
+            // machine object AND the `c.fillDoors()` wrapper.
+            const state: TExoCompiledState = {
+                name: seed.name,
+                open: seed.open,
+                width: seed.width,
+                note: 0,
+                // THE PENDING WORD, IN THE ONE-SLOT TABLE THE ENODE CONTRACT NAMES, and the write
+                // door beside it. `set` is one shared function assigned by reference, so the table
+                // is the only allocation the contract costs this instance. NO EFFECT SLOT: a
+                // machine that owns no disposer allocates none, and this component declares none.
+                managedState: [0],
+                portTable: c.portTable(),
+                portWrite: c.portNodeWriter(),
+                attr: exoDetachedWrite,
+                text: exoDetachedWrite,
+                unsafeHtml: exoDetachedWrite,
+            };
+            handle.state = state;
+            // THROUGH THE DOOR. Every commit after this writes through `state.portWrite`, which
+            // tests nothing.
+            fillExoMachineDerivations(program, state);
+            c.on(component_SCHEMA.ports.click, () => toggleOpen(state));
+        },
+    });
     // EVERYTHING IN THIS BLOCK RUNS AT MODULE LOAD, ONCE, AND IS SHARED BY EVERY INSTANCE: the
     // program (two derivations, the inverted field table, the resolved port indexes), the four
     // marks, and the five transition closures. It is the whole per-COMPONENT cost of form C.
@@ -1066,47 +1099,18 @@ const makeCompiledPack = (): TExoCompiledPack => {
     });
 
     ops = { program, setName, setNameAndOpen, setWidth, setNote };
-    mComponent.createInitialState((c, i) => {
-        const handle = COMPILED_DATA[i];
-        const seed = handle.seed;
-        // ONE OBJECT AND ONE ONE-SLOT TABLE PER INSTANCE, both built whole — the author's four
-        // fields, and THREE REFERENCES: this instance's port table, the schema's write and the
-        // shared `set`. None of the three is an allocation; the table is, and it is what the
-        // enode contract costs a state that has no other slot. Form B allocates its state, a
-        // machine object AND the `c.fillDoors()` wrapper.
-        const state: TExoCompiledState = {
-            name: seed.name,
-            open: seed.open,
-            width: seed.width,
-            note: 0,
-            // THE PENDING WORD, IN THE ONE-SLOT TABLE THE ENODE CONTRACT NAMES, and the write
-            // door beside it. `set` is one shared function assigned by reference, so the table
-            // is the only allocation the contract costs this instance. NO EFFECT SLOT: a
-            // machine that owns no disposer allocates none, and this component declares none.
-            managedState: [0],
-            portTable: c.portTable(),
-            portWrite: c.portNodeWriter(),
-            attr: exoDetachedWrite,
-            text: exoDetachedWrite,
-            unsafeHtml: exoDetachedWrite,
-        };
-        handle.state = state;
-        // THROUGH THE DOOR. Every commit after this writes through `state.portWrite`, which
-        // tests nothing.
-        fillExoMachineDerivations(program, state);
-        c.on(component_SCHEMA.ports.click, () => toggleOpen(state));
-    });
-    const component = mComponent.done();
+    const component = mComponent;
     return { component, ops };
 };
 
 const makeCompiledShell = (tag: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA7 = createExoSchema(buildShell);
-    const mMachine7 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA7);
-    mMachine7.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA7.ports.tags, tag, COMPILED_DATA.length);
+    const mMachine7 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA7, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA7.ports.tags, tag, COMPILED_DATA);
+        },
     });
-    return mMachine7.done();
+    return mMachine7;
 };
 
 const PACK_C = makeCompiledPack();
@@ -1166,7 +1170,26 @@ type TExoSpelling = 'handles' | 'tuple';
 const makeSpelledPack = (spelling: TExoSpelling): TExoCompiledPack => {
     let ops!: TExoCompiledOps;
     const component_SCHEMA2 = createExoSchema(buildTag);
-    const mComponent2 = createExoMachineBuilder<TExoDomNode>(component_SCHEMA2);
+    const mComponent2 = createExoMachine<TExoDomNode, TExoCompiledHandle>(component_SCHEMA2, {
+        createInitialState: (c, handle) => {
+            const seed = handle.seed;
+            const state: TExoCompiledState = {
+                name: seed.name,
+                open: seed.open,
+                width: seed.width,
+                note: 0,
+                managedState: [0],
+                portTable: c.portTable(),
+                portWrite: c.portNodeWriter(),
+                attr: exoDetachedWrite,
+                text: exoDetachedWrite,
+                unsafeHtml: exoDetachedWrite,
+            };
+            handle.state = state;
+            fillExoMachineDerivations(program, state);
+            c.on(component_SCHEMA2.ports.click, () => toggleOpen(state));
+        },
+    });
     const program = compileExoMachine<TExoCompiledState>({
         fields: 4,
         pendingRow: PENDING_ROW,
@@ -1285,26 +1308,7 @@ const makeSpelledPack = (spelling: TExoSpelling): TExoCompiledPack => {
         s.open = s.open === true ? false : true;
         s.managedState[PENDING_ROW] |= M_OPEN;
     });
-    mComponent2.createInitialState((c, i) => {
-        const handle = COMPILED_DATA[i];
-        const seed = handle.seed;
-        const state: TExoCompiledState = {
-            name: seed.name,
-            open: seed.open,
-            width: seed.width,
-            note: 0,
-            managedState: [0],
-            portTable: c.portTable(),
-            portWrite: c.portNodeWriter(),
-            attr: exoDetachedWrite,
-            text: exoDetachedWrite,
-            unsafeHtml: exoDetachedWrite,
-        };
-        handle.state = state;
-        fillExoMachineDerivations(program, state);
-        c.on(component_SCHEMA2.ports.click, () => toggleOpen(state));
-    });
-    const component = mComponent2.done();
+    const component = mComponent2;
     return { component, ops };
 };
 
@@ -1476,15 +1480,12 @@ const PACK_C_SHR_TWIN = makeTagTablePack(true);
 
 const makeTableShell = (tag: TExoDomMachine, shared: boolean): TExoDomMachine => {
     const MACHINE_SCHEMA8 = createExoSchema(buildShell);
-    const mMachine8 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA8);
-    mMachine8.createInitialState((c) => {
-        c.list(
-            MACHINE_SCHEMA8.ports.tags,
-            tag,
-            shared ? TABLE_SHARED_DATA.length : TABLE_OWN_DATA.length
-        );
+    const mMachine8 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA8, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA8.ports.tags, tag, shared ? TABLE_SHARED_DATA : TABLE_OWN_DATA);
+        },
     });
-    return mMachine8.done();
+    return mMachine8;
 };
 
 const SHELL_C_TBL = makeTableShell(PACK_C_TBL.component, false);
@@ -1634,7 +1635,57 @@ const directSetNote = (s: TExoDirectState, note: number): void => {
 };
 
 const TAG_C_DIRECT_SCHEMA = createExoSchema(buildTag);
-const mTAG_C_DIRECT = createExoMachineBuilder<TExoDomNode>(TAG_C_DIRECT_SCHEMA);
+const mTAG_C_DIRECT = createExoMachine<TExoDomNode, TExoDirectHandle>(TAG_C_DIRECT_SCHEMA, {
+    createInitialState: (c, handle) => {
+        // FLATTENED ONCE, AT THE FIRST WIRE, and not per instance: `setters` and `elem` belong to
+        // the compiled SCHEMA — one per (declaration, backend) — and this component is rendered
+        // by one backend. The schema does not exist until the first render, which is the only
+        // reason this is here rather than beside the program above.
+        if (!flattened) {
+            const writers: TExoDomSetter[] = new Array<TExoDomSetter>(program.portIndexes.length);
+            const slots = new Int32Array(program.portIndexes.length);
+            const writeData: unknown[] = new Array<unknown>(program.portIndexes.length);
+            const schema = c.schema;
+            for (let i = 0; i < program.portIndexes.length; i++) {
+                const at = program.portIndexes[i];
+                writers[i] = schema.setters[at];
+                slots[i] = schema.elem[at];
+                writeData[i] = schema.writeData[at];
+            }
+            DIRECT_WRITERS = writers;
+            DIRECT_SLOTS = slots;
+            DIRECT_WRITE_DATA = writeData;
+            flattened = true;
+        }
+        const seed = handle.seed;
+        const state: TExoDirectState = {
+            name: seed.name,
+            open: seed.open,
+            width: seed.width,
+            note: 0,
+            touched: 0,
+            // THE INSTANCE'S NODE TABLE, TAKEN OFF THE INSTANCE'S OWN RECORD — a wire is handed
+            // that record, so this is one property load and the same hop every shipped port write
+            // makes. What is stored here is the array.
+            nodes: c.nodes,
+        };
+        handle.state = state;
+        // THE INITIAL FILL, the same one `fillExoMachineDerivations` makes: every derivation once,
+        // in declaration order, through this row's own write.
+        for (let i = 0; i < DIRECT_COMPUTES.length; i++) {
+            DIRECT_WRITERS[i](
+                state.nodes[DIRECT_SLOTS[i]] as Element,
+                DIRECT_COMPUTES[i](state),
+                DIRECT_WRITE_DATA[i]
+            );
+        }
+        c.on(TAG_C_DIRECT_SCHEMA.ports.click, () => {
+            state.open = state.open === true ? false : true;
+            state.touched |= DIRECT_MARK_OPEN;
+            commitDirect(state);
+        });
+    },
+});
 const program = compileExoMachine<TExoDirectState>({
     fields: 4,
     pendingRow: PENDING_ROW,
@@ -1659,64 +1710,15 @@ DIRECT_MARK_OPEN = program.fieldMarks[1];
 DIRECT_MARK_WIDTH = program.fieldMarks[2];
 DIRECT_MARK_NOTE = program.fieldMarks[3];
 let flattened = false;
-mTAG_C_DIRECT.createInitialState((c, row) => {
-    const handle = DIRECT_DATA[row];
-    // FLATTENED ONCE, AT THE FIRST WIRE, and not per instance: `setters` and `elem` belong to
-    // the compiled SCHEMA — one per (declaration, backend) — and this component is rendered
-    // by one backend. The schema does not exist until the first render, which is the only
-    // reason this is here rather than beside the program above.
-    if (!flattened) {
-        const writers: TExoDomSetter[] = new Array<TExoDomSetter>(program.portIndexes.length);
-        const slots = new Int32Array(program.portIndexes.length);
-        const writeData: unknown[] = new Array<unknown>(program.portIndexes.length);
-        const schema = c.schema;
-        for (let i = 0; i < program.portIndexes.length; i++) {
-            const at = program.portIndexes[i];
-            writers[i] = schema.setters[at];
-            slots[i] = schema.elem[at];
-            writeData[i] = schema.writeData[at];
-        }
-        DIRECT_WRITERS = writers;
-        DIRECT_SLOTS = slots;
-        DIRECT_WRITE_DATA = writeData;
-        flattened = true;
-    }
-    const seed = handle.seed;
-    const state: TExoDirectState = {
-        name: seed.name,
-        open: seed.open,
-        width: seed.width,
-        note: 0,
-        touched: 0,
-        // THE INSTANCE'S NODE TABLE, TAKEN OFF THE INSTANCE'S OWN RECORD — a wire is handed
-        // that record, so this is one property load and the same hop every shipped port write
-        // makes. What is stored here is the array.
-        nodes: c.nodes,
-    };
-    handle.state = state;
-    // THE INITIAL FILL, the same one `fillExoMachineDerivations` makes: every derivation once,
-    // in declaration order, through this row's own write.
-    for (let i = 0; i < DIRECT_COMPUTES.length; i++) {
-        DIRECT_WRITERS[i](
-            state.nodes[DIRECT_SLOTS[i]] as Element,
-            DIRECT_COMPUTES[i](state),
-            DIRECT_WRITE_DATA[i]
-        );
-    }
-    c.on(TAG_C_DIRECT_SCHEMA.ports.click, () => {
-        state.open = state.open === true ? false : true;
-        state.touched |= DIRECT_MARK_OPEN;
-        commitDirect(state);
-    });
-});
-const TAG_C_DIRECT = mTAG_C_DIRECT.done();
+const TAG_C_DIRECT = mTAG_C_DIRECT;
 
 const SHELL_C_DIRECT_SCHEMA = createExoSchema(buildShell);
-const mSHELL_C_DIRECT = createExoMachineBuilder<TExoDomNode>(SHELL_C_DIRECT_SCHEMA);
-mSHELL_C_DIRECT.createInitialState((c) => {
-    c.list(SHELL_C_DIRECT_SCHEMA.ports.tags, TAG_C_DIRECT, DIRECT_DATA.length);
+const mSHELL_C_DIRECT = createExoMachine<TExoDomNode>(SHELL_C_DIRECT_SCHEMA, {
+    createInitialState: (c) => {
+        c.list(SHELL_C_DIRECT_SCHEMA.ports.tags, TAG_C_DIRECT, DIRECT_DATA);
+    },
 });
-const SHELL_C_DIRECT: TExoDomMachine = mSHELL_C_DIRECT.done();
+const SHELL_C_DIRECT = mSHELL_C_DIRECT;
 
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 // `machine·bound` AND `machine·bound·twin` STOOD HERE AND ARE STRUCK WITH THE FEATURE THEY PRICED
@@ -1920,7 +1922,52 @@ const SHELL_C_DIRECT: TExoDomMachine = mSHELL_C_DIRECT.done();
 const makeWritePack = (): TExoCompiledPack => {
     let ops!: TExoCompiledOps;
     const component_SCHEMA3 = createExoSchema(buildTag);
-    const mComponent3 = createExoMachineBuilder<TExoDomNode>(component_SCHEMA3);
+    const mComponent3 = createExoMachine<TExoDomNode, TExoCompiledHandle>(component_SCHEMA3, {
+        createInitialState: (c, handle) => {
+            if (!flattened) {
+                const at = program.portIndexes;
+                const made: TExoDomSetter[] = new Array<TExoDomSetter>(at.length);
+                const found = new Int32Array(at.length);
+                const data: unknown[] = new Array<unknown>(at.length);
+                const schema = c.schema;
+                for (let i = 0; i < at.length; i++) {
+                    const port = at[i];
+                    made[i] = port < 0 ? refuseNoPort : schema.setters[port];
+                    found[i] = port < 0 ? 0 : schema.elem[port];
+                    data[i] = port < 0 ? undefined : schema.writeData[port];
+                }
+                writers = made;
+                slots = found;
+                writeData = data;
+                flattened = true;
+            }
+            const seed = handle.seed;
+            // `machine`'S WIRE, LINE FOR LINE — the same object with the same fields, built whole,
+            // including `portWrite`, which this row's commit never loads. It is taken
+            // because the state shape is `TExoCompiledState` and because the mount must cost what
+            // `machine`'s mount costs; dropping it would move TABLE 1 by one accessor call and make this
+            // row differ from `machine` in two places instead of one.
+            const state: TExoCompiledState = {
+                name: seed.name,
+                open: seed.open,
+                width: seed.width,
+                note: 0,
+                managedState: [0],
+                portTable: c.portTable(),
+                portWrite: c.portNodeWriter(),
+                attr: exoDetachedWrite,
+                text: exoDetachedWrite,
+                unsafeHtml: exoDetachedWrite,
+            };
+            handle.state = state;
+            // THE SAME FILL, THROUGH THE SAME DOOR — `fillExoMachineDerivations` writes every
+            // derivation once through `c.set`. The initial markup of this row and of `machine` is
+            // therefore produced by the identical code, and the swapped line is reached only by an
+            // UPDATE.
+            fillExoMachineDerivations(program, state);
+            c.on(component_SCHEMA3.ports.click, () => toggleOpen(state));
+        },
+    });
     const program = compileExoMachine<TExoCompiledState>({
         fields: 4,
         pendingRow: PENDING_ROW,
@@ -2101,52 +2148,7 @@ const makeWritePack = (): TExoCompiledPack => {
     });
 
     ops = { program, setName, setNameAndOpen, setWidth, setNote };
-    mComponent3.createInitialState((c, row) => {
-        const handle = COMPILED_DATA[row];
-        if (!flattened) {
-            const at = program.portIndexes;
-            const made: TExoDomSetter[] = new Array<TExoDomSetter>(at.length);
-            const found = new Int32Array(at.length);
-            const data: unknown[] = new Array<unknown>(at.length);
-            const schema = c.schema;
-            for (let i = 0; i < at.length; i++) {
-                const port = at[i];
-                made[i] = port < 0 ? refuseNoPort : schema.setters[port];
-                found[i] = port < 0 ? 0 : schema.elem[port];
-                data[i] = port < 0 ? undefined : schema.writeData[port];
-            }
-            writers = made;
-            slots = found;
-            writeData = data;
-            flattened = true;
-        }
-        const seed = handle.seed;
-        // `machine`'S WIRE, LINE FOR LINE — the same object with the same fields, built whole,
-        // including `portWrite`, which this row's commit never loads. It is taken
-        // because the state shape is `TExoCompiledState` and because the mount must cost what
-        // `machine`'s mount costs; dropping it would move TABLE 1 by one accessor call and make this
-        // row differ from `machine` in two places instead of one.
-        const state: TExoCompiledState = {
-            name: seed.name,
-            open: seed.open,
-            width: seed.width,
-            note: 0,
-            managedState: [0],
-            portTable: c.portTable(),
-            portWrite: c.portNodeWriter(),
-            attr: exoDetachedWrite,
-            text: exoDetachedWrite,
-            unsafeHtml: exoDetachedWrite,
-        };
-        handle.state = state;
-        // THE SAME FILL, THROUGH THE SAME DOOR — `fillExoMachineDerivations` writes every
-        // derivation once through `c.set`. The initial markup of this row and of `machine` is
-        // therefore produced by the identical code, and the swapped line is reached only by an
-        // UPDATE.
-        fillExoMachineDerivations(program, state);
-        c.on(component_SCHEMA3.ports.click, () => toggleOpen(state));
-    });
-    const component = mComponent3.done();
+    const component = mComponent3;
     return { component, ops };
 };
 
@@ -2261,81 +2263,82 @@ let WIRE_DATA: readonly TExoWireHandle[] = [];
  */
 const makeWireTag = (): TExoDomMachine => {
     const MACHINE_SCHEMA9 = createExoSchema(buildTag);
-    const mMachine9 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA9);
-    mMachine9.createInitialState((c, i) => {
-        const handle = WIRE_DATA[i];
-        const seed = handle.seed;
-        // THE STATE — four closure variables, which is the whole of it. `note` is here for the
-        // same reason it is on every other row: TABLE 4 writes it and nothing reads it.
-        let name = seed.name;
-        let open = seed.open;
-        let width = seed.width;
-        let note = 0;
+    const mMachine9 = createExoMachine<TExoDomNode, TExoWireHandle>(MACHINE_SCHEMA9, {
+        createInitialState: (c, handle) => {
+            const seed = handle.seed;
+            // THE STATE — four closure variables, which is the whole of it. `note` is here for the
+            // same reason it is on every other row: TABLE 4 writes it and nothing reads it.
+            let name = seed.name;
+            let open = seed.open;
+            let width = seed.width;
+            let note = 0;
 
-        // THE INITIAL FILL, THROUGH `c.set` — the same door `fillExoMachineDerivations` uses for
-        // every machine row, so the mounted markup is produced by the same call.
-        c.text(MACHINE_SCHEMA9.ports.label, labelOf(name, open));
-        c.text(MACHINE_SCHEMA9.ports.size, sizeOf(width));
+            // THE INITIAL FILL, THROUGH `c.set` — the same door `fillExoMachineDerivations` uses for
+            // every machine row, so the mounted markup is produced by the same call.
+            c.text(MACHINE_SCHEMA9.ports.label, labelOf(name, open));
+            c.text(MACHINE_SCHEMA9.ports.size, sizeOf(width));
 
-        // THE PORT HANDLE, KEPT. One object per instance and nothing per port; the connector
-        // itself is deliberately not captured. See `apps/exodra/exodra.md` for the note.
-        const ports = c.fillDoors();
+            // THE PORT HANDLE, KEPT. One object per instance and nothing per port; the connector
+            // itself is deliberately not captured. See `apps/exodra/exodra.md` for the note.
+            const ports = c.fillDoors();
 
-        // THE FOUR DOORS. Each stores its state and recomputes exactly the derived value that
-        // state feeds, unconditionally — there is nothing here holding the previous string to
-        // compare against, and nothing here that could skip a write.
-        const setName = (next: string): void => {
-            name = next;
-            ports.text(MACHINE_SCHEMA9.ports.label, labelOf(name, open));
-        };
-        // TWO FIELDS, ONE WRITE — by hand, because both feed ONE derived string. A machine gets
-        // this from the mask; this row gets it from its author knowing, which is the difference
-        // the file's caveat (6) is about and which no gate here could catch if he did not.
-        const setNameAndOpen = (nextName: string, nextOpen: boolean): void => {
-            name = nextName;
-            open = nextOpen;
-            ports.text(MACHINE_SCHEMA9.ports.label, labelOf(name, open));
-        };
-        const setWidth = (next: number): void => {
-            width = next;
-            ports.text(MACHINE_SCHEMA9.ports.size, sizeOf(width));
-            // AND THE ONE READ OF `note` IN THIS COMPONENT, PUT WHERE IT COSTS NOTHING. TABLE 4
-            // writes that variable and nothing else in this closure touches it, and a closure
-            // variable no live code reads is one an engine may drop along with its store —
-            // which would leave TABLE 4 timing an empty call for this row and a real store for
-            // every other. The WIDTH signal is GATED AND NEVER TIMED (see the header), so this
-            // is read on the one door no measured region ever opens. `note` is `noteAt`'s
-            // output and is never negative; the refusal is the read, not a guard against a
-            // case that can happen.
-            if (note < 0) {
-                refuse(
-                    `machine-vs-cells: \`wire\` holds a negative note (${note}), which ` +
-                        '`noteAt` cannot produce.'
-                );
-            }
-        };
-        // THE FIELD NOTHING READS — a store and nothing else. There is no mask to OR and no
-        // commit to return from, so this row's TABLE 4 is a call and an assignment.
-        const setNote = (next: number): void => {
-            note = next;
-        };
-        handle.ops = { setName, setNameAndOpen, setWidth, setNote };
+            // THE FOUR DOORS. Each stores its state and recomputes exactly the derived value that
+            // state feeds, unconditionally — there is nothing here holding the previous string to
+            // compare against, and nothing here that could skip a write.
+            const setName = (next: string): void => {
+                name = next;
+                ports.text(MACHINE_SCHEMA9.ports.label, labelOf(name, open));
+            };
+            // TWO FIELDS, ONE WRITE — by hand, because both feed ONE derived string. A machine gets
+            // this from the mask; this row gets it from its author knowing, which is the difference
+            // the file's caveat (6) is about and which no gate here could catch if he did not.
+            const setNameAndOpen = (nextName: string, nextOpen: boolean): void => {
+                name = nextName;
+                open = nextOpen;
+                ports.text(MACHINE_SCHEMA9.ports.label, labelOf(name, open));
+            };
+            const setWidth = (next: number): void => {
+                width = next;
+                ports.text(MACHINE_SCHEMA9.ports.size, sizeOf(width));
+                // AND THE ONE READ OF `note` IN THIS COMPONENT, PUT WHERE IT COSTS NOTHING. TABLE 4
+                // writes that variable and nothing else in this closure touches it, and a closure
+                // variable no live code reads is one an engine may drop along with its store —
+                // which would leave TABLE 4 timing an empty call for this row and a real store for
+                // every other. The WIDTH signal is GATED AND NEVER TIMED (see the header), so this
+                // is read on the one door no measured region ever opens. `note` is `noteAt`'s
+                // output and is never negative; the refusal is the read, not a guard against a
+                // case that can happen.
+                if (note < 0) {
+                    refuse(
+                        `machine-vs-cells: \`wire\` holds a negative note (${note}), which ` +
+                            '`noteAt` cannot produce.'
+                    );
+                }
+            };
+            // THE FIELD NOTHING READS — a store and nothing else. There is no mask to OR and no
+            // commit to return from, so this row's TABLE 4 is a call and an assignment.
+            const setNote = (next: number): void => {
+                note = next;
+            };
+            handle.ops = { setName, setNameAndOpen, setWidth, setNote };
 
-        c.on(MACHINE_SCHEMA9.ports.click, () => {
-            open = open === true ? false : true;
-            ports.text(MACHINE_SCHEMA9.ports.label, labelOf(name, open));
-        });
+            c.on(MACHINE_SCHEMA9.ports.click, () => {
+                open = open === true ? false : true;
+                ports.text(MACHINE_SCHEMA9.ports.label, labelOf(name, open));
+            });
+        },
     });
-    return mMachine9.done();
+    return mMachine9;
 };
 
 const makeWireShell = (tag: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA10 = createExoSchema(buildShell);
-    const mMachine10 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA10);
-    mMachine10.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA10.ports.tags, tag, WIRE_DATA.length);
+    const mMachine10 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA10, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA10.ports.tags, tag, WIRE_DATA);
+        },
     });
-    return mMachine10.done();
+    return mMachine10;
 };
 
 const TAG_WIRE = makeWireTag();
@@ -2993,7 +2996,15 @@ const wideBMask = (at: number): number => {
 
 const makeWideMachineRow = (): TExoDomMachine => {
     const MACHINE_SCHEMA15 = createExoSchema(buildWideRow);
-    const mMachine15 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA15);
+    const mMachine15 = createExoMachine<
+        TExoDomNode,
+        TExoWideHandle<TExoBenchMachine<TExoWideMachineState>>
+    >(MACHINE_SCHEMA15, {
+        createInitialState: (c, handle) => {
+            const state: TExoWideMachineState = wideFieldsOf(handle.seed);
+            handle.state = exoFormBMachine(state, c.fillDoors(), derivations);
+        },
+    });
     // DECLARED ONCE, AT MODULE LOAD — nineteen objects shared by every instance.
     const derivations: readonly TExoDerivation<TExoWideMachineState>[] = WIDE_READS.slice(1).map(
         (_reads, k) => {
@@ -3013,21 +3024,17 @@ const makeWideMachineRow = (): TExoDomMachine => {
         }
     );
     WIDE_B_DERIVATIONS.push(derivations);
-    mMachine15.createInitialState((c, i) => {
-        const handle = WIDE_MACHINE_DATA[i];
-        const state: TExoWideMachineState = wideFieldsOf(handle.seed);
-        handle.state = exoFormBMachine(state, c.fillDoors(), derivations);
-    });
-    return mMachine15.done();
+    return mMachine15;
 };
 
 const makeWideMachineShell = (row: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA16 = createExoSchema(buildWideShell);
-    const mMachine16 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA16);
-    mMachine16.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA16.ports.rows, row, WIDE_MACHINE_DATA.length);
+    const mMachine16 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA16, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA16.ports.rows, row, WIDE_MACHINE_DATA);
+        },
     });
-    return mMachine16.done();
+    return mMachine16;
 };
 
 const WIDE_ROW_B = makeWideMachineRow();
@@ -3057,7 +3064,26 @@ let WIDE_COMPILED_DATA: readonly TExoWideHandle<TExoWideCompiledState>[] = [];
 const makeWideCompiledPack = (): TExoWideCompiledPack => {
     let ops!: TExoWideCompiledOps;
     const component_SCHEMA4 = createExoSchema(buildWideRow);
-    const mComponent4 = createExoMachineBuilder<TExoDomNode>(component_SCHEMA4);
+    const mComponent4 = createExoMachine<TExoDomNode, TExoWideHandle<TExoWideCompiledState>>(
+        component_SCHEMA4,
+        {
+            createInitialState: (c, handle) => {
+                // ONE OBJECT AND ONE ONE-SLOT PENDING TABLE PER INSTANCE, at twenty fields
+                // exactly as at four.
+                const state: TExoWideCompiledState = {
+                    ...wideFieldsOf(handle.seed),
+                    managedState: [0],
+                    portTable: c.portTable(),
+                    portWrite: c.portNodeWriter(),
+                    attr: exoDetachedWrite,
+                    text: exoDetachedWrite,
+                    unsafeHtml: exoDetachedWrite,
+                };
+                handle.state = state;
+                fillExoMachineDerivations(program, state);
+            },
+        }
+    );
     const program = compileExoMachine<TExoWideCompiledState>({
         fields: WIDE_FIELDS,
         pendingRow: PENDING_ROW,
@@ -3095,33 +3121,18 @@ const makeWideCompiledPack = (): TExoWideCompiledPack => {
         // is 0 — however wide the component is.
         none: writeFields(WIDE_NONE),
     };
-    mComponent4.createInitialState((c, i) => {
-        const handle = WIDE_COMPILED_DATA[i];
-        // ONE OBJECT AND ONE ONE-SLOT PENDING TABLE PER INSTANCE, at twenty fields
-        // exactly as at four.
-        const state: TExoWideCompiledState = {
-            ...wideFieldsOf(handle.seed),
-            managedState: [0],
-            portTable: c.portTable(),
-            portWrite: c.portNodeWriter(),
-            attr: exoDetachedWrite,
-            text: exoDetachedWrite,
-            unsafeHtml: exoDetachedWrite,
-        };
-        handle.state = state;
-        fillExoMachineDerivations(program, state);
-    });
-    const component = mComponent4.done();
+    const component = mComponent4;
     return { component, ops };
 };
 
 const makeWideCompiledShell = (row: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA17 = createExoSchema(buildWideShell);
-    const mMachine17 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA17);
-    mMachine17.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA17.ports.rows, row, WIDE_COMPILED_DATA.length);
+    const mMachine17 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA17, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA17.ports.rows, row, WIDE_COMPILED_DATA);
+        },
     });
-    return mMachine17.done();
+    return mMachine17;
 };
 
 const WIDE_PACK_C = makeWideCompiledPack();
@@ -3251,15 +3262,16 @@ const WIDE_PACK_C_SHR_TWIN = makeWideTablePack(true);
 
 const makeWideTableShell = (row: TExoDomMachine, shared: boolean): TExoDomMachine => {
     const MACHINE_SCHEMA18 = createExoSchema(buildWideShell);
-    const mMachine18 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA18);
-    mMachine18.createInitialState((c) => {
-        c.list(
-            MACHINE_SCHEMA18.ports.rows,
-            row,
-            shared ? WIDE_TABLE_SHARED_DATA.length : WIDE_TABLE_OWN_DATA.length
-        );
+    const mMachine18 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA18, {
+        createInitialState: (c) => {
+            c.list(
+                MACHINE_SCHEMA18.ports.rows,
+                row,
+                shared ? WIDE_TABLE_SHARED_DATA : WIDE_TABLE_OWN_DATA
+            );
+        },
     });
-    return mMachine18.done();
+    return mMachine18;
 };
 
 const WIDE_SHELL_C_TBL = makeWideTableShell(WIDE_PACK_C_TBL.component, false);
@@ -3421,128 +3433,132 @@ let WIDE_WIRE_DATA: readonly TExoWideHandle<TExoWideWireOps>[] = [];
  */
 const makeWideWireRow = (): TExoDomMachine => {
     const MACHINE_SCHEMA19 = createExoSchema(buildWideRow);
-    const mMachine19 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA19);
+    const mMachine19 = createExoMachine<TExoDomNode, TExoWideHandle<TExoWideWireOps>>(
+        MACHINE_SCHEMA19,
+        {
+            createInitialState: (c, handle) => {
+                const seed = handle.seed;
+                // THE STATE — twenty closure variables. `let` for the five the doors write, `const` for
+                // the fifteen nothing here moves; see the block above for why that is stated rather
+                // than spelled `let` throughout.
+                let f0 = seed[0];
+                const f1 = seed[1];
+                let f2 = seed[2];
+                const f3 = seed[3];
+                const f4 = seed[4];
+                const f5 = seed[5];
+                const f6 = seed[6];
+                const f7 = seed[7];
+                const f8 = seed[8];
+                const f9 = seed[9];
+                const f10 = seed[10];
+                const f11 = seed[11];
+                let f12 = seed[12];
+                const f13 = seed[13];
+                const f14 = seed[14];
+                const f15 = seed[15];
+                const f16 = seed[16];
+                const f17 = seed[17];
+                // SEEDED WITH THE CHAIN ALREADY RUN, exactly as `wideFieldsOf` seeds it — `seed[18]` is
+                // not read by anybody, here or anywhere else.
+                let f18 = wideSummary(seed[0], seed[1]);
+                // THE FIELD NOTHING READS. It is `let` because TABLE 8's door writes it.
+                let f19 = seed[19];
+
+                // THE FILL — nineteen ports, written out, through the same `c.text` every machine row's
+                // fill uses. This is the author's copy of `WIDE_READS`, and it is what "written by
+                // hand" costs in source.
+                c.text(out[0], WIDE_FROM_VALUES[1](f2, f3));
+                c.text(out[1], WIDE_FROM_VALUES[2](f2, f4));
+                c.text(out[2], WIDE_FROM_VALUES[3](f2, f5));
+                c.text(out[3], WIDE_FROM_VALUES[4](f3, f6));
+                c.text(out[4], WIDE_FROM_VALUES[5](f6, f7));
+                c.text(out[5], WIDE_FROM_VALUES[6](f7, f8));
+                c.text(out[6], WIDE_FROM_VALUES[7](f8, f9));
+                c.text(out[7], WIDE_FROM_VALUES[8](f9, f10));
+                c.text(out[8], WIDE_FROM_VALUES[9](f10, f11));
+                c.text(out[9], WIDE_FROM_VALUES[10](f11, f12));
+                c.text(out[10], WIDE_FROM_VALUES[11](f12, f13));
+                c.text(out[11], WIDE_FROM_VALUES[12](f13, f14));
+                c.text(out[12], WIDE_FROM_VALUES[13](f14, f15));
+                c.text(out[13], WIDE_FROM_VALUES[14](f15, f16));
+                c.text(out[14], WIDE_FROM_VALUES[15](f16, f17));
+                c.text(out[15], WIDE_FROM_VALUES[16](f17, f0));
+                c.text(out[16], WIDE_FROM_VALUES[17](f1, f4));
+                c.text(out[17], WIDE_FROM_VALUES[18](f18, f5));
+                c.text(out[18], WIDE_FROM_VALUES[19](f12, f18));
+
+                // THE PORT HANDLE, KEPT — one object per instance and nothing per port.
+                const ports = c.fillDoors();
+
+                // DOOR ONE — `f2`, which three derivations read and no chain touches.
+                const one = (v2: number): void => {
+                    f2 = v2;
+                    ports.text(out[0], WIDE_FROM_VALUES[1](f2, f3));
+                    ports.text(out[1], WIDE_FROM_VALUES[2](f2, f4));
+                    ports.text(out[2], WIDE_FROM_VALUES[3](f2, f5));
+                    // AND THE ONE READ OF `f19` IN THIS COMPONENT, PUT WHERE IT COSTS LEAST — the same
+                    // move the narrow row makes with `note`, and for the same reason. TABLE 8's door
+                    // stores that variable and no other live code here touches it, and a closure
+                    // variable nothing reads is one an engine may drop ALONG WITH ITS STORE, which
+                    // would leave TABLE 8 timing an empty call for this row and a real store for every
+                    // other. It is read HERE and not in `none` because this door already runs three
+                    // recomputes and three DOM writes, so a context load and a never-taken branch are
+                    // small against it, where TABLE 8's whole job for this row is one store and they
+                    // would be a fraction of it that this file cannot bound.
+                    // `wideAt` masks with 0xff and cannot produce a negative; the refusal is the READ.
+                    if (f19 < 0) {
+                        refuse(
+                            `machine-vs-cells: wide \`wire\` holds a negative f19 (${f19}), which ` +
+                                '`wideAt` cannot produce.'
+                        );
+                    }
+                };
+
+                // DOOR TWO — `f0`, `f2` and `f12` as ONE change, the chain by hand, eight ports each
+                // written once, in ascending derivation order. That order is not decoration: it is
+                // what `machine`'s commit guarantees structurally and what this row's author has to keep.
+                const some = (v0: number, v2: number, v12: number): void => {
+                    f0 = v0;
+                    f2 = v2;
+                    f12 = v12;
+                    f18 = wideSummary(f0, f1);
+                    ports.text(out[0], WIDE_FROM_VALUES[1](f2, f3));
+                    ports.text(out[1], WIDE_FROM_VALUES[2](f2, f4));
+                    ports.text(out[2], WIDE_FROM_VALUES[3](f2, f5));
+                    ports.text(out[9], WIDE_FROM_VALUES[10](f11, f12));
+                    ports.text(out[10], WIDE_FROM_VALUES[11](f12, f13));
+                    ports.text(out[15], WIDE_FROM_VALUES[16](f17, f0));
+                    ports.text(out[17], WIDE_FROM_VALUES[18](f18, f5));
+                    ports.text(out[18], WIDE_FROM_VALUES[19](f12, f18));
+                };
+
+                // DOOR THREE — the field nothing reads. No mask to OR, no commit to return from.
+                const none = (v19: number): void => {
+                    f19 = v19;
+                };
+
+                // THE OBJECT THAT CARRIES THE DOORS BACK — the fifth allocation, and the one a machine
+                // does not make because its transitions are the component's rather than the instance's.
+                handle.state = { one, some, none };
+            },
+        }
+    );
     // PER COMPONENT, NOT PER INSTANCE — the port array the schema handed back. Hoisting it here
     // costs no per-instance slot and makes a write `out[k]`: ONE array load, which is what
     // `machine`'s commit pays for `ports[i]`.
     const out = MACHINE_SCHEMA19.ports.out;
-    mMachine19.createInitialState((c, i) => {
-        const handle = WIDE_WIRE_DATA[i];
-        const seed = handle.seed;
-        // THE STATE — twenty closure variables. `let` for the five the doors write, `const` for
-        // the fifteen nothing here moves; see the block above for why that is stated rather
-        // than spelled `let` throughout.
-        let f0 = seed[0];
-        const f1 = seed[1];
-        let f2 = seed[2];
-        const f3 = seed[3];
-        const f4 = seed[4];
-        const f5 = seed[5];
-        const f6 = seed[6];
-        const f7 = seed[7];
-        const f8 = seed[8];
-        const f9 = seed[9];
-        const f10 = seed[10];
-        const f11 = seed[11];
-        let f12 = seed[12];
-        const f13 = seed[13];
-        const f14 = seed[14];
-        const f15 = seed[15];
-        const f16 = seed[16];
-        const f17 = seed[17];
-        // SEEDED WITH THE CHAIN ALREADY RUN, exactly as `wideFieldsOf` seeds it — `seed[18]` is
-        // not read by anybody, here or anywhere else.
-        let f18 = wideSummary(seed[0], seed[1]);
-        // THE FIELD NOTHING READS. It is `let` because TABLE 8's door writes it.
-        let f19 = seed[19];
-
-        // THE FILL — nineteen ports, written out, through the same `c.text` every machine row's
-        // fill uses. This is the author's copy of `WIDE_READS`, and it is what "written by
-        // hand" costs in source.
-        c.text(out[0], WIDE_FROM_VALUES[1](f2, f3));
-        c.text(out[1], WIDE_FROM_VALUES[2](f2, f4));
-        c.text(out[2], WIDE_FROM_VALUES[3](f2, f5));
-        c.text(out[3], WIDE_FROM_VALUES[4](f3, f6));
-        c.text(out[4], WIDE_FROM_VALUES[5](f6, f7));
-        c.text(out[5], WIDE_FROM_VALUES[6](f7, f8));
-        c.text(out[6], WIDE_FROM_VALUES[7](f8, f9));
-        c.text(out[7], WIDE_FROM_VALUES[8](f9, f10));
-        c.text(out[8], WIDE_FROM_VALUES[9](f10, f11));
-        c.text(out[9], WIDE_FROM_VALUES[10](f11, f12));
-        c.text(out[10], WIDE_FROM_VALUES[11](f12, f13));
-        c.text(out[11], WIDE_FROM_VALUES[12](f13, f14));
-        c.text(out[12], WIDE_FROM_VALUES[13](f14, f15));
-        c.text(out[13], WIDE_FROM_VALUES[14](f15, f16));
-        c.text(out[14], WIDE_FROM_VALUES[15](f16, f17));
-        c.text(out[15], WIDE_FROM_VALUES[16](f17, f0));
-        c.text(out[16], WIDE_FROM_VALUES[17](f1, f4));
-        c.text(out[17], WIDE_FROM_VALUES[18](f18, f5));
-        c.text(out[18], WIDE_FROM_VALUES[19](f12, f18));
-
-        // THE PORT HANDLE, KEPT — one object per instance and nothing per port.
-        const ports = c.fillDoors();
-
-        // DOOR ONE — `f2`, which three derivations read and no chain touches.
-        const one = (v2: number): void => {
-            f2 = v2;
-            ports.text(out[0], WIDE_FROM_VALUES[1](f2, f3));
-            ports.text(out[1], WIDE_FROM_VALUES[2](f2, f4));
-            ports.text(out[2], WIDE_FROM_VALUES[3](f2, f5));
-            // AND THE ONE READ OF `f19` IN THIS COMPONENT, PUT WHERE IT COSTS LEAST — the same
-            // move the narrow row makes with `note`, and for the same reason. TABLE 8's door
-            // stores that variable and no other live code here touches it, and a closure
-            // variable nothing reads is one an engine may drop ALONG WITH ITS STORE, which
-            // would leave TABLE 8 timing an empty call for this row and a real store for every
-            // other. It is read HERE and not in `none` because this door already runs three
-            // recomputes and three DOM writes, so a context load and a never-taken branch are
-            // small against it, where TABLE 8's whole job for this row is one store and they
-            // would be a fraction of it that this file cannot bound.
-            // `wideAt` masks with 0xff and cannot produce a negative; the refusal is the READ.
-            if (f19 < 0) {
-                refuse(
-                    `machine-vs-cells: wide \`wire\` holds a negative f19 (${f19}), which ` +
-                        '`wideAt` cannot produce.'
-                );
-            }
-        };
-
-        // DOOR TWO — `f0`, `f2` and `f12` as ONE change, the chain by hand, eight ports each
-        // written once, in ascending derivation order. That order is not decoration: it is
-        // what `machine`'s commit guarantees structurally and what this row's author has to keep.
-        const some = (v0: number, v2: number, v12: number): void => {
-            f0 = v0;
-            f2 = v2;
-            f12 = v12;
-            f18 = wideSummary(f0, f1);
-            ports.text(out[0], WIDE_FROM_VALUES[1](f2, f3));
-            ports.text(out[1], WIDE_FROM_VALUES[2](f2, f4));
-            ports.text(out[2], WIDE_FROM_VALUES[3](f2, f5));
-            ports.text(out[9], WIDE_FROM_VALUES[10](f11, f12));
-            ports.text(out[10], WIDE_FROM_VALUES[11](f12, f13));
-            ports.text(out[15], WIDE_FROM_VALUES[16](f17, f0));
-            ports.text(out[17], WIDE_FROM_VALUES[18](f18, f5));
-            ports.text(out[18], WIDE_FROM_VALUES[19](f12, f18));
-        };
-
-        // DOOR THREE — the field nothing reads. No mask to OR, no commit to return from.
-        const none = (v19: number): void => {
-            f19 = v19;
-        };
-
-        // THE OBJECT THAT CARRIES THE DOORS BACK — the fifth allocation, and the one a machine
-        // does not make because its transitions are the component's rather than the instance's.
-        handle.state = { one, some, none };
-    });
-    return mMachine19.done();
+    return mMachine19;
 };
 
 const makeWideWireShell = (row: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA20 = createExoSchema(buildWideShell);
-    const mMachine20 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA20);
-    mMachine20.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA20.ports.rows, row, WIDE_WIRE_DATA.length);
+    const mMachine20 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA20, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA20.ports.rows, row, WIDE_WIRE_DATA);
+        },
     });
-    return mMachine20.done();
+    return mMachine20;
 };
 
 const WIDE_ROW_WIRE = makeWideWireRow();
@@ -3573,12 +3589,12 @@ const WIDE_SHELL_WIRE_TWIN = makeWideWireShell(WIDE_ROW_WIRE_TWIN);
 //
 // ═══ WHAT IT IS, PART BY PART ═══
 //
-//  · TWENTY VALUES IN ONE CACHE SLOT — `m.createInitialState(() => ({ f0: 0, … f19: 0 }))`, one object
+//  · TWENTY VALUES IN ONE CACHE SLOT — `createExoMachine(schema, { createInitialState: () => ({ f0: 0, … f19: 0 }) })`, one object
 //    per instance of the same `TExoWideFields` shape every participant holds, read with
 //    `c.readState(K)` once per transition body and written with an ordinary property
 //    store. THEY USED TO BE TWENTY `m.field`s, and the reason they are not is not
 //    performance: a field is an address for WAKING — a bit against the thirty-one ceiling, a row of
-//    the mark table, a place in `done()`'s inversion, a row of the chain table — and a component
+//    the mark table, a place in `withExoComputedMachine`'s inversion, a row of the chain table — and a component
 //    that declares no derivation, no fill and no effect can never use one. The values here are read
 //    by three transition bodies and a seed, and reading a value inside a transition body is not a
 //    declaration and wakes nothing. NOT ONE OF THE TWENTY STAYS A FIELD, because the one shape that
@@ -3601,7 +3617,7 @@ const WIDE_SHELL_WIRE_TWIN = makeWideWireShell(WIDE_ROW_WIRE_TWIN);
 //    otherwise.
 //  · THIS ROW LOST ITS `exoTransition` WRAPPER, and it is recorded rather than hidden. A transition
 //    is the COMPUTED system's door and is declared against a compiled program; an undecorated
-//    `createExoMachineBuilder` has none, so `exoTransition(ROW, …)` no longer typechecks and the three bodies are
+//    `createExoMachine` has none, so `exoTransition(ROW, …)` no longer typechecks and the three bodies are
 //    plain functions over the instance. AT RUN TIME NOTHING MOVED: `exoTransition.ts` returns
 //    `apply` unchanged for a program with no compute and no body, and this component declares
 //    neither — so what the wrapper handed back was always the author's own function. Every mention
@@ -3700,7 +3716,7 @@ const WIDE_SHELL_WIRE_TWIN = makeWideWireShell(WIDE_ROW_WIRE_TWIN);
 //
 // `machine·imperative − machine` CARRIED TWO TERMS AND THIS FILE'S DISCIPLINE IS ONE. `machine` is
 // the FLAT DESCRIPTION — `compileExoMachine` called by hand over a state object with
-// twenty NAMED properties — and this row was the SHIPPED AUTHORING LAYER, `createExoMachineBuilder`, whose
+// twenty NAMED properties — and this row was the SHIPPED AUTHORING LAYER, the machine builder, whose
 // instance kept its fields in a VALUE TABLE. So the subtraction carried (i) where the rules live
 // AND (ii) where the state lives.
 //
@@ -3721,9 +3737,9 @@ const WIDE_SHELL_WIRE_TWIN = makeWideWireShell(WIDE_ROW_WIRE_TWIN);
 //      three mechanisms are real and they are not orderable by reading them. THIS ROW per woken
 //      derivation: two property loads off the cached object, the compute call, and `c.text` — a
 //      prototype method call, two field loads off the instance and the schema's write;
-//      per update, ONE CALL AND NOTHING AROUND IT — `m.transition` on a plain
-//      `createExoMachineBuilder` hands `apply` straight back, so there is no wrapper, no `settle` and no commit
-//      on this path at all — plus ONE `c.kept` (two loads) for the body, and one PROPERTY STORE
+//      per update, ONE CALL AND ONE NULL TEST AROUND IT — `withExoTransitions` on a plain
+//      `createExoMachine` wraps `apply` in one `transitionOverrides === null` test, so there is no `settle`
+//      and no commit on this path at all — plus ONE `c.kept` (two loads) for the body, and one PROPERTY STORE
 //      per value written, which is the whole of what the cache changed on this path and is the
 //      write bullet above. `machine` pays a wrapper and then a real commit:
 //      the effect-mask split, a bit scan per woken slot, a `computes` call, a `ports[i]` load, a
@@ -3762,7 +3778,7 @@ interface TExoWideDirectOps {
 }
 
 interface TExoWideDirectPack {
-    /** `m.done()`'s value — a schema and a plan, and nothing callable. There is no wire in this
+    /** The composed machine — a schema and a plan. There is no wire in this
      *  row's source and no props slot on its component. */
     readonly component: TExoMachine<TExoWideDirectInstance>;
     readonly ops: TExoWideDirectOps;
@@ -3821,233 +3837,237 @@ if (
  * and not a second name for one program.
  */
 const makeWideDirectPack = (): TExoWideDirectPack => {
-    // `createExoSchema` AND NOT `createExoMachineBuilder`, for the reason `apps/exodra/exodra.md`
-    // gives: a machine IS the wire, so there is no wire factory to hand the ports to. The ports are numbered
-    // when this returns, which is what `m.done()`'s compile requires.
+    // The ports are numbered when `createExoSchema` returns, before `createExoMachine` is handed the
+    // schema.
     const schema = createExoSchema(buildWideRow);
     const out = schema.ports.out;
 
-    const m = createExoMachineBuilder<TExoDomNode>(schema);
-
-    /**
-     * THE TWENTY VALUES, IN THE CACHE — ONE SLOT, holding one object of this file's own
-     * `TExoWideFields` shape, and NOT twenty `m.field`s.
-     *
-     * ═══ WHY A FIELD WAS THE WRONG ADDRESS FOR EVERY ONE OF THEM ═══
-     *
-     * A FIELD IS AN ADDRESS FOR WAKING. It takes a bit of the pending word against a thirty-one
-     * ceiling, a row of the mark table, a place in `done()`'s field→derivations inversion and a row
-     * of the chain table, and every one of those exists so that WRITING it can wake a declaration.
-     * THIS COMPONENT DECLARES NOTHING — no `m.derive`, no `m.fill`, no `m.effect` — so its values
-     * are read by its own three transition bodies and by the seed, which is not a declaration and
-     * wakes nothing. Twenty fields here buy twenty addresses for a wake that can never happen.
-     *
-     * NOT ONE VALUE STAYS A FIELD, AND THE ONE SHAPE THAT WOULD HAVE KEPT ONE IS ABSENT HERE. A
-     * value named in the dependency list of a declaration the row legitimately keeps must stay a
-     * field, because that list is what its bit and mark are for —
-     * `apps/exodra/exodra.tsx`
-     * keeps two region fields for exactly that reason, named by its teardown effect. This row
-     * declares no effect (it has nothing to tear down: no reconciler owns a region here) and
-     * therefore has no dependency list anywhere, so all twenty move and the machine declares ZERO
-     * fields.
-     *
-     * ═══ WHAT THAT CHANGES IN WHAT IS MEASURED, AND IT POINTS BOTH WAYS ═══
-     *
-     * PER WRITE it removes five of six steps: `F[2].set(c, v)` was a store into the value table, a
-     * `wakes` load, a null test, a `wakes[row]` load with its own null test, a
-     * `marks[row]` load and an OR of zero; `s.f2 = v` is a named property store and nothing else.
-     * THIS READ "seven of eight" AND COUNTED A BATCH-DEPTH LOAD AND A COMPARISON among them. The
-     * shipped `set` (`exo-machine.ts`) makes neither — the module-global depth went with
-     * `exoMachineBatch` — so the saving named here is TWO STEPS SMALLER than it was
-     * written as, and no number on TABLES 5 TO 8 was ever charged for those two.
-     * PER READ it is one property load off a local where `F[3].get(c)` was a call and two loads, and
-     * the ONE `c.kept` call (two loads) is paid once per transition body rather than once
-     * per read. PER INSTANCE IT COSTS ONE MORE ALLOCATION, and this is the half that points the
-     * other way: the field form put its twenty values in the value table the wire allocates anyway,
-     * where the cache is one slot of that table PLUS the object this seeder returns. NO DIRECTION IS
-     * PREDICTED FOR THE ROW'S NUMBER on any table; the mount is where both effects are largest at
-     * once (twenty seed writes against one more allocation) and it is the table to read first.
-     *
-     * AND IT REMOVES ONE OF THE TWO TERMS IN `machine·imperative ↔ machine`. That subtraction
-     * carried (i) where the rules live and (ii) where the state lives — a VALUE TABLE against
-     * `machine`'s twenty NAMED PROPERTIES. Both rows now hold their values as twenty named
-     * properties of one object of the identical `TExoWideFields` shape, so the second term is gone
-     * and what is left between them is where the rules live. `machine·array` stays on the axis as
-     * the row that prices the storage question on its own.
-     *
-     * THE SEEDER CANNOT KNOW WHICH ROW IT IS — a machine takes no props — so it returns the twenty
-     * at zero and the `seed` transition below writes this row's values into the object it made.
-     * That is the same two-pass shape the field form had (twenty declared defaults built with the
-     * value table, then twenty seed writes over them), moved from the table into the object.
-     *
-     * AND IT FILES THE INSTANCE ON THIS ROW'S HANDLE, which is the one line that makes the row
-     * drivable at all. `c.build` hands back a CHILD, not an exonode; the seeder is handed the
-     * exonode itself, and the cursor says which row is being armed. One property store per row,
-     * which is the same one every other participant makes inside its mount.
-     */
-    const K = m.createInitialState((c: TExoWideDirectInstance): TExoWideFields => {
-        WIDE_DIRECT_DATA[WIDE_DIRECT_NEXT++].state = c;
-        return {
-            f0: 0,
-            f1: 0,
-            f2: 0,
-            f3: 0,
-            f4: 0,
-            f5: 0,
-            f6: 0,
-            f7: 0,
-            f8: 0,
-            f9: 0,
-            f10: 0,
-            f11: 0,
-            f12: 0,
-            f13: 0,
-            f14: 0,
-            f15: 0,
-            f16: 0,
-            f17: 0,
-            f18: 0,
-            f19: 0,
-        };
-    });
-
-    /**
-     * TABLE 6 — `f2`, which three derivations read and no chain touches.
-     *
-     * THE CACHE IS TAKEN ONCE AND READ AS PROPERTIES, which is what a cache IS: `c.kept`
-     * is two loads and a call, paid once for the body, and every read after it is a named property
-     * load. THAT IS NOT A SHORTCUT `machine` IS DENIED — `machine`'s compute is handed its two
-     * values off its own state object through `WIDE_READ_FIELD`, which is the identical shape. What
-     * the field form paid instead was a `get` CALL and two loads per read, and that was the cost of
-     * an address these values never used.
-     */
-    const one = m.transition((c: TExoWideDirectInstance, k: number, row: number): void => {
-        const s = c.readState(K);
-        s.f2 = wideAt(k, row, 2);
-        c.text(out[0], WIDE_FROM_VALUES[1](s.f2, s.f3));
-        c.text(out[1], WIDE_FROM_VALUES[2](s.f2, s.f4));
-        c.text(out[2], WIDE_FROM_VALUES[3](s.f2, s.f5));
-    });
-
-    /**
-     * TABLE 7 — `f0`, `f2` and `f12` as ONE change, eight ports each written ONCE, in ascending
-     * derivation order.
-     *
-     * THE CHAIN IS RUN BY HAND AND ONCE, and derivation 19 — reached by `f12` directly AND through
-     * field 18 — is written once BECAUSE ITS AUTHOR KNEW TO. `machine` gets both of those from the pending
-     * set; this row gets them from him, and nothing in this file checks that he was right except a
-     * gate that can only see a write that is MISSING.
-     */
-    const some = m.transition((c: TExoWideDirectInstance, k: number, row: number): void => {
-        const s = c.readState(K);
-        s.f0 = wideAt(k, row, 0);
-        s.f2 = wideAt(k, row, 2);
-        s.f12 = wideAt(k, row, 12);
-        s.f18 = wideSummary(s.f0, s.f1);
-        c.text(out[0], WIDE_FROM_VALUES[1](s.f2, s.f3));
-        c.text(out[1], WIDE_FROM_VALUES[2](s.f2, s.f4));
-        c.text(out[2], WIDE_FROM_VALUES[3](s.f2, s.f5));
-        c.text(out[9], WIDE_FROM_VALUES[10](s.f11, s.f12));
-        c.text(out[10], WIDE_FROM_VALUES[11](s.f12, s.f13));
-        c.text(out[15], WIDE_FROM_VALUES[16](s.f17, s.f0));
-        c.text(out[17], WIDE_FROM_VALUES[18](s.f18, s.f5));
-        c.text(out[18], WIDE_FROM_VALUES[19](s.f12, s.f18));
-    });
-
-    /**
-     * TABLE 8 — the value nothing reads. ONE PROPERTY STORE AND NOTHING ELSE WHATEVER: this
-     * transition is declared on a plain `createExoMachineBuilder`, which compiles no program and hands `apply`
-     * back untouched, so there is no settle to run and no pending word to clear — this component
-     * declares no field at all, at this width and at any other.
-     *
-     * IT NEEDS NO GUARDED READ, AND THE REASON MOVED WITH THE STATE. `wire`'s TABLE 8 door had to be
-     * read from another door, because a closure variable nothing reads is one an engine may drop
-     * ALONG WITH ITS STORE. This store lands in a property of an object the instance's value table
-     * holds for the life of the row and that two other transition bodies read, so it cannot be
-     * dropped and the store measured here is a store.
-     */
-    const none = m.transition((c: TExoWideDirectInstance, k: number, row: number): void => {
-        c.readState(K).f19 = wideAt(k, row, 19);
-    });
-
-    /**
-     * ONE ROW'S STARTING STATE AND ITS INITIAL PAINT — A FOURTH TRANSITION, fired by the shell
-     * against an instance it has built and not yet inserted. This row has no derivation pass to
-     * paint it; see WHERE THE INITIAL PAINT COMES FROM above.
-     *
-     * IT IS A TRANSITION AND NOT A SEED, AND THAT IS THE WHOLE OF HOW A MACHINE IS STARTED NOW. A
-     * machine takes no props: `create → fire transitions by hand → insert by hand` is the shape,
-     * and this is its first step. The instance it is handed came off the handle its keep-seeder
-     * filed it on.
-     */
-    const seed = m.transition((c: TExoWideDirectInstance, s: TExoWideSeed): void => {
-        // VALUES 0..17 STRAIGHT OFF THE SEED, then the CHAIN'S from `wideSummary` and not
-        // from `s[18]`, so this row starts SETTLED and its mount agrees with the floor's —
-        // exactly what `wideFieldsOf` does for the object rows and the wire does for its
-        // twenty closure variables. `s[18]` is read by nobody, here or anywhere else.
-        //
-        // WRITTEN OUT RATHER THAN LOOPED, AND THAT IS A CHANGE TO WHAT THIS ROW'S MOUNT COSTS,
-        // said rather than glossed. The field form wrote `for (let f = 0; f < 18; f++)
-        // F[f].set(c, s[f])` — eighteen indexed handle loads and eighteen `set` calls. Named
-        // properties cannot be indexed, so these are eighteen straight-line stores, which is
-        // CHEAPER, and any recording of TABLE 5 taken before this edit is measuring a mount
-        // this row no longer performs. It is the same straight line `wideFieldsOf` builds for
-        // every object row, which is what makes the two comparable at all.
-        const mem = c.readState(K);
-        mem.f0 = s[0];
-        mem.f1 = s[1];
-        mem.f2 = s[2];
-        mem.f3 = s[3];
-        mem.f4 = s[4];
-        mem.f5 = s[5];
-        mem.f6 = s[6];
-        mem.f7 = s[7];
-        mem.f8 = s[8];
-        mem.f9 = s[9];
-        mem.f10 = s[10];
-        mem.f11 = s[11];
-        mem.f12 = s[12];
-        mem.f13 = s[13];
-        mem.f14 = s[14];
-        mem.f15 = s[15];
-        mem.f16 = s[16];
-        mem.f17 = s[17];
-        const f18 = wideSummary(s[0], s[1]);
-        mem.f18 = f18;
-        mem.f19 = s[WIDE_UNREAD_FIELD];
-
-        // THE NINETEEN PORTS, THROUGH THE INSTANCE'S OWN DOOR. There is no second
-        // door to reach for, and none is needed: this transition and the three above write
-        // through the same exonode, before the insertion and long after it alike.
-        c.text(out[0], WIDE_FROM_VALUES[1](s[2], s[3]));
-        c.text(out[1], WIDE_FROM_VALUES[2](s[2], s[4]));
-        c.text(out[2], WIDE_FROM_VALUES[3](s[2], s[5]));
-        c.text(out[3], WIDE_FROM_VALUES[4](s[3], s[6]));
-        c.text(out[4], WIDE_FROM_VALUES[5](s[6], s[7]));
-        c.text(out[5], WIDE_FROM_VALUES[6](s[7], s[8]));
-        c.text(out[6], WIDE_FROM_VALUES[7](s[8], s[9]));
-        c.text(out[7], WIDE_FROM_VALUES[8](s[9], s[10]));
-        c.text(out[8], WIDE_FROM_VALUES[9](s[10], s[11]));
-        c.text(out[9], WIDE_FROM_VALUES[10](s[11], s[12]));
-        c.text(out[10], WIDE_FROM_VALUES[11](s[12], s[13]));
-        c.text(out[11], WIDE_FROM_VALUES[12](s[13], s[14]));
-        c.text(out[12], WIDE_FROM_VALUES[13](s[14], s[15]));
-        c.text(out[13], WIDE_FROM_VALUES[14](s[15], s[16]));
-        c.text(out[14], WIDE_FROM_VALUES[15](s[16], s[17]));
-        c.text(out[15], WIDE_FROM_VALUES[16](s[17], s[0]));
-        c.text(out[16], WIDE_FROM_VALUES[17](s[1], s[4]));
-        c.text(out[17], WIDE_FROM_VALUES[18](f18, s[5]));
-        c.text(out[18], WIDE_FROM_VALUES[19](s[12], f18));
+    const m = createExoMachine<TExoDomNode>(schema, {
+        createInitialState: (c: TExoWideDirectInstance): TExoWideFields => {
+            WIDE_DIRECT_DATA[WIDE_DIRECT_NEXT++].state = c;
+            return {
+                f0: 0,
+                f1: 0,
+                f2: 0,
+                f3: 0,
+                f4: 0,
+                f5: 0,
+                f6: 0,
+                f7: 0,
+                f8: 0,
+                f9: 0,
+                f10: 0,
+                f11: 0,
+                f12: 0,
+                f13: 0,
+                f14: 0,
+                f15: 0,
+                f16: 0,
+                f17: 0,
+                f18: 0,
+                f19: 0,
+            };
+        },
     });
 
     /**
      * ONE ROW, AS A MACHINE THAT WRITES ITS OWN PORTS. No derivation, no fill, no effect — and no
      * FIELD either, so its instance's value table is one slot long and holds the cache.
      *
-     * LAST, BECAUSE `done()` SEALS THE BUILDER: every transition above it is declared before it,
-     * and `createExoMachineBuilder.ts` throws by name on one that arrives after.
+     * `withExoTransitions` returns a NEW machine and leaves `m` unchanged, so `ROW` is the machine
+     * with the transitions and `m` is not.
      */
-    const ROW = m.done();
+    const ROW = composeExoMachine(m, (m) =>
+        withExoTransitions(m, {
+            /**
+             * THE TWENTY VALUES, IN THE CACHE — ONE SLOT, holding one object of this file's own
+             * `TExoWideFields` shape, and NOT twenty `m.field`s.
+             *
+             * ═══ WHY A FIELD WAS THE WRONG ADDRESS FOR EVERY ONE OF THEM ═══
+             *
+             * A FIELD IS AN ADDRESS FOR WAKING. It takes a bit of the pending word against a thirty-one
+             * ceiling, a row of the mark table, a place in `withExoComputedMachine`'s field→derivations inversion and a row
+             * of the chain table, and every one of those exists so that WRITING it can wake a declaration.
+             * THIS COMPONENT DECLARES NOTHING — no `m.derive`, no `m.fill`, no `m.effect` — so its values
+             * are read by its own three transition bodies and by the seed, which is not a declaration and
+             * wakes nothing. Twenty fields here buy twenty addresses for a wake that can never happen.
+             *
+             * NOT ONE VALUE STAYS A FIELD, AND THE ONE SHAPE THAT WOULD HAVE KEPT ONE IS ABSENT HERE. A
+             * value named in the dependency list of a declaration the row legitimately keeps must stay a
+             * field, because that list is what its bit and mark are for —
+             * `apps/exodra/exodra.tsx`
+             * keeps two region fields for exactly that reason, named by its teardown effect. This row
+             * declares no effect (it has nothing to tear down: no reconciler owns a region here) and
+             * therefore has no dependency list anywhere, so all twenty move and the machine declares ZERO
+             * fields.
+             *
+             * ═══ WHAT THAT CHANGES IN WHAT IS MEASURED, AND IT POINTS BOTH WAYS ═══
+             *
+             * PER WRITE it removes five of six steps: `F[2].set(c, v)` was a store into the value table, a
+             * `wakes` load, a null test, a `wakes[row]` load with its own null test, a
+             * `marks[row]` load and an OR of zero; `s.f2 = v` is a named property store and nothing else.
+             * THIS READ "seven of eight" AND COUNTED A BATCH-DEPTH LOAD AND A COMPARISON among them. The
+             * shipped `set` (`exo-machine.ts`) makes neither — the module-global depth went with
+             * `exoMachineBatch` — so the saving named here is TWO STEPS SMALLER than it was
+             * written as, and no number on TABLES 5 TO 8 was ever charged for those two.
+             * PER READ it is one property load off a local where `F[3].get(c)` was a call and two loads, and
+             * the ONE `c.kept` call (two loads) is paid once per transition body rather than once
+             * per read. PER INSTANCE IT COSTS ONE MORE ALLOCATION, and this is the half that points the
+             * other way: the field form put its twenty values in the value table the wire allocates anyway,
+             * where the cache is one slot of that table PLUS the object this seeder returns. NO DIRECTION IS
+             * PREDICTED FOR THE ROW'S NUMBER on any table; the mount is where both effects are largest at
+             * once (twenty seed writes against one more allocation) and it is the table to read first.
+             *
+             * AND IT REMOVES ONE OF THE TWO TERMS IN `machine·imperative ↔ machine`. That subtraction
+             * carried (i) where the rules live and (ii) where the state lives — a VALUE TABLE against
+             * `machine`'s twenty NAMED PROPERTIES. Both rows now hold their values as twenty named
+             * properties of one object of the identical `TExoWideFields` shape, so the second term is gone
+             * and what is left between them is where the rules live. `machine·array` stays on the axis as
+             * the row that prices the storage question on its own.
+             *
+             * THE SEEDER CANNOT KNOW WHICH ROW IT IS — a machine takes no props — so it returns the twenty
+             * at zero and the `seed` transition below writes this row's values into the object it made.
+             * That is the same two-pass shape the field form had (twenty declared defaults built with the
+             * value table, then twenty seed writes over them), moved from the table into the object.
+             *
+             * AND IT FILES THE INSTANCE ON THIS ROW'S HANDLE, which is the one line that makes the row
+             * drivable at all. `c.build` hands back a CHILD, not an exonode; the seeder is handed the
+             * exonode itself, and the cursor says which row is being armed. One property store per row,
+             * which is the same one every other participant makes inside its mount.
+             */
+
+            /**
+             * TABLE 6 — `f2`, which three derivations read and no chain touches.
+             *
+             * THE CACHE IS TAKEN ONCE AND READ AS PROPERTIES, which is what a cache IS: `c.kept`
+             * is two loads and a call, paid once for the body, and every read after it is a named property
+             * load. THAT IS NOT A SHORTCUT `machine` IS DENIED — `machine`'s compute is handed its two
+             * values off its own state object through `WIDE_READ_FIELD`, which is the identical shape. What
+             * the field form paid instead was a `get` CALL and two loads per read, and that was the cost of
+             * an address these values never used.
+             */
+
+            one: (c: TExoWideDirectInstance, k: number, row: number): void => {
+                const s = c.readState<TExoWideFields>();
+                s.f2 = wideAt(k, row, 2);
+                c.text(out[0], WIDE_FROM_VALUES[1](s.f2, s.f3));
+                c.text(out[1], WIDE_FROM_VALUES[2](s.f2, s.f4));
+                c.text(out[2], WIDE_FROM_VALUES[3](s.f2, s.f5));
+            },
+            /**
+             * TABLE 7 — `f0`, `f2` and `f12` as ONE change, eight ports each written ONCE, in ascending
+             * derivation order.
+             *
+             * THE CHAIN IS RUN BY HAND AND ONCE, and derivation 19 — reached by `f12` directly AND through
+             * field 18 — is written once BECAUSE ITS AUTHOR KNEW TO. `machine` gets both of those from the pending
+             * set; this row gets them from him, and nothing in this file checks that he was right except a
+             * gate that can only see a write that is MISSING.
+             */
+
+            some: (c: TExoWideDirectInstance, k: number, row: number): void => {
+                const s = c.readState<TExoWideFields>();
+                s.f0 = wideAt(k, row, 0);
+                s.f2 = wideAt(k, row, 2);
+                s.f12 = wideAt(k, row, 12);
+                s.f18 = wideSummary(s.f0, s.f1);
+                c.text(out[0], WIDE_FROM_VALUES[1](s.f2, s.f3));
+                c.text(out[1], WIDE_FROM_VALUES[2](s.f2, s.f4));
+                c.text(out[2], WIDE_FROM_VALUES[3](s.f2, s.f5));
+                c.text(out[9], WIDE_FROM_VALUES[10](s.f11, s.f12));
+                c.text(out[10], WIDE_FROM_VALUES[11](s.f12, s.f13));
+                c.text(out[15], WIDE_FROM_VALUES[16](s.f17, s.f0));
+                c.text(out[17], WIDE_FROM_VALUES[18](s.f18, s.f5));
+                c.text(out[18], WIDE_FROM_VALUES[19](s.f12, s.f18));
+            },
+            /**
+             * TABLE 8 — the value nothing reads. ONE PROPERTY STORE AND NOTHING ELSE WHATEVER: this
+             * transition is declared on a plain `createExoMachine`, which compiles no program; `withExoTransitions`
+             * adds one `transitionOverrides === null` test in front of `apply`, so there is no settle to run and no pending word to clear — this component
+             * declares no field at all, at this width and at any other.
+             *
+             * IT NEEDS NO GUARDED READ, AND THE REASON MOVED WITH THE STATE. `wire`'s TABLE 8 door had to be
+             * read from another door, because a closure variable nothing reads is one an engine may drop
+             * ALONG WITH ITS STORE. This store lands in a property of an object the instance's value table
+             * holds for the life of the row and that two other transition bodies read, so it cannot be
+             * dropped and the store measured here is a store.
+             */
+
+            none: (c: TExoWideDirectInstance, k: number, row: number): void => {
+                c.readState<TExoWideFields>().f19 = wideAt(k, row, 19);
+            },
+            /**
+             * ONE ROW'S STARTING STATE AND ITS INITIAL PAINT — A FOURTH TRANSITION, fired by the shell
+             * against an instance it has built and not yet inserted. This row has no derivation pass to
+             * paint it; see WHERE THE INITIAL PAINT COMES FROM above.
+             *
+             * IT IS A TRANSITION AND NOT A SEED, AND THAT IS THE WHOLE OF HOW A MACHINE IS STARTED NOW. A
+             * machine takes no props: `create → fire transitions by hand → insert by hand` is the shape,
+             * and this is its first step. The instance it is handed came off the handle its keep-seeder
+             * filed it on.
+             */
+
+            seed: (c: TExoWideDirectInstance, s: TExoWideSeed): void => {
+                // VALUES 0..17 STRAIGHT OFF THE SEED, then the CHAIN'S from `wideSummary` and not
+                // from `s[18]`, so this row starts SETTLED and its mount agrees with the floor's —
+                // exactly what `wideFieldsOf` does for the object rows and the wire does for its
+                // twenty closure variables. `s[18]` is read by nobody, here or anywhere else.
+                //
+                // WRITTEN OUT RATHER THAN LOOPED, AND THAT IS A CHANGE TO WHAT THIS ROW'S MOUNT COSTS,
+                // said rather than glossed. The field form wrote `for (let f = 0; f < 18; f++)
+                // F[f].set(c, s[f])` — eighteen indexed handle loads and eighteen `set` calls. Named
+                // properties cannot be indexed, so these are eighteen straight-line stores, which is
+                // CHEAPER, and any recording of TABLE 5 taken before this edit is measuring a mount
+                // this row no longer performs. It is the same straight line `wideFieldsOf` builds for
+                // every object row, which is what makes the two comparable at all.
+                const mem = c.readState<TExoWideFields>();
+                mem.f0 = s[0];
+                mem.f1 = s[1];
+                mem.f2 = s[2];
+                mem.f3 = s[3];
+                mem.f4 = s[4];
+                mem.f5 = s[5];
+                mem.f6 = s[6];
+                mem.f7 = s[7];
+                mem.f8 = s[8];
+                mem.f9 = s[9];
+                mem.f10 = s[10];
+                mem.f11 = s[11];
+                mem.f12 = s[12];
+                mem.f13 = s[13];
+                mem.f14 = s[14];
+                mem.f15 = s[15];
+                mem.f16 = s[16];
+                mem.f17 = s[17];
+                const f18 = wideSummary(s[0], s[1]);
+                mem.f18 = f18;
+                mem.f19 = s[WIDE_UNREAD_FIELD];
+
+                // THE NINETEEN PORTS, THROUGH THE INSTANCE'S OWN DOOR. There is no second
+                // door to reach for, and none is needed: this transition and the three above write
+                // through the same exonode, before the insertion and long after it alike.
+                c.text(out[0], WIDE_FROM_VALUES[1](s[2], s[3]));
+                c.text(out[1], WIDE_FROM_VALUES[2](s[2], s[4]));
+                c.text(out[2], WIDE_FROM_VALUES[3](s[2], s[5]));
+                c.text(out[3], WIDE_FROM_VALUES[4](s[3], s[6]));
+                c.text(out[4], WIDE_FROM_VALUES[5](s[6], s[7]));
+                c.text(out[5], WIDE_FROM_VALUES[6](s[7], s[8]));
+                c.text(out[6], WIDE_FROM_VALUES[7](s[8], s[9]));
+                c.text(out[7], WIDE_FROM_VALUES[8](s[9], s[10]));
+                c.text(out[8], WIDE_FROM_VALUES[9](s[10], s[11]));
+                c.text(out[9], WIDE_FROM_VALUES[10](s[11], s[12]));
+                c.text(out[10], WIDE_FROM_VALUES[11](s[12], s[13]));
+                c.text(out[11], WIDE_FROM_VALUES[12](s[13], s[14]));
+                c.text(out[12], WIDE_FROM_VALUES[13](s[14], s[15]));
+                c.text(out[13], WIDE_FROM_VALUES[14](s[15], s[16]));
+                c.text(out[14], WIDE_FROM_VALUES[15](s[16], s[17]));
+                c.text(out[15], WIDE_FROM_VALUES[16](s[17], s[0]));
+                c.text(out[16], WIDE_FROM_VALUES[17](s[1], s[4]));
+                c.text(out[17], WIDE_FROM_VALUES[18](f18, s[5]));
+                c.text(out[18], WIDE_FROM_VALUES[19](s[12], f18));
+            },
+        })
+    );
+    const { one, some, none, seed } = ROW.transitions;
 
     return { component: ROW, ops: { one, some, none }, seed };
 };
@@ -4082,33 +4102,34 @@ const makeWideDirectPack = (): TExoWideDirectPack => {
  */
 const makeWideDirectShell = (pack: TExoWideDirectPack): TExoDomMachine => {
     const MACHINE_SCHEMA21 = createExoSchema(buildWideShell);
-    const mMachine21 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA21);
-    mMachine21.createInitialState((c) => {
-        const data = WIDE_DIRECT_DATA;
-        const region = c.childList(MACHINE_SCHEMA21.ports.rows);
-        // BEFORE THE FIRST BUILD, inside the timed region: the keep-seeder of every row
-        // about to be armed reads this cursor, and a render that did not reset it would
-        // file its instances past the end of the handle array.
-        WIDE_DIRECT_NEXT = 0;
-        for (let i = 0; i < data.length; i++) {
-            const built = c.build(pack.component);
-            const handle = data[i];
-            const enode = handle.state;
-            if (enode === null) {
-                refuse(
-                    'machine-vs-cells: machine·imperative built a row whose keep-seeder ' +
-                        `did not file it on handle ${i}. Its starting state could not be ` +
-                        'set, so this row would mount nineteen empty ports.'
-                );
+    const mMachine21 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA21, {
+        createInitialState: (c) => {
+            const data = WIDE_DIRECT_DATA;
+            const region = c.childList(MACHINE_SCHEMA21.ports.rows);
+            // BEFORE THE FIRST BUILD, inside the timed region: the keep-seeder of every row
+            // about to be armed reads this cursor, and a render that did not reset it would
+            // file its instances past the end of the handle array.
+            WIDE_DIRECT_NEXT = 0;
+            for (let i = 0; i < data.length; i++) {
+                const built = c.build(pack.component);
+                const handle = data[i];
+                const enode = handle.state;
+                if (enode === null) {
+                    refuse(
+                        'machine-vs-cells: machine·imperative built a row whose keep-seeder ' +
+                            `did not file it on handle ${i}. Its starting state could not be ` +
+                            'set, so this row would mount nineteen empty ports.'
+                    );
+                }
+                pack.seed(enode, handle.seed);
+                region.insert(built);
             }
-            pack.seed(enode, handle.seed);
-            region.insert(built);
-        }
-        c.onTeardown((): void => {
-            for (let k = region.size - 1; k >= 0; k--) exoNodeDom(region.at(k)!).unmount();
-        });
+            c.onTeardown((): void => {
+                for (let k = region.size - 1; k >= 0; k--) exoNodeDom(region.at(k)!).unmount();
+            });
+        },
     });
-    return mMachine21.done();
+    return mMachine21;
 };
 
 const WIDE_PACK_DIRECT = makeWideDirectPack();
@@ -4559,7 +4580,6 @@ const tableProgram = (
           'allocations, which is this variant`s whole price at the mount',
     prepare: () => {
         const handles = handlesOf<TExoTableHandle>((seed) => ({ seed, state: null }));
-        pack.setHandles(handles);
         return (parent) => {
             if (pack.shared) {
                 TABLE_SHARED_DATA = handles;
@@ -4787,7 +4807,6 @@ const wideTableProgram = (
         : `1 state object + 1 array of ${WIDE_FIELDS + 1} — two allocations`,
     prepare: () => {
         const handles = wideHandlesOf<TExoStateTableState>();
-        pack.setHandles(handles);
         return (parent) => {
             if (pack.shared) {
                 WIDE_TABLE_SHARED_DATA = handles;
@@ -5019,12 +5038,13 @@ const buildApp = (b: TExoSchemaCursor): TExoAppPorts => {
 /** The outer shell — a component with NO derivations, which is what most of a page is made of. */
 const makeAppShell = (tagShell: TExoDomMachine, wideShell: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA22 = createExoSchema(buildApp);
-    const mMachine22 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA22);
-    mMachine22.createInitialState((c) => {
-        c.one(MACHINE_SCHEMA22.ports.narrow, tagShell);
-        c.one(MACHINE_SCHEMA22.ports.wide, wideShell);
+    const mMachine22 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA22, {
+        createInitialState: (c) => {
+            c.one(MACHINE_SCHEMA22.ports.narrow, tagShell);
+            c.one(MACHINE_SCHEMA22.ports.wide, wideShell);
+        },
     });
-    return mMachine22.done();
+    return mMachine22;
 };
 
 /** What an app participant answers: ONE round that touches both types. */
@@ -5980,7 +6000,26 @@ const ladderCheckMarks = (
 const makeLadderMachinePack = (n: number): TExoLadderMachinePack => {
     let ops!: TExoLadderMachineOps;
     const component_SCHEMA5 = createExoSchema(buildLadderRow);
-    const mComponent5 = createExoMachineBuilder<TExoDomNode>(component_SCHEMA5);
+    const mComponent5 = createExoMachine<TExoDomNode, TExoLadderHandle<TExoLadderMachineState>>(
+        component_SCHEMA5,
+        {
+            createInitialState: (c, handle) => {
+                // ONE OBJECT AND ONE ONE-SLOT PENDING TABLE PER INSTANCE, at one declared
+                // transition exactly as at sixteen.
+                const state: TExoLadderMachineState = {
+                    ...ladderFieldsOf(handle.seed),
+                    managedState: [0],
+                    portTable: c.portTable(),
+                    portWrite: c.portNodeWriter(),
+                    attr: exoDetachedWrite,
+                    text: exoDetachedWrite,
+                    unsafeHtml: exoDetachedWrite,
+                };
+                handle.state = state;
+                fillExoMachineDerivations(program, state);
+            },
+        }
+    );
     // MODULE LOAD, ONCE, SHARED BY EVERY INSTANCE: the program, and the rung's transitions.
     const program = compileExoMachine<TExoLadderMachineState>({
         fields: LADDER_FIELDS,
@@ -5998,33 +6037,18 @@ const makeLadderMachinePack = (n: number): TExoLadderMachinePack => {
         calls.push(exoTransition<TExoLadderMachineState, number>(program, LADDER_BODY[j]));
     }
     ops = { program, calls };
-    mComponent5.createInitialState((c, i) => {
-        const handle = LADDER_MACHINE_DATA[i];
-        // ONE OBJECT AND ONE ONE-SLOT PENDING TABLE PER INSTANCE, at one declared
-        // transition exactly as at sixteen.
-        const state: TExoLadderMachineState = {
-            ...ladderFieldsOf(handle.seed),
-            managedState: [0],
-            portTable: c.portTable(),
-            portWrite: c.portNodeWriter(),
-            attr: exoDetachedWrite,
-            text: exoDetachedWrite,
-            unsafeHtml: exoDetachedWrite,
-        };
-        handle.state = state;
-        fillExoMachineDerivations(program, state);
-    });
-    const component = mComponent5.done();
+    const component = mComponent5;
     return { component, ops };
 };
 
 const makeLadderMachineShell = (row: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA23 = createExoSchema(buildLadderShell);
-    const mMachine23 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA23);
-    mMachine23.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA23.ports.rows, row, LADDER_MACHINE_DATA.length);
+    const mMachine23 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA23, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA23.ports.rows, row, LADDER_MACHINE_DATA);
+        },
     });
-    return mMachine23.done();
+    return mMachine23;
 };
 
 // ── THE WIRE ARM — twenty-one doors, written out, because a door closes over its instance ────
@@ -6042,244 +6066,270 @@ let LADDER_WIRE_DATA: readonly TExoLadderHandle<TExoLadderDoors>[] = [];
  */
 const makeLadderWireN1 = (): TExoDomMachine => {
     const MACHINE_SCHEMA24 = createExoSchema(buildLadderRow);
-    const mMachine24 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA24);
+    const mMachine24 = createExoMachine<TExoDomNode, TExoLadderHandle<TExoLadderDoors>>(
+        MACHINE_SCHEMA24,
+        {
+            createInitialState: (c, handle) => {
+                const seed = handle.seed;
+                let t0 = seed[0];
+                const t1 = seed[1];
+                const t2 = seed[2];
+                const t3 = seed[3];
+                const t4 = seed[4];
+                const t5 = seed[5];
+                const t6 = seed[6];
+                const t7 = seed[7];
+                const t8 = seed[8];
+                const t9 = seed[9];
+                const t10 = seed[10];
+                const t11 = seed[11];
+                const t12 = seed[12];
+                const t13 = seed[13];
+                const t14 = seed[14];
+                const t15 = seed[15];
+                c.text(out[0], LADDER_TEXT[0](t0));
+                c.text(out[1], LADDER_TEXT[1](t1));
+                c.text(out[2], LADDER_TEXT[2](t2));
+                c.text(out[3], LADDER_TEXT[3](t3));
+                c.text(out[4], LADDER_TEXT[4](t4));
+                c.text(out[5], LADDER_TEXT[5](t5));
+                c.text(out[6], LADDER_TEXT[6](t6));
+                c.text(out[7], LADDER_TEXT[7](t7));
+                c.text(out[8], LADDER_TEXT[8](t8));
+                c.text(out[9], LADDER_TEXT[9](t9));
+                c.text(out[10], LADDER_TEXT[10](t10));
+                c.text(out[11], LADDER_TEXT[11](t11));
+                c.text(out[12], LADDER_TEXT[12](t12));
+                c.text(out[13], LADDER_TEXT[13](t13));
+                c.text(out[14], LADDER_TEXT[14](t14));
+                c.text(out[15], LADDER_TEXT[15](t15));
+                const ports = c.fillDoors();
+                const d0 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N1[0]++;
+                    t0 = LADDER_MIX[0](v, t0);
+                    ports.text(out[0], LADDER_TEXT[0](t0));
+                };
+                handle.state = [d0];
+            },
+        }
+    );
     const out = MACHINE_SCHEMA24.ports.out;
-    mMachine24.createInitialState((c, i) => {
-        const handle = LADDER_WIRE_DATA[i];
-        const seed = handle.seed;
-        let t0 = seed[0];
-        const t1 = seed[1];
-        const t2 = seed[2];
-        const t3 = seed[3];
-        const t4 = seed[4];
-        const t5 = seed[5];
-        const t6 = seed[6];
-        const t7 = seed[7];
-        const t8 = seed[8];
-        const t9 = seed[9];
-        const t10 = seed[10];
-        const t11 = seed[11];
-        const t12 = seed[12];
-        const t13 = seed[13];
-        const t14 = seed[14];
-        const t15 = seed[15];
-        c.text(out[0], LADDER_TEXT[0](t0));
-        c.text(out[1], LADDER_TEXT[1](t1));
-        c.text(out[2], LADDER_TEXT[2](t2));
-        c.text(out[3], LADDER_TEXT[3](t3));
-        c.text(out[4], LADDER_TEXT[4](t4));
-        c.text(out[5], LADDER_TEXT[5](t5));
-        c.text(out[6], LADDER_TEXT[6](t6));
-        c.text(out[7], LADDER_TEXT[7](t7));
-        c.text(out[8], LADDER_TEXT[8](t8));
-        c.text(out[9], LADDER_TEXT[9](t9));
-        c.text(out[10], LADDER_TEXT[10](t10));
-        c.text(out[11], LADDER_TEXT[11](t11));
-        c.text(out[12], LADDER_TEXT[12](t12));
-        c.text(out[13], LADDER_TEXT[13](t13));
-        c.text(out[14], LADDER_TEXT[14](t14));
-        c.text(out[15], LADDER_TEXT[15](t15));
-        const ports = c.fillDoors();
-        const d0 = (v: number): void => {
-            LADDER_SEEN_WIRE_N1[0]++;
-            t0 = LADDER_MIX[0](v, t0);
-            ports.text(out[0], LADDER_TEXT[0](t0));
-        };
-        handle.state = [d0];
-    });
-    return mMachine24.done();
+    return mMachine24;
 };
 
 /** RUNG 4 — four doors, written out. */
 const makeLadderWireN4 = (): TExoDomMachine => {
     const MACHINE_SCHEMA25 = createExoSchema(buildLadderRow);
-    const mMachine25 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA25);
+    const mMachine25 = createExoMachine<TExoDomNode, TExoLadderHandle<TExoLadderDoors>>(
+        MACHINE_SCHEMA25,
+        {
+            createInitialState: (c, handle) => {
+                const seed = handle.seed;
+                let t0 = seed[0];
+                let t1 = seed[1];
+                let t2 = seed[2];
+                let t3 = seed[3];
+                const t4 = seed[4];
+                const t5 = seed[5];
+                const t6 = seed[6];
+                const t7 = seed[7];
+                const t8 = seed[8];
+                const t9 = seed[9];
+                const t10 = seed[10];
+                const t11 = seed[11];
+                const t12 = seed[12];
+                const t13 = seed[13];
+                const t14 = seed[14];
+                const t15 = seed[15];
+                c.text(out[0], LADDER_TEXT[0](t0));
+                c.text(out[1], LADDER_TEXT[1](t1));
+                c.text(out[2], LADDER_TEXT[2](t2));
+                c.text(out[3], LADDER_TEXT[3](t3));
+                c.text(out[4], LADDER_TEXT[4](t4));
+                c.text(out[5], LADDER_TEXT[5](t5));
+                c.text(out[6], LADDER_TEXT[6](t6));
+                c.text(out[7], LADDER_TEXT[7](t7));
+                c.text(out[8], LADDER_TEXT[8](t8));
+                c.text(out[9], LADDER_TEXT[9](t9));
+                c.text(out[10], LADDER_TEXT[10](t10));
+                c.text(out[11], LADDER_TEXT[11](t11));
+                c.text(out[12], LADDER_TEXT[12](t12));
+                c.text(out[13], LADDER_TEXT[13](t13));
+                c.text(out[14], LADDER_TEXT[14](t14));
+                c.text(out[15], LADDER_TEXT[15](t15));
+                const ports = c.fillDoors();
+                const d0 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N4[0]++;
+                    t0 = LADDER_MIX[0](v, t0);
+                    ports.text(out[0], LADDER_TEXT[0](t0));
+                };
+                const d1 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N4[1]++;
+                    t1 = LADDER_MIX[1](v, t1);
+                    ports.text(out[1], LADDER_TEXT[1](t1));
+                };
+                const d2 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N4[2]++;
+                    t2 = LADDER_MIX[2](v, t2);
+                    ports.text(out[2], LADDER_TEXT[2](t2));
+                };
+                const d3 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N4[3]++;
+                    t3 = LADDER_MIX[3](v, t3);
+                    ports.text(out[3], LADDER_TEXT[3](t3));
+                };
+                handle.state = [d0, d1, d2, d3];
+            },
+        }
+    );
     const out = MACHINE_SCHEMA25.ports.out;
-    mMachine25.createInitialState((c, i) => {
-        const handle = LADDER_WIRE_DATA[i];
-        const seed = handle.seed;
-        let t0 = seed[0];
-        let t1 = seed[1];
-        let t2 = seed[2];
-        let t3 = seed[3];
-        const t4 = seed[4];
-        const t5 = seed[5];
-        const t6 = seed[6];
-        const t7 = seed[7];
-        const t8 = seed[8];
-        const t9 = seed[9];
-        const t10 = seed[10];
-        const t11 = seed[11];
-        const t12 = seed[12];
-        const t13 = seed[13];
-        const t14 = seed[14];
-        const t15 = seed[15];
-        c.text(out[0], LADDER_TEXT[0](t0));
-        c.text(out[1], LADDER_TEXT[1](t1));
-        c.text(out[2], LADDER_TEXT[2](t2));
-        c.text(out[3], LADDER_TEXT[3](t3));
-        c.text(out[4], LADDER_TEXT[4](t4));
-        c.text(out[5], LADDER_TEXT[5](t5));
-        c.text(out[6], LADDER_TEXT[6](t6));
-        c.text(out[7], LADDER_TEXT[7](t7));
-        c.text(out[8], LADDER_TEXT[8](t8));
-        c.text(out[9], LADDER_TEXT[9](t9));
-        c.text(out[10], LADDER_TEXT[10](t10));
-        c.text(out[11], LADDER_TEXT[11](t11));
-        c.text(out[12], LADDER_TEXT[12](t12));
-        c.text(out[13], LADDER_TEXT[13](t13));
-        c.text(out[14], LADDER_TEXT[14](t14));
-        c.text(out[15], LADDER_TEXT[15](t15));
-        const ports = c.fillDoors();
-        const d0 = (v: number): void => {
-            LADDER_SEEN_WIRE_N4[0]++;
-            t0 = LADDER_MIX[0](v, t0);
-            ports.text(out[0], LADDER_TEXT[0](t0));
-        };
-        const d1 = (v: number): void => {
-            LADDER_SEEN_WIRE_N4[1]++;
-            t1 = LADDER_MIX[1](v, t1);
-            ports.text(out[1], LADDER_TEXT[1](t1));
-        };
-        const d2 = (v: number): void => {
-            LADDER_SEEN_WIRE_N4[2]++;
-            t2 = LADDER_MIX[2](v, t2);
-            ports.text(out[2], LADDER_TEXT[2](t2));
-        };
-        const d3 = (v: number): void => {
-            LADDER_SEEN_WIRE_N4[3]++;
-            t3 = LADDER_MIX[3](v, t3);
-            ports.text(out[3], LADDER_TEXT[3](t3));
-        };
-        handle.state = [d0, d1, d2, d3];
-    });
-    return mMachine25.done();
+    return mMachine25;
 };
 
 /** RUNG 16 — sixteen doors, written out. This is the row P24 is about. */
 const makeLadderWireN16 = (): TExoDomMachine => {
     const MACHINE_SCHEMA26 = createExoSchema(buildLadderRow);
-    const mMachine26 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA26);
+    const mMachine26 = createExoMachine<TExoDomNode, TExoLadderHandle<TExoLadderDoors>>(
+        MACHINE_SCHEMA26,
+        {
+            createInitialState: (c, handle) => {
+                const seed = handle.seed;
+                let t0 = seed[0];
+                let t1 = seed[1];
+                let t2 = seed[2];
+                let t3 = seed[3];
+                let t4 = seed[4];
+                let t5 = seed[5];
+                let t6 = seed[6];
+                let t7 = seed[7];
+                let t8 = seed[8];
+                let t9 = seed[9];
+                let t10 = seed[10];
+                let t11 = seed[11];
+                let t12 = seed[12];
+                let t13 = seed[13];
+                let t14 = seed[14];
+                let t15 = seed[15];
+                c.text(out[0], LADDER_TEXT[0](t0));
+                c.text(out[1], LADDER_TEXT[1](t1));
+                c.text(out[2], LADDER_TEXT[2](t2));
+                c.text(out[3], LADDER_TEXT[3](t3));
+                c.text(out[4], LADDER_TEXT[4](t4));
+                c.text(out[5], LADDER_TEXT[5](t5));
+                c.text(out[6], LADDER_TEXT[6](t6));
+                c.text(out[7], LADDER_TEXT[7](t7));
+                c.text(out[8], LADDER_TEXT[8](t8));
+                c.text(out[9], LADDER_TEXT[9](t9));
+                c.text(out[10], LADDER_TEXT[10](t10));
+                c.text(out[11], LADDER_TEXT[11](t11));
+                c.text(out[12], LADDER_TEXT[12](t12));
+                c.text(out[13], LADDER_TEXT[13](t13));
+                c.text(out[14], LADDER_TEXT[14](t14));
+                c.text(out[15], LADDER_TEXT[15](t15));
+                const ports = c.fillDoors();
+                const d0 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[0]++;
+                    t0 = LADDER_MIX[0](v, t0);
+                    ports.text(out[0], LADDER_TEXT[0](t0));
+                };
+                const d1 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[1]++;
+                    t1 = LADDER_MIX[1](v, t1);
+                    ports.text(out[1], LADDER_TEXT[1](t1));
+                };
+                const d2 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[2]++;
+                    t2 = LADDER_MIX[2](v, t2);
+                    ports.text(out[2], LADDER_TEXT[2](t2));
+                };
+                const d3 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[3]++;
+                    t3 = LADDER_MIX[3](v, t3);
+                    ports.text(out[3], LADDER_TEXT[3](t3));
+                };
+                const d4 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[4]++;
+                    t4 = LADDER_MIX[4](v, t4);
+                    ports.text(out[4], LADDER_TEXT[4](t4));
+                };
+                const d5 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[5]++;
+                    t5 = LADDER_MIX[5](v, t5);
+                    ports.text(out[5], LADDER_TEXT[5](t5));
+                };
+                const d6 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[6]++;
+                    t6 = LADDER_MIX[6](v, t6);
+                    ports.text(out[6], LADDER_TEXT[6](t6));
+                };
+                const d7 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[7]++;
+                    t7 = LADDER_MIX[7](v, t7);
+                    ports.text(out[7], LADDER_TEXT[7](t7));
+                };
+                const d8 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[8]++;
+                    t8 = LADDER_MIX[8](v, t8);
+                    ports.text(out[8], LADDER_TEXT[8](t8));
+                };
+                const d9 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[9]++;
+                    t9 = LADDER_MIX[9](v, t9);
+                    ports.text(out[9], LADDER_TEXT[9](t9));
+                };
+                const d10 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[10]++;
+                    t10 = LADDER_MIX[10](v, t10);
+                    ports.text(out[10], LADDER_TEXT[10](t10));
+                };
+                const d11 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[11]++;
+                    t11 = LADDER_MIX[11](v, t11);
+                    ports.text(out[11], LADDER_TEXT[11](t11));
+                };
+                const d12 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[12]++;
+                    t12 = LADDER_MIX[12](v, t12);
+                    ports.text(out[12], LADDER_TEXT[12](t12));
+                };
+                const d13 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[13]++;
+                    t13 = LADDER_MIX[13](v, t13);
+                    ports.text(out[13], LADDER_TEXT[13](t13));
+                };
+                const d14 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[14]++;
+                    t14 = LADDER_MIX[14](v, t14);
+                    ports.text(out[14], LADDER_TEXT[14](t14));
+                };
+                const d15 = (v: number): void => {
+                    LADDER_SEEN_WIRE_N16[15]++;
+                    t15 = LADDER_MIX[15](v, t15);
+                    ports.text(out[15], LADDER_TEXT[15](t15));
+                };
+                handle.state = [
+                    d0,
+                    d1,
+                    d2,
+                    d3,
+                    d4,
+                    d5,
+                    d6,
+                    d7,
+                    d8,
+                    d9,
+                    d10,
+                    d11,
+                    d12,
+                    d13,
+                    d14,
+                    d15,
+                ];
+            },
+        }
+    );
     const out = MACHINE_SCHEMA26.ports.out;
-    mMachine26.createInitialState((c, i) => {
-        const handle = LADDER_WIRE_DATA[i];
-        const seed = handle.seed;
-        let t0 = seed[0];
-        let t1 = seed[1];
-        let t2 = seed[2];
-        let t3 = seed[3];
-        let t4 = seed[4];
-        let t5 = seed[5];
-        let t6 = seed[6];
-        let t7 = seed[7];
-        let t8 = seed[8];
-        let t9 = seed[9];
-        let t10 = seed[10];
-        let t11 = seed[11];
-        let t12 = seed[12];
-        let t13 = seed[13];
-        let t14 = seed[14];
-        let t15 = seed[15];
-        c.text(out[0], LADDER_TEXT[0](t0));
-        c.text(out[1], LADDER_TEXT[1](t1));
-        c.text(out[2], LADDER_TEXT[2](t2));
-        c.text(out[3], LADDER_TEXT[3](t3));
-        c.text(out[4], LADDER_TEXT[4](t4));
-        c.text(out[5], LADDER_TEXT[5](t5));
-        c.text(out[6], LADDER_TEXT[6](t6));
-        c.text(out[7], LADDER_TEXT[7](t7));
-        c.text(out[8], LADDER_TEXT[8](t8));
-        c.text(out[9], LADDER_TEXT[9](t9));
-        c.text(out[10], LADDER_TEXT[10](t10));
-        c.text(out[11], LADDER_TEXT[11](t11));
-        c.text(out[12], LADDER_TEXT[12](t12));
-        c.text(out[13], LADDER_TEXT[13](t13));
-        c.text(out[14], LADDER_TEXT[14](t14));
-        c.text(out[15], LADDER_TEXT[15](t15));
-        const ports = c.fillDoors();
-        const d0 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[0]++;
-            t0 = LADDER_MIX[0](v, t0);
-            ports.text(out[0], LADDER_TEXT[0](t0));
-        };
-        const d1 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[1]++;
-            t1 = LADDER_MIX[1](v, t1);
-            ports.text(out[1], LADDER_TEXT[1](t1));
-        };
-        const d2 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[2]++;
-            t2 = LADDER_MIX[2](v, t2);
-            ports.text(out[2], LADDER_TEXT[2](t2));
-        };
-        const d3 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[3]++;
-            t3 = LADDER_MIX[3](v, t3);
-            ports.text(out[3], LADDER_TEXT[3](t3));
-        };
-        const d4 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[4]++;
-            t4 = LADDER_MIX[4](v, t4);
-            ports.text(out[4], LADDER_TEXT[4](t4));
-        };
-        const d5 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[5]++;
-            t5 = LADDER_MIX[5](v, t5);
-            ports.text(out[5], LADDER_TEXT[5](t5));
-        };
-        const d6 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[6]++;
-            t6 = LADDER_MIX[6](v, t6);
-            ports.text(out[6], LADDER_TEXT[6](t6));
-        };
-        const d7 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[7]++;
-            t7 = LADDER_MIX[7](v, t7);
-            ports.text(out[7], LADDER_TEXT[7](t7));
-        };
-        const d8 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[8]++;
-            t8 = LADDER_MIX[8](v, t8);
-            ports.text(out[8], LADDER_TEXT[8](t8));
-        };
-        const d9 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[9]++;
-            t9 = LADDER_MIX[9](v, t9);
-            ports.text(out[9], LADDER_TEXT[9](t9));
-        };
-        const d10 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[10]++;
-            t10 = LADDER_MIX[10](v, t10);
-            ports.text(out[10], LADDER_TEXT[10](t10));
-        };
-        const d11 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[11]++;
-            t11 = LADDER_MIX[11](v, t11);
-            ports.text(out[11], LADDER_TEXT[11](t11));
-        };
-        const d12 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[12]++;
-            t12 = LADDER_MIX[12](v, t12);
-            ports.text(out[12], LADDER_TEXT[12](t12));
-        };
-        const d13 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[13]++;
-            t13 = LADDER_MIX[13](v, t13);
-            ports.text(out[13], LADDER_TEXT[13](t13));
-        };
-        const d14 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[14]++;
-            t14 = LADDER_MIX[14](v, t14);
-            ports.text(out[14], LADDER_TEXT[14](t14));
-        };
-        const d15 = (v: number): void => {
-            LADDER_SEEN_WIRE_N16[15]++;
-            t15 = LADDER_MIX[15](v, t15);
-            ports.text(out[15], LADDER_TEXT[15](t15));
-        };
-        handle.state = [d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15];
-    });
-    return mMachine26.done();
+    return mMachine26;
 };
 
 const makeLadderWireRow = (n: number): TExoDomMachine => {
@@ -6296,11 +6346,12 @@ const makeLadderWireRow = (n: number): TExoDomMachine => {
 
 const makeLadderWireShell = (row: TExoDomMachine): TExoDomMachine => {
     const MACHINE_SCHEMA27 = createExoSchema(buildLadderShell);
-    const mMachine27 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA27);
-    mMachine27.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA27.ports.rows, row, LADDER_WIRE_DATA.length);
+    const mMachine27 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA27, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA27.ports.rows, row, LADDER_WIRE_DATA);
+        },
     });
-    return mMachine27.done();
+    return mMachine27;
 };
 
 // ── THE TWO LIBRARY ARMS AS PROGRAMS ─────────────────────────────────────────────────────────

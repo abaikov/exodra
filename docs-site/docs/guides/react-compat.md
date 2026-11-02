@@ -296,8 +296,8 @@ compiled). Without the compiler, mounting is level with React.
 The full field, one recorded run (`initial-render.calls-full-2026-11-01` and
 `app-update.calls-full-2026-11-01`, medians):
 
-<!-- gate: axis=initial-render label=calls-full-2026-11-01 col=2 map="compiled JSX:reactCompatJsx;compiled `createElement` calls:reactCompatCalls;host templates, no compiler (default):reactCompatTemplates;React 19:react;React 19 + React Compiler:reactCompiler;templates off:reactCompat" -->
-<!-- gate: axis=app-update label=calls-full-2026-11-01 col=3 map="compiled JSX:reactCompatJsx;compiled `createElement` calls:reactCompatCalls;host templates, no compiler (default):reactCompatTemplates;React 19:react;React 19 + React Compiler:reactCompiler;templates off:reactCompat" -->
+<!-- gate: axis=initial-render label=calls-full-2026-11-01 col=2 map="compiled JSX:reactCompatJsx;compiled `createElement` calls:reactCompatCalls;host templates, no compiler (default):reactCompatTemplates;React 19:react;React 19 + React Compiler:reactCompiler" -->
+<!-- gate: axis=app-update label=calls-full-2026-11-01 col=3 map="compiled JSX:reactCompatJsx;compiled `createElement` calls:reactCompatCalls;host templates, no compiler (default):reactCompatTemplates;React 19:react;React 19 + React Compiler:reactCompiler" -->
 | participant | mount, ms | 40 update rounds, ms |
 |---|---|---|
 | **compiled JSX** | **0.820** | **8.4** |
@@ -305,7 +305,6 @@ The full field, one recorded run (`initial-render.calls-full-2026-11-01` and
 | host templates, no compiler (default) | 0.915 | 9.5 |
 | React 19 | 0.980 | 11.0 |
 | React 19 + React Compiler | 1.025 | 10.1 |
-| templates off | 1.310 | 13.8 |
 
 Mounting compiled is 1.19× faster than React in that run. `app-update` carries no
 null pair, so its column is an order, not a size: both compiled rows lead React,
@@ -329,16 +328,14 @@ measured both:
 On updates it is ahead of React in every run that carried both
 (`app-update.compat1`, `compat2`, `compat4`, `compat8`); that axis reports order only. The
 runs are narrowed to the React family, Solid and Exodra, so only the ratios inside
-a run are comparable. With host templates (on by default) mounting is level with React and updates
-are ahead of it; the plain runtime, with templates switched off, is behind React
-on both axes. The full account is the post
+a run are comparable. Without the compiler, mounting is level with React and updates are ahead of
+it. The full account is the post
 [Your React Code, Faster Than React](/blog/react-on-exodra-faster-than-react).
 
 ## Host templates, without the compiler
 
 When the compiler is not in the build, the runtime does the same job itself.
-It is on by default; `enableExoReactHostTemplates(false)` switches it off for
-the whole application:
+It is on by default:
 
 ```ts
 import { createElement, createRoot } from '@exodra/react-compat';
@@ -358,11 +355,11 @@ anything that is not a host element stays a region the reconciler handles as
 before.
 
 Measured on the benchmark application (`initial-render.compat8`, narrowed run,
-ratios only): mounting took 1.000 ms with templates, 1.280 without them and
+ratios only): mounting took 1.000 ms with templates and
 0.980 in React — level with React, not ahead of it. Across the four runs that
 carried both, templates against React read 1.39, 0.87, 1.00 and 1.00. On
 `app-update` (`app-update.compat8`) the axis reports no resolution, so only the
-order is known: templates ahead of React, the plain runtime behind it.
+order is known: templates ahead of React.
 
 **Changing shape keeps what React keeps.** If a component changes the shape of a
 tree it already rendered — a host element appears where there was none, a text

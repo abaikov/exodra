@@ -5,7 +5,7 @@ Two pages, one per package that shipped with **no runnable demonstration at all*
 | Page | Package | What it shows |
 |---|---|---|
 | `router.html` | `@exodra/router` | one table, one outlet: a param route, a nested layout with a second boundary inside it, a redirecting guard, a lazy page arriving late, a two-way query parameter, and a path that matches nothing |
-| `forms.html` | `@exodra/forms` | one machine with one `input` port on the `<form>`: a text field, a number field, a checkbox, a radio group, a select, a live read-out written by transitions, a submit read-out from `readExoControlValues`, and two buttons that set the fields from code |
+| `forms.html` | `@exodra/forms` | one machine with one `input` port on the `<form>`: a text field, a number field, a checkbox, a radio group, a select, a live read-out written by the functions the handlers call, a submit read-out from `readExoControlValues`, and two buttons that set the fields from code |
 
 Both packages were covered by tests before these pages existed and by nothing a person could
 open.
@@ -27,7 +27,7 @@ disposer. `forms.html` uses the three functions `@exodra/forms` exports: `readEx
 `readExoControlValues` and `writeExoChoice`.
 
 **`router.html` shows the router's current shape:** a page that receives its match as the params
-of its wire, `ExoOutlet` placed with `c.one`, `ExoLink` built with `c.build(ExoLink, i, { to, label })`,
+of its wire, `ExoOutlet` placed with `c.one`, `ExoLink` built with `c.build(ExoLink, { to, label })`,
 and `router.onChange` subscribed from a machine effect.
 
 Each page checks every name it uses against the build before it runs anything, and prints which

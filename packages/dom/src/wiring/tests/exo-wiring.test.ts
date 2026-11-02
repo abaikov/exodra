@@ -22,7 +22,7 @@
 // case that compares a LATER COMMIT fires the init transition — the spelling a machine needs when
 // the value comes from outside. The server case has no choice at all: `@exodra/string`'s `one`
 // hands back nothing, so there is no exonode there to fire anything at.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoChildrenPort,
@@ -30,7 +30,7 @@ import type {
     TExoTextPort,
     TExoMachineInitialState,
 } from '@exodra/core';
-import { exoTransition, withExoComputedMachine } from '@exodra/computed';
+import { withExoComputedMachine } from '@exodra/computed';
 import type { TExoComputedMachine, TExoComputedMachineNode } from '@exodra/computed';
 import { describe, expect, it } from 'vitest';
 
@@ -102,7 +102,7 @@ type TMachineInstance = TExoComputedMachineNode;
  * THE MACHINE HALF. Declared once, at module load — but built per test around its own log, because
  * the log is what the parity assertion reads and a shared one would carry between cases.
  *
- * IT IS A DECORATED MACHINE, because a field is what it declares: `createExoMachineBuilder` is the engine —
+ * IT IS A DECORATED MACHINE, because a field is what it declares: `createExoMachine` is the engine —
  * numbered slots, handlers, effects with no dependency list — and `field`, `derive` and `effectOn`
  * are `withExoComputedMachine`'s. The wire half below reaches the same three through the block.
  *
@@ -118,39 +118,39 @@ function makeMachineCard(
     component: TExoComputedMachine<TExoComputedMachineNode>;
     out: (c: TMachineInstance) => TCardOut;
 } {
-    const m = withExoComputedMachine(createExoMachineBuilder<TExoComputedMachineNode>(CARD_SCHEMA));
-    const name = m.field(startsAt);
-    const open = m.field(false);
-    const visible = m.field('');
+    const component = withExoComputedMachine(
+        createExoMachine<TExoComputedMachineNode>(CARD_SCHEMA),
+        (b) => {
+            const name = b.field(startsAt);
+            const open = b.field(false);
+            const visible = b.field('');
 
-    m.derive(visible, [name, open], (name, open) => {
-        log.push(`visible ${name}/${open}`);
-        return open ? name : name.slice(0, 3);
-    });
-    m.derive(CP.label, [visible], (visible) => {
-        log.push(`label ${visible}`);
-        return visible;
-    });
-    m.derive(CP.len, [visible], (visible) => {
-        log.push(`len ${visible}`);
-        return `${visible.length}`;
-    });
-    m.effectOn([name], (c) => {
-        const at = name.get(c);
-        log.push(`start ${at}`);
-        return (): void => {
-            log.push(`stop ${at}`);
-        };
-    });
+            b.derive(visible, [name, open], (name, open) => {
+                log.push(`visible ${name}/${open}`);
+                return open ? name : name.slice(0, 3);
+            });
+            b.derive(CP.label, [visible], (visible) => {
+                log.push(`label ${visible}`);
+                return visible;
+            });
+            b.derive(CP.len, [visible], (visible) => {
+                log.push(`len ${visible}`);
+                return `${visible.length}`;
+            });
+            b.effectOn([name], (c) => {
+                const at = name.get(c);
+                log.push(`start ${at}`);
+                return (): void => {
+                    log.push(`stop ${at}`);
+                };
+            });
 
-    const component = m.done();
-    const setName = exoTransition<TMachineInstance, string>(component, (c, value) =>
-        name.set(c, value)
+            const setName = b.transition<string, void>((c, value) => name.set(c, value));
+            const toggle = b.transition<void, void>((c) => open.set(c, !open.get(c)));
+            return { setName, toggle };
+        }
     );
-    const toggle = exoTransition<TMachineInstance>(component, (c) => open.set(c, !open.get(c)));
-    // DECLARED AFTER `done()` AND THEREFORE THROUGH A WRAPPER — the machine cannot name `toggle`
-    // where it declares its ports, because `toggle` does not exist until the program is compiled.
-    // The wire form's whole answer to this is that its transitions come first; see the other half.
+    const { setName, toggle } = component.transitions;
     return {
         component,
         out: (c) => ({
@@ -516,7 +516,7 @@ describe('what the wire form adds', () => {
                         const rows = childList.get(c);
                         const value = text.get(c);
                         for (let k = rows.size; k < value.length; k++) {
-                            rows.insert(c.build(CHIP, k));
+                            rows.insert(c.build(CHIP));
                         }
                         for (let k = rows.size - 1; k >= value.length; k--) rows.remove(k);
                     });

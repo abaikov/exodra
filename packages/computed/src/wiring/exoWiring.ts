@@ -6,7 +6,7 @@ import type { TExoWiringSite } from './types/TExoWiringSite';
 const HERE = 'exoWiring';
 
 export function exoWiring<TWiring extends TExoComputedMachineNode, TOut = void>(
-    body: (w: ExoWiringBlock<TWiring>, c: TWiring, index: number) => TOut
+    body: (w: ExoWiringBlock<TWiring>, c: TWiring, params: unknown) => TOut
 ): TExoMachineInitialState<TWiring, TOut> {
     const site: TExoWiringSite<TWiring> = {
         program: null,
@@ -17,9 +17,9 @@ export function exoWiring<TWiring extends TExoComputedMachineNode, TOut = void>(
         owns: [],
         mountedRow: -1,
     };
-    return (c, index): TOut => {
+    return (c, params): TOut => {
         const w = new ExoWiringBlock<TWiring>(site, c);
-        const out = body(w, c, index);
+        const out = body(w, c, params);
         // A BLOCK THAT NEVER ARMED COMPILED NOTHING, FILLED NOTHING, AND NO TRANSITION OF IT CAN
         // COMMIT — every symptom is a component that renders empty and never moves.
         if (w.instance === null) {

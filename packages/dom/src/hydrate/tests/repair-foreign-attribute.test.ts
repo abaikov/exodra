@@ -21,7 +21,13 @@
 // alike — where the generic value rule expects the attribute to be ABSENT, and its writer is
 // `writeExoNsAttrString` rather than `writeExoAttrString`, so the two halves of one port have to be
 // keyed on the writer BODY and never guessed from the value.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type { TExoAttrPort, TExoMachineNode, TExoSchemaCursor } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
@@ -53,15 +59,25 @@ const attrFollowing = (
     src: TExoTestSource<unknown>
 ) => {
     const schema = createExoSchema(build);
-    const m = createExoMachineBuilder<TExoMachineNode>(schema);
-    const show = m.transition((c) => {
-        c.attr(schema.ports.port, src.getValue());
-    });
-    m.effect((c) => {
-        show(c);
-        return src.onChange(() => show(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode>(schema);
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => {
+                    c.attr(schema.ports.port, src.getValue());
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return src.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = machine.transitions;
+    return machine;
 };
 
 const countingMutations = (root: Element, run: () => void): number => {

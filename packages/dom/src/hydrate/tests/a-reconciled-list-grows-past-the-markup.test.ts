@@ -46,7 +46,7 @@ let rows: readonly string[] = [];
 type TRowSurface = { text(port: TExoTextPort, value: unknown): void };
 type TListSurface = {
     childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
-    build(component: TExoDomMachine, index?: number): TExoNode;
+    build(component: TExoDomMachine, params?: unknown): TExoNode;
 };
 
 const ROW = createExoTestMachine(
@@ -58,8 +58,8 @@ const ROW = createExoTestMachine(
         return { label };
     },
     (P): TExoMachineInitialState<TRowSurface> =>
-        (c, at) => {
-            c.text(P.label, rows[at]);
+        (c, row) => {
+            c.text(P.label, row);
         }
 );
 
@@ -73,7 +73,7 @@ const LIST = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TListSurface> =>
         (c) => {
-            reconcileExoOrder(c.childList(P.kids), [], rows, rows, (_row, at) => c.build(ROW, at));
+            reconcileExoOrder(c.childList(P.kids), [], rows, rows, (row) => c.build(ROW, row));
         }
 );
 

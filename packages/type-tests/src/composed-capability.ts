@@ -52,8 +52,8 @@ const ROW = createExoTestMachine(
         return { label };
     },
     (P) =>
-        (c: TExoDomNode, index: number): void => {
-            c.text(P.label, 'row ' + index);
+        (c: TExoDomNode, params: unknown): void => {
+            c.text(P.label, 'row ' + String(params));
         }
 );
 
@@ -72,7 +72,7 @@ const HIGHLIGHTS = createExoTestMachine(
     (P): TExoMachineInitialState<TExoDomNode & TExoHighlightApi> =>
         (c): void => {
             c.highlight(P.title);
-            c.list(P.rows, ROW, 1);
+            c.list(P.rows, ROW, Array.from({ length: 1 }));
         }
 );
 
@@ -172,7 +172,7 @@ const HIGHLIGHTING_PARENT = createExoTestMachine(
     (P) =>
         (c: TExoChildrenWiring & TExoHighlightApi): void => {
             c.one(P.slot, HIGHLIGHTING_CHILD);
-            c.list(P.slot, HIGHLIGHTING_CHILD, 1);
+            c.list(P.slot, HIGHLIGHTING_CHILD, Array.from({ length: 1 }));
         }
 );
 void HIGHLIGHTING_PARENT;

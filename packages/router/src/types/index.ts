@@ -80,7 +80,7 @@ export type TExoOutletChildList = {
 };
 
 export interface TExoOutletWiring extends TExoMachineNode {
-    build(machine: TExoPageMachine, index?: number, params?: TExoRouteMatch): TExoNode;
+    build(machine: TExoPageMachine, params?: TExoRouteMatch): TExoNode;
     childList(port: TExoChildrenPort): TExoOutletChildList;
 }
 

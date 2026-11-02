@@ -96,15 +96,15 @@ describe('ExoIntrospectionEngine', () => {
         }).not.toThrow();
     });
 
-    it('counts a createExoMachineBuilder machine as a component', async () => {
+    it('counts a createExoMachine machine as a component', async () => {
         const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'exo-introspect-machine-'));
         try {
             fs.writeFileSync(
                 path.join(projectRoot, 'counter.ts'),
                 [
-                    "import { createExoSchema, createExoMachineBuilder } from '@exodra/core';",
+                    "import { createExoSchema, createExoMachine } from '@exodra/core';",
                     'const SCHEMA = createExoSchema((b) => ({ label: b.textPort() }));',
-                    'export const COUNTER = createExoMachineBuilder(SCHEMA).done();',
+                    'export const COUNTER = createExoMachine(SCHEMA);',
                     '',
                 ].join('\n')
             );

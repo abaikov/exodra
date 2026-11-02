@@ -167,7 +167,14 @@ import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    composeExoMachine,
+    createExoMachine,
+    withExoEffects,
+    withExoHandlers,
+    withExoTransitions,
+    withExoWire,
+} from '@exodra/core';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -367,131 +374,142 @@ type TMonoState = {
 const MONO_DECKS = MONO_APP_SCHEMA.ports.decks;
 const MONO_CARDS = MONO_APP_SCHEMA.ports.cards;
 
-const mMONO_APP = createExoMachineBuilder<TExoRegionWiring>(MONO_APP_SCHEMA);
+const mMONO_APP = createExoMachine<TExoRegionWiring>(MONO_APP_SCHEMA, {
+    createInitialState: (c): TMonoState => {
+        const users = USER_IDX.map((u) => createExoBenchSource<number>(startChars(u)));
+        const deckNames: number[] = [];
+        for (let d = 0; d < MONO_DECKS.length; d++) deckNames.push(startDeckName(d));
+        const cards: TMonoCardState[] = [];
+        for (let i = 0; i < MONO_CARDS.length; i++) {
+            cards.push({
+                open: startsOpen(i),
+                count: startCount(i),
+                title: titleOf(i),
+                pool: tagsOfCard(i).map((t) => ({ label: t.label, chars: users[t.user] })),
+                details: c.childList(MONO_CARDS[i].details),
+                tags: c.childList(MONO_CARDS[i].tags),
+                shownDetails: [],
+                shownTags: [],
+            });
+        }
+        PENDING_MONO_ADVANCE = () => advanceMono(c);
+        return { users, round: 0, deckNames, cards };
+    },
+});
 // THE APP'S FIVE USERS AND ITS ROUND COUNTER — created here, per RENDER, exactly as the
 // per-component shell creates them, because they belong to a MOUNTED APP and not to this
 // module (`todo-spec.ts`, WHERE THE USERS LIVE). The monolith bakes a user's NAME into
 // its prototype above; it cannot bake a SETTING, which is the whole difference between
 // the two values this scene attaches to a user.
-const K_MONO = mMONO_APP.createInitialState((c): TMonoState => {
-    const users = USER_IDX.map((u) => createExoBenchSource<number>(startChars(u)));
-    const deckNames: number[] = [];
-    for (let d = 0; d < MONO_DECKS.length; d++) deckNames.push(startDeckName(d));
-    const cards: TMonoCardState[] = [];
-    for (let i = 0; i < MONO_CARDS.length; i++) {
-        cards.push({
-            open: startsOpen(i),
-            count: startCount(i),
-            title: titleOf(i),
-            pool: tagsOfCard(i).map((t) => ({ label: t.label, chars: users[t.user] })),
-            details: c.childList(MONO_CARDS[i].details),
-            tags: c.childList(MONO_CARDS[i].tags),
-            shownDetails: [],
-            shownTags: [],
-        });
-    }
-    PENDING_MONO_ADVANCE = () => advanceMono(c);
-    return { users, round: 0, deckNames, cards };
-});
 
-const showMonoDeckName = mMONO_APP.transition((c: TExoRegionWiring, d: number) => {
-    c.text(MONO_DECKS[d].name, deckNameOf(d, c.readState(K_MONO).deckNames[d]));
-});
-
-const showMonoDeckDate = mMONO_APP.transition((c: TExoRegionWiring, d: number) => {
-    const chars = c.readState(K_MONO).users[deckUserOf(d)].getValue();
-    c.text(MONO_DECKS[d].date, dateTextOf(deckDateOf(d), chars));
-});
-
-const showMonoOpen = mMONO_APP.transition((c: TExoRegionWiring, i: number) => {
-    const card = c.readState(K_MONO).cards[i];
-    c.text(MONO_CARDS[i].title, headlineOf(card.title, card.open));
-    c.attr(MONO_CARDS[i].expanded, expandedOf(card.open));
-    const want: number[] = card.open ? [0] : [];
-    card.shownDetails = reconcileExoOrder(card.details, card.shownDetails, want, want, () =>
-        c.build(DETAILS, 0)
-    );
-});
-
-const showMonoCount = mMONO_APP.transition((c: TExoRegionWiring, i: number) => {
-    const card = c.readState(K_MONO).cards[i];
-    c.text(MONO_CARDS[i].count, tagsLabel(card.count));
-    const want = card.pool.slice(0, card.count);
-    card.shownTags = reconcileExoOrder(card.tags, card.shownTags, want, want, (tag, k) => {
-        const row = c.build(TAG, k);
-        writeTagLabel(
-            row as unknown as TExoMachineNode,
-            tagTextOf(tag.label, tag.chars.getValue())
-        );
-        return row;
-    });
-});
-
-const reclipMono = mMONO_APP.transition((c: TExoRegionWiring, cell: TExoBenchSource<number>) => {
-    const chars = cell.getValue();
-    const cards = c.readState(K_MONO).cards;
-    for (let i = 0; i < cards.length; i++) {
-        const card = cards[i];
-        for (let k = card.count - 1; k >= 0; k--) {
-            if (card.pool[k].chars !== cell) continue;
-            writeTagLabel(
-                card.tags.at(k) as unknown as TExoMachineNode,
-                tagTextOf(card.pool[k].label, chars)
-            );
-        }
-    }
-});
-
-const advanceMono = mMONO_APP.transition((c: TExoRegionWiring) => {
-    const state = c.readState(K_MONO);
-    const cell = state.users[roundUserOf(state.round)];
-    state.round++;
-    cell.setValue(nextChars(cell.getValue()));
-    reclipMono(c, cell);
-});
-
-mMONO_APP.wire((c) => {
-    for (let d = 0; d < MONO_DECKS.length; d++) showMonoDeckName(c, d);
-    for (let i = 0; i < MONO_CARDS.length; i++) {
-        showMonoOpen(c, i);
-        showMonoCount(c, i);
-    }
-});
-
-// THE COARSE FAN-OUT, and it survives monolithising untouched: each deck date follows the SAME
-// source forty tags in forty cards read, and reads the number as a precision rather than a length.
-mMONO_APP.effect((c) => {
-    const users = c.readState(K_MONO).users;
-    const stops: (() => void)[] = [];
-    for (let d = 0; d < MONO_DECKS.length; d++) {
-        showMonoDeckDate(c, d);
-        stops.push(users[deckUserOf(d)].onChange(() => showMonoDeckDate(c, d)));
-    }
-    return () => {
-        for (let k = 0; k < stops.length; k++) stops[k]();
-    };
-});
-
-for (let d = 0; d < MONO_DECKS.length; d++) {
-    mMONO_APP.on(MONO_DECKS[d].rename, (c) => {
-        const names = c.readState(K_MONO).deckNames;
-        names[d] = nextDeckName(names[d]);
-        showMonoDeckName(c, d);
-    });
-}
-for (let i = 0; i < MONO_CARDS.length; i++) {
-    mMONO_APP.on(MONO_CARDS[i].toggle, (c) => {
-        const card = c.readState(K_MONO).cards[i];
-        card.open = card.open === false;
-        showMonoOpen(c, i);
-    });
-    mMONO_APP.on(MONO_CARDS[i].addTag, (c) => {
-        const card = c.readState(K_MONO).cards[i];
-        card.count = nextCount(card.count);
-        showMonoCount(c, i);
-    });
-}
-const MONO_APP = mMONO_APP.done();
+const MONO_APP = composeExoMachine(
+    mMONO_APP,
+    (m) =>
+        withExoTransitions(m, {
+            showMonoDeckName: (c: TExoRegionWiring, d: number) => {
+                c.text(MONO_DECKS[d].name, deckNameOf(d, c.readState<TMonoState>().deckNames[d]));
+            },
+            showMonoDeckDate: (c: TExoRegionWiring, d: number) => {
+                const chars = c.readState<TMonoState>().users[deckUserOf(d)].getValue();
+                c.text(MONO_DECKS[d].date, dateTextOf(deckDateOf(d), chars));
+            },
+            showMonoOpen: (c: TExoRegionWiring, i: number) => {
+                const card = c.readState<TMonoState>().cards[i];
+                c.text(MONO_CARDS[i].title, headlineOf(card.title, card.open));
+                c.attr(MONO_CARDS[i].expanded, expandedOf(card.open));
+                const want: number[] = card.open ? [0] : [];
+                card.shownDetails = reconcileExoOrder(
+                    card.details,
+                    card.shownDetails,
+                    want,
+                    want,
+                    () => c.build(DETAILS)
+                );
+            },
+            showMonoCount: (c: TExoRegionWiring, i: number) => {
+                const card = c.readState<TMonoState>().cards[i];
+                c.text(MONO_CARDS[i].count, tagsLabel(card.count));
+                const want = card.pool.slice(0, card.count);
+                card.shownTags = reconcileExoOrder(card.tags, card.shownTags, want, want, (tag) => {
+                    const row = c.build(TAG);
+                    writeTagLabel(
+                        row as unknown as TExoMachineNode,
+                        tagTextOf(tag.label, tag.chars.getValue())
+                    );
+                    return row;
+                });
+            },
+            reclipMono: (c: TExoRegionWiring, cell: TExoBenchSource<number>) => {
+                const chars = cell.getValue();
+                const cards = c.readState<TMonoState>().cards;
+                for (let i = 0; i < cards.length; i++) {
+                    const card = cards[i];
+                    for (let k = card.count - 1; k >= 0; k--) {
+                        if (card.pool[k].chars !== cell) continue;
+                        writeTagLabel(
+                            card.tags.at(k) as unknown as TExoMachineNode,
+                            tagTextOf(card.pool[k].label, chars)
+                        );
+                    }
+                }
+            },
+            advanceMono: (c: TExoRegionWiring) => {
+                const state = c.readState<TMonoState>();
+                const cell = state.users[roundUserOf(state.round)];
+                state.round++;
+                cell.setValue(nextChars(cell.getValue()));
+                reclipMono(c, cell);
+            },
+        }),
+    (m) =>
+        withExoWire(m, (c) => {
+            for (let d = 0; d < MONO_DECKS.length; d++) showMonoDeckName(c, d);
+            for (let i = 0; i < MONO_CARDS.length; i++) {
+                showMonoOpen(c, i);
+                showMonoCount(c, i);
+            }
+        }),
+    // THE COARSE FAN-OUT, and it survives monolithising untouched: each deck date follows the SAME
+    // source forty tags in forty cards read, and reads the number as a precision rather than a length.
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                const users = c.readState<TMonoState>().users;
+                const stops: (() => void)[] = [];
+                for (let d = 0; d < MONO_DECKS.length; d++) {
+                    showMonoDeckDate(c, d);
+                    stops.push(users[deckUserOf(d)].onChange(() => showMonoDeckDate(c, d)));
+                }
+                return () => {
+                    for (let k = 0; k < stops.length; k++) stops[k]();
+                };
+            });
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            for (let d = 0; d < MONO_DECKS.length; d++) {
+                on(MONO_DECKS[d].rename, (c) => {
+                    const names = c.readState<TMonoState>().deckNames;
+                    names[d] = nextDeckName(names[d]);
+                    showMonoDeckName(c, d);
+                });
+            }
+            for (let i = 0; i < MONO_CARDS.length; i++) {
+                on(MONO_CARDS[i].toggle, (c) => {
+                    const card = c.readState<TMonoState>().cards[i];
+                    card.open = card.open === false;
+                    showMonoOpen(c, i);
+                });
+                on(MONO_CARDS[i].addTag, (c) => {
+                    const card = c.readState<TMonoState>().cards[i];
+                    card.count = nextCount(card.count);
+                    showMonoCount(c, i);
+                });
+            }
+        })
+);
+const { showMonoDeckName, showMonoDeckDate, showMonoOpen, showMonoCount, reclipMono, advanceMono } =
+    MONO_APP.transitions;
 
 /** The monolith's advance closure, on its way out of the render that built it — the same hand-off
  *  `apps/exodra/exodra.tsx`'s `PENDING_ADVANCE` makes, whose own block carries the argument. */

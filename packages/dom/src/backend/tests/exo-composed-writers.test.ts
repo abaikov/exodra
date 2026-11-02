@@ -27,7 +27,14 @@
 // PLACEHOLDER through a `writesAttribute` member — `false` left ` data-id=""` standing on an
 // element the wire had filled, `true` removed it. No attribute port keeps a placeholder any more,
 // so that member has no caller and is off the interface.
-import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    composeExoPlugins,
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenWiring,
@@ -145,7 +152,7 @@ describe('the composed value writers, as the renderer actually uses it', () => {
         const COMP = cardComponent();
         // THREE INSTANCES, THREE `render` CALLS into one parent — `render` mounts one and appends
         // it, so this is the same three siblings a count argument used to make.
-        for (let i = 0; i < 3; i++) rt.render(COMP, parent);
+        for (let i = 0; i < 3; i++) rt.render(COMP, parent, i);
 
         expect(shown(parent)).toBe('row-0/label 0');
         // ONCE PER PORT PER SCHEMA, with three instances rendered. This is the cost argument,
@@ -159,7 +166,8 @@ describe('the composed value writers, as the renderer actually uses it', () => {
         const parent = host();
         composeExoPlugins(withExoCompiler(new ExoDomBackend()), withWriters(inert())).render(
             cardComponent(),
-            parent
+            parent,
+            0
         );
 
         // The element is there — the compiler, the walk and the wiring all ran. Nothing reached
@@ -182,21 +190,30 @@ describe('the composed value writers, as the renderer actually uses it', () => {
             });
             return { id, label };
         });
-        const m = createExoMachineBuilder<TExoDomNode>(schema);
-        const show = m.transition((c) => {
-            c.attr(schema.ports.id, boundId.getValue());
-            c.text(schema.ports.label, boundLabel.getValue());
-        });
-        m.effect((c) => {
-            show(c);
-            const offId = boundId.onChange(() => show(c));
-            const offLabel = boundLabel.onChange(() => show(c));
-            return () => {
-                offId();
-                offLabel();
-            };
-        });
-        const bound = m.done();
+        const m = createExoMachine<TExoDomNode>(schema);
+        const bound = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    show: (c) => {
+                        c.attr(schema.ports.id, boundId.getValue());
+                        c.text(schema.ports.label, boundLabel.getValue());
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        show(c);
+                        const offId = boundId.onChange(() => show(c));
+                        const offLabel = boundLabel.onChange(() => show(c));
+                        return () => {
+                            offId();
+                            offLabel();
+                        };
+                    });
+                })
+        );
+        const { show } = bound.transitions;
 
         const parent = host();
         composeExoPlugins(withExoCompiler(new ExoDomBackend()), withWriters(inert())).render(
@@ -221,7 +238,7 @@ describe('the composed value writers, as the renderer actually uses it', () => {
             },
             (P): TExoMachineInitialState<TExoChildrenWiring> =>
                 (c) => {
-                    c.one(P.slot, inner);
+                    c.one(P.slot, inner, 0);
                 }
         );
 
@@ -287,7 +304,8 @@ describe('createExoPropertyWriters — the case the shipped pack cannot express'
         const parent = host();
         withExoPropertyWriters(withExoCompiler(new ExoDomBackend())).render(
             cardComponent(),
-            parent
+            parent,
+            0
         );
 
         // A `<p>` is not a custom element, so nothing about it changed.

@@ -8,7 +8,14 @@
 // in the artefact.
 // The cost is that the server answers CANNOT-EXPRESS, since there is no observable on a server for
 // a listener that was never attached.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoAttrPort,
@@ -31,17 +38,28 @@ const buttonWhoseClickShows = () => {
         });
         return { click, shown };
     });
-    const m = createExoMachineBuilder<TExoWiring & TExoMachineNode>(schema);
-    const show = m.transition((c) => c.attr(schema.ports.shown, state.getValue()));
-    m.wire((c) => {
-        // The mistake under test, and a plausible one: `set` is the general fill.
-        c.on(schema.ports.click, () => state.setValue('fired'));
-    });
-    m.effect((c) => {
-        show(c);
-        return state.onChange(() => show(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoWiring & TExoMachineNode>(schema);
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => c.attr(schema.ports.shown, state.getValue()),
+            }),
+        (m) =>
+            withExoWire(m, (c) => {
+                // The mistake under test, and a plausible one: `set` is the general fill.
+                c.on(schema.ports.click, () => state.setValue('fired'));
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return state.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = machine.transitions;
+    return machine;
 };
 
 describe('a handler put in an event port with set()', () => {

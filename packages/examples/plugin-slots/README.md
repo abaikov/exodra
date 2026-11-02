@@ -26,20 +26,23 @@ Everything else a pack adds is a method on the exonode a machine is handed: `c.c
 |---|---|---|
 | `events.html` | `events`: `createExoDelegatedEvents(['click'])` | one `addEventListener` per row: the delegating pack puts one on the render root |
 | `value-writers.html` | `writers`: `withExoPropertyWriters` | a value having to be a string: the port lands on a custom element as an Array |
-| `keyed-list.html` | packs, not fields: `EXO_KEYED_LIST_VOCABULARY` from `@exodra/list-reconcile` over `withExoChildList` | keys being the framework's rule: the left panel reconciles by object **identity** with `reconcileExoOrder` in a transition, the right one opens `c.keyedList(port, keyOf, build, update)` and calls its `reconcile(items)` from a transition |
+| `keyed-list.html` | packs, not fields: `EXO_KEYED_LIST_VOCABULARY` from `@exodra/list-reconcile` over `withExoChildList` | keys being the framework's rule: the left panel reconciles by object **identity** with `reconcileExoOrder` in an effect, the right one opens `c.keyedList(port, keyOf, build, update)` and calls its `reconcile(items)` from an effect; the row's `setLabel` is a `withExoTransitions` transition the list calls from outside the row |
 | `nested-mounts.html` | `withExoChildList` for the row list; the subject is not a plugin interface | a context reaching past the render that provided it |
 
 ## How data reaches the ports on these pages
 
 There is no binding layer. A machine's `createInitialState` runs once and returns its state (and
-opens its children ports); a **transition** is the one place that writes state to ports; and
+opens its children ports); a plain function over the exonode is the one place that writes state to
+ports, and a **transition** (`withExoTransitions`) only where something outside the machine calls it; and
 following outside data is an **effect** that draws first, then subscribes, and returns the
 unsubscribe:
 
 ```js
-mList.effect(c => {
-    showRows(c);
-    return rows.onChange(() => showRows(c));
+const listMachine = withExoEffects(listBase, effect => {
+    effect(c => {
+        showRows(c);
+        return rows.onChange(() => showRows(c));
+    });
 });
 ```
 
@@ -50,9 +53,9 @@ place.
 ## `events.html`
 
 Two hundred rows, the same row machine, rendered under both strategies. The rows are a fixed list
-inside one shell machine (`c.list(port, ROW, 200)`), so each panel is **one** `render`: a delegating
+inside one shell machine (`c.list(port, ROW, rows)` over a 200-entry array), so each panel is **one** `render`: a delegating
 pack installs its root listener per render. The click handler is declared on the machine
-(`mRow.on(port, handler)`), which registers one shared function per machine with the row's exonode
+(`withExoHandlers(m, on => on(port, handler))`), which registers one shared function per machine with the row's exonode
 as its **subject** — the shape a delegated pack can read back off an element, so the same machine
 runs under both strategies. The readout counts `addEventListener` calls during one render by
 replacing it and putting it back; that is an instrument, not something an application should do.

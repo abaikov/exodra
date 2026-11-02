@@ -3,7 +3,7 @@
 A small TodoMVC built on the local sources of three libraries:
 
 -   **Exodra** (this repository) renders. Both components are machines (`exoPorts` +
-    `createExoSchema` + `createExoMachineBuilder`); the todo list is `reconcileExoOrder` over
+    `createExoSchema` + `createExoMachine` and its `withExo*` decorators); the todo list is `reconcileExoOrder` over
     `c.childList`, and `createExoDelegatedEvents` puts one listener per event type on the render
     root while each row keeps its own event ports and handlers.
 -   **OIMDB** (`../oimdb`) holds the state: a todo collection, an index of todos by `done`, a

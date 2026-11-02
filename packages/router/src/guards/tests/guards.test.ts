@@ -12,18 +12,18 @@
 // it, and the only one that can see the ORDER the branch's guards ran in.
 
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import { createExoMemoryHistory, createExoRouter } from '../../index';
 
 // A PAGE THAT IS NEVER RENDERED — nothing here mounts anything, and a guard never sees a route's
 // component. One real page stands in for every entry in the tables below.
 const page = (name: string) =>
-    createExoMachineBuilder(
+    createExoMachine(
         createExoSchema((b) => {
             b.el('p', { class: name });
             return {};
         })
-    ).done();
+    );
 
 describe('guard rejection does not hang and keeps the URL in sync', () => {
     it('navigate() resolves when a guard blocks, and rolls the URL back', async () => {

@@ -22,7 +22,7 @@ export function createExoStatic(
                   'component has nothing to fill them' +
                   ' — a static component arms nothing at all, so those ports would stay empty for ' +
                   'the life of the page with no error anywhere. Build a machine with ' +
-                  'createExoMachineBuilder and fill them, or drop the ports.'
+                  'createExoMachine and fill them, or drop the ports.'
                 : 'EXO0019'
         );
     }

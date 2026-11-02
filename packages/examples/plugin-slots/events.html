@@ -40,7 +40,7 @@
 
 <p class="boot">
     <strong>Status: written against the source of <code>@exodra/core</code> and <code>@exodra/dom</code>; not yet opened in a browser.</strong>
-    The two hundred rows are a fixed list inside one shell machine (<code>c.list(port, ROW, 200)</code>),
+    The two hundred rows are a fixed list inside one shell machine (<code>c.list(port, ROW, ROW_INDICES)</code>, one row per element of a 200-entry array),
     so each panel is ONE <code>render</code> — a delegated pack installs its root listener per
     render, and two hundred renders would have been two hundred roots.
 </p>
@@ -55,7 +55,14 @@
 }
 </script>
 <script type="module">
-    import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import {
+        composeExoMachine,
+        composeExoPlugins,
+        createExoMachine,
+        createExoSchema,
+        withExoHandlers,
+        withExoWire,
+    } from '@exodra/core';
     import * as exoDom from '@exodra/dom';
 
     const { ExoDomBackend, createExoDelegatedEvents, EXO_DIRECT_EVENTS, withExoCompiler } = exoDom;
@@ -75,10 +82,11 @@
     }
 
     const ROWS = 200;
+    const ROW_INDICES = Array.from({ length: ROWS }, (_, index) => index);
 
     /**
      * How many clicks each panel has answered: a tiny local store, so the readout can follow it.
-     * The row's click handler is declared on the MACHINE (`mRow.on`), which registers ONE shared
+     * The row's click handler is declared on the MACHINE (`withExoHandlers`), which registers ONE shared
      * function per machine with the row's exonode as its SUBJECT — the shape a delegated pack can
      * read back off an element, so the same machine runs under both strategies.
      */
@@ -109,20 +117,26 @@
             return { label, click };
         }
     );
-    const mRow = createExoMachineBuilder(ROW_SCHEMA);
-    mRow.createInitialState((c, index) => ({ index, hits: CURRENT_SIDE.hits }));
-    mRow.wire(c => {
-        c.text(ROW_SCHEMA.ports.label, 'row ' + c.state.index + ' · click me');
+    const rowBase = createExoMachine(ROW_SCHEMA, {
+        createInitialState: (c, index) => ({ index, hits: CURRENT_SIDE.hits }),
     });
-    mRow.on(ROW_SCHEMA.ports.click, c => {
-        c.state.hits.setValue(c.state.hits.getValue() + 1);
-    });
-    const ROW = mRow.done();
+    const ROW = composeExoMachine(
+        rowBase,
+        m => withExoWire(m, c => {
+            c.text(ROW_SCHEMA.ports.label, 'row ' + c.state.index + ' · click me');
+        }),
+        m => withExoHandlers(m, on => {
+            on(ROW_SCHEMA.ports.click, c => {
+                c.state.hits.setValue(c.state.hits.getValue() + 1);
+            });
+        }),
+    );
 
     /**
      * THE SHELL: `backend.render(machine, parent)` mounts ONE instance, so the two hundred rows are
-     * a FIXED LIST inside it — `c.list(port, ROW, count)` opens the children port once, in
-     * `createInitialState`, and mounts one row per index.
+     * a FIXED LIST inside it — `c.list(port, ROW, ROW_INDICES)` opens the children port once, in
+     * `createInitialState`, and mounts one row per array element, handing it that element (its
+     * number) as params.
      */
     const SHELL_SCHEMA = createExoSchema(
         b => {
@@ -131,12 +145,12 @@
             return { rows };
         }
     );
-    const mShell = createExoMachineBuilder(SHELL_SCHEMA);
-    mShell.createInitialState(c => {
-        c.list(SHELL_SCHEMA.ports.rows, ROW, ROWS);
-        return null;
+    const SHELL = createExoMachine(SHELL_SCHEMA, {
+        createInitialState: c => {
+            c.list(SHELL_SCHEMA.ports.rows, ROW, ROW_INDICES);
+            return null;
+        },
     });
-    const SHELL = mShell.done();
 
     // ONE PACK, ONE NAME — the whole of what an application writes to change strategy. A pack is a
     // bag of FACTORIES: `events` receives what already stands there (the direct strategy) as

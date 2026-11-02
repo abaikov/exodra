@@ -2,16 +2,13 @@
 //
 // WHAT A NESTED INSTANCE IS HANDED — on all three passes, from ONE wiring function.
 //
-// IT IS ITS INDEX, AND NOTHING ELSE. There are no props: a wire is `(enode, index) => out`, and a
-// component that needs data reads it by index from wherever its caller put it. That is not an
-// ergonomic preference. Props would have to be SERVICED — something has to decide which transitions
-// a new value dials — and an init transition the application calls itself is cheaper and is already
-// expressible, so the argument was taken out rather than maintained.
+// IT IS ITS PARAMS, AND NOTHING ELSE. There are no props: an initial state is `(enode, params) => out`,
+// and the params are handed once, when the instance is built. Props would have to be SERVICED —
+// something has to decide which transitions a new value dials — so there are none to maintain.
 //
-// WHAT THESE CASES ASSERT is that the index arrives, and the data behind it, identically on the
-// server, on a client render and through hydration — because the wire is one function object shared
-// by all three, and data that reached only two of them would be a component that serves one thing
-// and renders another.
+// WHAT THESE CASES ASSERT is that the params arrive identically on the server, on a client render and
+// through hydration — because the initial state is one function object shared by all three, and data
+// that reached only two of them would be a component that serves one thing and renders another.
 import type {
     TExoChildrenPort,
     TExoMachine,
@@ -31,23 +28,22 @@ const EXO_STR = new ExoStrBackend();
 
 type TDetail = { readonly title: string };
 
-/** Every index the nested wire was handed, in the order it saw them. */
-const seen: number[] = [];
+/** Every params value the nested instance was handed, in the order it saw them. */
+const seen: unknown[] = [];
 
-/** What the nested rows read, BY INDEX. The caller owns it; the component only indexes it. */
-const DETAILS: TDetail[] = [];
+const ITEM: TDetail = { title: 'from the item' };
 
 /** What these wires assume about an exonode — methods, so all three exonodes satisfy it. */
 type TNesting = {
     attr(port: TExoAttrPort, value: unknown): void;
     text(port: TExoTextPort, value: unknown): void;
     unsafeHtml(port: TExoChildrenPort, markup: unknown): void;
-    one(port: TExoPort, component: TExoMachine<never>): void;
+    one(port: TExoPort, component: TExoMachine<never>, params?: unknown): void;
 };
 
 /** The same, for the wire that builds a LIST of nested instances instead of one. */
 type TListing = TNesting & {
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 const PANEL = createExoTestMachine(
@@ -59,9 +55,9 @@ const PANEL = createExoTestMachine(
         return { title };
     },
     (P): TExoMachineInitialState<TNesting> =>
-        (c, i) => {
-            seen.push(i);
-            c.text(P.title, DETAILS[i].title);
+        (c, detail) => {
+            seen.push(detail);
+            c.text(P.title, (detail as TDetail).title);
         }
 );
 
@@ -78,38 +74,34 @@ const CARD = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TNesting> =>
         (c) => {
-            // TWO ARGUMENTS, no closure. A single nested instance is at index 0 by definition.
-            c.one(P.slot, PANEL);
+            c.one(P.slot, PANEL, ITEM);
         }
 );
 
 const MARKUP = '<div class="card"><section><p class="panel">from the item</p></section></div>';
 
-describe('one() hands its instance an index, and the three passes agree', () => {
+describe('one() hands its instance its params, and the three passes agree', () => {
     it('on the server', () => {
-        DETAILS.length = 0;
-        DETAILS.push({ title: 'from the item' });
         seen.length = 0;
         expect(EXO_STR.render(CARD)).toBe(MARKUP);
-        expect(seen).toEqual([0]);
+        expect(seen[0]).toBe(ITEM);
+        expect(seen).toHaveLength(1);
     });
 
     it('on a client render, byte for byte the same', () => {
-        DETAILS.length = 0;
-        DETAILS.push({ title: 'from the item' });
         seen.length = 0;
         const parent = host();
         EXO_BACKEND.render(CARD, parent);
         expect(parent.innerHTML).toBe(MARKUP);
-        expect(seen).toEqual([0]);
+        expect(seen[0]).toBe(ITEM);
+        expect(seen).toHaveLength(1);
     });
 
     it('through hydration, without touching the markup the server sent', () => {
-        // Hydration writes only what the markup does not already carry, so what the index must do
-        // here is REACH the nested wire — that wire is where a page's handlers and subscriptions
-        // are made. A pass that never ran it would leave the page inert with no error anywhere.
-        DETAILS.length = 0;
-        DETAILS.push({ title: 'from the item' });
+        // Hydration writes only what the markup does not already carry, so what the params must do
+        // here is REACH the nested initial state — that is where a page's handlers and
+        // subscriptions are made. A pass that never ran it would leave the page inert with no error
+        // anywhere.
         const parent = host();
         parent.innerHTML = EXO_STR.render(CARD);
         const before = parent.innerHTML;
@@ -117,17 +109,17 @@ describe('one() hands its instance an index, and the three passes agree', () => 
         seen.length = 0;
         EXO_BACKEND.hydrate(CARD, parent);
 
-        expect(seen).toEqual([0]);
+        expect(seen[0]).toBe(ITEM);
+        expect(seen).toHaveLength(1);
         expect(parent.innerHTML).toBe(before);
     });
 
     it('per row of a list, so two cards show two different details', () => {
         // THE CASE THE CLOSURE FORM EXISTED FOR: data that varies with the parent. Two cards side
         // by side is a LIST — one card per position — because that is how an application makes
-        // several instances of a component. The index travels two levels down from ONE array, and
-        // each level indexes the same array rather than being handed a value to carry.
-        DETAILS.length = 0;
-        DETAILS.push({ title: 'first' }, { title: 'second' });
+        // several instances of a component. Each card is handed its detail and hands it on, so the
+        // value travels two levels down and one shared panel shows both.
+        const DETAILS: readonly TDetail[] = [{ title: 'first' }, { title: 'second' }];
 
         const CARD_OF = createExoTestMachine(
             (b) => {
@@ -140,13 +132,10 @@ describe('one() hands its instance an index, and the three passes agree', () => 
                 return { slot };
             },
             (P): TExoMachineInitialState<TListing> =>
-                (c, i) => {
-                    c.list(P.slot, PANEL_AT[i], 1);
+                (c, detail) => {
+                    c.list(P.slot, PANEL, [detail]);
                 }
         );
-        // ONE SCHEMA PER POSITION, and this is what the index costs: row 0 and row 1 both hand
-        // their nested instance index 0, so a single shared component cannot tell them apart.
-        const PANEL_AT = [panelReading(0), panelReading(1)];
 
         const PAIR = createExoTestMachine(
             (b) => {
@@ -158,7 +147,7 @@ describe('one() hands its instance an index, and the three passes agree', () => 
             },
             (P): TExoMachineInitialState<TListing> =>
                 (c) => {
-                    c.list(P.cards, CARD_OF, DETAILS.length);
+                    c.list(P.cards, CARD_OF, DETAILS);
                 }
         );
 
@@ -174,21 +163,3 @@ describe('one() hands its instance an index, and the three passes agree', () => 
         expect(EXO_STR.render(PAIR)).toBe(parent.innerHTML);
     });
 });
-
-/** A panel reading a FIXED position of `DETAILS`, so a nested instance at index 0 can still show
- *  its own card's detail. */
-function panelReading(at: number) {
-    return createExoTestMachine(
-        (b) => {
-            let title!: TExoTextPort;
-            b.el('p', { class: 'panel' }, (p) => {
-                title = p.textPort();
-            });
-            return { title };
-        },
-        (P): TExoMachineInitialState<TNesting> =>
-            (c) => {
-                c.text(P.title, DETAILS[at].title);
-            }
-    );
-}

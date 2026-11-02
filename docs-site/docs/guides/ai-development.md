@@ -33,7 +33,7 @@ The practical upshot: static analysis (and an LLM) can answer "what does this
 component render, what's reactive, where are the perf risks?" from the source
 alone. That's what the tooling below is built on — `createExoSchema`,
 `createExoNamedSchema`, `createExoStatic` and `exoJsx` are the schema calls its
-analysis looks for, and `createExoMachineBuilder` / `createExoStatic` are what it
+analysis looks for, and `createExoMachine` / `createExoStatic` are what it
 counts as components.
 
 ## `@exodra/introspect` — analyze the tree

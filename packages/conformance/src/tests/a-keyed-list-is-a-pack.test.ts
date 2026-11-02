@@ -1,5 +1,12 @@
 // @vitest-environment jsdom
-import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    composeExoPlugins,
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type { TExoChildrenPort, TExoTextPort } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
@@ -21,11 +28,15 @@ describe('a keyed list is a pack', () => {
             });
             return { name };
         });
-        const mRow = createExoMachineBuilder<TExoDomNode>(ROW_SCHEMA);
-        const setUser = mRow.transition((row: TExoDomNode, user: TUser) => {
-            row.text(ROW_SCHEMA.ports.name, user.name);
-        });
-        const ROW = mRow.done();
+        const mRow = createExoMachine<TExoDomNode>(ROW_SCHEMA);
+        const ROW = composeExoMachine(mRow, (m) =>
+            withExoTransitions(m, {
+                setUser: (row: TExoDomNode, user: TUser) => {
+                    row.text(ROW_SCHEMA.ports.name, user.name);
+                },
+            })
+        );
+        const { setUser } = ROW.transitions;
 
         const users = source<readonly TUser[]>([
             { id: 1, name: 'ada' },
@@ -38,27 +49,38 @@ describe('a keyed list is a pack', () => {
             });
             return { rows };
         });
-        const mList = createExoMachineBuilder<TExoDomNode & TExoKeyedListApi, unknown, TListState>(
-            LIST_SCHEMA
+        const mList = createExoMachine<TExoDomNode & TExoKeyedListApi, unknown, TListState>(
+            LIST_SCHEMA,
+            {
+                createInitialState: (c) => ({
+                    list: c.keyedList(
+                        LIST_SCHEMA.ports.rows,
+                        (user: TUser) => user.id,
+                        (user: TUser) => {
+                            const row = c.build(ROW);
+                            setUser(row, user);
+                            return row;
+                        },
+                        setUser
+                    ),
+                }),
+            }
         );
-        mList.createInitialState((c) => ({
-            list: c.keyedList(
-                LIST_SCHEMA.ports.rows,
-                (user: TUser) => user.id,
-                (user: TUser, i) => {
-                    const row = c.build(ROW, i);
-                    setUser(row, user);
-                    return row;
-                },
-                setUser
-            ),
-        }));
-        const showUsers = mList.transition((c) => c.state.list.reconcile(users.getValue()));
-        mList.effect((c) => {
-            showUsers(c);
-            return users.onChange(() => showUsers(c));
-        });
-        const LIST = mList.done();
+        const LIST = composeExoMachine(
+            mList,
+            (m) =>
+                withExoTransitions(m, {
+                    showUsers: (c) => c.state.list.reconcile(users.getValue()),
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        showUsers(c);
+                        return users.onChange(() => showUsers(c));
+                    });
+                })
+        );
+        const { showUsers } = LIST.transitions;
 
         const backend = composeExoPlugins(
             withExoChildList(withExoCompiler(new ExoDomBackend())),

@@ -49,7 +49,7 @@
 // with no list, no conditional and no mount anywhere in the timed region.
 //
 // WHAT IT ACTUALLY RUNS PER WRITE, so the number can be attributed rather than guessed. Each
-// span is one row of a FIXED list (`c.list(port, C, count)`, not a reconciler — the thousand spans
+// span is one row of a FIXED list (`c.list(port, C, params)`, not a reconciler — the thousand spans
 // never change, so nothing here pays for a diff), and each row is a machine whose effect shows the
 // text once and subscribes a closure to its own source that re-runs the `show` transition. So a
 // write is: the source's single listener → one closure → one transition → one `getValue()` → one
@@ -102,10 +102,9 @@ import Mikado from 'mikado';
 // A machine row stood beside `exodraDirect` here — the same job spelled as a MACHINE, with a twin
 // declared a second time so the two could be subtracted to read this instrument's own zero. Both are
 // removed, and the reason is a property of the library rather than of this file: NOTHING TAKES
-// PROPS. `c.list(port, C, count)` is the FIXED list call every row on this axis uses; it takes a
-// `TExoMachine` and a COUNT, and it hands nothing back. A row is handed its INDEX and reads
-// whatever it needs out of a module-level array the shell filled an instant earlier, which is what
-// the two wire rows below do. A declared machine has no such closure to read from and no return for
+// PROPS. `c.list(port, C, params)` is the FIXED list call every row on this axis uses; it takes a
+// `TExoMachine` and one params value per row, and it hands nothing back. A row reads what it needs
+// from its params, which is what the two rows below do. A declared machine has no such closure to read from and no return for
 // the caller to catch. The two calls that DO hand an instance back — `c.one` and `c.build` — place
 // one child each, so a row built on either of them is no longer the fixed-list program the rows
 // beside it are, and a benchmark row that quietly stopped being its neighbours' program is worse
@@ -124,7 +123,12 @@ import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
 import { ExoDomBackend, type TExoDomNode, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 
 const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 /**
@@ -140,11 +144,6 @@ const NODES = 1000;
 const SWEEPS = 3;
 
 // --- the schema core's SPAN: module scope, one declaration, one compiled schema, 1000 clones ---
-// THE SOURCE IS READ BY INDEX. A wire is handed its position and nothing else, so the shell below
-// publishes this scenario's thousand sources here before `c.list` builds a single row, so the
-// component needs no props mechanism, no context and no closure per row beyond the one its effect
-// subscribes.
-let SPAN_SOURCES: readonly TExoBenchSource<string>[] = [];
 
 const SPAN_SCHEMA = createExoSchema((b) => {
     let text!: TExoTextPort;
@@ -153,16 +152,26 @@ const SPAN_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSPAN = createExoMachineBuilder<TExoDomNode>(SPAN_SCHEMA);
-const K_SPAN = mSPAN.createInitialState((_c, i) => SPAN_SOURCES[i]);
-const showSpan = mSPAN.transition((c: TExoDomNode) => {
-    c.text(SPAN_SCHEMA.ports.text, c.readState(K_SPAN).getValue());
+const mSPAN = createExoMachine(SPAN_SCHEMA, {
+    createInitialState: (_c: TExoDomNode, source: TExoBenchSource<string>) => source,
 });
-mSPAN.effect((c) => {
-    showSpan(c);
-    return c.readState(K_SPAN).onChange(() => showSpan(c));
-});
-const SPAN = mSPAN.done();
+const SPAN = composeExoMachine(
+    mSPAN,
+    (m) =>
+        withExoTransitions(m, {
+            showSpan: (c) => {
+                c.text(SPAN_SCHEMA.ports.text, c.state.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showSpan(c);
+                return c.state.onChange(() => showSpan(c));
+            });
+        })
+);
+const { showSpan } = SPAN.transitions;
 
 // --- the schema core's SPAN, WRITTEN DIRECTLY: the same one element, filled without a cell ---------
 /**
@@ -188,8 +197,6 @@ type TDirectSpanSlot = { ports: TExoFillDoors | null; readonly initial: string }
  * renderer: the table it wraps belongs to the INSTANCE, not to the pooled connector, which is the
  * property its own header exists to state. A user can write this.
  */
-let DIRECT_SLOTS: readonly TDirectSpanSlot[] = [];
-
 const DIRECT_SPAN_SCHEMA = createExoSchema((b) => {
     let text!: TExoTextPort;
     b.el('span', null, (s) => {
@@ -197,13 +204,13 @@ const DIRECT_SPAN_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mDIRECT_SPAN = createExoMachineBuilder<TExoDomNode>(DIRECT_SPAN_SCHEMA);
-mDIRECT_SPAN.createInitialState((c, i) => {
-    const slot = DIRECT_SLOTS[i];
-    c.text(DIRECT_SPAN_SCHEMA.ports.text, slot.initial);
-    slot.ports = c.fillDoors();
+const mDIRECT_SPAN = createExoMachine(DIRECT_SPAN_SCHEMA, {
+    createInitialState: (c: TExoDomNode, slot: TDirectSpanSlot) => {
+        c.text(DIRECT_SPAN_SCHEMA.ports.text, slot.initial);
+        slot.ports = c.fillDoors();
+    },
 });
-const DIRECT_SPAN = mDIRECT_SPAN.done();
+const DIRECT_SPAN = mDIRECT_SPAN;
 
 // --- MIKADO'S SPAN ---------------------------------------------------------------------------
 /**
@@ -381,12 +388,12 @@ export async function benchmarkReactiveUpdate(rounds = 100, batch = 1): Promise<
             });
             return { kids };
         });
-        const mHOST = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA);
-        mHOST.createInitialState((cc) => {
-            SPAN_SOURCES = sigs;
-            cc.list(HOST_SCHEMA.ports.kids, SPAN, sigs.length);
+        const mHOST = createExoMachine<TExoDomNode>(HOST_SCHEMA, {
+            createInitialState: (cc) => {
+                cc.list(HOST_SCHEMA.ports.kids, SPAN, sigs);
+            },
         });
-        const HOST = mHOST.done();
+        const HOST = mHOST;
         return EXO_BACKEND.render(HOST, c);
     };
     const exodraSigs = () => Array.from({ length: NODES }, (_, i) => createExoBenchSource(`v${i}`));
@@ -423,12 +430,12 @@ export async function benchmarkReactiveUpdate(rounds = 100, batch = 1): Promise<
             });
             return { kids };
         });
-        const mHOST2 = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA2);
-        mHOST2.createInitialState((cc) => {
-            DIRECT_SLOTS = slots;
-            cc.list(HOST_SCHEMA2.ports.kids, DIRECT_SPAN, slots.length);
+        const mHOST2 = createExoMachine<TExoDomNode>(HOST_SCHEMA2, {
+            createInitialState: (cc) => {
+                cc.list(HOST_SCHEMA2.ports.kids, DIRECT_SPAN, slots);
+            },
         });
-        const HOST = mHOST2.done();
+        const HOST = mHOST2;
         return DIRECT_BACKEND.render(HOST, c);
     };
     const exodraDirectSlots = (): TDirectSpanSlot[] =>

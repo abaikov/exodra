@@ -57,7 +57,7 @@ type TReading = {
 
 /** What the shell fills: a fixed list of rows. */
 type TListing = {
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 /** What one row handed out while it was being wired, kept so the test can read it afterwards. */
@@ -111,7 +111,7 @@ const LIST = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TListing> =>
         (c) => {
-            c.list(P.rows, ROW, 2);
+            c.list(P.rows, ROW, Array.from({ length: 2 }));
         }
 );
 

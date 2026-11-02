@@ -46,15 +46,15 @@ a different program, not a slower one.
 
 ### The dialect
 
-In the last column `RowPorts` is `rowSchema.ports` and `rowBuilder` is the machine builder over `rowSchema`.
+In the last column `RowPorts` is `rowSchema.ports` and `on` is the registrar `withExoHandlers(machine, (on) => …)` hands its callback.
 
 | written | schema call | filled by the machine with |
 |---|---|---|
 | `class="row"`, `tabindex={0}`, `disabled` | folded into the markup | — |
 | `data-id={$.id}` | `port("data-id", "id")` | `c.attr(RowPorts.id, value)` |
 | `<span>{$.label}</span>` | `textPort("label")` | `c.text(RowPorts.label, value)` |
-| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `rowBuilder.on(RowPorts.toggle, handler)` |
-| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `rowBuilder.on(RowPorts.edit, handler)` |
+| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `on(RowPorts.toggle, handler)` |
+| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `on(RowPorts.edit, handler)` |
 | `ref={$.box}` | `refPort("box")` | — |
 | `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(RowPorts.body, markup)` |
 | `<$.rows />` | `childrenPort("rows")` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema } from '@exodra/core';
 import { matchExoRoutes } from '../matchExoRoutes';
 import { parseExoPath } from '../../path/parseExoPath';
 import type { TExoRoute } from '../../types';
@@ -10,12 +10,12 @@ import type { TExoRoute } from '../../types';
 // reads `component` — but a route table is still a route table, so one real page stands in for
 // every entry below and says nothing about what any of them draw.
 const page = (name: string) =>
-    createExoMachineBuilder(
+    createExoMachine(
         createExoSchema((b) => {
             b.el('p', { class: name });
             return {};
         })
-    ).done();
+    );
 
 describe('router path matching', () => {
     const routes: readonly TExoRoute[] = [

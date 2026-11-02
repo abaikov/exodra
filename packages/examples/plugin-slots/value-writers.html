@@ -60,7 +60,7 @@
 }
 </script>
 <script type="module">
-    import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+    import { createExoMachine, createExoSchema, withExoWire } from '@exodra/core';
     import * as exoDom from '@exodra/dom';
 
     const { ExoDomBackend, withExoCompiler, withExoPropertyWriters } = exoDom;
@@ -134,11 +134,9 @@
             return { series };
         }
     );
-    const mChart = createExoMachineBuilder(CHART_SCHEMA);
-    mChart.wire(c => {
+    const CHART = withExoWire(createExoMachine(CHART_SCHEMA), c => {
         c.attr(CHART_SCHEMA.ports.series, SERIES);
     });
-    const CHART = mChart.done();
 
     const plainBackend = withExoCompiler(new ExoDomBackend());
     // THE PACK TAKES AN OPTIONAL PREDICATE — `(name, proto) => boolean`, called at COMPILE time,

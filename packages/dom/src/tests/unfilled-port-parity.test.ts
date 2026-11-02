@@ -65,7 +65,7 @@ type TFilling = {
 
 /** The same, for the one wire here that builds a LIST of rows rather than filling one. */
 type TListing = {
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 /** Render one instance through the DOM backend and hand back the markup it produced. */
@@ -81,7 +81,7 @@ const fromDom = (component: TExoMachine<TExoDomNode>): string => {
  *
  * THEY ARE ABOUT WHAT ROW TWO INHERITS FROM ROW ONE: one prototype, one schema and one sweep-flag
  * array, reused down a run of siblings. `c.list` mounts every row through exactly that shared machinery
- * and hands row `i` the number `i` as its INDEX, which is what those wires branch on. Separate
+ * and hands row `i` the number `i` as its PARAMS, which is what those wires branch on. Separate
  * top-level renders would give each row its own pass and could not ask the question.
  *
  * The `<div>` is the element the children port lives on and it is the same wrapper on both
@@ -98,7 +98,11 @@ const listOf = (component: TExoMachine<TExoDomNode>, n: number) => {
         },
         (P): TExoMachineInitialState<TListing> =>
             (c) => {
-                c.list(P.rows, component, n);
+                c.list(
+                    P.rows,
+                    component,
+                    Array.from({ length: n }, (_, i) => i)
+                );
             }
     );
 };

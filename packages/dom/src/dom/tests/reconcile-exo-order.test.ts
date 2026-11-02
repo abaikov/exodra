@@ -9,7 +9,14 @@
 // instead — see `src/tests/duplicate-item-parity.test.ts`. What is asserted here is the composition
 // against a document: element identity across a reorder, disposal on the way out, and the climb
 // that survives another program reparenting a row.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoWire,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenPort,
@@ -33,13 +40,9 @@ type TItem = { readonly id: string };
 const items = (n: number): TItem[] => Array.from({ length: n }, (_, i) => ({ id: 'i' + i }));
 
 /**
- * WHAT A ROW READS, BY INDEX. A wire is handed its position and nothing else, so the item a row
- * stands for is written here by the build callback an instant before `c.build` runs the wire. A row
- * keeps the id it was built with for life, which is the point: the row belongs to that ITEM, and
- * nothing re-wires a row the reconciler merely moved.
+ * A row is built with its item as params and keeps that id for life, which is the point: the row
+ * belongs to that ITEM, and nothing re-wires a row the reconciler merely moved.
  */
-const BUILDING: TItem[] = [];
-
 /** How many times a row was WIRED — the evidence that a survivor was not rebuilt. */
 let built = 0;
 
@@ -52,9 +55,9 @@ const ROW = createExoTestMachine(
         return { id };
     },
     (P): TExoMachineInitialState<TExoDomNode> =>
-        (c, i) => {
+        (c, item) => {
             built++;
-            c.attr(P.id, BUILDING[i].id);
+            c.attr(P.id, (item as TItem).id);
         }
 );
 
@@ -71,22 +74,34 @@ const BOUND_ROW_SCHEMA = createExoSchema((b) => {
 /** The same row, SUBSCRIBED — the leak cases need a live subscription to count. The subscription is
  *  on the TEXT so `data-id` stays the row's own and an order is still readable. */
 const boundRow = (value: TExoTestSource<string>): TExoDomMachine => {
-    const m = createExoMachineBuilder<TExoDomNode, unknown, { id: string }>(BOUND_ROW_SCHEMA);
-    m.createInitialState((_c, i) => {
-        built++;
-        return { id: BUILDING[i].id };
+    const m = createExoMachine<TExoDomNode, unknown, { id: string }>(BOUND_ROW_SCHEMA, {
+        createInitialState: (_c, item) => {
+            built++;
+            return { id: (item as TItem).id };
+        },
     });
-    m.wire((c) => {
-        c.attr(BOUND_ROW_SCHEMA.ports.id, c.state.id);
-    });
-    const show = m.transition((c) => {
-        c.text(BOUND_ROW_SCHEMA.ports.label, value.getValue());
-    });
-    m.effect((c) => {
-        show(c);
-        return value.onChange(() => show(c));
-    });
-    return m.done();
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                show: (c) => {
+                    c.text(BOUND_ROW_SCHEMA.ports.label, value.getValue());
+                },
+            }),
+        (m) =>
+            withExoWire(m, (c) => {
+                c.attr(BOUND_ROW_SCHEMA.ports.id, c.state.id);
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    show(c);
+                    return value.onChange(() => show(c));
+                });
+            })
+    );
+    const { show } = machine.transitions;
+    return machine;
 };
 
 const buildList = (b: TExoSchemaCursor): { rows: TExoChildrenPort } => {
@@ -109,24 +124,35 @@ const listOf = (
     build: (b: TExoSchemaCursor) => { rows: TExoChildrenPort } = buildList
 ): TExoDomMachine => {
     const schema = createExoSchema(build);
-    const m = createExoMachineBuilder<
-        TExoDomNode,
-        unknown,
-        { rows: TExoChildList; shown: TItem[] }
-    >(schema);
-    m.createInitialState((c) => ({ rows: c.childList(schema.ports.rows), shown: [] }));
-    const showRows = m.transition((c) => {
-        const want = src.getValue();
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item, i) => {
-            BUILDING[i] = item;
-            return c.build(rowComponent, i);
-        });
-    });
-    m.effect((c) => {
-        showRows(c);
-        return src.onChange(() => showRows(c));
-    });
-    return m.done();
+    const m = createExoMachine<TExoDomNode, unknown, { rows: TExoChildList; shown: TItem[] }>(
+        schema,
+        { createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] }) }
+    );
+    const machine = composeExoMachine(
+        m,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const want = src.getValue();
+                    c.state.shown = reconcileExoOrder(
+                        c.state.rows,
+                        c.state.shown,
+                        want,
+                        want,
+                        (item) => c.build(rowComponent, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return src.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = machine.transitions;
+    return machine;
 };
 
 /** Mount a list over `src`, and hand back the tools every case below needs. */

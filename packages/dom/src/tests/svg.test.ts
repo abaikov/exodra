@@ -35,7 +35,13 @@
 // same parser, in the same context the server's markup arrives in. What a tag name cannot decide
 // is a root that is a real element in BOTH namespaces — `<a>`, `<title>`, `<script>`, `<style>`
 // — and those stay HTML unless the schema's own markup holds an SVG-only element below them.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoAttrPort,
@@ -80,7 +86,7 @@ type TSetting = {
  * backend is accepted here without a cast.
  */
 type TNesting = {
-    list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+    list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
 };
 
 /**
@@ -202,7 +208,7 @@ describe('a schema whose root is <svg>', () => {
 });
 
 describe('a component nested into an <svg> child list', () => {
-    /** What each dot reads by INDEX: a wire is handed its position and nothing else. */
+    /** Each dot is handed its `cx` as params. */
     const DOT_CX = [1, 2, 3];
 
     /** A row whose ROOT is an SVG tag — and which therefore has no `<svg>` in its own markup. */
@@ -215,8 +221,8 @@ describe('a component nested into an <svg> child list', () => {
             return { cx };
         },
         (P): TExoMachineInitialState<TSetting> =>
-            (c, i) => {
-                c.attr(P.cx, DOT_CX[i]);
+            (c, cx) => {
+                c.attr(P.cx, cx);
             }
     );
 
@@ -231,7 +237,7 @@ describe('a component nested into an <svg> child list', () => {
         },
         (P): TExoMachineInitialState<TNesting> =>
             (c) => {
-                c.list(P.dots, DOT, DOT_CX.length);
+                c.list(P.dots, DOT, DOT_CX);
             }
     );
 
@@ -424,15 +430,24 @@ describe('a camelCase attribute PORT on an SVG element', () => {
             });
             return { port };
         });
-        const m = createExoMachineBuilder<TExoMachineNode>(schema);
-        const show = m.transition((c) => {
-            c.attr(schema.ports.port, box.getValue());
-        });
-        m.effect((c) => {
-            show(c);
-            return box.onChange(() => show(c));
-        });
-        const LIVE = m.done();
+        const m = createExoMachine<TExoMachineNode>(schema);
+        const LIVE = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    show: (c) => {
+                        c.attr(schema.ports.port, box.getValue());
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        show(c);
+                        return box.onChange(() => show(c));
+                    });
+                })
+        );
+        const { show } = LIVE.transitions;
 
         const parent = host();
         EXO_BACKEND.render(LIVE, parent);

@@ -305,9 +305,7 @@ backend and the method that was called.
 
 A component built with createExoStatic declared ports, and a static component has no wiring to fill them.
 
-A static component is EXO_NO_WIRE, which fills nothing, so those ports would stay empty for the life
-of the page with no error anywhere. Use createExoWiredMachine and give them a wire, or drop the ports. A
-development build prints how many ports the schema declared.
+A static component arms nothing at all, so those ports would stay empty for the life of the page with no error anywhere. Build a machine with createExoMachine and fill them with withExoWire, or drop the ports. A development build prints how many ports the schema declared.
 
 ### EXO0020 {#exo0020}
 
@@ -366,33 +364,11 @@ exempt from the comparison because they write no markup on any backend, so their
 collide with an attribute. Use one port and decide the value in the wire. The tag and the spelling
 ship with the code because either can be assembled from data.
 
-### EXO0025 {#exo0025}
-
-A machine was given a keep, an effect or a handler after done() had already compiled it.
-
-A machine compiles once, into one component that every instance shares, and everything declared on
-it is numbered into that compiled shape. A declaration arriving afterwards would be absent from the
-component and from every instance already rendered, with nothing to say so. Declare every keep,
-effect and handler before done(), or build a second machine. A development build names which of the
-three arrived late.
-
 ### EXO0026 {#exo0026}
 
-A machine's keep() was handed a value instead of a function that makes one.
+The createInitialState option of createExoMachine was handed a value instead of a function that makes one.
 
-This is the one place the shared-object bug can be caught. A value handed here would be ONE object
-shared by every instance of the component, each instance seeing every other instance's writes, and
-nothing downstream could tell that apart from intent. keep() takes a function so that each instance
-gets its own value. Wrap the value in a function that returns it.
-
-### EXO0027 {#exo0027}
-
-A machine's done() was called a second time, and a machine compiles once.
-
-The first call froze the seeds, the effects and the handlers into one component that every instance
-shares. A second call would either hand back a different component for the same machine or recompile
-declarations that rendered instances already carry, so it is refused instead. Hold on to the
-component the first call returned.
+This is the one place the shared-object bug can be caught. A value handed here would be ONE object shared by every instance of the component, each instance seeing every other instance's writes, and nothing downstream could tell that apart from intent. createInitialState takes a function so that each instance gets its own value. Wrap the value in a function that returns it.
 
 ### EXO0029 {#exo0029}
 
@@ -804,11 +780,7 @@ explicitly, and give the server createExoMemoryHistory instead.
 A lazy route loader resolved to a module export that is not a page component, caught while a caller
 is still awaiting the preload.
 
-Exodra router: a lazy route resolved to something that is not a page component. A page is a machine —
-the value `createExoMachineBuilder(…).done()` returns — and the module this loader imported exports
-something else (the previous runtime's h() schema, or a module with no default). It
-is refused inside preloadExoPage, where a caller is awaiting and can see it, rather than inside a
-subscriber with no stack pointing at the route table.
+Exodra router: a lazy route resolved to something that is not a page component. A page is a machine — the value createExoMachine, or a decorator over it, returns — and the module this loader imported exports something else (the previous runtime's h() schema, or a module with no default). It is refused inside preloadExoPage, where a caller is awaiting and can see it, rather than inside a subscriber with no stack pointing at the route table.
 
 ### EXO0074 {#exo0074}
 
@@ -817,11 +789,7 @@ has nothing it can render.
 
 **After the code:** the path of the route whose component was refused, in double quotes.
 
-Exodra router: the route has a component the schema core cannot render. A page here is a machine —
-the value `createExoMachineBuilder(…).done()` returns — or an exoLazy() loader that resolves to one.
-The route path ships because a route table is routinely assembled from data — a config, a
-manifest, a per-tenant list — so the developer's own run may hold different routes entirely, and a
-bare code would name none of them.
+Exodra router: the route has a component the schema core cannot render. A page here is a machine — the value createExoMachine, or a decorator over it, returns — or an exoLazy() loader that resolves to one. The route path ships because a route table is routinely assembled from data — a config, a manifest, a per-tenant list — so the developer's own run may hold different routes entirely, and a bare code would name none of them.
 
 ### EXO0077 {#exo0077}
 
@@ -882,11 +850,7 @@ ordering rule, every derivation that reads the field too early.
 A machine derivation was pointed at an event port or a ref port, neither of which a derivation is
 able to fill.
 
-createExoMachineBuilder: a derivation cannot fill an EVENT port — use on(port, handler); and a derivation cannot
-fill a REF port — use portNodeReader() to READ the node. A derivation produces a value and stores
-it, which is what attribute, text and children ports accept. An event port is a place a handler is
-installed, not a place a value lands, and a ref port exists so the wire can read the node back out;
-filling either from a derivation has no meaning the backend could carry out.
+withExoComputedMachine: a derivation cannot fill an EVENT port — use on(port, handler) inside withExoHandlers; and a derivation cannot fill a REF port — use portNodeReader() to READ the node. A derivation produces a value and stores it, which is what attribute, text and children ports accept. An event port is a place a handler is installed, not a place a value lands, and a ref port exists so the wire can read the node back out; filling either from a derivation has no meaning the backend could carry out.
 
 ### EXO0082 {#exo0082}
 
@@ -922,15 +886,6 @@ every exoJsx(…) with a module-level schema declaration, and there is no runtim
 interpret an element. The factory exists at all so that a tsc emit resolves and fails with a
 sentence instead of a missing export; there is deliberately no Fragment export, because the compiler
 refuses one and an unresolved `<></>` is the honest end.
-
-### EXO0086 {#exo0086}
-
-A machine called keep() twice. Unmanaged state is ONE value, not a table of them.
-
-createExoMachineBuilder keeps ONE unmanaged value per instance, because unmanaged state has no derivation to wake
-and no pending word to mark — there is nothing for a row number to address. A machine that needs
-several values keeps one object holding them, which is exactly what a wire holds in its closure.
-Rows, marks and numbering belong to managed state, which is withExoComputedMachine and its m.field.
 
 ### EXO0087 {#exo0087}
 
@@ -1008,20 +963,15 @@ one it renders through: compose EXO_DOM_FOREIGN_VOCABULARY onto it.
 
 ### EXO0101 {#exo0101}
 
-wire() was called a second time on one machine builder, which already holds its one wire.
+withExoWire was handed a machine that already has a wire, and a machine holds exactly one wire.
 
-A machine has one wire: the transition the system runs after createInitialState and that can
-be run again with new params. Two would leave it unclear which one a re-run calls, so put both
-bodies in one wire.
+A machine has one wire: the transition the system runs after createInitialState and that can be run again with new params through wireExoNode. Two would leave it unclear which one a re-run calls, so put both bodies in one withExoWire.
 
 ### EXO0102 {#exo0102}
 
-overrides() was handed a function that is not a transition of this machine.
+overrides() was handed a name that is not a transition of this machine.
 
-An override table is indexed by the number the builder gives each transition when
-m.transition(...) declares it, so only a function m.transition returned on this same builder
-can be overridden. Declare the transition on this builder, or build the table on the builder
-that declared it.
+An override table is indexed by the position withExoTransitions gives each name it declares, so only a name declared by withExoTransitions on this machine, or on a machine it was composed from, can be overridden. Declare the transition with withExoTransitions first, or call overrides() on the machine that declared it.
 
 ### EXO0103 {#exo0103}
 
@@ -1109,12 +1059,15 @@ one of these; if you are holding a console log with one in it, this table is the
 | `EXO0001` | A plugin declared a need for a plugin slot that no plugin in the composition provided. The named-slot runtime it belonged to was deleted: a backend is now an object that holds each plugin interface in a plain field, so an unprovided name is a missing method at compile time, not a boot refusal.                                                                                                                                                                                                                                                                                                                       |
 | `EXO0003` | An application asked a composed runtime for a plugin slot that no plugin provided. Retired with EXO0001 and for the same reason: there is no runtime to ask, and reaching a plugin's API is a property read the checker verifies.                                                                                                                                                                                                                                                                                                                                                                                            |
 | `EXO0095` | childList() was handed a port that is not a children port. Retired because the refusal is no longer dom's: @exodra/string grew the same door and accepted an attribute port in silence, writing a list's markup into an attribute slot, so both backends now raise core's assertExoChildrenPort (EXO0018) and there is one sentence for one mistake instead of two codes. |
-| `EXO0096` | exoRouteMatchAt was asked for a match no route boundary had filed. Retired with exoRouteMatchAt itself: a page now receives its match as the params of its wire, and createInitialState reads router.getMatches()[index], so there is no side table to miss. |
+| `EXO0096` | exoRouteMatchAt was asked for a match no route boundary had filed. Retired with exoRouteMatchAt itself: a page now receives its match as the params of its wire, and createInitialState receives it as its params, so there is no side table to miss. |
 | `EXO0091` | A fill door was handed a port of a kind it does not fill, such as an attribute port handed to the call that places children. Retired with @exodra/wire and its withExoWiringAsserts decorator, which never shipped. |
 | `EXO0092` | A fill door was handed a port that the schema being wired never declared, so its number addresses somebody else's table slot. Retired with @exodra/wire and its withExoWiringAsserts decorator, which never shipped. |
 | `EXO0093` | One port was filled twice in a single wire, and only one of the two values can reach the page. Retired with @exodra/wire and its withExoWiringAsserts decorator, which never shipped. |
 | `EXO0084` | mergeAttrs was called on @exodra/attrs, a tombstone that only threw. Retired with the package itself: it was deleted, because a package kept only so an old import resolves is the compatibility shim this project does not keep. |
 | `EXO0094` | A wire returned leaving ports that it declared and nobody filled, which is reported at the end because until then not yet and never are the same state. Retired with @exodra/wire and its withExoWiringAsserts decorator, which never shipped. |
+| `EXO0086` | A machine declared its initial state twice. Retired when createInitialState moved into the options object of createExoMachine: an object literal has one createInitialState key, so a second declaration cannot be written. |
+| `EXO0025` | A machine was given a keep, an effect or a handler after done() had compiled it. Retired with the machine builder: createExoMachine and the decorators withExoTransitions, withExoWire, withExoHandlers and withExoEffects each return a new machine and leave their input unchanged, so there is no compiled machine for a late declaration to miss. |
+| `EXO0027` | A machine builder's done() was called a second time. Retired with the machine builder: a machine is the value createExoMachine or a decorator returns, and there is no compile step to run twice. |
 | `EXO0028` | attachExoKeyedList refused the same key twice while reconciling one children port. The keyed list is now createExoKeyedList in @exodra/list-reconcile (c.keyedList through EXO_KEYED_LIST_VOCABULARY), and the reconcileExoOrder pass under it gives each occurrence of a repeated key its own row, so a repeated key is two rows rather than an error. |
 | `EXO0070` | The variableName given to the hydration script renderer was not a dotted identifier path. Retired with renderExoHydrationScript, the renderer that assigned state to a global by that name: state now ships only as the JSON script renderExoPage() returns as page.stateScript, read with readExoStateScript(), and an element id is quoted data rather than source. |
 | `EXO0075` | Two different observables were registered with the persistor under one key. Retired with the persistor and @exodra/reactivity: server state is written with c.inject(EXO_SSR_RESPONSE).setState(key, value) under keys the page chooses, and read back on the client with readExoStateScript(), so there is no registration to collide. |

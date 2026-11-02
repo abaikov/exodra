@@ -78,7 +78,7 @@
 //
 // Every DOM instance arrives through it (`dom/src/dom/factories/createExoMachineNode.ts:34`), so
 // a static child really does skip a per-instance call, while the wired twin pays one —
-// `wire/src/createExoMachineBuilder.ts` puts the wire in that very field. TABLE 1's `static`
+// `createExoMachine` puts the twin's `createInitialState` in the field `armExoNode` tests. TABLE 1's `static`
 // and `empty·wire` rows are therefore a comparison of TWO REAL PATHS and no longer a test of an
 // unread identity: `static` arms through the null branch, `empty·wire` runs the same static child
 // behind a FRESH `() => {}`. What separates them is one function call and one `enode.state`
@@ -92,7 +92,7 @@
 //    `TExoMachine` with an empty `portList`, and every backend takes it unchanged
 //    (`packages/core/src/component/tests/createExoStatic.test.ts:20-29`). On the server a zero-port
 //    schema collapses to arity zero and renders as one prepared string — but that is a property of
-//    HAVING NO PORTS, which `createExoMachineBuilder` with an empty cursor has too, not of this function.
+//    HAVING NO PORTS, which `createExoMachine` with an empty cursor has too, not of this function.
 //
 // THIS AXIS MEASURES THE DOM BACKEND ONLY. `ssr-floor` is where the server number would go.
 //
@@ -170,7 +170,7 @@ import { gateMarkup, markupOf } from '../../gates/markup-gate';
 import { el } from '../../shared/todo-spec';
 import type { Scenario } from '../../../harness';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import { createExoMachine } from '@exodra/core';
 
 // eslint-disable-next-line no-console
 const line = (s: string): void => console.log(`✅ ${s}`);
@@ -225,11 +225,12 @@ const FOOTER_WIRED_SCHEMA = createExoSchema((b) => {
     });
     return {};
 });
-const mFOOTER_WIRED = createExoMachineBuilder<TExoDomNode>(FOOTER_WIRED_SCHEMA);
-mFOOTER_WIRED.createInitialState(() => {
-    /* an empty wire, so `wire` is a function and not `null` */
+const mFOOTER_WIRED = createExoMachine<TExoDomNode>(FOOTER_WIRED_SCHEMA, {
+    createInitialState: () => {
+        /* an empty wire, so `wire` is a function and not `null` */
+    },
 });
-const FOOTER_WIRED: TExoWiredComponent = mFOOTER_WIRED.done();
+const FOOTER_WIRED = mFOOTER_WIRED;
 
 /** The card, with the static subtree INLINE in its own schema — the clone already contains it. */
 const CARD_INLINE_SCHEMA = createExoSchema((b) => {
@@ -251,16 +252,17 @@ const CARD_INLINE_SCHEMA = createExoSchema((b) => {
     });
     return { title };
 });
-const mCARD_INLINE = createExoMachineBuilder<TExoDomNode>(CARD_INLINE_SCHEMA);
-mCARD_INLINE.createInitialState((c, i) => {
-    c.text(CARD_INLINE_SCHEMA.ports.title, `Card ${i}`);
+const mCARD_INLINE = createExoMachine<TExoDomNode, number>(CARD_INLINE_SCHEMA, {
+    createInitialState: (c, i) => {
+        c.text(CARD_INLINE_SCHEMA.ports.title, `Card ${i}`);
+    },
 });
-const CARD_INLINE: TExoWiredComponent = mCARD_INLINE.done();
+const CARD_INLINE = mCARD_INLINE;
 
 /**
  * A SECOND, SEPARATELY DECLARED, IDENTICAL CARD — the null control for TABLE 1.
  *
- * It is its own `createExoMachineBuilder` call and therefore its own declaration and its own compiled
+ * It is its own `createExoMachine` call and therefore its own declaration and its own compiled
  * schema, so `inline` against `inline·twin` is two different programs doing exactly the same work.
  * Reusing ONE component under two row names would have shared a schema and understated the scatter.
  */
@@ -283,11 +285,12 @@ const CARD_INLINE_TWIN_SCHEMA = createExoSchema((b) => {
     });
     return { title };
 });
-const mCARD_INLINE_TWIN = createExoMachineBuilder<TExoDomNode>(CARD_INLINE_TWIN_SCHEMA);
-mCARD_INLINE_TWIN.createInitialState((c, i) => {
-    c.text(CARD_INLINE_TWIN_SCHEMA.ports.title, `Card ${i}`);
+const mCARD_INLINE_TWIN = createExoMachine<TExoDomNode, number>(CARD_INLINE_TWIN_SCHEMA, {
+    createInitialState: (c, i) => {
+        c.text(CARD_INLINE_TWIN_SCHEMA.ports.title, `Card ${i}`);
+    },
 });
-const CARD_INLINE_TWIN: TExoWiredComponent = mCARD_INLINE_TWIN.done();
+const CARD_INLINE_TWIN = mCARD_INLINE_TWIN;
 
 /** The card whose static subtree is a CHILD INSTANCE in a children port. */
 function cardWithChild(child: TExoWiredComponent): TExoWiredComponent {
@@ -304,12 +307,13 @@ function cardWithChild(child: TExoWiredComponent): TExoWiredComponent {
         });
         return { title, slot };
     });
-    const mMachine = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA);
-    mMachine.createInitialState((c, i) => {
-        c.text(MACHINE_SCHEMA.ports.title, `Card ${i}`);
-        c.one(MACHINE_SCHEMA.ports.slot, child);
+    const mMachine = createExoMachine<TExoDomNode, number>(MACHINE_SCHEMA, {
+        createInitialState: (c, i) => {
+            c.text(MACHINE_SCHEMA.ports.title, `Card ${i}`);
+            c.one(MACHINE_SCHEMA.ports.slot, child);
+        },
     });
-    return mMachine.done();
+    return mMachine;
 }
 
 const CARD_STATIC = cardWithChild(FOOTER_STATIC);
@@ -360,14 +364,13 @@ const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 // ═══ WHY EVERY EXODRA ROW HERE IS ONE `render` OF A FIXED LIST ═══
 //
-// `backend.render(component, parent)` MOUNTS ONE INSTANCE and hands it the index `0`. A loop of `n`
-// calls therefore builds `n` copies of card 0 — `Card 0` two hundred times — while `native` writes
-// `Card ${i}`, and the markup gate refuses the pair before anything is timed. It was right to: two
-// programs building different trees have no ratio.
+// `backend.render(component, parent)` MOUNTS ONE INSTANCE. A card writes `Card ${i}` from the number
+// it is armed with, `native` writes the same, and the markup gate refuses any pair whose trees differ.
 //
 // SO THE PER-ROW NUMBER COMES FROM THE LIST, which is where it comes from in an application:
-// `c.list(port, CARD, n)` arms row `i` with the index `i` (`EXO_DOM_NODE_VOCABULARY.ts`'s `list`, which passes
-// its loop counter to `mountExoInstance`). One `render`, one outer instance, `n` cards under it.
+// `c.list(port, CARD, numbers)` arms row `i` with `numbers[i]`, which is `i`
+// (`EXO_DOM_NODE_VOCABULARY.ts`'s `list` passes `params[i]` to `mountExoInstance`). One `render`,
+// one outer instance, `n` cards under it.
 //
 // IT IS THE FIXED LIST AND NOT A RECONCILED ONE. A fixed list has no row record, no diff and no
 // registry, so nothing in these numbers is a reconciler — which is what TABLE 1 is asked about: the
@@ -390,11 +393,13 @@ function listOf(row: TExoWiredComponent, n: number): TExoWiredComponent {
         });
         return { slot };
     });
-    const mMachine2 = createExoMachineBuilder<TExoDomNode>(MACHINE_SCHEMA2);
-    mMachine2.createInitialState((c) => {
-        c.list(MACHINE_SCHEMA2.ports.slot, row, n);
+    const numbers = Array.from({ length: n }, (_, i) => i);
+    const mMachine2 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA2, {
+        createInitialState: (c) => {
+            c.list(MACHINE_SCHEMA2.ports.slot, row, numbers);
+        },
     });
-    return mMachine2.done();
+    return mMachine2;
 }
 
 /** The wrapper the hand-written floors must open and close, so their tree matches. */

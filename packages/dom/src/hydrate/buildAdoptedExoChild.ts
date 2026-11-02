@@ -18,14 +18,13 @@ export function buildAdoptedExoChild(
     schema: TExoHydrateSchema,
     root: Element,
     machine: TExoDomMachine,
-    index: number,
     context: TExoContextFrame | null = null,
     params?: unknown
 ): TExoDomChild {
     // `owner.childUnmount` and not a direct import: a hydrate schema is DERIVED from a DOM one, and
     // reading the unmount off it keeps a composition that replaced one from having two.
     const child = schema.createChild(schema, root, schema.domSchema.childUnmount);
-    hydrateExoInstance(schema, root, machine, index, child, child, context, params);
+    hydrateExoInstance(schema, root, machine, child, child, context, params);
     holdExoInstance(child);
     return child;
 }

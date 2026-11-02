@@ -19,7 +19,13 @@
 // all unless the options already exist. On this core they always do — the options are STATIC
 // markup, so they are in the parsed prototype before any port is filled — which is a property of
 // the design worth holding onto rather than a coincidence to rediscover.
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+    createExoSchema,
+} from '@exodra/core';
 import type {
     TExoMachineNode,
     TExoSchemaCursor,
@@ -106,16 +112,25 @@ describe('a <select> whose options are static markup', () => {
         // bound to `model === its own value`, the same shape a radio group has had all along.
         const src = source<unknown>('a');
         const schema = createExoSchema(buildSelect);
-        const m = createExoMachineBuilder<TExoMachineNode>(schema);
-        const choose = m.transition((c) => {
-            c.attr(schema.ports.a, src.getValue() === 'a');
-            c.attr(schema.ports.v, src.getValue() === 'b');
-        });
-        m.effect((c) => {
-            choose(c);
-            return src.onChange(() => choose(c));
-        });
-        const SELECT = m.done();
+        const m = createExoMachine<TExoMachineNode>(schema);
+        const SELECT = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    choose: (c) => {
+                        c.attr(schema.ports.a, src.getValue() === 'a');
+                        c.attr(schema.ports.v, src.getValue() === 'b');
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        choose(c);
+                        return src.onChange(() => choose(c));
+                    });
+                })
+        );
+        const { choose } = SELECT.transitions;
 
         const parent = host();
         EXO_BACKEND.render(SELECT, parent);
@@ -176,15 +191,24 @@ describe('a checkbox the user has already ticked', () => {
             });
             return { v };
         });
-        const m = createExoMachineBuilder<TExoMachineNode>(schema);
-        const show = m.transition((c) => {
-            c.attr(schema.ports.v, src.getValue());
-        });
-        m.effect((c) => {
-            show(c);
-            return src.onChange(() => show(c));
-        });
-        const BOX = m.done();
+        const m = createExoMachine<TExoMachineNode>(schema);
+        const BOX = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    show: (c) => {
+                        c.attr(schema.ports.v, src.getValue());
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        show(c);
+                        return src.onChange(() => show(c));
+                    });
+                })
+        );
+        const { show } = BOX.transitions;
 
         const parent = host();
         EXO_BACKEND.render(BOX, parent);
@@ -212,15 +236,24 @@ describe('a text field the user has already typed in', () => {
             });
             return { v };
         });
-        const m = createExoMachineBuilder<TExoMachineNode>(schema);
-        const show = m.transition((c) => {
-            c.attr(schema.ports.v, src.getValue());
-        });
-        m.effect((c) => {
-            show(c);
-            return src.onChange(() => show(c));
-        });
-        const FIELD = m.done();
+        const m = createExoMachine<TExoMachineNode>(schema);
+        const FIELD = composeExoMachine(
+            m,
+            (m) =>
+                withExoTransitions(m, {
+                    show: (c) => {
+                        c.attr(schema.ports.v, src.getValue());
+                    },
+                }),
+            (m) =>
+                withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        show(c);
+                        return src.onChange(() => show(c));
+                    });
+                })
+        );
+        const { show } = FIELD.transitions;
 
         const parent = host();
         EXO_BACKEND.render(FIELD, parent);

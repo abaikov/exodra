@@ -81,11 +81,11 @@ The application is deliberately not a counter. It has:
   tasks and a cleared count; every machine that shows it follows it with an effect that draws
   first and then subscribes;
 - a list reconciled by item identity: `createInitialState` opens `c.childList(port)` once, and a
-  transition calls `reconcileExoOrder(rows, shown, want, want, (item, at) => c.build(TASK, at, item))`,
+  plain function the effect runs calls `reconcileExoOrder(rows, shown, want, want, (item) => c.build(TASK, item))`,
   each row receiving its item as its wire's params;
-- event handlers on three different buttons, declared on the machines (`m.on(port, handler)`);
+- event handlers on three different buttons, declared on the machines (`withExoHandlers(m, (on) => on(port, handler))`);
 - one stat schema behind two machines (`STAT_OPEN`, `STAT_CLEARED`), each mounted with `c.one`
-  and showing a different value of the store through its own transition;
+  and showing a different value of the store through its own function;
 - a build counter stamped into every row. Press **Move last to first**: the
   numbers travel with their rows, which is the visible evidence that the
   reconciler moved existing elements instead of rebuilding them.
@@ -98,7 +98,7 @@ The application is deliberately not a counter. It has:
   that dialect is compiled away into a `b.el(…)` line in a schema and machine code
   that writes ports, and there is no runtime that could interpret one. Without a
   compiler you write the two halves yourself, which is what `createExoSchema(build)`
-  and `createExoMachineBuilder(schema)` take.
+  and `createExoMachine(schema)` with its `withExo*` decorators take.
 - **No `@exodra/babel-plugin-exodra-schema`**, no `@exodra/vite-plugin-exodra`,
   no `create-exodra`, no `npm`, no `node`.
 - **No `@exodra/router` and no `@exodra/forms`.** They are CDN-installable the

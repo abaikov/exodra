@@ -10,7 +10,7 @@
 // child list, a door `@exodra/string` does not have. `ExoDomBackend.render` is synchronous too, so
 // it answers the same question.
 import { describe, expect, it } from 'vitest';
-import { createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { createExoMachine, composeExoMachine, withExoWire, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { host } from '@exodra/test-utils';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
@@ -44,11 +44,12 @@ const page = (name: string) => {
         });
         return { label };
     });
-    const m = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(schema);
-    m.wire((c, match) => {
-        c.text(schema.ports.label, name + ' at ' + match.pathname);
-    });
-    return m.done();
+    const m = createExoMachine<TExoMachineNode, TExoRouteMatch>(schema);
+    return composeExoMachine(m, (m) =>
+        withExoWire(m, (c, match) => {
+            c.text(schema.ports.label, name + ' at ' + match.pathname);
+        })
+    );
 };
 
 const DASHBOARD = page('dashboard');
@@ -163,12 +164,13 @@ const shellFor = (router: TExoRouter) => {
         });
         return { body };
     });
-    const m = createExoMachineBuilder<TNestingNode>(schema);
-    m.createInitialState((c) => {
-        provideExoRouter(c, router);
-        c.one(schema.ports.body, OUTLET);
+    const m = createExoMachine<TNestingNode>(schema, {
+        createInitialState: (c) => {
+            provideExoRouter(c, router);
+            c.one(schema.ports.body, OUTLET);
+        },
     });
-    return m.done() as never;
+    return m as never;
 };
 
 /** ONE SYNCHRONOUS RENDER, which is the instrument: nothing here awaits between mount and read. */

@@ -3,12 +3,15 @@ import {
     EXO_PORT_CHILDREN,
     EXO_PORT_EVENT,
     EXO_PORT_TEXT,
-    createExoMachineBuilder,
+    composeExoMachine,
+    createExoMachine,
     createExoSchema,
     exoEventPortKind,
     exoPorts,
+    withExoEffects,
+    withExoHandlers,
 } from '@exodra/core';
-import type { TExoAttrPort, TExoEventPort, TExoMachineBuilderNode } from '@exodra/core';
+import type { TExoAttrPort, TExoEventPort, TExoMachineNodeOf } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -121,13 +124,11 @@ const todoAppSchema = createExoSchema(ports, (b) => {
     });
 });
 
-const todoAppBuilder = createExoMachineBuilder<TExoDomNode, TTodoAppParams, TTodoAppState>(
-    todoAppSchema
-);
-
-todoAppBuilder.createInitialState((c, _index, params): TTodoAppState => {
-    c.provide(TodoCnsContext, params.cns);
-    return { rows: c.childList(ports.rows), shownSlots: [] };
+const todoAppBase = createExoMachine<TExoDomNode, TTodoAppParams, TTodoAppState>(todoAppSchema, {
+    createInitialState: (c, params): TTodoAppState => {
+        c.provide(TodoCnsContext, params.cns);
+        return { rows: c.childList(ports.rows), shownSlots: [] };
+    },
 });
 
 function shownFilter(): TTodoFilter {
@@ -152,7 +153,7 @@ function showFilter(c: TExoDomNode): void {
     }
 }
 
-function showRows(c: TExoMachineBuilderNode<typeof todoAppBuilder>): void {
+function showRows(c: TExoMachineNodeOf<typeof todoAppBase>): void {
     const state = c.state;
     const shown = shownFilter();
     const visibleSlots: TTodoSlot[] = [];
@@ -166,33 +167,39 @@ function showRows(c: TExoMachineBuilderNode<typeof todoAppBuilder>): void {
         state.shownSlots,
         visibleSlots,
         visibleSlots,
-        (slot, at) => c.build(TodoRow, at, slot)
+        (slot) => c.build(TodoRow, slot)
     );
 }
 
-todoAppBuilder.effect((c) => oimdb.effect(() => showCounts(c)));
+export const TodoApp = composeExoMachine(
+    todoAppBase,
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => oimdb.effect(() => showCounts(c)));
+            effect((c) => oimdb.effect(() => showFilter(c)));
+            effect((c) => oimdb.effect(() => showRows(c)));
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(ports.draftKeydown, (c, event) => {
+                if (event.key !== 'Enter') return;
+                const title = (readExoControlValue(event.target) as string).trim();
+                if (title === '') return;
+                injectTodoCns(c).stimulate(TodoUiAxon.newTodoEntered.createSignal({ title }));
+                c.attr(ports.draft, '');
+            });
 
-todoAppBuilder.effect((c) => oimdb.effect(() => showFilter(c)));
+            for (const { filter, clickPort } of filterLinks) {
+                on(clickPort, (c, event) => {
+                    event.preventDefault();
+                    injectTodoCns(c).stimulate(
+                        TodoUiAxon.filterLinkClicked.createSignal({ filter })
+                    );
+                });
+            }
 
-todoAppBuilder.effect((c) => oimdb.effect(() => showRows(c)));
-
-todoAppBuilder.on(ports.draftKeydown, (c, event) => {
-    if (event.key !== 'Enter') return;
-    const title = (readExoControlValue(event.target) as string).trim();
-    if (title === '') return;
-    injectTodoCns(c).stimulate(TodoUiAxon.newTodoEntered.createSignal({ title }));
-    c.attr(ports.draft, '');
-});
-
-for (const { filter, clickPort } of filterLinks) {
-    todoAppBuilder.on(clickPort, (c, event) => {
-        event.preventDefault();
-        injectTodoCns(c).stimulate(TodoUiAxon.filterLinkClicked.createSignal({ filter }));
-    });
-}
-
-todoAppBuilder.on(ports.clearCompleted, (c) => {
-    injectTodoCns(c).stimulate(TodoUiAxon.clearCompletedClicked.createSignal());
-});
-
-export const TodoApp = todoAppBuilder.done();
+            on(ports.clearCompleted, (c) => {
+                injectTodoCns(c).stimulate(TodoUiAxon.clearCompletedClicked.createSignal());
+            });
+        })
+);

@@ -259,7 +259,7 @@
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "A standalone component, filled from a parent with `c.one(port, Name)` or repeated with `c.list(port, Name, count)`.",
+        "doc": "A standalone component, filled from a parent with `c.one(port, Name)` or repeated with `c.list(port, Name, params)`.",
         "width": 350,
         "height": 69,
         "violations": []
@@ -271,15 +271,15 @@
         "layer": 0,
         "members": [
           {
-            "text": "(pageName, useTypeScript): string",
-            "full": "(pageName, useTypeScript): string",
+            "text": "(pageName): string",
+            "full": "(pageName): string",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
         "doc": "A page: a machine default-exported from its module, which is what the generated route table resolves and what the router will mount.",
-        "width": 248,
+        "width": 152,
         "height": 69,
         "violations": []
       },
@@ -675,9 +675,9 @@
       },
       {
         "id": "generatePageFile",
-        "x": 75,
+        "x": 123,
         "y": 635.3,
-        "width": 248,
+        "width": 152,
         "height": 69
       },
       {

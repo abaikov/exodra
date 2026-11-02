@@ -49,7 +49,7 @@ const boxWith = (
  * `n` BOXES AS A LIST — the only way to put several instances of one component on a page, and the
  * shape the cases below need for a reason of their own: the claim is about SIBLINGS at the same
  * depth of one schema's wire-frame stack, and `c.list` is what mounts them there. It hands box `i`
- * the number `i` as its index, which is what these wires read as `i`.
+ * the number `i` as its params, which is what these wires read as `i`.
  */
 const listOf = (component: TExoMachine<TExoWiring>, n: number): TExoMachine<TExoChildrenWiring> => {
     return createExoTestMachine(
@@ -62,7 +62,11 @@ const listOf = (component: TExoMachine<TExoWiring>, n: number): TExoMachine<TExo
         },
         (P): TExoMachineInitialState<TExoChildrenWiring> =>
             (c) => {
-                c.list(P.boxes, component, n);
+                c.list(
+                    P.boxes,
+                    component,
+                    Array.from({ length: n }, (_, i) => i)
+                );
             }
     );
 };
@@ -83,7 +87,7 @@ describe('wireExoInstance and the wire-frame stack', () => {
         });
         const parent = host();
 
-        expect(() => EXO_BACKEND.render(FLAKY, parent)).toThrow('first attempt fails');
+        expect(() => EXO_BACKEND.render(FLAKY, parent, 0)).toThrow('first attempt fails');
         parent.innerHTML = '';
         EXO_BACKEND.render(listOf(FLAKY, 2), parent);
 

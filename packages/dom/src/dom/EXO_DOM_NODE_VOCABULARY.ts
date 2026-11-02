@@ -53,10 +53,13 @@ export interface TExoDomNodeApi {
         machine: TExoMachine<this, unknown, TParams>,
         params?: TParams
     ): this & TExoNode<TExoDomMark>;
-    list(port: TExoChildrenPort, machine: TExoMachine<this>, count: number): void;
+    list<TParams>(
+        port: TExoChildrenPort,
+        machine: TExoMachine<this, unknown, TParams>,
+        params: readonly TParams[]
+    ): void;
     build<TParams>(
         machine: TExoMachine<this, unknown, TParams>,
-        index?: number,
         params?: TParams
     ): this & TExoNode<TExoDomMark>;
     childList(port: TExoChildrenPort): TExoChildList;
@@ -188,7 +191,6 @@ const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
         const root = mountExoInstance(
             exoDomSchemaForChild(machine, this.schema.backend),
             machine,
-            0,
             parent,
             before,
             this.child,
@@ -205,7 +207,7 @@ const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
         this: TExoDomRenderNode & TExoDomPhaseSeams,
         port: TExoChildrenPort,
         machine: TExoDomMachine,
-        count: number
+        params: readonly unknown[]
     ): void {
         assertExoArming('list');
         const schema = this.schema;
@@ -219,10 +221,11 @@ const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
         // comparison per row for one assignment. An empty list leaves `first` null, which is what
         // the publish below reads as EMPTY.
         let first: Element | null = null;
+        const count = params.length;
         if (count > 0) {
-            first = mountExoInstance(rowSchema, machine, 0, parent, before, owner, context);
+            first = mountExoInstance(rowSchema, machine, parent, before, owner, context, params[0]);
             for (let i = 1; i < count; i++) {
-                mountExoInstance(rowSchema, machine, i, parent, before, owner, context);
+                mountExoInstance(rowSchema, machine, parent, before, owner, context, params[i]);
             }
         }
         // A fixed list must publish too: unpublished reads EMPTY to the chain, and the list in front anchors past it.
@@ -233,13 +236,9 @@ const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
     },
 
     /** Builds a child, wires it and places it NOWHERE — the caller drives it and decides where it goes. It inherits THIS instance's context chain, the same one `one` and `list` hand their children, so a reconciled row reads what the parent provided; a child placed under a different parent carries this chain and not that one's. */
-    build(
-        machine: TExoDomMachine,
-        index: unknown = 0,
-        params?: unknown
-    ): TExoDomNodeApi & TExoNode<TExoDomMark> {
+    build(machine: TExoDomMachine, params?: unknown): TExoDomNodeApi & TExoNode<TExoDomMark> {
         const schema = exoDomSchemaForChild(machine, this.schema.backend);
-        const child = buildLiveExoChild(schema, machine, index as number, this.context, params);
+        const child = buildLiveExoChild(schema, machine, this.context, params);
         return child as unknown as TExoDomNodeApi & TExoNode<TExoDomMark>;
     },
 

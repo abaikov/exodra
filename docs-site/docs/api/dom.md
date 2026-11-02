@@ -50,7 +50,7 @@ page for every name hydration claims: `withExoHydration`'s bodies ignore `next` 
 replace. See [Plugins](../guides/plugins.md#the-fields-a-composition-can-replace).
 
 ```ts
-import { EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
+import { EXO_PORT_TEXT, composeExoMachine, createExoMachine, createExoSchema, exoPorts, withExoWire } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -61,17 +61,17 @@ const greetingSchema = createExoSchema(GreetingPorts, (b) => {
         h1.textPort(GreetingPorts.label);
     });
 });
-const greetingBuilder = createExoMachineBuilder<TExoDomNode>(greetingSchema);
-greetingBuilder.wire((c) => {
-    c.text(GreetingPorts.label, 'Hello');
-});
-const Greeting = greetingBuilder.done();
+const greetingMachine = composeExoMachine(createExoMachine<TExoDomNode>(greetingSchema), (m) =>
+    withExoWire(m, (c) => {
+        c.text(GreetingPorts.label, 'Hello');
+    })
+);
 
 /** ONE backend for the application, at module level — it is the schema cache key. */
 const backend = withExoCompiler(new ExoDomBackend());
 
 const root = document.getElementById('root') as HTMLElement;
-const dispose = backend.render(Greeting, root);
+const dispose = backend.render(greetingMachine, root);
 
 // later…
 dispose();
@@ -82,8 +82,9 @@ Four things about it are deliberate:
 - **It takes a machine, not a schema and a wiring side by side.** The schema is
   inside the machine, so a schema can never be paired with somebody else's wiring,
   compiled against one numbering and filled against another.
-- **It mounts one instance, and takes no count.** The instance is handed `0` as
-  its index, and there are no props — a lone root has nothing else to be about.
+- **It mounts one instance, and takes no count.** The instance is handed the
+  optional `params` and nothing else; there are no props — a lone root has
+  nothing else to be about.
 - **It is not a list.** There is no reconciler and no diff: this renders and
   stops. Rows that vary over time are a **list** — a children port filled by
   `reconcileExoOrder` over `c.childList`, below — and keeping the two
@@ -168,12 +169,14 @@ is the same shape with `reconcileExoOrder` from `@exodra/list-reconcile` inside
 that function, over the child-list door:
 
 ```ts no-check
-const show = (c: TExoMachineBuilderNode<typeof labelBuilder>): void => {
+const show = (c: TExoMachineNodeOf<typeof labelBaseMachine>): void => {
     c.text(LabelPorts.label, store.getValue().label);
 };
-labelBuilder.effect((c) => {
-    show(c);
-    return store.onChange(() => show(c));
+const labelMachine = withExoEffects(labelBaseMachine, (effect) => {
+    effect((c) => {
+        show(c);
+        return store.onChange(() => show(c));
+    });
 });
 ```
 
@@ -211,9 +214,9 @@ the last port may be filled first.
 | `on(port, handler, subject?)` | Put a [handler](./core.md#event-handlers) in an event port — a closure, or a module-level function plus the subject it is told its position by. |
 | `provide(token, value)` | Put a value where everything below this instance can reach it. |
 | `inject(token)` | The nearest value for a token, or `undefined`. |
-| `one(port, component)` | One nested instance of another component, in a children port. Hands back the child's exonode. |
-| `list(port, component, count)` | A **fixed** list of instances — one row per POSITION, rendered once, never reconciled, nothing subscribed. |
-| `build(component, index?)` | Build one child and put it nowhere — hands back the child's exonode. |
+| `one(port, component, params?)` | One nested instance of another component, in a children port. Hands back the child's exonode. |
+| `list(port, component, rows)` | A **fixed** list of instances — one row per entry of `rows`, armed with that entry as its params, rendered once, never reconciled, nothing subscribed. |
+| `build(component, params?)` | Build one child and put it nowhere — hands back the child's exonode. |
 | `childList(port)` | The child-list door for a children port: it holds whatever is put in it. This is the half a reconciler stands on — see below. |
 | `onTeardown(off)` | Hand the instance a disposer to run when it goes. |
 | `foreign(t)` | A child this renderer did not make. A pack: compose `EXO_DOM_FOREIGN_VOCABULARY` first. |
@@ -237,8 +240,18 @@ The data can live anywhere that offers a read and a change notification. Here it
 is a store object of a dozen lines; in an application it is the data layer.
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_EVENT, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoEffects,
+    withExoHandlers,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -277,20 +290,28 @@ const panelSchema = createExoSchema(PanelPorts, (b) => {
     });
 });
 
-const panelBuilder = createExoMachineBuilder<TExoDomNode>(panelSchema);
-const showActive = (c: TExoMachineBuilderNode<typeof panelBuilder>): void => {
+const panelBaseMachine = createExoMachine<TExoDomNode>(panelSchema);
+const showActive = (c: TExoMachineNodeOf<typeof panelBaseMachine>): void => {
     const on = active.getValue();
     c.attr(PanelPorts.panelClass, on ? 'panel panel--open' : 'panel');
     c.text(PanelPorts.buttonText, on ? 'Close' : 'Open');
 };
-panelBuilder.effect((c) => {
-    showActive(c);
-    return active.onChange(() => showActive(c));
-});
-panelBuilder.on(PanelPorts.click, () => active.setValue(!active.getValue()));
-const Panel = panelBuilder.done();
+const panelMachine = composeExoMachine(
+    panelBaseMachine,
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showActive(c);
+                return active.onChange(() => showActive(c));
+            });
+        }),
+    (m) =>
+        withExoHandlers(m, (on) => {
+            on(PanelPorts.click, () => active.setValue(!active.getValue()));
+        })
+);
 
-backend.render(Panel, document.body);
+backend.render(panelMachine, document.body);
 ```
 
 The first `showActive(c)` runs synchronously inside the effect, so the instance
@@ -351,8 +372,17 @@ The packs are independent, so the order among them does not matter:
 ### Nesting and lists
 
 ```ts
-import { EXO_PORT_ATTR, EXO_PORT_CHILDREN, EXO_PORT_TEXT, createExoMachineBuilder, createExoSchema, exoPorts } from '@exodra/core';
-import type { TExoMachineBuilderNode } from '@exodra/core';
+import {
+    EXO_PORT_ATTR,
+    EXO_PORT_CHILDREN,
+    EXO_PORT_TEXT,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoEffects,
+    withExoTransitions,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import type { TExoChildList, TExoDomNode } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -369,12 +399,13 @@ const taskSchema = createExoSchema(TaskPorts, (b) => {
         li.textPort(TaskPorts.title);
     });
 });
-const taskBuilder = createExoMachineBuilder<TExoDomNode>(taskSchema);
-const showTask = taskBuilder.transition((row: TExoDomNode, task: TTask) => {
-    row.attr(TaskPorts.id, task.id);
-    row.text(TaskPorts.title, task.title);
+const taskMachine = withExoTransitions(createExoMachine<TExoDomNode>(taskSchema), {
+    showTask: (row, task: TTask) => {
+        row.attr(TaskPorts.id, task.id);
+        row.text(TaskPorts.title, task.title);
+    },
 });
-const Task = taskBuilder.done();
+const { showTask } = taskMachine.transitions;
 
 let tasks: readonly TTask[] = [
     { id: 'a', title: 'First' },
@@ -396,26 +427,28 @@ const boardSchema = createExoSchema(BoardPorts, (b) => {
 
 type TBoardState = { rows: TExoChildList; shown: TTask[] };
 
-const boardBuilder = createExoMachineBuilder<TExoDomNode, unknown, TBoardState>(boardSchema);
-boardBuilder.createInitialState((c) => ({ rows: c.childList(BoardPorts.rows), shown: [] }));
-const showTasks = (c: TExoMachineBuilderNode<typeof boardBuilder>): void => {
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, tasks, tasks, (task, at) => {
-        const row = c.build(Task, at);
+const boardBaseMachine = createExoMachine<TExoDomNode, unknown, TBoardState>(boardSchema, {
+    createInitialState: (c) => ({ rows: c.childList(BoardPorts.rows), shown: [] }),
+});
+const showTasks = (c: TExoMachineNodeOf<typeof boardBaseMachine>): void => {
+    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, tasks, tasks, (task) => {
+        const row = c.build(taskMachine);
         showTask(row, task);
         return row;
     });
 };
-boardBuilder.effect((c) => {
-    showTasks(c);
-    const listener = (): void => showTasks(c);
-    taskListeners.add(listener);
-    return () => {
-        taskListeners.delete(listener);
-    };
+const boardMachine = withExoEffects(boardBaseMachine, (effect) => {
+    effect((c) => {
+        showTasks(c);
+        const listener = (): void => showTasks(c);
+        taskListeners.add(listener);
+        return () => {
+            taskListeners.delete(listener);
+        };
+    });
 });
-const Board = boardBuilder.done();
 
-backend.render(Board, document.body);
+backend.render(boardMachine, document.body);
 
 setTasks([...tasks, { id: 'c', title: 'Third' }]);
 ```
@@ -427,14 +460,15 @@ shown order, which the machine keeps in its state for the next pass. No keys are
 involved; keys are the opt-in `EXO_KEYED_LIST_VOCABULARY` pack. See the
 [Lists guide](../guides/lists.md).
 
-Use `c.list(port, component, count)` instead when the contents cannot change: a
-fixed list pays for no row records, no diff and no teardown.
+Use `c.list(port, component, rows)` instead when the contents cannot change: row
+`i` is armed with `rows[i]` as its params, and a fixed list pays for no row
+records, no diff and no teardown.
 
 ### Children as values
 
 A reconciler is a function over two doors, and both are public:
 
-- `c.build(component, index?)` returns a child — a complete, wired, detached
+- `c.build(component, params?)` returns a child — a complete, wired, detached
   instance, placed nowhere.
 - `c.childList(port)` returns the port's `TExoChildList`: `insert` (places and
   mounts), `move`, `remove` (unmounts and disposes), `removeAll`, and the placement
@@ -488,8 +522,8 @@ because a machine that names a context is the same module on the server.
 `render(component, parent, params?)` is two calls, and both are public:
 
 ```ts no-check
-const node = backend.buildRoot(Greeting, params); // the exonode, built and wired, placed nowhere
-// fire transitions at it, re-run its wire: wireExoNode(node, Greeting, nextParams)
+const node = backend.buildRoot(greetingMachine, params); // the exonode, built and wired, placed nowhere
+// fire transitions at it, re-run its wire: wireExoNode(node, greetingMachine, nextParams)
 const dispose = backend.mountRoot(node, root);    // places it, installs the event strategy
 ```
 

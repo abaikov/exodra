@@ -758,13 +758,10 @@ describe('what the refusal tells a cursor that wanted siblings to do instead', (
     // two shapes the message names are built here and rendered: the siblings live INSIDE the
     // root, and the run of them that varies is a children port standing where they stand.
     type TListing = {
-        list(port: TExoPort, component: TExoMachine<never>, count: number): void;
+        list(port: TExoPort, component: TExoMachine<never>, params: readonly unknown[]): void;
     };
 
     /** One element carrying its own label — what goes into the child list. */
-    /** What the tags read, BY INDEX. */
-    const TAG_LABELS = ['a', 'b'];
-
     const TAG = createExoTestMachine(
         (b: TExoSchemaCursor) => {
             let label!: TExoTextPort;
@@ -774,8 +771,8 @@ describe('what the refusal tells a cursor that wanted siblings to do instead', (
             return { label };
         },
         (P): TExoMachineInitialState<TSetting> =>
-            (c, i) => {
-                c.text(P.label, TAG_LABELS[i]);
+            (c, label) => {
+                c.text(P.label, label);
             }
     );
 
@@ -791,7 +788,7 @@ describe('what the refusal tells a cursor that wanted siblings to do instead', (
             },
             (P): TExoMachineInitialState<TListing> =>
                 (c) => {
-                    c.list(P.tags, TAG, 2);
+                    c.list(P.tags, TAG, ['a', 'b']);
                 }
         );
 

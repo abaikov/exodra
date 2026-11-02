@@ -24,7 +24,7 @@ export function preloadExoPage(loader: TExoLazyRouteLoader): Promise<void> {
                     throw new Error(
                         typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
                             ? 'Exodra router: a lazy route resolved to something that is not a page ' +
-                              'component. A page is a machine — the value createExoMachineBuilder(…).done() ' +
+                              'component. A page is a machine — the value createExoMachine(…) ' +
                               'returns — and the module this loader imported exports something else ' +
                               "(the previous runtime's h() schema, or a module with no default)."
                             : 'EXO0073'

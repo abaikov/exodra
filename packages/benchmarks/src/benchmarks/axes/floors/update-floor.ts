@@ -780,7 +780,12 @@ import {
 } from '../../shared/todo-spec';
 import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
-import { createExoMachineBuilder } from '@exodra/core';
+import {
+    createExoMachine,
+    composeExoMachine,
+    withExoTransitions,
+    withExoEffects,
+} from '@exodra/core';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -1010,14 +1015,6 @@ function buildTextFloor(container: HTMLElement): Text[] {
     return texts;
 }
 
-/**
- * WHICH SOURCE A SPAN FOLLOWS, BY INDEX. A wire is handed its position and nothing else, so the
- * shell writes this an instant before `c.list` runs the thousand wires. One module-level load and
- * one indexed read per row, which is what the list itself used to perform when it indexed an array
- * for the wire — moving it here changes who does the indexing and not how much of it happens.
- */
-let SPAN_SOURCES: readonly TExoBenchSource<string>[] = [];
-
 /** `reactive-update`'s span, re-declared here: one declaration, one compiled schema, 1000 clones. */
 const SPAN_SCHEMA = createExoSchema((b) => {
     let text!: TExoTextPort;
@@ -1026,16 +1023,26 @@ const SPAN_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mSPAN = createExoMachineBuilder<TExoDomNode>(SPAN_SCHEMA);
-const K_SPAN = mSPAN.createInitialState((_c, i) => SPAN_SOURCES[i]);
-const showSpan = mSPAN.transition((c: TExoDomNode) => {
-    c.text(SPAN_SCHEMA.ports.text, c.readState(K_SPAN).getValue());
+const mSPAN = createExoMachine(SPAN_SCHEMA, {
+    createInitialState: (_c: TExoDomNode, source: TExoBenchSource<string>) => source,
 });
-mSPAN.effect((c) => {
-    showSpan(c);
-    return c.readState(K_SPAN).onChange(() => showSpan(c));
-});
-const SPAN = mSPAN.done();
+const SPAN = composeExoMachine(
+    mSPAN,
+    (m) =>
+        withExoTransitions(m, {
+            showSpan: (c) => {
+                c.text(SPAN_SCHEMA.ports.text, c.state.getValue());
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showSpan(c);
+                return c.state.onChange(() => showSpan(c));
+            });
+        })
+);
+const { showSpan } = SPAN.transitions;
 
 /**
  * The shell is built per instance because its wiring names THAT instance's thousand sources — the
@@ -1052,12 +1059,12 @@ function mountTextExodra(
         });
         return { kids };
     });
-    const mHOST = createExoMachineBuilder<TExoDomNode>(HOST_SCHEMA);
-    mHOST.createInitialState((c) => {
-        SPAN_SOURCES = sigs;
-        c.list(HOST_SCHEMA.ports.kids, SPAN, sigs.length);
+    const mHOST = createExoMachine<TExoDomNode>(HOST_SCHEMA, {
+        createInitialState: (c) => {
+            c.list(HOST_SCHEMA.ports.kids, SPAN, sigs);
+        },
     });
-    const HOST = mHOST.done();
+    const HOST = mHOST;
     return EXO_BACKEND.render(HOST, container);
 }
 
@@ -1384,14 +1391,6 @@ interface TRow {
     readonly text: string;
 }
 
-/**
- * WHICH ITEM A ROW IS BUILT FOR. A wire is handed its position and nothing else, so the build
- * callback writes the item here an instant before `c.build` runs the wire. The row keeps the text it was
- * built with for life, which is what reconciling by identity means: nothing re-wires a row the
- * reconciler merely moved.
- */
-const LI_BUILDING: TRow[] = [];
-
 const LI_SCHEMA = createExoSchema((b) => {
     let text!: TExoTextPort;
     b.el('li', null, (li) => {
@@ -1399,11 +1398,16 @@ const LI_SCHEMA = createExoSchema((b) => {
     });
     return { text };
 });
-const mLI = createExoMachineBuilder<TExoDomNode>(LI_SCHEMA);
-mLI.createInitialState((c, i) => {
-    c.text(LI_SCHEMA.ports.text, LI_BUILDING[i].text);
+/**
+ * The row keeps the text it was built with for life, which is what reconciling by identity means:
+ * nothing re-wires a row the reconciler merely moved.
+ */
+const mLI = createExoMachine(LI_SCHEMA, {
+    createInitialState: (c: TExoDomNode, row: TRow) => {
+        c.text(LI_SCHEMA.ports.text, row.text);
+    },
 });
-const LI = mLI.done();
+const LI = mLI;
 
 /** The `<ul>` shell, built per instance because its wiring names THAT instance's source. */
 function mountListExodra(
@@ -1417,24 +1421,33 @@ function mountListExodra(
         });
         return { rows: port };
     });
-    const mUL = createExoMachineBuilder<TExoDomNode>(UL_SCHEMA);
-    const K_UL = mUL.createInitialState((c) => ({
-        kids: c.childList(UL_SCHEMA.ports.rows),
-        shown: [] as TRow[],
-    }));
-    const showRows = mUL.transition((c: TExoDomNode) => {
-        const state = c.readState(K_UL);
-        const want = rows.getValue();
-        state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item, i) => {
-            LI_BUILDING[i] = item;
-            return c.build(LI, i);
-        });
+    const mUL = createExoMachine(UL_SCHEMA, {
+        createInitialState: (c: TExoDomNode) => ({
+            kids: c.childList(UL_SCHEMA.ports.rows),
+            shown: [] as TRow[],
+        }),
     });
-    mUL.effect((c) => {
-        showRows(c);
-        return rows.onChange(() => showRows(c));
-    });
-    const UL = mUL.done();
+    const UL = composeExoMachine(
+        mUL,
+        (m) =>
+            withExoTransitions(m, {
+                showRows: (c) => {
+                    const state = c.state;
+                    const want = rows.getValue();
+                    state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item) =>
+                        c.build(LI, item)
+                    );
+                },
+            }),
+        (m) =>
+            withExoEffects(m, (effect) => {
+                effect((c) => {
+                    showRows(c);
+                    return rows.onChange(() => showRows(c));
+                });
+            })
+    );
+    const { showRows } = UL.transitions;
     return EXO_BACKEND.render(UL, container);
 }
 
@@ -2036,14 +2049,6 @@ function wideAdvanceUserWalk(
     for (let k = cards.length - 1; k >= 0; k--) cards[k].reclip(cell);
 }
 
-/**
- * WHICH CARDS THE NEXT `c.list` IS ABOUT TO WIRE — `exodra.tsx`'s `CARDS_SHOWN`, in this file's own
- * terms. A wire is handed its position and nothing else, so the shell writes the array here an
- * instant before the list runs, and each card reads its own slot. One array for the process is
- * enough because a shell fills its region inside its own synchronous call.
- */
-let WIDE_CARDS: readonly TWideCard[] = [];
-
 interface TWideDeck {
     readonly d: number;
     readonly name: TExoBenchSource<number>;
@@ -2064,7 +2069,6 @@ function wideRenameDecks(decks: readonly TWideDeck[]): void {
     }
 }
 
-let WIDE_DECKS: readonly TWideDeck[] = [];
 let WIDE_DECK_FILL: (c: TExoDomNode, cards: TExoChildrenPort, d: number) => void = NOOP;
 
 const WIDE_DECK_SCHEMA = createExoSchema((b) => {
@@ -2093,31 +2097,43 @@ const WIDE_DECK_SCHEMA = createExoSchema((b) => {
     });
     return { name, author, date, rename, cards };
 });
-const mWIDE_DECK = createExoMachineBuilder<TExoDomNode>(WIDE_DECK_SCHEMA);
-const K_WIDE_DECK = mWIDE_DECK.createInitialState((c, at) => {
-    const deck = WIDE_DECKS[at];
-    c.text(WIDE_DECK_SCHEMA.ports.author, userNameOf(deckUserOf(deck.d)));
-    c.on(WIDE_DECK_SCHEMA.ports.rename, NOOP);
-    WIDE_DECK_FILL(c, WIDE_DECK_SCHEMA.ports.cards, deck.d);
-    return { deck, when: deckDateOf(deck.d) };
+const mWIDE_DECK = createExoMachine(WIDE_DECK_SCHEMA, {
+    createInitialState: (c: TExoDomNode, deck: TWideDeck) => {
+        c.text(WIDE_DECK_SCHEMA.ports.author, userNameOf(deckUserOf(deck.d)));
+        c.on(WIDE_DECK_SCHEMA.ports.rename, NOOP);
+        WIDE_DECK_FILL(c, WIDE_DECK_SCHEMA.ports.cards, deck.d);
+        return { deck, when: deckDateOf(deck.d) };
+    },
 });
-const showWideDeckName = mWIDE_DECK.transition((c: TExoDomNode) => {
-    const deck = c.readState(K_WIDE_DECK).deck;
-    c.text(WIDE_DECK_SCHEMA.ports.name, deckNameOf(deck.d, deck.name.getValue()));
-});
-const showWideDeckDate = mWIDE_DECK.transition((c: TExoDomNode) => {
-    const state = c.readState(K_WIDE_DECK);
-    c.text(WIDE_DECK_SCHEMA.ports.date, dateTextOf(state.when, state.deck.chars.getValue()));
-});
-mWIDE_DECK.effect((c) => {
-    showWideDeckName(c);
-    return c.readState(K_WIDE_DECK).deck.name.onChange(() => showWideDeckName(c));
-});
-mWIDE_DECK.effect((c) => {
-    showWideDeckDate(c);
-    return c.readState(K_WIDE_DECK).deck.chars.onChange(() => showWideDeckDate(c));
-});
-const WIDE_DECK = mWIDE_DECK.done();
+const WIDE_DECK = composeExoMachine(
+    mWIDE_DECK,
+    (m) =>
+        withExoTransitions(m, {
+            showWideDeckName: (c) => {
+                const deck = c.state.deck;
+                c.text(WIDE_DECK_SCHEMA.ports.name, deckNameOf(deck.d, deck.name.getValue()));
+            },
+            showWideDeckDate: (c) => {
+                const state = c.state;
+                c.text(
+                    WIDE_DECK_SCHEMA.ports.date,
+                    dateTextOf(state.when, state.deck.chars.getValue())
+                );
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showWideDeckName(c);
+                return c.state.deck.name.onChange(() => showWideDeckName(c));
+            });
+            effect((c) => {
+                showWideDeckDate(c);
+                return c.state.deck.chars.onChange(() => showWideDeckDate(c));
+            });
+        })
+);
+const { showWideDeckName, showWideDeckDate } = WIDE_DECK.transitions;
 
 function mountWideDecks(
     container: HTMLElement,
@@ -2131,13 +2147,13 @@ function mountWideDecks(
         });
         return { decks: port };
     });
-    const mAPP = createExoMachineBuilder<TExoDomNode>(APP_SCHEMA);
-    mAPP.createInitialState((c) => {
-        WIDE_DECKS = decks;
-        WIDE_DECK_FILL = fill;
-        c.list(APP_SCHEMA.ports.decks, WIDE_DECK, decks.length);
+    const mAPP = createExoMachine<TExoDomNode>(APP_SCHEMA, {
+        createInitialState: (c) => {
+            WIDE_DECK_FILL = fill;
+            c.list(APP_SCHEMA.ports.decks, WIDE_DECK, decks);
+        },
     });
-    const APP = mAPP.done();
+    const APP = mAPP;
     return EXO_BACKEND.render(APP, container);
 }
 
@@ -2182,74 +2198,94 @@ const WIDE_CARD_SCHEMA = createExoSchema((b) => {
     });
     return { index, title, user, toggle, expanded, details, tags, count, addTag };
 });
-const mWIDE_CARD = createExoMachineBuilder<TExoDomNode>(WIDE_CARD_SCHEMA);
-const K_WIDE_CARD = mWIDE_CARD.createInitialState((c, at) => {
-    // WHICH CARD THIS ROW IS, read out of the slot the shell wrote an instant before
-    // `c.list` ran — the app's own wire reads `CARDS_SHOWN[at]` in exactly this place.
-    const card = WIDE_CARDS[at];
-    // The card's WHOLE title, computed once per instance exactly as the app's wire computes
-    // it, and clipped per flip by `headlineOf`.
-    const title = titleOf(card.i);
-    c.attr(WIDE_CARD_SCHEMA.ports.index, String(card.i));
-    // THE USER'S NAME — `c.text`, not a watched source: a name is a shared read that cannot
-    // move, and the app's own wire fills it exactly this way.
-    c.text(WIDE_CARD_SCHEMA.ports.user, userNameOf(cardUserOf(card.i)));
-    // The real card's handlers close over its state and flip it; here the driver does that
-    // directly, so the ports are filled with one shared no-op. Both apps therefore attach
-    // the same 160 listeners at mount, which is untimed for every row in this file.
-    c.on(WIDE_CARD_SCHEMA.ports.toggle, NOOP);
-    const detailsList = c.childList(WIDE_CARD_SCHEMA.ports.details);
-    const tagList = c.childList(WIDE_CARD_SCHEMA.ports.tags);
-    card.reclip = (cell) => {
-        const items = card.tags.getValue();
-        const chars = cell.getValue();
-        for (let k = items.length - 1; k >= 0; k--) {
-            const tag = items[k];
-            if (tag.chars !== cell) continue;
-            writeTagLabel(tagList.at(k) as unknown as TExoMachineNode, tagTextOf(tag.label, chars));
-        }
-    };
-    c.on(WIDE_CARD_SCHEMA.ports.addTag, NOOP);
-    return {
-        card,
-        title,
-        detailsList,
-        tagList,
-        shownDetails: [] as number[],
-        shownTags: [] as TExoCardTag[],
-    };
+const mWIDE_CARD = createExoMachine(WIDE_CARD_SCHEMA, {
+    createInitialState: (c: TExoDomNode, card: TWideCard) => {
+        // The card's WHOLE title, computed once per instance exactly as the app's wire computes
+        // it, and clipped per flip by `headlineOf`.
+        const title = titleOf(card.i);
+        c.attr(WIDE_CARD_SCHEMA.ports.index, String(card.i));
+        // THE USER'S NAME — `c.text`, not a watched source: a name is a shared read that cannot
+        // move, and the app's own wire fills it exactly this way.
+        c.text(WIDE_CARD_SCHEMA.ports.user, userNameOf(cardUserOf(card.i)));
+        // The real card's handlers close over its state and flip it; here the driver does that
+        // directly, so the ports are filled with one shared no-op. Both apps therefore attach
+        // the same 160 listeners at mount, which is untimed for every row in this file.
+        c.on(WIDE_CARD_SCHEMA.ports.toggle, NOOP);
+        const detailsList = c.childList(WIDE_CARD_SCHEMA.ports.details);
+        const tagList = c.childList(WIDE_CARD_SCHEMA.ports.tags);
+        card.reclip = (cell) => {
+            const items = card.tags.getValue();
+            const chars = cell.getValue();
+            for (let k = items.length - 1; k >= 0; k--) {
+                const tag = items[k];
+                if (tag.chars !== cell) continue;
+                writeTagLabel(
+                    tagList.at(k) as unknown as TExoMachineNode,
+                    tagTextOf(tag.label, chars)
+                );
+            }
+        };
+        c.on(WIDE_CARD_SCHEMA.ports.addTag, NOOP);
+        return {
+            card,
+            title,
+            detailsList,
+            tagList,
+            shownDetails: [] as number[],
+            shownTags: [] as TExoCardTag[],
+        };
+    },
 });
-const showWideDetails = mWIDE_CARD.transition((c: TExoDomNode) => {
-    const state = c.readState(K_WIDE_CARD);
-    const kids = state.card.details.getValue();
-    c.text(WIDE_CARD_SCHEMA.ports.title, headlineOf(state.title, kids.length === 1));
-    c.attr(WIDE_CARD_SCHEMA.ports.expanded, expandedOf(kids.length === 1));
-    state.shownDetails = reconcileExoOrder(state.detailsList, state.shownDetails, kids, kids, () =>
-        c.build(DETAILS, 0)
-    );
-});
-const showWideTags = mWIDE_CARD.transition((c: TExoDomNode) => {
-    const state = c.readState(K_WIDE_CARD);
-    const tags = state.card.tags.getValue();
-    c.text(WIDE_CARD_SCHEMA.ports.count, tagsLabel(tags.length));
-    state.shownTags = reconcileExoOrder(state.tagList, state.shownTags, tags, tags, (tag, k) => {
-        const row = c.build(TAG, k);
-        writeTagLabel(
-            row as unknown as TExoMachineNode,
-            tagTextOf(tag.label, tag.chars.getValue())
-        );
-        return row;
-    });
-});
-mWIDE_CARD.effect((c) => {
-    showWideDetails(c);
-    return c.readState(K_WIDE_CARD).card.details.onChange(() => showWideDetails(c));
-});
-mWIDE_CARD.effect((c) => {
-    showWideTags(c);
-    return c.readState(K_WIDE_CARD).card.tags.onChange(() => showWideTags(c));
-});
-const WIDE_CARD = mWIDE_CARD.done();
+const WIDE_CARD = composeExoMachine(
+    mWIDE_CARD,
+    (m) =>
+        withExoTransitions(m, {
+            showWideDetails: (c) => {
+                const state = c.state;
+                const kids = state.card.details.getValue();
+                c.text(WIDE_CARD_SCHEMA.ports.title, headlineOf(state.title, kids.length === 1));
+                c.attr(WIDE_CARD_SCHEMA.ports.expanded, expandedOf(kids.length === 1));
+                state.shownDetails = reconcileExoOrder(
+                    state.detailsList,
+                    state.shownDetails,
+                    kids,
+                    kids,
+                    () => c.build(DETAILS)
+                );
+            },
+            showWideTags: (c) => {
+                const state = c.state;
+                const tags = state.card.tags.getValue();
+                c.text(WIDE_CARD_SCHEMA.ports.count, tagsLabel(tags.length));
+                state.shownTags = reconcileExoOrder(
+                    state.tagList,
+                    state.shownTags,
+                    tags,
+                    tags,
+                    (tag) => {
+                        const row = c.build(TAG);
+                        writeTagLabel(
+                            row as unknown as TExoMachineNode,
+                            tagTextOf(tag.label, tag.chars.getValue())
+                        );
+                        return row;
+                    }
+                );
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showWideDetails(c);
+                return c.state.card.details.onChange(() => showWideDetails(c));
+            });
+            effect((c) => {
+                showWideTags(c);
+                return c.state.card.tags.onChange(() => showWideTags(c));
+            });
+        })
+);
+const { showWideDetails, showWideTags } = WIDE_CARD.transitions;
 
 /** Per card: its own four tag pools, precomputed, so no transition allocates an array. */
 interface TWideState {
@@ -2298,8 +2334,7 @@ function mountWideExodra(
 ): () => void {
     const slices = perDeck(cards);
     return mountWideDecks(container, decks, (c, port, d) => {
-        WIDE_CARDS = slices[d];
-        c.list(port, WIDE_CARD, slices[d].length);
+        c.list(port, WIDE_CARD, slices[d]);
     });
 }
 
@@ -3391,7 +3426,6 @@ function wideWireDetails(f: TWideFloor, r: TWideRecords, k: number): void {
             DETAILS_PLAN,
             d,
             DETAILS,
-            0,
             record as unknown as TExoDomChild,
             // THE RECORD IS THE HOLDER AND THE CHILD BOTH, exactly as `buildLiveExoChild` passes
             // it twice: since the two per-instance records were merged there is nothing to
@@ -3440,14 +3474,12 @@ function wideWireTags(
         const record = makeFloorRecord(t);
         // The wire writes the label the line above already wrote — the same string out of the
         // same `POOL` — so the DOM is the floor's and the byte-gate is a formality it still has
-        // to pass. `next - 1` is the position the reconciler's build callback would have been
-        // handed. The text crosses as a TRANSITION ARGUMENT now, fired right after the node is
+        // to pass. The text crosses as a TRANSITION ARGUMENT, fired right after the node is
         // armed, so this rung pays one call where it used to pay one array store.
         createExoNode(
             TAG_PLAN,
             t,
             TAG,
-            next - 1,
             record as unknown as TExoDomChild,
             // THE RECORD IS THE HOLDER AND THE CHILD — see `wideWireDetails` for the same pair.
             record as unknown as TExoDomChild,
@@ -3571,9 +3603,6 @@ interface TWideKeptCard {
     readonly tags: TExoBenchSource<readonly TExoNode<TExoDomMark>[]>;
 }
 
-/** `WIDE_CARDS` for the keep-alive row — its own slot, so neither row can read the other's cards. */
-let WIDE_KEPT_CARDS: readonly TWideKeptCard[] = [];
-
 /**
  * THE IDENTITY BUILD, one function for the process. A source whose items are already children
  * needs nothing made, and a closure per card per port would be an allocation this row claims not
@@ -3636,80 +3665,98 @@ const WIDE_CARD_KEPT_SCHEMA = createExoSchema((b) => {
     });
     return { index, title, user, toggle, expanded, details, tags, count, addTag };
 });
-const mWIDE_CARD_KEPT = createExoMachineBuilder<TExoDomNode>(WIDE_CARD_KEPT_SCHEMA);
-const K_WIDE_CARD_KEPT = mWIDE_CARD_KEPT.createInitialState((c, at) => {
-    const card = WIDE_KEPT_CARDS[at];
-    const title = titleOf(card.i);
-    c.attr(WIDE_CARD_KEPT_SCHEMA.ports.index, String(card.i));
-    c.text(WIDE_CARD_KEPT_SCHEMA.ports.user, userNameOf(cardUserOf(card.i)));
-    c.on(WIDE_CARD_KEPT_SCHEMA.ports.toggle, NOOP);
-    const hold = card.hold;
-    const d = c.build(DETAILS, 0);
-    exoNodeDom(d).unmount = KEEP_ALIVE;
-    hold.detailsOpen[0] = d;
-    for (let t = 0; t < POOL.length; t++) {
-        const kid = c.build(TAG, t);
-        writeTagLabel(
-            kid as unknown as TExoMachineNode,
-            tagTextOf(hold.pool[t].label, hold.pool[t].chars.getValue())
-        );
-        exoNodeDom(kid).unmount = KEEP_ALIVE;
-        // Every slice long enough to contain this position gets it, so the four arrays
-        // are complete before the first update and nothing is written inside a region.
-        for (let n = t; n < POOL.length; n++) hold.tagSlices[n][t] = kid;
-    }
-    const kids = hold.tagSlices[POOL.length - 1];
-    card.reclip = (cell) => {
-        const chars = cell.getValue();
-        for (let t = POOL.length - 1; t >= 0; t--) {
-            const tag = hold.pool[t];
-            if (tag.chars !== cell) continue;
-            writeTagLabel(kids[t] as unknown as TExoMachineNode, tagTextOf(tag.label, chars));
+const mWIDE_CARD_KEPT = createExoMachine(WIDE_CARD_KEPT_SCHEMA, {
+    createInitialState: (c: TExoDomNode, card: TWideKeptCard) => {
+        const title = titleOf(card.i);
+        c.attr(WIDE_CARD_KEPT_SCHEMA.ports.index, String(card.i));
+        c.text(WIDE_CARD_KEPT_SCHEMA.ports.user, userNameOf(cardUserOf(card.i)));
+        c.on(WIDE_CARD_KEPT_SCHEMA.ports.toggle, NOOP);
+        const hold = card.hold;
+        const d = c.build(DETAILS);
+        exoNodeDom(d).unmount = KEEP_ALIVE;
+        hold.detailsOpen[0] = d;
+        for (let t = 0; t < POOL.length; t++) {
+            const kid = c.build(TAG);
+            writeTagLabel(
+                kid as unknown as TExoMachineNode,
+                tagTextOf(hold.pool[t].label, hold.pool[t].chars.getValue())
+            );
+            exoNodeDom(kid).unmount = KEEP_ALIVE;
+            // Every slice long enough to contain this position gets it, so the four arrays
+            // are complete before the first update and nothing is written inside a region.
+            for (let n = t; n < POOL.length; n++) hold.tagSlices[n][t] = kid;
         }
-    };
-    card.details.setValue(startsOpen(card.i) ? hold.detailsOpen : NO_KIDS);
-    card.tags.setValue(hold.tagSlices[startCount(card.i) - 1]);
-    c.on(WIDE_CARD_KEPT_SCHEMA.ports.addTag, NOOP);
-    return {
-        card,
-        title,
-        detailsList: c.childList(WIDE_CARD_KEPT_SCHEMA.ports.details),
-        tagList: c.childList(WIDE_CARD_KEPT_SCHEMA.ports.tags),
-        shownDetails: [] as TExoNode<TExoDomMark>[],
-        shownTags: [] as TExoNode<TExoDomMark>[],
-    };
+        const kids = hold.tagSlices[POOL.length - 1];
+        card.reclip = (cell) => {
+            const chars = cell.getValue();
+            for (let t = POOL.length - 1; t >= 0; t--) {
+                const tag = hold.pool[t];
+                if (tag.chars !== cell) continue;
+                writeTagLabel(kids[t] as unknown as TExoMachineNode, tagTextOf(tag.label, chars));
+            }
+        };
+        card.details.setValue(startsOpen(card.i) ? hold.detailsOpen : NO_KIDS);
+        card.tags.setValue(hold.tagSlices[startCount(card.i) - 1]);
+        c.on(WIDE_CARD_KEPT_SCHEMA.ports.addTag, NOOP);
+        return {
+            card,
+            title,
+            detailsList: c.childList(WIDE_CARD_KEPT_SCHEMA.ports.details),
+            tagList: c.childList(WIDE_CARD_KEPT_SCHEMA.ports.tags),
+            shownDetails: [] as TExoNode<TExoDomMark>[],
+            shownTags: [] as TExoNode<TExoDomMark>[],
+        };
+    },
 });
-// THE SAME TRANSITIONS AS `WIDE_CARD`, over sources whose ITEMS ARE THE CHILDREN, so the build is
-// the identity and nothing is ever made inside a timed region. The reconciler still diffs, inserts,
-// moves and removes, and the children it removes are the ones KEEP_ALIVE told to survive.
-const showWideKeptDetails = mWIDE_CARD_KEPT.transition((c: TExoDomNode) => {
-    const state = c.readState(K_WIDE_CARD_KEPT);
-    const kids = state.card.details.getValue();
-    c.text(WIDE_CARD_KEPT_SCHEMA.ports.title, headlineOf(state.title, kids.length === 1));
-    c.attr(WIDE_CARD_KEPT_SCHEMA.ports.expanded, expandedOf(kids.length === 1));
-    state.shownDetails = reconcileExoOrder(
-        state.detailsList,
-        state.shownDetails,
-        kids,
-        kids,
-        KEPT_CHILD
-    );
-});
-const showWideKeptTags = mWIDE_CARD_KEPT.transition((c: TExoDomNode) => {
-    const state = c.readState(K_WIDE_CARD_KEPT);
-    const kids = state.card.tags.getValue();
-    c.text(WIDE_CARD_KEPT_SCHEMA.ports.count, tagsLabel(kids.length));
-    state.shownTags = reconcileExoOrder(state.tagList, state.shownTags, kids, kids, KEPT_CHILD);
-});
-mWIDE_CARD_KEPT.effect((c) => {
-    showWideKeptDetails(c);
-    return c.readState(K_WIDE_CARD_KEPT).card.details.onChange(() => showWideKeptDetails(c));
-});
-mWIDE_CARD_KEPT.effect((c) => {
-    showWideKeptTags(c);
-    return c.readState(K_WIDE_CARD_KEPT).card.tags.onChange(() => showWideKeptTags(c));
-});
-const WIDE_CARD_KEPT = mWIDE_CARD_KEPT.done();
+const WIDE_CARD_KEPT = composeExoMachine(
+    mWIDE_CARD_KEPT,
+    (m) =>
+        withExoTransitions(m, {
+            // THE SAME TRANSITIONS AS `WIDE_CARD`, over sources whose ITEMS ARE THE CHILDREN, so the build is
+            // the identity and nothing is ever made inside a timed region. The reconciler still diffs, inserts,
+            // moves and removes, and the children it removes are the ones KEEP_ALIVE told to survive.
+            showWideKeptDetails: (c) => {
+                const state = c.state;
+                const kids = state.card.details.getValue();
+                c.text(
+                    WIDE_CARD_KEPT_SCHEMA.ports.title,
+                    headlineOf(state.title, kids.length === 1)
+                );
+                c.attr(WIDE_CARD_KEPT_SCHEMA.ports.expanded, expandedOf(kids.length === 1));
+                state.shownDetails = reconcileExoOrder(
+                    state.detailsList,
+                    state.shownDetails,
+                    kids,
+                    kids,
+                    KEPT_CHILD
+                );
+            },
+            showWideKeptTags: (c) => {
+                const state = c.state;
+                const kids = state.card.tags.getValue();
+                c.text(WIDE_CARD_KEPT_SCHEMA.ports.count, tagsLabel(kids.length));
+                state.shownTags = reconcileExoOrder(
+                    state.tagList,
+                    state.shownTags,
+                    kids,
+                    kids,
+                    KEPT_CHILD
+                );
+            },
+        }),
+    (m) =>
+        withExoEffects(m, (effect) => {
+            effect((c) => {
+                showWideKeptDetails(c);
+                return c.state.card.details.onChange(() => showWideKeptDetails(c));
+            });
+            effect((c) => {
+                showWideKeptTags(c);
+                return c.state.card.tags.onChange(() => showWideKeptTags(c));
+            });
+        })
+);
+const { showWideKeptDetails, showWideKeptTags } = WIDE_CARD_KEPT.transitions;
 
 function mountWideKept(
     container: HTMLElement,
@@ -3718,8 +3765,7 @@ function mountWideKept(
 ): () => void {
     const slices = perDeck(cards);
     return mountWideDecks(container, decks, (c, port, d) => {
-        WIDE_KEPT_CARDS = slices[d];
-        c.list(port, WIDE_CARD_KEPT, slices[d].length);
+        c.list(port, WIDE_CARD_KEPT, slices[d]);
     });
 }
 

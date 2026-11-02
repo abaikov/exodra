@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { composeExoPlugins, createExoMachineBuilder, createExoSchema } from '@exodra/core';
+import { composeExoPlugins, createExoMachine, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort, TExoTextPort } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
 import { describe, expect, it } from 'vitest';
@@ -23,11 +23,12 @@ const GREETING_SCHEMA = createExoSchema((b) => {
     });
     return { who, slot };
 });
-const mGreeting = createExoMachineBuilder<TExoDomNode>(GREETING_SCHEMA);
-mGreeting.createInitialState((c) => {
-    c.text(GREETING_SCHEMA.ports.who, 'world');
+const mGreeting = createExoMachine<TExoDomNode>(GREETING_SCHEMA, {
+    createInitialState: (c) => {
+        c.text(GREETING_SCHEMA.ports.who, 'world');
+    },
 });
-const GREETING = mGreeting.done();
+const GREETING = mGreeting;
 
 describe('one composeExoPlugins call takes function packs and vocabularies in order', () => {
     const backend = composeExoPlugins(

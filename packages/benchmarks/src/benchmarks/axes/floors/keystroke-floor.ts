@@ -342,7 +342,9 @@ import type { TExoCursorDeclaration, TExoMachine } from '@exodra/core';
 // MUTATES and returns the object it is handed, so `DELEGATED_BACKEND` stays ONE identity, which is
 // what the schema cache needs: it keys the backend by pointer.
 import {
-    createExoMachineBuilder,
+    createExoMachine,
+    composeExoMachine,
+    withExoHandlers,
     createExoSchema,
     composeExoPlugins,
     type TExoAttrPort,
@@ -504,32 +506,36 @@ type TRootState = { readonly nodes: Element[]; readonly values: string[] };
 /**
  * AS IT SHIPS. One listener on the form, the fields' nodes read once, the value read off the target.
  */
-const mFormRoot = createExoMachineBuilder<TExoDomNode, unknown, TRootState>(FORM_ROOT_SCHEMA);
-mFormRoot.createInitialState((c): TRootState => {
-    const table = c.portTable();
-    const read = c.portNodeReader();
-    const nodes = new Array<Element>(FIELDS);
-    for (let k = 0; k < FIELDS; k++) nodes[k] = read(table, R.fields[k]);
-    c.text(R.readout, fmt(''));
-    return { nodes, values: new Array<string>(FIELDS).fill('') };
+const mFormRoot = createExoMachine<TExoDomNode, unknown, TRootState>(FORM_ROOT_SCHEMA, {
+    createInitialState: (c): TRootState => {
+        const table = c.portTable();
+        const read = c.portNodeReader();
+        const nodes = new Array<Element>(FIELDS);
+        for (let k = 0; k < FIELDS; k++) nodes[k] = read(table, R.fields[k]);
+        c.text(R.readout, fmt(''));
+        return { nodes, values: new Array<string>(FIELDS).fill('') };
+    },
 });
-mFormRoot.on(R.input, (c, event) => {
-    const target = event.target;
-    const value = readExoControlValue(target) as string;
-    const nodes = c.state.nodes;
-    if (target === nodes[TYPED]) {
-        c.state.values[TYPED] = value;
-        c.text(R.readout, fmt(value));
-        return;
-    }
-    for (let k = 0; k < FIELDS; k++) {
-        if (nodes[k] === target) {
-            c.state.values[k] = value;
-            return;
-        }
-    }
-});
-const FORM_EXODRA: TExoDomMachine = mFormRoot.done();
+const FORM_EXODRA = composeExoMachine(mFormRoot, (m) =>
+    withExoHandlers(m, (on) => {
+        on(R.input, (c, event) => {
+            const target = event.target;
+            const value = readExoControlValue(target) as string;
+            const nodes = c.state.nodes;
+            if (target === nodes[TYPED]) {
+                c.state.values[TYPED] = value;
+                c.text(R.readout, fmt(value));
+                return;
+            }
+            for (let k = 0; k < FIELDS; k++) {
+                if (nodes[k] === target) {
+                    c.state.values[k] = value;
+                    return;
+                }
+            }
+        });
+    })
+);
 
 /**
  * THE CONTROLLED SHAPE — a model per field, written back into the field on every keystroke by a

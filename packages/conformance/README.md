@@ -44,8 +44,8 @@ hydration disagree about how many children a parent has"
 (`packages/dom/src/tests/duplicate-item-parity.test.ts:8-10`) — and a table with the two halves in
 it and not their meeting point would record the premise and omit the conclusion. That sentence is
 written in the PAST tense in the file it comes from, because the fork it describes is closed: a
-backend now has one list call, `c.list(port, component, count)`, which builds a row per POSITION and
-consults no identity, so the two backends answer alike by construction rather than by agreement.
+backend now has one list call, `c.list(port, component, rows)`, which builds a row per ENTRY of
+`rows`, arms row i with `rows[i]` as its params, and consults no identity, so the two backends answer alike by construction rather than by agreement.
 
 ## How it is used
 
@@ -312,7 +312,7 @@ All eight are FALSE NEGATIVES: things two backends can differ about while sketch
    need a different artefact.
 7. **Identity across time.** The sketch is a snapshot. "The same element object was kept" and "an
    identical element was rebuilt" read alike, so no rule here can assert row reuse — only the
-   observable consequence of it (which is how the row-index rule is written).
+   observable consequence of it.
 8. **Everything the parser repairs — the costliest entry on this list.** Defining the artefact
    post-parse means `@exodra/string`'s bytes are seen only after the HTML parser has fixed them, and
    the parser fixes a great deal: a DUPLICATE ATTRIBUTE is dropped and the first wins, MIS-NESTING is
@@ -431,25 +431,23 @@ a wire's exonode parameter is contravariant, so a component typed against a back
 is a backend-only component whatever the design promised. Here one value reaches all four, and the
 compiler is what says so.
 
-**There is no second type argument carrying props, because there are no props.** A wire is
-`(enode, index) => TOut`: `TExoMachine<TWiring, TPorts>`'s second parameter is the PORT RECORD the
-schema handed back, which is inferred and which nothing here names. An instance is handed its
-POSITION and reads whatever it shows from state keyed by that number. The two shipped backends mount
-ONE instance and hand it `0`; `ExoTermBackend.renderScreen` takes a count and hands row `i` the
-number `i`.
+**There is no second type argument carrying props, because there are no props.** An initial state
+is `(enode, params) => TOut`: `TExoMachine<TWiring, TPorts>`'s second parameter is the PORT RECORD the
+schema handed back, which is inferred and which nothing here names. An instance is handed no
+position; what it shows arrives as its `params`. The two shipped backends mount ONE instance and
+hand it the params given to `render`; `ExoTermBackend.renderScreen` takes a count and hands every
+one of its `n` instances the same params.
 
-That is why a subject's wire can be written `(c) => { … }` and still be passable everywhere: a
-function of fewer parameters is assignable to one of more, and the index it ignores was the only
-thing it was ever going to be handed. A subject that *does* want its row number writes
-`(c, index) => { … }` and reads the datum out of its own array:
+That is why a subject's initial state can be written `(c) => { … }` and still be passable
+everywhere: a function of fewer parameters is assignable to one of more, and the params it ignores
+are the only thing it was ever going to be handed. A subject that *does* want a datum names it as
+its params and writes it:
 
 ```ts
 import type { TExoAttrPort, TExoChildrenWiring, TExoMachineInitialState } from '@exodra/core';
 
-declare const VALUES: readonly string[];
-
-const wire = (P: { attr: TExoAttrPort }): TExoMachineInitialState<TExoChildrenWiring> =>
-    (c, index) => { c.attr(P.attr, VALUES[index]); };
+const wire = (P: { attr: TExoAttrPort }): TExoMachineInitialState<TExoChildrenWiring, void, string> =>
+    (c, value) => { c.attr(P.attr, value); };
 ```
 
 ## Ordering constraints inside a run
@@ -502,7 +500,7 @@ not carry the `exoReclaimingText` writer. See the translator probe below for wha
 ## Instances
 
 `n` instances are `n` calls, and they are IDENTICAL rows. `render` mounts one instance and hands it
-`0` as its index — no entry point takes a count. So a rule asking for
+the params it was given — no entry point takes a count. So a rule asking for
 several instances gets several SIBLINGS rather than a numbered series: what an `n > 1` rule can
 observe is placement and interference between neighbours, never a per-row value. The string adapter
 concatenates its `n` calls, which is what the deleted entry point's loop did minus the row number it

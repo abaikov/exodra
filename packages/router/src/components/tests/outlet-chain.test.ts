@@ -1,7 +1,10 @@
 // @vitest-environment jsdom
 import {
     connectExoNode,
-    createExoMachineBuilder,
+    createExoMachine,
+    composeExoMachine,
+    withExoWire,
+    withExoEffects,
     createExoSchema,
     disconnectExoNode,
 } from '@exodra/core';
@@ -41,15 +44,17 @@ const wiredPage = (name: string) => {
         });
         return { label };
     });
-    const m = createExoMachineBuilder<TExoMachineNode, TExoRouteMatch>(schema);
-    m.createInitialState(() => {
-        log.push('build ' + name);
+    const m = createExoMachine<TExoMachineNode, TExoRouteMatch>(schema, {
+        createInitialState: () => {
+            log.push('build ' + name);
+        },
     });
-    m.wire((c, match) => {
-        log.push('wire ' + name);
-        c.text(schema.ports.label, name + ' ' + (match.params.id ?? ''));
-    });
-    return m.done();
+    return composeExoMachine(m, (m) =>
+        withExoWire(m, (c, match) => {
+            log.push('wire ' + name);
+            c.text(schema.ports.label, name + ' ' + (match.params.id ?? ''));
+        })
+    );
 };
 
 const plainPage = (name: string) => {
@@ -60,13 +65,13 @@ const plainPage = (name: string) => {
         });
         return { label };
     });
-    const m = createExoMachineBuilder<TExoMachineNode>(schema);
-    m.createInitialState((c, index) => {
-        log.push('build ' + name);
-        const match = injectExoRouter(c).getMatches()[index];
-        c.text(schema.ports.label, name + ' ' + (match.params.id ?? ''));
+    const m = createExoMachine<TExoMachineNode, TExoRouteMatch>(schema, {
+        createInitialState: (c, match) => {
+            log.push('build ' + name);
+            c.text(schema.ports.label, name + ' ' + (match.params.id ?? ''));
+        },
     });
-    return m.done();
+    return m;
 };
 
 const layout = (name: string) => {
@@ -77,12 +82,13 @@ const layout = (name: string) => {
         });
         return { page };
     });
-    const m = createExoMachineBuilder<TNestingNode>(schema);
-    m.createInitialState((c) => {
-        log.push('build ' + name);
-        c.one(schema.ports.page, ExoOutlet);
+    const m = createExoMachine<TNestingNode>(schema, {
+        createInitialState: (c) => {
+            log.push('build ' + name);
+            c.one(schema.ports.page, ExoOutlet);
+        },
     });
-    return m.done();
+    return m;
 };
 
 const shellFor = (router: TExoRouter, held: TExoNode[]) => {
@@ -93,14 +99,15 @@ const shellFor = (router: TExoRouter, held: TExoNode[]) => {
         });
         return { body };
     });
-    const m = createExoMachineBuilder<TNestingNode>(schema);
-    m.createInitialState((c) => {
-        provideExoRouter(c, router);
-        const outlet = c.build(ExoOutlet);
-        held.push(outlet);
-        c.childList(schema.ports.body).insert(outlet);
+    const m = createExoMachine<TNestingNode>(schema, {
+        createInitialState: (c) => {
+            provideExoRouter(c, router);
+            const outlet = c.build(ExoOutlet);
+            held.push(outlet);
+            c.childList(schema.ports.body).insert(outlet);
+        },
     });
-    return m.done();
+    return m;
 };
 
 const mount = (routes: readonly TExoRoute[], at: string) => {
@@ -226,11 +233,12 @@ describe('nested route boundaries', () => {
             b.el('p', { class: 'listening' });
             return {};
         });
-        const m = createExoMachineBuilder<TExoMachineNode>(schema);
-        m.effect((c) => injectExoRouter(c).onChange(() => heard.push('old page')));
+        const Page = withExoEffects(createExoMachine<TExoMachineNode>(schema), (effect) => {
+            effect((c) => injectExoRouter(c).onChange(() => heard.push('old page')));
+        });
         const { router } = mount(
             [
-                { path: '/', component: m.done() },
+                { path: '/', component: Page },
                 { path: '/next', component: wiredPage('next') },
             ],
             '/'
@@ -247,15 +255,16 @@ describe('nested route boundaries', () => {
             b.el('p', { class: 'arriving' });
             return {};
         });
-        const m = createExoMachineBuilder<TExoMachineNode>(schema);
-        m.effect((c) => {
-            const router = injectExoRouter(c);
-            return router.onChange(() => heard.push(router.getLocation().search));
+        const Page = withExoEffects(createExoMachine<TExoMachineNode>(schema), (effect) => {
+            effect((c) => {
+                const router = injectExoRouter(c);
+                return router.onChange(() => heard.push(router.getLocation().search));
+            });
         });
         const { router } = mount(
             [
                 { path: '/', component: wiredPage('home') },
-                { path: '/arriving', component: m.done() },
+                { path: '/arriving', component: Page },
             ],
             '/'
         );

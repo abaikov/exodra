@@ -10,13 +10,12 @@ import type { TExoStrMachine } from './types/TExoStrMachine';
 export function renderExoStrInstance(
     schema: TExoStrSchema,
     machine: TExoStrMachine,
-    index: number,
     context: TExoContextFrame | null = null,
     params?: unknown
 ): string {
     const node = schema.createInstance(schema, context);
     try {
-        armExoNode<TExoStrNode>(node, machine, index, params);
+        armExoNode<TExoStrNode>(node, machine, params);
         return schema.fillMarkup(node.values);
     } finally {
         disposeExoStrInstance(node);

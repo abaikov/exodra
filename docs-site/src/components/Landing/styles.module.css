@@ -290,13 +290,56 @@
   background: repeating-linear-gradient(90deg, rgba(127, 127, 127, 0.55) 0 6px, transparent 6px 10px);
 }
 
-.reactLibrariesLabel {
-  margin: 0 0 1rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  opacity: 0.6;
+.codeWindow {
+  max-width: 760px;
+  margin: 0 0 3.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(182, 242, 58, 0.25);
+  background: rgba(12, 8, 9, 0.92);
+  box-shadow: 0 30px 80px -30px rgba(255, 59, 78, 0.45);
+  overflow: hidden;
+}
+
+.codeWindowBar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.codeWindowBar span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.codeWindowBar span:nth-child(1) { background: var(--exo-blood-bright); }
+.codeWindowBar span:nth-child(2) { background: var(--exo-flesh-bright); }
+.codeWindowBar span:nth-child(3) { background: var(--exo-slime-bright); }
+
+.codeWindowBar em {
+  margin-left: 10px;
+  font-style: normal;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.codeWindow pre {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+
+.reactTax {
+  margin: 6rem 0 1rem;
+  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .reactLibraries {
