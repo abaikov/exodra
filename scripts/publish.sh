@@ -14,7 +14,9 @@ if [[ -n "${NPM_CONFIG_PROVENANCE:-}" ]]; then
 fi
 
 # Check if logged in to NPM
-if ! npm whoami > /dev/null 2>&1; then
+if [[ -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]]; then
+    echo "🔐 Trusted publishing: npm authenticates each package through GitHub OIDC"
+elif ! npm whoami > /dev/null 2>&1; then
     echo "❌ You're not logged in to NPM"
     echo "Run: npm login"
     exit 1

@@ -56,8 +56,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          # Makes npm write an authenticated .npmrc from NODE_AUTH_TOKEN.
           registry-url: https://registry.npmjs.org
+
+      - name: npm with trusted publishing (OIDC)
+        run: npm install -g npm@^11.5.1
 
       # A RELEASE ONLY, and it is not optional: `swc_plugin_exodra.wasm` is gitignored and is the
       # whole of `swc-plugin-exodra`'s `files`, and `scripts/publish.sh` refuses to publish ANY
@@ -106,7 +108,6 @@ jobs:
         if: ${{ !inputs.dry_run }}
         run: npm run publish:all
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # publish.sh leaves this unset locally; provenance is rejected outside CI.
           NPM_CONFIG_PROVENANCE: 'true'
 
