@@ -96,11 +96,18 @@ const listed = spawnSync('npx', ['vitest', 'list', '--maxWorkers=2'], {
     encoding: 'utf8',
     timeout: 600000,
 });
-if (listed.status !== 0 && listed.stdout === '') {
+if (listed.status !== 0) {
     problems.push(
-        'could not ask vitest which files it collects — `vitest list` failed, so question 1 was ' +
-            'not answered:\n' +
-            (listed.stderr || '').split('\n').slice(0, 4).join('\n')
+        'could not ask vitest which files it collects — `vitest list` ' +
+            (listed.signal ? `was killed by ${listed.signal}` : `exited ${listed.status}`) +
+            (listed.error ? ` (${listed.error.message})` : '') +
+            ', so question 1 was not answered:\n' +
+            [listed.stderr, listed.stdout]
+                .join('\n')
+                .split('\n')
+                .filter((line) => line.trim() !== '' && !line.startsWith('npm warn'))
+                .slice(-8)
+                .join('\n')
     );
 } else {
     const collected = new Set(

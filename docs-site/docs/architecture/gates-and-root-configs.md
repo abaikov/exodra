@@ -269,8 +269,11 @@ turned off.
 
 ## Why `build:wasm` stays inside `release:check`
 
-It is the last step of the chain, and moving it to a job of its own looks
-tidier than it is. `npm run release` is `release:check && test:packed &&
+It runs right after `build:all`, before every check. `check:gates` asks
+`vitest list` which files it collects, and `swc-plugin-exodra`'s parity
+suite skips itself when the `.wasm` is missing, so a checkout without the
+binary reported that suite as never run. Moving the step to a job of its own
+looks tidier than it is. `npm run release` is `release:check && test:packed &&
 publish:all`; `swc_plugin_exodra.wasm` is gitignored, and
 `swc-plugin-exodra`'s `files` is exactly `["swc_plugin_exodra.wasm"]`.
 Nothing else in that chain produces the artefact. A release whose gate
