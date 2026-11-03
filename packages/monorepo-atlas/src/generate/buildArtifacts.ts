@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 import { buildModel, withoutExternal, type TExoCruiseInput } from '../model/buildModel';
 import type { TExoGraphModel, TExoPackageMeta } from '../model/types';
 import { layoutModel, type TExoLayoutOptions } from '../layout/layoutModel';
@@ -49,12 +49,13 @@ function extractInsides(
     root: string
 ): TExoGraphArtifacts['insides'] {
     const out: TExoGraphArtifacts['insides'] = [];
+    const rootPrefix = JSON.stringify(`${root.split(sep).join('/')}/`).slice(1, -1);
     for (const meta of packages) {
         const base = join(root, meta.dir);
         const sources = existsSync(join(base, 'src'))
             ? [join(base, 'src', '**', '*.ts'), join(base, 'src', '**', '*.tsx')]
             : [join(base, '*.ts'), join(base, '*.tsx')];
-        const model = extractEntities({
+        const extracted = extractEntities({
             include: sources,
             exclude: [
                 '**/*.test.*',
@@ -64,6 +65,9 @@ function extractInsides(
                 '**/dist/**',
             ],
         });
+        const model = JSON.parse(
+            JSON.stringify(extracted).split(rootPrefix).join('')
+        ) as TExoGraphModel;
         if (model.nodes.length === 0) continue;
         if (model.nodes.length > EXO_INSIDES_NODE_LIMIT) {
             process.stderr.write(

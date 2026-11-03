@@ -1171,8 +1171,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1190,8 +1190,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoPortSource.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoPortSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1209,8 +1209,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1228,8 +1228,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1247,8 +1247,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1266,8 +1266,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1285,8 +1285,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1304,8 +1304,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1323,8 +1323,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/readReactEventProp.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/readReactEventProp.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1342,8 +1342,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1361,8 +1361,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMarkupNames.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/types/TExoMarkupNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1380,8 +1380,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1399,8 +1399,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1418,8 +1418,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1437,8 +1437,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1456,8 +1456,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1475,8 +1475,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1494,8 +1494,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/rewriteExoConnectorCalls.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1513,8 +1513,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMachineSource.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoMachineSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1532,8 +1532,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoRewriteContext.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoRewriteContext.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1551,8 +1551,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1570,8 +1570,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1589,8 +1589,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1608,8 +1608,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1627,8 +1627,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1646,8 +1646,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMarkupNames.ts",
+            "from": "packages/to-react/src/emitReactMarkup.ts",
+            "to": "packages/to-react/src/types/TExoMarkupNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1665,8 +1665,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1684,8 +1684,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1703,8 +1703,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1722,8 +1722,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMachineSource.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoMachineSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1741,8 +1741,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/rewriteExoConnectorCalls.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1760,8 +1760,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1779,8 +1779,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1798,8 +1798,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1817,8 +1817,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1836,8 +1836,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1855,8 +1855,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/rewriteExoConnectorCalls.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1874,8 +1874,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1893,8 +1893,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1912,8 +1912,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/rewriteExoConnectorCalls.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1931,8 +1931,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1951,14 +1951,14 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "uses",
             "kind": "type-only"
           },
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1976,8 +1976,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1995,8 +1995,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2014,8 +2014,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMachineSource.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoMachineSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2033,8 +2033,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/readReactEventProp.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/readReactEventProp.ts",
+            "from": "packages/to-react/src/readReactEventProp.ts",
+            "to": "packages/to-react/src/readReactEventProp.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2052,8 +2052,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2071,8 +2071,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2090,8 +2090,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "from": "packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "packages/to-react/src/rewriteExoConnectorCalls.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2109,8 +2109,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2128,8 +2128,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoRewriteContext.ts",
+            "from": "packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "packages/to-react/src/types/TExoRewriteContext.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2147,8 +2147,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "from": "packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "packages/to-react/src/rewriteExoConnectorCalls.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2166,8 +2166,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoRewriteContext.ts",
+            "from": "packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "to": "packages/to-react/src/types/TExoRewriteContext.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2185,8 +2185,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2204,8 +2204,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2223,8 +2223,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMachineSource.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoMachineSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2242,8 +2242,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2261,8 +2261,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoRewriteContext.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/emitReactMarkup.ts",
+            "from": "packages/to-react/src/types/TExoRewriteContext.ts",
+            "to": "packages/to-react/src/emitReactMarkup.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2280,8 +2280,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoPortSource.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoPortSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2299,8 +2299,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2318,8 +2318,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2337,8 +2337,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2356,8 +2356,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/EXO_REACT_CHILDREN_RUNTIME.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/EXO_REACT_CHILDREN_RUNTIME.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2375,8 +2375,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2394,8 +2394,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2413,8 +2413,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2432,8 +2432,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2451,8 +2451,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2470,8 +2470,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2489,8 +2489,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2508,8 +2508,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2527,8 +2527,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2546,8 +2546,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoMachineSource.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoMachineSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2565,8 +2565,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoPortSource.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoPortSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2584,8 +2584,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/translateExoToReact.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2603,8 +2603,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/types/TExoTranslation.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/types/TExoTranslation.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2622,8 +2622,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/to-react/src/translateExoToReact.ts",
-            "to": "/Users/abaikov/work/exodra/packages/to-react/src/rewriteExoConnectorCalls.ts",
+            "from": "packages/to-react/src/translateExoToReact.ts",
+            "to": "packages/to-react/src/rewriteExoConnectorCalls.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

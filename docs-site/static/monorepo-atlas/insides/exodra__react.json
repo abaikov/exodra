@@ -203,8 +203,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/react/src/types/TExoReactWiring.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -222,8 +222,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/react/src/types/TExoReactWiring.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -241,8 +241,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/react/src/types/TExoReactWiring.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -260,8 +260,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/react/src/reactIsland.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -279,8 +279,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/react/src/reactIsland.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -298,8 +298,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactIsland.ts",
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/react/src/types/TExoReactIsland.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -317,8 +317,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/react/src/reactIsland.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -336,8 +336,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/reactIsland.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "from": "packages/react/src/reactIsland.ts",
+            "to": "packages/react/src/types/TExoReactWiring.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -355,8 +355,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react/src/types/TExoReactWiring.ts",
+            "from": "packages/react/src/types/TExoReactWiring.ts",
+            "to": "packages/react/src/types/TExoReactWiring.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

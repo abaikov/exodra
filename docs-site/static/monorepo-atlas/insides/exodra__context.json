@@ -269,8 +269,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/constants/EXO_ID_COUNTER.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/exoContextToken.ts",
+            "from": "packages/context/src/constants/EXO_ID_COUNTER.ts",
+            "to": "packages/context/src/exoContextToken.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -288,8 +288,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/constants/EXO_ID_COUNTER.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoIdCounter.ts",
+            "from": "packages/context/src/constants/EXO_ID_COUNTER.ts",
+            "to": "packages/context/src/types/TExoIdCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -307,8 +307,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/exoContextFrame.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextFrame.ts",
+            "from": "packages/context/src/exoContextFrame.ts",
+            "to": "packages/context/src/types/TExoContextFrame.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -326,8 +326,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/exoContextFrame.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "from": "packages/context/src/exoContextFrame.ts",
+            "to": "packages/context/src/types/TExoContextToken.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -345,8 +345,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/exoContextToken.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "from": "packages/context/src/exoContextToken.ts",
+            "to": "packages/context/src/types/TExoContextToken.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -364,8 +364,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/nextExoId.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/constants/EXO_ID_COUNTER.ts",
+            "from": "packages/context/src/nextExoId.ts",
+            "to": "packages/context/src/constants/EXO_ID_COUNTER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -383,8 +383,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/nextExoId.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "from": "packages/context/src/nextExoId.ts",
+            "to": "packages/context/src/types/TExoContextToken.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -402,8 +402,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/provideExoIds.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/constants/EXO_ID_COUNTER.ts",
+            "from": "packages/context/src/provideExoIds.ts",
+            "to": "packages/context/src/constants/EXO_ID_COUNTER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -421,8 +421,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/provideExoIds.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "from": "packages/context/src/provideExoIds.ts",
+            "to": "packages/context/src/types/TExoContextToken.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -440,8 +440,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/provideExoIds.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoIdCounter.ts",
+            "from": "packages/context/src/provideExoIds.ts",
+            "to": "packages/context/src/types/TExoIdCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -459,8 +459,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/readExoContext.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextFrame.ts",
+            "from": "packages/context/src/readExoContext.ts",
+            "to": "packages/context/src/types/TExoContextFrame.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -478,8 +478,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/readExoContext.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "from": "packages/context/src/readExoContext.ts",
+            "to": "packages/context/src/types/TExoContextToken.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -497,8 +497,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextFrame.ts",
-            "to": "/Users/abaikov/work/exodra/packages/context/src/types/TExoContextToken.ts",
+            "from": "packages/context/src/types/TExoContextFrame.ts",
+            "to": "packages/context/src/types/TExoContextToken.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

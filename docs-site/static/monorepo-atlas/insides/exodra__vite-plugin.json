@@ -236,8 +236,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
+            "from": "packages/vite-plugin-exodra/src/index.ts",
+            "to": "packages/vite-plugin-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -255,8 +255,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
+            "from": "packages/vite-plugin-exodra/src/index.ts",
+            "to": "packages/vite-plugin-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -274,8 +274,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
+            "from": "packages/vite-plugin-exodra/src/index.ts",
+            "to": "packages/vite-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -293,8 +293,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
+            "from": "packages/vite-plugin-exodra/src/index.ts",
+            "to": "packages/vite-plugin-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -312,8 +312,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
+            "from": "packages/vite-plugin-exodra/src/index.ts",
+            "to": "packages/vite-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -331,8 +331,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/transformExodraJsx.ts",
+            "from": "packages/vite-plugin-exodra/src/index.ts",
+            "to": "packages/vite-plugin-exodra/src/transformExodraJsx.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -350,8 +350,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/index.ts",
+            "from": "packages/vite-plugin-exodra/src/index.ts",
+            "to": "packages/vite-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -369,8 +369,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/transformExodraJsx.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/transformExodraJsx.ts",
+            "from": "packages/vite-plugin-exodra/src/transformExodraJsx.ts",
+            "to": "packages/vite-plugin-exodra/src/transformExodraJsx.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -388,8 +388,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/transformExodraJsx.ts",
-            "to": "/Users/abaikov/work/exodra/packages/vite-plugin-exodra/src/transformExodraJsx.ts",
+            "from": "packages/vite-plugin-exodra/src/transformExodraJsx.ts",
+            "to": "packages/vite-plugin-exodra/src/transformExodraJsx.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

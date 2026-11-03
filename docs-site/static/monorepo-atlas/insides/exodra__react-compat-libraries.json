@@ -202,8 +202,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "from": "packages/react-compat-libraries/vitest.config.ts",
+            "to": "packages/react-compat-libraries/vitest.config.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -221,8 +221,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "from": "packages/react-compat-libraries/vitest.config.ts",
+            "to": "packages/react-compat-libraries/vitest.config.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -240,8 +240,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "from": "packages/react-compat-libraries/vitest.config.ts",
+            "to": "packages/react-compat-libraries/vitest.config.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -259,8 +259,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "from": "packages/react-compat-libraries/vitest.config.ts",
+            "to": "packages/react-compat-libraries/vitest.config.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -278,8 +278,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
+            "from": "packages/react-compat-libraries/vitest.config.ts",
+            "to": "packages/react-compat-libraries/vitest.config.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -297,8 +297,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/react-compat-libraries/vitest.config.ts",
-            "to": "/Users/abaikov/work/exodra/packages/react-compat-libraries/EXO_REACT_LIBRARIES.ts",
+            "from": "packages/react-compat-libraries/vitest.config.ts",
+            "to": "packages/react-compat-libraries/EXO_REACT_LIBRARIES.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

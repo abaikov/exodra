@@ -461,8 +461,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
+            "from": "packages/dom-profiler/src/profileClass.ts",
+            "to": "packages/dom-profiler/src/profileClass.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -480,8 +480,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileMethods.ts",
+            "from": "packages/dom-profiler/src/profileClass.ts",
+            "to": "packages/dom-profiler/src/profileMethods.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -499,8 +499,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
+            "from": "packages/dom-profiler/src/profileClass.ts",
+            "to": "packages/dom-profiler/src/profileClass.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -518,8 +518,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
+            "from": "packages/dom-profiler/src/profileClass.ts",
+            "to": "packages/dom-profiler/src/profileClass.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -537,8 +537,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
+            "from": "packages/dom-profiler/src/profileDom.ts",
+            "to": "packages/dom-profiler/src/profileDom.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -556,8 +556,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileMethods.ts",
+            "from": "packages/dom-profiler/src/profileDom.ts",
+            "to": "packages/dom-profiler/src/profileMethods.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -575,8 +575,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
+            "from": "packages/dom-profiler/src/profileDom.ts",
+            "to": "packages/dom-profiler/src/profileDom.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -594,8 +594,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
+            "from": "packages/dom-profiler/src/profileDom.ts",
+            "to": "packages/dom-profiler/src/profileDom.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -613,8 +613,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
+            "from": "packages/dom-profiler/src/profileDom.ts",
+            "to": "packages/dom-profiler/src/profileClass.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -632,8 +632,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
+            "from": "packages/dom-profiler/src/profileDom.ts",
+            "to": "packages/dom-profiler/src/profileClass.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -651,8 +651,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileMethods.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/now.ts",
+            "from": "packages/dom-profiler/src/profileMethods.ts",
+            "to": "packages/dom-profiler/src/now.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -670,8 +670,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileMethods.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
+            "from": "packages/dom-profiler/src/profileMethods.ts",
+            "to": "packages/dom-profiler/src/profileClass.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -689,8 +689,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileMethods.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
+            "from": "packages/dom-profiler/src/profileMethods.ts",
+            "to": "packages/dom-profiler/src/profileClass.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -708,8 +708,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/dom-profiler/src/profilePorts.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -727,8 +727,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/now.ts",
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/dom-profiler/src/now.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -746,8 +746,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/dom-profiler/src/profilePorts.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -765,8 +765,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/dom-profiler/src/profilePorts.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -784,8 +784,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileDom.ts",
+            "from": "packages/dom-profiler/src/profileDom.ts",
+            "to": "packages/dom-profiler/src/profileDom.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -803,8 +803,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profilePorts.ts",
+            "from": "packages/dom-profiler/src/profilePorts.ts",
+            "to": "packages/dom-profiler/src/profilePorts.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -822,8 +822,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
-            "to": "/Users/abaikov/work/exodra/packages/dom-profiler/src/profileClass.ts",
+            "from": "packages/dom-profiler/src/profileClass.ts",
+            "to": "packages/dom-profiler/src/profileClass.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

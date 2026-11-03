@@ -3030,8 +3030,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3049,8 +3049,8 @@
         "relation": "composition",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/schema/compileExoTermSchema.ts",
             "specifier": "constructs",
             "kind": "value"
           }
@@ -3068,8 +3068,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/backend/types/TExoTermApi.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/backend/types/TExoTermApi.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3087,8 +3087,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3106,8 +3106,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/schema/types/TExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3125,8 +3125,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "from": "packages/term/src/doc/readme-counter.ts",
+            "to": "packages/term/src/doc/readme-counter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3144,8 +3144,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "from": "packages/term/src/doc/readme-counter.ts",
+            "to": "packages/term/src/doc/readme-counter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3163,8 +3163,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "from": "packages/term/src/doc/readme-counter.ts",
+            "to": "packages/term/src/doc/readme-counter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3182,8 +3182,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "from": "packages/term/src/doc/readme-counter.ts",
+            "to": "packages/term/src/doc/readme-counter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3201,8 +3201,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3220,8 +3220,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3239,8 +3239,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3258,8 +3258,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/factories/createExoTermChildList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/disposeExoTermChild.ts",
+            "from": "packages/term/src/instance/factories/createExoTermChildList.ts",
+            "to": "packages/term/src/instance/disposeExoTermChild.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3277,8 +3277,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/factories/createExoTermChildList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/factories/createExoTermChildList.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3296,8 +3296,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/factories/createExoTermChildList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChildList.ts",
+            "from": "packages/term/src/instance/factories/createExoTermChildList.ts",
+            "to": "packages/term/src/instance/types/TExoTermChildList.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3315,8 +3315,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/factories/createExoTermChildList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
+            "from": "packages/term/src/instance/factories/createExoTermChildList.ts",
+            "to": "packages/term/src/rendering/types/TExoTermMark.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3334,8 +3334,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/factories/createExoTermChildList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/factories/createExoTermChildList.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3353,8 +3353,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/instantiateExoTermProto.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/instance/instantiateExoTermProto.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3372,8 +3372,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3391,8 +3391,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/instance/createExoTermInstanceFactory.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3410,8 +3410,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/instance/createExoTermInstanceFactory.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3429,8 +3429,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3448,8 +3448,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/schema/types/TExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3467,8 +3467,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3486,8 +3486,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3505,8 +3505,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3524,8 +3524,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3543,8 +3543,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3562,8 +3562,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/disposeExoTermChild.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/disposeExoTermChild.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3581,8 +3581,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/foreign/types/TExoTermForeignApi.ts",
+            "from": "packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
+            "to": "packages/term/src/foreign/types/TExoTermForeignApi.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3600,8 +3600,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
+            "from": "packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
+            "to": "packages/term/src/rendering/types/TExoTermMark.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3619,8 +3619,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
+            "from": "packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
+            "to": "packages/term/src/foreign/constants/EXO_TERM_FOREIGN_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3638,8 +3638,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/factories/createExoTermChildList.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/factories/createExoTermChildList.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3657,8 +3657,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/exoTermSchemaOf.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/schema/exoTermSchemaOf.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3676,8 +3676,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3695,8 +3695,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/renderExoTermInstance.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/rendering/renderExoTermInstance.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3714,8 +3714,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3733,8 +3733,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3752,8 +3752,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChildList.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermChildList.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3771,8 +3771,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3790,8 +3790,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermEvent.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/utilities/types/TExoTermEvent.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3809,8 +3809,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermMachine.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3828,8 +3828,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/rendering/types/TExoTermMark.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3847,8 +3847,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3866,8 +3866,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3885,8 +3885,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3904,8 +3904,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3923,8 +3923,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3942,8 +3942,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3961,8 +3961,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3980,8 +3980,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3999,8 +3999,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriterFactories.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriterFactories.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4018,8 +4018,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4037,8 +4037,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoForeignTermNode.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/exoForeignTermNode.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4056,8 +4056,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoForeignTermNode.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/exoForeignTermNode.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4075,8 +4075,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoForeignTermNode.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
+            "from": "packages/term/src/instance/exoForeignTermNode.ts",
+            "to": "packages/term/src/rendering/types/TExoTermMark.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4094,8 +4094,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/backend/ExoTermBackend.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4113,8 +4113,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/backend/ExoTermBackend.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4132,8 +4132,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/createExoTermInstanceFactory.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4151,8 +4151,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/disposeExoTermChild.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/disposeExoTermChild.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4170,8 +4170,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4189,8 +4189,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermContextSlot.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/utilities/exoTermContextSlot.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4208,8 +4208,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/exoTermSchemaOf.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/schema/exoTermSchemaOf.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4227,8 +4227,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4246,8 +4246,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/renderExoTermInstance.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/rendering/renderExoTermInstance.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4265,8 +4265,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/backend/types/TExoTermApi.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/backend/types/TExoTermApi.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4284,8 +4284,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4303,8 +4303,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4322,8 +4322,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermMachine.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/types/TExoTermMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4341,8 +4341,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4360,8 +4360,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/schema/types/TExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4379,8 +4379,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermScreen.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/rendering/types/TExoTermScreen.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4398,8 +4398,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4417,8 +4417,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/schema/compileExoTermSchema.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4436,8 +4436,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4455,8 +4455,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/schema/compileExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4474,8 +4474,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4493,8 +4493,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4512,8 +4512,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermFind.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/utilities/exoTermFind.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4531,8 +4531,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermFire.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/utilities/exoTermFire.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4550,8 +4550,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermFire.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermEvent.ts",
+            "from": "packages/term/src/utilities/exoTermFire.ts",
+            "to": "packages/term/src/utilities/types/TExoTermEvent.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4569,8 +4569,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/exoTermSchemaOf.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
+            "from": "packages/term/src/schema/exoTermSchemaOf.ts",
+            "to": "packages/term/src/schema/compileExoTermSchema.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4588,8 +4588,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/exoTermSchemaOf.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/backend/types/TExoTermApi.ts",
+            "from": "packages/term/src/schema/exoTermSchemaOf.ts",
+            "to": "packages/term/src/backend/types/TExoTermApi.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4607,8 +4607,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/exoTermSchemaOf.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
+            "from": "packages/term/src/schema/exoTermSchemaOf.ts",
+            "to": "packages/term/src/schema/types/TExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4626,8 +4626,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4645,8 +4645,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4664,8 +4664,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4683,8 +4683,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4702,8 +4702,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4721,8 +4721,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4740,8 +4740,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4759,8 +4759,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/exoTermWriterForPort.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4778,8 +4778,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4797,8 +4797,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriterFactories.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriterFactories.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4816,8 +4816,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4835,8 +4835,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/instantiateExoTermProto.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/instantiateExoTermProto.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4854,8 +4854,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/instantiateExoTermProto.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/instantiateExoTermProto.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4873,8 +4873,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/instantiateExoTermProto.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/instance/instantiateExoTermProto.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4892,8 +4892,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/instantiateExoTermProto.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/instantiateExoTermProto.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4911,8 +4911,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/rendering/renderExoTermInstance.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/disposeExoTermChild.ts",
+            "from": "packages/term/src/rendering/renderExoTermInstance.ts",
+            "to": "packages/term/src/instance/disposeExoTermChild.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4930,8 +4930,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/rendering/renderExoTermInstance.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/rendering/renderExoTermInstance.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4949,8 +4949,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/rendering/renderExoTermInstance.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermMachine.ts",
+            "from": "packages/term/src/rendering/renderExoTermInstance.ts",
+            "to": "packages/term/src/instance/types/TExoTermMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4968,8 +4968,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/rendering/renderExoTermInstance.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/rendering/renderExoTermInstance.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4987,8 +4987,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/rendering/renderExoTermInstance.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
+            "from": "packages/term/src/rendering/renderExoTermInstance.ts",
+            "to": "packages/term/src/schema/types/TExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5006,8 +5006,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5025,8 +5025,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5044,8 +5044,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5063,8 +5063,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/types/TExoTermApi.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
+            "from": "packages/term/src/backend/types/TExoTermApi.ts",
+            "to": "packages/term/src/schema/types/TExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5082,8 +5082,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/types/TExoTermApi.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/backend/types/TExoTermApi.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5101,8 +5101,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/backend/ExoTermBackend.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5120,8 +5120,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5139,8 +5139,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/backend/ExoTermBackend.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5158,8 +5158,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/backend/ExoTermBackend.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/backend/ExoTermBackend.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5177,8 +5177,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermChild.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5196,8 +5196,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/types/TExoTermChild.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5215,8 +5215,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChildList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
+            "from": "packages/term/src/instance/types/TExoTermChildList.ts",
+            "to": "packages/term/src/rendering/types/TExoTermMark.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5234,8 +5234,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5253,8 +5253,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5272,8 +5272,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/foreign/types/TExoTermForeignApi.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
+            "from": "packages/term/src/foreign/types/TExoTermForeignApi.ts",
+            "to": "packages/term/src/rendering/types/TExoTermMark.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5291,8 +5291,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5310,8 +5310,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/types/TExoTermElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5329,8 +5329,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5348,8 +5348,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5367,8 +5367,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermEvent.ts",
+            "from": "packages/term/src/instance/types/TExoTermElement.ts",
+            "to": "packages/term/src/utilities/types/TExoTermEvent.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5386,8 +5386,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/types/TExoTermMachine.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5405,8 +5405,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
+            "from": "packages/term/src/rendering/types/TExoTermMark.ts",
+            "to": "packages/term/src/rendering/types/TExoTermMark.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5424,8 +5424,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5443,8 +5443,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5462,8 +5462,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChildList.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermChildList.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5481,8 +5481,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5500,8 +5500,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermEvent.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/utilities/types/TExoTermEvent.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5519,8 +5519,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermMark.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/rendering/types/TExoTermMark.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5538,8 +5538,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5557,8 +5557,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/schema/types/TExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5576,8 +5576,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5595,8 +5595,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5614,8 +5614,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/schema/types/TExoTermSchema.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5633,8 +5633,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5652,8 +5652,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/createExoTermInstanceFactory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/createExoTermInstanceFactory.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5671,8 +5671,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/compileExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/schema/compileExoTermSchema.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5690,8 +5690,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5709,8 +5709,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5728,8 +5728,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5747,8 +5747,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5766,8 +5766,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermChild.ts",
+            "from": "packages/term/src/instance/types/TExoTermChild.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5785,8 +5785,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-counter.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/doc/readme-counter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5804,8 +5804,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5823,8 +5823,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermMachine.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/instance/types/TExoTermMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5842,8 +5842,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5861,8 +5861,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermMachine.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/instance/types/TExoTermMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5880,8 +5880,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5899,8 +5899,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5918,8 +5918,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermMachine.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/instance/types/TExoTermMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5937,8 +5937,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5956,8 +5956,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5975,8 +5975,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5994,8 +5994,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/doc/types/TExoTermRunsTheReadmeCounter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6013,8 +6013,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6032,8 +6032,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/backend/types/TExoTermApi.ts",
+            "from": "packages/term/src/schema/types/TExoTermSchema.ts",
+            "to": "packages/term/src/backend/types/TExoTermApi.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6051,8 +6051,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/schema/types/TExoTermSchema.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6070,8 +6070,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/schema/types/TExoTermSchema.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6089,8 +6089,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermProtoElement.ts",
+            "from": "packages/term/src/schema/types/TExoTermSchema.ts",
+            "to": "packages/term/src/instance/types/TExoTermProtoElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6108,8 +6108,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/schema/types/TExoTermSchema.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/schema/types/TExoTermSchema.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6127,8 +6127,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermScreen.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/rendering/types/TExoTermScreen.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6146,8 +6146,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/rendering/types/TExoTermScreen.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/rendering/types/TExoTermScreen.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6165,8 +6165,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6184,8 +6184,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/utilities/types/TExoTermWriter.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6203,8 +6203,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriterFactories.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriterFactories.ts",
+            "from": "packages/term/src/utilities/types/TExoTermWriterFactories.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriterFactories.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6222,8 +6222,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriterFactories.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/utilities/types/TExoTermWriter.ts",
+            "from": "packages/term/src/utilities/types/TExoTermWriterFactories.ts",
+            "to": "packages/term/src/utilities/types/TExoTermWriter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6241,8 +6241,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6260,8 +6260,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6279,8 +6279,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6298,8 +6298,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6317,8 +6317,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6336,8 +6336,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6355,8 +6355,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6374,8 +6374,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6393,8 +6393,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6412,8 +6412,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6431,8 +6431,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/doc/readme-todos.ts",
+            "from": "packages/term/src/doc/readme-todos.ts",
+            "to": "packages/term/src/doc/readme-todos.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6450,8 +6450,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/utilities/exoTermWriterForPort.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/types/TExoTermElement.ts",
+            "from": "packages/term/src/utilities/exoTermWriterForPort.ts",
+            "to": "packages/term/src/instance/types/TExoTermElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6469,8 +6469,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
-            "to": "/Users/abaikov/work/exodra/packages/term/src/instance/exoTermText.ts",
+            "from": "packages/term/src/instance/exoTermText.ts",
+            "to": "packages/term/src/instance/exoTermText.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

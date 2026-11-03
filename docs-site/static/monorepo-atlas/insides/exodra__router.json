@@ -4023,8 +4023,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/path/addExoBasePath.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
+            "from": "packages/router/src/path/addExoBasePath.ts",
+            "to": "packages/router/src/path/parseExoPath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4042,8 +4042,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4061,8 +4061,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4080,8 +4080,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4099,8 +4099,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4118,8 +4118,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4137,8 +4137,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4156,8 +4156,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4175,8 +4175,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/guards/collectExoRouteGuards.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/guards/collectExoRouteGuards.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4194,8 +4194,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/guards/collectExoRouteGuards.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/guards/collectExoRouteGuards.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4213,8 +4213,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4232,8 +4232,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4251,8 +4251,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/joinExoPaths.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/path/joinExoPaths.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4270,8 +4270,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4289,8 +4289,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4308,8 +4308,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4327,8 +4327,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4346,8 +4346,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4365,8 +4365,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4384,8 +4384,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4403,8 +4403,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4422,8 +4422,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4441,8 +4441,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4460,8 +4460,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4479,8 +4479,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/addExoBasePath.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/path/addExoBasePath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4498,8 +4498,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/normalizeExoBasePath.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/path/normalizeExoBasePath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4517,8 +4517,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/history/notifyExoHistory.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/history/notifyExoHistory.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4536,8 +4536,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/path/parseExoPath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4555,8 +4555,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/resolveExoHref.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/path/resolveExoHref.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4574,8 +4574,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/stripExoBasePath.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/path/stripExoBasePath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4593,8 +4593,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/history/subscribeExoHistory.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/history/subscribeExoHistory.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4612,8 +4612,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4631,8 +4631,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoBrowserHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/history/createExoBrowserHistory.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4650,8 +4650,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/normalizeExoBasePath.ts",
+            "from": "packages/router/src/history/createExoMemoryHistory.ts",
+            "to": "packages/router/src/path/normalizeExoBasePath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4669,8 +4669,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/history/notifyExoHistory.ts",
+            "from": "packages/router/src/history/createExoMemoryHistory.ts",
+            "to": "packages/router/src/history/notifyExoHistory.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4688,8 +4688,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
+            "from": "packages/router/src/history/createExoMemoryHistory.ts",
+            "to": "packages/router/src/path/parseExoPath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4707,8 +4707,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/resolveExoHref.ts",
+            "from": "packages/router/src/history/createExoMemoryHistory.ts",
+            "to": "packages/router/src/path/resolveExoHref.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4726,8 +4726,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/stripExoBasePath.ts",
+            "from": "packages/router/src/history/createExoMemoryHistory.ts",
+            "to": "packages/router/src/path/stripExoBasePath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4745,8 +4745,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/history/subscribeExoHistory.ts",
+            "from": "packages/router/src/history/createExoMemoryHistory.ts",
+            "to": "packages/router/src/history/subscribeExoHistory.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4764,8 +4764,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/history/createExoMemoryHistory.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4783,8 +4783,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/history/createExoMemoryHistory.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4802,8 +4802,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/guards/collectExoRouteGuards.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/guards/collectExoRouteGuards.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4821,8 +4821,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/history/createExoMemoryHistory.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/history/createExoMemoryHistory.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4840,8 +4840,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/setup/createExoRouter.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4859,8 +4859,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/guards/executeExoGuards.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/guards/executeExoGuards.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4878,8 +4878,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/constants/EXO_ROUTER_OUTLETS.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/setup/constants/EXO_ROUTER_OUTLETS.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4897,8 +4897,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4916,8 +4916,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4935,8 +4935,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/path/parseExoPath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4954,8 +4954,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4973,8 +4973,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/sameMatch.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/matching/sameMatch.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4992,8 +4992,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5011,8 +5011,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5030,8 +5030,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5049,8 +5049,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5068,8 +5068,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5087,8 +5087,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5106,8 +5106,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5125,8 +5125,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5144,8 +5144,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5163,8 +5163,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5182,8 +5182,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5201,8 +5201,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5220,8 +5220,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/createExoRouter.ts",
+            "from": "packages/router/src/setup/createExoRouter.ts",
+            "to": "packages/router/src/setup/createExoRouter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5239,8 +5239,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5258,8 +5258,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5277,8 +5277,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/guards/executeExoGuards.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/guards/executeExoGuards.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5296,8 +5296,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/guards/executeExoGuards.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/guards/executeExoGuards.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5315,8 +5315,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/guards/executeExoGuards.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/guards/executeExoGuards.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5334,8 +5334,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/constants/EXO_OUTLET_STATE.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/constants/EXO_OUTLET_STATE.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5353,8 +5353,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/constants/EXO_ROUTER_OUTLETS.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/constants/EXO_ROUTER_OUTLETS.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5372,8 +5372,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/constants/EXO_ROUTER.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/constants/EXO_ROUTER.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5391,8 +5391,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5410,8 +5410,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5429,8 +5429,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/isAbsoluteUrl.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/path/isAbsoluteUrl.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5448,8 +5448,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/components/exoLink.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5467,8 +5467,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/components/exoLink.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5486,8 +5486,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/components/exoLink.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5505,8 +5505,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/shouldIgnoreExoLinkClick.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/components/shouldIgnoreExoLinkClick.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5524,8 +5524,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5543,8 +5543,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoOutlet.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/constants/EXO_OUTLET_STATE.ts",
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/router/src/setup/constants/EXO_OUTLET_STATE.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5562,8 +5562,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoOutlet.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoOutlet.ts",
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/router/src/components/exoOutlet.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5581,8 +5581,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoOutlet.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/injectExoRouter.ts",
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/router/src/setup/injectExoRouter.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5600,8 +5600,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoOutlet.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/onExoRouterCommit.ts",
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/router/src/setup/onExoRouterCommit.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5619,8 +5619,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoOutlet.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/router/src/components/showExoOutletRoute.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5638,8 +5638,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoOutlet.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5657,8 +5657,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoOutlet.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoOutlet.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5676,8 +5676,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5695,8 +5695,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5714,8 +5714,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5733,8 +5733,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5752,8 +5752,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5771,8 +5771,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5790,8 +5790,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5809,8 +5809,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5828,8 +5828,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/pages/exoLazy.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5847,8 +5847,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/pages/exoLazy.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5866,8 +5866,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5885,8 +5885,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5904,8 +5904,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5923,8 +5923,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/normalizeExoPathname.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/path/normalizeExoPathname.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5942,8 +5942,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -5961,8 +5961,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5980,8 +5980,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -5999,8 +5999,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/injectExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/constants/EXO_ROUTER.ts",
+            "from": "packages/router/src/setup/injectExoRouter.ts",
+            "to": "packages/router/src/setup/constants/EXO_ROUTER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6018,8 +6018,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/injectExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/injectExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6037,8 +6037,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/injectExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/injectExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6056,8 +6056,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/isAbsoluteUrl.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/path/isAbsoluteUrl.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6075,8 +6075,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/path/parseExoPath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6094,8 +6094,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6113,8 +6113,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6132,8 +6132,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6151,8 +6151,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/isExoPageMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/isExoPageMachine.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6170,8 +6170,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/isExoPageMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/isExoPageMachine.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6189,8 +6189,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/shouldIgnoreExoLinkClick.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/isAbsoluteUrl.ts",
+            "from": "packages/router/src/components/shouldIgnoreExoLinkClick.ts",
+            "to": "packages/router/src/path/isAbsoluteUrl.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6208,8 +6208,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6227,8 +6227,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6246,8 +6246,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/path/joinExoPaths.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/normalizeExoPathname.ts",
+            "from": "packages/router/src/path/joinExoPaths.ts",
+            "to": "packages/router/src/path/normalizeExoPathname.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6265,8 +6265,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/pages/exoLazy.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6284,8 +6284,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6303,8 +6303,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6322,8 +6322,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6341,8 +6341,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6360,8 +6360,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6379,8 +6379,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6398,8 +6398,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6417,8 +6417,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6436,8 +6436,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6455,8 +6455,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6474,8 +6474,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6493,8 +6493,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6512,8 +6512,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6531,8 +6531,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6550,8 +6550,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6569,8 +6569,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6588,8 +6588,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6607,8 +6607,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/injectExoRouter.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/setup/injectExoRouter.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6626,8 +6626,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/components/exoLink.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6645,8 +6645,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6664,8 +6664,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6683,8 +6683,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6702,8 +6702,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/path/normalizeExoBasePath.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
+            "from": "packages/router/src/path/normalizeExoBasePath.ts",
+            "to": "packages/router/src/path/parseExoPath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6721,8 +6721,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6740,8 +6740,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/onExoRouterCommit.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/constants/EXO_ROUTER_OUTLETS.ts",
+            "from": "packages/router/src/setup/onExoRouterCommit.ts",
+            "to": "packages/router/src/setup/constants/EXO_ROUTER_OUTLETS.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6759,8 +6759,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/onExoRouterCommit.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/onExoRouterCommit.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6778,8 +6778,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoLink.ts",
+            "from": "packages/router/src/components/exoLink.ts",
+            "to": "packages/router/src/components/exoLink.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6797,8 +6797,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/pages/exoLazy.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6816,8 +6816,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/isExoPageMachine.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/pages/isExoPageMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6835,8 +6835,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/pages/preloadExoPage.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6854,8 +6854,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/pages/preloadExoPage.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6873,8 +6873,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6892,8 +6892,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6911,8 +6911,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6930,8 +6930,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -6949,8 +6949,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6968,8 +6968,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6987,8 +6987,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7006,8 +7006,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/normalizeExoPathname.ts",
+            "from": "packages/router/src/path/parseExoPath.ts",
+            "to": "packages/router/src/path/normalizeExoPathname.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7025,8 +7025,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/path/parseExoPath.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7044,8 +7044,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7063,8 +7063,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7082,8 +7082,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7101,8 +7101,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7120,8 +7120,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7139,8 +7139,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7158,8 +7158,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7177,8 +7177,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7196,8 +7196,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7215,8 +7215,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7234,8 +7234,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7253,8 +7253,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7272,8 +7272,8 @@
         "relation": "composition",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "constructs",
             "kind": "value"
           }
@@ -7291,8 +7291,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7310,8 +7310,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7329,8 +7329,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7348,8 +7348,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7367,8 +7367,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7386,8 +7386,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7405,8 +7405,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7424,8 +7424,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7443,8 +7443,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7462,8 +7462,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7481,8 +7481,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/isExoPageMachine.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/pages/isExoPageMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7500,8 +7500,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/pages/exoLazy.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7519,8 +7519,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/pages/preloadExoPage.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7538,8 +7538,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/pages/preloadExoPage.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7557,8 +7557,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7576,8 +7576,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/provideExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/setup/constants/EXO_ROUTER.ts",
+            "from": "packages/router/src/setup/provideExoRouter.ts",
+            "to": "packages/router/src/setup/constants/EXO_ROUTER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7595,8 +7595,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/provideExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/provideExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7614,8 +7614,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/setup/provideExoRouter.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/setup/provideExoRouter.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7633,8 +7633,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7652,8 +7652,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7671,8 +7671,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7690,8 +7690,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7709,8 +7709,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7728,8 +7728,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7747,8 +7747,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7766,8 +7766,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7785,8 +7785,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7804,8 +7804,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/pages/preloadExoPage.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7823,8 +7823,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7842,8 +7842,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/preloadExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/preloadExoPage.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7861,8 +7861,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/path/resolveExoHref.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/addExoBasePath.ts",
+            "from": "packages/router/src/path/resolveExoHref.ts",
+            "to": "packages/router/src/path/addExoBasePath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7880,8 +7880,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/path/resolveExoHref.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
+            "from": "packages/router/src/path/resolveExoHref.ts",
+            "to": "packages/router/src/path/parseExoPath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7899,8 +7899,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/pages/exoLazy.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7918,8 +7918,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/pages/exoLazy.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7937,8 +7937,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/pages/exoLazy.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/pages/exoLazy.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7956,8 +7956,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/normalizeExoPathname.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/path/normalizeExoPathname.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -7975,8 +7975,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -7994,8 +7994,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/sameMatch.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/sameMatch.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8013,8 +8013,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/shouldIgnoreExoLinkClick.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/shouldIgnoreExoLinkClick.ts",
+            "from": "packages/router/src/components/shouldIgnoreExoLinkClick.ts",
+            "to": "packages/router/src/components/shouldIgnoreExoLinkClick.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -8032,8 +8032,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/components/showExoOutletRoute.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -8051,8 +8051,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/components/showExoOutletRoute.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -8070,8 +8070,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/components/showExoOutletRoute.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -8089,8 +8089,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8108,8 +8108,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/showExoOutletRoute.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/showExoOutletRoute.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8127,8 +8127,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/normalizeExoPathname.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/path/normalizeExoPathname.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -8146,8 +8146,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/components/exoQuery.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -8165,8 +8165,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/components/exoQuery.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/components/exoQuery.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8184,8 +8184,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/path/stripExoBasePath.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/path/parseExoPath.ts",
+            "from": "packages/router/src/path/stripExoBasePath.ts",
+            "to": "packages/router/src/path/parseExoPath.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -8203,8 +8203,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8222,8 +8222,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8241,8 +8241,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8260,8 +8260,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8279,8 +8279,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8298,8 +8298,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8317,8 +8317,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8336,8 +8336,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8355,8 +8355,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8374,8 +8374,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8393,8 +8393,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8412,8 +8412,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8431,8 +8431,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8450,8 +8450,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8469,8 +8469,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8488,8 +8488,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8507,8 +8507,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8526,8 +8526,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8545,8 +8545,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8564,8 +8564,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8583,8 +8583,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8602,8 +8602,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8621,8 +8621,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8640,8 +8640,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8659,8 +8659,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8678,8 +8678,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8697,8 +8697,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8716,8 +8716,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8735,8 +8735,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8754,8 +8754,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8773,8 +8773,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8792,8 +8792,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8811,8 +8811,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8830,8 +8830,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8849,8 +8849,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8868,8 +8868,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8887,8 +8887,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8906,8 +8906,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8925,8 +8925,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8944,8 +8944,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8963,8 +8963,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -8982,8 +8982,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -9001,8 +9001,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -9020,8 +9020,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -9039,8 +9039,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -9058,8 +9058,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -9077,8 +9077,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/types/index.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -9096,8 +9096,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/matching/matchExoRoutes.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -9115,8 +9115,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/router/src/matching/matchExoRoutes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/router/src/types/index.ts",
+            "from": "packages/router/src/matching/matchExoRoutes.ts",
+            "to": "packages/router/src/types/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

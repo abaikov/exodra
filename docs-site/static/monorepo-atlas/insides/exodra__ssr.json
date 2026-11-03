@@ -835,8 +835,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/constants/EXO_SSR_RESPONSE.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
+            "from": "packages/ssr/src/constants/EXO_SSR_RESPONSE.ts",
+            "to": "packages/ssr/src/types/TExoSsrResponse.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -854,8 +854,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/constants/EXO_STATE_SCRIPT_ID.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/constants/EXO_STATE_SCRIPT_ID.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -873,8 +873,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/context/ExoSsrResponse.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -892,8 +892,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/context/ExoSsrResponse.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -911,8 +911,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/scripts/renderExoJsonScript.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -930,8 +930,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrDocumentOptions.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrDocumentOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -949,8 +949,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadEntry.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrHeadEntry.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -968,8 +968,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeader.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrHeader.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -987,8 +987,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadOption.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrHeadOption.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1006,8 +1006,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPageOptions.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrPageOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1026,14 +1026,14 @@
         "relation": "realization",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrResponse.ts",
             "specifier": "implements",
             "kind": "value"
           },
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrResponse.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1051,8 +1051,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrStateScriptOptions.ts",
+            "from": "packages/ssr/src/context/ExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrStateScriptOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1070,8 +1070,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/readExoStateScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/constants/EXO_STATE_SCRIPT_ID.ts",
+            "from": "packages/ssr/src/scripts/readExoStateScript.ts",
+            "to": "packages/ssr/src/constants/EXO_STATE_SCRIPT_ID.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1089,8 +1089,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
+            "from": "packages/ssr/src/scripts/renderExoJsonScript.ts",
+            "to": "packages/ssr/src/scripts/renderExoJsonScript.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1108,8 +1108,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/scripts/renderExoJsonScript.ts",
+            "from": "packages/ssr/src/scripts/renderExoJsonScript.ts",
+            "to": "packages/ssr/src/scripts/renderExoJsonScript.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1127,8 +1127,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/constants/EXO_SSR_RESPONSE.ts",
+            "from": "packages/ssr/src/page/renderExoPage.ts",
+            "to": "packages/ssr/src/constants/EXO_SSR_RESPONSE.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1146,8 +1146,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
+            "from": "packages/ssr/src/page/renderExoPage.ts",
+            "to": "packages/ssr/src/page/renderExoPage.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1165,8 +1165,8 @@
         "relation": "composition",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/context/ExoSsrResponse.ts",
+            "from": "packages/ssr/src/page/renderExoPage.ts",
+            "to": "packages/ssr/src/context/ExoSsrResponse.ts",
             "specifier": "constructs",
             "kind": "value"
           }
@@ -1184,8 +1184,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrDocumentOptions.ts",
+            "from": "packages/ssr/src/page/renderExoPage.ts",
+            "to": "packages/ssr/src/types/TExoSsrDocumentOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1203,8 +1203,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPage.ts",
+            "from": "packages/ssr/src/page/renderExoPage.ts",
+            "to": "packages/ssr/src/types/TExoSsrPage.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1222,8 +1222,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/page/renderExoPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPageOptions.ts",
+            "from": "packages/ssr/src/page/renderExoPage.ts",
+            "to": "packages/ssr/src/types/TExoSsrPageOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1241,8 +1241,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrDocumentOptions.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadOption.ts",
+            "from": "packages/ssr/src/types/TExoSsrDocumentOptions.ts",
+            "to": "packages/ssr/src/types/TExoSsrHeadOption.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1260,8 +1260,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadOption.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeadEntry.ts",
+            "from": "packages/ssr/src/types/TExoSsrHeadOption.ts",
+            "to": "packages/ssr/src/types/TExoSsrHeadEntry.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1279,8 +1279,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrDocumentOptions.ts",
+            "from": "packages/ssr/src/types/TExoSsrPage.ts",
+            "to": "packages/ssr/src/types/TExoSsrDocumentOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1298,8 +1298,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPage.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeader.ts",
+            "from": "packages/ssr/src/types/TExoSsrPage.ts",
+            "to": "packages/ssr/src/types/TExoSsrHeader.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1317,8 +1317,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrPageOptions.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeader.ts",
+            "from": "packages/ssr/src/types/TExoSsrPageOptions.ts",
+            "to": "packages/ssr/src/types/TExoSsrHeader.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1336,8 +1336,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrHeader.ts",
+            "from": "packages/ssr/src/types/TExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrHeader.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1355,8 +1355,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrResponse.ts",
-            "to": "/Users/abaikov/work/exodra/packages/ssr/src/types/TExoSsrStateScriptOptions.ts",
+            "from": "packages/ssr/src/types/TExoSsrResponse.ts",
+            "to": "packages/ssr/src/types/TExoSsrStateScriptOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

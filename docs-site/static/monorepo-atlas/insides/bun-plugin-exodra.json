@@ -208,8 +208,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
+            "from": "packages/bun-plugin-exodra/src/index.ts",
+            "to": "packages/bun-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -227,8 +227,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
+            "from": "packages/bun-plugin-exodra/src/index.ts",
+            "to": "packages/bun-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -246,8 +246,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
+            "from": "packages/bun-plugin-exodra/src/index.ts",
+            "to": "packages/bun-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -265,8 +265,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
+            "from": "packages/bun-plugin-exodra/src/index.ts",
+            "to": "packages/bun-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -284,8 +284,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
+            "from": "packages/bun-plugin-exodra/src/index.ts",
+            "to": "packages/bun-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -303,8 +303,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/bun-plugin-exodra/src/index.ts",
+            "from": "packages/bun-plugin-exodra/src/index.ts",
+            "to": "packages/bun-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

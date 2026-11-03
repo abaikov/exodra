@@ -245,8 +245,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/checkExoControlValues.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlRule.ts",
+            "from": "packages/forms/src/controls/checkExoControlValues.ts",
+            "to": "packages/forms/src/types/TExoControlRule.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -264,8 +264,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/checkExoControlValues.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlValue.ts",
+            "from": "packages/forms/src/controls/checkExoControlValues.ts",
+            "to": "packages/forms/src/types/TExoControlValue.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -283,8 +283,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/readExoControlValue.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlValue.ts",
+            "from": "packages/forms/src/controls/readExoControlValue.ts",
+            "to": "packages/forms/src/types/TExoControlValue.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -302,8 +302,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/readExoControlValues.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/controls/readExoControlValue.ts",
+            "from": "packages/forms/src/controls/readExoControlValues.ts",
+            "to": "packages/forms/src/controls/readExoControlValue.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -321,8 +321,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/readExoControlValues.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlValue.ts",
+            "from": "packages/forms/src/controls/readExoControlValues.ts",
+            "to": "packages/forms/src/types/TExoControlValue.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -340,8 +340,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/controls/setExoControlErrors.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/controls/setExoControlErrors.ts",
+            "from": "packages/forms/src/controls/setExoControlErrors.ts",
+            "to": "packages/forms/src/controls/setExoControlErrors.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -359,8 +359,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlRule.ts",
-            "to": "/Users/abaikov/work/exodra/packages/forms/src/types/TExoControlValue.ts",
+            "from": "packages/forms/src/types/TExoControlRule.ts",
+            "to": "packages/forms/src/types/TExoControlValue.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

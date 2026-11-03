@@ -195,7 +195,7 @@ export function askTheChecker(
     into: TExoUnresolvedType[]
 ): string {
     try {
-        return read();
+        return read().replace(/import\("[^"]*"\)\./g, '');
     } catch (error) {
         // `String(error)` rather than a blind `.message`: a stack overflow is a real
         // `RangeError`, but a report that reads `undefined` for anything else is the

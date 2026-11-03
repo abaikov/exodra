@@ -26,15 +26,14 @@
         "layer": 0,
         "members": [
           {
-            "text": "(): import(\"/Users/abai…",
-            "full": "(): import(\"/Users/abaikov/work/exodra/node_modules/@types/react/index\").JSX.Element",
-            "parts": [],
-            "fullParts": []
+            "text": "(): JSX.Element",
+            "full": "(): JSX.Element",
+            "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "width": 190,
+        "width": 133,
         "height": 69,
         "violations": []
       },
@@ -292,8 +291,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -311,8 +310,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
+            "from": "packages/examples/todo-react-rtk/src/App.tsx",
+            "to": "packages/examples/todo-react-rtk/src/App.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -330,8 +329,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/App.tsx",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -349,8 +348,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/App.tsx",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -368,8 +367,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/App.tsx",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -387,8 +386,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/TodoItem.tsx",
+            "from": "packages/examples/todo-react-rtk/src/App.tsx",
+            "to": "packages/examples/todo-react-rtk/src/TodoItem.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -406,8 +405,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/App.tsx",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -425,8 +424,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/App.tsx",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -444,8 +443,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/App.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/App.tsx",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -463,8 +462,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -482,8 +481,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -501,8 +500,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -520,8 +519,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -539,8 +538,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -558,8 +557,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -577,8 +576,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -596,8 +595,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/TodoItem.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/TodoItem.tsx",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -615,8 +614,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/TodoItem.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/TodoItem.tsx",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -634,8 +633,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -653,8 +652,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -672,8 +671,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -691,8 +690,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -710,8 +709,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-react-rtk/src/store.ts",
+            "from": "packages/examples/todo-react-rtk/src/store.ts",
+            "to": "packages/examples/todo-react-rtk/src/store.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -722,12 +721,12 @@
     "rules": {}
   },
   "layout": {
-    "width": 2053,
+    "width": 1996,
     "height": 612.5,
     "nodes": [
       {
         "id": "{ todoAdded, todoToggled, todoRemoved, todoEdited, completedCleared, filterChanged }",
-        "x": 990,
+        "x": 933,
         "y": 125.8,
         "width": 562,
         "height": 46
@@ -736,103 +735,103 @@
         "id": "App",
         "x": 24,
         "y": 294.8,
-        "width": 190,
+        "width": 133,
         "height": 69
       },
       {
         "id": "Filter",
-        "x": 1800,
+        "x": 1743,
         "y": 519.5,
         "width": 229,
         "height": 69
       },
       {
         "id": "FILTERS",
-        "x": 1616,
+        "x": 1559,
         "y": 541,
         "width": 120,
         "height": 46
       },
       {
         "id": "lastTodoId",
-        "x": 1854.5,
+        "x": 1797.5,
         "y": 152.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "RootState",
-        "x": 678,
+        "x": 621,
         "y": 360,
         "width": 248,
         "height": 69
       },
       {
         "id": "selectCounts",
-        "x": 287.5,
+        "x": 230.5,
         "y": 427.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "selectFilter",
-        "x": 481,
+        "x": 424,
         "y": 270.3,
         "width": 133,
         "height": 69
       },
       {
         "id": "selectItems",
-        "x": 481,
+        "x": 424,
         "y": 379.3,
         "width": 133,
         "height": 69
       },
       {
         "id": "selectVisibleTodos",
-        "x": 278,
+        "x": 221,
         "y": 353.8,
         "width": 139,
         "height": 46
       },
       {
         "id": "store",
-        "x": 1211,
+        "x": 1154,
         "y": 264,
         "width": 120,
         "height": 46
       },
       {
         "id": "Todo",
-        "x": 1851.5,
+        "x": 1794.5,
         "y": 24,
         "width": 126,
         "height": 99
       },
       {
         "id": "TodoItem",
-        "x": 487.5,
+        "x": 430.5,
         "y": 196.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "todosSlice",
-        "x": 1616,
+        "x": 1559,
         "y": 227,
         "width": 120,
         "height": 46
       },
       {
         "id": "useAppDispatch",
-        "x": 742,
+        "x": 685,
         "y": 172.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "useAppSelector",
-        "x": 487.5,
+        "x": 430.5,
         "y": 494,
         "width": 120,
         "height": 46
@@ -843,15 +842,15 @@
         "id": "{ todoAdded, todoToggled, todoRemoved, todoEdited, completedCleared, filterChanged }→todosSlice",
         "points": [
           {
-            "x": 1552,
+            "x": 1495,
             "y": 148.8
           },
           {
-            "x": 1584,
+            "x": 1527,
             "y": 148.8
           },
           {
-            "x": 1655.1,
+            "x": 1598.1,
             "y": 227
           }
         ]
@@ -860,47 +859,47 @@
         "id": "App→FILTERS",
         "points": [
           {
-            "x": 137.7,
+            "x": 105,
             "y": 363.8
           },
           {
-            "x": 246,
+            "x": 189,
             "y": 564
           },
           {
-            "x": 347.5,
+            "x": 290.5,
             "y": 564
           },
           {
-            "x": 449,
+            "x": 392,
             "y": 564
           },
           {
-            "x": 547.5,
+            "x": 490.5,
             "y": 564
           },
           {
-            "x": 646,
+            "x": 589,
             "y": 564
           },
           {
-            "x": 802,
+            "x": 745,
             "y": 564
           },
           {
-            "x": 958,
+            "x": 901,
             "y": 564
           },
           {
-            "x": 1271,
+            "x": 1214,
             "y": 564
           },
           {
-            "x": 1584,
+            "x": 1527,
             "y": 564
           },
           {
-            "x": 1616,
+            "x": 1559,
             "y": 564
           }
         ]
@@ -909,15 +908,15 @@
         "id": "App→selectCounts",
         "points": [
           {
-            "x": 155.1,
+            "x": 118.5,
             "y": 363.8
           },
           {
-            "x": 246,
+            "x": 189,
             "y": 450.8
           },
           {
-            "x": 287.5,
+            "x": 230.5,
             "y": 450.8
           }
         ]
@@ -926,23 +925,23 @@
         "id": "App→selectFilter",
         "points": [
           {
-            "x": 195.5,
+            "x": 149.9,
             "y": 294.8
           },
           {
-            "x": 246,
+            "x": 189,
             "y": 272
           },
           {
-            "x": 347.5,
+            "x": 290.5,
             "y": 272
           },
           {
-            "x": 449,
+            "x": 392,
             "y": 272
           },
           {
-            "x": 481,
+            "x": 424,
             "y": 282.6
           }
         ]
@@ -951,15 +950,15 @@
         "id": "App→selectVisibleTodos",
         "points": [
           {
-            "x": 211.2,
-            "y": 363.8
+            "x": 157,
+            "y": 361.3
           },
           {
-            "x": 246,
+            "x": 189,
             "y": 376.8
           },
           {
-            "x": 278,
+            "x": 221,
             "y": 376.8
           }
         ]
@@ -968,23 +967,23 @@
         "id": "App→TodoItem",
         "points": [
           {
-            "x": 158.8,
+            "x": 121.4,
             "y": 294.8
           },
           {
-            "x": 246,
+            "x": 189,
             "y": 219.3
           },
           {
-            "x": 347.5,
+            "x": 290.5,
             "y": 219.3
           },
           {
-            "x": 449,
+            "x": 392,
             "y": 219.3
           },
           {
-            "x": 487.5,
+            "x": 430.5,
             "y": 219.3
           }
         ]
@@ -993,31 +992,31 @@
         "id": "App→useAppDispatch",
         "points": [
           {
-            "x": 146.9,
+            "x": 112.1,
             "y": 294.8
           },
           {
-            "x": 246,
+            "x": 189,
             "y": 172.3
           },
           {
-            "x": 347.5,
+            "x": 290.5,
             "y": 172.3
           },
           {
-            "x": 449,
+            "x": 392,
             "y": 172.3
           },
           {
-            "x": 547.5,
+            "x": 490.5,
             "y": 172.3
           },
           {
-            "x": 646,
+            "x": 589,
             "y": 172.3
           },
           {
-            "x": 742,
+            "x": 685,
             "y": 186.7
           }
         ]
@@ -1026,23 +1025,23 @@
         "id": "App→useAppSelector",
         "points": [
           {
-            "x": 142.3,
+            "x": 108.6,
             "y": 363.8
           },
           {
-            "x": 246,
+            "x": 189,
             "y": 517
           },
           {
-            "x": 347.5,
+            "x": 290.5,
             "y": 517
           },
           {
-            "x": 449,
+            "x": 392,
             "y": 517
           },
           {
-            "x": 487.5,
+            "x": 430.5,
             "y": 517
           }
         ]
@@ -1051,15 +1050,15 @@
         "id": "FILTERS→Filter",
         "points": [
           {
-            "x": 1736,
+            "x": 1679,
             "y": 564
           },
           {
-            "x": 1768,
+            "x": 1711,
             "y": 564
           },
           {
-            "x": 1800,
+            "x": 1743,
             "y": 561.8
           }
         ]
@@ -1068,15 +1067,15 @@
         "id": "RootState→store",
         "points": [
           {
-            "x": 926,
+            "x": 869,
             "y": 394.5
           },
           {
-            "x": 958,
+            "x": 901,
             "y": 394.5
           },
           {
-            "x": 1211,
+            "x": 1154,
             "y": 307.6
           }
         ]
@@ -1085,15 +1084,15 @@
         "id": "selectCounts→selectItems",
         "points": [
           {
-            "x": 394.2,
+            "x": 337.2,
             "y": 427.8
           },
           {
-            "x": 449,
+            "x": 392,
             "y": 400.8
           },
           {
-            "x": 481,
+            "x": 424,
             "y": 405
           }
         ]
@@ -1102,15 +1101,15 @@
         "id": "selectFilter→RootState",
         "points": [
           {
-            "x": 614,
+            "x": 557,
             "y": 304.8
           },
           {
-            "x": 646,
+            "x": 589,
             "y": 304.8
           },
           {
-            "x": 742,
+            "x": 685,
             "y": 360
           }
         ]
@@ -1119,15 +1118,15 @@
         "id": "selectItems→RootState",
         "points": [
           {
-            "x": 614,
+            "x": 557,
             "y": 413.8
           },
           {
-            "x": 646,
+            "x": 589,
             "y": 413.8
           },
           {
-            "x": 678,
+            "x": 621,
             "y": 409.8
           }
         ]
@@ -1136,15 +1135,15 @@
         "id": "selectVisibleTodos→selectFilter",
         "points": [
           {
-            "x": 395.6,
+            "x": 338.6,
             "y": 353.8
           },
           {
-            "x": 449,
+            "x": 392,
             "y": 328.3
           },
           {
-            "x": 481,
+            "x": 424,
             "y": 320.6
           }
         ]
@@ -1153,15 +1152,15 @@
         "id": "selectVisibleTodos→selectItems",
         "points": [
           {
-            "x": 381,
+            "x": 324,
             "y": 399.8
           },
           {
-            "x": 449,
+            "x": 392,
             "y": 446.5
           },
           {
-            "x": 481,
+            "x": 424,
             "y": 435.9
           }
         ]
@@ -1170,15 +1169,15 @@
         "id": "store→todosSlice",
         "points": [
           {
-            "x": 1331,
+            "x": 1274,
             "y": 287
           },
           {
-            "x": 1584,
+            "x": 1527,
             "y": 287
           },
           {
-            "x": 1618.8,
+            "x": 1561.8,
             "y": 273
           }
         ]
@@ -1187,39 +1186,39 @@
         "id": "TodoItem→Todo",
         "points": [
           {
-            "x": 566.8,
+            "x": 509.8,
             "y": 196.3
           },
           {
-            "x": 646,
+            "x": 589,
             "y": 101.8
           },
           {
-            "x": 802,
+            "x": 745,
             "y": 101.8
           },
           {
-            "x": 958,
+            "x": 901,
             "y": 101.8
           },
           {
-            "x": 1271,
+            "x": 1214,
             "y": 101.8
           },
           {
-            "x": 1584,
+            "x": 1527,
             "y": 101.8
           },
           {
-            "x": 1676,
+            "x": 1619,
             "y": 101.8
           },
           {
-            "x": 1768,
+            "x": 1711,
             "y": 101.8
           },
           {
-            "x": 1851.5,
+            "x": 1794.5,
             "y": 85.6
           }
         ]
@@ -1228,15 +1227,15 @@
         "id": "TodoItem→useAppDispatch",
         "points": [
           {
-            "x": 607.5,
+            "x": 550.5,
             "y": 219.3
           },
           {
-            "x": 646,
+            "x": 589,
             "y": 219.3
           },
           {
-            "x": 742,
+            "x": 685,
             "y": 204.8
           }
         ]
@@ -1245,15 +1244,15 @@
         "id": "todosSlice→Filter",
         "points": [
           {
-            "x": 1683.8,
+            "x": 1626.8,
             "y": 273
           },
           {
-            "x": 1768,
+            "x": 1711,
             "y": 521.3
           },
           {
-            "x": 1800,
+            "x": 1743,
             "y": 528.4
           }
         ]
@@ -1262,15 +1261,15 @@
         "id": "todosSlice→lastTodoId",
         "points": [
           {
-            "x": 1704.4,
+            "x": 1647.4,
             "y": 227
           },
           {
-            "x": 1768,
+            "x": 1711,
             "y": 175.5
           },
           {
-            "x": 1854.5,
+            "x": 1797.5,
             "y": 175.5
           }
         ]
@@ -1279,15 +1278,15 @@
         "id": "todosSlice→Todo",
         "points": [
           {
-            "x": 1687.4,
+            "x": 1630.4,
             "y": 227
           },
           {
-            "x": 1768,
+            "x": 1711,
             "y": 65
           },
           {
-            "x": 1851.5,
+            "x": 1794.5,
             "y": 69.8
           }
         ]
@@ -1296,15 +1295,15 @@
         "id": "useAppDispatch→store",
         "points": [
           {
-            "x": 862,
+            "x": 805,
             "y": 195.8
           },
           {
-            "x": 958,
+            "x": 901,
             "y": 195.8
           },
           {
-            "x": 1211,
+            "x": 1154,
             "y": 269.5
           }
         ]
@@ -1313,15 +1312,15 @@
         "id": "useAppSelector→RootState",
         "points": [
           {
-            "x": 607.5,
+            "x": 550.5,
             "y": 517
           },
           {
-            "x": 646,
+            "x": 589,
             "y": 517
           },
           {
-            "x": 758.1,
+            "x": 701.1,
             "y": 429
           }
         ]

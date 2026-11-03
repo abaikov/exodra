@@ -80,8 +80,8 @@
         "layer": 0,
         "members": [
           {
-            "text": "(oimdb, todoDb): CNS<any, import(\"/U…",
-            "full": "(oimdb, todoDb): CNS<any, import(\"/Users/abaikov/work/exodra/node_modules/@cnstra/types/dist/index\").TCNSDendrite<any, any, any>>",
+            "text": "(oimdb, todoDb): CNS<any, TCNSDendri…",
+            "full": "(oimdb, todoDb): CNS<any, TCNSDendrite<any, any, any>>",
             "parts": [
               {
                 "text": "("
@@ -98,7 +98,7 @@
                 "link": "todoDb"
               },
               {
-                "text": "): CNS<any, import(\"/U…"
+                "text": "): CNS<any, TCNSDendri…"
               }
             ],
             "fullParts": [
@@ -117,7 +117,7 @@
                 "link": "todoDb"
               },
               {
-                "text": "): CNS<any, import(\"/Users/abaikov/work/exodra/node_modules/@cnstra/types/dist/index\").TCNSDendrite<any, any, any>>"
+                "text": "): CNS<any, TCNSDendrite<any, any, any>>"
               }
             ]
           }
@@ -136,445 +136,172 @@
         "members": [
           {
             "text": "(): OIMDB<{ todos: { to…",
-            "full": "(): OIMDB<{ todos: { todos: import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMEntitySlotCollectionStoreAggregate<TTodo, \"id\" | \"title\" | \"done\">; todosInOrder: import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMSlotCollectionIndexStoreAggregate<string, TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntitySlot<TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMSlotCollectionIndexService<string, TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntitySlot<TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<TTodoSlot, string>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>>>>; todosByDone: import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMSlotCollectionIndexStoreAggregate<string, TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntitySlot<TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMSlotCollectionIndexService<string, TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntitySlot<TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<TTodoSlot, string>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>>>>; filter: import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMWritableSingleSlotStoreAggregate<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }, unknown, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMWritableSingleSlotService<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMEntityContentService<{ filter: TTodoFilter; }, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"filter\"> & import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").IOIMSingleSlotCreator<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">> & import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").IOIMSlotContentWriter<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }> & import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").IOIMSlotContentService<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">>, string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMColumnSlot, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMPushColumnSlotOwner, unknown>>; nextTodoId: () => string; putInCreatedOrder(slot: TTodoSlot): void; }; }>",
+            "full": "(): OIMDB<{ todos: { todos: OIMEntitySlotCollectionStoreAggregate<TTodo, \"id\" | \"title\" | \"done\">; todosInOrder: OIMSlotCollectionIndexStoreAggregate<string, TTodo, TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<TOIMStoreKey, TOIMEntitySlot<TTodo, TOIMStoreKey, \"id\" | \"title\" | \"done\">>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>>, OIMSlotCollectionIndexService<string, TTodo, TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<TOIMStoreKey, TOIMEntitySlot<TTodo, TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<TTodoSlot, string>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>>>>; todosByDone: OIMSlotCollectionIndexStoreAggregate<string, TTodo, TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<TOIMStoreKey, TOIMEntitySlot<TTodo, TOIMStoreKey, \"id\" | \"title\" | \"done\">>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>>, OIMSlotCollectionIndexService<string, TTodo, TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<TOIMStoreKey, TOIMEntitySlot<TTodo, TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<TTodoSlot, string>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>>>>; filter: OIMWritableSingleSlotStoreAggregate<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }, unknown, OIMWritableSingleSlotService<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }, OIMEntityContentService<{ filter: TTodoFilter; }, TOIMStoreKey, \"filter\"> & IOIMSingleSlotCreator<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">> & IOIMSlotContentWriter<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }> & IOIMSlotContentService<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">>, string, TOIMColumnSlot, OIMPushColumnSlotOwner, unknown>>; nextTodoId: () => string; putInCreatedOrder(slot: TTodoSlot): void; }; }>",
             "parts": [],
             "fullParts": [
               {
-                "text": "(): OIMDB<{ todos: { todos: import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMEntitySlotCollectionStoreAggregate<"
+                "text": "(): OIMDB<{ todos: { todos: OIMEntitySlotCollectionStoreAggregate<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", \"id\" | \"title\" | \"done\">; todosInOrder: import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMSlotCollectionIndexStoreAggregate<string, "
+                "text": ", \"id\" | \"title\" | \"done\">; todosInOrder: OIMSlotCollectionIndexStoreAggregate<string, "
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntitySlot<"
+                "text": ">, {}, Map<TOIMStoreKey, TOIMEntitySlot<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMStoreKey, \"id\" | \"title\" | \"done\">>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ">, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMSlotCollectionIndexService<string, "
+                "text": ">, string>>, OIMSlotCollectionIndexService<string, "
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntitySlot<"
+                "text": ">, {}, Map<TOIMStoreKey, TOIMEntitySlot<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<"
+                "text": ", TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ", string>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", string>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ">, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>>>>; todosByDone: import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMSlotCollectionIndexStoreAggregate<string, "
+                "text": ">, string>>>>; todosByDone: OIMSlotCollectionIndexStoreAggregate<string, "
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntitySlot<"
+                "text": ">, {}, Map<TOIMStoreKey, TOIMEntitySlot<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMStoreKey, \"id\" | \"title\" | \"done\">>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ">, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMSlotCollectionIndexService<string, "
+                "text": ">, string>>, OIMSlotCollectionIndexService<string, "
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntitySlot<"
+                "text": ">, {}, Map<TOIMStoreKey, TOIMEntitySlot<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<"
+                "text": ", TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ", string>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", string>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ">, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>>>>; filter: import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMWritableSingleSlotStoreAggregate<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": ">, string>>>>; filter: OIMWritableSingleSlotStoreAggregate<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
@@ -588,21 +315,7 @@
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, unknown, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMWritableSingleSlotService<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": "; }, unknown, OIMWritableSingleSlotService<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
@@ -616,63 +329,21 @@
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMEntityContentService<{ filter: "
+                "text": "; }, OIMEntityContentService<{ filter: "
               },
               {
                 "text": "TTodoFilter",
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"filter\"> & import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").IOIMSingleSlotCreator<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": "; }, TOIMStoreKey, \"filter\"> & IOIMSingleSlotCreator<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, \"filter\">> & import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").IOIMSlotContentWriter<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": "; }, \"filter\">> & IOIMSlotContentWriter<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
@@ -686,42 +357,14 @@
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }> & import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").IOIMSlotContentService<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": "; }> & IOIMSlotContentService<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, \"filter\">>, string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMColumnSlot, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMPushColumnSlotOwner, unknown>>; nextTodoId: () => string; putInCreatedOrder(slot: "
+                "text": "; }, \"filter\">>, string, TOIMColumnSlot, OIMPushColumnSlotOwner, unknown>>; nextTodoId: () => string; putInCreatedOrder(slot: "
               },
               {
                 "text": "TTodoSlot",
@@ -746,446 +389,173 @@
         "layer": 0,
         "members": [
           {
-            "text": "(db): { todos: import(\"/U…",
-            "full": "(db): { todos: import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMEntitySlotCollectionStoreAggregate<TTodo, \"id\" | \"title\" | \"done\">; todosInOrder: import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMSlotCollectionIndexStoreAggregate<string, TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntitySlot<TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMSlotCollectionIndexService<string, TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntitySlot<TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<TTodoSlot, string>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>>>>; todosByDone: import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMSlotCollectionIndexStoreAggregate<string, TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntitySlot<TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMSlotCollectionIndexService<string, TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntitySlot<TTodo, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<TTodoSlot, string>, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMBucketSlotsArrayStore<TTodoSlot>, string>>>>; filter: import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMWritableSingleSlotStoreAggregate<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }, unknown, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMWritableSingleSlotService<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMEntityContentService<{ filter: TTodoFilter; }, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMStoreKey, \"filter\"> & import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").IOIMSingleSlotCreator<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">> & import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").IOIMSlotContentWriter<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }> & import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").IOIMSlotContentService<import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">>, string, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").TOIMColumnSlot, import(\"/Users/abaikov/work/exodra/node_modules/@oimdb/core/dist/index\").OIMPushColumnSlotOwner, unknown>>; nextTodoId: () => string; putInCreatedOrder(slot: TTodoSlot): void; }",
+            "text": "(db): { todos: OIMEntityS…",
+            "full": "(db): { todos: OIMEntitySlotCollectionStoreAggregate<TTodo, \"id\" | \"title\" | \"done\">; todosInOrder: OIMSlotCollectionIndexStoreAggregate<string, TTodo, TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<TOIMStoreKey, TOIMEntitySlot<TTodo, TOIMStoreKey, \"id\" | \"title\" | \"done\">>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>>, OIMSlotCollectionIndexService<string, TTodo, TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<TOIMStoreKey, TOIMEntitySlot<TTodo, TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<TTodoSlot, string>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>>>>; todosByDone: OIMSlotCollectionIndexStoreAggregate<string, TTodo, TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<TOIMStoreKey, TOIMEntitySlot<TTodo, TOIMStoreKey, \"id\" | \"title\" | \"done\">>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>>, OIMSlotCollectionIndexService<string, TTodo, TOIMBucketSlotsArrayStore<TTodoSlot>, {}, Map<TOIMStoreKey, TOIMEntitySlot<TTodo, TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<TTodoSlot, string>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<TTodoSlot>, string>>>>; filter: OIMWritableSingleSlotStoreAggregate<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }, unknown, OIMWritableSingleSlotService<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }, OIMEntityContentService<{ filter: TTodoFilter; }, TOIMStoreKey, \"filter\"> & IOIMSingleSlotCreator<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">> & IOIMSlotContentWriter<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">, { filter: TTodoFilter; }> & IOIMSlotContentService<TOIMEntityContentSlot<{ filter: TTodoFilter; }, \"filter\">>, string, TOIMColumnSlot, OIMPushColumnSlotOwner, unknown>>; nextTodoId: () => string; putInCreatedOrder(slot: TTodoSlot): void; }",
             "parts": [],
             "fullParts": [
               {
-                "text": "(db): { todos: import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMEntitySlotCollectionStoreAggregate<"
+                "text": "(db): { todos: OIMEntitySlotCollectionStoreAggregate<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", \"id\" | \"title\" | \"done\">; todosInOrder: import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMSlotCollectionIndexStoreAggregate<string, "
+                "text": ", \"id\" | \"title\" | \"done\">; todosInOrder: OIMSlotCollectionIndexStoreAggregate<string, "
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntitySlot<"
+                "text": ">, {}, Map<TOIMStoreKey, TOIMEntitySlot<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMStoreKey, \"id\" | \"title\" | \"done\">>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ">, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMSlotCollectionIndexService<string, "
+                "text": ">, string>>, OIMSlotCollectionIndexService<string, "
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntitySlot<"
+                "text": ">, {}, Map<TOIMStoreKey, TOIMEntitySlot<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<"
+                "text": ", TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ", string>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", string>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ">, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>>>>; todosByDone: import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMSlotCollectionIndexStoreAggregate<string, "
+                "text": ">, string>>>>; todosByDone: OIMSlotCollectionIndexStoreAggregate<string, "
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntitySlot<"
+                "text": ">, {}, Map<TOIMStoreKey, TOIMEntitySlot<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMStoreKey, \"id\" | \"title\" | \"done\">>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ">, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMSlotCollectionIndexService<string, "
+                "text": ">, string>>, OIMSlotCollectionIndexService<string, "
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, {}, Map<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntitySlot<"
+                "text": ">, {}, Map<TOIMStoreKey, TOIMEntitySlot<"
               },
               {
                 "text": "TTodo",
                 "link": "TTodo"
               },
               {
-                "text": ", import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<"
+                "text": ", TOIMStoreKey, \"id\" | \"title\" | \"done\">>, OIMPositionalArrayBucketContentService<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ", string>, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ", string>, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>, Map<string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlot<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMBucketSlotsArrayStore<"
+                "text": ">, string>, Map<string, TOIMBucketSlot<TOIMBucketSlotsArrayStore<"
               },
               {
                 "text": "TTodoSlot",
                 "link": "TTodoSlot"
               },
               {
-                "text": ">, string>>>>; filter: import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMWritableSingleSlotStoreAggregate<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": ">, string>>>>; filter: OIMWritableSingleSlotStoreAggregate<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
@@ -1199,21 +569,7 @@
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, unknown, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMWritableSingleSlotService<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": "; }, unknown, OIMWritableSingleSlotService<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
@@ -1227,63 +583,21 @@
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMEntityContentService<{ filter: "
+                "text": "; }, OIMEntityContentService<{ filter: "
               },
               {
                 "text": "TTodoFilter",
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMStoreKey, \"filter\"> & import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").IOIMSingleSlotCreator<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": "; }, TOIMStoreKey, \"filter\"> & IOIMSingleSlotCreator<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, \"filter\">> & import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").IOIMSlotContentWriter<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": "; }, \"filter\">> & IOIMSlotContentWriter<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
@@ -1297,42 +611,14 @@
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }> & import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").IOIMSlotContentService<import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMEntityContentSlot<{ filter: "
+                "text": "; }> & IOIMSlotContentService<TOIMEntityContentSlot<{ filter: "
               },
               {
                 "text": "TTodoFilter",
                 "link": "TTodoFilter"
               },
               {
-                "text": "; }, \"filter\">>, string, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").TOIMColumnSlot, import(\"/Users/abaikov/work/exodra/node_modules/@"
-              },
-              {
-                "text": "oimdb",
-                "link": "oimdb"
-              },
-              {
-                "text": "/core/dist/index\").OIMPushColumnSlotOwner, unknown>>; nextTodoId: () => string; putInCreatedOrder(slot: "
+                "text": "; }, \"filter\">>, string, TOIMColumnSlot, OIMPushColumnSlotOwner, unknown>>; nextTodoId: () => string; putInCreatedOrder(slot: "
               },
               {
                 "text": "TTodoSlot",
@@ -2445,8 +1731,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2464,8 +1750,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2483,8 +1769,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2502,8 +1788,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2521,8 +1807,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2540,8 +1826,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2559,8 +1845,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2578,8 +1864,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2597,8 +1883,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2616,8 +1902,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2635,8 +1921,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2654,8 +1940,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2673,8 +1959,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2692,8 +1978,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2711,8 +1997,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2730,8 +2016,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2749,8 +2035,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2768,8 +2054,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2787,8 +2073,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoOimdb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoOimdb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2806,8 +2092,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2825,8 +2111,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2844,8 +2130,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodo.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodo.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2863,8 +2149,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2882,8 +2168,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2901,8 +2187,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/constants/EXO_OIM_PARKED_BY_OWNER.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/constants/EXO_OIM_PARKED_BY_OWNER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2920,8 +2206,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2939,8 +2225,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/exoOimRowReleaseListener.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/constants/EXO_OIM_PARKED_BY_OWNER.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/exoOimRowReleaseListener.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/constants/EXO_OIM_PARKED_BY_OWNER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2958,8 +2244,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/exoOimRowReleaseListener.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimParkedRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/exoOimRowReleaseListener.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimParkedRow.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2977,8 +2263,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2996,8 +2282,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3015,8 +2301,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3034,8 +2320,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3053,8 +2339,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3072,8 +2358,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimParkedRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimParkedRow.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3091,8 +2377,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3110,8 +2396,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/constants/EXO_OIM_PARKED_BY_OWNER.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/constants/EXO_OIM_PARKED_BY_OWNER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3129,8 +2415,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3148,8 +2434,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3167,8 +2453,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3186,8 +2472,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3205,8 +2491,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3224,8 +2510,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3243,8 +2529,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3262,8 +2548,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3281,8 +2567,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3300,8 +2586,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3319,8 +2605,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3338,8 +2624,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3357,8 +2643,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3376,8 +2662,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3395,8 +2681,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3414,8 +2700,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoBucket.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoBucket.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3433,8 +2719,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3452,8 +2738,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3471,8 +2757,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3490,8 +2776,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3509,8 +2795,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3528,8 +2814,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3547,8 +2833,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3566,8 +2852,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3585,8 +2871,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3604,8 +2890,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3623,8 +2909,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimParkedRow.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimParkedRow.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3642,8 +2928,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3661,8 +2947,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3680,8 +2966,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoAppState.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoAppState.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3699,8 +2985,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3718,8 +3004,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3737,8 +3023,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3756,8 +3042,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3775,8 +3061,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3794,8 +3080,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3813,8 +3099,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3832,8 +3118,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3851,8 +3137,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3870,8 +3156,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3889,8 +3175,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3908,8 +3194,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3927,8 +3213,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3946,8 +3232,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3965,8 +3251,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3984,8 +3270,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4003,8 +3289,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4022,8 +3308,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4041,8 +3327,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4060,8 +3346,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4079,8 +3365,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4098,8 +3384,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoNeurons.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4117,8 +3403,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4136,8 +3422,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoRowState.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoRowState.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4155,8 +3441,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4174,8 +3460,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4193,8 +3479,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4212,8 +3498,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4231,8 +3517,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4250,8 +3536,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4269,8 +3555,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4288,8 +3574,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4307,8 +3593,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4326,8 +3612,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4345,8 +3631,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4364,8 +3650,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimWatches.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimWatches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4383,8 +3669,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4402,8 +3688,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TodoUiAxon.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoFilter.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4421,8 +3707,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoBucket.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoBucket.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4440,8 +3726,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoCns.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoCns.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/createTodoCns.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4459,8 +3745,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoOimdb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoOimdb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4478,8 +3764,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoOimdb.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoOimdb.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/createTodoOimdb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4497,8 +3783,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoRowState.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoRowState.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4516,8 +3802,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4535,8 +3821,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4554,8 +3840,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4573,8 +3859,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/main.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4592,8 +3878,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoCns.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoCns.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4611,8 +3897,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoDb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4630,8 +3916,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoOimdb.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoServices.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodoOimdb.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4649,8 +3935,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TTodo.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TTodoSlot.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TTodo.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4668,8 +3954,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4687,8 +3973,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimParkedRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimParkedRow.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4706,8 +3992,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4725,8 +4011,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4744,8 +4030,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4763,8 +4049,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4782,8 +4068,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimBucketListOptions.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimBucketListOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4801,8 +4087,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4820,8 +4106,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4839,8 +4125,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4858,8 +4144,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimWatches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/todo-cnstra-oimdb/src/withExoOimWatches.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimWatches.ts",
+            "to": "packages/examples/todo-cnstra-oimdb/src/withExoOimWatches.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

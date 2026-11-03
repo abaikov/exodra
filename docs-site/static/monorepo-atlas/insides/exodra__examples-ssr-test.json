@@ -114,8 +114,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
+            "from": "packages/examples/ssr-test/src/app.ts",
+            "to": "packages/examples/ssr-test/src/app.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -133,8 +133,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
+            "from": "packages/examples/ssr-test/src/app.ts",
+            "to": "packages/examples/ssr-test/src/app.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -152,8 +152,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
+            "from": "packages/examples/ssr-test/src/app.ts",
+            "to": "packages/examples/ssr-test/src/app.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -171,8 +171,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
+            "from": "packages/examples/ssr-test/src/app.ts",
+            "to": "packages/examples/ssr-test/src/app.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -190,8 +190,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/entry-server.ts",
-            "to": "/Users/abaikov/work/exodra/packages/examples/ssr-test/src/app.ts",
+            "from": "packages/examples/ssr-test/src/entry-server.ts",
+            "to": "packages/examples/ssr-test/src/app.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

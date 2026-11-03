@@ -71,8 +71,8 @@
         "layer": 0,
         "members": [
           {
-            "text": "(schema, src, show): import(\"/Users/abai…",
-            "full": "(schema, src, show): import(\"/Users/abaikov/work/exodra/packages/core/dist/index\").TExoMachine<TExoMachineNode<unknown, unknown>, unknown, unknown, unknown> & { readonly transitions: import(\"/Users/abaikov/work/exodra/packages/core/dist/index\").TExoMachineTransitions<TExoMachineNode<unknown, unknown>, { show: []; }>; overrides(replacements: { readonly show?: (enode: TExoMachineNode<unknown, unknown>) => void; }): import(\"/Users/abaikov/work/exodra/packages/core/dist/index\").TExoTransitionOverrides; }",
+            "text": "(schema, src, show): TExoMachine<TExoMac…",
+            "full": "(schema, src, show): TExoMachine<TExoMachineNode<unknown, unknown>, unknown, unknown, unknown> & { readonly transitions: TExoMachineTransitions<TExoMachineNode<unknown, unknown>, { show: []; }>; overrides(replacements: { readonly show?: (enode: TExoMachineNode<unknown, unknown>) => void; }): TExoTransitionOverrides; }",
             "parts": [],
             "fullParts": []
           }
@@ -357,8 +357,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/bareImports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/source.ts",
+            "from": "packages/test-utils/src/bareImports.ts",
+            "to": "packages/test-utils/src/source.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -376,8 +376,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/buildRow.ts",
-            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/types/TExoTestRowPorts.ts",
+            "from": "packages/test-utils/src/buildRow.ts",
+            "to": "packages/test-utils/src/types/TExoTestRowPorts.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -395,8 +395,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/createExoFollowingMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/types/TExoTestSource.ts",
+            "from": "packages/test-utils/src/createExoFollowingMachine.ts",
+            "to": "packages/test-utils/src/types/TExoTestSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -414,8 +414,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/describeIfPresetBuilt.ts",
-            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/describeIfPresetBuilt.ts",
+            "from": "packages/test-utils/src/describeIfPresetBuilt.ts",
+            "to": "packages/test-utils/src/describeIfPresetBuilt.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -433,8 +433,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/describeIfPresetBuilt.ts",
-            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/describeIfPresetBuilt.ts",
+            "from": "packages/test-utils/src/describeIfPresetBuilt.ts",
+            "to": "packages/test-utils/src/describeIfPresetBuilt.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -452,8 +452,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/source.ts",
-            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/types/TExoTestSource.ts",
+            "from": "packages/test-utils/src/source.ts",
+            "to": "packages/test-utils/src/types/TExoTestSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

@@ -1538,8 +1538,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1557,8 +1557,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1576,8 +1576,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/compileHostTree.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/compileHostTree.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1595,8 +1595,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1614,8 +1614,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/exoImports.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/exoImports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1633,8 +1633,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/isCompilableHost.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/isCompilableHost.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1652,8 +1652,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1671,8 +1671,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1690,8 +1690,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1709,8 +1709,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1728,8 +1728,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoFileState.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoFileState.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1747,8 +1747,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1766,8 +1766,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoReactPluginOptions.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoReactPluginOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1785,8 +1785,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1804,8 +1804,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1823,8 +1823,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/exoImports.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/exoImports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1842,8 +1842,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1861,8 +1861,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1880,8 +1880,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoFileState.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoFileState.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1899,8 +1899,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoGeneratedNames.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoGeneratedNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1918,8 +1918,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoSchemaPluginOptions.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoSchemaPluginOptions.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1937,8 +1937,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoSchemaProducer.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoSchemaProducer.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1956,8 +1956,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1975,8 +1975,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1994,8 +1994,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2013,8 +2013,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/cleanJsxText.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/cleanJsxText.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2032,8 +2032,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2051,8 +2051,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2070,8 +2070,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/readPortName.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readPortName.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2089,8 +2089,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2108,8 +2108,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2127,8 +2127,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2146,8 +2146,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2165,8 +2165,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/compileHostTree.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/compileHostTree.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2184,8 +2184,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/compileHostTree.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/compileHostTree.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2203,8 +2203,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/compileHostTree.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/compileHostTree.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2222,8 +2222,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2241,8 +2241,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/exoImports.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/exoImports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2260,8 +2260,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2279,8 +2279,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2298,8 +2298,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoCompiledJsxDeclaration.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoCompiledJsxDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2317,8 +2317,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoFileState.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoFileState.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2336,8 +2336,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoGeneratedNames.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoGeneratedNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2355,8 +2355,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoSchemaProducer.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoSchemaProducer.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2374,8 +2374,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2393,8 +2393,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2412,8 +2412,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2431,8 +2431,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2450,8 +2450,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/isCompilableHost.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/isCompilableHost.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2469,8 +2469,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2488,8 +2488,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2507,8 +2507,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2526,8 +2526,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2545,8 +2545,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2564,8 +2564,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2583,8 +2583,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/readPortName.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readPortName.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2602,8 +2602,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/readStaticAttribute.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readStaticAttribute.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2621,8 +2621,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2640,8 +2640,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2659,8 +2659,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2678,8 +2678,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2697,8 +2697,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2716,8 +2716,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2735,8 +2735,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2754,8 +2754,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2773,8 +2773,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2792,8 +2792,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/isCompilableHost.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/isCompilableHost.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2811,8 +2811,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2830,8 +2830,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2849,8 +2849,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2868,8 +2868,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2887,8 +2887,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2906,8 +2906,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2925,8 +2925,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2944,8 +2944,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2963,8 +2963,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2982,8 +2982,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3001,8 +3001,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitRuntimeElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3020,8 +3020,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/exoImports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/pickName.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/exoImports.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/pickName.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3039,8 +3039,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/exoImports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoFileState.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/exoImports.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoFileState.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3058,8 +3058,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3077,8 +3077,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3096,8 +3096,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3115,8 +3115,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3134,8 +3134,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/isCompilableHost.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/isCompilableHost.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3153,8 +3153,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3172,8 +3172,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3191,8 +3191,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3210,8 +3210,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3229,8 +3229,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3248,8 +3248,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3267,8 +3267,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3286,8 +3286,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3305,8 +3305,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3324,8 +3324,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3343,8 +3343,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/mergeHostBranches.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3362,8 +3362,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3381,8 +3381,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/pickName.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/pickName.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3400,8 +3400,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoGeneratedNames.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoGeneratedNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3419,8 +3419,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/pickName.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/pickName.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3438,8 +3438,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/index.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3457,8 +3457,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3476,8 +3476,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3495,8 +3495,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/readPortName.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readPortName.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3514,8 +3514,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3533,8 +3533,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/readCallElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3552,8 +3552,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/cleanJsxText.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/cleanJsxText.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3571,8 +3571,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3590,8 +3590,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
-            "to": "/Users/abaikov/work/exodra/packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
+            "from": "packages/babel-plugin-exodra-schema/src/react/types/TExoHostTreeWalk.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

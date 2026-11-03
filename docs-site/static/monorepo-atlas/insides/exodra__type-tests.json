@@ -1382,8 +1382,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1401,8 +1401,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1420,8 +1420,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1439,8 +1439,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1458,8 +1458,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1477,8 +1477,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1496,8 +1496,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1515,8 +1515,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1534,8 +1534,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1553,8 +1553,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1572,8 +1572,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1591,8 +1591,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1610,8 +1610,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1629,8 +1629,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1648,8 +1648,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1667,8 +1667,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1686,8 +1686,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1705,8 +1705,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/typed-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1724,8 +1724,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/typed-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1743,8 +1743,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/box.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1762,8 +1762,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "from": "packages/type-tests/src/backend-compatible.ts",
+            "to": "packages/type-tests/src/backend-compatible.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1781,8 +1781,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "from": "packages/type-tests/src/backend-compatible.ts",
+            "to": "packages/type-tests/src/backend-compatible.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1800,8 +1800,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/box.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1819,8 +1819,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/box.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1838,8 +1838,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/box.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1857,8 +1857,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1876,8 +1876,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1895,8 +1895,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1914,8 +1914,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1933,8 +1933,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/port-name-check.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/port-name-check.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1952,8 +1952,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1971,8 +1971,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
+            "from": "packages/type-tests/src/backend-compatible.ts",
+            "to": "packages/type-tests/src/backend-compatible.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1990,8 +1990,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/backend-compatible.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/backend-compatible.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2009,8 +2009,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2028,8 +2028,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2047,8 +2047,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/schema-dialect.tsx",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2066,8 +2066,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/typed-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2085,8 +2085,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2104,8 +2104,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2123,8 +2123,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/typed-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2142,8 +2142,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2161,8 +2161,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2180,8 +2180,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2199,8 +2199,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2218,8 +2218,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2237,8 +2237,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2256,8 +2256,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2275,8 +2275,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2294,8 +2294,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2313,8 +2313,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2332,8 +2332,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2351,8 +2351,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2370,8 +2370,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2389,8 +2389,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2408,8 +2408,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2427,8 +2427,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2446,8 +2446,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2465,8 +2465,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/port-name-check.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/port-name-check.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2484,8 +2484,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "from": "packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "packages/type-tests/src/machine-params-and-overrides.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2503,8 +2503,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
+            "from": "packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "packages/type-tests/src/machine-params-and-overrides.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2522,8 +2522,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
+            "from": "packages/type-tests/src/named-ports.ts",
+            "to": "packages/type-tests/src/named-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2541,8 +2541,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2560,8 +2560,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2579,8 +2579,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2598,8 +2598,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2617,8 +2617,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2636,8 +2636,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2655,8 +2655,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2674,8 +2674,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2693,8 +2693,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2712,8 +2712,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2731,8 +2731,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2750,8 +2750,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/CARD.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2769,8 +2769,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2788,8 +2788,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2807,8 +2807,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2826,8 +2826,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2845,8 +2845,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2864,8 +2864,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2883,8 +2883,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2902,8 +2902,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2921,8 +2921,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2940,8 +2940,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2959,8 +2959,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/typed-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2978,8 +2978,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2997,8 +2997,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3016,8 +3016,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/schema-dialect.tsx",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/schema-dialect.tsx",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3035,8 +3035,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3054,8 +3054,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3073,8 +3073,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3092,8 +3092,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3111,8 +3111,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3130,8 +3130,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3149,8 +3149,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3168,8 +3168,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3187,8 +3187,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3206,8 +3206,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3225,8 +3225,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/typed-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3244,8 +3244,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/declarationDataForm.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3263,8 +3263,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/machine-params-and-overrides.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/machine-params-and-overrides.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3282,8 +3282,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/typed-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3301,8 +3301,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/typed-ports.ts",
+            "from": "packages/type-tests/src/typed-ports.ts",
+            "to": "packages/type-tests/src/typed-ports.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3320,8 +3320,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/CARD.ts",
+            "from": "packages/type-tests/src/named-ports.ts",
+            "to": "packages/type-tests/src/CARD.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3339,8 +3339,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/named-ports.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/declarationDataForm.ts",
+            "from": "packages/type-tests/src/named-ports.ts",
+            "to": "packages/type-tests/src/declarationDataForm.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3358,8 +3358,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/composed-capability.ts",
+            "from": "packages/type-tests/src/composed-capability.ts",
+            "to": "packages/type-tests/src/composed-capability.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3377,8 +3377,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
-            "to": "/Users/abaikov/work/exodra/packages/type-tests/src/box.ts",
+            "from": "packages/type-tests/src/box.ts",
+            "to": "packages/type-tests/src/box.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

@@ -1130,8 +1130,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1149,8 +1149,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/constants/EXO_COMPONENT_BUILDERS.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/constants/EXO_COMPONENT_BUILDERS.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1168,8 +1168,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/constants/EXO_HOISTED_BUILDERS.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/constants/EXO_HOISTED_BUILDERS.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1187,8 +1187,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/constants/EXO_SCHEMA_BUILDERS.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/constants/EXO_SCHEMA_BUILDERS.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1206,8 +1206,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/summarizeDiagnostics.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/summarizeDiagnostics.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -1225,8 +1225,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoAnalysisResult.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/types/TExoAnalysisResult.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1244,8 +1244,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoDiagnostic.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/types/TExoDiagnostic.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1263,8 +1263,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoIntrospectionConfig.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/types/TExoIntrospectionConfig.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1282,8 +1282,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoMetric.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/types/TExoMetric.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1301,8 +1301,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoSourceLocation.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/types/TExoSourceLocation.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1320,8 +1320,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/ExoIntrospectionEngine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoSuggestion.ts",
+            "from": "packages/introspect/src/ExoIntrospectionEngine.ts",
+            "to": "packages/introspect/src/types/TExoSuggestion.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1339,8 +1339,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1358,8 +1358,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1377,8 +1377,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1396,8 +1396,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1415,8 +1415,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1434,8 +1434,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1453,8 +1453,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/constants/EXO_HOISTED_BUILDERS.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/constants/EXO_HOISTED_BUILDERS.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1472,8 +1472,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/constants/EXO_SCHEMA_BUILDERS.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/constants/EXO_SCHEMA_BUILDERS.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1491,8 +1491,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1510,8 +1510,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/eslint-plugin.ts",
+            "from": "packages/introspect/src/eslint-plugin.ts",
+            "to": "packages/introspect/src/eslint-plugin.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1529,8 +1529,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/summarizeDiagnostics.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoDiagnostic.ts",
+            "from": "packages/introspect/src/summarizeDiagnostics.ts",
+            "to": "packages/introspect/src/types/TExoDiagnostic.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1548,8 +1548,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/summarizeDiagnostics.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoSuggestion.ts",
+            "from": "packages/introspect/src/summarizeDiagnostics.ts",
+            "to": "packages/introspect/src/types/TExoSuggestion.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1567,8 +1567,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoAnalysisResult.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoDiagnostic.ts",
+            "from": "packages/introspect/src/types/TExoAnalysisResult.ts",
+            "to": "packages/introspect/src/types/TExoDiagnostic.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1586,8 +1586,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoAnalysisResult.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoMetric.ts",
+            "from": "packages/introspect/src/types/TExoAnalysisResult.ts",
+            "to": "packages/introspect/src/types/TExoMetric.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1605,8 +1605,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoAnalysisResult.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoSuggestion.ts",
+            "from": "packages/introspect/src/types/TExoAnalysisResult.ts",
+            "to": "packages/introspect/src/types/TExoSuggestion.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1624,8 +1624,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoCodeAction.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoTextEdit.ts",
+            "from": "packages/introspect/src/types/TExoCodeAction.ts",
+            "to": "packages/introspect/src/types/TExoTextEdit.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1643,8 +1643,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoDiagnostic.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoDiagnosticSeverity.ts",
+            "from": "packages/introspect/src/types/TExoDiagnostic.ts",
+            "to": "packages/introspect/src/types/TExoDiagnosticSeverity.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1662,8 +1662,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoDiagnostic.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoSourceLocation.ts",
+            "from": "packages/introspect/src/types/TExoDiagnostic.ts",
+            "to": "packages/introspect/src/types/TExoSourceLocation.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1681,8 +1681,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoSuggestion.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoCodeAction.ts",
+            "from": "packages/introspect/src/types/TExoSuggestion.ts",
+            "to": "packages/introspect/src/types/TExoCodeAction.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -1700,8 +1700,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoSuggestion.ts",
-            "to": "/Users/abaikov/work/exodra/packages/introspect/src/types/TExoSourceLocation.ts",
+            "from": "packages/introspect/src/types/TExoSuggestion.ts",
+            "to": "packages/introspect/src/types/TExoSourceLocation.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

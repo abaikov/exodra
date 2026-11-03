@@ -58,8 +58,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/rollup-plugin-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/rollup-plugin-exodra/src/index.ts",
+            "from": "packages/rollup-plugin-exodra/src/index.ts",
+            "to": "packages/rollup-plugin-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

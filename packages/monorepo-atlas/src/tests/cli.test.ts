@@ -88,4 +88,30 @@ describe('run', () => {
         expect(names).toContain('main');
         expect(existsSync(join(out, 'graph.json'))).toBe(true);
     }, 60_000);
+
+    it('writes the insides with paths relative to the root, so a checkout elsewhere verifies', async () => {
+        const root = mkdtempSync(join(tmpdir(), 'exo-where-'));
+        mkdirSync(join(root, 'src'));
+        writeFileSync(
+            join(root, 'package.json'),
+            JSON.stringify({ name: 'where-app', version: '1.0.0' })
+        );
+        writeFileSync(join(root, 'src', 'store.ts'), 'export class Store {}\n');
+        writeFileSync(
+            join(root, 'src', 'index.ts'),
+            "import { Store } from './store';\nexport function main() { return new Store(); }\n"
+        );
+
+        const out = join(root, 'out');
+        expect(await run(['--root', root, '--out', out], '/elsewhere')).toBe(0);
+
+        const text = readFileSync(join(out, 'insides', 'where-app.json'), 'utf8');
+        expect(text).not.toContain(root);
+        const inside = JSON.parse(text);
+        const edge = inside.model.edges.find((e: { id: string }) => e.id === 'main→Store');
+        expect(edge.evidence[0]).toMatchObject({ from: 'src/index.ts', to: 'src/store.ts' });
+        expect(
+            inside.model.nodes.find((n: { id: string }) => n.id === 'main').members[0].full
+        ).toBe('(): Store');
+    }, 60_000);
 });

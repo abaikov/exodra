@@ -2084,8 +2084,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/bindExoMachineReads.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineField.ts",
+            "from": "packages/computed/src/fields/bindExoMachineReads.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineField.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2103,8 +2103,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/bindExoMachineReads.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/bindExoMachineReads.ts",
+            "from": "packages/computed/src/fields/bindExoMachineReads.ts",
+            "to": "packages/computed/src/fields/bindExoMachineReads.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2122,8 +2122,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/chainExoMachineWakes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2141,8 +2141,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/chainExoMachineWakes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2160,8 +2160,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/chainExoMachineWakes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2179,8 +2179,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/chainExoMachineWakes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2198,8 +2198,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/chainExoMachineWakes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2217,8 +2217,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/chainExoMachineWakes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2236,8 +2236,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2255,8 +2255,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2274,8 +2274,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineWake.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineWake.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2293,8 +2293,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2312,8 +2312,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineWake.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineWake.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2331,8 +2331,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2350,8 +2350,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineWake.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineWake.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2369,8 +2369,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2388,8 +2388,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineWake.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineWake.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2407,8 +2407,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2426,8 +2426,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineWake.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineWake.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2445,8 +2445,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2464,8 +2464,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineWake.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineWake.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2483,8 +2483,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2502,8 +2502,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineWake.ts",
+            "from": "packages/computed/src/machine/chainExoMachineWakes.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineWake.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2521,8 +2521,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/commitExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/commitExoMachine.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2540,8 +2540,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/commitExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/machine/commitExoMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2559,8 +2559,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/bindExoMachineReads.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/fields/bindExoMachineReads.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2578,8 +2578,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/constants/EXO_MACHINE_LIMIT.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/transitions/constants/EXO_MACHINE_LIMIT.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2597,8 +2597,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2616,8 +2616,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/computed/withExoComputedMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2636,14 +2636,14 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
             "specifier": "uses",
             "kind": "type-only"
           },
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2661,8 +2661,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineBody.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineBody.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2680,8 +2680,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDeclaration.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2699,8 +2699,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineField.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineField.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2718,8 +2718,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/machine/compileExoMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2737,8 +2737,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/commitExoMachine.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/machine/commitExoMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2756,8 +2756,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2775,8 +2775,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/runExoMachineSlots.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/machine/runExoMachineSlots.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2794,8 +2794,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2813,8 +2813,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoHoldApi.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/wiring/types/TExoHoldApi.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2832,8 +2832,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDeclared.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineDeclared.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2851,8 +2851,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2870,8 +2870,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2889,8 +2889,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "from": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "to": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -2908,8 +2908,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2927,8 +2927,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "from": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "to": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2946,8 +2946,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/lifecycle/exoBody.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineBody.ts",
+            "from": "packages/computed/src/lifecycle/exoBody.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineBody.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2965,8 +2965,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/lifecycle/exoBody.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineField.ts",
+            "from": "packages/computed/src/lifecycle/exoBody.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineField.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2984,8 +2984,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoBoundTransition.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
+            "from": "packages/computed/src/transitions/exoBoundTransition.ts",
+            "to": "packages/computed/src/computed/withExoComputedMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3003,8 +3003,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoBoundTransition.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/transitions/exoBoundTransition.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3022,8 +3022,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoBoundTransition.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/types/TExoMachineSettler.ts",
+            "from": "packages/computed/src/transitions/exoBoundTransition.ts",
+            "to": "packages/computed/src/transitions/types/TExoMachineSettler.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3041,8 +3041,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/exoComputed.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDerivation.ts",
+            "from": "packages/computed/src/computed/exoComputed.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineDerivation.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3060,8 +3060,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/exoFieldBit.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/constants/EXO_MACHINE_LIMIT.ts",
+            "from": "packages/computed/src/fields/exoFieldBit.ts",
+            "to": "packages/computed/src/transitions/constants/EXO_MACHINE_LIMIT.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3079,8 +3079,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/exoMachineField.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/exoFieldBit.ts",
+            "from": "packages/computed/src/fields/exoMachineField.ts",
+            "to": "packages/computed/src/fields/exoFieldBit.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3098,8 +3098,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/exoMachineField.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineField.ts",
+            "from": "packages/computed/src/fields/exoMachineField.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineField.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3117,8 +3117,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoMachineSettle.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/commitExoMachine.ts",
+            "from": "packages/computed/src/transitions/exoMachineSettle.ts",
+            "to": "packages/computed/src/machine/commitExoMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3136,8 +3136,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoMachineSettle.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/runExoMachineSlots.ts",
+            "from": "packages/computed/src/transitions/exoMachineSettle.ts",
+            "to": "packages/computed/src/machine/runExoMachineSlots.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3155,8 +3155,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoMachineSettle.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/transitions/exoMachineSettle.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3174,8 +3174,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoMachineSettle.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/transitions/exoMachineSettle.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3193,8 +3193,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoTransition.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoMachineSettle.ts",
+            "from": "packages/computed/src/transitions/exoTransition.ts",
+            "to": "packages/computed/src/transitions/exoMachineSettle.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3212,8 +3212,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoTransition.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/transitions/exoTransition.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3231,8 +3231,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoTransition.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDeclared.ts",
+            "from": "packages/computed/src/transitions/exoTransition.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineDeclared.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3250,8 +3250,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoTransition.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/transitions/exoTransition.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3270,14 +3270,14 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/exoWiring.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
+            "from": "packages/computed/src/wiring/exoWiring.ts",
+            "to": "packages/computed/src/wiring/ExoWiringBlock.ts",
             "specifier": "uses",
             "kind": "type-only"
           },
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/exoWiring.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
+            "from": "packages/computed/src/wiring/exoWiring.ts",
+            "to": "packages/computed/src/wiring/ExoWiringBlock.ts",
             "specifier": "constructs",
             "kind": "value"
           }
@@ -3295,8 +3295,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/exoWiring.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
+            "from": "packages/computed/src/wiring/exoWiring.ts",
+            "to": "packages/computed/src/computed/withExoComputedMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3314,8 +3314,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/exoWiring.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedMachineNode.ts",
+            "from": "packages/computed/src/wiring/exoWiring.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedMachineNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3333,8 +3333,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/exoWiring.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoWiringSite.ts",
+            "from": "packages/computed/src/wiring/exoWiring.ts",
+            "to": "packages/computed/src/wiring/types/TExoWiringSite.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3352,8 +3352,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/bindExoMachineReads.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/fields/bindExoMachineReads.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3371,8 +3371,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/machine/compileExoMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3390,8 +3390,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/wiring/ExoWiringBlock.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3409,8 +3409,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoBoundTransition.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/transitions/exoBoundTransition.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3428,8 +3428,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/exoFieldBit.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/fields/exoFieldBit.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3447,8 +3447,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoMachineSettle.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/transitions/exoMachineSettle.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3466,8 +3466,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/fillExoMachineDerivations.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/fields/fillExoMachineDerivations.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3485,8 +3485,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/computed/withExoComputedMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3504,8 +3504,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/wiring/ExoWiringBlock.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3523,8 +3523,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3542,8 +3542,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/runExoMachineSlots.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/machine/runExoMachineSlots.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3561,8 +3561,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/wiring/ExoWiringBlock.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3580,8 +3580,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/seatExoManagedRows.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/wiring/seatExoManagedRows.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3599,8 +3599,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/wiring/ExoWiringBlock.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3618,8 +3618,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedLive.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedLive.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3637,8 +3637,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedMachineNode.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedMachineNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3656,8 +3656,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3675,8 +3675,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3694,8 +3694,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineReads.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineReads.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3714,14 +3714,14 @@
         "relation": "realization",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/types/TExoMachineSettler.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/transitions/types/TExoMachineSettler.ts",
             "specifier": "implements",
             "kind": "value"
           },
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/types/TExoMachineSettler.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/transitions/types/TExoMachineSettler.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3739,8 +3739,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineTarget.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineTarget.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3758,8 +3758,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/ExoWiringBlock.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoWiringSite.ts",
+            "from": "packages/computed/src/wiring/ExoWiringBlock.ts",
+            "to": "packages/computed/src/wiring/types/TExoWiringSite.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3777,8 +3777,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/fillExoMachineDerivations.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/fields/fillExoMachineDerivations.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3796,8 +3796,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/fillExoMachineDerivations.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/fields/fillExoMachineDerivations.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3815,8 +3815,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/wiring/constants/EXO_HOLD_VOCABULARY.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3834,8 +3834,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/runExoMachineSlots.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/runExoMachineSlots.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3853,8 +3853,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/runExoMachineSlots.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/machine/runExoMachineSlots.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3872,8 +3872,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/seatExoManagedRows.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedMachineNode.ts",
+            "from": "packages/computed/src/wiring/seatExoManagedRows.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedMachineNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3891,8 +3891,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedBuilder.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
+            "from": "packages/computed/src/computed/types/TExoComputedBuilder.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3910,8 +3910,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedBuilder.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineReads.ts",
+            "from": "packages/computed/src/computed/types/TExoComputedBuilder.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineReads.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3929,8 +3929,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedBuilder.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineTarget.ts",
+            "from": "packages/computed/src/computed/types/TExoComputedBuilder.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineTarget.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3948,8 +3948,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/exoComputed.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineTarget.ts",
+            "from": "packages/computed/src/computed/exoComputed.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineTarget.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3967,8 +3967,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/computed/types/TExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3986,8 +3986,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoHoldApi.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/wiring/types/TExoHoldApi.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4005,8 +4005,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoHoldApi.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDeclared.ts",
+            "from": "packages/computed/src/wiring/types/TExoHoldApi.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineDeclared.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4024,8 +4024,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineBody.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineField.ts",
+            "from": "packages/computed/src/machine/types/TExoMachineBody.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineField.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4043,8 +4043,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineBody.ts",
+            "from": "packages/computed/src/machine/types/TExoMachineDeclaration.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineBody.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4062,8 +4062,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDeclaration.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDerivation.ts",
+            "from": "packages/computed/src/machine/types/TExoMachineDeclaration.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineDerivation.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4081,8 +4081,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDeclared.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/machine/types/TExoMachineDeclared.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4100,8 +4100,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDerivation.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineField.ts",
+            "from": "packages/computed/src/machine/types/TExoMachineDerivation.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineField.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4119,8 +4119,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDerivation.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineTarget.ts",
+            "from": "packages/computed/src/machine/types/TExoMachineDerivation.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineTarget.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4138,8 +4138,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineField.ts",
+            "from": "packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineField.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4157,8 +4157,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineReads.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
+            "from": "packages/computed/src/fields/types/TExoMachineReads.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4176,8 +4176,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/transitions/types/TExoMachineSettler.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/transitions/types/TExoMachineSettler.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4195,8 +4195,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineTarget.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineField.ts",
+            "from": "packages/computed/src/machine/types/TExoMachineTarget.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineField.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4214,8 +4214,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoCommitNode.ts",
+            "from": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "to": "packages/computed/src/computed/types/TExoCommitNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4233,8 +4233,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoWiringSite.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineBody.ts",
+            "from": "packages/computed/src/wiring/types/TExoWiringSite.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineBody.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4252,8 +4252,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoWiringSite.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDerivation.ts",
+            "from": "packages/computed/src/wiring/types/TExoWiringSite.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineDerivation.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4271,8 +4271,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoWiringSite.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
+            "from": "packages/computed/src/wiring/types/TExoWiringSite.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4290,8 +4290,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/wiring/types/TExoWiringSite.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/wiring/types/TExoWiringSite.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4309,8 +4309,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/chainExoMachineWakes.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/chainExoMachineWakes.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4328,8 +4328,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/compileExoMachine.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/compileExoMachine.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4347,8 +4347,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/lifecycle/constants/EXO_MOUNTED.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/lifecycle/constants/EXO_MOUNTED.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4366,8 +4366,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/exoFieldBit.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/fields/exoFieldBit.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4385,8 +4385,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoMachineSettle.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/transitions/exoMachineSettle.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4404,8 +4404,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/transitions/exoTransition.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/transitions/exoTransition.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4423,8 +4423,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/fillExoMachineDerivations.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/fields/fillExoMachineDerivations.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4442,8 +4442,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/computed/withExoComputedMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4462,14 +4462,14 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
             "specifier": "calls",
             "kind": "value"
           },
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/EXO_STORE_COMPILER.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/EXO_STORE_COMPILER.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4487,8 +4487,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/wiring/seatExoManagedRows.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/wiring/seatExoManagedRows.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -4506,8 +4506,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedBuilder.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedBuilder.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4525,8 +4525,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedLive.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedLive.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4544,8 +4544,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedMachine.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedMachine.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4563,8 +4563,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedMachineNode.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedMachineNode.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4582,8 +4582,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/computed/types/TExoComputedSettleCell.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/computed/types/TExoComputedSettleCell.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4601,8 +4601,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineBody.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineBody.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4620,8 +4620,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineDerivation.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineDerivation.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4639,8 +4639,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/fields/types/TExoMachineFieldHandle.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4658,8 +4658,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineProgram.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineProgram.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4677,8 +4677,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineTarget.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineTarget.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4696,8 +4696,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/computed/src/computed/withExoComputedMachine.ts",
-            "to": "/Users/abaikov/work/exodra/packages/computed/src/machine/types/TExoMachineWake.ts",
+            "from": "packages/computed/src/computed/withExoComputedMachine.ts",
+            "to": "packages/computed/src/machine/types/TExoMachineWake.ts",
             "specifier": "uses",
             "kind": "type-only"
           }

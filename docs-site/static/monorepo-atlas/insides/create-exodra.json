@@ -398,8 +398,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -417,8 +417,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -436,8 +436,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -455,8 +455,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -474,8 +474,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -493,8 +493,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -512,8 +512,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -531,8 +531,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -550,8 +550,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -569,8 +569,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -588,8 +588,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
-            "to": "/Users/abaikov/work/exodra/packages/create-exodra/src/index.ts",
+            "from": "packages/create-exodra/src/index.ts",
+            "to": "packages/create-exodra/src/index.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
