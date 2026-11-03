@@ -109,15 +109,16 @@ export async function profileListOpsExodra(times = 20): Promise<void> {
                         );
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { showRows } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((conn) => {
                         showRows(conn);
                         return rows.onChange(() => showRows(conn));
                     });
-                })
+                });
+            }
         );
-        const { showRows } = UL.transitions;
         const dispose = EXO_BACKEND.render(UL, c);
         for (let r = 0; r < OP_ROUNDS; r++) {
             items.splice(150, 0, items.splice(0, 1)[0]);

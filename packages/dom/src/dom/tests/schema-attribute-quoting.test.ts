@@ -58,24 +58,26 @@ describe('compileExoDomSchema writes a static attribute value as data', () => {
     // THE RULE IS STATED IN `tests/unfilled-port-parity.test.ts`: NO attribute port keeps a
     // placeholder. An unfilled port therefore leaves nothing behind, which is what the server
     // prints, and a filled one lands wherever `setAttribute` appends it.
-    it('gives a LONE attribute port no placeholder', () => {
-        const proto = protoOf((b) => b.el('div', null, (d) => d.port('data-id')));
-        expect(proto.getAttributeNames()).toEqual([]);
-    });
-
+    //
     // AND NEITHER DOES A PORT ANOTHER ONE FOLLOWS. This case read `['data-id']` while the first of
     // two ports on one element kept its position reserved, so that a wire filling them in reverse
     // still produced DECLARATION order. That order is given up: the prototype is bare, and two
     // ports come out in FILL order.
-    it('gives the port a second one FOLLOWS no placeholder either', () => {
-        const proto = protoOf((b) =>
-            b.el('div', null, (d) => {
-                d.port('data-id');
-                d.port('data-state');
-            })
-        );
-        expect(proto.getAttributeNames()).toEqual([]);
-    });
+    const PORT_RUNS: ReadonlyArray<{ readonly what: string; readonly names: readonly string[] }> = [
+        { what: 'a LONE attribute port', names: ['data-id'] },
+        { what: 'the port a second one FOLLOWS', names: ['data-id', 'data-state'] },
+    ];
+
+    for (const run of PORT_RUNS) {
+        it(`gives ${run.what} no placeholder`, () => {
+            const proto = protoOf((b) =>
+                b.el('div', null, (d) => {
+                    for (const name of run.names) d.port(name);
+                })
+            );
+            expect(proto.getAttributeNames()).toEqual([]);
+        });
+    }
 
     it('is the same attribute a browser reads out of the string backend, which still quotes', () => {
         // THE CROSS-BACKEND HALF. `@exodra/string` prints ` id="…"` and `escapeExoAttributeValue`

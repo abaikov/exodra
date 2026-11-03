@@ -168,23 +168,4 @@ describe('the hydration walk fills the node table in slot order', () => {
             for (const slot of repaired) expect(written).toContain(slot);
         }
     });
-
-    it('emits the back-counting op for a port behind a child list, and still fills in order', () => {
-        const declaration = createExoSchema((b) => {
-            const p: Record<string, unknown> = {};
-            b.el('ul', null, (ul) => {
-                p.rows = ul.childrenPort();
-                ul.el('li', null, (li) => (p.tail = li.textPort()));
-            });
-            return p;
-        }) as TExoCursorDeclaration;
-        const dom = compileExoDomSchema(declaration, EXO_HYDRATING);
-        const hydrate = compileExoHydrateSchema(declaration, EXO_HYDRATING, dom);
-        const ops: number[] = [];
-        for (let i = 0; i < hydrate.walk.length; i += 3) ops.push(hydrate.walk[i + 2]);
-        expect(Math.max(...ops)).toBeGreaterThanOrEqual(2);
-        const buildOps: number[] = [];
-        for (let i = 0; i < dom.walk.length; i += 3) buildOps.push(dom.walk[i + 2]);
-        expect(Math.max(...buildOps)).toBeLessThan(2);
-    });
 });

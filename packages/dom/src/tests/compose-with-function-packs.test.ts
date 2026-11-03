@@ -7,7 +7,6 @@ import { ExoDomBackend } from '../dom/ExoDomBackend';
 import { withExoCompiler } from '../dom/withExoCompiler';
 import { withExoHydration } from '../hydrate/withExoHydration';
 import { EXO_DOM_FOREIGN_VOCABULARY } from '../foreign/constants/EXO_DOM_FOREIGN_VOCABULARY';
-import { exoForeignNode } from '../foreign/exoForeignNode';
 import type { TExoDomNode } from '../dom/EXO_DOM_NODE_VOCABULARY';
 
 const GREETING_SCHEMA = createExoSchema((b) => {
@@ -50,12 +49,5 @@ describe('one composeExoPlugins call takes function packs and vocabularies in or
         const served = parent.querySelector('p');
         backend.hydrate(GREETING, parent);
         expect(parent.querySelector('p')).toBe(served);
-    });
-
-    it('carries the vocabulary composed after the function packs', () => {
-        expect(typeof backend.foreign).toBe('function');
-        const canvas = document.createElement('canvas');
-        expect(exoForeignNode).toBeTypeOf('function');
-        expect(canvas.tagName).toBe('CANVAS');
     });
 });

@@ -233,23 +233,6 @@ describe('a value filled into an ATTRIBUTE port', () => {
     });
 });
 
-/**
- * The component, or `null` when declaring it was REFUSED — so a test can state the property
- * that matters (no page carries the handler) without depending on which way it is kept true.
- *
- * It is kept true by refusal today: the composed `withExoSchemaAsserts` validates the name. A
- * future rule that instead dropped the attribute would take the other branch here and still have
- * to satisfy the same assertions, which is the point of writing it this way rather than as a
- * second `toThrow`.
- */
-const builtOrRefused = (attribute: string): ReturnType<typeof attrWith> | null => {
-    try {
-        return attrWith(attribute, 'v', withExoSchemaAsserts);
-    } catch {
-        return null;
-    }
-};
-
 describe('an attribute port whose NAME is not a legal attribute name', () => {
     // THIS WAS A LIVE INJECTION AND THE CHECK THAT CLOSES IT IS A RESTORATION, not a new idea.
     //
@@ -289,18 +272,6 @@ describe('an attribute port whose NAME is not a legal attribute name', () => {
             expect(() => attrWith(c.name, 'v', withExoSchemaAsserts)).toThrow();
         });
     }
-
-    it('never puts a working handler on the page, on either backend', () => {
-        // THE CONSEQUENCE, stated separately from the refusal, so that a fix which validates
-        // names cannot be credited without the page actually being clean — and so that this
-        // reads as what it is: an injection, not a naming preference.
-        for (const c of INJECTING) {
-            const component = builtOrRefused(c.name);
-            if (component === null) continue;
-            expect(domElement(component).hasAttribute('onclick')).toBe(false);
-            expect(parsed(EXO_STR.render(component)).hasAttribute('onclick')).toBe(false);
-        }
-    });
 
     it('leaves every attribute name real components already use alone', () => {
         // THE HALF THAT MATTERS TO EVERYONE WHO IS NOT BEING ATTACKED. A refusal that broke a

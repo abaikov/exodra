@@ -40,11 +40,9 @@ graph TD
     examples_ssr_test --> core
     examples_ssr_test --> dom
     examples_ssr_test --> ssr
-    examples_todo_cnstra_oimdb --> context
     examples_todo_cnstra_oimdb --> core
     examples_todo_cnstra_oimdb --> dom
     examples_todo_cnstra_oimdb --> forms
-    examples_todo_cnstra_oimdb --> list_reconcile
     forms --> core
     jsx --> core
     react --> core

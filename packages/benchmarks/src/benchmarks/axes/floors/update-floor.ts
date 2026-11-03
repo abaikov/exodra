@@ -1034,15 +1034,16 @@ const SPAN = composeExoMachine(
                 c.text(SPAN_SCHEMA.ports.text, c.state.getValue());
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showSpan } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showSpan(c);
                 return c.state.onChange(() => showSpan(c));
             });
-        })
+        });
+    }
 );
-const { showSpan } = SPAN.transitions;
 
 /**
  * The shell is built per instance because its wiring names THAT instance's thousand sources — the
@@ -1439,15 +1440,16 @@ function mountListExodra(
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showRows(c);
                     return rows.onChange(() => showRows(c));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = UL.transitions;
     return EXO_BACKEND.render(UL, container);
 }
 
@@ -2121,8 +2123,9 @@ const WIDE_DECK = composeExoMachine(
                 );
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showWideDeckName, showWideDeckDate } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showWideDeckName(c);
                 return c.state.deck.name.onChange(() => showWideDeckName(c));
@@ -2131,9 +2134,9 @@ const WIDE_DECK = composeExoMachine(
                 showWideDeckDate(c);
                 return c.state.deck.chars.onChange(() => showWideDeckDate(c));
             });
-        })
+        });
+    }
 );
-const { showWideDeckName, showWideDeckDate } = WIDE_DECK.transitions;
 
 function mountWideDecks(
     container: HTMLElement,
@@ -2273,8 +2276,9 @@ const WIDE_CARD = composeExoMachine(
                 );
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showWideDetails, showWideTags } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showWideDetails(c);
                 return c.state.card.details.onChange(() => showWideDetails(c));
@@ -2283,9 +2287,9 @@ const WIDE_CARD = composeExoMachine(
                 showWideTags(c);
                 return c.state.card.tags.onChange(() => showWideTags(c));
             });
-        })
+        });
+    }
 );
-const { showWideDetails, showWideTags } = WIDE_CARD.transitions;
 
 /** Per card: its own four tag pools, precomputed, so no transition allocates an array. */
 interface TWideState {
@@ -3744,8 +3748,9 @@ const WIDE_CARD_KEPT = composeExoMachine(
                 );
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showWideKeptDetails, showWideKeptTags } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showWideKeptDetails(c);
                 return c.state.card.details.onChange(() => showWideKeptDetails(c));
@@ -3754,9 +3759,9 @@ const WIDE_CARD_KEPT = composeExoMachine(
                 showWideKeptTags(c);
                 return c.state.card.tags.onChange(() => showWideKeptTags(c));
             });
-        })
+        });
+    }
 );
-const { showWideKeptDetails, showWideKeptTags } = WIDE_CARD_KEPT.transitions;
 
 function mountWideKept(
     container: HTMLElement,

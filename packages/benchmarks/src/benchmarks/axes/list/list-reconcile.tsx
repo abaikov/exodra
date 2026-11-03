@@ -818,15 +818,16 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
                         );
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { showRows } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         showRows(c);
                         return rows.onChange(() => showRows(c));
                     });
-                })
+                });
+            }
         );
-        const { showRows } = UL.transitions;
         // ONE instance of UL; the rows are a reactive list in its children port,
         // reconciled by object IDENTITY — the Row objects are the same ones `runOps`
         // shuffles, so kept rows are recognised without a key.
@@ -974,15 +975,16 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
                         );
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { showTwinRows } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c2) => {
                         showTwinRows(c2);
                         return rows.onChange(() => showTwinRows(c2));
                     });
-                })
+                });
+            }
         );
-        const { showTwinRows } = UL_TWIN.transitions;
         const dispose = EXO_BACKEND_TWIN.render(UL_TWIN, c);
         return {
             data,

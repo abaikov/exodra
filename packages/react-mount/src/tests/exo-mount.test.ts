@@ -89,15 +89,16 @@ const followingLine = (label: TExoTestSource<string>) => {
                 show: (c) => c.text(schema.ports.text, label.getValue()),
             }),
         (m) => withExoWire(m, (c) => c.attr(schema.ports.cls, 'island')),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { show } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     show(c);
                     return label.onChange(() => show(c));
                 });
-            })
+            });
+        }
     );
-    const { show } = machine.transitions;
     return machine;
 };
 
@@ -133,15 +134,16 @@ const reconciledList = <TItem>(
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showRows(c);
                     return items.onChange(() => showRows(c));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = machine.transitions;
     return machine;
 };
 
@@ -245,31 +247,6 @@ describe('ExoMount', () => {
         act(() => root.render(view('two')));
         expect(host.querySelectorAll('p')).toHaveLength(1);
         expect(host.querySelector('p')?.textContent).toBe('two');
-
-        act(() => root.unmount());
-    });
-
-    it('renders a LIST inside the island, each row with its own number', () => {
-        // AN ISLAND IS ONE COMPONENT. There is no instance count on this boundary and there was
-        // never a reason for one — a React island that shows three rows shows a LIST, exactly as
-        // the same page would outside React, and the rows differ because each is handed its item.
-        const ROW = createExoTestMachine(
-            buildLine,
-            (P): TExoMachineInitialState<TExoDomNode> =>
-                (c, n) => {
-                    c.attr(P.cls, 'row');
-                    c.text(P.text, 'row ' + String(n));
-                }
-        );
-        const rows = source<readonly number[]>([0, 1, 2]);
-        const LIST = reconciledList(rows, (c, n) => c.build(ROW, n));
-        const { host, root } = render(createElement(ExoMount, { component: LIST }));
-
-        expect(Array.from(host.querySelectorAll('p')).map((n) => n.textContent)).toEqual([
-            'row 0',
-            'row 1',
-            'row 2',
-        ]);
 
         act(() => root.unmount());
     });

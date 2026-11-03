@@ -217,30 +217,38 @@ describe('an instance built from that prototype', () => {
 });
 
 describe('a schema whose markup would do work when its node document changes', () => {
-    it('never begins that work at module load, because nothing is adopted at compile time', () => {
-        // This used to be the ONE case the predicate protected — a schema holding an `<img>` kept
-        // its template-owned prototype so that "update the image data" could not start a fetch
-        // before the application had rendered anything. It is now the case for every schema, and
-        // the guarantee is structural rather than a list of tag names that had to be kept
-        // complete: the compiler moves no prototype anywhere, so there is no adopt to trigger it.
-        const AVATAR = inert((b) => {
-            b.el('div', null, (d) => {
-                d.el('img', { src: 'https://example.invalid/a.png', alt: '' });
-            });
+    // This used to be the ONE case the predicate protected — a schema holding an `<img>` kept
+    // its template-owned prototype so that "update the image data" could not start a fetch
+    // before the application had rendered anything. It is now the case for every schema, and
+    // the guarantee is structural rather than a list of tag names that had to be kept
+    // complete: the compiler moves no prototype anywhere, so there is no adopt to trigger it.
+    const WORKING_MARKUP: ReadonlyArray<{
+        readonly what: string;
+        readonly build: (b: TExoSchemaCursor) => void;
+    }> = [
+        {
+            what: 'never begins that work at module load, because nothing is adopted at compile time',
+            build: (b) => {
+                b.el('div', null, (d) => {
+                    d.el('img', { src: 'https://example.invalid/a.png', alt: '' });
+                });
+            },
+        },
+        {
+            what: 'is a custom element too, whose adoptedCallback is application code',
+            build: (b) => {
+                b.el('my-widget', { 'data-a': '' });
+            },
+        },
+    ];
+
+    for (const c of WORKING_MARKUP) {
+        it(c.what, () => {
+            expect(exoDomSchemaOf(inert(c.build), EXO_BACKEND).proto.ownerDocument).toBe(
+                templateOwner()
+            );
         });
-
-        const proto = exoDomSchemaOf(AVATAR, EXO_BACKEND).proto;
-
-        expect(proto.ownerDocument).toBe(templateOwner());
-    });
-
-    it('is a custom element too, whose adoptedCallback is application code', () => {
-        const WIDGET = inert((b) => {
-            b.el('my-widget', { 'data-a': '' });
-        });
-
-        expect(exoDomSchemaOf(WIDGET, EXO_BACKEND).proto.ownerDocument).toBe(templateOwner());
-    });
+    }
 
     it('still renders into the page exactly as any other schema does', () => {
         const AVATAR = inert((b) => {

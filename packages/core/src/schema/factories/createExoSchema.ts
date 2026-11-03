@@ -113,7 +113,7 @@ export function createExoSchema<TPorts>(
             return rootTag;
         },
         get ports(): TPorts {
-            if (!harvested) harvest();
+            if (record === null) harvest();
             return record as TPorts;
         },
         portList: ports,

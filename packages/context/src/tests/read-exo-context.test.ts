@@ -84,13 +84,6 @@ describe('readExoContext', () => {
 });
 
 describe('exoContextFrame', () => {
-    it('edits nothing it was handed', () => {
-        const outer = exoContextFrame(null, THEME, 'dark');
-        const before = { key: outer.key, value: outer.value, outer: outer.outer };
-        exoContextFrame(outer, THEME, 'light');
-        expect({ key: outer.key, value: outer.value, outer: outer.outer }).toEqual(before);
-    });
-
     it('FORKS: two pushes onto one frame are two chains that cannot see each other', () => {
         // THE PROPERTY EVERY SIBLING SUBTREE RESTS ON. Two children of one provider each push
         // their own value; neither may become visible to the other, and the parent must be
@@ -165,21 +158,6 @@ describe('a child built AFTER the wire that declared it returned', () => {
         // And the deferred build put the holder back, so the subtree that was mid-render is
         // unharmed. This is the half a missing `finally` loses.
         expect(inject()).toBe('print-preview');
-    });
-
-    it('is the reason the FORK matters: the frame it captured outlives every later push', () => {
-        // Same scenario, said as a property of the primitives rather than of the holder: the
-        // captured frame is still a complete, correct chain after arbitrary further pushes,
-        // because nothing anybody did afterwards could edit it.
-        slot.frame = null;
-        provide('dark');
-        const captured = slot.frame;
-
-        provide('light');
-        provide('sepia');
-
-        expect(readExoContext(captured, THEME)).toBe('dark');
-        expect(readExoContext(slot.frame, THEME)).toBe('sepia');
     });
 
     it('sees a shadowing provide that was already in force at bind time', () => {

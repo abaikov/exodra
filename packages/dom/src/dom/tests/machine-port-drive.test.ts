@@ -12,14 +12,8 @@
 // (`c.effectStops`, plus the single `c.onTeardown(() => c.stopEffects())` that ends it with the element),
 // and the re-establishment — a BODY slot of the program runs `c.restartEffect` against an effect
 // handle declared beside it.
-import {
-    createExoMachine,
-    composeExoMachine,
-    withExoTransitions,
-    withExoEffects,
-    createExoSchema,
-} from '@exodra/core';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { createExoSchema } from '@exodra/core';
+import { createExoReconciledList } from './createExoReconciledList';
 import type {
     TExoSchemaCursor,
     TExoMachine,
@@ -49,7 +43,6 @@ import type { TExoTestSource } from '@exodra/test-utils';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
 import type { TExoDomMachine } from '../types/TExoDomMachine';
 import type { TExoDomNode } from '../EXO_DOM_NODE_VOCABULARY';
-import type { TExoChildList } from '../types/TExoChildList';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -163,16 +156,6 @@ const makeShell = (row: TExoMachine<TMachineDriving>): TExoDomMachine =>
     );
 
 describe('a machine driving a component`s ports', () => {
-    it('fills at the mount, and the fill is not swept back over', () => {
-        const card = makeCard();
-        const parent = host();
-        EXO_BACKEND.render(card.component, parent, 0);
-        const el = parent.firstElementChild as Element;
-        expect(el.getAttribute('data-a')).toBe('row-0');
-        expect(el.hasAttribute('data-b')).toBe(false);
-        expect(el.hasAttribute('data-c')).toBe(false);
-    });
-
     it('updates through the schema`s write after the wire has returned', () => {
         const card = makeCard();
         const parent = host();
@@ -320,44 +303,11 @@ const makeRowList = (
     row: TExoMachine<TMachineDriving>,
     src: TExoTestSource<readonly TItem[]>
 ): TExoDomMachine => {
-    const m = createExoMachine<TExoDomNode, unknown, { rows: TExoChildList; shown: TItem[] }>(
-        ROW_LIST_SCHEMA,
-        {
-            createInitialState: (c) => ({
-                rows: c.childList(ROW_LIST_SCHEMA.ports.rows),
-                shown: [],
-            }),
-        }
-    );
-    const machine = composeExoMachine(
-        m,
-        (m) =>
-            withExoTransitions(m, {
-                showRows: (c) => {
-                    const want = src.getValue();
-                    c.state.shown = reconcileExoOrder(
-                        c.state.rows,
-                        c.state.shown,
-                        want,
-                        want,
-                        (item) => c.build(row, item)
-                    );
-                },
-            }),
-        (m) =>
-            withExoEffects(m, (effect) => {
-                effect((c) => {
-                    showRows(c);
-                    return src.onChange(() => showRows(c));
-                });
-            })
-    );
-    const { showRows } = machine.transitions;
-    return machine;
+    return createExoReconciledList(ROW_LIST_SCHEMA, src, row);
 };
 
 describe('an effect whose store answers from inside subscribe', () => {
-    it('leaves the store`s value on the element, past the sweep of skipped ports', () => {
+    it('leaves the value the store answered from inside subscribe on the element', () => {
         const store = new SyncStore();
         store.rows.set('a', 'from the store');
         const row = makeStoreRow(store);
@@ -367,9 +317,8 @@ describe('an effect whose store answers from inside subscribe', () => {
         const el = parent.querySelector('div') as Element;
         expect(store.log).toEqual(['subscribe a']);
         // THE VALUE THE STORE ANSWERED WITH FROM INSIDE `subscribe`, not the `'unset'` the wire
-        // seeded and not the placeholder the sweep would have put back.
+        // seeded.
         expect(el.getAttribute('data-a')).toBe('from the store');
-        expect(el.hasAttribute('data-b')).toBe(false);
         expect(R_TITLE.read(row.instances[0])).toBe('from the store');
     });
 

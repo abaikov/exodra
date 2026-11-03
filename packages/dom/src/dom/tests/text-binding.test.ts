@@ -17,17 +17,11 @@
 // the update path faster, and each says what deleting it would cost. The equivalent cases for
 // the LEGACY renderer live in `src/text-binding.test.ts` and `src/translated-page.test.ts` —
 // different code, and they say nothing about this one.
-import {
-    createExoMachine,
-    composeExoMachine,
-    withExoTransitions,
-    withExoEffects,
-    createExoSchema,
-} from '@exodra/core';
-import type { TExoSchemaCursor, TExoTextPort, TExoMachineNode } from '@exodra/core';
+import { createExoSchema } from '@exodra/core';
+import type { TExoSchemaCursor, TExoTextPort } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
-import { host, source } from '@exodra/test-utils';
+import { host, source, createExoFollowingMachine } from '@exodra/test-utils';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 // `ExoDomBackend` is a CONST (`ExoDomBackendBase as unknown as TExoDomBackendConstructor`), so the name
 // has no type meaning and cannot annotate the parameter below. `TExoDomBackend` is the instance
@@ -69,25 +63,9 @@ const lineBoundTo = (src: {
     getValue(): unknown;
     onChange(cb: (...event: never[]) => void): () => void;
 }) => {
-    const m = createExoMachine<TExoMachineNode>(LINE_SCHEMA);
-    const machine = composeExoMachine(
-        m,
-        (m) =>
-            withExoTransitions(m, {
-                show: (c) => {
-                    c.text(LINE_SCHEMA.ports.label, src.getValue());
-                },
-            }),
-        (m) =>
-            withExoEffects(m, (effect) => {
-                effect((c) => {
-                    show(c);
-                    return src.onChange(() => show(c));
-                });
-            })
-    );
-    const { show } = machine.transitions;
-    return machine;
+    return createExoFollowingMachine(LINE_SCHEMA, src, (c, value) => {
+        c.text(LINE_SCHEMA.ports.label, value);
+    });
 };
 
 /** Mount one instance and hand back its `<p>`, plus the render's disposer. */
@@ -196,7 +174,7 @@ describe('a bound text port', () => {
         // markup would show it — the text is right either way — so the assertion is again
         // node identity, this time across the update AFTER the recovery.
         const src = source('hello');
-        const { line } = mount(src);
+        const { line } = mount(src, EXO_ELEMENT_TEXT_BACKEND);
         wrapText(line);
         src.setValue('one');
 

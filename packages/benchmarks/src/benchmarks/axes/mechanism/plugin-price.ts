@@ -612,15 +612,16 @@ const listBound = (row: TExoDomMachine): TExoDomMachine => {
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showRows(c);
                     return c.state.source.onChange(() => showRows(c));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = machine.transitions;
     return machine;
 };
 
@@ -686,15 +687,16 @@ const rowBound = () => {
                     c.text(MACHINE_SCHEMA3.ports.meta, c.state.label.getValue());
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showLabel } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showLabel(c);
                     return c.state.label.onChange(() => showLabel(c));
                 });
-            })
+            });
+        }
     );
-    const { showLabel } = machine.transitions;
     return machine;
 };
 
@@ -745,15 +747,16 @@ const listStore = (row: TExoDomMachine): TExoDomMachine => {
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showRows(c);
                     return c.state.source.onChange(() => showRows(c));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = machine.transitions;
     return machine;
 };
 

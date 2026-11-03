@@ -110,7 +110,7 @@ afterEach(() => {
 });
 
 describe('a client render hands React a DETACHED host', () => {
-    it('the host is not in the document when the wire calls reactIsland', () => {
+    it('the host is not in the document when the wire calls reactIsland, and React has still committed into the LIVE document by the time its refs attach', () => {
         (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
         const container = freshContainer();
         let dispose!: () => void;
@@ -122,17 +122,6 @@ describe('a client render hands React a DETACHED host', () => {
         // to insert before wiring — which would be fine for this bridge, but the rest of this
         // file would then be testing a hazard that no longer exists and should be re-read.
         expect(connectedAtWireTime).toBe(false);
-        act(() => dispose());
-    });
-
-    it('React has still committed into the LIVE document by the time its refs attach', () => {
-        (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
-        const container = freshContainer();
-        let dispose!: () => void;
-        act(() => {
-            dispose = EXO_BACKEND.render(ISLAND, container);
-        });
-
         expect(connectedAtCommit).toBe(true);
         expect(inOwnerDocumentAtCommit).toBe(true);
         expect(container.querySelector('.probe')?.textContent).toBe('probe');

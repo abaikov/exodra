@@ -195,14 +195,16 @@ const counterMachine = composeExoMachine(
             },
         }),
     (m) =>
-        withExoEffects(m, (effect) => {
+        {
+        const { showCount } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showCount(c);
                 return count.onChange(() => showCount(c));
             });
-        })
+        });
+    }
 );
-const { showCount } = counterMachine.transitions;
 ```
 
 The source is anything with a read and a subscription — a store, an

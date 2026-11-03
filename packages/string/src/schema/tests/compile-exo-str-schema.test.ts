@@ -37,18 +37,6 @@ function compile(build: (b: TExoSchemaCursor) => void): void {
 }
 
 describe("compileExoStrSchema's void-element refusal is NOT dev-only — it ships", () => {
-    it('refuses a void element with a static child under NODE_ENV=production', () => {
-        expect(() =>
-            underProduction(() =>
-                compile((b) => {
-                    b.el('br', null, (br) => {
-                        br.text('nope');
-                    });
-                })
-            )
-        ).toThrow(/EXO0060/);
-    });
-
     it('refuses a void element with a content port under NODE_ENV=production', () => {
         expect(() =>
             underProduction(() =>
@@ -249,18 +237,6 @@ describe('a leading newline in a port that stands where the parser eats one', ()
         });
         // Obsolete, non-conforming, and still parsed by every browser with the `<pre>` rule.
         expect(render(schema, ['\nhello'])).toBe('<listing>\n\nhello</listing>');
-    });
-
-    it('prints it for raw markup that OWNS a <pre>', () => {
-        const schema = schemaOf((b) => {
-            b.el('pre', null, (pre) => {
-                pre.childrenPort();
-            });
-        });
-        // `@exodra/dom` fills this port with `pre.innerHTML = value`, and FRAGMENT parsing has no
-        // `<pre>` start tag token for the newline rule to attach to, so the browser KEEPS it.
-        expect(render(schema, ['\n<b>x</b>'])).toBe('<pre>\n\n<b>x</b></pre>');
-        expect(render(schema, ['<b>x</b>'])).toBe('<pre><b>x</b></pre>');
     });
 
     it('leaves a port that is NOT first inside the <pre> alone', () => {

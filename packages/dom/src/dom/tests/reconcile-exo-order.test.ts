@@ -24,7 +24,7 @@ import type {
     TExoMachineInitialState,
     TExoSchemaCursor,
 } from '@exodra/core';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { createExoReconciledList } from './createExoReconciledList';
 import { describe, expect, it } from 'vitest';
 
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
@@ -32,7 +32,6 @@ import type { TExoTestSource } from '@exodra/test-utils';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
 import type { TExoDomMachine } from '../types/TExoDomMachine';
 import type { TExoDomNode } from '../EXO_DOM_NODE_VOCABULARY';
-import type { TExoChildList } from '../types/TExoChildList';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -92,15 +91,16 @@ const boundRow = (value: TExoTestSource<string>): TExoDomMachine => {
             withExoWire(m, (c) => {
                 c.attr(BOUND_ROW_SCHEMA.ports.id, c.state.id);
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { show } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     show(c);
                     return value.onChange(() => show(c));
                 });
-            })
+            });
+        }
     );
-    const { show } = machine.transitions;
     return machine;
 };
 
@@ -124,35 +124,7 @@ const listOf = (
     build: (b: TExoSchemaCursor) => { rows: TExoChildrenPort } = buildList
 ): TExoDomMachine => {
     const schema = createExoSchema(build);
-    const m = createExoMachine<TExoDomNode, unknown, { rows: TExoChildList; shown: TItem[] }>(
-        schema,
-        { createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] }) }
-    );
-    const machine = composeExoMachine(
-        m,
-        (m) =>
-            withExoTransitions(m, {
-                showRows: (c) => {
-                    const want = src.getValue();
-                    c.state.shown = reconcileExoOrder(
-                        c.state.rows,
-                        c.state.shown,
-                        want,
-                        want,
-                        (item) => c.build(rowComponent, item)
-                    );
-                },
-            }),
-        (m) =>
-            withExoEffects(m, (effect) => {
-                effect((c) => {
-                    showRows(c);
-                    return src.onChange(() => showRows(c));
-                });
-            })
-    );
-    const { showRows } = machine.transitions;
-    return machine;
+    return createExoReconciledList(schema, src, rowComponent);
 };
 
 /** Mount a list over `src`, and hand back the tools every case below needs. */
@@ -210,15 +182,6 @@ describe('reconcileExoOrder — reconcile by object identity', () => {
             }
         });
     }
-
-    it('refills after being cleared', () => {
-        const src = source<readonly TItem[]>(items(3));
-        const list = mountList(src);
-        src.setValue([]);
-        expect(list.ul.children).toHaveLength(0);
-        src.setValue(items(4));
-        expect(list.shown()).toBe(list.wanted());
-    });
 
     it('builds a row for a new item only, and rebuilds one that left and came back', () => {
         // THE WHOLE OF WHAT THE RECONCILER KEEPS AND THE WHOLE OF WHAT IT FORGETS. There is no

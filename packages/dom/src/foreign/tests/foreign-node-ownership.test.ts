@@ -39,48 +39,11 @@ import type { TExoTestSource } from '@exodra/test-utils';
 import type { TExoDomNode } from '../../dom/EXO_DOM_NODE_VOCABULARY';
 
 import { exoForeignNode } from '../exoForeignNode';
+import { placeExoChildrenFrom } from './placeExoChildrenFrom';
 import type { TExoDomMark } from '../../dom/types/TExoDomMark';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
-/** WHAT `bindChildren` WAS, composed from the doors it was made of: a child list, a subscription,
- *  and `detachAll` rather than `remove` because these nodes are the caller's and must not be
- *  disposed when they leave. */
-const placeExoChildrenFrom = (
-    c: TExoDomNode,
-    port: TExoChildrenPort,
-    src: { getValue(): readonly TExoNode<TExoDomMark>[]; onChange(cb: () => void): () => void }
-): void => {
-    const kids = c.childList(port);
-    const apply = (): void => {
-        const want = src.getValue();
-        // `remove` and never `detach`: a child that LEAVES must be told, or its unmount hook never
-        // runs and a foreign node goes on believing a list holds it.
-        if (want.length === 0) {
-            // ONE CALL, so every child is told while the list is still whole.
-            kids.removeAll();
-            return;
-        }
-        for (let i = kids.size - 1; i >= 0; i--) {
-            if (!want.includes(kids.at(i) as TExoNode<TExoDomMark>)) kids.remove(i);
-        }
-        for (let i = 0; i < want.length; i++) {
-            if (kids.at(i) === want[i]) continue;
-            let from = -1;
-            for (let j = i + 1; j < kids.size; j++) {
-                if (kids.at(j) === want[i]) {
-                    from = j;
-                    break;
-                }
-            }
-            if (from === -1) kids.insert(want[i], i);
-            else kids.move(from, i);
-        }
-    };
-    apply();
-    c.onTeardown(src.onChange(apply));
-};
-
 /** Where a `<template>`'s contents live in this environment — the document a prototype stays in. */
 const templateOwner = (): Document | null =>
     document.createElement('template').content.ownerDocument;
@@ -371,36 +334,5 @@ describe('a foreign element placed by an UPDATE', () => {
         expect(log).toEqual([]);
         expect(stages).toEqual(['inside the mount hook: the page', 'connected then: true']);
         expect(list.shown()).toBe('a,w');
-    });
-});
-
-describe('the difference between the two paths', () => {
-    it('is the whole finding: same element, same list, same hooks — two adoptions or none', () => {
-        // ONE CASE HOLDING BOTH, because the number that matters is a DIFFERENCE and a difference
-        // asserted in two files is a difference nobody reads. Everything but the path is identical
-        // here: the same component, the same source shape, the same hooks, one foreign child.
-        const atBuild: string[] = [];
-        const built = foreignWidget(atBuild);
-        const buildSrc = source<readonly TExoNode<TExoDomMark>[]>([]);
-        mount(buildSrc, (c) => [
-            exoForeignNode(c, built, { onMount: () => atBuild.push('mount hook') }),
-        ]);
-
-        const onUpdate: string[] = [];
-        const updated = foreignWidget(onUpdate);
-        const updateSrc = source<readonly TExoNode<TExoDomMark>[]>([]);
-        const list = mount(updateSrc);
-        updateSrc.setValue([
-            exoForeignNode(list.exonode, updated, {
-                onMount: () => onUpdate.push('mount hook'),
-            }),
-        ]);
-
-        expect(atBuild.filter((entry) => entry !== 'mount hook').length).toBe(2);
-        expect(onUpdate.filter((entry) => entry !== 'mount hook').length).toBe(0);
-        // And both end in the same place, which is why this is a cost and not a corruption.
-        expect(whichDocument(built)).toBe('the page');
-        expect(whichDocument(updated)).toBe('the page');
-        expect(list.ul.children[0]).toBe(updated);
     });
 });

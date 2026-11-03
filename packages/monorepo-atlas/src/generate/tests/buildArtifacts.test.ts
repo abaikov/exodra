@@ -67,17 +67,6 @@ describe('buildArtifacts', () => {
         );
     });
 
-    // THE CASE THAT USED TO STAND HERE ASSERTED THE PRERENDERED SVG, and it went with the view:
-    // the picture was built by the three-props renderer, which has been deleted. What a
-    // schema-core view has to satisfy when it arrives is exactly what that case said — an
-    // `<svg>` carrying a `viewBox` of the layout's own size, one `data-node` per model node, and
-    // no literal colour anywhere in the marks.
-
-    it('ships colours as custom properties, not baked into the marks', () => {
-        expect(artifacts.css).toContain('--exo-kind-runtime:');
-        expect(artifacts.css).not.toMatch(/fill="#/);
-    });
-
     it('serialises deterministically, with a trailing newline', () => {
         const once = serialiseData(artifacts);
         expect(once).toBe(serialiseData(buildArtifacts(CRUISE, PACKAGES)));

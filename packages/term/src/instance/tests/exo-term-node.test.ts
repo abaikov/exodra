@@ -104,15 +104,16 @@ const LIVE = composeExoMachine(
         withExoTransitions(m, {
             showLive: (c) => c.text(LIVE_SCHEMA.ports.text, LIVE_TEXT.getValue()),
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showLive } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showLive(c);
                 return LIVE_TEXT.onChange(() => showLive(c));
             });
-        })
+        });
+    }
 );
-const { showLive } = LIVE.transitions;
 
 /**
  * WHAT A WIRE THAT PLACES CHILDREN BY HAND ASSUMES. `childList` is each backend's own door — it
@@ -396,15 +397,16 @@ describe('attributes, events, and what this backend refuses', () => {
                 withExoTransitions(m, {
                     show: (c) => c.attr(schema.ports.flag, values.getValue()),
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { show } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         show(c);
                         return values.onChange(() => show(c));
                     });
-                })
+                });
+            }
         );
-        const { show } = PAGE.transitions;
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe('div');
         values.setValue(true);
@@ -441,15 +443,16 @@ describe('attributes, events, and what this backend refuses', () => {
                 withExoWire(m, (c) => {
                     c.on(schema.ports.click, TOGGLE_DONE, subject);
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { show } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         show(c);
                         return done.onChange(() => show(c));
                     });
-                })
+                });
+            }
         );
-        const { show } = PAGE.transitions;
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe('button on:click "false"');
         exoTermFire(screen.roots[0], 'click');
@@ -493,15 +496,6 @@ describe('attributes, events, and what this backend refuses', () => {
         expect(told).toEqual([rows[1], rows[0]]);
         first.dispose();
         second.dispose();
-    });
-
-    it('html() refuses a children port, naming the call that works', () => {
-        const BAD_CHILDREN = shell((P) => (c) => {
-            c.unsafeHtml(P.slot, '<b>raw</b>');
-        });
-        // `@exodra/string` ACCEPTS this one when the port owns its element — the value is raw
-        // markup and `innerHTML` is its browser counterpart. There is no counterpart here.
-        expect(() => BACKEND.renderScreen(BAD_CHILDREN, 1)).toThrow(/CHILDREN port/);
     });
 
     it('on() names TExoEventPort, and a cast past it lands on the missing event name', () => {

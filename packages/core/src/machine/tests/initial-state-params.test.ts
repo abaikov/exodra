@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EXO_BASE_NODE_VOCABULARY } from '../../plugins/constants/EXO_BASE_NODE_VOCABULARY';
-import { EXO_NO_STATE } from '../../wiring/constants/EXO_NO_STATE';
-import { composeExoPlugins } from '../../plugins/composeExoPlugins';
+import { createExoTestRowNode } from './createExoTestRowNode';
 import { EXO_PORT_ATTR } from '../../schema/ports/constants/EXO_PORT_ATTR';
 import { exoPorts } from '../../schema/ports/factories/exoPorts';
 import { createExoSchema } from '../../schema/factories/createExoSchema';
@@ -12,27 +10,6 @@ import type { TExoBaseNodeFields } from '../../wiring/types/TExoBaseNodeFields';
 import type { TExoMachineNode } from '../types/TExoMachineNode';
 
 type TRow = TExoBaseNodeFields & TExoMachineNode;
-
-class ExoRowBackend {
-    constructor() {
-        composeExoPlugins(this, EXO_BASE_NODE_VOCABULARY);
-    }
-
-    attr(): void {}
-
-    on(): void {}
-}
-
-const nodeOf = (): TRow =>
-    ({
-        __proto__: new ExoRowBackend(),
-        context: null,
-        disposers: null,
-        state: EXO_NO_STATE,
-        effectStops: null,
-        transitionOverrides: null,
-        serviceState: undefined,
-    } as unknown as TRow);
 
 const RowPorts = exoPorts({ label: EXO_PORT_ATTR });
 const rowSchema = createExoSchema(RowPorts, (b) => {
@@ -47,7 +24,7 @@ describe('createInitialState', () => {
             rowSchema,
             { createInitialState: (_c, params) => ({ id: params.id, at: params.at }) }
         );
-        const node = nodeOf();
+        const node = createExoTestRowNode();
         armExoNode(node, Row, { id: 'a', at: 3 });
         expect(node.state).toEqual({ id: 'a', at: 3 });
     });
@@ -60,7 +37,7 @@ describe('createInitialState', () => {
         const Row = withExoWire(rowBase, (c) => {
             seen.push(c.state.id);
         });
-        armExoNode(nodeOf(), Row, { id: 'b' });
+        armExoNode(createExoTestRowNode(), Row, { id: 'b' });
         expect(seen).toEqual(['b']);
     });
 });

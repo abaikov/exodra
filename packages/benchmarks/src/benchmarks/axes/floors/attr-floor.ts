@@ -562,8 +562,9 @@ const CARD = composeExoMachine(
             showGcls: (c) => c.attr(P.gcls, c.state.gcls.getValue()),
             showHref: (c) => c.attr(P.href, c.state.href.getValue()),
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showCls, showSty, showVal, showChk, showBox, showGcls, showHref } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showCls(c);
                 return c.state.cls.onChange(() => showCls(c));
@@ -592,9 +593,9 @@ const CARD = composeExoMachine(
                 showHref(c);
                 return c.state.href.onChange(() => showHref(c));
             });
-        })
+        });
+    }
 );
-const { showCls, showSty, showVal, showChk, showBox, showGcls, showHref } = CARD.transitions;
 
 /**
  * THE TWO BACKENDS THIS AXIS RENDERS THROUGH, BUILT ONCE AT MODULE LOAD.

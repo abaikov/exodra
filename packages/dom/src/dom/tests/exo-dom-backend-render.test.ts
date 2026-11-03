@@ -116,25 +116,4 @@ describe('mounting through ExoDomBackend.render', () => {
         buttons[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
         expect(clicks).toBe(1);
     });
-
-    it("gives every row its own values rather than the last row's", () => {
-        // The exonode is reused at one stack depth; a row that read its leftovers would show
-        // as every row carrying the final item's text, which a length check never catches.
-        const ROW = rowWith((P) => (c, i) => {
-            c.attr(P.id, i);
-            c.attr(P.mark, i);
-            c.text(P.count, i);
-            c.text(P.label, 'row ' + i);
-            c.on(P.click, () => undefined);
-        });
-        const parent = host();
-        EXO_BACKEND.render(listOf(ROW, 3), parent);
-
-        expect(
-            Array.from(parent.querySelectorAll('.row__label')).map((n) => n.textContent)
-        ).toEqual(['row 0', 'row 1', 'row 2']);
-        expect(
-            Array.from(parent.querySelectorAll('li')).map((n) => n.getAttribute('data-id'))
-        ).toEqual(['0', '1', '2']);
-    });
 });

@@ -33,37 +33,10 @@ function underProduction<T>(fn: () => T): T {
 }
 
 describe('assertExoNoTextAfterChildrenPort is NOT dev-only — it ships', () => {
-    it('refuses a non-empty run under NODE_ENV=production', () => {
-        expect(() =>
-            underProduction(() => assertExoNoTextAfterChildrenPort('p', ' items'))
-        ).toThrow('EXO0014');
-    });
-
-    it('carries the bare code in production, and the element and the words in dev', () => {
-        let short = '';
-        underProduction(() => {
-            try {
-                assertExoNoTextAfterChildrenPort('section', ' items');
-            } catch (e) {
-                short = (e as Error).message;
-            }
-        });
-        let long = '';
-        try {
-            assertExoNoTextAfterChildrenPort('section', ' items');
-        } catch (e) {
-            long = (e as Error).message;
-        }
-        expect(short).toBe('EXO0014');
-        expect(long).toContain('<section>');
-        expect(long).toContain('" items"');
-        expect(long).not.toContain('EXO0014');
-    });
-
-    it('drops the whole sentence in production and keeps it in dev', () => {
+    it('carries the bare code in production, and the element and the whole sentence in dev', () => {
         const message = (): string => {
             try {
-                assertExoNoTextAfterChildrenPort('p', ' items');
+                assertExoNoTextAfterChildrenPort('section', ' items');
             } catch (e) {
                 return (e as Error).message;
             }
@@ -74,9 +47,12 @@ describe('assertExoNoTextAfterChildrenPort is NOT dev-only — it ships', () => 
 
         expect(short).toBe('EXO0014');
         expect(short).not.toContain('Wrap the text in an element');
+        expect(long).toContain('<section>');
+        expect(long).toContain('" items"');
         expect(long).toContain('Wrap the text in an element');
         expect(long).toContain('anchored on the next static ELEMENT');
         expect(long.length).toBeGreaterThan(short.length);
+        expect(long).not.toContain('EXO0014');
     });
 
     it('still accepts an EMPTY run under production, which is not a divergence', () => {

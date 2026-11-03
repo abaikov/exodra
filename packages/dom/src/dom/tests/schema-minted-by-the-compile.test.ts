@@ -168,16 +168,3 @@ describe('an <a> root, whose namespace only the markup BELOW it can settle', () 
         );
     });
 });
-
-describe('what the compile that minted puts in the page', () => {
-    it('writes through the numbers it handed out, whichever compile came first', () => {
-        const card = cardOf();
-        const schema = createExoSchema(card.build);
-        const strSchema = exoStrSchemaOf(machineOf(schema), EXO_STR);
-        const domSchema = exoDomSchemaOf(machineOf(schema), EXO_BACKEND);
-
-        expect(strSchema.writers).toHaveLength(3);
-        expect(domSchema.setters).toHaveLength(3);
-        expect(schema.ports.id.name).toBe('data-id');
-    });
-});

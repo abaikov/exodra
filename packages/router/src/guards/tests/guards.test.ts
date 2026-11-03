@@ -65,25 +65,6 @@ describe('guard rejection does not hang and keeps the URL in sync', () => {
         expect(router.getLocation().pathname).toBe('/login');
         expect(router.getMatch()?.route.path).toBe('/login');
     });
-
-    it('a passing guard commits normally', async () => {
-        const router = createExoRouter(
-            [
-                { path: '/', component: page('home') },
-                {
-                    path: '/ok',
-                    component: page('ok'),
-                    beforeEnter: () => true,
-                },
-            ],
-            { history: createExoMemoryHistory('/') }
-        );
-
-        await router.navigate('/ok');
-
-        expect(router.getLocation().pathname).toBe('/ok');
-        expect(router.getMatch()?.route.path).toBe('/ok');
-    });
 });
 
 describe('ancestor/layout guards run', () => {

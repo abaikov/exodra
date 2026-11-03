@@ -26,15 +26,16 @@ export const COUNTER = composeExoMachine(
                 c.attr(P.tone, c.state.n > 2 ? 'loud' : 'calm');
             },
         }),
-    (m) =>
-        withExoHandlers(m, (on) => {
+    (m) => {
+        const { show } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(P.increment, (c) => {
                 c.state.n++;
                 show(c);
             });
-        })
+        });
+    }
 );
-const { show } = COUNTER.transitions;
 `;
 
 export const LIST_SOURCE = `
@@ -84,12 +85,15 @@ export const LIST = composeExoMachine(
                 });
             },
         }),
-    (m) =>
-        withExoWire(m, (c) => {
+    (m) => {
+        const { show } = m.transitions;
+        return withExoWire(m, (c) => {
             show(c);
-        }),
-    (m) =>
-        withExoHandlers(m, (on) => {
+        });
+    },
+    (m) => {
+        const { show } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(L.add, (c) => {
                 c.state.items = [...c.state.items, 'n' + c.state.next++];
                 show(c);
@@ -102,9 +106,9 @@ export const LIST = composeExoMachine(
                 const first = c.state.items[0];
                 wireExoNode(c.state.byItem.get(first), ROW, { label: first + '!', done: true });
             });
-        })
+        });
+    }
 );
-const { show } = LIST.transitions;
 `;
 
 export const FIXED_SOURCE = `

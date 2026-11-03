@@ -50,9 +50,6 @@ describe('renderThemeCss', () => {
     it('leaves its defaults at zero specificity so a host always wins', () => {
         // Without this, whichever stylesheet the browser loaded last decides the
         // colours — and the library is usually last, because it is injected.
-        for (const line of css.split('\n')) {
-            if (!line.includes('--exo-kind-runtime')) continue;
-        }
         expect(css).toContain(':where(.exo-graph)');
         expect(css).not.toMatch(/^\.exo-graph \{/m);
     });

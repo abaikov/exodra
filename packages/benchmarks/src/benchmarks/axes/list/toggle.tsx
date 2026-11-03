@@ -1811,15 +1811,16 @@ const PANEL_BOUND = composeExoMachine(
                 c.text(PANEL_BOUND_SCHEMA.ports.text, c.state.getValue());
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showBoundText } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showBoundText(c);
                 return c.state.onChange(() => showBoundText(c));
             });
-        })
+        });
+    }
 );
-const { showBoundText } = PANEL_BOUND.transitions;
 
 /**
  * WHERE ONE DIRECT PANEL PUTS ITS PORT HANDLE — one object per panel, allocated in `prep`.
@@ -2204,15 +2205,16 @@ function createExoToggleHost<TItem>(
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((cc) => {
                     showRows(cc);
                     return source.onChange(() => showRows(cc));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = host.transitions;
     return { schema, host };
 }
 

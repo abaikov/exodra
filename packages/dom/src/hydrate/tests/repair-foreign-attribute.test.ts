@@ -68,15 +68,16 @@ const attrFollowing = (
                     c.attr(schema.ports.port, src.getValue());
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { show } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     show(c);
                     return src.onChange(() => show(c));
                 });
-            })
+            });
+        }
     );
-    const { show } = machine.transitions;
     return machine;
 };
 

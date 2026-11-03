@@ -8,6 +8,7 @@ import LandingReact from '@site/src/components/Landing/LandingReact';
 import LandingPlugins from '@site/src/components/Landing/LandingPlugins';
 import HeroCodePre from '@site/src/components/Landing/HeroCodePre';
 import LandingAnatomy from '@site/src/components/Landing/LandingAnatomy';
+import LandingNoMagic from '@site/src/components/Landing/LandingNoMagic';
 import Reveal from '@site/src/components/Landing/Reveal';
 import landingStyles from '@site/src/components/Landing/styles.module.css';
 import HeroCodeJsx from './_heroCode.mdx';
@@ -145,6 +146,7 @@ export default function Home() {
             <main>
                 <HomepageFeatures />
                 <LandingAnatomy />
+                <LandingNoMagic />
                 <LandingSpeed />
                 <LandingReact />
                 <LandingPlugins />

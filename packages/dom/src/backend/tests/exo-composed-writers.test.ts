@@ -200,8 +200,9 @@ describe('the composed value writers, as the renderer actually uses it', () => {
                         c.text(schema.ports.label, boundLabel.getValue());
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { show } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         show(c);
                         const offId = boundId.onChange(() => show(c));
@@ -211,9 +212,9 @@ describe('the composed value writers, as the renderer actually uses it', () => {
                             offLabel();
                         };
                     });
-                })
+                });
+            }
         );
-        const { show } = bound.transitions;
 
         const parent = host();
         composeExoPlugins(withExoCompiler(new ExoDomBackend()), withWriters(inert())).render(

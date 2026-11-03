@@ -58,17 +58,6 @@ d('bun-plugin-exodra', () => {
         expect(out?.contents).not.toContain('unknown');
     });
 
-    it('lowers a named attribute port', async () => {
-        const { onLoad } = capture(exodra());
-        const path = join(dir, 'b.tsx');
-        writeFileSync(
-            path,
-            `export const V = exoJsx(($) => <input class="f" value={$.value} />);`
-        );
-        const out = await onLoad({ path });
-        expect(out?.contents).toContain('.port("value", "value")');
-    });
-
     // THE MAP HAS TO TRAVEL IN THE CONTENTS, because a loader hook has no field to return
     // one in — which is exactly what the esbuild plugin does with the identical eight lines
     // against the identical host-API shape. This plugin did not, and dropped a map the

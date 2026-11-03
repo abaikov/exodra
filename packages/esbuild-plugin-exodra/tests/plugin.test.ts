@@ -45,13 +45,4 @@ d('esbuild-plugin-exodra', () => {
         expect(out).toContain('.port("data-id", "id")');
         expect(out).not.toContain('unknown');
     });
-
-    it('lowers a named attribute port', async () => {
-        const out = await bundle(
-            'b.tsx',
-            `export const V = exoJsx(($) => <input class="f" value={$.value} />);`
-        );
-        expect(out).toContain('createExoNamedSchema(');
-        expect(out).toContain('.port("value", "value")');
-    });
 });

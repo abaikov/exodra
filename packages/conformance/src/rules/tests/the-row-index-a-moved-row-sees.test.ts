@@ -91,15 +91,16 @@ const rotatingList = () => {
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showRows(c);
                     return items.onChange(() => showRows(c));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = component.transitions;
     return { component, items };
 };
 

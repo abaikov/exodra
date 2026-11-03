@@ -203,6 +203,7 @@ export function createExoDomSchema(
                 : declaration.hydrateUnreachable,
         rootTag: declaration.rootTag,
         ports,
+        portNames: new Array<string | null>(ports.length).fill(null),
         backend,
         acquireNode: cloneExoNode,
         childUnmount: disposeExoChildSelf,

@@ -6,7 +6,7 @@ import type { TExoMachineEffect } from '../../machine/types/TExoMachineEffect';
 export interface TExoBaseNodeMethods {
     fillDoors(): TExoFillDoors;
     onTeardown(off: () => void): void;
-    provide<TValue>(key: TExoContextToken<TValue>, value: TValue): void;
+    provide<TValue>(key: TExoContextToken<TValue>, value: NoInfer<TValue>): void;
     inject<TValue>(key: TExoContextToken<TValue>): TValue | undefined;
     readState<TValue>(): TValue;
     restartEffect<TOf extends TExoEffectOwner>(this: TOf, effect: TExoMachineEffect<TOf>): void;

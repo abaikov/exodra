@@ -131,43 +131,44 @@ describe('translateExoToReact', () => {
         expect(sides.react.querySelector('.head li')?.textContent).toBe('head');
     });
 
-    it('reads createInitialState only from the createExoMachine options', () => {
-        const source = COUNTER_SOURCE.replace(
-            '    (m) =>\n        withExoHandlers(',
-            '    (m) => ({ ...m, createInitialState: (c) => ({ n: 1 }) }),\n    (m) =>\n        withExoHandlers('
-        );
-        expect(translateExoToReact(source).unsupported).toEqual([
-            'COUNTER: a composeExoMachine step is not one decorator call',
-        ]);
-    });
+    const HANDLERS_STEP =
+        '    (m) => {\n        const { show } = m.transitions;\n        return withExoHandlers(';
+    const UNSUPPORTED_SOURCES: readonly { what: string; source: string; unsupported: string }[] = [
+        {
+            what: 'names a composeExoMachine step that is not one decorator call',
+            source: COUNTER_SOURCE.replace(
+                HANDLERS_STEP,
+                '    (m) => ({ ...m, createInitialState: (c) => ({ n: 1 }) }),\n' + HANDLERS_STEP
+            ),
+            unsupported: 'COUNTER: a composeExoMachine step is not one decorator call',
+        },
+        {
+            what: 'names what it cannot translate instead of emitting wrong code',
+            source: `${COUNTER_SOURCE}const COMPACT = COUNTER.overrides({});\n`,
+            unsupported: 'COUNTER.overrides(…) has no React form',
+        },
+        {
+            what: 'refuses a second wire, as withExoWire does',
+            source: LIST_SOURCE.replace(
+                HANDLERS_STEP,
+                '    (m) => withExoWire(m, (c) => c),\n' + HANDLERS_STEP
+            ),
+            unsupported: 'LIST: withExoWire(…) is applied twice; a machine has one wire',
+        },
+        {
+            what: 'names an effect handle kept in a variable',
+            source: COUNTER_SOURCE.replace(
+                HANDLERS_STEP,
+                '    (m) =>\n        withExoEffects(m, (effect) => {\n            const ticking = effect((c) => null);\n        }),\n' +
+                    HANDLERS_STEP
+            ),
+            unsupported: 'COUNTER: an effect handle kept in a variable has no React form',
+        },
+    ];
 
-    it('names what it cannot translate instead of emitting wrong code', () => {
-        const source = COUNTER_SOURCE.replace(
-            'const { show } = COUNTER.transitions;',
-            'const { show } = COUNTER.transitions;\nconst COMPACT = COUNTER.overrides({});'
-        );
-        expect(translateExoToReact(source).unsupported).toEqual([
-            'COUNTER.overrides(…) has no React form',
-        ]);
-    });
-
-    it('refuses a second wire, as withExoWire does', () => {
-        const source = LIST_SOURCE.replace(
-            '    (m) =>\n        withExoHandlers(',
-            '    (m) => withExoWire(m, (c) => show(c)),\n    (m) =>\n        withExoHandlers('
-        );
-        expect(translateExoToReact(source).unsupported).toEqual([
-            'LIST: withExoWire(…) is applied twice; a machine has one wire',
-        ]);
-    });
-
-    it('names an effect handle kept in a variable', () => {
-        const source = COUNTER_SOURCE.replace(
-            '    (m) =>\n        withExoHandlers(',
-            '    (m) =>\n        withExoEffects(m, (effect) => {\n            const ticking = effect((c) => null);\n        }),\n    (m) =>\n        withExoHandlers('
-        );
-        expect(translateExoToReact(source).unsupported).toEqual([
-            'COUNTER: an effect handle kept in a variable has no React form',
-        ]);
-    });
+    for (const c of UNSUPPORTED_SOURCES) {
+        it(c.what, () => {
+            expect(translateExoToReact(c.source).unsupported).toEqual([c.unsupported]);
+        });
+    }
 });

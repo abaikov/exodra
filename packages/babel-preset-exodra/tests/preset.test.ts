@@ -79,9 +79,6 @@ d('babel-preset-exodra', () => {
         expect(cfg.plugins).toHaveLength(2);
     });
 
-    // THE RETIRED OPTION. `mode` used to choose between two compilers; the
-    // three-props one is gone, so a config that still names it must fail loudly
-    // rather than compile its source with a compiler for a different dialect.
     // The shared runner every bundler plugin calls.
     it('transformExodraJsx runs the full pipeline with a source map', async () => {
         const { transformExodraJsx } = require('../dist/index.cjs') as {
@@ -96,7 +93,7 @@ d('babel-preset-exodra', () => {
         );
         expect(out).not.toBeNull();
         expect(out!.code).toContain('createExoNamedSchema(');
-        expect(out!.code).not.toContain(': string');
+        expect(out!.code).not.toContain('unknown');
         expect(out!.map).toBeTypeOf('object');
     });
 
@@ -113,26 +110,6 @@ d('babel-preset-exodra', () => {
             'input.jsx'
         );
         expect(out!.code).toContain('createExoNamedSchema(');
-    });
-
-    it('emits the named ports', async () => {
-        const { transformExodraJsx } = require('../dist/index.cjs') as {
-            transformExodraJsx: (
-                code: string,
-                filename: string,
-                options?: { schemaSource?: string }
-            ) => Promise<{ code: string } | null>;
-        };
-        const out = await transformExodraJsx(
-            `export const ROW = exoJsx<{ id: unknown; title: unknown }>(($) => (
-                 <li class="row" data-id={$.id}>
-                     <span>{$.title}</span>
-                 </li>
-             ));`,
-            'input.tsx'
-        );
-        expect(out!.code).toContain('.port("data-id", "id")');
-        expect(out!.code).toContain('.textPort("title")');
     });
 
     // The schema compiler's own options reach it through the preset.

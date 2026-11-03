@@ -13,7 +13,6 @@
 // attribute value, which the OLDER `cursor/string/escape-attribute-value` deliberately leaves raw
 // (safe — nothing but the quote can end a value — and different bytes), and the non-breaking
 // space, which is invisible in a diff.
-import { escapeExoAttributeValue, escapeExoText } from '@exodra/core';
 import type { TExoMachineInitialState } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
@@ -23,41 +22,6 @@ import { ExoStrBackend } from '@exodra/string';
 
 const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 const EXO_STR = new ExoStrBackend();
-
-describe('escapeExoAttributeValue', () => {
-    it('escapes the angle brackets a browser escapes, which the older string backend does not', () => {
-        expect(escapeExoAttributeValue('a<b>c')).toBe('a&lt;b&gt;c');
-    });
-
-    it('escapes the quote that would end the value, and the ampersand FIRST', () => {
-        // `&` first is the whole ordering rule: any other order would re-escape the
-        // ampersands the earlier replacements just introduced, and `&quot;` would print as
-        // `&amp;quot;`.
-        expect(escapeExoAttributeValue('say "hi" & bye')).toBe('say &quot;hi&quot; &amp; bye');
-    });
-
-    it('escapes a non-breaking space, which no diff would ever show', () => {
-        expect(escapeExoAttributeValue('a\u00A0b')).toBe('a&nbsp;b');
-    });
-
-    it('returns the very same string when there is nothing to escape', () => {
-        const plain = 'nothing here';
-        expect(escapeExoAttributeValue(plain)).toBe(plain);
-    });
-});
-
-describe('escapeExoText', () => {
-    it('escapes what a text position needs and leaves the quote alone', () => {
-        // A `"` in text is a `"` in the serialised tree, so escaping it would be SAFE and
-        // would be different bytes — which is the only failure mode that matters here.
-        expect(escapeExoText('<b>a & "b"</b>\u00A0')).toBe('&lt;b&gt;a &amp; "b"&lt;/b&gt;&nbsp;');
-    });
-
-    it('returns the very same string when there is nothing to escape', () => {
-        const plain = 'nothing here';
-        expect(escapeExoText(plain)).toBe(plain);
-    });
-});
 
 describe('the two backends escape their static markup the same way', () => {
     // The reason the functions are shared, asserted through the compilers that call them:

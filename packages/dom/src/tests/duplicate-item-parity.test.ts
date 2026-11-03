@@ -75,33 +75,32 @@ const markupOfDom = (component: TExoDomMachine): string => {
 const SAME: TItem = { label: 'a' };
 const OTHER: TItem = { label: 'b' };
 
+const CASES: ReadonlyArray<{
+    readonly what: string;
+    readonly items: readonly TItem[];
+    readonly markup: string;
+}> = [
+    {
+        what: 'renders a repeated item once per position',
+        items: [SAME, SAME, OTHER],
+        markup: '<ul><li>a</li><li>a</li><li>b</li></ul>',
+    },
+    {
+        what: 'counts POSITIONS and not distinct items, including when every entry is the same',
+        items: [SAME, SAME, SAME],
+        markup: '<ul><li>a</li><li>a</li><li>a</li></ul>',
+    },
+];
+
 describe('the same item twice, in the only list a backend has', () => {
-    it('renders it twice on BOTH backends — a position is a row, and identity is not consulted', () => {
-        const LIST = listOf([SAME, SAME, OTHER]);
+    for (const c of CASES) {
+        it(`${c.what} — on BOTH backends, and identity is not consulted`, () => {
+            const LIST = listOf(c.items);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expect(markupOfDom(LIST as any)).toBe('<ul><li>a</li><li>a</li><li>b</li></ul>');
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expect(EXO_STR.render(LIST as any)).toBe('<ul><li>a</li><li>a</li><li>b</li></ul>');
-    });
-
-    it('agrees between the server and the client, which is what the fork used to break', () => {
-        // THE ASSERTION THAT REPLACED THE PINNED DISAGREEMENT. It is the shape every other parity
-        // file in this package has, and the day a backend grows a list call of its own with an
-        // answer of its own, this is the line that fails.
-        const LIST = listOf([SAME, SAME, OTHER]);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const served = EXO_STR.render(LIST as any);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const client = markupOfDom(LIST as any);
-
-        expect(served).toBe(client);
-        expect(served.split('<li>').length - 1).toBe(3);
-    });
-
-    it('counts POSITIONS and not distinct items, including when every entry is the same', () => {
-        const LIST = listOf([SAME, SAME, SAME]);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        expect(markupOfDom(LIST as any)).toBe('<ul><li>a</li><li>a</li><li>a</li></ul>');
-    });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            expect(markupOfDom(LIST as any)).toBe(c.markup);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            expect(EXO_STR.render(LIST as any)).toBe(c.markup);
+        });
+    }
 });

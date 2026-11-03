@@ -151,15 +151,16 @@ describe('mounted, on every path an instance arrives by', () => {
                         );
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { showRows } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         showRows(c);
                         return src.onChange(() => showRows(c));
                     });
-                })
+                });
+            }
         );
-        const { showRows } = PARENT.transitions;
         const parent = host();
         EXO_BACKEND.render(PARENT, parent);
         expect(log).toEqual(WIRED_THEN_PLACED);

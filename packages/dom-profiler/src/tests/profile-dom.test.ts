@@ -75,15 +75,16 @@ const followingRow = <TValue>(
                 draw: (c) => show(c, schema.ports, data.getValue()),
             }),
         (m) => withExoWire(m, (c) => fill(c, schema.ports)),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { draw } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     draw(c);
                     return data.onChange(() => draw(c));
                 });
-            })
+            });
+        }
     );
-    const { draw } = machine.transitions;
     return machine;
 };
 
@@ -134,78 +135,59 @@ describe('profileDom', () => {
 });
 
 describe('profilePorts', () => {
-    it('reports one entry per port, named the way the template reads', () => {
-        const ROW = rowWith((P) => (c, i) => {
-            c.attr(P.id, i);
-            c.attr(P.cls, 'row');
-            c.text(P.label, 'row ' + i);
-        });
-
-        const parent = host();
-        const profiler = profilePorts(ROW, EXO_BACKEND);
-        // TWO INSTANCES, so each port is filled twice and the counts below say which port that
-        // was rather than only that something ran.
-        const first = EXO_BACKEND.render(ROW, parent);
-        const second = EXO_BACKEND.render(ROW, parent);
-        const report = profiler.stop();
-        first();
-        second();
-
-        const labels = report.map((e) => e.label).sort();
-        expect(labels).toEqual(['attr:class', 'attr:data-id', 'text']);
-        for (const entry of report) expect(entry.count).toBe(2);
-    });
-
-    it('times the UPDATES of a followed attribute, not just the first fill', () => {
-        // The subscriber an effect leaves behind calls the setter on every change, so every one of
-        // those writes is timed here, after the render that armed it has returned.
-        const theme = source('light');
-        const ROW = followingRow(
-            theme,
-            (c, P) => {
+    const FOLLOWED_PORTS: readonly {
+        what: string;
+        initial: string;
+        updates: readonly string[];
+        fill: (c: TExoMachineNode, ports: ReturnType<typeof buildRow>) => void;
+        show: (c: TExoMachineNode, ports: ReturnType<typeof buildRow>, value: string) => void;
+        label: string;
+        count: number;
+    }[] = [
+        {
+            what: 'attribute',
+            initial: 'light',
+            updates: ['dark', 'light'],
+            fill: (c, P) => {
                 c.attr(P.id, 'a');
                 c.text(P.label, 'l');
             },
-            (c, P, value) => c.attr(P.cls, value)
-        );
-
-        const profiler = profilePorts(ROW, EXO_BACKEND);
-        const dispose = EXO_BACKEND.render(ROW, host());
-        theme.setValue('dark');
-        theme.setValue('light');
-        const report = profiler.stop();
-        dispose();
-
-        const cls = report.find((e) => e.label === 'attr:class');
-        expect(cls).toBeDefined();
-        expect(cls!.count).toBe(3); // the initial fill plus two updates
-    });
-
-    it('DOES see a port a source drives, because there is one write path now', () => {
-        // There is no second write path: an effect writes a followed port through `c.text`, the
-        // same door a one-off fill uses, so a watched port and a written one are the same calls
-        // and the profiler times both.
-        const label = source('a');
-        const ROW = followingRow(
-            label,
-            (c, P) => {
+            show: (c, P, value) => c.attr(P.cls, value),
+            label: 'attr:class',
+            count: 3,
+        },
+        {
+            what: 'text',
+            initial: 'a',
+            updates: ['b'],
+            fill: (c, P) => {
                 c.attr(P.id, 'a');
                 c.attr(P.cls, 'row');
             },
-            (c, P, value) => c.text(P.label, value)
-        );
+            show: (c, P, value) => c.text(P.label, value),
+            label: 'text',
+            count: 2,
+        },
+    ];
 
-        const profiler = profilePorts(ROW, EXO_BACKEND);
-        const dispose = EXO_BACKEND.render(ROW, host());
-        label.setValue('b');
-        const report = profiler.stop();
-        dispose();
+    // The subscriber an effect leaves behind calls the setter on every change, so every one of
+    // those writes is timed here, after the render that armed it has returned.
+    for (const c of FOLLOWED_PORTS) {
+        it(`times the UPDATES of a followed ${c.what}, not just the first fill`, () => {
+            const data = source(c.initial);
+            const ROW = followingRow(data, c.fill, c.show);
 
-        const text = report.find((e) => e.label === 'text');
-        expect(text).toBeDefined();
-        // TWICE: the first write the effect makes on arming, and the one the source's change ran.
-        expect(text!.count).toBe(2);
-    });
+            const profiler = profilePorts(ROW, EXO_BACKEND);
+            const dispose = EXO_BACKEND.render(ROW, host());
+            for (const value of c.updates) data.setValue(value);
+            const report = profiler.stop();
+            dispose();
+
+            const entry = report.find((e) => e.label === c.label);
+            expect(entry).toBeDefined();
+            expect(entry!.count).toBe(c.count);
+        });
+    }
 
     // ═══ THE BACKEND IS THE SCHEMA'S CACHE KEY, AND EVERY TEST ABOVE RENDERS FROM THE FILE'S ONE
     // BACKEND ═══

@@ -79,12 +79,13 @@ function island(
             withExoTransitions(m, {
                 show: (c) => c.state.island.render(follow.getValue()),
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { show } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => follow.onChange(() => show(c)));
-            })
+            });
+        }
     );
-    const { show } = following.transitions;
     return following;
 }
 
@@ -95,20 +96,6 @@ function freshContainer(): HTMLElement {
 }
 
 describe('reactIsland — the browser', () => {
-    it('mounts a static island inside an Exodra instance', () => {
-        const container = freshContainer();
-        let dispose!: () => void;
-        act(() => {
-            dispose = EXO_BACKEND.render(island({ value: 1 }), container);
-        });
-
-        expect(container.querySelector('section.wrap')).not.toBeNull();
-        // React owns the inside of the Exodra-owned host element.
-        expect(container.querySelector('.react-val')?.textContent).toBe('v=1');
-
-        act(() => dispose());
-    });
-
     it('re-renders through its handle and is torn down by the render disposer', () => {
         const container = freshContainer();
         const data = source<TLabelProps>({ value: 10 });

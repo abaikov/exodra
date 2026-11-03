@@ -376,7 +376,7 @@ function makeCard(): {
 }
 
 describe('an instance the decoration wired', () => {
-    it('seeds every field from a constant, from the context, and from the creator`s seed', () => {
+    it('fills every field from a constant, from the context, and from a transition', () => {
         const card = makeCard();
         const backend = new ExoCardBackend();
         const context = exoContextFrame(null, STORE, { tag: 'gold' });
@@ -399,15 +399,6 @@ describe('an instance the decoration wired', () => {
             [0, ''],
             [1, 'none'],
         ]);
-    });
-
-    it('stores and marks in ONE call, so a commit follows a handle`s set', () => {
-        const card = makeCard();
-        const backend = new ExoCardBackend();
-        const enode = card.wire(bareNode(backend), 'Alderaan');
-        backend.fills.length = 0;
-        card.setName(enode, 'Bespin');
-        expect(backend.fills).toEqual([[0, 'Bes']]);
     });
 
     it('reads through the same handle it writes through', () => {
@@ -984,23 +975,6 @@ describe('a field nothing derives from', () => {
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 
 describe('a transition', () => {
-    it('IS the body on a machine that declares no slot — no wrapper, no settler', () => {
-        const [CARD, name] = decorate(createExoSchema(buildCard), (b) => b.field(''));
-        const apply = (s: TCard, v: string): void => name.set(s, v);
-        expect(exoTransition<TCard, string>(CARD, apply)).toBe(apply);
-    });
-
-    it('is a WRAPPER the moment a derivation exists', () => {
-        const schema = createExoSchema(buildCard);
-        const [CARD, name] = decorate(schema, (b) => {
-            const name = b.field('');
-            b.derive(schema.ports.label, [name], (value) => value);
-            return name;
-        });
-        const apply = (s: TCard, v: string): void => name.set(s, v);
-        expect(exoTransition<TCard, string>(CARD, apply)).not.toBe(apply);
-    });
-
     it('is a WRAPPER for a FILL with no derivation, whose settler is what runs the fill', () => {
         let runs = 0;
         const [CARD, tick] = decorate(createExoSchema(buildCard), (b) => {

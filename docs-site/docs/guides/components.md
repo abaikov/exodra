@@ -258,18 +258,23 @@ const toggleMachine = composeExoMachine(
             },
         }),
     (m) =>
-        withExoWire(m, (c) => {
+        {
+        const { show } = m.transitions;
+        return withExoWire(m, (c) => {
             show(c);
-        }),
+        });
+    },
     (m) =>
-        withExoHandlers(m, (on) => {
+        {
+        const { show } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(TogglePorts.click, (c) => {
                 c.state.on = !c.state.on;
                 show(c);
             });
-        })
+        });
+    }
 );
-const { show } = toggleMachine.transitions;
 
 backend.render(toggleMachine, document.body);
 ```

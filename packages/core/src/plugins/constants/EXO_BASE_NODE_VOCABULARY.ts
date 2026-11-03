@@ -21,7 +21,7 @@ const EXO_BASE_NODE_METHODS: TExoBaseNodeMethods & ThisType<TExoBaseReceiver> = 
         else disposers.push(off);
     },
 
-    provide<TValue>(key: TExoContextToken<TValue>, value: TValue): void {
+    provide<TValue>(key: TExoContextToken<TValue>, value: NoInfer<TValue>): void {
         this.context = exoContextFrame(this.context, key, value);
     },
 

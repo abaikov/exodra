@@ -49,7 +49,6 @@ import type { TExoDomChild } from '../types/TExoDomChild';
 import type { TExoChildList } from '../types/TExoChildList';
 import { host, createExoTestMachine } from '@exodra/test-utils';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
@@ -407,56 +406,6 @@ describe('a children port written by commands', () => {
         expect((childList.at(0) as unknown as TExoDomChild).node).toBe(
             parent.querySelectorAll('li')[0]
         );
-    });
-
-    /**
-     * THE COMMANDS AND THE DIFF AGREE ON THE OUTPUT — the claim the whole design rests on, and the
-     * only one a reader cannot check by inspection.
-     *
-     * Two shells are rendered. One is advanced by commands to the sequence a-b-c; the other is given
-     * the same three rows through `bindChildren` and reconciled. The markup must be identical, byte
-     * for byte, including the static sibling behind the child list.
-     */
-    it('lands the same markup a bound-and-reconciled child list does', () => {
-        let childList!: TExoChildList;
-        let conn!: TDriving;
-        const written = host();
-        EXO_BACKEND.render(
-            SHELL((r, c) => {
-                childList = r;
-                conn = c;
-            }),
-            written
-        );
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
-
-        const bound = host();
-        const BOUND = createExoTestMachine(
-            (b) => {
-                let rows!: TExoChildrenPort;
-                b.el('ul', null, (ul) => {
-                    rows = ul.childrenPort();
-                    ul.el('li', { class: 'tail' }, (li) => {
-                        li.text('tail');
-                    });
-                });
-                return { rows };
-            },
-            (
-                    P
-                ): TExoMachineInitialState<
-                    TDriving & {
-                        childList(port: TExoChildrenPort): TExoChildList;
-                    }
-                > =>
-                (c) => {
-                    const kids = ['a', 'b', 'c'].map((t) => c.build(ROW, t));
-                    reconcileExoOrder(c.childList(P.rows), [], kids, kids, (child) => child);
-                }
-        );
-        EXO_BACKEND.render(BOUND, bound);
-
-        expect(written.innerHTML).toBe(bound.innerHTML);
     });
 });
 

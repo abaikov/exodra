@@ -1077,3 +1077,13 @@ one of these; if you are holding a console log with one in it, this table is the
 | `EXO0042` | An SVG-rooted schema used to be parsed inside a throwaway svg element and its namespace checked afterwards. The compiler now creates SVG and MathML elements with createElementNS directly, so the namespace is chosen rather than discovered and cannot come back wrong.                                                                                                                                                                                                                                                                                                                                                    |
 | `EXO0043` | The walk compiled from a schema was replayed over the parsed prototype to prove the parser had not reshaped it. There is no parser on this path any more: the walk and the prototype come out of one construction pass, so the walk cannot run off a tree it built itself.                                                                                                                                                                                                                                                                                                                                                   |
 | `EXO0044` | The compiled plan expected one tag where the parsed prototype had another — the parser having moved a tr out of a tbody and the like. Those reshapes are now refused at DECLARATION by assertExoParserStableChild.ts, which names the case instead of discovering it after the fact.                                                                                                                                                                                                                                                                                                                                     |
+
+### EXO0111 {#exo0111}
+
+A machine registered a second handler on an event port that already had one.
+
+**After the code:** the index of the event port that already had a handler.
+
+An element keeps one handler per event: both events packs store it in one field, so a second
+registration on the same port would silently replace the first. Handle the port once — a handler
+can do several things — and keep it in one withExoHandlers step or one plugin step, not both.

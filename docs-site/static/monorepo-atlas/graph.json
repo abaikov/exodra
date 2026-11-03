@@ -112,7 +112,7 @@
         "label": "examples-todo-cnstra-oimdb",
         "kind": "app",
         "layer": 4,
-        "moduleCount": 18,
+        "moduleCount": 25,
         "published": false,
         "violations": []
       },
@@ -247,7 +247,7 @@
         "label": "test-utils",
         "kind": "app",
         "layer": 3,
-        "moduleCount": 10,
+        "moduleCount": 12,
         "published": false,
         "violations": []
       },
@@ -2194,25 +2194,6 @@
         "violations": []
       },
       {
-        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/context",
-        "from": "@exodra/examples-todo-cnstra-oimdb",
-        "to": "@exodra/context",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "evidence": [
-          {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoCnsContext.ts",
-            "to": "packages/context/src/index.ts",
-            "specifier": "@exodra/context",
-            "kind": "value"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
         "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/core",
         "from": "@exodra/examples-todo-cnstra-oimdb",
         "to": "@exodra/core",
@@ -2220,34 +2201,10 @@
           "type-only",
           "value"
         ],
-        "weight": 6,
+        "weight": 11,
         "evidence": [
           {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoApp.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoApp.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/examples/todo-cnstra-oimdb/src/injectTodoCns.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoRow.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -2257,6 +2214,60 @@
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimWatches.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimWatches.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimBucketListOptions.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -2270,16 +2281,34 @@
           "type-only",
           "value"
         ],
-        "weight": 4,
+        "weight": 8,
         "evidence": [
           {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoApp.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/TodoEnvironment.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimRow.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "type-only"
@@ -2291,10 +2320,16 @@
             "kind": "type-only"
           },
           {
-            "from": "packages/examples/todo-cnstra-oimdb/src/main.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/withExoOimBucketList.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
-            "kind": "value"
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/examples/todo-cnstra-oimdb/src/types/TExoOimBucketListOptions.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
           }
         ],
         "declared": true,
@@ -2310,34 +2345,15 @@
         "weight": 2,
         "evidence": [
           {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoApp.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoAppMachine.ts",
             "to": "packages/forms/src/index.ts",
             "specifier": "@exodra/forms",
             "kind": "value"
           },
           {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoRow.ts",
+            "from": "packages/examples/todo-cnstra-oimdb/src/todoRowMachine.ts",
             "to": "packages/forms/src/index.ts",
             "specifier": "@exodra/forms",
-            "kind": "value"
-          }
-        ],
-        "declared": true,
-        "violations": []
-      },
-      {
-        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/list-reconcile",
-        "from": "@exodra/examples-todo-cnstra-oimdb",
-        "to": "@exodra/list-reconcile",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "evidence": [
-          {
-            "from": "packages/examples/todo-cnstra-oimdb/src/TodoApp.ts",
-            "to": "packages/list-reconcile/src/index.ts",
-            "specifier": "@exodra/list-reconcile",
             "kind": "value"
           }
         ],
@@ -3476,7 +3492,7 @@
           "type-only",
           "value"
         ],
-        "weight": 6,
+        "weight": 8,
         "evidence": [
           {
             "from": "packages/test-utils/src/buildRow.ts",
@@ -3486,6 +3502,18 @@
           },
           {
             "from": "packages/test-utils/src/types/TExoTestRowPorts.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/test-utils/src/createExoFollowingMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/test-utils/src/createExoFollowingMachine.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -3800,7 +3828,7 @@
       },
       "not-to-unresolvable": {
         "severity": "error",
-        "comment": "An import that does not resolve is a broken build waiting to happen. EXCEPT a Vite virtual module: `virtual:app-sloc` is produced by the plugin at packages/benchmarks/vite.config.ts:31 and exists only inside a Vite build, so a crawler that reads the filesystem cannot resolve it and never will. The exemption is that ONE specifier and not the `virtual:` scheme, so a second virtual module has to be added here deliberately."
+        "comment": "An import that does not resolve is a broken build waiting to happen. EXCEPT a Vite virtual module: `virtual:app-sloc` is produced by the plugin at packages/benchmarks/vite.config.ts:31 and exists only inside a Vite build, so a crawler that reads the filesystem cannot resolve it and never will. The exemption is that ONE specifier and not the `virtual:` scheme, so a second virtual module has to be added here deliberately. `@cnstra/exodra` is the other one: it peers on @exodra/core 0.3.0, so it reaches npm only after this repo publishes, and until then the todo example aliases it to the cnstra source; drop it here once the example installs the published package."
       },
       "no-undeclared-dep": {
         "severity": "error",
@@ -3858,7 +3886,7 @@
   },
   "layout": {
     "width": 1256,
-    "height": 1498,
+    "height": 1486,
     "nodes": [
       {
         "id": "@exodra/babel-plugin-schema",
@@ -3870,7 +3898,7 @@
       {
         "id": "@exodra/bench-harness",
         "x": 1108,
-        "y": 694,
+        "y": 712,
         "width": 124,
         "height": 40
       },
@@ -3884,42 +3912,42 @@
       {
         "id": "@exodra/computed",
         "x": 610,
-        "y": 64,
+        "y": 68,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/conformance",
         "x": 363.5,
-        "y": 258,
+        "y": 376,
         "width": 109,
         "height": 40
       },
       {
         "id": "@exodra/context",
         "x": 948,
-        "y": 578,
+        "y": 794,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/core",
         "x": 788,
-        "y": 742,
+        "y": 716,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/dom",
         "x": 610,
-        "y": 720,
+        "y": 738,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/dom-profiler",
         "x": 359.5,
-        "y": 546,
+        "y": 534,
         "width": 117,
         "height": 40
       },
@@ -3933,140 +3961,140 @@
       {
         "id": "@exodra/examples-ssr-test",
         "x": 57,
-        "y": 1162,
+        "y": 1150,
         "width": 154,
         "height": 40
       },
       {
         "id": "@exodra/examples-todo-cnstra-oimdb",
         "x": 308,
-        "y": 700,
+        "y": 632,
         "width": 220,
         "height": 40
       },
       {
         "id": "@exodra/examples-todo-react-rtk",
         "x": 35,
-        "y": 448,
+        "y": 420,
         "width": 198,
         "height": 40
       },
       {
         "id": "@exodra/forms",
         "x": 610,
-        "y": 492,
+        "y": 276,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/introspect",
         "x": 83,
-        "y": 516,
+        "y": 488,
         "width": 102,
         "height": 40
       },
       {
         "id": "@exodra/jsx",
         "x": 610,
-        "y": 1102,
+        "y": 1108,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/list-reconcile",
         "x": 592,
-        "y": 652,
+        "y": 568,
         "width": 132,
         "height": 40
       },
       {
         "id": "@exodra/monorepo-atlas",
         "x": 68,
-        "y": 584,
+        "y": 556,
         "width": 132,
         "height": 40
       },
       {
         "id": "@exodra/react",
         "x": 610,
-        "y": 356,
+        "y": 344,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/react-compat",
         "x": 359.5,
-        "y": 882,
+        "y": 838,
         "width": 117,
         "height": 40
       },
       {
         "id": "@exodra/react-compat-libraries",
         "x": 38.5,
-        "y": 652,
+        "y": 624,
         "width": 191,
         "height": 40
       },
       {
         "id": "@exodra/react-mount",
         "x": 363.5,
-        "y": 950,
+        "y": 956,
         "width": 109,
         "height": 40
       },
       {
         "id": "@exodra/router",
         "x": 610,
-        "y": 424,
+        "y": 412,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/ssr",
         "x": 370,
-        "y": 1018,
+        "y": 1024,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/string",
         "x": 610,
-        "y": 808,
+        "y": 824,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/term",
         "x": 610,
-        "y": 288,
+        "y": 480,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/test-utils",
         "x": 607,
-        "y": 1170,
+        "y": 1176,
         "width": 102,
         "height": 40
       },
       {
         "id": "@exodra/to-react",
         "x": 86,
-        "y": 720,
+        "y": 692,
         "width": 96,
         "height": 40
       },
       {
         "id": "@exodra/type-tests",
         "x": 367,
-        "y": 1114,
+        "y": 1120,
         "width": 102,
         "height": 40
       },
       {
         "id": "@exodra/vite-plugin",
         "x": 79.5,
-        "y": 788,
+        "y": 760,
         "width": 109,
         "height": 40
       },
@@ -4080,28 +4108,28 @@
       {
         "id": "bun-plugin-exodra",
         "x": 57,
-        "y": 1230,
+        "y": 1218,
         "width": 154,
         "height": 40
       },
       {
         "id": "create-exodra",
         "x": 72,
-        "y": 1298,
+        "y": 1286,
         "width": 124,
         "height": 40
       },
       {
         "id": "esbuild-plugin-exodra",
         "x": 42.5,
-        "y": 1366,
+        "y": 1354,
         "width": 183,
         "height": 40
       },
       {
         "id": "rollup-plugin-exodra",
         "x": 46,
-        "y": 1434,
+        "y": 1422,
         "width": 176,
         "height": 40
       }
@@ -4111,16 +4139,16 @@
         "id": "@exodra/benchmarks→@exodra/computed",
         "points": [
           {
-            "x": 447.6,
+            "x": 448.9,
             "y": 160
           },
           {
             "x": 560,
-            "y": 84
+            "y": 88
           },
           {
             "x": 610,
-            "y": 84
+            "y": 88
           }
         ]
       },
@@ -4129,31 +4157,31 @@
         "points": [
           {
             "x": 469,
-            "y": 161.3
+            "y": 162.8
           },
           {
             "x": 560,
-            "y": 128
+            "y": 132
           },
           {
             "x": 658,
-            "y": 128
+            "y": 132
           },
           {
             "x": 756,
-            "y": 128
+            "y": 132
           },
           {
             "x": 836,
-            "y": 128
+            "y": 132
           },
           {
             "x": 916,
-            "y": 128
+            "y": 132
           },
           {
-            "x": 992.6,
-            "y": 578
+            "x": 993.7,
+            "y": 794
           }
         ]
       },
@@ -4162,23 +4190,23 @@
         "points": [
           {
             "x": 469,
-            "y": 168.5
+            "y": 169.9
           },
           {
             "x": 560,
-            "y": 148
+            "y": 152
           },
           {
             "x": 658,
-            "y": 148
+            "y": 152
           },
           {
             "x": 756,
-            "y": 148
+            "y": 152
           },
           {
-            "x": 833.4,
-            "y": 742
+            "x": 833.3,
+            "y": 716
           }
         ]
       },
@@ -4187,15 +4215,15 @@
         "points": [
           {
             "x": 469,
-            "y": 175.7
+            "y": 177.1
           },
           {
             "x": 560,
-            "y": 168
+            "y": 172
           },
           {
-            "x": 654.6,
-            "y": 720
+            "x": 654.7,
+            "y": 738
           }
         ]
       },
@@ -4204,15 +4232,15 @@
         "points": [
           {
             "x": 469,
-            "y": 182.9
+            "y": 184.3
           },
           {
             "x": 560,
-            "y": 188
+            "y": 192
           },
           {
-            "x": 652,
-            "y": 492
+            "x": 639.2,
+            "y": 276
           }
         ]
       },
@@ -4221,15 +4249,15 @@
         "points": [
           {
             "x": 469,
-            "y": 190.1
+            "y": 191.5
           },
           {
             "x": 560,
-            "y": 208
+            "y": 212
           },
           {
-            "x": 653.8,
-            "y": 652
+            "x": 652.8,
+            "y": 568
           }
         ]
       },
@@ -4238,15 +4266,15 @@
         "points": [
           {
             "x": 469,
-            "y": 197.2
+            "y": 198.7
           },
           {
             "x": 560,
-            "y": 228
+            "y": 232
           },
           {
-            "x": 654.7,
-            "y": 808
+            "x": 654.8,
+            "y": 824
           }
         ]
       },
@@ -4255,31 +4283,31 @@
         "points": [
           {
             "x": 706,
-            "y": 79.1
+            "y": 93.9
           },
           {
             "x": 756,
-            "y": 74
+            "y": 100
           },
           {
             "x": 836,
-            "y": 74
+            "y": 100
           },
           {
             "x": 916,
-            "y": 74
+            "y": 100
           },
           {
             "x": 996,
-            "y": 74
+            "y": 100
           },
           {
             "x": 1076,
-            "y": 74
+            "y": 100
           },
           {
-            "x": 1167.1,
-            "y": 694
+            "x": 1167,
+            "y": 712
           }
         ]
       },
@@ -4288,15 +4316,15 @@
         "points": [
           {
             "x": 706,
-            "y": 89.9
+            "y": 83.1
           },
           {
             "x": 756,
-            "y": 96
+            "y": 78
           },
           {
             "x": 833.6,
-            "y": 742
+            "y": 716
           }
         ]
       },
@@ -4304,24 +4332,24 @@
         "id": "@exodra/conformance→@exodra/core",
         "points": [
           {
-            "x": 472.5,
-            "y": 266.5
+            "x": 437.7,
+            "y": 376
           },
           {
             "x": 560,
-            "y": 248
+            "y": 252
           },
           {
             "x": 658,
-            "y": 248
+            "y": 252
           },
           {
             "x": 756,
-            "y": 248
+            "y": 252
           },
           {
-            "x": 832.9,
-            "y": 742
+            "x": 832.7,
+            "y": 716
           }
         ]
       },
@@ -4330,15 +4358,15 @@
         "points": [
           {
             "x": 472.5,
-            "y": 274.2
+            "y": 384.5
           },
           {
             "x": 560,
-            "y": 268
+            "y": 366
           },
           {
-            "x": 653.8,
-            "y": 720
+            "x": 653,
+            "y": 738
           }
         ]
       },
@@ -4347,15 +4375,15 @@
         "points": [
           {
             "x": 472.5,
-            "y": 281.8
+            "y": 392.2
           },
           {
             "x": 560,
-            "y": 288
+            "y": 386
           },
           {
-            "x": 654.4,
-            "y": 808
+            "x": 653.7,
+            "y": 824
           }
         ]
       },
@@ -4363,16 +4391,16 @@
         "id": "@exodra/conformance→@exodra/term",
         "points": [
           {
-            "x": 472.5,
-            "y": 289.5
+            "x": 445.3,
+            "y": 416
           },
           {
             "x": 560,
-            "y": 308
+            "y": 500
           },
           {
             "x": 610,
-            "y": 308
+            "y": 500
           }
         ]
       },
@@ -4381,15 +4409,15 @@
         "points": [
           {
             "x": 1044,
-            "y": 598
+            "y": 814
           },
           {
             "x": 1076,
-            "y": 598
+            "y": 814
           },
           {
-            "x": 1153.8,
-            "y": 694
+            "x": 1147.1,
+            "y": 752
           }
         ]
       },
@@ -4398,23 +4426,23 @@
         "points": [
           {
             "x": 884,
-            "y": 769.2
+            "y": 728.8
           },
           {
             "x": 916,
-            "y": 774
+            "y": 724
           },
           {
             "x": 996,
-            "y": 774
+            "y": 724
           },
           {
             "x": 1076,
-            "y": 774
+            "y": 724
           },
           {
-            "x": 1138.7,
-            "y": 734
+            "x": 1108,
+            "y": 726.7
           }
         ]
       },
@@ -4422,16 +4450,16 @@
         "id": "@exodra/core→@exodra/context",
         "points": [
           {
-            "x": 869.3,
-            "y": 742
+            "x": 884,
+            "y": 749.2
           },
           {
             "x": 916,
-            "y": 714
+            "y": 758
           },
           {
-            "x": 982.2,
-            "y": 618
+            "x": 967.4,
+            "y": 794
           }
         ]
       },
@@ -4440,23 +4468,23 @@
         "points": [
           {
             "x": 476.5,
-            "y": 561.9
+            "y": 549.9
           },
           {
             "x": 560,
-            "y": 556
+            "y": 544
           },
           {
             "x": 658,
-            "y": 556
+            "y": 544
           },
           {
             "x": 756,
-            "y": 556
+            "y": 544
           },
           {
-            "x": 828.2,
-            "y": 742
+            "x": 827.7,
+            "y": 716
           }
         ]
       },
@@ -4465,15 +4493,15 @@
         "points": [
           {
             "x": 476.5,
-            "y": 570.1
+            "y": 568
           },
           {
             "x": 560,
-            "y": 576
+            "y": 588
           },
           {
-            "x": 646,
-            "y": 720
+            "x": 646.5,
+            "y": 738
           }
         ]
       },
@@ -4481,24 +4509,24 @@
         "id": "@exodra/dom→@exodra/context",
         "points": [
           {
-            "x": 691.8,
-            "y": 720
+            "x": 706,
+            "y": 773.7
           },
           {
             "x": 756,
-            "y": 682
+            "y": 790
           },
           {
             "x": 836,
-            "y": 682
+            "y": 790
           },
           {
             "x": 916,
-            "y": 682
+            "y": 790
           },
           {
-            "x": 977,
-            "y": 618
+            "x": 948,
+            "y": 799.6
           }
         ]
       },
@@ -4507,15 +4535,15 @@
         "points": [
           {
             "x": 706,
-            "y": 750.8
+            "y": 747.2
           },
           {
             "x": 756,
-            "y": 762
+            "y": 736
           },
           {
             "x": 788,
-            "y": 762
+            "y": 736
           }
         ]
       },
@@ -4523,32 +4551,32 @@
         "id": "@exodra/examples-ssr-test→@exodra/core",
         "points": [
           {
-            "x": 188.6,
-            "y": 1202
+            "x": 174.6,
+            "y": 1190
           },
           {
             "x": 276,
-            "y": 1234
+            "y": 1240
           },
           {
             "x": 418,
-            "y": 1234
+            "y": 1240
           },
           {
             "x": 560,
-            "y": 1234
+            "y": 1240
           },
           {
             "x": 658,
-            "y": 1234
+            "y": 1240
           },
           {
             "x": 756,
-            "y": 1234
+            "y": 1240
           },
           {
-            "x": 832.6,
-            "y": 782
+            "x": 832.8,
+            "y": 756
           }
         ]
       },
@@ -4556,24 +4584,24 @@
         "id": "@exodra/examples-ssr-test→@exodra/dom",
         "points": [
           {
-            "x": 211,
-            "y": 1197.2
+            "x": 195.7,
+            "y": 1190
           },
           {
             "x": 276,
-            "y": 1210
+            "y": 1216
           },
           {
             "x": 418,
-            "y": 1210
+            "y": 1216
           },
           {
             "x": 560,
-            "y": 1210
+            "y": 1216
           },
           {
-            "x": 653.8,
-            "y": 760
+            "x": 653.7,
+            "y": 778
           }
         ]
       },
@@ -4581,49 +4609,16 @@
         "id": "@exodra/examples-ssr-test→@exodra/ssr",
         "points": [
           {
-            "x": 153.7,
-            "y": 1162
+            "x": 156.5,
+            "y": 1150
           },
           {
             "x": 276,
-            "y": 1038
+            "y": 1044
           },
           {
             "x": 370,
-            "y": 1038
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/context",
-        "points": [
-          {
-            "x": 440.9,
-            "y": 700
-          },
-          {
-            "x": 560,
-            "y": 596
-          },
-          {
-            "x": 658,
-            "y": 596
-          },
-          {
-            "x": 756,
-            "y": 596
-          },
-          {
-            "x": 836,
-            "y": 596
-          },
-          {
-            "x": 916,
-            "y": 596
-          },
-          {
-            "x": 948,
-            "y": 596.8
+            "y": 1044
           }
         ]
       },
@@ -4631,24 +4626,24 @@
         "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/core",
         "points": [
           {
-            "x": 445.3,
-            "y": 700
+            "x": 528,
+            "y": 636.5
           },
           {
             "x": 560,
-            "y": 616
+            "y": 632
           },
           {
             "x": 658,
-            "y": 616
+            "y": 632
           },
           {
             "x": 756,
-            "y": 616
+            "y": 632
           },
           {
-            "x": 825,
-            "y": 742
+            "x": 820.6,
+            "y": 716
           }
         ]
       },
@@ -4657,15 +4652,15 @@
         "points": [
           {
             "x": 528,
-            "y": 712.3
+            "y": 652
           },
           {
             "x": 560,
-            "y": 710
+            "y": 652
           },
           {
-            "x": 610,
-            "y": 725.3
+            "x": 639.5,
+            "y": 738
           }
         ]
       },
@@ -4674,32 +4669,15 @@
         "points": [
           {
             "x": 528,
-            "y": 735.5
+            "y": 667.5
           },
           {
             "x": 560,
-            "y": 740
+            "y": 672
           },
           {
-            "x": 649.4,
-            "y": 532
-          }
-        ]
-      },
-      {
-        "id": "@exodra/examples-todo-cnstra-oimdb→@exodra/list-reconcile",
-        "points": [
-          {
-            "x": 489,
-            "y": 740
-          },
-          {
-            "x": 560,
-            "y": 760
-          },
-          {
-            "x": 635.7,
-            "y": 692
+            "x": 652.8,
+            "y": 316
           }
         ]
       },
@@ -4708,15 +4686,15 @@
         "points": [
           {
             "x": 706,
-            "y": 512
+            "y": 296
           },
           {
             "x": 756,
-            "y": 512
+            "y": 296
           },
           {
-            "x": 829.6,
-            "y": 742
+            "x": 832.4,
+            "y": 716
           }
         ]
       },
@@ -4725,15 +4703,15 @@
         "points": [
           {
             "x": 706,
-            "y": 1122
+            "y": 1128
           },
           {
             "x": 756,
-            "y": 1122
+            "y": 1128
           },
           {
-            "x": 831.6,
-            "y": 782
+            "x": 831.9,
+            "y": 756
           }
         ]
       },
@@ -4741,32 +4719,32 @@
         "id": "@exodra/react-compat→@exodra/context",
         "points": [
           {
-            "x": 476.5,
-            "y": 889.6
+            "x": 435.1,
+            "y": 838
           },
           {
             "x": 560,
-            "y": 872
+            "y": 692
           },
           {
             "x": 658,
-            "y": 872
+            "y": 692
           },
           {
             "x": 756,
-            "y": 872
+            "y": 692
           },
           {
             "x": 836,
-            "y": 872
+            "y": 692
           },
           {
             "x": 916,
-            "y": 872
+            "y": 692
           },
           {
-            "x": 990.2,
-            "y": 618
+            "x": 982.9,
+            "y": 794
           }
         ]
       },
@@ -4775,23 +4753,23 @@
         "points": [
           {
             "x": 476.5,
-            "y": 897.9
+            "y": 874.5
           },
           {
             "x": 560,
-            "y": 892
+            "y": 898
           },
           {
             "x": 658,
-            "y": 892
+            "y": 898
           },
           {
             "x": 756,
-            "y": 892
+            "y": 898
           },
           {
-            "x": 823.7,
-            "y": 782
+            "x": 826.1,
+            "y": 756
           }
         ]
       },
@@ -4799,16 +4777,16 @@
         "id": "@exodra/react-compat→@exodra/dom",
         "points": [
           {
-            "x": 476.5,
-            "y": 907.8
+            "x": 462.4,
+            "y": 878
           },
           {
             "x": 560,
-            "y": 916
+            "y": 922
           },
           {
-            "x": 646.9,
-            "y": 760
+            "x": 646,
+            "y": 778
           }
         ]
       },
@@ -4816,16 +4794,16 @@
         "id": "@exodra/react-compat→@exodra/list-reconcile",
         "points": [
           {
-            "x": 476.5,
-            "y": 916
+            "x": 451.8,
+            "y": 878
           },
           {
             "x": 560,
-            "y": 936
+            "y": 942
           },
           {
-            "x": 650.6,
-            "y": 692
+            "x": 652.5,
+            "y": 608
           }
         ]
       },
@@ -4834,23 +4812,23 @@
         "points": [
           {
             "x": 472.5,
-            "y": 964.6
+            "y": 970.6
           },
           {
             "x": 560,
-            "y": 956
+            "y": 962
           },
           {
             "x": 658,
-            "y": 956
+            "y": 962
           },
           {
             "x": 756,
-            "y": 956
+            "y": 962
           },
           {
-            "x": 827.8,
-            "y": 782
+            "x": 828.9,
+            "y": 756
           }
         ]
       },
@@ -4859,15 +4837,15 @@
         "points": [
           {
             "x": 472.5,
-            "y": 975.4
+            "y": 981.4
           },
           {
             "x": 560,
-            "y": 984
+            "y": 990
           },
           {
-            "x": 650,
-            "y": 760
+            "x": 649.6,
+            "y": 778
           }
         ]
       },
@@ -4876,15 +4854,15 @@
         "points": [
           {
             "x": 706,
-            "y": 376
+            "y": 364
           },
           {
             "x": 756,
-            "y": 376
+            "y": 364
           },
           {
-            "x": 831.9,
-            "y": 742
+            "x": 831.7,
+            "y": 716
           }
         ]
       },
@@ -4893,23 +4871,23 @@
         "points": [
           {
             "x": 706,
-            "y": 432.2
+            "y": 443.8
           },
           {
             "x": 756,
-            "y": 420
+            "y": 456
           },
           {
             "x": 836,
-            "y": 420
+            "y": 456
           },
           {
             "x": 916,
-            "y": 420
+            "y": 456
           },
           {
-            "x": 987,
-            "y": 578
+            "x": 991.5,
+            "y": 794
           }
         ]
       },
@@ -4918,15 +4896,15 @@
         "points": [
           {
             "x": 706,
-            "y": 455.8
+            "y": 420.2
           },
           {
             "x": 756,
-            "y": 468
+            "y": 408
           },
           {
-            "x": 830.6,
-            "y": 742
+            "x": 831.1,
+            "y": 716
           }
         ]
       },
@@ -4935,31 +4913,31 @@
         "points": [
           {
             "x": 466,
-            "y": 1026.5
+            "y": 1032.5
           },
           {
             "x": 560,
-            "y": 1004
+            "y": 1010
           },
           {
             "x": 658,
-            "y": 1004
+            "y": 1010
           },
           {
             "x": 756,
-            "y": 1004
+            "y": 1010
           },
           {
             "x": 836,
-            "y": 1004
+            "y": 1010
           },
           {
             "x": 916,
-            "y": 1004
+            "y": 1010
           },
           {
-            "x": 992.1,
-            "y": 618
+            "x": 987.8,
+            "y": 834
           }
         ]
       },
@@ -4968,23 +4946,23 @@
         "points": [
           {
             "x": 466,
-            "y": 1038
+            "y": 1044
           },
           {
             "x": 560,
-            "y": 1038
+            "y": 1044
           },
           {
             "x": 658,
-            "y": 1038
+            "y": 1044
           },
           {
             "x": 756,
-            "y": 1038
+            "y": 1044
           },
           {
-            "x": 830.2,
-            "y": 782
+            "x": 830.8,
+            "y": 756
           }
         ]
       },
@@ -4993,15 +4971,15 @@
         "points": [
           {
             "x": 466,
-            "y": 1044.8
+            "y": 1050.8
           },
           {
             "x": 560,
-            "y": 1058
+            "y": 1064
           },
           {
-            "x": 649.5,
-            "y": 848
+            "x": 649.1,
+            "y": 864
           }
         ]
       },
@@ -5010,31 +4988,31 @@
         "points": [
           {
             "x": 706,
-            "y": 817.2
+            "y": 860.7
           },
           {
             "x": 756,
-            "y": 806
+            "y": 878
           },
           {
             "x": 836,
-            "y": 806
+            "y": 878
           },
           {
             "x": 916,
-            "y": 806
+            "y": 878
           },
           {
             "x": 996,
-            "y": 806
+            "y": 878
           },
           {
             "x": 1076,
-            "y": 806
+            "y": 878
           },
           {
-            "x": 1149.6,
-            "y": 734
+            "x": 1157.1,
+            "y": 752
           }
         ]
       },
@@ -5043,23 +5021,23 @@
         "points": [
           {
             "x": 706,
-            "y": 828
+            "y": 844
           },
           {
             "x": 756,
-            "y": 828
+            "y": 844
           },
           {
             "x": 836,
-            "y": 828
+            "y": 844
           },
           {
             "x": 916,
-            "y": 828
+            "y": 844
           },
           {
-            "x": 989,
-            "y": 618
+            "x": 948,
+            "y": 832
           }
         ]
       },
@@ -5068,15 +5046,15 @@
         "points": [
           {
             "x": 706,
-            "y": 838.8
+            "y": 827.3
           },
           {
             "x": 756,
-            "y": 850
+            "y": 810
           },
           {
-            "x": 817.8,
-            "y": 782
+            "x": 814.4,
+            "y": 756
           }
         ]
       },
@@ -5085,23 +5063,23 @@
         "points": [
           {
             "x": 706,
-            "y": 298.2
+            "y": 505.9
           },
           {
             "x": 756,
-            "y": 288
+            "y": 512
           },
           {
             "x": 836,
-            "y": 288
+            "y": 512
           },
           {
             "x": 916,
-            "y": 288
+            "y": 512
           },
           {
-            "x": 990.8,
-            "y": 578
+            "x": 990.7,
+            "y": 794
           }
         ]
       },
@@ -5110,15 +5088,15 @@
         "points": [
           {
             "x": 706,
-            "y": 319.8
+            "y": 488.2
           },
           {
             "x": 756,
-            "y": 332
+            "y": 476
           },
           {
-            "x": 832.3,
-            "y": 742
+            "x": 829.8,
+            "y": 716
           }
         ]
       },
@@ -5127,15 +5105,15 @@
         "points": [
           {
             "x": 709,
-            "y": 1190
+            "y": 1196
           },
           {
             "x": 756,
-            "y": 1190
+            "y": 1196
           },
           {
-            "x": 832.3,
-            "y": 782
+            "x": 832.5,
+            "y": 756
           }
         ]
       },
@@ -5144,23 +5122,23 @@
         "points": [
           {
             "x": 468.7,
-            "y": 1114
+            "y": 1120
           },
           {
             "x": 560,
-            "y": 1078
+            "y": 1084
           },
           {
             "x": 658,
-            "y": 1078
+            "y": 1084
           },
           {
             "x": 756,
-            "y": 1078
+            "y": 1084
           },
           {
-            "x": 830.9,
-            "y": 782
+            "x": 831.4,
+            "y": 756
           }
         ]
       },
@@ -5169,15 +5147,15 @@
         "points": [
           {
             "x": 469,
-            "y": 1121.8
+            "y": 1127.8
           },
           {
             "x": 560,
-            "y": 1100
+            "y": 1106
           },
           {
-            "x": 652.6,
-            "y": 760
+            "x": 652.4,
+            "y": 778
           }
         ]
       },
@@ -5186,15 +5164,15 @@
         "points": [
           {
             "x": 469,
-            "y": 1129.7
+            "y": 1135.7
           },
           {
             "x": 560,
-            "y": 1122
+            "y": 1128
           },
           {
             "x": 610,
-            "y": 1122
+            "y": 1128
           }
         ]
       },
@@ -5203,15 +5181,15 @@
         "points": [
           {
             "x": 469,
-            "y": 1141.9
+            "y": 1147.9
           },
           {
             "x": 560,
-            "y": 1156
+            "y": 1162
           },
           {
-            "x": 652,
-            "y": 848
+            "x": 651.8,
+            "y": 864
           }
         ]
       },
@@ -5220,15 +5198,15 @@
         "points": [
           {
             "x": 468.7,
-            "y": 1154
+            "y": 1160
           },
           {
             "x": 560,
-            "y": 1190
+            "y": 1196
           },
           {
             "x": 607,
-            "y": 1190
+            "y": 1196
           }
         ]
       },

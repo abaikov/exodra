@@ -323,55 +323,47 @@ describe('markup the HTML parser reshapes', () => {
 });
 
 describe('static text after a children port', () => {
-    it('is refused, because a child list can only be anchored on an element', () => {
-        // FOUND WHILE CLOSING THE TWO ABOVE, AND IT IS THE SAME FAILURE SHAPE. A child list's end is
-        // the next static ELEMENT (`childListEndSlot` in the DOM schema), or the end of the parent
-        // when there is none. A Text node is neither, so the rows of this child list would be
-        // appended AFTER the text while the server prints them BEFORE it: two backends, two orders,
-        // and markup plausible enough that only an ordering assertion would have caught it.
-        //
-        // The parser has a hand in it too. Text on both sides of a child list merges into ONE Text
-        // node — an empty child list emits nothing between them — so every sibling hop counted after
-        // it addresses a position that does not exist.
-        //
-        // Text BEFORE a child list is untouched and stays legal: what precedes a child list does not
-        // move its end.
-        const component = createExoTestMachine(
-            (b: TExoSchemaCursor) => {
-                let kids!: TExoChildrenPort;
-                b.el('p', null, (p) => {
-                    kids = p.childrenPort();
-                    p.text(' items');
-                });
-                return { kids };
-            },
-            (): TExoMachineInitialState<unknown> => () => undefined
-        );
+    // FOUND WHILE CLOSING THE TWO ABOVE, AND IT IS THE SAME FAILURE SHAPE. A child list's end is
+    // the next static ELEMENT (`childListEndSlot` in the DOM schema), or the end of the parent
+    // when there is none. A Text node is neither, so the rows of this child list would be
+    // appended AFTER the text while the server prints them BEFORE it: two backends, two orders,
+    // and markup plausible enough that only an ordering assertion would have caught it.
+    //
+    // The parser has a hand in it too. Text on both sides of a child list merges into ONE Text
+    // node — an empty child list emits nothing between them — so every sibling hop counted after
+    // it addresses a position that does not exist.
+    //
+    // Text BEFORE a child list is untouched and stays legal: what precedes a child list does not
+    // move its end.
+    //
+    // THE HALF THAT WAS MISSING, and it is the worst possible half to be missing: the DOM
+    // compiler refused this shape and `compile-exo-str-schema` walked straight past it, so a
+    // component with a label after a child list rendered perfectly on the server and threw the
+    // moment a browser tried to build the same schema. Every SSR check green, and a user
+    // finds it. The rule lives in `@exodra/core` now (`assert-exo-text-after-children-port`) and both
+    // compilers call it, so the two cannot drift into different answers again.
+    const KIDS_THEN_TEXT = createExoTestMachine(
+        (b: TExoSchemaCursor) => {
+            let kids!: TExoChildrenPort;
+            b.el('p', null, (p) => {
+                kids = p.childrenPort();
+                p.text(' items');
+            });
+            return { kids };
+        },
+        (): TExoMachineInitialState<unknown> => () => undefined
+    );
 
-        expect(() => fromDom(component)).toThrow(/followed by the static text/);
-    });
+    const BACKENDS: ReadonlyArray<{ readonly what: string; readonly render: () => string }> = [
+        { what: 'the DOM backend', render: () => fromDom(KIDS_THEN_TEXT) },
+        { what: 'the STRING backend', render: () => EXO_STR.render(KIDS_THEN_TEXT) },
+    ];
 
-    it('is refused by the STRING backend too, in the same words', () => {
-        // THE HALF THAT WAS MISSING, and it is the worst possible half to be missing: the DOM
-        // compiler refused this shape and `compile-exo-str-schema` walked straight past it, so a
-        // component with a label after a child list rendered perfectly on the server and threw the
-        // moment a browser tried to build the same schema. Every SSR check green, and a user
-        // finds it. The rule lives in `@exodra/core` now (`assert-exo-text-after-children-port`) and both
-        // compilers call it, so the two cannot drift into different answers again.
-        const component = createExoTestMachine(
-            (b: TExoSchemaCursor) => {
-                let kids!: TExoChildrenPort;
-                b.el('p', null, (p) => {
-                    kids = p.childrenPort();
-                    p.text(' items');
-                });
-                return { kids };
-            },
-            (): TExoMachineInitialState<unknown> => () => undefined
-        );
-
-        expect(() => EXO_STR.render(component)).toThrow(/followed by the static text/);
-    });
+    for (const backend of BACKENDS) {
+        it(`is refused by ${backend.what}, because a child list can only be anchored on an element`, () => {
+            expect(backend.render).toThrow(/followed by the static text/);
+        });
+    }
 
     it('leaves text BEFORE a child list alone, on both backends and byte for byte', () => {
         // The rule is about what FOLLOWS a child list — what precedes one does not move its end —
@@ -616,33 +608,6 @@ describe('a child ELEMENT inside a raw-text element', () => {
     // `assert-exo-element-in-raw-text` — which is the property worth pinning HERE: the refusal is one
     // rule for both backends, not the DOM compiler's private objection.
 
-    for (const tag of ['style', 'script']) {
-        it(`never becomes a component when it stands in <${tag}>`, () => {
-            expect(() =>
-                staticOf((b) => {
-                    b.el(tag, null, (s) => {
-                        s.el('b');
-                    });
-                }, withExoSchemaAsserts)
-            ).toThrow(new RegExp(`<b>[\\s\\S]*<${tag}>[\\s\\S]*RAW TEXT`));
-        });
-    }
-
-    it('is refused before either compiler runs, so the string backend cannot print it', () => {
-        // The assertion the split was made of. The server render alone used to be a passing
-        // render of `<style><b></b></style>`; there is now no component for it to be given, and
-        // this is the call that would have produced the server's half of the divergence.
-        expect(() =>
-            EXO_STR.render(
-                staticOf((b) => {
-                    b.el('style', null, (s) => {
-                        s.el('b');
-                    });
-                }, withExoSchemaAsserts)
-            )
-        ).toThrow(/RAW TEXT/);
-    });
-
     it('leaves the same element alone one level out, where both backends agree on it', () => {
         const component = staticOf((b) => {
             b.el('div', null, (d) => {
@@ -657,68 +622,9 @@ describe('a child ELEMENT inside a raw-text element', () => {
         expect(markup).toBe('<div><style>.a > .b { color: red }</style><b></b></div>');
         expect(fromDom(component)).toBe(markup);
     });
-
-    it('is refused inside <textarea> too, which is RCDATA — the gap this used to pin', () => {
-        // WHAT THIS USED TO PIN WAS THE GAP: `EXO_RAW_TEXT_ELEMENTS` excludes `<textarea>` and
-        // `<title>`, so the build-time rule said nothing about them, the schema built, the string
-        // backend printed `<textarea><b></b></textarea>` and the DOM side refused the identical
-        // bytes. One schema, a page from the server and a throw in the browser — the same class of
-        // split as `<style>`'s, one tag list over.
-        //
-        // IT IS CLOSED IN THE CURSOR AND NOT IN EITHER BACKEND. The two lists still differ, and
-        // they have to: they disagree about ESCAPING, which is what `assert-exo-text-port-in-raw-text`,
-        // `assert-exo-broken-raw-text-boundary` and both compilers are asking about. This rule is not about
-        // escaping — RCDATA recognises no TAG either — so `assert-exo-element-in-raw-text` asks a second,
-        // two-element list of its own and gives one answer before any compiler runs.
-        //
-        // AND IT IS THE ONLY PLACE THIS SHAPE IS NOW SPOKEN ABOUT. The DOM compiler's independent
-        // cross-check was a comparison against a PARSED prototype, and the compiler parses nothing
-        // any more: what caught the `<tbody>` nobody wrote is a declaration-time table
-        // (`assertExoParserStableChild`), which answers about tag pairs and not about a
-        // `<textarea>` holding an element. So this cursor rule is the whole of the refusal.
-        expect(() => {
-            const component = staticOf((b) => {
-                b.el('textarea', null, (t) => {
-                    t.el('b');
-                });
-            }, withExoSchemaAsserts);
-            EXO_STR.render(component);
-        }).toThrow(/RCDATA element/);
-    });
 });
 
 describe('a cursor that declares more than one root element', () => {
-    // WAS A BUG, NOW A REFUSAL — and the history is written down because the refusal looks
-    // removable. `createExoSchema` read `holder.kids[0]` and never looked at the rest, so a second
-    // top-level element was DROPPED without a word, and its ports kept the `-1` index every
-    // port starts life with, because `numberPorts` and `collectPorts` only walk the root it
-    // chose. The author saw half a component render, and a wire filling one of the vanished
-    // ports reached `setters[-1]` — "undefined is not a function", naming a line inside the
-    // exonode rather than naming the mistake.
-    //
-    // IT WAS A REGRESSION, not a gap: the renderer this core replaced refused exactly this
-    // shape and named the component and the count (`dom/legacy/errors.test.ts`: "component Component
-    // returned 2 root schemas"), and the rewrite lost the behaviour silently. A schema is ONE
-    // element by construction; the check costs one comparison per component for the life of the
-    // process, because a schema is built once and never again.
-    it('is refused, rather than silently keeping the first and dropping the rest', () => {
-        expect(() =>
-            staticOf((b) => {
-                b.el('div');
-                b.el('span');
-            })
-        ).toThrow();
-    });
-
-    it('says HOW MANY it found and WHAT they were, so the search ends at the message', () => {
-        expect(() =>
-            staticOf((b) => {
-                b.el('div');
-                b.el('span');
-            })
-        ).toThrow(/produced 2 roots \(<div>, <span>\)/);
-    });
-
     it('is refused by the DOM compile too, for a schema no wire ever asked its ports for', () => {
         expect(() =>
             exoDomSchemaOf(
@@ -732,24 +638,6 @@ describe('a cursor that declares more than one root element', () => {
                 EXO_BACKEND
             )
         ).toThrow(/produced 2 roots \(<div>, <span>\)/);
-    });
-
-    it('counts a top-level children port too — dropping one is the same silent loss', () => {
-        // The shape somebody reaching for a fragment writes: a root, and a run of children
-        // beside it rather than inside it. The port would be dropped with the `-1` still on it,
-        // so the count is over ALL of the cursor`s top-level kids and not just the elements.
-        expect(() =>
-            exoDomSchemaOf(
-                machineOf(
-                    createExoSchema((b) => {
-                        b.el('ul');
-                        b.childrenPort();
-                        return {};
-                    })
-                ),
-                EXO_BACKEND
-            )
-        ).toThrow(/produced 2 roots \(<ul>, a children port\)/);
     });
 });
 

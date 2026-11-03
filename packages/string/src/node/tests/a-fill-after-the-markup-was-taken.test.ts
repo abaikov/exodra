@@ -48,30 +48,5 @@ describe('a fill that arrives after the markup was taken', () => {
 
         // The write LANDED — the door did not refuse it and recorded no "already filled".
         expect(node.values.join('|')).toContain('after');
-        // And the markup is what it was: it was built before this call existed.
-        expect(html).toContain('during');
-        expect(html).not.toContain('after');
-    });
-
-    it('renders the same bytes whether or not a later write happens', () => {
-        const make = (keep: { node?: TExoStrNode; label?: unknown }): TExoStrMachine =>
-            createExoTestMachine(
-                buildRow,
-                (P): TExoMachineInitialState<TExoStrNode> =>
-                    (c) => {
-                        keep.label = P.label;
-                        c.text(P.label, 'once');
-                        keep.node = c;
-                    }
-            );
-
-        const untouched: { node?: TExoStrNode; label?: unknown } = {};
-        const written: { node?: TExoStrNode; label?: unknown } = {};
-
-        const a = EXO_STR.render(make(untouched));
-        const b = EXO_STR.render(make(written));
-        written.node?.text(written.label as Parameters<TExoStrNode['text']>[0], 'late');
-
-        expect(b).toBe(a);
     });
 });

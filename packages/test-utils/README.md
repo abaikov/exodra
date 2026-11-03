@@ -21,6 +21,7 @@ helper with a flag.
 | `buildRow(b)` | The benchmark's row shape, built into a schema |
 | `TExoTestRowPorts` | The five ports `buildRow` returns |
 | `describeIfPresetBuilt(url)` | `describe`, or `describe.skip` if the Babel preset's dist is missing |
+| `bareImports(source)` | The non-relative import specifiers a file names, for the per-package import gates |
 
 ## `host()` and `detachedHost()`
 
@@ -206,3 +207,10 @@ site uses. All three callers (`esbuild-`, `rollup-` and `bun-plugin-exodra`'s
 `plugin.test.ts`) do exactly `d('name', () => { … })`; not one reaches for `.each`,
 `.only` or `.skipIf`. Writing that shape means nothing has to be computed, by tsc or
 by any tool reading these types. The atlas reads what is here.
+
+## `bareImports(source)`
+
+The sorted, de-duplicated non-relative specifiers in a file's text: every `import`/`export … from`
+that begins a line, plus the type-position `import('…')` form. The import gates of `@exodra/dom`,
+`@exodra/string` and `@exodra/term` check each file against an allow-list with it; the regex's own
+cases are pinned in `packages/dom/src/tests/imports-only-core.test.ts`.

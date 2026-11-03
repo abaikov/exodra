@@ -195,6 +195,7 @@ class ExoDomEmitter implements TExoEmitter {
     private readonly foreign: TExoForeignNamespaces | undefined;
     private rootNs = '';
     private readonly supply: TExoAnyPort[];
+    readonly portNames: (string | null)[] = [];
     private next: number;
     private frame: TExoDomFrame | null = null;
     private loose: TExoDomFrame | null = null;
@@ -268,8 +269,10 @@ class ExoDomEmitter implements TExoEmitter {
 
     private minted<TPort extends TExoAnyPort>(
         kind: TExoAnyPort['kind'],
-        name: string | null
+        name: string | null,
+        portName: string | undefined
     ): TPort {
+        if (portName !== undefined) this.portNames[this.next] = portName;
         return mintExoPort<TPort>(this.supply, this.next++, kind, name);
     }
 
@@ -551,7 +554,7 @@ class ExoDomEmitter implements TExoEmitter {
     attrPort(first: TExoAttrPort | string, second?: string): TExoAttrPort {
         const port =
             typeof first === 'string'
-                ? this.minted<TExoAttrPort>(EXO_PORT_ATTR, first)
+                ? this.minted<TExoAttrPort>(EXO_PORT_ATTR, first, second)
                 : nameExoPort(first, second as string);
         this.placeAttrPort(port);
         return port;
@@ -562,7 +565,7 @@ class ExoDomEmitter implements TExoEmitter {
     stringPort(first: TExoAttrPort | string, second?: string): TExoAttrPort {
         const port =
             typeof first === 'string'
-                ? this.minted<TExoAttrPort>(EXO_PORT_ATTR_STRING, first)
+                ? this.minted<TExoAttrPort>(EXO_PORT_ATTR_STRING, first, second)
                 : nameExoPort(first, second as string);
         this.placeAttrPort(port);
         return port;
@@ -573,7 +576,7 @@ class ExoDomEmitter implements TExoEmitter {
     togglePort(first: TExoAttrPort | string, second?: string): TExoAttrPort {
         const port =
             typeof first === 'string'
-                ? this.minted<TExoAttrPort>(EXO_PORT_ATTR_TOGGLE, first)
+                ? this.minted<TExoAttrPort>(EXO_PORT_ATTR_TOGGLE, first, second)
                 : nameExoPort(first, second as string);
         this.placeAttrPort(port);
         return port;
@@ -588,7 +591,7 @@ class ExoDomEmitter implements TExoEmitter {
     eventPort(first: TExoEventPort | string, second?: string): TExoEventPort {
         const port =
             typeof first === 'string'
-                ? this.minted<TExoEventPort>(EXO_PORT_EVENT, first)
+                ? this.minted<TExoEventPort>(EXO_PORT_EVENT, first, second)
                 : nameExoPort(first, second as string);
         this.portSlots[port.index] = this.slotOf(this.standing());
         return port;
@@ -599,7 +602,7 @@ class ExoDomEmitter implements TExoEmitter {
     refPort(given?: TExoRefPort | string): TExoRefPort {
         const port =
             given === undefined || typeof given === 'string'
-                ? this.minted<TExoRefPort>(EXO_PORT_REF, null)
+                ? this.minted<TExoRefPort>(EXO_PORT_REF, null, given)
                 : given;
         this.portSlots[port.index] = this.slotOf(this.standing());
         return port;
@@ -613,7 +616,7 @@ class ExoDomEmitter implements TExoEmitter {
         if (frame.rawKids > 0) assertExoContentBeside(frame.tag);
         const port =
             given === undefined || typeof given === 'string'
-                ? this.minted<TExoTextPort>(EXO_PORT_TEXT, null)
+                ? this.minted<TExoTextPort>(EXO_PORT_TEXT, null, given)
                 : given;
         this.portSlots[port.index] = this.slotOf(frame);
         frame.contentPort = port.index;
@@ -631,7 +634,7 @@ class ExoDomEmitter implements TExoEmitter {
         this.flushText(frame);
         const port =
             given === undefined || typeof given === 'string'
-                ? this.minted<TExoChildrenPort>(EXO_PORT_CHILDREN, null)
+                ? this.minted<TExoChildrenPort>(EXO_PORT_CHILDREN, null, given)
                 : given;
         const index = port.index;
         this.portSlots[index] = this.slotOf(frame);
@@ -711,7 +714,7 @@ export function compileExoDomSchema(
         backend.parserStability,
         backend.foreignNamespaces
     );
-    declaration.build(emitter);
+    const returned = declaration.build(emitter);
     assertExoOneRoot(emitter.roots);
     assertExoRootElement(emitter.rootTag);
     const portList = declaration.portList;
@@ -883,6 +886,22 @@ export function compileExoDomSchema(
 
     // Built whole, in one field order, so every schema in the process shares one hidden class: this
     // object is read on the hot path of every render.
+    const portNames: (string | null)[] = new Array<string | null>(portList.length).fill(null);
+    for (let i = 0; i < emitter.portNames.length; i++) {
+        const name = emitter.portNames[i];
+        if (name !== undefined) portNames[i] = name;
+    }
+    const record = (declaration.declaredPorts > 0 ? declaration.ports : returned) as
+        | Readonly<Record<string, TExoAnyPort | null | undefined>>
+        | null
+        | undefined;
+    if (typeof record === 'object' && record !== null) {
+        for (const name in record) {
+            const port = record[name];
+            if (port !== null && port !== undefined) portNames[port.index] = name;
+        }
+    }
+
     const compiled: TExoDomSchema = {
         // An ACCESSOR, and the only one on this object: nothing on a render path reads it, and
         // serialising the prototype for the two readers that do (a benchmark report, a test) would
@@ -912,6 +931,7 @@ export function compileExoDomSchema(
         hydrateUnreachable: unreachable.length === 0 ? NO_UNREACHABLE : unreachable,
         rootTag: emitter.rootTag as string,
         ports: declaration.portList,
+        portNames,
         backend,
         acquireNode: cloneExoNode,
         childUnmount: disposeExoChildSelf,

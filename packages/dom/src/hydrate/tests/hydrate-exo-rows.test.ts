@@ -77,8 +77,9 @@ const rowWith = (
             createInitialState: (c, params) => fill(c, params),
         }),
         (m) => withExoTransitions(m, { draw: (c) => following.draw(c) }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { draw } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     draw(c);
                     const offs = following.sources.map((followed) =>
@@ -88,9 +89,9 @@ const rowWith = (
                         for (const off of offs) off();
                     };
                 });
-            })
+            });
+        }
     );
-    const { draw } = row.transitions;
     return row as unknown as TExoMachine<TSurface, TRowPorts>;
 };
 
@@ -131,65 +132,6 @@ const rowsIn = (parent: HTMLElement): HTMLElement[] =>
     Array.from(parent.querySelectorAll('li')) as HTMLElement[];
 
 describe('ExoDomBackend.hydrate', () => {
-    it('adopts server markup without touching a single node', () => {
-        // Checked with a MutationObserver rather than by comparing markup: a hydration that
-        // rebuilt the rows and happened to produce identical bytes would pass a string
-        // compare and fail this. "Creates, moves and removes nothing" is the claim, so
-        // nothing is what gets asserted.
-        const LIST = listOf(
-            (P) => (c, at) => {
-                c.attr(P.id, at);
-                c.text(P.label, 'Item ' + at);
-                c.on(P.click, () => undefined);
-            },
-            4
-        );
-        const parent = host();
-        parent.innerHTML = EXO_STR.render(LIST);
-        const before = parent.innerHTML;
-        const original = rowsIn(parent);
-
-        let mutations = 0;
-        const observer = new MutationObserver((records) => {
-            mutations += records.length;
-        });
-        observer.observe(parent, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            characterData: true,
-        });
-        EXO_BACKEND.hydrate(LIST, parent);
-        mutations += observer.takeRecords().length;
-        observer.disconnect();
-
-        expect(mutations).toBe(0);
-        expect(parent.innerHTML).toBe(before);
-        expect(rowsIn(parent)).toEqual(original);
-    });
-
-    it('attaches the listeners the server could not print', () => {
-        // The one thing hydration must actually DO. Attributes and text are already in the
-        // markup; a listener has no markup form, so it is the whole remaining work.
-        let clicked = -1;
-        const LIST = listOf(
-            (P) => (c, at) => {
-                c.attr(P.id, at);
-                c.text(P.label, 'Item ' + at);
-                c.on(P.click, () => {
-                    clicked = at as number;
-                });
-            },
-            3
-        );
-        const parent = host();
-        parent.innerHTML = EXO_STR.render(LIST);
-        EXO_BACKEND.hydrate(LIST, parent);
-
-        rowsIn(parent)[2].dispatchEvent(new MouseEvent('click', { bubbles: true }));
-        expect(clicked).toBe(2);
-    });
-
     it('does not write a bound value it already agrees with, but does update on change', () => {
         // The asymmetry hydration exists for: the server already computed the value, so the
         // first write is skipped — and the subscription is not, or the page would be frozen

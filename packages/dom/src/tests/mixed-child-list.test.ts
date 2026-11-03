@@ -22,12 +22,6 @@
 // compares components, and nothing compares data — so two positions may hold the SAME component and
 // be two instances, which is asserted below because the pair-shaped value this file used to publish
 // could not express it at all.
-//
-// WHAT THIS FILE CANNOT ASSERT, said here rather than found later. `childList` is a door on
-// `@exodra/dom` and `@exodra/term` only; `@exodra/string` has no placement command at all, so a
-// heterogeneous child list has NO server expression, one component cannot drive both backends
-// through one, and the byte-identity that makes an SSR'd page of blocks adoptable is unmeasurable
-// from here until the server gets a placement door.
 import {
     createExoMachine,
     composeExoMachine,
@@ -118,15 +112,16 @@ const placingShell = <TPorts>(
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { placeBlocks } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     placeBlocks(c);
                     return src.onChange(() => placeBlocks(c));
                 });
-            })
+            });
+        }
     );
-    const { placeBlocks } = machine.transitions;
     return machine;
 };
 
@@ -193,15 +188,16 @@ const BLOCK_BOUND_MACHINE = composeExoMachine(
                 c.text(BLOCK_BOUND_SCHEMA.ports.text, BOUND.getValue());
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showBlockBound } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showBlockBound(c);
                 return BOUND.onChange(() => showBlockBound(c));
             });
-        })
+        });
+    }
 );
-const { showBlockBound } = BLOCK_BOUND_MACHINE.transitions;
 const BLOCK_BOUND = BLOCK_BOUND_MACHINE as unknown as TExoMachine<TExoChildrenWiring>;
 
 /** What goes into the child list BESIDE a mixed list: one element carrying its own label. */

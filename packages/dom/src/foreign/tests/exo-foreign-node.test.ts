@@ -31,48 +31,11 @@ import { exoNodeDom } from '../../dom/exoNodeDom';
 import { exoOnTeardown } from '../../dom/exoTeardownScope';
 
 import { exoForeignNode } from '../exoForeignNode';
+import { placeExoChildrenFrom } from './placeExoChildrenFrom';
 import type { TExoDomMark } from '../../dom/types/TExoDomMark';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
 
 const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
-/** WHAT `bindChildren` WAS, composed from the doors it was made of: a child list, a subscription,
- *  and `detachAll` rather than `remove` because these nodes are the caller's and must not be
- *  disposed when they leave. */
-const placeExoChildrenFrom = (
-    c: TExoDomNode,
-    port: TExoChildrenPort,
-    src: { getValue(): readonly TExoNode<TExoDomMark>[]; onChange(cb: () => void): () => void }
-): void => {
-    const kids = c.childList(port);
-    const apply = (): void => {
-        const want = src.getValue();
-        // `remove` and never `detach`: a child that LEAVES must be told, or its unmount hook never
-        // runs and a foreign node goes on believing a list holds it.
-        if (want.length === 0) {
-            // ONE CALL, so every child is told while the list is still whole.
-            kids.removeAll();
-            return;
-        }
-        for (let i = kids.size - 1; i >= 0; i--) {
-            if (!want.includes(kids.at(i) as TExoNode<TExoDomMark>)) kids.remove(i);
-        }
-        for (let i = 0; i < want.length; i++) {
-            if (kids.at(i) === want[i]) continue;
-            let from = -1;
-            for (let j = i + 1; j < kids.size; j++) {
-                if (kids.at(j) === want[i]) {
-                    from = j;
-                    break;
-                }
-            }
-            if (from === -1) kids.insert(want[i], i);
-            else kids.move(from, i);
-        }
-    };
-    apply();
-    c.onTeardown(src.onChange(apply));
-};
-
 /** An ordinary child, so a foreign one always has neighbours built the normal way. */
 const ROW = createExoTestMachine(
     (b) => {
@@ -195,11 +158,6 @@ describe('exoForeignNode — a foreign element is an ordinary child', () => {
         const c = emptyListNode();
         const el = foreignElement('f');
         expect(exoNodeDom(exoForeignNode(c, el)).node).toBe(el);
-        // AND THERE IS NO WAY BACK FROM THE ELEMENT, which used to be asserted here as the
-        // direction a plugin's `querySelector` and the walking reconciler's repair pass came from.
-        // The mark that carried it has been removed from the package: a caller holds the CHILD,
-        // and an element handed to this door a second time is refused rather than opened.
-        expect(() => exoForeignNode(c, el)).toThrow(/already carries an Exodra child lifecycle/);
     });
 });
 

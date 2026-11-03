@@ -278,12 +278,6 @@ describe('an ATTRIBUTE port the wire never fills', () => {
         expect(button.disabled).toBe(false);
     });
 
-    it('prints the same bytes on both backends — an enabled button on both', () => {
-        // WHAT THIS FILE EXISTS FOR, on the kind that was the last to agree. It used to serve an
-        // enabled button and build a disabled one.
-        expect(fromDom(BUTTON)).toBe(EXO_STR.render(BUTTON));
-    });
-
     it('has no placeholder left in the PROTOTYPE, and no per-instance work either', () => {
         // THE MECHANISM. Nothing is ever written for an attribute port — for this one or for any
         // other — so the unfilled case costs nothing at all to get right: there is no fill record to

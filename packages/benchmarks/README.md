@@ -654,7 +654,7 @@ npm run axis --workspace=@exodra/benchmarks -- import-node-trade 100 1
 
 `import-node-trade` is the narrowest diagnostic here: it measures ONE LINE of `@exodra/dom`, and it
 is the axis that settled that line. The compiler now ends with `const instanceProto = proto`
-(`packages/dom/src/dom/compileExoDomSchema.ts:877`): the prototype is left in the inert
+(`packages/dom/src/dom/compileExoDomSchema.ts:882`): the prototype is left in the inert
 template-contents owner document the parser built it in. It used to read
 `document.importNode(proto, true)`, guarded by a `hasAdoptingSteps` predicate, so nearly every
 prototype was moved out of that document into the page's, once per schema. That was a **trade**: it

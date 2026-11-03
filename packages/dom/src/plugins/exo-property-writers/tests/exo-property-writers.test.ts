@@ -22,22 +22,15 @@
 // AND THE COST GUARD IS THE LAST CASE, because the saving hydration exists for is that the first
 // write is skipped where it would change nothing: a port this pack DELEGATES must adopt exactly as
 // it did before, writing nothing.
-import {
-    createExoMachine,
-    composeExoMachine,
-    withExoTransitions,
-    withExoEffects,
-    createExoSchema,
-} from '@exodra/core';
+import { createExoSchema } from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoAttrPort,
-    TExoMachineNode,
     TExoWiring,
     TExoMachineInitialState,
 } from '@exodra/core';
 
-import { host, source, createExoTestMachine } from '@exodra/test-utils';
+import { host, source, createExoTestMachine, createExoFollowingMachine } from '@exodra/test-utils';
 import { describe, expect, it } from 'vitest';
 
 import { withExoPropertyWriters } from '../withExoPropertyWriters';
@@ -65,25 +58,9 @@ const badgeBoundTo = (tag: string, name: string, src: TSource) => {
         });
         return { x: p };
     });
-    const m = createExoMachine<TExoMachineNode>(schema);
-    const machine = composeExoMachine(
-        m,
-        (m) =>
-            withExoTransitions(m, {
-                show: (c) => {
-                    c.attr(schema.ports.x, src.getValue());
-                },
-            }),
-        (m) =>
-            withExoEffects(m, (effect) => {
-                effect((c) => {
-                    show(c);
-                    return src.onChange(() => show(c));
-                });
-            })
-    );
-    const { show } = machine.transitions;
-    return machine;
+    return createExoFollowingMachine(schema, src, (c, value) => {
+        c.attr(schema.ports.x, value);
+    });
 };
 
 /** The same, with the port FILLED rather than bound — the other half of the silenced table. */

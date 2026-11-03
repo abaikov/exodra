@@ -9,7 +9,7 @@
 import { describe, expect, it } from 'vitest';
 import { createExoMachine, createExoSchema } from '@exodra/core';
 import { createExoMemoryHistory, createExoRouter } from '../../index';
-import type { TExoHistory, TExoRoute, TExoRouteMatch, TExoRouter } from '../../types';
+import type { TExoHistory, TExoRoute, TExoRouter } from '../../types';
 
 /** A page that is never drawn — every case here reads the MATCH, never the markup. */
 const page = (name: string) =>
@@ -87,23 +87,6 @@ describe('router.navigationState', () => {
 
         router.dispose();
     });
-
-    it('comes back to idle when the guard BLOCKS, not only when it allows', async () => {
-        // A refused navigation still has to end the loading state; leaving it at `loading` is a
-        // spinner that never stops.
-        const router = createExoRouter(ROUTES, {
-            history: createExoMemoryHistory('/'),
-            beforeEach: async (match) => match.pathname !== '/about',
-        });
-
-        await router.navigate('/about');
-        await settled();
-
-        expect(router.getNavigationState()).toBe('idle');
-        expect(router.getLocation().pathname).toBe('/');
-
-        router.dispose();
-    });
 });
 
 // --------------------------------------------------------------------------- afterEach
@@ -134,28 +117,6 @@ describe('createExoRouter option: afterEach', () => {
         router.dispose();
     });
 
-    it('runs with `to` UNDEFINED when the destination matches no route', async () => {
-        // An unmatched destination still COMMITS — the URL moved, `location` was written, `match`
-        // was set to `undefined` — so the hook fires with `undefined`. Declared as
-        // `(to: TExoRouteMatch, …)` and passed through a `!`, a hook body reading `to.pathname`
-        // would typecheck and then throw at the first mistyped URL a user reached;
-        // `TExoRouteMatch | undefined` makes that body a compile error instead.
-        const at: Array<TExoRouteMatch | undefined> = [];
-        const router = createExoRouter(ROUTES, {
-            history: createExoMemoryHistory('/'),
-            afterEach: (to) => at.push(to),
-        });
-
-        await router.navigate('/nowhere');
-
-        expect(router.getLocation().pathname).toBe('/nowhere');
-        expect(router.getMatch()).toBeUndefined();
-        expect(at).toHaveLength(1);
-        expect(at[0]).toBeUndefined();
-
-        router.dispose();
-    });
-
     it('follows a guard REDIRECT and reports the destination that was actually reached', async () => {
         const at: Array<string | undefined> = [];
         const router = createExoRouter(
@@ -180,7 +141,9 @@ describe('createExoRouter option: afterEach', () => {
         router.dispose();
     });
 
-    it('does not fire for a refused navigation: nothing was written, so nothing is rolled back', async () => {
+    it('does not fire for a refused navigation, and the state comes back to idle: nothing was written, so nothing is rolled back', async () => {
+        // A refused navigation still has to end the loading state; leaving it at `loading` is a
+        // spinner that never stops.
         const at: Array<{ to?: string; from?: string }> = [];
         const history = createExoMemoryHistory('/');
         const router = createExoRouter(ROUTES, {
@@ -193,6 +156,7 @@ describe('createExoRouter option: afterEach', () => {
         await settled();
 
         expect(at).toEqual([]);
+        expect(router.getNavigationState()).toBe('idle');
         expect(router.getLocation().pathname).toBe('/');
         expect(history.getLocation().pathname).toBe('/');
 

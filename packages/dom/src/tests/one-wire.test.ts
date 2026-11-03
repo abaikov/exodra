@@ -236,15 +236,16 @@ const DRIFT = composeExoMachine(
             c.attr(DRIFT_SCHEMA.ports.stamped, drift.getValue());
             c.text(DRIFT_SCHEMA.ports.label, drift.getValue());
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showDrift } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showDrift(c);
                 return drift.onChange(() => showDrift(c));
             });
-        })
+        });
+    }
 );
-const { showDrift } = DRIFT.transitions;
 
 describe('every fill repairs when the client disagrees with the served bytes', () => {
     it('repairs an attribute, a text port and a composed binding alike', () => {

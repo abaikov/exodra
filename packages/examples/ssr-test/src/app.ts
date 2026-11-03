@@ -43,16 +43,19 @@ export const APP = composeExoMachine(
                 c.text(P.count, c.state.clicks);
             },
         }),
-    (m) =>
-        withExoWire(m, (c) => {
+    (m) => {
+        const { showCount } = m.transitions;
+        return withExoWire(m, (c) => {
             showCount(c);
-        }),
-    (m) =>
-        withExoHandlers(m, (on) => {
+        });
+    },
+    (m) => {
+        const { showCount } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(P.click, (c) => {
                 c.state.clicks++;
                 showCount(c);
             });
-        })
+        });
+    }
 );
-const { showCount } = APP.transitions;

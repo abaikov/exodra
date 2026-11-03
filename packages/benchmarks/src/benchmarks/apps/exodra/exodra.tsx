@@ -209,6 +209,10 @@ export const CARD = composeExoMachine(
                     );
                 }
             },
+        }),
+    (m) => {
+        const { toggleOpen, advanceTags } = m.transitions;
+        return withExoTransitions(m, {
             /** THE ONE DOOR A FRESHLY BUILT CARD IS MOVED OFF ITS DECLARED START THROUGH. A machine takes no
              *  props, so every value that belongs to THIS instance arrives as a transition argument. */
             seedCard: (c: TCard, i: number, users: readonly TExoBenchSource<number>[]) => {
@@ -240,12 +244,15 @@ export const CARD = composeExoMachine(
                     );
                 }
             },
-        }),
-    (m) =>
-        withExoHandlers(m, (on) => {
+        });
+    },
+    (m) => {
+        const { toggleOpen, advanceTags } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(P.toggle, (c) => toggleOpen(c));
             on(P.addTag, (c) => advanceTags(c));
-        }),
+        });
+    },
     (m) =>
         withExoEffects(m, (effect) => {
             effect((c) => {
@@ -341,6 +348,10 @@ export const DECK = composeExoMachine(
                 state.detail = detail;
                 c.text(PD.date, dateTextOf(state.when, state.detail));
             },
+        }),
+    (m) => {
+        const { renameDeck, setDeckDetail } = m.transitions;
+        return withExoTransitions(m, {
             /** The deck's own door off its declared start — the card's `seedCard`, one level up.
              *
              *  THREE STATEMENTS PER ROW AND NOT ONE EXPRESSION — build, drive, place. `c.build` arms the machine
@@ -388,11 +399,14 @@ export const DECK = composeExoMachine(
                     reclipTags(region.at(k) as unknown as TCard, cell);
                 }
             },
-        }),
-    (m) =>
-        withExoHandlers(m, (on) => {
+        });
+    },
+    (m) => {
+        const { renameDeck } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(PD.rename, (c) => renameDeck(c));
-        }),
+        });
+    },
     (m) =>
         withExoEffects(m, (effect) => {
             effect((c) => {

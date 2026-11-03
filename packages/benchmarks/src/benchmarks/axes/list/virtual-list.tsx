@@ -100,15 +100,16 @@ const RICH_ROW = composeExoMachine(
                 c.text(RICH_ROW_SCHEMA.ports.text, c.state.getValue());
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showRichText } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showRichText(c);
                 return c.state.onChange(() => showRichText(c));
             });
-        })
+        });
+    }
 );
-const { showRichText } = RICH_ROW.transitions;
 
 /**
  * The `<ul>` whose single children port holds the window.
@@ -146,15 +147,16 @@ function mountExodraWindow<TItem>(
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showWindow } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((cc) => {
                     showWindow(cc);
                     return visible.onChange(() => showWindow(cc));
                 });
-            })
+            });
+        }
     );
-    const { showWindow } = UL.transitions;
     return EXO_BACKEND.render(UL, c);
 }
 

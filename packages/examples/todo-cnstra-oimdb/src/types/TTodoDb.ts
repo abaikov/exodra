@@ -1,3 +1,3 @@
-import type { createTodoDb } from '../createTodoDb';
+import type { TTodoOimdb } from './TTodoOimdb';
 
-export type TTodoDb = ReturnType<typeof createTodoDb>;
+export type TTodoDb = NonNullable<TTodoOimdb['schemas']>['todos'];

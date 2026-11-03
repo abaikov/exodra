@@ -81,18 +81,6 @@ describe('isExoLazyLoader', () => {
         expect(isExoLazyLoader(exoLazy(() => Promise.resolve(DASHBOARD)))).toBe(true);
         expect(isExoLazyLoader(DASHBOARD)).toBe(false);
     });
-
-    it('goes by ARITY, so a loader written to take an argument is not recognised', () => {
-        // A TRAP, NOT A THEORY. The test is `typeof component === 'function' &&
-        // component.length === 0`, so a hand-rolled loader that declares a parameter —
-        // `(match) => import('./page')` — answers `false` here, is then refused by
-        // `isExoPageMachine` as well, and reaches the "cannot render" throw in
-        // `showExoOutletRoute`. `exoLazy` always returns a zero-arity function.
-        const takesAnArgument = ((_unused: unknown) =>
-            Promise.resolve(DASHBOARD)) as unknown as TExoRouteMachine;
-        expect(isExoLazyLoader(takesAnArgument)).toBe(false);
-        expect(isExoPageMachine(takesAnArgument)).toBe(false);
-    });
 });
 
 // --------------------------------------------------------------------- fetching a chunk

@@ -4,6 +4,7 @@ import type { TTodoFilter } from './types/TTodoFilter';
 export const TodoUiAxon = {
     newTodoEntered: cnsCollateral<{ title: string }>(),
     toggleClicked: cnsCollateral<{ id: string; done: boolean }>(),
+    toggleAllClicked: cnsCollateral<{ done: boolean }>(),
     destroyClicked: cnsCollateral<{ id: string }>(),
     titleEdited: cnsCollateral<{ id: string; title: string }>(),
     clearCompletedClicked: cnsCollateral(),

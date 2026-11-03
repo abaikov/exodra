@@ -116,15 +116,16 @@ const htmlFollowing = <TPorts extends { html: TExoChildrenPort }>(
                     c.unsafeHtml(schema.ports.html, body.getValue());
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { draw } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     draw(c);
                     return body.onChange(() => draw(c));
                 });
-            })
+            });
+        }
     );
-    const { draw } = following.transitions;
     return following as unknown as TExoMachine<TFilling>;
 };
 

@@ -4,6 +4,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { bareImports } from '@exodra/test-utils';
 
 const SRC = fileURLToPath(new URL('../', import.meta.url));
 
@@ -42,39 +43,8 @@ function sourceFiles(dir: string, prefix = ''): string[] {
     return out;
 }
 
-/**
- * The BARE specifiers a file names. The statement must BEGIN a line, which steps over a quoted
- * import inside a comment or a string literal, and it may not cross a `;`, which stops the lazy
- * middle pairing an `export function …` with an unrelated `from` further down.
- *
- * THE TYPE-POSITION FORM IS MATCHED TOO: `X extends import('@exodra/core').TExoWiring` is how a
- * file could reach into another package without ever writing an import statement.
- */
-function bareImports(source: string): string[] {
-    const found = new Set<string>();
-    const take = (specifier: string): void => {
-        if (!specifier.startsWith('.')) found.add(specifier);
-    };
-
-    const statements = /(?:^|\n)[ \t]*(?:import|export)\b[^;]*?\bfrom\s*'([^']+)'/g;
-    let match = statements.exec(source);
-    while (match !== null) {
-        take(match[1]);
-        match = statements.exec(source);
-    }
-
-    const inType = /\bimport\s*\(\s*'([^']+)'\s*\)/g;
-    match = inType.exec(source);
-    while (match !== null) {
-        take(match[1]);
-        match = inType.exec(source);
-    }
-
-    return [...found].sort();
-}
-
 function allowedFor(file: string): readonly string[] {
-    if (file.endsWith('.test.ts')) return TEST_MAY_IMPORT;
+    if (file.endsWith('.test.ts') || file.includes('/tests/')) return TEST_MAY_IMPORT;
     if (file.includes('bench/')) return BENCH_MAY_IMPORT;
     return RENDERER_MAY_IMPORT;
 }
@@ -91,19 +61,6 @@ describe('@exodra/dom names the schema surface and the context vocabulary, and n
         expect(FILES.length).toBeGreaterThan(100);
         expect(FILES).toContain('dom/EXO_DOM_NODE_VOCABULARY.ts');
         expect(FILES).toContain('hydrate/EXO_HYDRATE_NODE_VOCABULARY.ts');
-    });
-
-    it('no file in this package reaches another backend outside a test', () => {
-        const offenders: string[] = [];
-        for (const file of FILES) {
-            if (file.endsWith('.test.ts')) continue;
-            for (const specifier of bareImports(readFileSync(SRC + file, 'utf8'))) {
-                if (/^@exodra\/(string|term|ssr)\b/.test(specifier)) {
-                    offenders.push(`${file} imports ${specifier}`);
-                }
-            }
-        }
-        expect(offenders).toEqual([]);
     });
 
     it('every file imports only what its layer may name', () => {

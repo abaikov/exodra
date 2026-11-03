@@ -182,15 +182,16 @@ function mountExodraRows(
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((cc) => {
                     showRows(cc);
                     return rows.onChange(() => showRows(cc));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = UL.transitions;
     return EXO_BACKEND.render(UL, c);
 }
 

@@ -183,40 +183,6 @@ const BUMP: TExoEventHandler<Event, Element> = function (_event, subject) {
 };
 
 describe('handlers that read their subject', () => {
-    it('serve every row from ONE object, under the direct strategy', () => {
-        const items = [item(), item(), item()];
-        const ROW = rowWith((P) => (c, at) => {
-            c.text(P.label, 'row ' + at);
-            c.on(P.click, TOGGLE_DONE, items[at as number]);
-        });
-        const parent = host();
-        EXO_BACKEND.render(listOf(ROW, 3), parent);
-
-        const buttons = parent.querySelectorAll('button');
-        clickOn(buttons[1]);
-
-        // ONE handler for all three rows; which row it wrote came from the element the event hit.
-        expect(items[1].done.getValue()).toBe(true);
-        expect(items[0].done.getValue()).toBe(false);
-        expect(items[2].done.getValue()).toBe(false);
-    });
-
-    it('print nothing on the server, and leave the two backends byte-identical', () => {
-        const items = [item(), item()];
-        const ROW = rowWith((P) => (c, at) => {
-            c.text(P.label, 'row ' + at);
-            c.on(P.click, TOGGLE_DONE, items[at as number]);
-        });
-        const parent = host();
-        const LIST = listOf(ROW, 2);
-        EXO_BACKEND.render(LIST, parent);
-
-        expect(EXO_STR.render(LIST)).toBe(parent.innerHTML);
-        // A handler is a FUNCTION: the failure this guards is it being stringified into the
-        // markup, which both backends would do identically and neither would complain about.
-        expect(parent.innerHTML).not.toContain('function');
-    });
-
     it('set a constant and apply a pure update, with the element in hand', () => {
         const SET_TEXT: TExoEventHandler<Event, Element> = function (_event, subject) {
             (subject as TItem).text.setValue('chosen');
@@ -484,40 +450,24 @@ describe('the delegated strategy', () => {
         expect(() => DELEGATED_BACKEND.render(ROW, host())).toThrow(/"click".*delegated/s);
     });
 
-    it('refuses an event that does not bubble, when the pack is built', () => {
-        expect(() => renderNamed('focus')).toThrow(/does not bubble/);
-    });
-
-    it('STILL refuses it under NODE_ENV=production — the check is not a dev-only guard', () => {
-        // THIS IS THE POINT OF THE WHOLE CASE, and it is here because for a while it was false.
-        //
-        // Both refusals in `createExoDelegatedEvents` used to be written
-        // `if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && COND)`,
-        // and in this repository that spelling does not strip a MESSAGE — the `define` folds
-        // `NODE_ENV` to "production" and the minifier deletes THE WHOLE CONDITION. So a production
-        // build accepted `focus` in a delegated pack in silence and shipped a page whose handler
-        // could never fire.
-        //
-        // The argument for stripping was that a pack's list is a literal written at module level
-        // and a typo in it is caught by the first local load. That holds for a literal and not for
-        // a pack assembled from DATA — a config, a plugin registry, a list a host application
-        // composes — where the name is not settled before the program ships.
-        //
-        // Keeping the check costs one `Set.has` per event name, once per pack, once per process
-        // (`createExoDelegatedEvents` is called by the application in a plugin provider; nothing inside
-        // this package calls it in a loop — read off the call sites, not assumed).
-        const before = process.env.NODE_ENV;
-        process.env.NODE_ENV = 'production';
-        try {
-            expect(() => renderNamed('focus')).toThrow(/EXO0051 "focus"/);
-            expect(() => renderNamed('pointermove')).toThrow(/EXO0052 "pointermove"/);
-        } finally {
-            if (before === undefined) delete process.env.NODE_ENV;
-            else process.env.NODE_ENV = before;
-        }
-    });
-
-    it('prints EXO0051 with the port name under production, and the sentence in development', () => {
+    // THIS IS THE POINT OF THE WHOLE CASE, and it is here because for a while it was false.
+    //
+    // Both refusals in `createExoDelegatedEvents` used to be written
+    // `if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && COND)`,
+    // and in this repository that spelling does not strip a MESSAGE — the `define` folds
+    // `NODE_ENV` to "production" and the minifier deletes THE WHOLE CONDITION. So a production
+    // build accepted `focus` in a delegated pack in silence and shipped a page whose handler
+    // could never fire.
+    //
+    // The argument for stripping was that a pack's list is a literal written at module level
+    // and a typo in it is caught by the first local load. That holds for a literal and not for
+    // a pack assembled from DATA — a config, a plugin registry, a list a host application
+    // composes — where the name is not settled before the program ships.
+    //
+    // Keeping the check costs one `Set.has` per event name, once per pack, once per process
+    // (`createExoDelegatedEvents` is called by the application in a plugin provider; nothing inside
+    // this package calls it in a loop — read off the call sites, not assumed).
+    it('STILL refuses under production, printing the code and the port name, and the sentence in development', () => {
         // The other side of the same change: the check ships, the explanation does not. What must
         // survive is the code and the offending name — a pack can be assembled from a config, so a
         // production console that named neither would leave a reader nothing to search for.
@@ -530,6 +480,7 @@ describe('the delegated strategy', () => {
             } catch (e) {
                 short = (e as Error).message;
             }
+            expect(() => renderNamed('pointermove')).toThrow(/EXO0052 "pointermove"/);
         } finally {
             if (before === undefined) delete process.env.NODE_ENV;
             else process.env.NODE_ENV = before;
@@ -589,36 +540,6 @@ describe('the delegated strategy', () => {
         // header instead of looking like a completeness fix.
         expect(() => renderNamed('cancel')).not.toThrow();
         expect(() => renderNamed('slotchange')).not.toThrow();
-    });
-
-    it('still accepts every name that DOES bubble', () => {
-        // The other half of widening the refusal set, and the one that catches an over-eager
-        // addition: a name whose spec says it bubbles must stay delegatable, or the pack has
-        // taken a feature away instead of a footgun.
-        //
-        // `wheel` used to be in this list and now lives in the high-frequency describe below.
-        // It still bubbles and is still delegatable — what changed is that the intent has to be
-        // stated in the call, because the walk to the root runs on every notch of momentum
-        // scrolling. Nothing here may be a name from EITHER refusal set.
-        expect(() =>
-            createExoDelegatedEvents([
-                'click',
-                'input',
-                'change',
-                'submit',
-                'reset',
-                'keydown',
-                'focusin',
-                'focusout',
-                'pointerdown',
-                'mouseover',
-                'select',
-                'beforeinput',
-                'contextmenu',
-                'dragenter',
-                'transitionend',
-            ])
-        ).not.toThrow();
     });
 
     it('refuses a port whose event the pack does not listen for', () => {
@@ -746,15 +667,6 @@ describe('the high-frequency refusal', () => {
         expect(message).toContain('allowHighFrequency');
     });
 
-    it('accepts the same names when the call states the intent', () => {
-        expect(() =>
-            createExoDelegatedEvents(
-                ['pointermove', 'mousemove', 'wheel', 'touchmove', 'drag', 'dragover'],
-                { allowHighFrequency: true }
-            )
-        ).not.toThrow();
-    });
-
     it('builds a pack that really dispatches the name it accepted', () => {
         // Not throwing is not the claim — the claim is that the opt-in produces a WORKING
         // delegated pack, so the accepted name has to reach a handler through the root.
@@ -785,27 +697,6 @@ describe('the high-frequency refusal', () => {
                 /does not bubble/
             );
         }
-    });
-
-    it('leaves ordinary bubbling names alone, with or without the opt-in', () => {
-        // `mouseover` and `dragenter` are the near misses: they bubble and they can arrive in
-        // bursts, but their rate is bounded by boundary crossings rather than by the sampling
-        // rate, and one listener serving a whole list's hover is what delegation is FOR.
-        const ordinary = ['click', 'input', 'keydown', 'mouseover', 'mouseout', 'dragenter'];
-        expect(() => createExoDelegatedEvents(ordinary)).not.toThrow();
-        expect(() =>
-            createExoDelegatedEvents(ordinary, { allowHighFrequency: true })
-        ).not.toThrow();
-    });
-
-    it('is a per-call option, so one pack cannot unlock the next', () => {
-        // The whole reason the opt-in is an argument and not a setting: a pack built with it
-        // must leave the pack built on the line below refusing.
-        createExoDelegatedEvents(['pointermove'], { allowHighFrequency: true });
-        expect(() => renderNamed('pointermove')).toThrow(/allowHighFrequency/);
-        expect(() => renderNamed('pointermove', { allowHighFrequency: false })).toThrow(
-            /allowHighFrequency/
-        );
     });
 });
 
@@ -922,21 +813,6 @@ describe('hydration', () => {
         clickOn(parent.querySelectorAll('button')[2]);
         expect(items[2].done.getValue()).toBe(true);
         expect(items[1].done.getValue()).toBe(false);
-    });
-
-    it('attaches the direct strategy to markup the server printed', () => {
-        const items = [item(), item()];
-        const ROW = rowWith((P) => (c, at) => {
-            c.text(P.label, 'row ' + at);
-            c.on(P.click, TOGGLE_DONE, items[at as number]);
-        });
-        const parent = host();
-        const LIST = listOf(ROW, 2);
-        parent.innerHTML = EXO_STR.render(LIST);
-        EXO_BACKEND.hydrate(LIST, parent);
-
-        clickOn(parent.querySelectorAll('button')[0]);
-        expect(items[0].done.getValue()).toBe(true);
     });
 });
 

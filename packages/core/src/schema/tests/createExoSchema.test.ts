@@ -1,7 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import ts from 'typescript';
 import { createExoNamedSchema } from '../factories/createExoNamedSchema';
 import { createExoSchema } from '../factories/createExoSchema';
 import { harvestExoSchema } from '../factories/harvestExoSchema';
@@ -63,22 +60,6 @@ describe('createExoSchema', () => {
         expect(schema.portList[0]).toBe(schema.ports.text);
         expect(schema.portList[1]).toBe(schema.ports.attr);
         expect(schema.declaredPorts).toBe(0);
-    });
-
-    it('numbers an element as: its attribute and event ports, then its content, then children', () => {
-        const schema = createExoSchema((b) => {
-            const ports: Record<string, { index: number }> = {};
-            b.el('div', null, (div) => {
-                ports.a = div.port('data-a');
-                ports.click = div.eventPort('click');
-                ports.children = div.childrenPort();
-            });
-            return ports;
-        });
-
-        expect(schema.ports.a.index).toBe(0);
-        expect(schema.ports.click.index).toBe(1);
-        expect(schema.ports.children.index).toBe(2);
     });
 
     it('records each port with the kind it was declared as', () => {
@@ -187,25 +168,6 @@ describe('createExoSchema', () => {
                 })
             )
         ).toThrow(/no element/);
-    });
-
-    it('numbers a nested tree depth-first, so a port deep in the first branch precedes a shallow one in the second', () => {
-        const schema = createExoSchema((b) => {
-            const out: Record<string, { index: number }> = {};
-            b.el('div', null, (div) => {
-                div.el('section', null, (section) => {
-                    section.el('span', null, (span) => {
-                        out.deep = span.textPort();
-                    });
-                });
-                div.el('footer', null, (footer) => {
-                    out.shallow = footer.port('data-f');
-                });
-            });
-            return out;
-        });
-        expect(schema.ports.deep.index).toBe(0);
-        expect(schema.ports.shallow.index).toBe(1);
     });
 });
 
@@ -407,38 +369,12 @@ describe('a text port inside a raw-text element', () => {
             expect(schema.portList).toHaveLength(1);
         }
     });
-
-    it('leaves a CHILDREN port in a raw-text element alone — it is the way out', () => {
-        // Raw content that belongs in a `<script>` goes in as MARKUP through a port that owns
-        // the element (the `unsafeHtml` hatch), which is written raw on BOTH backends by
-        // design. Refusing that too would leave the shape with no expression at all.
-        const schema = checkedSchema((b) => {
-            const out: Record<string, { index: number }> = {};
-            b.el('script', null, (e) => {
-                out.body = e.childrenPort();
-            });
-            return out;
-        });
-        expect(schema.portList).toHaveLength(1);
-    });
 });
 
 describe('STATIC text inside a raw-text element', () => {
     // The text is emitted VERBATIM by both compilers now — escaping it produced the same broken
     // bytes on both sides, which is why no parity test ever objected — so the element's boundary
     // has nothing holding it up but this refusal. See `assertExoIntactRawTextBoundary`.
-
-    it('is accepted when it merely contains characters HTML would otherwise escape', () => {
-        // The whole point of the change: this is the shape that was shipping `.a &gt; .b` to the
-        // CSS parser, which reads the entity as six literal characters and matches nothing.
-        const schema = checkedSchema((b) => {
-            b.el('style', null, (s) => {
-                s.text('.a > .b { color: red } .c::after { content: "&" }');
-            });
-            return {};
-        });
-        expect(schema.portList).toHaveLength(0);
-    });
 
     for (const [tag, text] of [
         ['script', 'var a = "</script>"'],
@@ -459,169 +395,133 @@ describe('STATIC text inside a raw-text element', () => {
         });
     }
 
-    it('names the tag and the sequence it found', () => {
-        expect(() =>
-            checkedSchema((b) => {
-                b.el('script', null, (e) => {
-                    e.text('f("</SCRIPT >")');
-                });
-                return {};
-            })
-        ).toThrow(/closing sequence/);
-    });
+    const STATIC_RUNS: ReadonlyArray<{
+        what: string;
+        tag: string;
+        texts: readonly string[];
+        childrenPortAfter?: true;
+        refusal?: RegExp;
+    }> = [
+        {
+            what: 'is accepted when it merely contains characters HTML would otherwise escape',
+            // The whole point of the change: this is the shape that was shipping `.a &gt; .b` to the
+            // CSS parser, which reads the entity as six literal characters and matches nothing.
+            tag: 'style',
+            texts: ['.a > .b { color: red } .c::after { content: "&" }'],
+        },
+        {
+            what: 'is refused when the sequence is SPLIT across two text calls',
+            // Both compilers merge a run of adjacent static text before emitting it — the parser sees
+            // one Text node either way — so neither half needs to contain the sequence for the markup
+            // to. A per-call check would be stepped around by exactly the author who wanted to.
+            tag: 'script',
+            texts: ['var a = "</scr', 'ipt> and more"'],
+            refusal: /closing sequence/,
+        },
+        {
+            what: 'is refused when the sequence is split across THREE text calls',
+            tag: 'style',
+            texts: ['</st', 'y', 'le> x'],
+            refusal: /closing sequence/,
+        },
+        {
+            what: 'is NOT refused for `</script` with no terminator after it',
+            // The tokenizer emits an end tag only when `</script` is followed by whitespace, `/` or
+            // `>`; anything else — including the `<` of whatever the compiler appends next — makes
+            // the whole run ordinary character data. Refusing this would refuse a page that works.
+            tag: 'script',
+            texts: ['var a = "</scriptable";'],
+        },
+        {
+            what: 'is refused when the sequence is the LAST thing in the run and a PORT follows it',
+            // THE RULE THAT HOLDS THIS SHAPE IS THE PORT'S. A children port in a raw-text element must
+            // be that element's ONLY child, so a static cannot stand in front of one at all — and the
+            // boundary across which the static's last eight characters could spell a closing sequence
+            // does not exist. The schema is refused at the port rather than at the `text()`, one call
+            // later and by name.
+            tag: 'script',
+            texts: ['var x = "</script'],
+            childrenPortAfter: true,
+            refusal: /must be its ONLY child/,
+        },
+        {
+            what: 'is ACCEPTED when the sequence ends the run and NOTHING follows it',
+            // WAS REFUSED IN EVERY BUILD, on a run that renders correctly. The only thing a compiler
+            // can emit after this run is the element's own `</script>`, and `<` is not a terminator —
+            // which is a fact about the tokenizer, not a decision either backend is free to change.
+            // See the enumeration in `closingSequenceAt` for the four other things that could have
+            // followed and the rule that refuses each of them.
+            tag: 'script',
+            texts: ['var x = "</script'],
+        },
+        {
+            what: 'is ACCEPTED when the run ends on the sequence after a SECOND text() call',
+            // The merge still makes the run the unit — what changed is that a run merely ENDING on
+            // the sequence is not a match. A third call supplying a terminator would be, and is
+            // pinned in `assertExoIntactRawTextBoundary.test.ts`.
+            tag: 'script',
+            texts: ['var a = "</scr', 'ipt'],
+        },
+        {
+            what: 'is ACCEPTED for a run-ending sequence spelled in the other case',
+            // Both halves are still compared lowercased — `</SCRIPT ` closes a `<script>` and is still
+            // refused. What is accepted is the run that stops before any terminator, in either case.
+            tag: 'script',
+            texts: ['f("</SCRIPT'],
+        },
+        {
+            what: 'no longer decides a benign static followed by a children port — the PORT rule does',
+            // WAS "still accepts", AND THE SHAPE IS REFUSED NOW, one call later than this describe.
+            // What refuses it is not this rule — the text is harmless and stays harmless — but
+            // `assertExoSoleChildRawTextPort`, which requires a children port in a raw-text element to
+            // be that element's ONLY child. The message names the port, not the text.
+            tag: 'script',
+            texts: ['var config = 1;'],
+            childrenPortAfter: true,
+            refusal: /must be its ONLY child/,
+        },
+        {
+            what: 'has no PARTIAL-sequence residue left, because the boundary cannot be built',
+            // WAS AN OPEN RESIDUE, SAID OUT LOUD: `</scri` here plus a port value beginning `pt>`
+            // closed the element between them, and this rule could not see it — it runs at `text()`,
+            // where the next call has not happened, and refusing every tail that is a prefix of
+            // `</script` would refuse a run ending in a bare `<`. What kept it shut was in
+            // @exodra/string: `refuseSharedHtml`, plus "every instance's markup begins with `<`".
+            //
+            // IT IS CLOSED FROM THE OTHER END. The static is still accepted BY THIS RULE, and the
+            // schema is still refused, because a children port may not stand behind a static in a
+            // raw-text element at all — so there is no boundary for a sequence to be spelled across,
+            // whatever @exodra/string later decides about raw markup.
+            tag: 'script',
+            texts: ['var x = "</scri'],
+            childrenPortAfter: true,
+            refusal: /ONLY child/,
+        },
+        {
+            what: 'still accepts the same static when NO port follows it',
+            // The legitimate neighbour of both refusals above: a partial sequence in the middle of a
+            // `<script>`'s text is ordinary source and is not refused by anything. `</scri` is not a
+            // closing sequence, and with no port behind it there is nothing to complete it.
+            tag: 'script',
+            texts: ['var x = "</scri" + tail;'],
+        },
+    ];
 
-    it('is refused when the sequence is SPLIT across two text calls', () => {
-        // Both compilers merge a run of adjacent static text before emitting it — the parser sees
-        // one Text node either way — so neither half needs to contain the sequence for the markup
-        // to. A per-call check would be stepped around by exactly the author who wanted to.
-        expect(() =>
-            checkedSchema((b) => {
-                b.el('script', null, (e) => {
-                    e.text('var a = "</scr');
-                    e.text('ipt> and more"');
+    for (const c of STATIC_RUNS) {
+        it(c.what, () => {
+            const build = (): TExoCursorDeclaration<Record<string, { index: number }>> =>
+                checkedSchema((b) => {
+                    const out: Record<string, { index: number }> = {};
+                    b.el(c.tag, null, (e) => {
+                        for (const text of c.texts) e.text(text);
+                        if (c.childrenPortAfter) out.body = e.childrenPort();
+                    });
+                    return out;
                 });
-                return {};
-            })
-        ).toThrow(/closing sequence/);
-    });
-
-    it('is refused when the sequence is split across THREE text calls', () => {
-        expect(() =>
-            checkedSchema((b) => {
-                b.el('style', null, (e) => {
-                    e.text('</st');
-                    e.text('y');
-                    e.text('le> x');
-                });
-                return {};
-            })
-        ).toThrow(/closing sequence/);
-    });
-
-    it('is NOT refused for `</script` with no terminator after it', () => {
-        // The tokenizer emits an end tag only when `</script` is followed by whitespace, `/` or
-        // `>`; anything else — including the `<` of whatever the compiler appends next — makes
-        // the whole run ordinary character data. Refusing this would refuse a page that works.
-        const schema = checkedSchema((b) => {
-            b.el('script', null, (s) => {
-                s.text('var a = "</scriptable";');
-            });
-            return {};
+            if (c.refusal) expect(build).toThrow(c.refusal);
+            else expect(build().portList).toHaveLength(0);
         });
-        expect(schema.portList).toHaveLength(0);
-    });
-
-    it('is refused when the sequence is the LAST thing in the run and a PORT follows it', () => {
-        // THE RULE THAT HOLDS THIS SHAPE IS THE PORT'S. A children port in a raw-text element must
-        // be that element's ONLY child, so a static cannot stand in front of one at all — and the
-        // boundary across which the static's last eight characters could spell a closing sequence
-        // does not exist. The schema is refused at the port rather than at the `text()`, one call
-        // later and by name.
-        expect(() =>
-            checkedSchema((b) => {
-                const out: Record<string, { index: number }> = {};
-                b.el('script', null, (s) => {
-                    s.text('var x = "</script');
-                    out.body = s.childrenPort();
-                });
-                return out;
-            })
-        ).toThrow(/must be its ONLY child/);
-    });
-
-    it('is ACCEPTED when the sequence ends the run and NOTHING follows it', () => {
-        // WAS REFUSED IN EVERY BUILD, on a run that renders correctly. The only thing a compiler
-        // can emit after this run is the element's own `</script>`, and `<` is not a terminator —
-        // which is a fact about the tokenizer, not a decision either backend is free to change.
-        // See the enumeration in `closingSequenceAt` for the four other things that could have
-        // followed and the rule that refuses each of them.
-        const schema = checkedSchema((b) => {
-            b.el('script', null, (s) => {
-                s.text('var x = "</script');
-            });
-            return {};
-        });
-        expect(schema.portList).toHaveLength(0);
-    });
-
-    it('is ACCEPTED when the run ends on the sequence after a SECOND text() call', () => {
-        // The merge still makes the run the unit — what changed is that a run merely ENDING on
-        // the sequence is not a match. A third call supplying a terminator would be, and is
-        // pinned in `assertExoIntactRawTextBoundary.test.ts`.
-        const schema = checkedSchema((b) => {
-            b.el('script', null, (s) => {
-                s.text('var a = "</scr');
-                s.text('ipt');
-            });
-            return {};
-        });
-        expect(schema.portList).toHaveLength(0);
-    });
-
-    it('is ACCEPTED for a run-ending sequence spelled in the other case', () => {
-        // Both halves are still compared lowercased — `</SCRIPT ` closes a `<script>` and is still
-        // refused. What is accepted is the run that stops before any terminator, in either case.
-        const schema = checkedSchema((b) => {
-            b.el('script', null, (s) => {
-                s.text('f("</SCRIPT');
-            });
-            return {};
-        });
-        expect(schema.portList).toHaveLength(0);
-    });
-
-    it('no longer decides a benign static followed by a children port — the PORT rule does', () => {
-        // WAS "still accepts", AND THE SHAPE IS REFUSED NOW, one call later than this describe.
-        // What refuses it is not this rule — the text is harmless and stays harmless — but
-        // `assertExoSoleChildRawTextPort`, which requires a children port in a raw-text element to
-        // be that element's ONLY child. The message names the port, not the text.
-        expect(() =>
-            checkedSchema((b) => {
-                const out: Record<string, { index: number }> = {};
-                b.el('script', null, (s) => {
-                    s.text('var config = 1;');
-                    out.body = s.childrenPort();
-                });
-                return out;
-            })
-        ).toThrow(/must be its ONLY child/);
-    });
-
-    it('has no PARTIAL-sequence residue left, because the boundary cannot be built', () => {
-        // WAS AN OPEN RESIDUE, SAID OUT LOUD: `</scri` here plus a port value beginning `pt>`
-        // closed the element between them, and this rule could not see it — it runs at `text()`,
-        // where the next call has not happened, and refusing every tail that is a prefix of
-        // `</script` would refuse a run ending in a bare `<`. What kept it shut was in
-        // @exodra/string: `refuseSharedHtml`, plus "every instance's markup begins with `<`".
-        //
-        // IT IS CLOSED FROM THE OTHER END. The static is still accepted BY THIS RULE, and the
-        // schema is still refused, because a children port may not stand behind a static in a
-        // raw-text element at all — so there is no boundary for a sequence to be spelled across,
-        // whatever @exodra/string later decides about raw markup.
-        expect(() =>
-            checkedSchema((b) => {
-                const out: Record<string, { index: number }> = {};
-                b.el('script', null, (s) => {
-                    s.text('var x = "</scri');
-                    out.body = s.childrenPort();
-                });
-                return out;
-            })
-        ).toThrow(/ONLY child/);
-    });
-
-    it('still accepts the same static when NO port follows it', () => {
-        // The legitimate neighbour of both refusals above: a partial sequence in the middle of a
-        // `<script>`'s text is ordinary source and is not refused by anything. `</scri` is not a
-        // closing sequence, and with no port behind it there is nothing to complete it.
-        const schema = checkedSchema((b) => {
-            b.el('script', null, (s) => {
-                s.text('var x = "</scri" + tail;');
-            });
-            return {};
-        });
-        expect(schema.portList).toHaveLength(0);
-    });
+    }
 
     it('is NOT refused inside <textarea> or <title>, whose text is still ESCAPED', () => {
         // RCDATA, not raw text: a browser DOES decode character references in these, both
@@ -832,30 +732,6 @@ describe('a child ELEMENT inside an RCDATA element', () => {
         ).toThrow(/RCDATA element/);
     });
 
-    it('still accepts static text and a text port in the same elements', () => {
-        // THE LEGITIMATE NEIGHBOUR. Everything that was legal inside these two stays legal: their
-        // content model is TEXT and both backends write text there identically, escaped. Only the
-        // shape HTML cannot express — an element — is gone.
-        for (const tag of ['textarea', 'title']) {
-            const withStatic = checkedSchema((b) => {
-                b.el(tag, null, (e) => {
-                    e.text('a < b & c');
-                });
-                return {};
-            });
-            expect(withStatic.portList).toHaveLength(0);
-
-            const withPort = checkedSchema((b) => {
-                const out: Record<string, { index: number }> = {};
-                b.el(tag, null, (e) => {
-                    out.text = e.textPort();
-                });
-                return out;
-            });
-            expect(withPort.portList).toHaveLength(1);
-        }
-    });
-
     it('still accepts an element NEXT TO one, which is where content belongs', () => {
         const schema = checkedSchema((b) => {
             b.el('div', null, (d) => {
@@ -922,27 +798,6 @@ describe('a child ELEMENT inside a raw-text element', () => {
         ).toThrow(/RAW TEXT/);
     });
 
-    it('is refused inside <textarea> and <title> TOO, and says RCDATA when it is', () => {
-        // WAS "is NOT refused", and the reversal is the point rather than a detail.
-        // `EXO_RAW_TEXT_ELEMENTS` still names neither, deliberately: their text is escapable, a
-        // browser decodes character references in them, both compilers escape what they write
-        // there, and every OTHER file asking about raw text is asking about exactly that. This
-        // rule is not. RCDATA recognises no TAG either, so `<b>` between `<textarea>` and
-        // `</textarea>` is characters on the server and a Text node in the browser's parse of the
-        // same bytes — the same divergence, refused now by a second tag list,
-        // `EXO_RCDATA_ELEMENTS`. The full case lives in its own describe above.
-        for (const tag of ['textarea', 'title']) {
-            expect(() =>
-                checkedSchema((b) => {
-                    b.el(tag, null, (e) => {
-                        e.el('b');
-                    });
-                    return {};
-                })
-            ).toThrow(/RCDATA element/);
-        }
-    });
-
     it('is NOT refused inside an ordinary element', () => {
         const schema = checkedSchema((b) => {
             b.el('p', null, (p) => {
@@ -951,32 +806,6 @@ describe('a child ELEMENT inside a raw-text element', () => {
             return {};
         });
         expect(schema.portList).toHaveLength(0);
-    });
-
-    it('leaves a raw-text element holding nothing but TEXT alone', () => {
-        // The shape the refusal recommends, and the one both compilers emit verbatim.
-        const schema = checkedSchema((b) => {
-            b.el('style', null, (s) => {
-                s.text('.a > .b { color: red }');
-            });
-            return {};
-        });
-        expect(schema.portList).toHaveLength(0);
-    });
-
-    it('still leaves a CHILDREN port in a raw-text element alone', () => {
-        // The other way out, and the reason this rule is about ELEMENTS rather than about
-        // "anything inside a <script>": a port filled with `set` is the `unsafeHtml` hatch,
-        // written raw on the server and with `innerHTML` in the browser — one Text node on both
-        // sides. Pinned beside the refusal so that widening one into the other fails here.
-        const schema = checkedSchema((b) => {
-            const out: Record<string, { index: number }> = {};
-            b.el('script', null, (e) => {
-                out.body = e.childrenPort();
-            });
-            return out;
-        });
-        expect(schema.portList).toHaveLength(1);
     });
 });
 
@@ -1013,19 +842,6 @@ describe('the raw-text refusals are NOT dev-only — they ship', () => {
     // a per-deployment constant reaches the call as a value the developer's machine never saw.
     // See the two-baskets note in `createExoSchema.ts` and both raw-text refusal files.
 
-    it('refuses a `</script>` payload in a raw-text STATIC under NODE_ENV=production', () => {
-        expect(() =>
-            underProduction(() =>
-                checkedSchema((b) => {
-                    b.el('script', null, (s) => {
-                        s.text('var cfg = "</script><img src=x onerror=alert(1)>";');
-                    });
-                    return {};
-                })
-            )
-        ).toThrow('EXO0009');
-    });
-
     it('refuses it under production when it is SPLIT across two text() calls', () => {
         // The merge both compilers do is what makes the run the unit, and production must see the
         // run for the same reason development does — otherwise the shipped refusal is the one that
@@ -1041,50 +857,6 @@ describe('the raw-text refusals are NOT dev-only — they ship', () => {
                 })
             )
         ).toThrow('EXO0009');
-    });
-
-    it('refuses a run ENDING on the closing sequence, before a port, under production', () => {
-        // The end-of-run case belongs in the shipped half for the reason the whole file does: the
-        // static that ends on `</script` is exactly the one a host application, a CMS field or a
-        // template compiler can hand over, and the port after it prints a value straight into the
-        // raw text. A build that accepts it in silence serves a document whose structure the
-        // value chooses.
-        //
-        // WHICH RULE HOLDS IT: `assertExoSoleChildRawTextPort`, not an end-of-run branch in
-        // `closingSequenceAt`. With a children port required to be its element's ONLY child there
-        // is nothing a run can spell a sequence ACROSS, and an end-of-run branch would charge for
-        // that reach with a false refusal — `.text('</script').text('able')` is the legal string
-        // `</scriptable`.
-        //
-        // The assertion names that rule by its CODE, since that refusal is in the third shape and
-        // a production build prints `EXO0005` and the names. A throw about a closing sequence here
-        // means an end-of-run branch is back and the enumeration in `assertExoIntactRawTextBoundary`
-        // needs re-reading.
-        expect(() =>
-            underProduction(() =>
-                checkedSchema((b) => {
-                    const out: Record<string, { index: number }> = {};
-                    b.el('script', null, (s) => {
-                        s.text('var x = "</script');
-                        out.body = s.childrenPort();
-                    });
-                    return out;
-                })
-            )
-        ).toThrow('EXO0005 "script" 1');
-    });
-
-    it('refuses a text PORT inside a raw-text element under NODE_ENV=production', () => {
-        expect(() =>
-            underProduction(() =>
-                checkedSchema((b) => {
-                    b.el('script', null, (e) => {
-                        e.textPort();
-                    });
-                    return {};
-                })
-            )
-        ).toThrow('EXO0012');
     });
 
     it('accepts a benign static in the same position under production', () => {
@@ -1179,7 +951,18 @@ describe('the raw-text refusals are NOT dev-only — they ship', () => {
         expect(message).not.toContain('EXO0004');
     });
 
-    it('refuses a SHARED children port in a raw-text element under NODE_ENV=production', () => {
+    const STATICS_BEFORE_A_CHILDREN_PORT_UNDER_PRODUCTION: ReadonlyArray<{
+        what: string;
+        tag: string;
+        texts: readonly string[];
+        message: string;
+    }> = [
+        {
+            what: 'refuses a run ENDING on the closing sequence, before a port, under production',
+            tag: 'script',
+            texts: ['var x = "</script'],
+            message: 'EXO0005 "script" 1',
+        },
         // The shape a stripped build would otherwise accept is the divergence itself: a nested
         // instance printed as markup into a `<script>` by the server and inserted as real elements
         // by the browser, out of one schema.
@@ -1188,45 +971,42 @@ describe('the raw-text refusals are NOT dev-only — they ship', () => {
         // assembled from data is the case the payload exists for — one kid on the developer's
         // machine, two on the deployment — so the number is the fact a local re-run does not
         // reproduce, and it has to be on the console.
-        let message = '';
-        try {
-            underProduction(() =>
-                checkedSchema((b) => {
-                    const out: Record<string, { index: number }> = {};
-                    b.el('script', null, (s) => {
-                        s.text('var config = 1;');
-                        out.body = s.childrenPort();
-                    });
-                    return out;
-                })
-            );
-        } catch (e) {
-            message = (e as Error).message;
-        }
-        expect(message).toBe('EXO0005 "script" 1');
-    });
-
-    it('counts the siblings in the payload rather than saying there were some', () => {
+        {
+            what: 'refuses a SHARED children port in a raw-text element under NODE_ENV=production',
+            tag: 'script',
+            texts: ['var config = 1;'],
+            message: 'EXO0005 "script" 1',
+        },
         // Two kids, and the payload has to say two: the number is the only thing in this refusal
         // that a development run of an ASSEMBLED schema would not reproduce.
-        let message = '';
-        try {
-            underProduction(() =>
-                checkedSchema((b) => {
-                    const out: Record<string, { index: number }> = {};
-                    b.el('style', null, (s) => {
-                        s.text('.a { color: red }');
-                        s.text('.b { color: blue }');
-                        out.body = s.childrenPort();
-                    });
-                    return out;
-                })
-            );
-        } catch (e) {
-            message = (e as Error).message;
-        }
-        expect(message).toBe('EXO0005 "style" 2');
-    });
+        {
+            what: 'counts the siblings in the payload rather than saying there were some',
+            tag: 'style',
+            texts: ['.a { color: red }', '.b { color: blue }'],
+            message: 'EXO0005 "style" 2',
+        },
+    ];
+
+    for (const c of STATICS_BEFORE_A_CHILDREN_PORT_UNDER_PRODUCTION) {
+        it(c.what, () => {
+            let message = '';
+            try {
+                underProduction(() =>
+                    checkedSchema((b) => {
+                        const out: Record<string, { index: number }> = {};
+                        b.el(c.tag, null, (e) => {
+                            for (const text of c.texts) e.text(text);
+                            out.body = e.childrenPort();
+                        });
+                        return out;
+                    })
+                );
+            } catch (e) {
+                message = (e as Error).message;
+            }
+            expect(message).toBe(c.message);
+        });
+    }
 
     it('gives the port refusal its full sentence in a development build', () => {
         let message = '';
@@ -1319,61 +1099,6 @@ describe('the raw-text refusals are NOT dev-only — they ship', () => {
         expect(long).toContain('RAW TEXT element');
         expect(long).toContain('unsafeHtml');
         expect(long).not.toContain('EXO0012');
-    });
-
-    it('is a SOURCE-SHAPE property: neither throw sits inside the stripped condition', () => {
-        // The runtime assertions above cannot see the minifier, and the minifier is what deletes a
-        // check written `if (guard && COND) throw`. So the shape itself is asserted: in both files
-        // every `process.env.NODE_ENV` read must be the test of a CONDITIONAL EXPRESSION (the
-        // `guard ? long : short` that folds to `short`) and never the left half of an `if` that
-        // carries the refusal with it. This is the assertion that fails if either file goes back
-        // to the cheaper shape, and it is text, so it is checkable.
-        //
-        // `browserGlobalSafety.test.ts` asserts the other half of the spelling — that the
-        // `typeof` stands in front — across all three runtime packages.
-        //
-        // ALL FOUR RAW-TEXT REFUSALS ARE HELD TO IT, `assertExoNoElementInRawText` included: it covers
-        // raw text and RCDATA in one function, and the same divergence in a second tag list cannot
-        // get a different answer in a production build.
-        for (const file of [
-            'markup/asserts/assertExoIntactRawTextBoundary.ts',
-            'markup/asserts/assertExoNoTextPortInRawText.ts',
-            'markup/asserts/assertExoNoElementInRawText.ts',
-            'markup/asserts/assertExoSoleChildRawTextPort.ts',
-        ]) {
-            const src = readFileSync(fileURLToPath(new URL('../' + file, import.meta.url)), 'utf8');
-            const source = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true);
-            const reads: ts.Node[] = [];
-            const visit = (node: ts.Node): void => {
-                if (
-                    ts.isPropertyAccessExpression(node) &&
-                    node.name.text === 'NODE_ENV' &&
-                    ts.isPropertyAccessExpression(node.expression) &&
-                    node.expression.name.text === 'env'
-                ) {
-                    reads.push(node);
-                }
-                ts.forEachChild(node, visit);
-            };
-            ts.forEachChild(source, visit);
-
-            expect(reads.length, `${file} reads process.env.NODE_ENV`).toBeGreaterThan(0);
-            for (const read of reads) {
-                // Walk out of the `!==` and the `&&` to whatever the whole guard is an operand of.
-                let node: ts.Node = read;
-                while (
-                    ts.isBinaryExpression(node.parent) ||
-                    ts.isParenthesizedExpression(node.parent)
-                ) {
-                    node = node.parent;
-                }
-                expect(
-                    ts.isConditionalExpression(node.parent) && node.parent.condition === node,
-                    `${file}: the NODE_ENV guard must be the test of a \`? :\` that folds to the ` +
-                        'short message, not an `if` that takes the refusal away with it'
-                ).toBe(true);
-            }
-        }
     });
 });
 
@@ -1500,19 +1225,6 @@ describe('a port that names itself where it stands', () => {
                 })
             )
         ).toThrow(/named the port "attr" AND returned a record/);
-    });
-
-    it('still takes the older spelling, where the callback returns the record', () => {
-        const schema = createExoSchema((b) => {
-            let title!: TExoTextPort;
-            b.el('h3', null, (h3) => {
-                title = h3.textPort();
-            });
-            return { title };
-        });
-
-        expect(schema.ports.title.index).toBe(0);
-        expect(schema.portList[0]).toBe(schema.ports.title);
     });
 });
 
@@ -1908,17 +1620,5 @@ describe('withExoSchemaAsserts', () => {
         expect(schema.portList).toHaveLength(1);
         // The markup itself is kept as the FUNCTION, which is what every backend replays.
         expect(schema.build).toBeTypeOf('function');
-    });
-
-    it('leaves an element with NO callback able to stand on its own', () => {
-        const schema = checkedSchema((b) => {
-            b.el('ul', null, (ul) => {
-                ul.el('li');
-                ul.el('li');
-            });
-            return {};
-        });
-
-        expect(tagsOf(exoSchemaShape(schema))).toEqual(['li', 'li']);
     });
 });

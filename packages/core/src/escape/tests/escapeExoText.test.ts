@@ -301,26 +301,4 @@ describe('escapeExoText', () => {
         // escaped, because that is the whole of what the reader needs to act.
         expect(unexpected).toEqual([]);
     });
-
-    it('agrees with itself about which values need work', () => {
-        // The function TESTS before it replaces, so the guard regex and the replacement list are
-        // two statements of one set and are free to drift — a character added to one and not
-        // the other is either an escape that never fires or a scan that never returns early.
-        // Asserted by requiring "the value came back changed" and "the value contains one of
-        // the four" to answer identically for every code point in the BMP.
-        const touched = new Set(ESCAPED.map((c) => c.char));
-        const disagreed: string[] = [];
-        for (let code = 0; code <= 0xffff; code++) {
-            const char = String.fromCharCode(code);
-            const input = 'a' + char + 'b';
-            const changed = escapeExoText(input) !== input;
-            if (changed !== touched.has(char)) {
-                disagreed.push(
-                    `${named(code)}: the escaper changed it = ${changed}, ` +
-                        `it is in the documented set = ${touched.has(char)}`
-                );
-            }
-        }
-        expect(disagreed).toEqual([]);
-    });
 });

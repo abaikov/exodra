@@ -14,7 +14,6 @@ import type {
 import { describe, expect, it } from 'vitest';
 import {
     EXO_DIRECT_EVENTS,
-    EXO_DIRECT_PACK_ID,
     EXO_NON_BUBBLING_EVENTS,
     ExoDomBackend,
     attachExoDelegatedEvent,
@@ -274,7 +273,6 @@ describe('a pack written outside this package', () => {
         // A closure is the case only the direct strategy can serve, and calling that pack's own
         // `port` and `attach` is how a hybrid keeps it — the reason both halves are exported
         // rather than reimplemented behind a copy of `EXO_DIRECT_PACK_ID`.
-        expect(EXO_DIRECT_PACK_ID).toBe('direct');
 
         const BACKEND = backendOf(hybridPack(['input']));
         let seen = 0;

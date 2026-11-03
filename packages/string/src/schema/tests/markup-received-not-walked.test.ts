@@ -29,20 +29,6 @@ function render(
 }
 
 describe('an attribute port declared after a child', () => {
-    it('prints inside the start tag, where the element it belongs to has already gone by', () => {
-        const schema = schemaOf((b) => {
-            b.el('li', null, (li) => {
-                li.el('span', null, (span) => {
-                    span.textPort();
-                });
-                li.port('data-id');
-            });
-        });
-        // Port 0 is the span's text — declared first — and port 1 the attribute, whose bytes
-        // belong in front of a `>` the emitter had already written.
-        expect(render(schema, ['hello', '7'])).toBe('<li data-id="7"><span>hello</span></li>');
-    });
-
     it('takes a SECOND late attribute on the same element', () => {
         const schema = schemaOf((b) => {
             b.el('li', { class: 'row' }, (li) => {

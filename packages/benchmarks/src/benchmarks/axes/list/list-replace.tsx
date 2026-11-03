@@ -472,8 +472,9 @@ const SLOT_ROW = composeExoMachine(
                 c.text(SLOT_ROW_SCHEMA.ports.meta, c.state.meta.getValue());
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showSlotName, showSlotMeta } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showSlotName(c);
                 return c.state.name.onChange(() => showSlotName(c));
@@ -482,9 +483,9 @@ const SLOT_ROW = composeExoMachine(
                 showSlotMeta(c);
                 return c.state.meta.onChange(() => showSlotMeta(c));
             });
-        })
+        });
+    }
 );
-const { showSlotName, showSlotMeta } = SLOT_ROW.transitions;
 
 // ── THE AXIS BODY, shared by both exported benchmarks ─────────────────────────────────────────
 
@@ -618,15 +619,16 @@ async function runListReplace(
                             );
                         },
                     }),
-                (m) =>
-                    withExoEffects(m, (effect) => {
+                (m) => {
+                    const { showRows } = m.transitions;
+                    return withExoEffects(m, (effect) => {
                         effect((cc) => {
                             showRows(cc);
                             return rows.onChange(() => showRows(cc));
                         });
-                    })
+                    });
+                }
             );
-            const { showRows } = UL.transitions;
             return EXO_BACKEND.render(UL, host);
         };
 

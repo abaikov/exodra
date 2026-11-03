@@ -1542,6 +1542,16 @@ one of these; if you are holding a console log with one in it, this table is the
 | `EXO0043` | The walk compiled from a schema was replayed over the parsed prototype to prove the parser had not reshaped it. There is no parser on this path any more: the walk and the prototype come out of one construction pass, so the walk cannot run off a tree it built itself.                                                                                                                                                                                                                                                                                                                                                   |
 | `EXO0044` | The compiled plan expected one tag where the parsed prototype had another — the parser having moved a tr out of a tbody and the like. Those reshapes are now refused at DECLARATION by assertExoParserStableChild.ts, which names the case instead of discovering it after the fact.                                                                                                                                                                                                                                                                                                                                     |
 
+### EXO0111 {#exo0111}
+
+A machine registered a second handler on an event port that already had one.
+
+**After the code:** the index of the event port that already had a handler.
+
+An element keeps one handler per event: both events packs store it in one field, so a second
+registration on the same port would silently replace the first. Handle the port once — a handler
+can do several things — and keep it in one withExoHandlers step or one plugin step, not both.
+
 
 ==============================================================================
 # Benchmarks
@@ -6191,14 +6201,16 @@ const counterMachine = composeExoMachine(
             },
         }),
     (m) =>
-        withExoEffects(m, (effect) => {
+        {
+        const { showCount } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showCount(c);
                 return count.onChange(() => showCount(c));
             });
-        })
+        });
+    }
 );
-const { showCount } = counterMachine.transitions;
 ```
 
 The source is anything with a read and a subscription — a store, an
@@ -6975,18 +6987,23 @@ const toggleMachine = composeExoMachine(
             },
         }),
     (m) =>
-        withExoWire(m, (c) => {
+        {
+        const { show } = m.transitions;
+        return withExoWire(m, (c) => {
             show(c);
-        }),
+        });
+    },
     (m) =>
-        withExoHandlers(m, (on) => {
+        {
+        const { show } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(TogglePorts.click, (c) => {
                 c.state.on = !c.state.on;
                 show(c);
             });
-        })
+        });
+    }
 );
-const { show } = toggleMachine.transitions;
 
 backend.render(toggleMachine, document.body);
 ```
@@ -11674,11 +11691,14 @@ export const counterButtonMachine = composeExoMachine(
             },
         }),
     (m) =>
-        withExoHandlers(m, (on) => {
+        {
+        const { add } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(CounterButtonPorts.click, (c) => {
                 add(c, 1);
             });
-        })
+        });
+    }
 );
 export const { add } = counterButtonMachine.transitions;
 ```
@@ -15647,11 +15667,9 @@ graph TD
     examples_ssr_test --> core
     examples_ssr_test --> dom
     examples_ssr_test --> ssr
-    examples_todo_cnstra_oimdb --> context
     examples_todo_cnstra_oimdb --> core
     examples_todo_cnstra_oimdb --> dom
     examples_todo_cnstra_oimdb --> forms
-    examples_todo_cnstra_oimdb --> list_reconcile
     forms --> core
     jsx --> core
     react --> core

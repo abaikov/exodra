@@ -8,6 +8,36 @@
     },
     "nodes": [
       {
+        "id": "bareImports",
+        "label": "bareImports",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(source): string[]",
+            "full": "(source): string[]",
+            "parts": [
+              {
+                "text": "("
+              },
+              {
+                "text": "source",
+                "link": "source"
+              },
+              {
+                "text": "): string[]"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The BARE specifiers a file names.",
+        "width": 152,
+        "height": 69,
+        "violations": []
+      },
+      {
         "id": "buildRow",
         "label": "buildRow",
         "kind": "tooling",
@@ -31,6 +61,25 @@
         "stereotype": "function",
         "doc": "The shape the published benchmark numbers were measured on, SHARED so the DOM and the string backend are compared on the same bytes rather than on two drifting copies.",
         "width": 171,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "createExoFollowingMachine",
+        "label": "createExoFollowingMachine",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema, src, show): import(\"/Users/abai…",
+            "full": "(schema, src, show): import(\"/Users/abaikov/work/exodra/packages/core/dist/index\").TExoMachine<TExoMachineNode<unknown, unknown>, unknown, unknown, unknown> & { readonly transitions: import(\"/Users/abaikov/work/exodra/packages/core/dist/index\").TExoMachineTransitions<TExoMachineNode<unknown, unknown>, { show: []; }>; overrides(replacements: { readonly show?: (enode: TExoMachineNode<unknown, unknown>) => void; }): import(\"/Users/abaikov/work/exodra/packages/core/dist/index\").TExoTransitionOverrides; }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 299,
         "height": 69,
         "violations": []
       },
@@ -298,6 +347,25 @@
     ],
     "edges": [
       {
+        "id": "bareImports→source",
+        "from": "bareImports",
+        "to": "source",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/bareImports.ts",
+            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/source.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "buildRow→TExoTestRowPorts",
         "from": "buildRow",
         "to": "TExoTestRowPorts",
@@ -310,6 +378,25 @@
           {
             "from": "/Users/abaikov/work/exodra/packages/test-utils/src/buildRow.ts",
             "to": "/Users/abaikov/work/exodra/packages/test-utils/src/types/TExoTestRowPorts.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoFollowingMachine→TExoTestSource",
+        "from": "createExoFollowingMachine",
+        "to": "TExoTestSource",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "/Users/abaikov/work/exodra/packages/test-utils/src/createExoFollowingMachine.ts",
+            "to": "/Users/abaikov/work/exodra/packages/test-utils/src/types/TExoTestSource.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -377,102 +464,150 @@
     "rules": {}
   },
   "layout": {
-    "width": 807,
-    "height": 751.5,
+    "width": 1170,
+    "height": 838.8,
     "nodes": [
+      {
+        "id": "bareImports",
+        "x": 149,
+        "y": 121,
+        "width": 152,
+        "height": 69
+      },
       {
         "id": "buildRow",
         "x": 139.5,
-        "y": 54,
+        "y": 551.8,
         "width": 171,
+        "height": 69
+      },
+      {
+        "id": "createExoFollowingMachine",
+        "x": 490,
+        "y": 24,
+        "width": 299,
         "height": 69
       },
       {
         "id": "createExoNamedTestMachine",
         "x": 24,
-        "y": 151,
+        "y": 357.8,
         "width": 402,
         "height": 69
       },
       {
         "id": "createExoTestMachine",
         "x": 24,
-        "y": 248,
+        "y": 454.8,
         "width": 402,
         "height": 69
       },
       {
         "id": "describeIfPresetBuilt",
         "x": 120,
-        "y": 345,
+        "y": 260.8,
         "width": 210,
         "height": 69
       },
       {
         "id": "detachedHost",
         "x": 158.5,
-        "y": 442,
+        "y": 648.8,
         "width": 133,
         "height": 69
       },
       {
         "id": "host",
         "x": 158.5,
-        "y": 539,
+        "y": 745.8,
         "width": 133,
         "height": 69
       },
       {
         "id": "PRESET_ENTRY",
-        "x": 576.5,
-        "y": 448,
+        "x": 579.5,
+        "y": 360,
         "width": 120,
         "height": 46
       },
       {
         "id": "source",
-        "x": 107.5,
-        "y": 636,
+        "x": 522,
+        "y": 121,
         "width": 235,
         "height": 69
       },
       {
         "id": "TExoDescribeLike",
-        "x": 496.5,
-        "y": 263,
+        "x": 499.5,
+        "y": 218,
         "width": 280,
         "height": 69
       },
       {
         "id": "TExoTestRowPorts",
-        "x": 551,
-        "y": 24,
+        "x": 554,
+        "y": 521.8,
         "width": 171,
         "height": 129
       },
       {
         "id": "TExoTestSource",
-        "x": 490,
-        "y": 613.5,
+        "x": 853,
+        "y": 50,
         "width": 293,
         "height": 114
       }
     ],
     "edges": [
       {
+        "id": "bareImports→source",
+        "points": [
+          {
+            "x": 301,
+            "y": 155.5
+          },
+          {
+            "x": 458,
+            "y": 155.5
+          },
+          {
+            "x": 522,
+            "y": 155.5
+          }
+        ]
+      },
+      {
         "id": "buildRow→TExoTestRowPorts",
         "points": [
           {
             "x": 310.5,
-            "y": 88.5
+            "y": 586.3
           },
           {
             "x": 458,
-            "y": 88.5
+            "y": 586.3
           },
           {
-            "x": 551,
-            "y": 88.5
+            "x": 554,
+            "y": 586.3
+          }
+        ]
+      },
+      {
+        "id": "createExoFollowingMachine→TExoTestSource",
+        "points": [
+          {
+            "x": 789,
+            "y": 58.5
+          },
+          {
+            "x": 821,
+            "y": 58.5
+          },
+          {
+            "x": 853,
+            "y": 67.2
           }
         ]
       },
@@ -480,16 +615,16 @@
         "id": "describeIfPresetBuilt→PRESET_ENTRY",
         "points": [
           {
-            "x": 312.9,
-            "y": 414
+            "x": 316.6,
+            "y": 329.8
           },
           {
             "x": 458,
-            "y": 471
+            "y": 383
           },
           {
-            "x": 576.5,
-            "y": 471
+            "x": 579.5,
+            "y": 383
           }
         ]
       },
@@ -497,16 +632,16 @@
         "id": "describeIfPresetBuilt→TExoDescribeLike",
         "points": [
           {
-            "x": 323,
-            "y": 345
+            "x": 330,
+            "y": 276
           },
           {
             "x": 458,
-            "y": 297.5
+            "y": 252.5
           },
           {
-            "x": 496.5,
-            "y": 297.5
+            "x": 499.5,
+            "y": 252.5
           }
         ]
       },
@@ -514,16 +649,16 @@
         "id": "source→TExoTestSource",
         "points": [
           {
-            "x": 342.5,
-            "y": 670.5
+            "x": 757,
+            "y": 155.5
           },
           {
-            "x": 458,
-            "y": 670.5
+            "x": 821,
+            "y": 155.5
           },
           {
-            "x": 490,
-            "y": 670.5
+            "x": 853,
+            "y": 146.8
           }
         ]
       }

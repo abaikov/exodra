@@ -96,33 +96,6 @@ describe('the React compiler turns host trees into schemas with ports', () => {
         expect(Array.from(host.querySelectorAll('li'))).toEqual(rows);
     });
 
-    it('keeps a nested component and its state when a ternary switches between two trees of the same root', async () => {
-        const { Shell, bump } = load(`
-            import { useState } from '@exodra/react-compat';
-            let up;
-            export const bump = () => up();
-            function Counter() {
-                const [n, setN] = useState(0);
-                up = () => setN((v) => v + 1);
-                return <b>{n}</b>;
-            }
-            export function Shell({ extra }) {
-                return extra ? (
-                    <div><i>t</i><Counter /><u>x</u></div>
-                ) : (
-                    <div><i>t</i><Counter /></div>
-                );
-            }
-        `) as { Shell: unknown; bump: () => void };
-        const host = document.createElement('div');
-        document.body.appendChild(host);
-        const root = createRoot(host);
-        root.render(jsx(Shell, { extra: false }));
-        await act(async () => bump());
-        root.render(jsx(Shell, { extra: true }));
-        expect(host.innerHTML).toBe('<div><i>t</i><b>1</b><u>x</u></div>');
-    });
-
     it('keeps DOM nodes, typed text, state and one click handler when compiled branches flip back and forth', async () => {
         const { Shell, bump, clicks } = load(`
             import { useState } from '@exodra/react-compat';

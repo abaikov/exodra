@@ -149,30 +149,36 @@ describe('ExoLink — the clicks it takes', () => {
 });
 
 describe('ExoLink — the clicks it leaves to the browser', () => {
-    const leavesItAlone = async (
-        params: TExoLinkParams,
-        init: MouseEventInit = {}
-    ): Promise<void> => {
-        const { router, parent } = mount([params]);
-        const event = clickOn(parent.querySelector('a') as Element, init);
-        await settled();
-        expect(event.defaultPrevented).toBe(false);
-        expect(router.getLocation().pathname).toBe('/');
-    };
+    const CLICKS_LEFT_ALONE: readonly {
+        what: string;
+        params: TExoLinkParams;
+        init?: MouseEventInit;
+    }[] = [
+        { what: 'a middle click', params: { to: '/about' }, init: { button: 1 } },
+        { what: 'a ⌘ click', params: { to: '/about' }, init: { metaKey: true } },
+        { what: 'a Ctrl click', params: { to: '/about' }, init: { ctrlKey: true } },
+        { what: 'a Shift click', params: { to: '/about' }, init: { shiftKey: true } },
+        { what: 'an Alt click', params: { to: '/about' }, init: { altKey: true } },
+        {
+            what: 'a link with a target other than _self',
+            params: { to: '/about', target: '_blank' },
+        },
+        {
+            what: 'a download link, INCLUDING one with an empty download attribute',
+            params: { to: '/about', download: '' },
+        },
+        { what: 'another origin', params: { to: 'https://example.com/about' } },
+    ];
 
-    it('a middle click', () => leavesItAlone({ to: '/about' }, { button: 1 }));
-    it('a ⌘ click', () => leavesItAlone({ to: '/about' }, { metaKey: true }));
-    it('a Ctrl click', () => leavesItAlone({ to: '/about' }, { ctrlKey: true }));
-    it('a Shift click', () => leavesItAlone({ to: '/about' }, { shiftKey: true }));
-    it('an Alt click', () => leavesItAlone({ to: '/about' }, { altKey: true }));
-
-    it('a link with a target other than _self', () =>
-        leavesItAlone({ to: '/about', target: '_blank' }));
-
-    it('a download link, INCLUDING one with an empty download attribute', () =>
-        leavesItAlone({ to: '/about', download: '' }));
-
-    it('another origin', () => leavesItAlone({ to: 'https://example.com/about' }));
+    for (const c of CLICKS_LEFT_ALONE) {
+        it(c.what, async () => {
+            const { router, parent } = mount([c.params]);
+            const event = clickOn(parent.querySelector('a') as Element, c.init ?? {});
+            await settled();
+            expect(event.defaultPrevented).toBe(false);
+            expect(router.getLocation().pathname).toBe('/');
+        });
+    }
 
     it("a click the params' own handler already called off", async () => {
         const { router, parent } = mount([

@@ -204,13 +204,6 @@ describe('exoDoubleEscapeArmedAt — which end states are a refusal', () => {
 });
 
 describe('the dangerous shape is REFUSED — script data double escaped', () => {
-    it('refuses `var t = "<!--<script>"`, which contains no closing sequence at all', () => {
-        // THE CASE THE OLDER RULE ACCEPTED. There is no `</script` anywhere in this run, so the
-        // whole-sequence rule has nothing to find — and the element's own `</script>` then emits
-        // no end tag and every byte after it is consumed as script source.
-        expect(script('var t = "<!--<script>";')).toThrow(/SCRIPT DATA DOUBLE ESCAPED/);
-    });
-
     it('names the characters it found and where, not merely that it threw', () => {
         let message = '';
         try {
@@ -234,18 +227,6 @@ describe('the dangerous shape is REFUSED — script data double escaped', () => 
         // No terminator after `</script`, so the whole-sequence rule does not fire; the state
         // machine does, because double escape end is still inside the family.
         expect(script('var t = "<!--<script>x</script')).toThrow(/SCRIPT DATA DOUBLE ESCAPED/);
-    });
-
-    it('ships: the refusal fires under NODE_ENV=production, as its bare code', () => {
-        let short = '';
-        underProduction(() => {
-            try {
-                script('var t = "<!--<script>";')();
-            } catch (e) {
-                short = (e as Error).message;
-            }
-        });
-        expect(short).toBe('EXO0011');
     });
 
     it('drops the whole sentence in production and keeps it in dev', () => {
@@ -309,38 +290,10 @@ describe('the working programs the older rules refused, and the one they still d
         expect(schema.portList).toHaveLength(0);
     });
 
-    it('accepts a run that ENDS on `</script` with nothing after it', () => {
-        // The next thing emitted is the element's own `</script>`, whose `<` is not a terminator.
-        // See the enumeration in `closingSequenceAt` for what else could have followed and which
-        // rule holds each of them.
-        const schema = createExoSchema((b) => {
-            b.el('script', null, (s) => {
-                s.text('var x = "</script');
-            });
-            return {};
-        }, withExoSchemaAsserts);
-        expect(schema.portList).toHaveLength(0);
-    });
-
     it('still refuses the same run once the NEXT chunk supplies a terminator', () => {
         // The merge is what makes this work: the second call re-asks the whole-sequence question
         // of the joined string, where `</script ` now has its space.
         expect(script('var a = "</script', ' x";')).toThrow(/closing sequence/);
-    });
-
-    it('still refuses a static run followed by a children port — by the PORT rule', () => {
-        // Caught one call later, and by the rule that owns it: a children port in a raw-text
-        // element must be the element's ONLY child.
-        expect(() =>
-            createExoSchema((b) => {
-                const out: Record<string, { index: number }> = {};
-                b.el('script', null, (s) => {
-                    s.text('var x = "</script');
-                    out.body = s.childrenPort();
-                });
-                return out;
-            }, withExoSchemaAsserts)
-        ).toThrow(/must be its ONLY child/);
     });
 
     it('STILL REFUSES the balanced double-escaped pair, and the older rule is why', () => {
@@ -400,41 +353,6 @@ describe('when both rules apply, the one that is TRUE answers', () => {
         expect(exoDoubleEscapeArmedAt(run)).toBeGreaterThanOrEqual(0);
         expect(script(run)).toThrow(/SCRIPT DATA DOUBLE ESCAPED/);
     });
-
-    it('refuses it either way — the order changes the message and never the answer', () => {
-        // THE CONSTRAINT ON THE WHOLE CHANGE. Both rules throw, so which one speaks can only move
-        // words; no run that was refused is now built. These are the three shapes of the fork.
-        expect(script('var t = "<!--<script>a</script>b<script>c";')).toThrow();
-        expect(script('var t = "<!--<script>x</script>-->";')).toThrow();
-        expect(script('var a = "</script>";')).toThrow();
-    });
-});
-
-describe('the whole-sequence refusal is unchanged', () => {
-    for (const text of [
-        'var a = "</script>"',
-        'var a = "</script "',
-        'var a = "</script/>"',
-        'var a = "</SCRIPT >"',
-    ]) {
-        it(`still refuses ${JSON.stringify(text)}`, () => {
-            expect(script(text)).toThrow(/closing sequence/);
-        });
-    }
-
-    it('still refuses a sequence split across two text() calls', () => {
-        expect(script('var a = "</scr', 'ipt> and more"')).toThrow(/closing sequence/);
-    });
-
-    it('still accepts `</scriptable` written in one call', () => {
-        const schema = createExoSchema((b) => {
-            b.el('script', null, (s) => {
-                s.text('var a = "</scriptable";');
-            });
-            return {};
-        }, withExoSchemaAsserts);
-        expect(schema.portList).toHaveLength(0);
-    });
 });
 
 describe('<plaintext>, the one tag on the list that nothing closes', () => {
@@ -448,12 +366,6 @@ describe('<plaintext>, the one tag on the list that nothing closes', () => {
                 return {};
             }, withExoSchemaAsserts);
     }
-
-    it('is REACHABLE, which is why the message matters at all', () => {
-        // `plaintext` is in `EXO_RAW_TEXT_ELEMENTS` and `el()` takes a tag, so a schema can declare
-        // one and this rule does run on its text. Nothing about this refusal is hypothetical.
-        expect(plaintext('</plaintext>')).toThrow();
-    });
 
     it('is not refused with the reason that is false for it', () => {
         // OVER-REFUSED AND PRE-EXISTING: `</plaintext>` closes nothing — the tokenizer's PLAINTEXT

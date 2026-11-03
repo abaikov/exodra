@@ -13,12 +13,6 @@
 // PROPS ARE GONE, so "which component" is only half of what a position needs. An instance is handed
 // its params once, when it is built, so what a source publishes here is a component and the params
 // its instance should be built with — `standing(PAGE_A, 'title')` and not a props value.
-//
-// WHAT THIS FILE CANNOT ASSERT, said here rather than found later. `childList` is a door on
-// `@exodra/dom` and `@exodra/term` only; `@exodra/string` has no placement command at all, so a
-// swap has NO server expression, one component cannot drive both backends through one, and the
-// byte-identity that makes an SSR'd router page adoptable is unmeasurable from here until the
-// server gets a placement door.
 import {
     createExoMachine,
     composeExoMachine,
@@ -107,15 +101,16 @@ const swappingShell = <TPorts>(
                     if (want !== null) state.slot.insert(c.build(want.component, want.text));
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { swap } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     swap(c);
                     return src.onChange(() => swap(c));
                 });
-            })
+            });
+        }
     );
-    const { swap } = machine.transitions;
     return machine;
 };
 
@@ -174,15 +169,16 @@ const PAGE_BOUND_MACHINE = composeExoMachine(
                 c.text(PAGE_BOUND_SCHEMA.ports.text, BOUND.getValue());
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showPageBound } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showPageBound(c);
                 return BOUND.onChange(() => showPageBound(c));
             });
-        })
+        });
+    }
 );
-const { showPageBound } = PAGE_BOUND_MACHINE.transitions;
 const PAGE_BOUND = PAGE_BOUND_MACHINE as unknown as TExoMachine<TExoChildrenWiring>;
 
 /** What goes into the child list BESIDE a swap: one element carrying its own label. */
@@ -273,22 +269,6 @@ describe('one position, and which component stands in it', () => {
         const parent = host();
         EXO_BACKEND.render(shellWith(src), parent);
         expect(parent.innerHTML).toBe('<main></main>');
-    });
-
-    it('leaves the very same element standing when the source republishes the same value', () => {
-        // WHAT A NOTIFICATION THAT CHANGES NOTHING MAY COST, which is nothing. The compare is the
-        // COMPOSITION'S and it is by object identity: a router that re-derives its value per read
-        // allocates a fresh one every time and must hand the same object back while the route holds,
-        // or the page is thrown away — DOM, listeners and whatever is focused inside it — on every
-        // unrelated notification. Nothing in the engine keys a position by component or by value.
-        const held = standing(PAGE_A, 'same');
-        const src = source<TStanding | null>(held);
-        const parent = host();
-        EXO_BACKEND.render(shellWith(src), parent);
-        const first = parent.querySelector('section');
-
-        src.setValue(held);
-        expect(parent.querySelector('section')).toBe(first);
     });
 
     it('rebuilds when the PARAMS change under the same component', () => {

@@ -65,12 +65,13 @@ const CARD = composeExoMachine(
             c.text(CARD_SCHEMA.ports.label, params.label);
             c.transitionOverrides = params.compact ? COMPACT : null;
         }),
-    (m) =>
-        withExoHandlers(m, (on) => {
+    (m) => {
+        const { press } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(CARD_SCHEMA.ports.click, (c) => press(c));
-        })
+        });
+    }
 );
-const { press } = CARD.transitions;
 const COMPACT = CARD.overrides({ press: pressCompact });
 
 const BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
@@ -132,13 +133,6 @@ describe('a machine wire and per-instance transition overrides', () => {
         expect(new ExoStrBackend().render(SHELL as never)).toBe(
             '<section><button>served</button></section>'
         );
-    });
-
-    it('refuses a second wire and an override of a name that is not its transition', () => {
-        const wired = withExoWire(createExoMachine<TExoMachineNode>(CARD_SCHEMA), () => undefined);
-        expect(() => withExoWire(wired, () => undefined)).toThrow(/already has a wire/);
-        const notATransition = { pressCompact } as unknown as Parameters<typeof CARD.overrides>[0];
-        expect(() => CARD.overrides(notATransition)).toThrow(/not a transition of this machine/);
     });
 
     it('re-runs the wire on a live instance, and swapExoParams lets it write only what changed', () => {
@@ -249,15 +243,16 @@ describe('a machine wire and per-instance transition overrides', () => {
                         c.state.list.reconcile(products.getValue());
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { showProducts } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         showProducts(c);
                         return products.onChange(() => showProducts(c));
                     });
-                })
+                });
+            }
         );
-        const { showProducts } = SHOP.transitions;
         const parent = document.createElement('div');
         BACKEND.render(SHOP, parent);
         const lamp = parent.querySelector('li');

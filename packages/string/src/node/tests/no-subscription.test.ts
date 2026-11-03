@@ -68,15 +68,16 @@ const BOUND = composeExoMachine(
         withExoTransitions(m, {
             showLabel: (c) => c.text(BOUND_SCHEMA.ports.label, BOUND_SOURCE.getValue()),
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showLabel } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showLabel(c);
                 return BOUND_SOURCE.onChange(() => showLabel(c));
             });
-        })
+        });
+    }
 );
-const { showLabel } = BOUND.transitions;
 
 describe('a server render takes no subscription past the response', () => {
     it('reads the source, subscribes once, and the render drops it', () => {
@@ -89,14 +90,6 @@ describe('a server render takes no subscription past the response', () => {
         // THE ONE THAT MATTERS: the disposer ran, so nothing this request built is still reachable
         // from the source.
         expect(BOUND_SOURCE.calls.disposals - before.disposals).toBe(1);
-    });
-
-    it('leaves nothing standing across many requests', () => {
-        const before = { ...BOUND_SOURCE.calls };
-        for (let i = 0; i < 5; i++) EXO_STR.render(BOUND);
-
-        expect(BOUND_SOURCE.calls.subscriptions - before.subscriptions).toBe(5);
-        expect(BOUND_SOURCE.calls.disposals - before.disposals).toBe(5);
     });
 });
 

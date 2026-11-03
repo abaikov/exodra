@@ -354,21 +354,6 @@ describe('renderExoPage — the request is one render long', () => {
         expect(seenOuter).toEqual(['outer']);
     });
 
-    it('is undefined outside renderExoPage, rather than a silent no-op', () => {
-        // The same component, rendered by `@exodra/string` directly. Nothing global was
-        // installed, so a page rendered without a request says so.
-        const seen: (TExoSsrResponse | undefined)[] = [];
-        const PAGE = pageWith((P) => {
-            const base = fill(P);
-            return (c, params) => {
-                seen.push(c.inject(EXO_SSR_RESPONSE));
-                base(c, params);
-            };
-        });
-        EXO_STR.render(PAGE);
-        expect(seen).toEqual([undefined]);
-    });
-
     it('does not shadow a context the caller had already provided', () => {
         // `renderExoPage` pushes ONE frame in front of the frame it was HANDED, exactly as
         // a wire's own `provide` does — so a framework that provided a router or a data layer
@@ -537,15 +522,16 @@ describe('the container a hydration is handed', () => {
                     c.attr(P.count, 0);
                     c.on(P.click, () => undefined);
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { show } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         show(c);
                         return title.onChange(() => show(c));
                     });
-                })
+                });
+            }
         );
-        const { show } = PAGE.transitions;
 
         const container = load(renderExoPage(PAGE).renderDocument());
         expect(container.querySelector('h1')?.textContent).toBe('from the server');

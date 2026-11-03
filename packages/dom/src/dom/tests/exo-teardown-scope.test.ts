@@ -52,15 +52,16 @@ const ROW = composeExoMachine(
                 c.attr(ROW_SCHEMA.ports.id, value.getValue());
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showRow } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showRow(c);
                 return value.onChange(() => showRow(c));
             });
-        })
+        });
+    }
 );
-const { showRow } = ROW.transitions;
 
 /**
  * TWO ROWS FROM ONE RENDER, which is what makes the disposer's job visible: a scope that ended

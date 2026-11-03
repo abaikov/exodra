@@ -161,6 +161,47 @@ function returnedExpression(fn: TExoFunction): t.Node | null | undefined {
     return t.isReturnStatement(only) ? only.argument : null;
 }
 
+function stepDecorator(
+    machine: TExoMachineSource,
+    step: TExoFunction,
+    param: t.Node | undefined,
+    unsupported: string[]
+): t.Node | null | undefined {
+    if (!t.isBlockStatement(step.body) || step.body.body.length !== 2) {
+        return returnedExpression(step);
+    }
+    const [read, done] = step.body.body;
+    if (!t.isReturnStatement(done) || !t.isVariableDeclaration(read)) return null;
+    const declarator = read.declarations.length === 1 ? read.declarations[0] : null;
+    const init = declarator?.init;
+    if (
+        declarator === null ||
+        !t.isObjectPattern(declarator.id) ||
+        !t.isMemberExpression(init) ||
+        init.computed ||
+        !t.isIdentifier(param) ||
+        !t.isIdentifier(init.object, { name: param.name }) ||
+        !t.isIdentifier(init.property, { name: 'transitions' })
+    ) {
+        return null;
+    }
+    for (const property of declarator.id.properties) {
+        if (
+            t.isObjectProperty(property) &&
+            !property.computed &&
+            t.isIdentifier(property.key) &&
+            t.isIdentifier(property.value)
+        ) {
+            machine.transitionNames.set(property.key.name, property.value.name);
+        } else {
+            unsupported.push(
+                `${machine.name}.transitions: a destructured transition is not a plain name`
+            );
+        }
+    }
+    return done.argument;
+}
+
 function machineFrom(
     base: TExoMachineBaseSource,
     name: string,
@@ -247,7 +288,7 @@ function readMachineStep(
 ): void {
     const name = machine.name;
     const param = isFunction(step) ? step.params[0] : undefined;
-    const decorator = isFunction(step) ? returnedExpression(step) : null;
+    const decorator = isFunction(step) ? stepDecorator(machine, step, param, unsupported) : null;
     if (
         !t.isIdentifier(param) ||
         !t.isCallExpression(decorator) ||
@@ -853,6 +894,7 @@ export function translateExoToReact(
             continue;
         }
         usesReact = true;
+        for (const local of machine.transitionNames.values()) transitions.add(local);
         const component = emitComponent(
             machine,
             schema,

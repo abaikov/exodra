@@ -57,8 +57,9 @@ export const ExoLink = composeExoMachine(
                 c.attr(P.current, isCurrent(params, pathname) ? 'page' : undefined);
             },
         }),
-    (m) =>
-        withExoWire(m, (c, params) => {
+    (m) => {
+        const { showCurrent } = m.transitions;
+        return withExoWire(m, (c, params) => {
             swapExoParams(c, params);
             const href = isAbsoluteUrl(params.to)
                 ? params.to
@@ -77,7 +78,8 @@ export const ExoLink = composeExoMachine(
                 c.state.pathname = null;
                 c.attr(P.current, undefined);
             }
-        }),
+        });
+    },
     (m) =>
         withExoHandlers(m, (on) => {
             on(P.click, (c, event) => {
@@ -94,16 +96,17 @@ export const ExoLink = composeExoMachine(
                 });
             });
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showCurrent } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 if ((c.serviceState as TExoLinkParams).currentWhen === undefined) return null;
                 showCurrent(c);
                 return c.state.router.onChange(() => showCurrent(c));
             });
-        })
+        });
+    }
 );
-const { showCurrent } = ExoLink.transitions;
 
 function isCurrent(params: TExoLinkParams, pathname: string): boolean {
     if (isAbsoluteUrl(params.to)) return false;

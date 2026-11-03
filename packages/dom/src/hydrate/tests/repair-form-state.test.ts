@@ -2,7 +2,7 @@
 //
 // A FORM WHOSE DATA MOVED BETWEEN THE RESPONSE AND THE HYDRATION.
 //
-// `hydrate-exo-rows.test.ts` pins the repair for a TEXT port and for an ordinary ATTRIBUTE: the
+// Hydration repairs a TEXT port and an ordinary ATTRIBUTE: the
 // server printed what the source held when the request was served, the client may compute
 // something else by the time the bundle lands, and skipping the first write would leave the page
 // wrong until the source next fired — which for a value that never changes again is forever.
@@ -81,15 +81,16 @@ const controlBoundTo = (
                     c.attr(schema.ports.x, src.getValue());
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { show } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     show(c);
                     return src.onChange(() => show(c));
                 });
-            })
+            });
+        }
     );
-    const { show } = machine.transitions;
     return machine;
 };
 
@@ -186,15 +187,16 @@ describe('hydrating a control whose source moved since the response', () => {
                         c.attr(optionSchema.ports.x, chosen.getValue() === c.state.option);
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { showOption } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         showOption(c);
                         return chosen.onChange(() => showOption(c));
                     });
-                })
+                });
+            }
         );
-        const { showOption } = OPTION.transitions;
         const GROUP = createExoTestMachine(
             (b: TExoSchemaCursor) => {
                 let options!: TExoChildrenPort;

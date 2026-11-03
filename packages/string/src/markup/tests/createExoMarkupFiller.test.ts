@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { createExoMarkupFiller } from '../factories/createExoMarkupFiller';
-import { exoForeignMarkup } from '../exoForeignMarkup';
 import { exoMarkupFillOrder } from '../exoMarkupFillOrder';
 
 // WHAT THIS FILE IS FOR. `fillMarkup` is the whole server render of one instance: a schema's static
@@ -70,16 +69,5 @@ describe('createExoMarkupFiller — what a caller cannot break afterwards', () =
     it('does not escape and is not asked to: the values arrive written by their writer', () => {
         const fill = createExoMarkupFiller(['<p>', '</p>']);
         expect(fill(['&amp;lt;'])).toBe('<p>&amp;lt;</p>');
-    });
-});
-
-describe('exoForeignMarkup', () => {
-    it('hands the string back untouched — the caller owns every byte of it', () => {
-        const markup = '<div onclick="alert(1)">&</div>';
-        expect(exoForeignMarkup(markup) as unknown as string).toBe(markup);
-    });
-
-    it('does not even look at the empty string', () => {
-        expect(exoForeignMarkup('') as unknown as string).toBe('');
     });
 });

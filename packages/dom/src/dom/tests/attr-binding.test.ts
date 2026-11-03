@@ -22,17 +22,11 @@
 // button — and `attr-parity.test.ts` pins that rule for the FIRST write, through `set`. Nothing
 // pinned it for an UPDATE, which is a different call site (the setter is invoked from inside the
 // subscriber) and the one a real page spends its life in.
-import {
-    createExoMachine,
-    composeExoMachine,
-    withExoTransitions,
-    withExoEffects,
-    createExoSchema,
-} from '@exodra/core';
-import type { TExoAttrPort, TExoMachineNode } from '@exodra/core';
+import { createExoSchema } from '@exodra/core';
+import type { TExoAttrPort } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
-import { host, source } from '@exodra/test-utils';
+import { host, source, createExoFollowingMachine } from '@exodra/test-utils';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
 const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
@@ -48,25 +42,9 @@ const boundAttr = (attribute: string, src: TSource) => {
         });
         return { x };
     });
-    const m = createExoMachine<TExoMachineNode>(schema);
-    const machine = composeExoMachine(
-        m,
-        (m) =>
-            withExoTransitions(m, {
-                show: (c) => {
-                    c.attr(schema.ports.x, src.getValue());
-                },
-            }),
-        (m) =>
-            withExoEffects(m, (effect) => {
-                effect((c) => {
-                    show(c);
-                    return src.onChange(() => show(c));
-                });
-            })
-    );
-    const { show } = machine.transitions;
-    return machine;
+    return createExoFollowingMachine(schema, src, (c, value) => {
+        c.attr(schema.ports.x, value);
+    });
 };
 
 const mount = (attribute: string, src: TSource) => {

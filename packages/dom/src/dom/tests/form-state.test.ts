@@ -19,15 +19,8 @@
 // all unless the options already exist. On this core they always do — the options are STATIC
 // markup, so they are in the parsed prototype before any port is filled — which is a property of
 // the design worth holding onto rather than a coincidence to rediscover.
-import {
-    createExoMachine,
-    composeExoMachine,
-    withExoTransitions,
-    withExoEffects,
-    createExoSchema,
-} from '@exodra/core';
+import { createExoSchema } from '@exodra/core';
 import type {
-    TExoMachineNode,
     TExoSchemaCursor,
     TExoAttrPort,
     TExoChildrenPort,
@@ -36,7 +29,7 @@ import type {
 } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
-import { host, source, createExoTestMachine } from '@exodra/test-utils';
+import { host, source, createExoTestMachine, createExoFollowingMachine } from '@exodra/test-utils';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 
@@ -82,29 +75,6 @@ const buildSelect = (b: TExoSchemaCursor) => {
 };
 
 describe('a <select> whose options are static markup', () => {
-    it('selects the option it is FILLED with, because the options already exist', () => {
-        // The legacy renderer had to defer `select.value = …` until after the children were
-        // built. Nothing writes `select.value` any more — each option says whether it is the
-        // chosen one — so the write lands on the element it is about by construction, and this
-        // case is what says so: the SECOND option is chosen, from a prototype whose placeholder
-        // markup carries ` selected=""` on BOTH.
-        const SELECT = createExoTestMachine(
-            buildSelect,
-            (P): TExoMachineInitialState<TFilling> =>
-                (c) => {
-                    c.attr(P.a, false);
-                    c.attr(P.v, true);
-                }
-        );
-
-        const parent = host();
-        EXO_BACKEND.render(SELECT, parent);
-        const select = parent.querySelector('select') as HTMLSelectElement;
-
-        expect(select.value).toBe('b');
-        expect(select.selectedIndex).toBe(1);
-    });
-
     it('follows a bound value after the user has already chosen something else', () => {
         // The two-way case, from the side this renderer owns. What the user did is in the
         // PROPERTY — an option's selectedness — so an update that went only to the attribute
@@ -112,25 +82,10 @@ describe('a <select> whose options are static markup', () => {
         // bound to `model === its own value`, the same shape a radio group has had all along.
         const src = source<unknown>('a');
         const schema = createExoSchema(buildSelect);
-        const m = createExoMachine<TExoMachineNode>(schema);
-        const SELECT = composeExoMachine(
-            m,
-            (m) =>
-                withExoTransitions(m, {
-                    choose: (c) => {
-                        c.attr(schema.ports.a, src.getValue() === 'a');
-                        c.attr(schema.ports.v, src.getValue() === 'b');
-                    },
-                }),
-            (m) =>
-                withExoEffects(m, (effect) => {
-                    effect((c) => {
-                        choose(c);
-                        return src.onChange(() => choose(c));
-                    });
-                })
-        );
-        const { choose } = SELECT.transitions;
+        const SELECT = createExoFollowingMachine(schema, src, (c, value) => {
+            c.attr(schema.ports.a, value === 'a');
+            c.attr(schema.ports.v, value === 'b');
+        });
 
         const parent = host();
         EXO_BACKEND.render(SELECT, parent);
@@ -169,6 +124,7 @@ describe('a <select> whose options are static markup', () => {
 
         expect((holder.content.firstElementChild as HTMLSelectElement).value).toBe('b');
         expect((parent.firstElementChild as HTMLSelectElement).value).toBe('b');
+        expect((parent.firstElementChild as HTMLSelectElement).selectedIndex).toBe(1);
         expect(EXO_STR.render(SELECT)).toBe(parent.innerHTML);
     });
 });
@@ -191,24 +147,9 @@ describe('a checkbox the user has already ticked', () => {
             });
             return { v };
         });
-        const m = createExoMachine<TExoMachineNode>(schema);
-        const BOX = composeExoMachine(
-            m,
-            (m) =>
-                withExoTransitions(m, {
-                    show: (c) => {
-                        c.attr(schema.ports.v, src.getValue());
-                    },
-                }),
-            (m) =>
-                withExoEffects(m, (effect) => {
-                    effect((c) => {
-                        show(c);
-                        return src.onChange(() => show(c));
-                    });
-                })
-        );
-        const { show } = BOX.transitions;
+        const BOX = createExoFollowingMachine(schema, src, (c, value) => {
+            c.attr(schema.ports.v, value);
+        });
 
         const parent = host();
         EXO_BACKEND.render(BOX, parent);
@@ -236,24 +177,9 @@ describe('a text field the user has already typed in', () => {
             });
             return { v };
         });
-        const m = createExoMachine<TExoMachineNode>(schema);
-        const FIELD = composeExoMachine(
-            m,
-            (m) =>
-                withExoTransitions(m, {
-                    show: (c) => {
-                        c.attr(schema.ports.v, src.getValue());
-                    },
-                }),
-            (m) =>
-                withExoEffects(m, (effect) => {
-                    effect((c) => {
-                        show(c);
-                        return src.onChange(() => show(c));
-                    });
-                })
-        );
-        const { show } = FIELD.transitions;
+        const FIELD = createExoFollowingMachine(schema, src, (c, value) => {
+            c.attr(schema.ports.v, value);
+        });
 
         const parent = host();
         EXO_BACKEND.render(FIELD, parent);

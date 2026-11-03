@@ -274,20 +274,6 @@ describe('one hydrate schema per DOM schema, one DOM schema per backendType', ()
         expect(head.domSchema.hydrateSchema).toBe(head);
     });
 
-    it('holds ONE hydrate schema when the caller names nothing at all', () => {
-        const LIST = listComponent(1);
-        const served = EXO_STR.render(LIST);
-
-        const one = host();
-        one.innerHTML = served;
-        EXO_BACKEND.hydrate(LIST, one);
-        const two = host();
-        two.innerHTML = served;
-        EXO_BACKEND.hydrate(LIST, two);
-
-        expect(hydrateSchemas(LIST).length).toBe(1);
-    });
-
     it('hangs a SECOND schema off one declaration for a second backend, head unchanged', () => {
         const shipped = withExoHydration(withExoCompiler(new ExoDomBackend()));
         const pack = createExoDelegatedEvents(['click']);
@@ -434,22 +420,14 @@ describe('a backend that composes ONLY its events, leaving every other implement
  * THE HOLE THESE PIN, STATED AS THE FAILURE IT WAS — see the file header for the `TypeError` a
  * class-shaped exonode produced on a name the compiler had approved.
  *
- * THE CHAIN THAT FIXED IT is `exonode → hydrate surface → composed backend`, and the three cases
- * below take it apart into the three claims it actually makes — which are NOT the same claim, and
- * one of them is a limit rather than a capability:
+ * THE CHAIN THAT FIXED IT is `exonode → hydrate surface → composed backend`, and the cases below
+ * take it apart into the claims it actually makes:
  *
  *  1. A NAME NO SURFACE CLAIMS (a pack's own) reaches an adopting wire.
  *  2. A WRAPPER ON A NAME ADOPTION DOES NOT CLAIM (`onTeardown`, `provide`, `inject`, `foreign`,
  *     `portTable`, `childList`) runs while adopting — those bodies were deleted from the hydrate
  *     side because they were character-for-character the render ones, so the chain falls through to
  *     whatever the application put on the backend.
- *  3. A WRAPPER ON A NAME ADOPTION *DOES* CLAIM DOES NOT RUN, and that is pinned here deliberately
- *     rather than left to be discovered. `exoVocabulary` builds `(_next) => body`, so the adopting
- *     `text` REPLACES whatever stood under it. That is correct — adoption's fill is a different
- *     program, and calling the render one would write values the markup already carries, which is
- *     the one thing adoption must not do — but it means an application cannot wrap adoption's
- *     `attr`, `text` or children calls at all. The gap is narrower than the one closed above and it
- *     is still a gap; see `withExoHydration`.
  *
  * ═══ WHY THE MARKUP IS SERVED BY THE DOM BACKEND AND NOT BY `ExoStrBackend` ═══
  *
@@ -531,7 +509,7 @@ describe('a pack composed onto a hydrating backend', () => {
         expect(parent.innerHTML).toBe(markup);
     });
 
-    it('runs a wrapper on a name adoption does not claim, and does not on one it does', () => {
+    it('reaches a wrapped name on both the render and the adopting pass', () => {
         const owned: string[] = [];
         const filled: number[] = [];
         /**

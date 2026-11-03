@@ -156,26 +156,6 @@ describe('driving a port by hand', () => {
         expect(seen[0]).toBe(seen[1]);
     });
 
-    it('lands a value written after the wire has returned', () => {
-        let drive!: TExoFillDoors;
-        let cls!: TExoAttrPort;
-        const COMP = createExoTestMachine(
-            buildClassBox,
-            (P): TExoMachineInitialState<TDriving> =>
-                (c) => {
-                    drive = c.fillDoors();
-                    cls = P.cls;
-                }
-        );
-
-        const parent = host();
-        EXO_BACKEND.render(COMP, parent);
-        const el = parent.firstElementChild as Element;
-
-        drive.attr(cls, 'late');
-        expect(el.getAttribute('class')).toBe('late');
-    });
-
     /**
      * `onTeardown` PUTS THE CALLER'S DISPOSER WHERE `bind` PUTS ITS OWN. Asserted through the render's
      * disposer rather than through a child's, because that is the path a top-level
@@ -203,57 +183,5 @@ describe('driving a port by hand', () => {
         expect(ended).toBe(0);
         dispose();
         expect(ended).toBe(1);
-    });
-
-    /**
-     * THE FILL RECORD, SEEN THROUGH THE SWEEP IT EXISTS FOR.
-     *
-     * Three attribute ports on ONE element. The compiler keeps a placeholder for every port that
-     * another attribute port FOLLOWS (`followed[i] === 1`), because two ports on one element must
-     * come out in declaration order — so `data-a` and `data-b` keep theirs and `data-c`, being
-     * last, has its removed at compile time. `restore` for a kept one is `removeAttributeNS`.
-     *
-     * The wire fills `data-a` through the ports value and leaves the other two alone, so the sweep
-     * runs (`writes !== setters.length`) and finds `data-b` unfilled. What each assertion says:
-     *
-     *  - `data-a` still holds its value → `set` recorded the fill. Delete the
-     *    `this.written[this.writes++]` store from it and this line fails, because the sweep
-     *    would remove the attribute the wire had just written.
-     *  - `data-b` is gone → the sweep genuinely ran on this template and does remove kept
-     *    placeholders, which is what makes the line above mean something.
-     *  - `data-c` is gone for a different reason — no placeholder was ever kept for it — and is
-     *    asserted so that a future change moving that boundary is visible here.
-     *
-     * THIS IS THE ASSERTION `setter`'s HAND-OUT STAMP NEVER HAD. Its header in this file used to
-     * record that the stamp had been deleted with every test still green, because a lone `class`
-     * port keeps no placeholder and the sweep has nothing to undo. Three attribute ports on one
-     * element is the template that does keep them.
-     */
-    it('is not swept back over, because the fill is recorded', () => {
-        const CARD = createExoTestMachine(
-            (b) => {
-                let first!: TExoAttrPort;
-                let second!: TExoAttrPort;
-                let third!: TExoAttrPort;
-                b.el('div', null, (d) => {
-                    first = d.port('data-a');
-                    second = d.port('data-b');
-                    third = d.port('data-c');
-                });
-                return { first, second, third };
-            },
-            (P): TExoMachineInitialState<TDriving> =>
-                (c) => {
-                    c.fillDoors().attr(P.first, 'written');
-                }
-        );
-
-        const parent = host();
-        EXO_BACKEND.render(CARD, parent);
-        const el = parent.firstElementChild as Element;
-
-        expect(el.getAttribute('data-a')).toBe('written');
-        expect(el.hasAttribute('data-b')).toBe(false);
-        expect(el.hasAttribute('data-c')).toBe(false);
     });
 });

@@ -1,12 +1,5 @@
 // @vitest-environment jsdom
-import {
-    composeExoPlugins,
-    createExoMachine,
-    composeExoMachine,
-    withExoTransitions,
-    withExoEffects,
-    createExoSchema,
-} from '@exodra/core';
+import { composeExoPlugins, createExoSchema } from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenPort,
@@ -14,21 +7,18 @@ import type {
     TExoWiring,
     TExoMachineInitialState,
 } from '@exodra/core';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { createExoReconciledList } from '../../dom/tests/createExoReconciledList';
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { TExoDomNode } from '../../dom/EXO_DOM_NODE_VOCABULARY';
-import type { TExoChildList } from '../../dom/types/TExoChildList';
 import type { TExoAttrWrite } from '../../dom/types/TExoAttrWrite';
 import type { TExoDomSchema } from '../../dom/types/TExoDomSchema';
 import type { TExoDomSetter } from '../../dom/types/TExoDomSetter';
 import { EXO_SHIPPED_WRITERS } from '../constants/EXO_SHIPPED_WRITERS';
 import type { TExoWritersApi } from '../types/TExoWritersApi';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
-
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
 
 type TItem = { readonly id: string };
 
@@ -119,35 +109,7 @@ const listComponent = (src: TExoTestSource<readonly TItem[]>) => {
         });
         return { rows };
     });
-    const m = createExoMachine<TExoDomNode, unknown, { rows: TExoChildList; shown: TItem[] }>(
-        schema,
-        { createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] }) }
-    );
-    const machine = composeExoMachine(
-        m,
-        (m) =>
-            withExoTransitions(m, {
-                showRows: (c) => {
-                    const want = src.getValue();
-                    c.state.shown = reconcileExoOrder(
-                        c.state.rows,
-                        c.state.shown,
-                        want,
-                        want,
-                        (item) => c.build(ROW, item)
-                    );
-                },
-            }),
-        (m) =>
-            withExoEffects(m, (effect) => {
-                effect((c) => {
-                    showRows(c);
-                    return src.onChange(() => showRows(c));
-                });
-            })
-    );
-    const { showRows } = machine.transitions;
-    return machine;
+    return createExoReconciledList(schema, src, ROW);
 };
 
 /** A `<section>` with ONE children port, filled by whatever the caller does with it. */
@@ -187,16 +149,6 @@ describe('machine.forms, one schema per backendType', () => {
 
         expect(formsHeld(LIST.forms)).toBe(1);
         expect(LIST.forms[rt.backendType]).toBe(first);
-    });
-
-    it('holds ONE schema when the caller names no composition at all', () => {
-        const src = source<readonly TItem[]>(items(['a']));
-        const LIST = listComponent(src);
-
-        EXO_BACKEND.render(LIST, host());
-        EXO_BACKEND.render(LIST, host());
-
-        expect(formsHeld(LIST.forms)).toBe(1);
     });
 
     it('holds a SECOND schema for a second backend, the first unchanged', () => {

@@ -14,6 +14,7 @@ export type TExoDomSchemaBase = {
     readonly events: TExoEventsApi;
     readonly elem: readonly number[];
     readonly ownsElement: readonly number[];
+    readonly portNames: readonly (string | null)[];
     /** The composition's record factories, resolved off the SURFACE these records will stand on —
      * a constructor's prototype is fixed when the constructor is made. They are the only seam for
      * putting a slot on every instance, and replacing one without the other makes a THIRD shape. */

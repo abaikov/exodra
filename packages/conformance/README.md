@@ -590,9 +590,9 @@ did not settle it and refused to invent one.
 - The `agreement` partition is what makes a DIVERGENCE a fact in the suite instead of a sentence in a
   comment. The duplicate-item fork is the case where somebody DID settle the semantics: the classes
   merged, and what stands in their place is an equality —
-  `packages/dom/src/tests/duplicate-item-parity.test.ts:95-106` renders the same list on both
-  backends and asserts `served` IS `client`, so the day one of them grows a list answer of its own
-  that line fails and names the rule instead of letting the regression look like a fix.
+  `packages/dom/src/tests/duplicate-item-parity.test.ts:99-104` renders the same list on both
+  backends and asserts each prints the same bytes, so the day one of them grows a list answer of its
+  own that line fails and names the rule instead of letting the regression look like a fix.
 - The partition is asserted over the backends that rendered and are NOT undeclared. An unrecorded
   backend is left out rather than the whole assertion being abandoned: three established answers stay
   asserted while a fourth is still open, which is the difference between a rule that says something

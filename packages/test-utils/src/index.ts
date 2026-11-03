@@ -12,5 +12,8 @@ export type { TExoTestRowPorts } from './types/TExoTestRowPorts';
 
 export { describeIfPresetBuilt } from './describeIfPresetBuilt';
 
+export { bareImports } from './bareImports';
+
 export { createExoTestMachine } from './createExoTestMachine';
 export { createExoNamedTestMachine } from './createExoNamedTestMachine';
+export { createExoFollowingMachine } from './createExoFollowingMachine';

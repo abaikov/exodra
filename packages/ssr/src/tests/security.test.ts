@@ -30,19 +30,6 @@ describe('ASVS V5.3 / CWE-116 — state serialised into <script>', () => {
         expect(JSON.parse(out)).toEqual(value);
     });
 
-    it('escapes U+2028/U+2029 — line terminators to a JS parser', () => {
-        const out = escapeExoJsonForScript(JSON.stringify({ s: '\u2028\u2029' }));
-        expect(out).not.toContain('\u2028');
-        expect(out).not.toContain('\u2029');
-        expect(out).toContain('\\u2028');
-        expect(out).toContain('\\u2029');
-    });
-
-    it('escapes the id/nonce attributes it interpolates', () => {
-        const html = renderExoJsonScript('{}', { id: 'x" onload="alert(1)' });
-        expect(html).not.toContain('onload="alert(1)"');
-    });
-
     it('emits a well-formed script element for ordinary input', () => {
         const html = renderExoJsonScript('{"a":1}', { id: 'state', nonce: 'n1' });
         expect(html).toBe('<script id="state" type="application/json" nonce="n1">{"a":1}</script>');

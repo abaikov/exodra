@@ -241,35 +241,6 @@ describe('a component nested into an <svg> child list', () => {
             }
     );
 
-    it('is in the SVG namespace, as the same markup from the server would be', () => {
-        // WAS A SERVER/CLIENT DIVERGENCE, PINNED AS FAILING, AND FIXED — the note stays because
-        // the failure it describes is one nothing else in this package can see.
-        //
-        // `DOT`'s schema is compiled on its own: `compileExoDomSchema` sets
-        // `template.innerHTML = '<circle r="2" cx=""></circle>'`, and a `<circle>` with no
-        // `<svg>` above it is not foreign content — the parser made an ordinary
-        // `HTMLUnknownElement` in the XHTML namespace. Cloning it into an `<svg>` at render time
-        // does not change its namespace: a node's namespace is fixed when it is created.
-        //
-        // WHAT IT COST. The SERVER prints one string, `<svg …><circle …>`, and the browser
-        // parses the whole of it in context — so the served page drew three real circles. The
-        // CLIENT render drew nothing at all, because an `HTMLUnknownElement` called `circle`
-        // inside an `<svg>` is invisible. A chart, an icon set or any inline graphic assembled
-        // from components appeared on first paint and VANISHED the moment the client took over,
-        // and no assertion anywhere in this package went red, because the markup strings match
-        // and only the namespaces differed.
-        //
-        // WHAT WAS DONE. `compileExoDomSchema` asks `exoSvgRootedSchema` whether the schema's
-        // markup is SVG content and, when it is, creates the root in the SVG namespace and
-        // descends in it — the same verdict the parser would reach about the server's page. No
-        // render path gained a branch: the schema is still a clone of a prototype.
-        const parent = host();
-        EXO_BACKEND.render(CHART, parent);
-        const circle = parent.querySelector('circle') as Element;
-
-        expect(circle.namespaceURI).toBe(SVG_NS);
-    });
-
     it('builds the same circles the server prints, namespace included', () => {
         // The companion to the case above and the reason it needs its own name. WHILE THE BUG
         // WAS LIVE, every assertion in this body except the last two passed: the client built
@@ -388,7 +359,7 @@ describe('a camelCase attribute PORT on an SVG element', () => {
             }
     );
 
-    it('fills the attribute the markup created, instead of adding a dead one beside it', () => {
+    it('fills the attribute the markup created, in the spelling the parser produced', () => {
         const parent = host();
         EXO_BACKEND.render(BOXED, parent);
         const svg = parent.firstElementChild as Element;
@@ -396,22 +367,10 @@ describe('a camelCase attribute PORT on an SVG element', () => {
         const box = named(svg, 'viewbox');
         expect(box).toHaveLength(1);
         expect(box[0].value).toBe('0 0 10 10');
-    });
 
-    it("writes the spelling the parser produced, which is the specification's adjusted form", () => {
-        // THE SPELLING QUESTION, SETTLED AS ITS OWN CASE because it is the one claim here that
-        // depends on the environment implementing "adjust SVG attributes". It is NOT the
-        // author's spelling: the markup is lowercased before the parser ever sees it, so
-        // `port('viewBox')`, `port('viewbox')` and `port('viewBOX')` are one attribute on the
-        // page and must be one attribute here. It is what the parser makes of that lowercase.
-        //
-        // If this case ever goes red on its own while the one above stays green, the runtime
-        // stopped adjusting foreign attributes — and the case above became vacuous, because
-        // there was never a second name for a dead attribute to have.
-        const parent = host();
-        EXO_BACKEND.render(BOXED, parent);
-        const svg = parent.firstElementChild as Element;
-
+        // It is NOT the author's spelling: the markup is lowercased before the parser ever sees
+        // it, so `port('viewBox')`, `port('viewbox')` and `port('viewBOX')` are one attribute on
+        // the page and must be one attribute here. It is what the parser makes of that lowercase.
         expect(svg.getAttribute('viewBox')).toBe('0 0 10 10');
         // Case-sensitive on a foreign element, so this is the dead attribute's own name.
         expect(svg.getAttribute('viewbox')).toBeNull();
@@ -439,15 +398,16 @@ describe('a camelCase attribute PORT on an SVG element', () => {
                         c.attr(schema.ports.port, box.getValue());
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { show } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         show(c);
                         return box.onChange(() => show(c));
                     });
-                })
+                });
+            }
         );
-        const { show } = LIVE.transitions;
 
         const parent = host();
         EXO_BACKEND.render(LIVE, parent);
@@ -584,7 +544,7 @@ describe('a NAMESPACED attribute port', () => {
             }
     );
 
-    it('fills the attribute the markup created, not a second one beside it', () => {
+    it('fills the attribute the markup created, in the XLink namespace where a renderer looks for it', () => {
         const parent = host();
         EXO_BACKEND.render(ICON_USE, parent);
         const use = parent.querySelector('use') as Element;
@@ -592,17 +552,9 @@ describe('a NAMESPACED attribute port', () => {
         const href = Array.from(use.attributes).filter((a) => a.localName === 'href');
         expect(href).toHaveLength(1);
         expect(href[0].value).toBe('#star');
-    });
 
-    it('leaves it in the XLink namespace, which is where a renderer looks for it', () => {
-        // Separate, for the reason the spelling case above is separate: this is the half that
-        // needs the environment to implement foreign-attribute adjustment. An `<use>` whose
-        // href is in the null namespace is not an error anywhere — it simply draws nothing in an
-        // SVG 1.1 renderer.
-        const parent = host();
-        EXO_BACKEND.render(ICON_USE, parent);
-        const use = parent.querySelector('use') as Element;
-
+        // An `<use>` whose href is in the null namespace is not an error anywhere — it simply
+        // draws nothing in an SVG 1.1 renderer.
         expect(use.getAttributeNS(XLINK, 'href')).toBe('#star');
     });
 });

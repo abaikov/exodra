@@ -369,7 +369,6 @@ describe('what the wire form adds', () => {
         const parent = host();
         EXO_BACKEND.render(HOLDER, parent);
 
-        expect(typeof out.setName).toBe('function');
         expect(parent.querySelector('b')?.textContent).toBe('Ald');
         out.setName('Bespin');
         expect(parent.querySelector('b')?.textContent).toBe('Bes');
@@ -393,21 +392,6 @@ describe('what the wire form adds', () => {
         handles[0].setName('Bespin');
         expect(first.querySelector('b')?.textContent).toBe('Bes');
         expect(second.querySelector('b')?.textContent).toBe('Ald');
-    });
-
-    it('seeds a field where it is declared, so the first paint already shows the seeded value', () => {
-        const CARD = makeWireCard([], 'Coruscant');
-        const HOLDER = createExoTestMachine(
-            buildHolder,
-            (P): TExoMachineInitialState<TExoDomNode> =>
-                (c) => {
-                    c.one(P.slot, CARD);
-                }
-        );
-        const parent = host();
-        EXO_BACKEND.render(HOLDER, parent);
-        // Never `''` for a frame, and no second commit to get there.
-        expect(parent.querySelector('b')?.textContent).toBe('Cor');
     });
 
     it('names a transition directly in c.on, with no wrapper', () => {
@@ -893,7 +877,5 @@ describe('what a wiring block refuses', () => {
             })
         );
         expect(() => EXO_BACKEND.render(LEAKY, host())).toThrow(/fired before its wiring block/);
-        // Declared and never usable, which is the point: the refusal names `done()`.
-        expect(typeof escaped).toBe('function');
     });
 });

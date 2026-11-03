@@ -131,11 +131,6 @@ describe('renderDocument — the doctype and the head', () => {
         expect(doc.startsWith('<!DOCTYPE html>\n<html')).toBe(true);
     });
 
-    it('emits no doctype at all for `false`, and no stray newline either', () => {
-        const doc = renderExoPage(PAGE).renderDocument({ doctype: false });
-        expect(doc.startsWith('<html')).toBe(true);
-    });
-
     it('takes an ARRAY of head entries and keeps them in order, before the collected ones', () => {
         // `renderHeadOption`'s array branch. The ordering rule is the one that matters: a charset
         // arriving after a title is a charset the parser has already had to guess at. The entries

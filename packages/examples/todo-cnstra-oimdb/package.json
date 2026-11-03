@@ -13,6 +13,6 @@
     "@exodra/dom": "^0.3.0",
     "@exodra/forms": "^0.3.0",
     "@exodra/list-reconcile": "^0.3.0",
-    "@oimdb/core": "^4.7.0"
+    "@oimdb/core": "^4.8.0"
   }
 }

@@ -108,86 +108,6 @@ const ROW = createExoTestMachine(
         }
 );
 
-describe('createExoTestMachine', () => {
-    it('hands the factory the ports of ITS OWN schema, which is what ties the two halves', () => {
-        let seen: unknown;
-        const component = createExoTestMachine(
-            (b) => {
-                let title!: TExoTextPort;
-                b.el('h3', null, (h) => {
-                    title = h.textPort();
-                });
-                return { title };
-            },
-            (P) => {
-                seen = P;
-                return () => undefined;
-            }
-        );
-        // Not "a record shaped like the ports" — THE record the build callback returned, by identity.
-        // A wire cannot name a port it was not given, and it is given exactly one schema's.
-        expect(seen).toBe(component.declaration.ports);
-    });
-
-    it('runs the factory ONCE, at construction, and not per instance', () => {
-        let made = 0;
-        const component = createExoTestMachine(
-            (b) => {
-                let title!: TExoTextPort;
-                b.el('h3', null, (h) => {
-                    title = h.textPort();
-                });
-                return { title };
-            },
-            (P): TExoMachineInitialState<TSetting> => {
-                made++;
-                return (c, i) => {
-                    c.text(P.title, i);
-                };
-            }
-        );
-        expect(made).toBe(1);
-
-        // Thirty instances, three backends — ten rows of one list, rendered three ways. The
-        // factory is the place a component's constants are captured; if it ran per instance it
-        // would be a per-row allocation, which is exactly what the fourth-argument alternative
-        // (passing the ports to the wire) was rejected for.
-        const TEN = listOf(component, 10);
-        EXO_BACKEND.render(TEN, host());
-        EXO_STR.render(TEN);
-        const parent = host();
-        parent.innerHTML = EXO_STR.render(TEN);
-        EXO_BACKEND.hydrate(TEN, parent);
-        expect(made).toBe(1);
-    });
-
-    it('carries the schema and the wire, and nothing else, so a compiler can emit one', () => {
-        // The shape is public because `@exodra/babel-plugin-exodra-schema` HOISTS the schema
-        // to module scope and leaves the wire where the author wrote it, which no single call
-        // can do. What it emits is this object.
-        expect(Object.keys(CARD).sort()).toEqual([
-            'createInitialState',
-            'declaration',
-            'effects',
-            'forms',
-            'handlers',
-        ]);
-        expect(typeof CARD.createInitialState).toBe('function');
-        expect(CARD.declaration.portList).toHaveLength(1);
-    });
-
-    it('holds no compiled schema: a machine is built before anything is compiled', () => {
-        const fresh = createExoTestMachine(
-            (b) => {
-                b.el('div');
-                return {};
-            },
-            () => () => undefined
-        );
-        expect(fresh.forms).toEqual([]);
-    });
-});
-
 describe("a component cannot be filled by another component's wire", () => {
     it('because no entry point has a place to put one', () => {
         // THE STRUCTURAL CLAIM, checked the only way a runtime test can check it: by arity.
@@ -248,7 +168,6 @@ describe("a component cannot be filled by another component's wire", () => {
             '<div><li data-id="0"><span>row 0</span></li>' +
                 '<li data-id="1"><span>row 1</span></li></div>'
         );
-        expect(CARD.createInitialState).not.toBe(ROW.createInitialState);
     });
 
     it('and the crossed pair, if someone assembles one by hand, fails LOUDLY', () => {

@@ -71,9 +71,12 @@ module.exports = {
                 'packages/benchmarks/vite.config.ts:31 and exists only inside a Vite build, so a ' +
                 'crawler that reads the filesystem cannot resolve it and never will. The ' +
                 'exemption is that ONE specifier and not the `virtual:` scheme, so a second ' +
-                'virtual module has to be added here deliberately.',
+                'virtual module has to be added here deliberately. `@cnstra/exodra` is the other ' +
+                'one: it peers on @exodra/core 0.3.0, so it reaches npm only after this repo ' +
+                'publishes, and until then the todo example aliases it to the cnstra source; ' +
+                'drop it here once the example installs the published package.',
             from: {},
-            to: { couldNotResolve: true, pathNot: '^virtual:app-sloc$' },
+            to: { couldNotResolve: true, pathNot: '^(virtual:app-sloc|@cnstra/exodra)$' },
         },
         {
             name: 'no-undeclared-dep',

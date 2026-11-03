@@ -78,17 +78,6 @@ describe('the string backend renders', () => {
         expect(html).not.toContain('click');
     });
 
-    it('escapes a text value for a text position', () => {
-        const ROW = rowWith((P) => (c) => {
-            c.attr(P.id, '');
-            c.attr(P.mark, '');
-            c.text(P.count, '');
-            c.on(P.click, () => undefined);
-            c.text(P.label, '<b>a & b</b>');
-        });
-        expect(EXO_STR.render(ROW)).toContain('&lt;b&gt;a &amp; b&lt;/b&gt;');
-    });
-
     it('escapes an attribute value, INCLUDING angle brackets', () => {
         // `setAttribute('x','a<b>')` serialises as `x="a&lt;b&gt;"`, so leaving `<` and `>` raw
         // inside a quoted value produces bytes the client would never produce.

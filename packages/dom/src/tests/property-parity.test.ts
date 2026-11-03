@@ -508,15 +508,16 @@ describe('the boolean/string split the server has to know about', () => {
                         c.attr(schema.ports.x, model.getValue());
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { show } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         show(c);
                         return model.onChange(() => show(c));
                     });
-                })
+                });
+            }
         );
-        const { show } = FIELD.transitions;
 
         const parent = host();
         EXO_BACKEND.render(FIELD, parent);

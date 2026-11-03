@@ -67,8 +67,9 @@ export function exoOutlet(
             withExoTransitions(m, {
                 showRoute: (c) => showExoOutletRoute(c.state),
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRoute } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     const state = c.state;
                     state.connected = true;
@@ -82,7 +83,8 @@ export function exoOutlet(
                         if (off !== null) off();
                     };
                 });
-            })
+            });
+        }
     );
     const { showRoute } = machine.transitions;
     return machine as TExoMachine<TExoOutletWiring, { page: TExoChildrenPort }>;

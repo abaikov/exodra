@@ -369,15 +369,16 @@ const appOf = (src: { getValue(): readonly TItem[]; onChange(cb: () => void): ()
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showRows(c);
                     return src.onChange(() => showRows(c));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = machine.transitions;
     return machine;
 };
 

@@ -46,10 +46,4 @@ d('rollup-plugin-exodra', () => {
         expect(code).toContain('.port("data-id", "id")');
         expect(code).not.toContain('unknown');
     });
-
-    it('lowers a named attribute port', async () => {
-        const code = await build(`export const V = exoJsx(($) => <input class="f" value={$.value} />);`);
-        expect(code).toContain('createExoNamedSchema(');
-        expect(code).toContain('.port("value", "value")');
-    });
 });

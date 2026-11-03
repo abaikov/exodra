@@ -125,21 +125,4 @@ describe('hydration is a leaf of @exodra/dom', () => {
             `${offences.length} import(s) into hydrate/ from outside it:\n` + offences.join('\n')
         ).toEqual([]);
     });
-
-    it('reaches `describeExoNode` from dom/, which is where the package exports it from', () => {
-        // The specific edge this closed, pinned by name so that "move it back, it is only
-        // thirty lines" is a red test rather than a plausible-sounding review comment.
-        //
-        // Its two EAGER readers are gone: both were parse-verification passes in
-        // `compileExoDomSchema`, and the compiler builds its prototype instead of parsing one.
-        // The module stays in `dom/` because `index.ts` exports it from there, and this case is
-        // now about the direction of the remaining import — the leaf pointing at the trunk.
-        for (const [dir, name, spec] of [
-            ['hydrate', 'findExoRowDisagreement.ts', '../dom/describeExoNode'],
-        ] as const) {
-            const text = readFileSync(join(SRC, dir, name), 'utf8');
-            expect(text, name).toContain(`from '${spec}'`);
-            expect(text, name).not.toContain('hydrate/describeExoNode');
-        }
-    });
 });

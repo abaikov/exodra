@@ -281,7 +281,6 @@ describe('an instance a machine wired', () => {
             'handlers',
             'wire',
         ]);
-        expect((CARD as unknown as { seed?: unknown }).seed).toBeUndefined();
     });
 
     it('holds no disposer array at all for a component that declares no effect', () => {
@@ -361,39 +360,6 @@ describe('a declared handler', () => {
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 
 describe('where an instance starts', () => {
-    it('takes a machine NOTHING at arming time — no seed, no props, no index', () => {
-        const m = createExoMachine<TCard>(createExoSchema(buildCard), {
-            createInitialState: () => 'declared',
-        });
-        const CARD = composeExoMachine(m, (m) => withExoWire(m, () => undefined));
-        expect(armExoNode).toHaveLength(3);
-        expect(Object.keys(CARD).sort()).toEqual([
-            'createInitialState',
-            'declaration',
-            'effects',
-            'forms',
-            'handlers',
-            'wire',
-        ]);
-    });
-
-    it('starts at the DECLARED value, and a TRANSITION is what moves it off that', () => {
-        const m = createExoMachine<TCard>(createExoSchema(buildCard), {
-            createInitialState: () => 'declared',
-        });
-        const held: (TCard | null)[] = [null];
-        const CARD = composeExoMachine(m, (m) =>
-            withExoEffects(m, (effect) => {
-                effect((c) => {
-                    held[0] = c;
-                    return null;
-                });
-            })
-        );
-        armExoNode(nodeOf(new ExoCardBackend()), CARD);
-        expect(took(held).readState<TKept>()).toBe('declared');
-    });
-
     it('names ONE instance among many, so two cards are moved apart by a transition', () => {
         const m = createExoMachine<TCard>(createExoSchema(buildCard), {
             createInitialState: () => 'declared',

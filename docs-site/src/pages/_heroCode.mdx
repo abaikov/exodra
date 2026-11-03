@@ -21,7 +21,10 @@ export const counterMachine = composeExoMachine(
         },
     }),
     (m) => withExoWire(m, (c) => c.text(CounterPorts.COUNT, String(c.state.count))),
-    (m) => withExoHandlers(m, (on) => on(CounterPorts.INCREMENT, (c) => increment(c))),
+    (m) => {
+        const { increment } = m.transitions;
+        return withExoHandlers(m, (on) => on(CounterPorts.INCREMENT, (c) => increment(c)));
+    },
 );
 export const { increment } = counterMachine.transitions;
 

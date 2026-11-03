@@ -5,14 +5,23 @@ import {
     withExoChildList,
     withExoCompiler,
 } from '@exodra/dom';
-import { TodoApp } from './TodoApp';
-import { TodoDb } from './TodoDb';
+import { todoAppMachine } from './todoAppMachine';
 import { createTodoCns } from './createTodoCns';
+import { createTodoOimdb } from './createTodoOimdb';
+import { exoOimRowReleaseListener } from './exoOimRowReleaseListener';
+
+const oimdb = createTodoOimdb();
+const todoRowCell = oimdb.claimSlotDataCell();
+oimdb.addSlotReleaseListener(exoOimRowReleaseListener(todoRowCell));
+const todoDb = oimdb.schemas.todos;
+const cns = createTodoCns(oimdb, todoDb);
 
 const backend = composeExoPlugins(withExoChildList(withExoCompiler(new ExoDomBackend())), {
     events: () => createExoDelegatedEvents(['change', 'click', 'dblclick', 'keydown', 'focusout']),
+    oimdb: () => oimdb,
+    todoDb: () => todoDb,
+    cns: () => cns,
+    todoRowCell: () => todoRowCell,
 });
 
-backend.render(TodoApp, document.getElementById('root') as HTMLElement, {
-    cns: createTodoCns(TodoDb),
-});
+backend.render(todoAppMachine, document.getElementById('root') as HTMLElement);

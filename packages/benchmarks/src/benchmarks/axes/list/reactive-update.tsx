@@ -163,15 +163,16 @@ const SPAN = composeExoMachine(
                 c.text(SPAN_SCHEMA.ports.text, c.state.getValue());
             },
         }),
-    (m) =>
-        withExoEffects(m, (effect) => {
+    (m) => {
+        const { showSpan } = m.transitions;
+        return withExoEffects(m, (effect) => {
             effect((c) => {
                 showSpan(c);
                 return c.state.onChange(() => showSpan(c));
             });
-        })
+        });
+    }
 );
-const { showSpan } = SPAN.transitions;
 
 // --- the schema core's SPAN, WRITTEN DIRECTLY: the same one element, filled without a cell ---------
 /**

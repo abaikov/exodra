@@ -104,6 +104,7 @@ export function compileExoHydrateSchema(
         childListPrevPort: dom.childListPrevPort,
         childListPrevStatics: dom.childListPrevStatics,
         ownsElement: dom.ownsElement,
+        portNames: dom.portNames,
         hasSeparatedChildLists: dom.hasSeparatedChildLists,
         // From the DOM schema and not from the parameter, so a schema and the key it is filed under
         // cannot disagree about which pair it belongs to.

@@ -72,15 +72,16 @@ describe('a keyed list is a pack', () => {
                 withExoTransitions(m, {
                     showUsers: (c) => c.state.list.reconcile(users.getValue()),
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { showUsers } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         showUsers(c);
                         return users.onChange(() => showUsers(c));
                     });
-                })
+                });
+            }
         );
-        const { showUsers } = LIST.transitions;
 
         const backend = composeExoPlugins(
             withExoChildList(withExoCompiler(new ExoDomBackend())),

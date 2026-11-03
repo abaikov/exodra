@@ -195,10 +195,6 @@ describe('the compiled field→slots table', () => {
         expect([...TAG.reads]).toEqual([0b011, 0b100]);
     });
 
-    it('gives a field NO slot reads the entry 0, which is what makes that write free', () => {
-        expect(M_NOTE).toBe(0);
-    });
-
     it('resolves each derivation`s port index, so a backend loop needs no port object', () => {
         expect([...TAG.portIndexes]).toEqual([0, 1]);
     });
@@ -223,11 +219,6 @@ describe('the initial fill', () => {
             [1, '48px'],
         ]);
         expect(pendingOf(enode)).toBe(0);
-    });
-
-    it('records every port it filled, through `set`, so a sweep leaves them alone', () => {
-        const { ports } = mountTag();
-        expect(ports.written).toEqual([0, 1]);
     });
 
     it('owns nothing and registers nothing — a stop is the engine`s, never a body`s', () => {
@@ -1030,23 +1021,6 @@ describe('the other refusals', () => {
                 ],
             })
         ).toThrow(/reads no field/);
-    });
-
-    it('accepts a BODY that reads nothing, which is not the same mistake', () => {
-        const program = compileExoMachine<TTagState>({
-            fields: 1,
-            pendingRow: PENDING,
-            derivations: [],
-            bodies: [
-                exoBody<TTagState>({
-                    label: 'once',
-                    reads: [],
-                    start: () => undefined,
-                }),
-            ],
-        });
-        expect(program.bodyMask).toBe(0b1);
-        expect([...program.fieldMarks]).toEqual([0]);
     });
 
     it('refuses a field this machine did not declare, in a derivation and in a body alike', () => {

@@ -58,93 +58,41 @@ const svgWithPortThenAnother = (portName: string, value: string) =>
             }
     );
 
-describe('an SVG attribute whose real name is not its lowercase spelling', () => {
-    it('lands under the parser’s name on every backend that can express it', () => {
-        assertExoConformanceRule({
-            name: 'port("viewBox") on an <svg>',
-            subject: () => ({ component: svgWithPort('viewBox', '0 0 10 10') }),
-            expect: {
-                dom: renders(),
-                string: renders(),
-                term: cannotExpress(EXO_CAP_ELEMENT),
-                hydrate: renders(),
-            },
-            agreement: [['dom', 'hydrate', 'string']],
-        });
-    });
-
-    it('lands under the parser’s name when the port is not the last one either', () => {
-        assertExoConformanceRule({
-            name: 'port("viewBox") on an <svg> with a port declared behind it',
-            subject: () => ({ component: svgWithPortThenAnother('viewBox', '0 0 10 10') }),
-            expect: {
-                dom: renders(),
-                string: renders(),
-                term: cannotExpress(EXO_CAP_ELEMENT),
-                hydrate: renders(),
-            },
-            agreement: [['dom', 'hydrate', 'string']],
-        });
-    });
-
-    it('and the same, for a name that is namespaced rather than merely cased', () => {
-        assertExoConformanceRule({
-            name: 'port("xlink:href") on an <svg>',
-            // "Adjust foreign attributes" turns the parsed `xlink:href` into an XLINK-namespaced
-            // `href`, so the setter must use `setAttributeNS` with the prototype `Attr`'s namespace.
-            subject: () => ({ component: svgWithPort('xlink:href', '#target') }),
-            expect: {
-                dom: renders(),
-                string: renders(),
-                term: cannotExpress(EXO_CAP_ELEMENT),
-                hydrate: renders(),
-            },
-            agreement: [['dom', 'hydrate', 'string']],
-        });
-    });
-
-    it('and the namespaced name when the port is not the last one either', () => {
-        assertExoConformanceRule({
-            name: 'port("xlink:href") on an <svg> with a port declared behind it',
-            subject: () => ({ component: svgWithPortThenAnother('xlink:href', '#target') }),
-            expect: {
-                dom: renders(),
-                string: renders(),
-                term: cannotExpress(EXO_CAP_ELEMENT),
-                hydrate: renders(),
-            },
-            agreement: [['dom', 'hydrate', 'string']],
-        });
-    });
-
+const SVG_ATTRIBUTES = [
+    { portName: 'viewBox', value: '0 0 10 10' },
+    // "Adjust foreign attributes" turns the parsed `xlink:href` into an XLINK-namespaced
+    // `href`, so the setter must use `setAttributeNS` with the prototype `Attr`'s namespace.
+    { portName: 'xlink:href', value: '#target' },
     // On an element in the SVG namespace `className` is a read-only `SVGAnimatedString`: a setter
     // routing `class` through the property raises a `TypeError` where it is implemented and writes
     // a silent expando where it is not, and neither leaves the element carrying a `class`.
-    it('writes class as an attribute on an <svg>, where className is read-only', () => {
-        assertExoConformanceRule({
-            name: 'port("class") on an <svg>',
-            subject: () => ({ component: svgWithPort('class', 'chart') }),
-            expect: {
-                dom: renders(),
-                string: renders(),
-                term: cannotExpress(EXO_CAP_ELEMENT),
-                hydrate: renders(),
-            },
-            agreement: [['dom', 'hydrate', 'string']],
-        });
-    });
+    { portName: 'class', value: 'chart' },
+] as const;
 
-    it('and class on an <svg> when the port is not the last one either', () => {
-        assertExoConformanceRule({
-            name: 'port("class") on an <svg> with a port declared behind it',
-            subject: () => ({ component: svgWithPortThenAnother('class', 'chart') }),
-            expect: {
-                dom: renders(),
-                string: renders(),
-                term: cannotExpress(EXO_CAP_ELEMENT),
-                hydrate: renders(),
-            },
-            agreement: [['dom', 'hydrate', 'string']],
-        });
-    });
+const PORT_ORDERS = [
+    { where: 'on an <svg>', build: svgWithPort },
+    { where: 'on an <svg> with a port declared behind it', build: svgWithPortThenAnother },
+] as const;
+
+describe('an SVG attribute whose real name is not its lowercase spelling', () => {
+    for (const attribute of SVG_ATTRIBUTES) {
+        for (const order of PORT_ORDERS) {
+            const name = `port("${attribute.portName}") ${order.where}`;
+            it(`${name} lands under the parser’s name on every backend that can express it`, () => {
+                assertExoConformanceRule({
+                    name,
+                    subject: () => ({
+                        component: order.build(attribute.portName, attribute.value),
+                    }),
+                    expect: {
+                        dom: renders(),
+                        string: renders(),
+                        term: cannotExpress(EXO_CAP_ELEMENT),
+                        hydrate: renders(),
+                    },
+                    agreement: [['dom', 'hydrate', 'string']],
+                });
+            });
+        }
+    }
 });

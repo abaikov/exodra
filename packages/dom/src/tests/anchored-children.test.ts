@@ -135,8 +135,9 @@ const followingCard = <TPorts>(
                     followed.draw();
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { draw } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     const all = c.state;
                     for (const followed of all) draw(c, followed);
@@ -147,9 +148,9 @@ const followingCard = <TPorts>(
                         for (const off of offs) off();
                     };
                 });
-            })
+            });
+        }
     );
-    const { draw } = machine.transitions;
     return machine;
 };
 
@@ -996,15 +997,16 @@ describe('ports on the statics AROUND a child list, hydrated', () => {
                         c.text(schema.ports.footer, label.getValue());
                     },
                 }),
-            (m) =>
-                withExoEffects(m, (effect) => {
+            (m) => {
+                const { showFooter } = m.transitions;
+                return withExoEffects(m, (effect) => {
                     effect((c) => {
                         showFooter(c);
                         return label.onChange(() => showFooter(c));
                     });
-                })
+                });
+            }
         );
-        const { showFooter } = CARD.transitions;
         return { label, CARD };
     };
 

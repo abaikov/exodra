@@ -23,6 +23,15 @@ export function withExoHandlers<
 ): TMachine {
     const handlers: TExoMachineHandler[] = machine.handlers.slice();
     declare((port, handler) => {
+        for (let at = 0; at < handlers.length; at++) {
+            if (handlers[at].port !== port) continue;
+            throw new Error(
+                typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
+                    ? `withExoHandlers: event port ${port.index} already has a handler on this machine; ` +
+                      'an element keeps one handler per event, so a second one would silently replace the first.'
+                    : `EXO0111 ${port.index}`
+            );
+        }
         handlers.push({
             port,
             run: (event: unknown, enode?: unknown): void => {

@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EXO_BASE_NODE_VOCABULARY } from '../../plugins/constants/EXO_BASE_NODE_VOCABULARY';
-import { EXO_NO_STATE } from '../../wiring/constants/EXO_NO_STATE';
-import { composeExoPlugins } from '../../plugins/composeExoPlugins';
+import { createExoTestRowNode } from './createExoTestRowNode';
 import { createExoSchema } from '../../schema/factories/createExoSchema';
 import { armExoNode } from '../armExoNode';
 import { connectExoNode } from '../connectExoNode';
@@ -17,27 +15,6 @@ import type { TExoMachineNode } from '../types/TExoMachineNode';
 import type { TExoAttrPort } from '../../schema/ports/types/TExoAttrPort';
 
 type TRow = TExoBaseNodeFields & TExoMachineNode;
-
-class ExoRowBackend {
-    constructor() {
-        composeExoPlugins(this, EXO_BASE_NODE_VOCABULARY);
-    }
-
-    attr(): void {}
-
-    on(): void {}
-}
-
-const nodeOf = (): TRow =>
-    ({
-        __proto__: new ExoRowBackend(),
-        context: null,
-        disposers: null,
-        state: EXO_NO_STATE,
-        effectStops: null,
-        transitionOverrides: null,
-        serviceState: undefined,
-    } as unknown as TRow);
 
 function buildRow(b: TExoSchemaCursor): { label: TExoAttrPort } {
     let label!: TExoAttrPort;
@@ -71,7 +48,7 @@ describe('disconnectExoNode / connectExoNode', () => {
     it('ends every effect, keeps the node, and starts them all again on connect', () => {
         const log: string[] = [];
         const ROW = rowWithTwoEffects(log);
-        const row = nodeOf();
+        const row = createExoTestRowNode();
         armExoNode(row, ROW);
 
         disconnectExoNode(row);
@@ -96,7 +73,7 @@ describe('disconnectExoNode / connectExoNode', () => {
                 });
             })
         );
-        const row = nodeOf();
+        const row = createExoTestRowNode();
         armExoNode(row, ROW);
 
         disconnectExoNode(row);
@@ -108,7 +85,7 @@ describe('disconnectExoNode / connectExoNode', () => {
     it('is a no-op twice in a row, and connect after a terminal stop starts nothing', () => {
         const log: string[] = [];
         const ROW = rowWithTwoEffects(log);
-        const row = nodeOf();
+        const row = createExoTestRowNode();
         armExoNode(row, ROW);
 
         disconnectExoNode(row);
@@ -145,7 +122,7 @@ describe('stopEffect', () => {
     it('ends one effect, leaves the others running, and restartEffect brings it back', () => {
         const log: string[] = [];
         const { ROW, first } = rowWithHandles(log);
-        const row = nodeOf();
+        const row = createExoTestRowNode();
         armExoNode(row, ROW);
 
         row.stopEffect(first);
@@ -159,7 +136,7 @@ describe('stopEffect', () => {
     it('is a no-op on an effect already stopped and on a node torn down', () => {
         const log: string[] = [];
         const { ROW, first } = rowWithHandles(log);
-        const row = nodeOf();
+        const row = createExoTestRowNode();
         armExoNode(row, ROW);
 
         row.stopEffect(first);
@@ -185,7 +162,7 @@ describe('stopEffect', () => {
                 });
             })
         );
-        const row = nodeOf();
+        const row = createExoTestRowNode();
         armExoNode(row, ROW);
 
         row.stopEffect(handle);

@@ -80,15 +80,16 @@ const boundRow = (value: TExoTestSource<string>) => {
             withExoWire(m, (c) => {
                 c.attr(BOUND_ROW_SCHEMA.ports.id, c.state.id);
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { show } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     show(c);
                     return value.onChange(() => show(c));
                 });
-            })
+            });
+        }
     );
-    const { show } = machine.transitions;
     return machine;
 };
 

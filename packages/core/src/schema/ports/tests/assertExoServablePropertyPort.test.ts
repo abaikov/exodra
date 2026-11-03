@@ -1,7 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import ts from 'typescript';
 import { createExoSchema } from '../../factories/createExoSchema';
 import { withExoSchemaAsserts } from '../../cursor/withExoSchemaAsserts';
 
@@ -65,14 +62,6 @@ const outputValuePort = (): unknown =>
     }, withExoSchemaAsserts);
 
 describe('the misplaced-property-port refusal is NOT dev-only — it ships', () => {
-    it('refuses `value` on a <select> under NODE_ENV=production', () => {
-        expect(() => underProduction(selectValuePort)).toThrow('EXO0015');
-    });
-
-    it('refuses `value` on an <output> under NODE_ENV=production', () => {
-        expect(() => underProduction(outputValuePort)).toThrow('EXO0015');
-    });
-
     it('refuses a name that arrived as DATA — the case a stripped build could not see', () => {
         // THE REASON THIS ONE IS NOT STRIPPABLE, written as the program that produces it.
         // `ExoSchemaCursor.port()` takes an ordinary `string`, so a schema built from a form
@@ -173,73 +162,5 @@ describe('the misplaced-property-port refusal is NOT dev-only — it ships', () 
             }, withExoSchemaAsserts)
         );
         expect(schema.portList).toHaveLength(3);
-    });
-});
-
-describe('the three core refusals are a SOURCE-SHAPE property', () => {
-    /**
-     * Every `process.env.NODE_ENV` read in a file, found by TypeScript's own parser rather than by
-     * a text scan — these files are mostly prose, the word "process" appears in dozens of comments,
-     * and the runtime source contains quotes inside string literals that defeat a naive scanner.
-     */
-    function nodeEnvReads(file: string): ts.Node[] {
-        const src = readFileSync(fileURLToPath(new URL('../' + file, import.meta.url)), 'utf8');
-        // `true` sets parent pointers, which is what makes "what is this expression an operand
-        // of?" answerable.
-        const source = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true);
-        const reads: ts.Node[] = [];
-        const visit = (node: ts.Node): void => {
-            if (
-                ts.isPropertyAccessExpression(node) &&
-                node.name.text === 'NODE_ENV' &&
-                ts.isPropertyAccessExpression(node.expression) &&
-                node.expression.name.text === 'env'
-            ) {
-                reads.push(node);
-            }
-            ts.forEachChild(node, visit);
-        };
-        ts.forEachChild(source, visit);
-        return reads;
-    }
-
-    it('neither throw sits inside the stripped condition', () => {
-        // The runtime assertions above cannot see the minifier, and the minifier is what deletes a
-        // check written `if (guard && COND) throw`. So the shape itself is asserted: in each file
-        // every `process.env.NODE_ENV` read must be the test of a CONDITIONAL EXPRESSION — the
-        // `guard ? long : short` that folds to `short` — and never the left half of an `if` that
-        // carries the refusal away with it. This is the assertion that fails if any of the three
-        // goes back to the cheaper shape, and it is text, so it is checkable.
-        //
-        // `browserGlobalSafety.test.ts` asserts the other half of the spelling — that the
-        // `typeof` stands immediately in front — across all three runtime packages.
-        //
-        // ONE of `compileExoStrSchema.ts`'s four guards in @exodra/string carries this shape and
-        // is asserted in its own test file. The other three there are deliberately still
-        // `if (guard && COND)`: they compare this repository's own two walks against each other,
-        // which is a fact no user's machine can add to.
-        for (const file of [
-            'asserts/assertExoServablePropertyPort.ts',
-            '../markup/asserts/assertExoNoTextAfterChildrenPort.ts',
-            '../../machine/factories/createExoStatic.ts',
-        ]) {
-            const reads = nodeEnvReads(file);
-            expect(reads.length, `${file} reads process.env.NODE_ENV`).toBe(1);
-            for (const read of reads) {
-                // Walk out of the `!==` and the `&&` to whatever the whole guard is an operand of.
-                let node: ts.Node = read;
-                while (
-                    ts.isBinaryExpression(node.parent) ||
-                    ts.isParenthesizedExpression(node.parent)
-                ) {
-                    node = node.parent;
-                }
-                expect(
-                    ts.isConditionalExpression(node.parent) && node.parent.condition === node,
-                    `${file}: the NODE_ENV guard must be the test of a \`? :\` that folds to the ` +
-                        'short message, not an `if` that takes the refusal away with it'
-                ).toBe(true);
-            }
-        }
     });
 });

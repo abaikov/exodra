@@ -146,15 +146,16 @@ const shellOver = (build: TBuild, items: TExoTestSource<readonly TItem[]>) => {
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showRows(c);
                     return items.onChange(() => showRows(c));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = machine.transitions;
     return machine;
 };
 

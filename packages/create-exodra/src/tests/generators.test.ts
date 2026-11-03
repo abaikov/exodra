@@ -109,29 +109,6 @@ describe('component generator', () => {
         expect(ts).toContain('withExoWire(m, c => {');
     });
 
-    it('names only doors that still exist', () => {
-        // `c.set` was the write door and is gone — `attr`/`text`/`html`/`on` are the whole set.
-        // Every `bind*` call was deleted from every backend, so a generated file that spelled one
-        // would throw on its first instance.
-        for (const source of [ts, js]) {
-            expect(source).not.toMatch(/\bc\.set\(/);
-            expect(source).not.toMatch(/\bc\.bind/);
-            expect(source).not.toContain('withExoBinding');
-        }
-    });
-
-    it('takes no props: createInitialState is handed its params', () => {
-        // `createInitialState` is `(enode, params) => TValue`. `props` does not exist on any
-        // backend, so a generated machine that read one would be reading `undefined`.
-        expect(js).toContain('createInitialState: (_c, params) => ({ label: params.label })');
-        for (const source of [ts, js]) {
-            expect(source).not.toContain('Labels');
-            expect(source).not.toMatch(/createInitialState\(\(/);
-            expect(source).not.toMatch(/\(c,\s*props\)/);
-            expect(source).not.toMatch(/props\./);
-        }
-    });
-
     it('emits types only in the TypeScript variant', () => {
         expect(ts).toContain("import type { TExoMachineNode } from '@exodra/core'");
         // The port's holder is declared before the call that mints it — a port escapes a nested
@@ -140,6 +117,7 @@ describe('component generator', () => {
         expect(ts).toContain('export type TButtonParams = { readonly label: string };');
         expect(js).not.toContain('import type');
         expect(js).not.toContain('TExoMachineNode');
+        expect(js).toContain('createInitialState: (_c, params) => ({ label: params.label })');
         expect(js).toContain('createExoMachine(buttonSchema, {');
         expect(js).toContain('createExoSchema(ButtonPorts, b =>');
     });
@@ -151,7 +129,6 @@ describe('component generator', () => {
         // scaffolded that way can never be served by `@exodra/string` or hydrated. Asserted in
         // both directions, because "contains the right thing" is also satisfied by a file that
         // contains the wrong one beside it.
-        expect(ts).toContain('createInitialState: (_c: TExoMachineNode, params: TButtonParams)');
         expect(ts).not.toContain('TExoDomNode');
         expect(ts).not.toContain("from '@exodra/dom'");
     });

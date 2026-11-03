@@ -12,7 +12,7 @@ import type { TExoDomSchema } from './types/TExoDomSchema';
 
 export interface TExoCompilerApi {
     /** COMPILE A DECLARATION NOW, for THIS backend, and hand the schema back. The schema is cached
-     *  on the declaration either way, so a render would compile it once anyway — on the FIRST
+     *  on the machine (`machine.forms`) either way, so a render would compile it once anyway — on the FIRST
      *  render, which may be inside a click. Calling this at module load takes that off the clock. */
     schema(machine: TExoMachine<never>): TExoDomSchema;
     /** `this & TExoDomInstanceRecord` and not a flat exonode, for the reason the class's own

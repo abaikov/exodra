@@ -102,15 +102,16 @@ const reconciledListOf = (items: readonly TItem[]): TExoStrMachine => {
                     );
                 },
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { showRows } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     showRows(c);
                     return source.onChange(() => showRows(c));
                 });
-            })
+            });
+        }
     );
-    const { showRows } = machine.transitions;
     return machine;
 };
 

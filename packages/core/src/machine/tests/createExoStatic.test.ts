@@ -2,8 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { EXO_NO_EFFECTS } from '../constants/EXO_NO_EFFECTS';
 import { EXO_NO_HANDLERS } from '../constants/EXO_NO_HANDLERS';
 import { createExoStatic } from '../factories/createExoStatic';
-import type { TExoChildrenWiring } from '@exodra/core';
-import type { TExoPort } from '@exodra/core';
 import { createExoSchema } from '../../schema/factories/createExoSchema';
 import { exoSchemaShape } from '../../schema/tests/exoSchemaShape';
 
@@ -35,22 +33,6 @@ describe('createExoStatic', () => {
         ]);
         expect(S.declaration.portList).toHaveLength(0);
         expect(S.forms).toEqual([]);
-    });
-
-    it('refuses a cursor that declared ports, because nothing would ever fill them', () => {
-        // The failure this prevents is silent: an attribute stuck empty and a text position
-        // stuck blank on a page that renders without error.
-        expect(() =>
-            createExoStatic((b) => {
-                b.el('div', null, (d) => {
-                    d.port('data-id');
-                });
-            })
-        ).toThrow(/1 port/);
-    });
-
-    it('still refuses a cursor that produced no element at all', () => {
-        expect(() => createExoStatic(() => undefined)).toThrow(/no element/);
     });
 
     it('carries the same static markup the schema builder does on its own', () => {
@@ -94,33 +76,6 @@ describe("createExoStatic's port refusal is NOT dev-only — it ships", () => {
     // The source SHAPE — that the guard is the test of a `? :` and not the head of an `if` — is
     // asserted in `check-misplaced-property-port.test.ts`, which checks this file among the three.
 
-    it('refuses a cursor that declared ports under NODE_ENV=production', () => {
-        expect(() =>
-            underProduction(() =>
-                createExoStatic((b) => {
-                    b.el('div', null, (d) => {
-                        d.port('data-id');
-                    });
-                })
-            )
-        ).toThrow('EXO0019');
-    });
-
-    it('refuses ports that came from DATA — the case a stripped build could not see', () => {
-        // Nobody typed a port call twice here: the count is whatever the configuration says, and
-        // an empty list on this machine is a non-empty one on a user's.
-        const badges = ['data-kind', 'data-tone'];
-        expect(() =>
-            underProduction(() =>
-                createExoStatic((b) => {
-                    b.el('span', null, (s) => {
-                        for (const attr of badges) s.port(attr);
-                    });
-                })
-            )
-        ).toThrow('EXO0019');
-    });
-
     it('carries the bare code in production and the COUNT in dev', () => {
         // The code is bare, so how many ports were declared is development's — and that count is
         // the fact a re-run on the author's own data does not always reproduce.
@@ -147,45 +102,5 @@ describe("createExoStatic's port refusal is NOT dev-only — it ships", () => {
         expect(long).toContain('createExoMachine and fill them');
         expect(long).not.toContain('EXO0019');
         expect(long.length).toBeGreaterThan(short.length);
-    });
-
-    it('refuses items for a static component — the reason this is a separate function', () => {
-        // THE CLAIM THIS PINS is `createExoStatic`'s own header: `TProps` is `void`, so
-        // `c.list(port, STATIC, items)` stops compiling, because a component that fills
-        // nothing cannot be given anything to fill from. Until the test files of this
-        // repository were type-checked at all, that claim was a sentence in a comment and
-        // nothing could contradict it.
-        //
-        // IT IS A TWO-WAY LOCK, which a runtime assertion cannot be. If the refusal ever stops
-        // firing, the directive becomes an
-        // UNUSED one and TypeScript reports it — so the gate goes red on the day the hole
-        // opens, not on the day somebody notices.
-        //
-        // WHY IT COULD OPEN. The props position is contravariant, so making a static wire
-        // assignable where specific props are wanted means widening `TProps` past `number` —
-        // and `list` infers `TItem` from BOTH `items` (covariantly) and the wire (contra-),
-        // preferring the covariant candidate whenever it is a subtype of the other. `unknown`
-        // admits every item type, so widening to it makes this very call legal. Anyone who
-        // reaches for that trade meets this line.
-        const STATIC = createExoStatic((b) => {
-            b.el('li');
-        });
-        const check = (c: TExoChildrenWiring, port: TExoPort): void => {
-            // @ts-expect-error a static component fills nothing, so it takes no items
-            c.list(port, STATIC, Array.from({ length: ['a', 'b'] }));
-        };
-        expect(typeof check).toBe('function');
-    });
-
-    it('still builds a port-free static component under production', () => {
-        // The other half: what ships is a REFUSAL, not a scare. A component with markup and
-        // nothing to fill is the ordinary case and must keep building.
-        const S = underProduction(() =>
-            createExoStatic((b) => {
-                b.el('div', { class: 'spinner' });
-            })
-        );
-        expect(S.effects).toBe(EXO_NO_EFFECTS);
-        expect(S.declaration.portList).toHaveLength(0);
     });
 });

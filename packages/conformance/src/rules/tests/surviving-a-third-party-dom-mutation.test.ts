@@ -39,15 +39,16 @@ const paragraphBoundTo = () => {
             withExoTransitions(m, {
                 show: (c) => c.text(schema.ports.text, label.getValue()),
             }),
-        (m) =>
-            withExoEffects(m, (effect) => {
+        (m) => {
+            const { show } = m.transitions;
+            return withExoEffects(m, (effect) => {
                 effect((c) => {
                     show(c);
                     return label.onChange(() => show(c));
                 });
-            })
+            });
+        }
     );
-    const { show } = component.transitions;
     return { component, label };
 };
 

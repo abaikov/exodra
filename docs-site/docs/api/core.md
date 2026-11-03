@@ -658,11 +658,14 @@ export const counterButtonMachine = composeExoMachine(
             },
         }),
     (m) =>
-        withExoHandlers(m, (on) => {
+        {
+        const { add } = m.transitions;
+        return withExoHandlers(m, (on) => {
             on(CounterButtonPorts.click, (c) => {
                 add(c, 1);
             });
-        })
+        });
+    }
 );
 export const { add } = counterButtonMachine.transitions;
 ```

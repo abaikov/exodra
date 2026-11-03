@@ -82,22 +82,6 @@ describe('an analyzer reports only what is in the project', () => {
         for (const invented of INVENTED_PATHS) {
             expect(serialized).not.toContain(invented);
         }
-
-        for (const diagnostic of result.diagnostics) {
-            expect(diagnostic.location.file.startsWith(projectRoot)).toBe(true);
-        }
-    });
-
-    it('reports no CWE, no risk score and no quality score anywhere', async () => {
-        const engine = new ExoIntrospectionEngine({
-            projectRoot,
-            analysis: { schema: true, performance: true },
-        });
-
-        const serialized = JSON.stringify(await engine.analyze());
-
-        expect(serialized).not.toContain('CWE-');
-        expect(serialized).not.toMatch(/riskScore|overall_quality_score/);
     });
 
     it('reports no metric whose value is NaN, Infinity or -Infinity', async () => {

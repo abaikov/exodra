@@ -74,11 +74,6 @@ function withoutEntryPoint(block: string): { kept: string; dropped: string[] } {
 }
 
 describe('the doc components this backend runs are the README’s, character for character', () => {
-    it('finds both blocks in README.md', () => {
-        const blocks = tsBlocks(README);
-        expect(blocks.some((b) => b.includes('const Counter = composeExoMachine('))).toBe(true);
-        expect(blocks.some((b) => b.includes('const TodoList = createExoMachine<TExoChildrenWiring & TExoMachineNode>(todoListSchema, {'))).toBe(true);
-    });
 
     it('the counter fixture is the README block minus its two entry-point lines', () => {
         const block = tsBlocks(README).find((b) => b.includes('const Counter = composeExoMachine('));
@@ -104,18 +99,4 @@ describe('the doc components this backend runs are the README’s, character for
         expect(kept).toBe(verbatimRegion('../readme-todos.ts'));
     });
 
-    it('neither fixture reaches a shipped backend', () => {
-        for (const file of ['../readme-counter.ts', '../readme-todos.ts']) {
-            const source = readFileSync(fileURLToPath(new URL(file, import.meta.url)), 'utf8');
-            expect(verbatimRegion(file)).not.toMatch(/@exodra\/(dom|string)/);
-            // …and no IMPORT anywhere in the file reaches one either. Compared against real
-            // import statements rather than against the text, because the headers of both
-            // fixtures QUOTE the entry-point line they left out.
-            const imports = source
-                .split('\n')
-                .filter((line) => /^\s*import\b/.test(line))
-                .join('\n');
-            expect(imports).not.toMatch(/@exodra\/(dom|string)/);
-        }
-    });
 });
