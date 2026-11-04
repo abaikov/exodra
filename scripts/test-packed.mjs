@@ -884,8 +884,10 @@ const compiled = (code, who) => {
         code.includes('createExoNamedSchema('),
         who + ' emitted a module-level createExoNamedSchema()\\n  got: ' + String(code).slice(0, 240)
     );
+    // Outside string literals only: the build-time schema forms carry the markup as a string.
+    const outsideStrings = code.replace(/"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*'/g, '');
     assert(
-        !code.includes('<h2'),
+        !outsideStrings.includes('<h2'),
         who + ' compiled the JSX away — a surviving element is a syntax error downstream'
     );
 };
