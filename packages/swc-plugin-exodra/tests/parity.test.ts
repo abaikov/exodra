@@ -87,7 +87,8 @@ function compileBabel(source: string, options: TExoParityOptions): string {
         configFile: false,
         plugins: [
             [syntaxJsx, { throwIfNamespace: false }],
-            [babelPlugin as unknown as babel.PluginItem, { ...options }],
+            // The Rust port emits declarations only; the JSON forms are the Babel plugin's alone.
+            [babelPlugin as unknown as babel.PluginItem, { ...options, jsonDeclarations: false }],
         ],
     });
     if (result?.code === undefined || result.code === null) {
@@ -252,6 +253,45 @@ const EMIT_CASES: readonly TExoEmitCase[] = [
         `,
         options: { markerName: 'mark' },
     },
+    {
+        what: 'a module const string and a template over consts fold into markup',
+        source: `
+            const A = 'radius:8px';
+            export const B = \`\${A};gap:4px\`;
+            const V = exoJsx(($) => <div class={A} style={\`flex:none;\${B}\`}><$.rows /></div>);
+        `,
+    },
+    {
+        what: 'an import and a module const are read when the schema compiles',
+        source: `
+            import styles from './Row.module.css';
+            import * as tokens from './tokens';
+            import { PANEL } from '../theme';
+            const THEME = { gap: 'gap:4px' };
+            const V = exoJsx(($) => (
+                <li class={styles['row-active']} style={PANEL} title={THEME.gap} data-tone={tokens.tone}>{$.t}</li>
+            ));
+        `,
+    },
+    {
+        what: 'camelCase SVG tags keep their spelling',
+        source: `
+            const V = exoJsx(($) => (
+                <svg>
+                    <defs><linearGradient id="g"><stop offset="0" /></linearGradient></defs>
+                    <circle r="1"><animateMotion dur="1s"><mpath href="#p" /></animateMotion></circle>
+                    <text><tspan>{$.t}</tspan></text>
+                </svg>
+            ));
+        `,
+    },
+    {
+        what: 'a module const folds into a declaration inside a function',
+        source: `
+            const ZONE = 'z';
+            function view() { return exoJsx(($) => <div class={ZONE} />); }
+        `,
+    },
 ];
 
 type TExoRefusalCase = {
@@ -411,6 +451,46 @@ const REFUSAL_CASES: readonly TExoRefusalCase[] = [
         source: `const V = <><li /></>;`,
         signature: 'a fragment cannot be compiled',
     },
+    {
+        what: 'a function-local value in an attribute',
+        source: `function f(styles) { return exoJsx(($) => <div style={styles.row} />); }`,
+        signature: 'style={…} on <div> is an expression',
+    },
+    {
+        what: 'a call off an import in an attribute',
+        source: `import { tone } from './t'; const V = exoJsx(($) => <div style={tone()} />);`,
+        signature: 'style={…} on <div> is an expression',
+    },
+    {
+        what: 'a let in an attribute',
+        source: `let ZONE = 'z'; const V = exoJsx(($) => <div style={ZONE} />);`,
+        signature: 'style={…} on <div> is an expression',
+    },
+    {
+        what: 'a const declared after the declaration',
+        source: `const V = exoJsx(($) => <div style={ZONE} />); const ZONE = 'z';`,
+        signature: 'style={…} on <div> is an expression',
+    },
+    {
+        what: 'a const of the same statement',
+        source: `const ZONE = 'z', V = exoJsx(($) => <div style={ZONE} />);`,
+        signature: 'style={…} on <div> is an expression',
+    },
+    {
+        what: 'a local const shadowing a module one',
+        source: `const ZONE = 'm'; function f() { const ZONE = 'l'; return exoJsx(($) => <div style={ZONE} />); }`,
+        signature: 'style={…} on <div> is an expression',
+    },
+    {
+        what: 'the declaration parameter shadowing a module const',
+        source: `const ZONE = 'm'; const V = exoJsx((ZONE) => <div style={ZONE} />);`,
+        signature: 'style={…} on <div> is an expression',
+    },
+    {
+        what: 'a module const as a child',
+        source: `const ZONE = 'z'; const V = exoJsx(($) => <div>{ZONE}</div>);`,
+        signature: '{…} inside <div> is an expression',
+    },
 ];
 
 function attempt(
@@ -439,7 +519,10 @@ d('the two compilers refuse the same sources, with the same message', () => {
                 fromBabel.error,
                 `@exodra/babel-plugin-schema is the SPECIFICATION and it ACCEPTED a source ` +
                     `this file says neither compiler may take (${testCase.what}).\n  source: ` +
-                    `${testCase.source.trim()}\n  it emitted: ${String(fromBabel.code).slice(0, 400)}`
+                    `${testCase.source.trim()}\n  it emitted: ${String(fromBabel.code).slice(
+                        0,
+                        400
+                    )}`
             ).not.toBeNull();
 
             expect(

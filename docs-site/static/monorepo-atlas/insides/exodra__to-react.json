@@ -721,6 +721,18 @@
         "violations": []
       },
       {
+        "id": "STYLED_SOURCE",
+        "label": "STYLED_SOURCE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
         "id": "TExoFunction",
         "label": "TExoFunction",
         "kind": "app",
@@ -2682,7 +2694,7 @@
       {
         "id": "COUNTER_SOURCE",
         "x": 136,
-        "y": 1083,
+        "y": 1009,
         "width": 120,
         "height": 46
       },
@@ -2703,7 +2715,7 @@
       {
         "id": "emitComponent",
         "x": 432,
-        "y": 2053,
+        "y": 2090,
         "width": 632,
         "height": 69
       },
@@ -2731,7 +2743,7 @@
       {
         "id": "FIXED_SOURCE",
         "x": 136,
-        "y": 1157,
+        "y": 1083,
         "width": 120,
         "height": 46
       },
@@ -2759,7 +2771,7 @@
       {
         "id": "LIST_SOURCE",
         "x": 136,
-        "y": 1231,
+        "y": 1157,
         "width": 120,
         "height": 46
       },
@@ -2829,7 +2841,7 @@
       {
         "id": "readMachineStep",
         "x": 595,
-        "y": 661.8,
+        "y": 698.8,
         "width": 306,
         "height": 69
       },
@@ -2881,6 +2893,13 @@
         "y": 329.5,
         "width": 402,
         "height": 69
+      },
+      {
+        "id": "STYLED_SOURCE",
+        "x": 136,
+        "y": 1231,
+        "width": 120,
+        "height": 46
       },
       {
         "id": "TExoFunction",
@@ -3145,8 +3164,8 @@
         "id": "emitComponent→capitalised",
         "points": [
           {
-            "x": 794.2,
-            "y": 2122
+            "x": 801.8,
+            "y": 2159
           },
           {
             "x": 1096,
@@ -3170,8 +3189,8 @@
         "id": "emitComponent→componentNameOf",
         "points": [
           {
-            "x": 810.4,
-            "y": 2122
+            "x": 825.3,
+            "y": 2159
           },
           {
             "x": 1096,
@@ -3187,8 +3206,8 @@
         "id": "emitComponent→constant",
         "points": [
           {
-            "x": 852.9,
-            "y": 2122
+            "x": 902.9,
+            "y": 2159
           },
           {
             "x": 1096,
@@ -3212,8 +3231,8 @@
         "id": "emitComponent→emitReactMarkup",
         "points": [
           {
-            "x": 962.4,
-            "y": 2122
+            "x": 1064,
+            "y": 2141.8
           },
           {
             "x": 1096,
@@ -3237,8 +3256,8 @@
         "id": "emitComponent→identifierOf",
         "points": [
           {
-            "x": 828.6,
-            "y": 2053
+            "x": 812.5,
+            "y": 2090
           },
           {
             "x": 1096,
@@ -3254,8 +3273,8 @@
         "id": "emitComponent→portOf",
         "points": [
           {
-            "x": 805.9,
-            "y": 2053
+            "x": 797.1,
+            "y": 2090
           },
           {
             "x": 1096,
@@ -3295,8 +3314,8 @@
         "id": "emitComponent→rewriteExoConnectorCalls",
         "points": [
           {
-            "x": 788.7,
-            "y": 2053
+            "x": 784.1,
+            "y": 2090
           },
           {
             "x": 1096,
@@ -3312,8 +3331,8 @@
         "id": "emitComponent→TExoMachineSource",
         "points": [
           {
-            "x": 776.9,
-            "y": 2053
+            "x": 774.5,
+            "y": 2090
           },
           {
             "x": 1096,
@@ -3337,8 +3356,8 @@
         "id": "emitComponent→TExoRewriteContext",
         "points": [
           {
-            "x": 775.6,
-            "y": 2053
+            "x": 773.4,
+            "y": 2090
           },
           {
             "x": 1096,
@@ -3370,8 +3389,8 @@
         "id": "emitComponent→TExoSchemaSource",
         "points": [
           {
-            "x": 773.8,
-            "y": 2053
+            "x": 771.9,
+            "y": 2090
           },
           {
             "x": 1096,
@@ -3387,8 +3406,8 @@
         "id": "emitComponent→useCall",
         "points": [
           {
-            "x": 772.3,
-            "y": 2053
+            "x": 770.6,
+            "y": 2090
           },
           {
             "x": 1096,
@@ -3765,8 +3784,8 @@
         "id": "readMachineStep→call",
         "points": [
           {
-            "x": 773.5,
-            "y": 730.8
+            "x": 775.6,
+            "y": 767.8
           },
           {
             "x": 1096,
@@ -3798,8 +3817,8 @@
         "id": "readMachineStep→isFunction",
         "points": [
           {
-            "x": 834.5,
-            "y": 730.8
+            "x": 866,
+            "y": 767.8
           },
           {
             "x": 1096,
@@ -3823,8 +3842,8 @@
         "id": "readMachineStep→portOf",
         "points": [
           {
-            "x": 849.1,
-            "y": 730.8
+            "x": 894.9,
+            "y": 767.8
           },
           {
             "x": 1096,
@@ -3864,8 +3883,8 @@
         "id": "readMachineStep→readCalls",
         "points": [
           {
-            "x": 815.9,
-            "y": 661.8
+            "x": 804.2,
+            "y": 698.8
           },
           {
             "x": 1096,
@@ -3881,8 +3900,8 @@
         "id": "readMachineStep→stepDecorator",
         "points": [
           {
-            "x": 784.1,
-            "y": 661.8
+            "x": 780.5,
+            "y": 698.8
           },
           {
             "x": 1096,
@@ -3898,8 +3917,8 @@
         "id": "readMachineStep→TExoMachineSource",
         "points": [
           {
-            "x": 778.7,
-            "y": 661.8
+            "x": 776.1,
+            "y": 698.8
           },
           {
             "x": 1096,
@@ -4251,16 +4270,16 @@
         "id": "translateExoToReact→emitComponent",
         "points": [
           {
-            "x": 205.4,
+            "x": 205,
             "y": 1374
           },
           {
             "x": 400,
-            "y": 2087.5
+            "y": 2124.5
           },
           {
             "x": 432,
-            "y": 2087.5
+            "y": 2124.5
           }
         ]
       },
@@ -4402,16 +4421,16 @@
         "id": "translateExoToReact→readMachineStep",
         "points": [
           {
-            "x": 206.9,
+            "x": 207.6,
             "y": 1305
           },
           {
             "x": 400,
-            "y": 696.3
+            "y": 733.3
           },
           {
             "x": 595,
-            "y": 696.3
+            "y": 733.3
           }
         ]
       },

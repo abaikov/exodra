@@ -250,14 +250,14 @@ async function createPackageJson(
             ...(options.eslint ? { lint: 'eslint . --ext ts,tsx,js,jsx --fix' } : {}),
         },
         dependencies: {
-            '@exodra/core': '^0.3.0',
-            '@exodra/jsx': '^0.3.0',
-            '@exodra/dom': '^0.3.0',
-            ...(options.app ? { '@exodra/router': '^0.3.0' } : {}),
+            '@exodra/core': '^0.4.0',
+            '@exodra/jsx': '^0.4.0',
+            '@exodra/dom': '^0.4.0',
+            ...(options.app ? { '@exodra/router': '^0.4.0' } : {}),
         },
         devDependencies: {
             vite: '^5.0.0',
-            '@exodra/vite-plugin': '^0.3.0',
+            '@exodra/vite-plugin': '^0.4.0',
             ...(useTypeScript
                 ? {
                       typescript: '^5.3.3',
@@ -617,10 +617,10 @@ async function createSsrPackageJson(
         },
         dependencies: {
             '@exodra/context': '^0.3.0',
-            '@exodra/core': '^0.3.0',
-            '@exodra/dom': '^0.3.0',
-            '@exodra/ssr': '^0.3.1',
-            '@exodra/string': '^0.4.1',
+            '@exodra/core': '^0.4.0',
+            '@exodra/dom': '^0.4.0',
+            '@exodra/ssr': '^0.4.0',
+            '@exodra/string': '^0.5.0',
         },
         devDependencies: {
             '@types/express': '^5.0.0',

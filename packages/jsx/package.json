@@ -1,6 +1,6 @@
 {
   "name": "@exodra/jsx",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -69,7 +69,7 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "peerDependencies": {
-    "@exodra/core": "^0.3.0"
+    "@exodra/core": "^0.4.0"
   },
   "devDependencies": {
     "vitest": "^4.0.16"

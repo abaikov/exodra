@@ -60,13 +60,18 @@ function readAttributePortName(
     return name;
 }
 
-function refuseExpression(where: string): never {
+function refuseExpression(where: string, tail = ''): never {
     throw new Error(
         `Exodra JSX: ${where} is an expression, and a declaration holds markup and named ports ` +
             'only. Write a literal for markup, or name a port with $.name and fill it from the ' +
-            'machine.'
+            `machine.${tail}`
     );
 }
+
+const FOLDED_ATTRIBUTE_VALUES =
+    ' A const string declared by an earlier statement of this module is folded in, and so is a ' +
+    'template made of such strings; an import or such a const, or a.b / a["b"] off one, is read ' +
+    'once when the schema compiles; a let, a local value or a call is neither.';
 
 function isChildrenPortTag(
     name: t.JSXIdentifier | t.JSXMemberExpression | t.JSXNamespacedName,
@@ -215,7 +220,7 @@ export function emitDeclaredElement(
             contentTaken = true;
             continue;
         }
-        const literal = readStaticAttribute(attr.value);
+        const literal = readStaticAttribute(attr.value, walk.readModuleConstantString);
         if (literal !== null) {
             statics.push(t.objectProperty(propKey(key), literal));
             continue;
@@ -223,7 +228,14 @@ export function emitDeclaredElement(
         const value = attr.value;
         const expression = t.isJSXExpressionContainer(value) ? value.expression : null;
         const port = expression === null ? null : readPortName(expression, walk.holder);
-        if (port === null) refuseExpression(`${key}={…} on <${tag}>`);
+        const moduleValue =
+            port !== null || expression === null ? null : walk.readModuleValue(expression);
+        if (moduleValue !== null) {
+            walk.readsModuleValue = true;
+            statics.push(t.objectProperty(propKey(key), moduleValue));
+            continue;
+        }
+        if (port === null) refuseExpression(`${key}={…} on <${tag}>`, FOLDED_ATTRIBUTE_VALUES);
         body.push(cursorCall(cursor, 'port', [t.stringLiteral(key), claimPortName(port, walk)]));
     }
 

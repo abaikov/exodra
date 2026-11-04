@@ -706,6 +706,7 @@ numbering.
 | `exoDomSchemaOf(machine, backend)` | The schema for a machine, compiled on first use and cached at `machine.forms[backend.backendType]`, so build the backend once at module level — one constructed per render is a fresh index and recompiles every schema, markup parse included. |
 | `createExoDomSchema` / `exoDomJsonDeclaration` | The two halves of shipping schemas off a build: the build makes the JSON declaration, the page turns it into a schema without the compiler. |
 | `mountExoSchema(…)` / `mountExoInstance(…)` | Put one instance of an already compiled schema in a parent. |
+| `withExoBuiltSchemas(base)` | `render`, `buildRoot` and `mountRoot` for a page whose declarations carry the JSON forms `@exodra/babel-plugin-schema` writes at build time: every schema, children's included, is built from that form, and nothing it imports reaches the compiler. A declaration without one is refused with [EXO0099](../errors.md#exo0099). `withExoCompiler` ignores the form and compiles the markup, so a compiling page never links the JSON path. |
 | `EXO_WALK_FIRST_CHILD`, `EXO_WALK_NEXT_SIBLING` | The two walk operations a schema's render walk is made of. |
 | `EXO_WALK_FROM_END` | The hydration walk's third operation: `op - EXO_WALK_FROM_END` steps back from `lastChild`, for a node standing behind a child list. |
 | `TExoDomSchema`, `TExoDomSetter`, `TExoHydrateSchema` (types) | The schema shapes. |

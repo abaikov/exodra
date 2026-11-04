@@ -69,8 +69,8 @@ what every example below does.
 The module build is `dist/exodra.esm.js`, named outright in the URL:
 
 ```
-https://cdn.jsdelivr.net/npm/@exodra/dom@0.3.0/dist/exodra.esm.js
-https://unpkg.com/@exodra/dom@0.3.0/dist/exodra.esm.js
+https://cdn.jsdelivr.net/npm/@exodra/dom@0.4.0/dist/exodra.esm.js
+https://unpkg.com/@exodra/dom@0.4.0/dist/exodra.esm.js
 ```
 
 **Use an import map.** `@exodra/dom` and `@exodra/router` do not re-bundle the
@@ -82,11 +82,11 @@ what resolves it, and it pins every version in one place as a bonus:
 ```html
 <script type="importmap">
 { "imports": {
-  "@exodra/core":       "https://cdn.jsdelivr.net/npm/@exodra/core@0.3.0/dist/exodra.esm.js",
+  "@exodra/core":       "https://cdn.jsdelivr.net/npm/@exodra/core@0.4.0/dist/exodra.esm.js",
   "@exodra/context":    "https://cdn.jsdelivr.net/npm/@exodra/context@0.3.0/dist/index.js",
-  "@exodra/dom":        "https://cdn.jsdelivr.net/npm/@exodra/dom@0.3.0/dist/exodra.esm.js",
-  "@exodra/router":     "https://cdn.jsdelivr.net/npm/@exodra/router@0.3.0/dist/exodra.esm.js",
-  "@exodra/forms":      "https://cdn.jsdelivr.net/npm/@exodra/forms@0.3.0/dist/exodra.esm.js",
+  "@exodra/dom":        "https://cdn.jsdelivr.net/npm/@exodra/dom@0.4.0/dist/exodra.esm.js",
+  "@exodra/router":     "https://cdn.jsdelivr.net/npm/@exodra/router@0.4.0/dist/exodra.esm.js",
+  "@exodra/forms":      "https://cdn.jsdelivr.net/npm/@exodra/forms@0.4.0/dist/exodra.esm.js",
   "@exodra/list-reconcile": "https://cdn.jsdelivr.net/npm/@exodra/list-reconcile@0.3.0/dist/exodra.esm.js"
 }}
 </script>
@@ -164,7 +164,7 @@ reach for it from an application you bundle — it is a pre-minified copy with
 
 ### `/+esm` is jsDelivr's file, not this repository's
 
-jsDelivr also answers `…/@exodra/dom@0.3.0/+esm`. That is jsDelivr's own transform
+jsDelivr also answers `…/@exodra/dom@0.4.0/+esm`. That is jsDelivr's own transform
 of `dist/index.js`, produced on their servers — it resolves the internal
 `@exodra/*` imports for you, so it needs no import map, but it is not a file this
 repository publishes, measures or can promise anything about. `dist/exodra.esm.js`
@@ -198,7 +198,7 @@ For no-module pages, each of those five packages also ships a minified IIFE that
 attaches to a single `window.Exodra` namespace. jsDelivr serves it from the bare
 package URL (via the package's `jsdelivr` / `unpkg` field, which points at
 `./dist/exodra.global.js`); naming that path outright —
-`…/@exodra/core@0.3.0/dist/exodra.global.js` — works too and does not depend on
+`…/@exodra/core@0.4.0/dist/exodra.global.js` — works too and does not depend on
 the CDN resolving the field.
 
 Those two manifest fields keep pointing at the IIFE now that there is a module
@@ -209,8 +209,8 @@ internet into `Uncaught SyntaxError: Unexpected token 'export'`.
 
 ```html
 <!-- load the shared runtime FIRST, then the pieces that use it -->
-<script src="https://cdn.jsdelivr.net/npm/@exodra/core@0.3"></script>
-<script src="https://cdn.jsdelivr.net/npm/@exodra/dom@0.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@exodra/core@0.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@exodra/dom@0.4"></script>
 <script>
   const {
     EXO_PORT_EVENT,
@@ -285,7 +285,7 @@ What each namespace holds:
 
 ## Versions
 
-CDNs serve exactly what's **published to npm**. Pin an exact version (`@exodra/core@0.3.0`)
+CDNs serve exactly what's **published to npm**. Pin an exact version (`@exodra/core@0.4.0`)
 for production so a future release can't shift under you; use a range (`@0.3`) to
 follow patch/minor. Whatever code is on the CDN is the last published version — to
 get a change onto the CDN, publish a new version to npm.

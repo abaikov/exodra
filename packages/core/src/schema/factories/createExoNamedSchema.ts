@@ -2,6 +2,7 @@ import { createExoSchema } from './createExoSchema';
 import type { TExoCursorDeclaration } from '../types/TExoCursorDeclaration';
 import type { TExoSchemaCursor } from '../cursor/types/TExoSchemaCursor';
 import type { TExoSchemaDecorator } from '../cursor/types/TExoSchemaDecorator';
+import type { TExoJsonDeclarations } from '../types/TExoJsonDeclarations';
 
 /**
  * THE NAMING FORM: each port names itself where it stands and the build callback returns nothing, so
@@ -17,7 +18,8 @@ import type { TExoSchemaDecorator } from '../cursor/types/TExoSchemaDecorator';
  */
 export function createExoNamedSchema<TPorts>(
     build: (cursor: TExoSchemaCursor<TPorts>) => void,
-    decorate?: TExoSchemaDecorator<TPorts>
+    decorate?: TExoSchemaDecorator<TPorts>,
+    jsonDeclarations?: TExoJsonDeclarations
 ): TExoCursorDeclaration<TPorts> {
-    return createExoSchema<TPorts>(build, decorate);
+    return createExoSchema<TPorts>(build, decorate, jsonDeclarations);
 }

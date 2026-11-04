@@ -36,6 +36,29 @@ createExoMachine<TExoDomNode>(COUNTER);
 
 export const _onColon = exoJsx<{ go: TExoEventPort }>(($) => <button on:dblclick={$.go} />);
 
+export const _svg = exoJsx<{ label: TExoTextPort }>(($) => (
+    <svg viewBox="0 0 10 10">
+        <defs>
+            <linearGradient id="g">
+                <stop offset="0" />
+            </linearGradient>
+            <clipPath id="c" />
+            <filter id="f">
+                <feDropShadow dx="1" />
+                <feGaussianBlur stdDeviation="1" />
+            </filter>
+        </defs>
+        <circle r="1">
+            <animateMotion dur="1s">
+                <mpath href="#p" />
+            </animateMotion>
+        </circle>
+        <text x="1">
+            <tspan>{$.label}</tspan>
+        </text>
+    </svg>
+));
+
 export const _literals = exoJsx(() => (
     <input type="checkbox" tabindex={0} checked disabled={false} />
 ));

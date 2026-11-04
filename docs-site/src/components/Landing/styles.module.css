@@ -43,12 +43,24 @@
   letter-spacing: -0.045em;
 }
 
+.subsection {
+  margin-top: 7rem;
+}
+
+.afterCards {
+  margin-top: 3rem;
+}
+
 .lead {
   margin: 0 0 3.5rem;
   max-width: 680px;
   font-size: 1.2rem;
   line-height: 1.65;
   opacity: 0.72;
+}
+
+.leadTight {
+  margin-bottom: 1.5rem;
 }
 
 .trio {
@@ -384,6 +396,10 @@
   height: 2px;
   background: linear-gradient(90deg, var(--exo-blood), var(--exo-slime), var(--exo-sky));
   opacity: 0.5;
+}
+
+.anatomyFlat::before {
+  display: none;
 }
 
 .anatomyCell {

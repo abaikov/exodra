@@ -1,6 +1,6 @@
 {
   "name": "@exodra/to-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Translate Exodra source — exoJsx schemas and the machines built on them — into plain React components, so code written on Exodra keeps running without it.",
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",

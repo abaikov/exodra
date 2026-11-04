@@ -1,5 +1,8 @@
 ```ts
-import { EXO_PORT_EVENT, EXO_PORT_TEXT, composeExoMachine, createExoMachine, createExoSchema, exoPorts, withExoHandlers, withExoTransitions, withExoWire } from '@exodra/core';
+import {
+    EXO_PORT_EVENT, EXO_PORT_TEXT, composeExoMachine, createExoMachine, createExoSchema,
+    exoPorts, withExoHandlers, withExoTransitions, withExoWire,
+} from '@exodra/core';
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
 const CounterPorts = exoPorts({ COUNT: EXO_PORT_TEXT, INCREMENT: EXO_PORT_EVENT });

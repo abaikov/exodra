@@ -203,7 +203,10 @@ const BUDGETS = {
     // Entry ceiling 20 000 — 29% over that measurement. The old 32 000 was breached by PROSE and
     // not by code: 15 521 code bytes sat well under it while 61% of the entry was JSDoc. WHICH
     // FILE carried that JSDoc is no longer recorded anywhere; the header above says why.
-    string: { browserGzip: null, entryCode: 21500 },
+    // Bumped 2026-11-03 when the string schema gained its JSON form (`compileExoStrJsonDeclaration`,
+    // `createExoStrSchema`, `exoStrWriterOf`): measured 22 034 code against the old 21 500. The new
+    // ceiling is the 25% rule over that figure.
+    string: { browserGzip: null, entryCode: 27500 },
     // types only at runtime — the entry is a stub, and under this measure it is a stub of exactly
     // ZERO code bytes: `dist/index.js` is one `//# sourceMappingURL` line and nothing else.
     // Entry ceiling 500, TIGHTENED from 2 500 on the same day the others were re-derived, because

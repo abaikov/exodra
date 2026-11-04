@@ -1,6 +1,6 @@
 {
   "name": "@exodra/vite-plugin",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -36,8 +36,8 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@exodra/core": "^0.3.0",
-    "@exodra/router": "^0.3.0",
+    "@exodra/core": "^0.4.0",
+    "@exodra/router": "^0.4.0",
     "vite": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
   },
   "description": "Vite plugin for Exodra - file-based routing, HMR, optimized builds, and Next.js-like developer experience",

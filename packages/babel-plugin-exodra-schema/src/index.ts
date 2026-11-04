@@ -48,6 +48,7 @@ function babelPluginExodraSchema(api: ConfigAPI, options: TExoSchemaPluginOption
     const producer: TExoSchemaProducer = {
         schemaSource: options.schemaSource ?? '@exodra/core',
         schemaImport: options.schemaImport ?? 'createExoNamedSchema',
+        jsonDeclarations: options.jsonDeclarations ?? true,
     };
     const markerName = options.markerName ?? 'exoJsx';
 
@@ -95,14 +96,15 @@ function babelPluginExodraSchema(api: ConfigAPI, options: TExoSchemaPluginOption
             CallExpression(path) {
                 const callee = path.node.callee;
                 if (!t.isIdentifier(callee) || !markers.has(callee.name)) return;
+                const target = moduleStatement(path, callee.name);
                 const { hoisted, replacement } = compileJsxDeclaration(
-                    path.node,
+                    path,
+                    target.node.start ?? 0,
                     callee.name,
                     names,
                     file,
                     producer
                 );
-                const target = moduleStatement(path, callee.name);
                 path.replaceWith(replacement);
                 target.insertBefore(hoisted);
             },

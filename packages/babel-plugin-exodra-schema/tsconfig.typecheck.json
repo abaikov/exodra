@@ -19,10 +19,20 @@
     "declarationMap": true,
     "baseUrl": ".",
     "paths": {
-      "@exodra/react-compat/names": ["../react-compat/.tsbuild/names.d.ts"]
+      "@exodra/react-compat/names": ["../react-compat/.tsbuild/names.d.ts"],
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
+      "@exodra/core": ["../core/.tsbuild/index.d.ts"],
+      "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"]
     }
   },
-  "references": [{ "path": "../react-compat" }],
+  "references": [
+    { "path": "../react-compat" },
+    { "path": "../context" },
+    { "path": "../core" },
+    { "path": "../dom" },
+    { "path": "../string" }
+  ],
   "include": ["src/**/*.ts"],
   "exclude": ["dist", ".tsbuild", "node_modules", "tests", "**/*.test.ts", "**/*.spec.ts"]
 }

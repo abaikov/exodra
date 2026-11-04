@@ -323,25 +323,7 @@ describe('markup the HTML parser reshapes', () => {
 });
 
 describe('static text after a children port', () => {
-    // FOUND WHILE CLOSING THE TWO ABOVE, AND IT IS THE SAME FAILURE SHAPE. A child list's end is
-    // the next static ELEMENT (`childListEndSlot` in the DOM schema), or the end of the parent
-    // when there is none. A Text node is neither, so the rows of this child list would be
-    // appended AFTER the text while the server prints them BEFORE it: two backends, two orders,
-    // and markup plausible enough that only an ordering assertion would have caught it.
-    //
-    // The parser has a hand in it too. Text on both sides of a child list merges into ONE Text
-    // node — an empty child list emits nothing between them — so every sibling hop counted after
-    // it addresses a position that does not exist.
-    //
-    // Text BEFORE a child list is untouched and stays legal: what precedes a child list does not
-    // move its end.
-    //
-    // THE HALF THAT WAS MISSING, and it is the worst possible half to be missing: the DOM
-    // compiler refused this shape and `compile-exo-str-schema` walked straight past it, so a
-    // component with a label after a child list rendered perfectly on the server and threw the
-    // moment a browser tried to build the same schema. Every SSR check green, and a user
-    // finds it. The rule lives in `@exodra/core` now (`assert-exo-text-after-children-port`) and both
-    // compilers call it, so the two cannot drift into different answers again.
+    // Text on both sides of an empty child list would be one Text node to a parser, hence the comment.
     const KIDS_THEN_TEXT = createExoTestMachine(
         (b: TExoSchemaCursor) => {
             let kids!: TExoChildrenPort;
@@ -354,16 +336,28 @@ describe('static text after a children port', () => {
         (): TExoMachineInitialState<unknown> => () => undefined
     );
 
-    const BACKENDS: ReadonlyArray<{ readonly what: string; readonly render: () => string }> = [
-        { what: 'the DOM backend', render: () => fromDom(KIDS_THEN_TEXT) },
-        { what: 'the STRING backend', render: () => EXO_STR.render(KIDS_THEN_TEXT) },
-    ];
+    it('prints the text after the empty child list, byte for byte on both backends', () => {
+        expect(EXO_STR.render(KIDS_THEN_TEXT)).toBe('<p> items</p>');
+        expect(fromDom(KIDS_THEN_TEXT)).toBe('<p> items</p>');
+    });
 
-    for (const backend of BACKENDS) {
-        it(`is refused by ${backend.what}, because a child list can only be anchored on an element`, () => {
-            expect(backend.render).toThrow(/followed by the static text/);
-        });
-    }
+    it('separates text on both sides of an empty child list with one comment, on both backends', () => {
+        const component = createExoTestMachine(
+            (b: TExoSchemaCursor) => {
+                let kids!: TExoChildrenPort;
+                b.el('p', null, (p) => {
+                    p.text('items:');
+                    kids = p.childrenPort();
+                    p.text(' left');
+                });
+                return { kids };
+            },
+            (): TExoMachineInitialState<unknown> => () => undefined
+        );
+
+        expect(EXO_STR.render(component)).toBe('<p>items:<!----> left</p>');
+        expect(fromDom(component)).toBe('<p>items:<!----> left</p>');
+    });
 
     it('leaves text BEFORE a child list alone, on both backends and byte for byte', () => {
         // The rule is about what FOLLOWS a child list — what precedes one does not move its end —

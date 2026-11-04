@@ -126,7 +126,7 @@ attribute and for the ordinary case
 (`packages/dom/src/dom/factories/createExoAttrWrite.ts:27-67`); the choice is made ONCE per
 port when the schema compiles, not per write, because the PORT KIND already carries it — the
 builder mints a different kind for a plain attribute, a string attribute and a toggle
-(`packages/string/src/schema/compileExoStrSchema.ts:294-308`), and the server reads the same
+(`packages/string/src/schema/compileExoStrJsonDeclaration.ts:309-327`), and the server reads the same
 kinds.
 A fifth branch for `href`, `src`, `action`, `formAction` and `xlink:href` would
 therefore leave every other port's writer byte-identical, and the whole price

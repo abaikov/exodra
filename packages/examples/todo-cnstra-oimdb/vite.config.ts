@@ -17,6 +17,7 @@ export default defineConfig({
             '@exodra/dom': at('../../dom/src/index.ts'),
             '@exodra/forms': at('../../forms/src/index.ts'),
             '@oimdb/core': at('../../../../oimdb/packages/core/src/index.ts'),
+            '@oimdb/exodra': at('../../../../oimdb/packages/exodra/src/index.ts'),
             '@cnstra/exodra': at('../../../../cnstra/packages/exodra/src/index.ts'),
             '@cnstra/core': at('../../../../cnstra/packages/core/src/index.ts'),
             '@cnstra/types': at('../../../../cnstra/packages/types/src/index.ts'),

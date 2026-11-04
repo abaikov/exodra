@@ -227,7 +227,93 @@ export type TExoElementAttrName =
     | 'y1'
     | 'y2'
     | 'points'
-    | 'transform';
+    | 'transform'
+    | 'opacity'
+    | 'fill-opacity'
+    | 'stroke-opacity'
+    | 'stroke-dasharray'
+    | 'stroke-dashoffset'
+    | 'stroke-miterlimit'
+    | 'rx'
+    | 'ry'
+    | 'fx'
+    | 'fy'
+    | 'fr'
+    | 'dx'
+    | 'dy'
+    | 'rotate'
+    | 'pathLength'
+    | 'preserveAspectRatio'
+    | 'vector-effect'
+    | 'visibility'
+    | 'display'
+    | 'offset'
+    | 'stop-color'
+    | 'stop-opacity'
+    | 'gradientUnits'
+    | 'gradientTransform'
+    | 'spreadMethod'
+    | 'clip-path'
+    | 'clipPathUnits'
+    | 'mask'
+    | 'maskUnits'
+    | 'maskContentUnits'
+    | 'filter'
+    | 'filterUnits'
+    | 'primitiveUnits'
+    | 'in'
+    | 'in2'
+    | 'result'
+    | 'stdDeviation'
+    | 'flood-color'
+    | 'flood-opacity'
+    | 'lighting-color'
+    | 'mode'
+    | 'operator'
+    | 'values'
+    | 'dur'
+    | 'begin'
+    | 'end'
+    | 'repeatCount'
+    | 'repeatDur'
+    | 'from'
+    | 'to'
+    | 'by'
+    | 'attributeName'
+    | 'calcMode'
+    | 'keyTimes'
+    | 'keySplines'
+    | 'keyPoints'
+    | 'additive'
+    | 'accumulate'
+    | 'restart'
+    | 'min'
+    | 'max'
+    | 'path'
+    | 'text-anchor'
+    | 'dominant-baseline'
+    | 'alignment-baseline'
+    | 'baseline-shift'
+    | 'textLength'
+    | 'lengthAdjust'
+    | 'font-family'
+    | 'font-size'
+    | 'font-weight'
+    | 'font-style'
+    | 'letter-spacing'
+    | 'word-spacing'
+    | 'marker-start'
+    | 'marker-mid'
+    | 'marker-end'
+    | 'markerWidth'
+    | 'markerHeight'
+    | 'markerUnits'
+    | 'refX'
+    | 'refY'
+    | 'orient'
+    | 'patternUnits'
+    | 'patternContentUnits'
+    | 'patternTransform';
 
 // The two index signatures are DOCUMENTATION, not enforcement: a hyphenated name is never checked.
 export type TExoElementAttrs = {
@@ -371,13 +457,66 @@ export namespace JSX {
         track: TExoSchemaElementProps;
         picture: TExoSchemaElementProps;
         svg: TExoSchemaElementProps;
-        path: TExoSchemaElementProps;
-        g: TExoSchemaElementProps;
+        animate: TExoSchemaElementProps;
+        animateMotion: TExoSchemaElementProps;
+        animateTransform: TExoSchemaElementProps;
         circle: TExoSchemaElementProps;
-        rect: TExoSchemaElementProps;
+        clipPath: TExoSchemaElementProps;
+        defs: TExoSchemaElementProps;
+        desc: TExoSchemaElementProps;
+        ellipse: TExoSchemaElementProps;
+        feBlend: TExoSchemaElementProps;
+        feColorMatrix: TExoSchemaElementProps;
+        feComponentTransfer: TExoSchemaElementProps;
+        feComposite: TExoSchemaElementProps;
+        feConvolveMatrix: TExoSchemaElementProps;
+        feDiffuseLighting: TExoSchemaElementProps;
+        feDisplacementMap: TExoSchemaElementProps;
+        feDistantLight: TExoSchemaElementProps;
+        feDropShadow: TExoSchemaElementProps;
+        feFlood: TExoSchemaElementProps;
+        feFuncA: TExoSchemaElementProps;
+        feFuncB: TExoSchemaElementProps;
+        feFuncG: TExoSchemaElementProps;
+        feFuncR: TExoSchemaElementProps;
+        feGaussianBlur: TExoSchemaElementProps;
+        feImage: TExoSchemaElementProps;
+        feMerge: TExoSchemaElementProps;
+        feMergeNode: TExoSchemaElementProps;
+        feMorphology: TExoSchemaElementProps;
+        feOffset: TExoSchemaElementProps;
+        fePointLight: TExoSchemaElementProps;
+        feSpecularLighting: TExoSchemaElementProps;
+        feSpotLight: TExoSchemaElementProps;
+        feTile: TExoSchemaElementProps;
+        feTurbulence: TExoSchemaElementProps;
+        filter: TExoSchemaElementProps;
+        foreignObject: TExoSchemaElementProps;
+        g: TExoSchemaElementProps;
+        hatch: TExoSchemaElementProps;
+        hatchpath: TExoSchemaElementProps;
+        image: TExoSchemaElementProps;
         line: TExoSchemaElementProps;
-        polyline: TExoSchemaElementProps;
+        linearGradient: TExoSchemaElementProps;
+        marker: TExoSchemaElementProps;
+        mask: TExoSchemaElementProps;
+        metadata: TExoSchemaElementProps;
+        mpath: TExoSchemaElementProps;
+        path: TExoSchemaElementProps;
+        pattern: TExoSchemaElementProps;
         polygon: TExoSchemaElementProps;
+        polyline: TExoSchemaElementProps;
+        radialGradient: TExoSchemaElementProps;
+        rect: TExoSchemaElementProps;
+        set: TExoSchemaElementProps;
+        stop: TExoSchemaElementProps;
+        switch: TExoSchemaElementProps;
+        symbol: TExoSchemaElementProps;
+        text: TExoSchemaElementProps;
+        textPath: TExoSchemaElementProps;
+        tspan: TExoSchemaElementProps;
+        use: TExoSchemaElementProps;
+        view: TExoSchemaElementProps;
         a: TExoSchemaElementProps;
         canvas: TExoSchemaElementProps;
         iframe: TExoSchemaElementProps;

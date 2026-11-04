@@ -1,19 +1,18 @@
 import { EXO_PORT_CHILDREN, EXO_PORT_EVENT, EXO_PORT_REF, EXO_PORT_TEXT } from '@exodra/core';
-import type { TExoCursorDeclaration, TExoAnyPort } from '@exodra/core';
+import type { TExoAnyPort } from '@exodra/core';
 
 // The one shape adoption gives up on: a PORT on a static standing BETWEEN two children ports.
 // Refused in the HYDRATE schema and not in `compileExoDomSchema`, so a page that renders such a
 // component and never hydrates is untouched. Why the child list behind that static is fine while a
 // port on it is not: ../../README.md § Adoption between child lists.
 export function assertReachableExoPorts(
-    schema: TExoCursorDeclaration,
+    portList: readonly TExoAnyPort[],
     // `[start, end)` slot ranges the hydration walk cannot resolve.
     unreachable: readonly number[],
     // By port index: the slot holding the element the port belongs to — the DOM schema's.
     elem: readonly number[]
 ): void {
     if (unreachable.length === 0) return;
-    const portList = schema.portList;
     for (let i = 0; i < portList.length; i++) {
         const slot = elem[i];
         for (let b = 0; b < unreachable.length; b += 2) {

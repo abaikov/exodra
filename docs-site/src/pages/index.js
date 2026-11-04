@@ -9,6 +9,7 @@ import LandingPlugins from '@site/src/components/Landing/LandingPlugins';
 import HeroCodePre from '@site/src/components/Landing/HeroCodePre';
 import LandingAnatomy from '@site/src/components/Landing/LandingAnatomy';
 import LandingNoMagic from '@site/src/components/Landing/LandingNoMagic';
+import LandingHiddenRules from '@site/src/components/Landing/LandingHiddenRules';
 import Reveal from '@site/src/components/Landing/Reveal';
 import landingStyles from '@site/src/components/Landing/styles.module.css';
 import HeroCodeJsx from './_heroCode.mdx';
@@ -19,7 +20,7 @@ const HERO_CODE_COMPONENTS = { pre: HeroCodePre };
 
 const HERO_WINDOWS = [
     { name: 'counter.ts', caption: null, Code: HeroCodeTs },
-    { name: 'counter.tsx', caption: 'The same machine, with its schema declared in JSX:', Code: HeroCodeJsx },
+    { name: 'counter.tsx', caption: 'The same machine, with its schema declared in JSX and compiled at build time, so the page ships no compiler:', Code: HeroCodeJsx },
 ];
 
 function HeroWindow() {
@@ -64,10 +65,9 @@ function HomepageHeader() {
                     <span className={styles.accent}>Near hand-written speed.</span>
                 </h1>
                 <p className={styles.subtitle}>
-                    Components with state, effects and context at the cost of a template engine: mounts faster than Mikado,
-                    updates level with hand-rolled DOM code, ahead of Lit, Solid and React on both. Reactivity, keys,
-                    hydration and React’s API sit on top as plugins: take the ones a screen needs, leave the rest out of
-                    the bundle.
+                    Components with state, effects and context at the cost of a template engine: mounts faster than
+                    Mikado, Solid and React, updates level with hand-rolled DOM code. Reactivity, keys, hydration and
+                    React’s API sit on top as plugins: take the ones a screen needs, leave the rest out of the bundle.
                 </p>
                 <div className={styles.buttons}>
                     <Link className="button button--primary button--lg" to="/docs/getting-started">
@@ -147,6 +147,7 @@ export default function Home() {
                 <HomepageFeatures />
                 <LandingAnatomy />
                 <LandingNoMagic />
+                <LandingHiddenRules />
                 <LandingSpeed />
                 <LandingReact />
                 <LandingPlugins />

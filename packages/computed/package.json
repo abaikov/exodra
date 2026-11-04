@@ -1,6 +1,6 @@
 {
   "name": "@exodra/computed",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -63,6 +63,6 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@exodra/core": "^0.3.0"
+    "@exodra/core": "^0.4.0"
   }
 }

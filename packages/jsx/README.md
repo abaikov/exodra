@@ -6,7 +6,7 @@ for the Exodra JSX dialect. Every `exoJsx(…)` call is compiled away by
 `createExoNamedSchema(…)`; nothing from this package survives into your bundle.
 
 A declaration holds markup and named ports, and nothing else. A literal attribute
-is markup; every port is named off `$` where it stands, and the machine fills it
+is markup, and so is a module-level value in an attribute (see below); every port is named off `$` where it stands, and the machine fills it
 through the schema's `.ports`.
 
 ## Installation
@@ -70,7 +70,9 @@ export const cardSchema = exoJsx<TCardPorts>(($) => (
 ```
 
 - A literal (`class="card"`, `tabindex={0}`, bare `disabled`) — markup, baked into
-  the schema.
+  the schema. A module `const` string (`style={ZONE}`) folds the same way.
+- `class={styles.row}`, `style={PANEL}` rooted at an import or a module `const` —
+  markup read once when the schema compiles; it never changes afterwards.
 - `data-id={$.id}` — an attribute port, filled with `c.attr(CardPorts.id, value)`.
 - `{$.title}` as an element's **only** child — a text port, filled with `c.text`.
 - `onClick={$.open}` (tail lowercased) or `on:dblclick={$.edit}` (name as written)

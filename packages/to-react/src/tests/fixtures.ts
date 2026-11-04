@@ -142,3 +142,18 @@ export const FIXED = createExoMachine<never, unknown>(FIXED_SCHEMA, {
     },
 });
 `;
+
+export const STYLED_SOURCE = `
+import { exoJsx } from '@exodra/jsx';
+import { createExoMachine } from '@exodra/core';
+
+const ZONE = 'color: red; border-radius: 8px';
+const STYLED_SCHEMA = exoJsx(() => (
+    <div class="styled" style={\`padding: 2px; \${ZONE}\`} title={ZONE}>
+        <b style={'margin: 1px'}>x</b>
+    </div>
+));
+export const STYLED = createExoMachine<never, unknown>(STYLED_SCHEMA, {
+    createInitialState: () => ({}),
+});
+`;

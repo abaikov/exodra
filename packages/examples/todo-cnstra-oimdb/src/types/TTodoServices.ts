@@ -1,10 +1,9 @@
 import type { TTodoCns } from './TTodoCns';
 import type { TTodoDb } from './TTodoDb';
-import type { TTodoOimdb } from './TTodoOimdb';
+import type { OIMExodraPlugin } from '@oimdb/exodra';
 
 export type TTodoServices = {
-    readonly oimdb: TTodoOimdb;
     readonly todoDb: TTodoDb;
     readonly cns: TTodoCns;
-    readonly todoRowCell: number;
+    readonly exodraPlugin: OIMExodraPlugin;
 };

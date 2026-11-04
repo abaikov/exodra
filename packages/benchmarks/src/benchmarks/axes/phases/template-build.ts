@@ -505,16 +505,23 @@ import {
     EXO_DIRECT_EVENTS,
     EXO_WALK_FIRST_CHILD,
     ExoDomBackend,
+    compileExoDomSchema,
+    createExoDomSchema,
     createExoNode,
     createExoDelegatedEvents,
     createExoEventPortData,
+    exoDomJsonDeclaration,
     exoDomSchemaOf,
     exoEventSlotsFor,
     mountExoInstance,
+    withExoBuiltSchemas,
+    withExoCompiler,
+    withExoDefaults,
     withExoHydration,
 } from '@exodra/dom';
 import type {
     TExoDomInstanceRecord,
+    TExoDomJsonDeclaration,
     TExoDomNode,
     TExoDomSchema,
     TExoEventAttacher,
@@ -1239,6 +1246,21 @@ function exodraCompile(token: string): TExoDomSchema {
     EXO_TOKEN = token;
     return exoDomSchemaOf(machineOf(createExoSchema(exoShape)), EXO_BACKEND);
 }
+
+// What `withExoBuiltSchemas` pays in this phase: the JSON form `@exodra/babel-plugin-schema` writes
+// at build time, turned into a schema. The forms are made untimed, under the writer the plugin uses.
+const EXO_BUILT_BACKEND = withExoBuiltSchemas(new ExoDomBackend());
+const EXO_JSON_FORMS: readonly TExoDomJsonDeclaration[] = TOKENS.slice(0, VARIANTS).map((token) => {
+    EXO_TOKEN = token;
+    const json = exoDomJsonDeclaration(
+        compileExoDomSchema(
+            createExoSchema(exoShape),
+            withExoDefaults(withExoCompiler(new ExoDomBackend()))
+        )
+    );
+    EXO_TOKEN = TOKENS[0];
+    return JSON.parse(JSON.stringify(json)) as TExoDomJsonDeclaration;
+});
 
 /**
  * `mountExoInstance` WITHOUT ITS INSERTION — the three lines that stand in front of its
@@ -6477,6 +6499,26 @@ export function benchmarkTemplateBuild(rounds = 100, batch = 1): void {
                     cleanup: () => {
                         sink.length = 0;
                         EXO_TOKEN = TOKENS[0];
+                    },
+                };
+            },
+        },
+        {
+            name: 'exodra·built',
+            reps: compileReps,
+            prep: () => {
+                const sink: TExoDomSchema[] = new Array<TExoDomSchema>(compileReps).fill(EXO_PLAN);
+                return {
+                    measure: () => {
+                        for (let i = 0; i < compileReps; i++) {
+                            sink[i] = createExoDomSchema(
+                                EXO_JSON_FORMS[i % VARIANTS],
+                                EXO_BUILT_BACKEND
+                            );
+                        }
+                    },
+                    cleanup: () => {
+                        sink.length = 0;
                     },
                 };
             },

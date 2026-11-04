@@ -3,6 +3,7 @@ import { assertExoOneRoot } from '../markup/asserts/assertExoOneRoot';
 import { assertExoRootElement } from '../markup/asserts/assertExoRootElement';
 import type { TExoAnyPort } from '../ports/types/TExoAnyPort';
 import type { TExoCursorDeclaration } from '../types/TExoCursorDeclaration';
+import type { TExoJsonDeclarations } from '../types/TExoJsonDeclarations';
 import type { TExoEmitter } from '../types/TExoEmitter';
 import type { TExoSchemaBuild } from '../types/TExoSchemaBuild';
 import type { TExoSchemaCursor } from '../cursor/types/TExoSchemaCursor';
@@ -12,11 +13,13 @@ import type { TExoSchemaDraft } from '../cursor/types/TExoSchemaDraft';
 
 export function createExoSchema<TPorts>(
     build: (cursor: TExoSchemaCursor) => TPorts,
-    decorate?: TExoSchemaDecorator<TPorts>
+    decorate?: TExoSchemaDecorator<TPorts>,
+    jsonDeclarations?: TExoJsonDeclarations
 ): TExoCursorDeclaration<TPorts>;
 export function createExoSchema<TPorts>(
     build: (cursor: TExoSchemaCursor<TPorts>) => void,
-    decorate?: TExoSchemaDecorator<TPorts>
+    decorate?: TExoSchemaDecorator<TPorts>,
+    jsonDeclarations?: TExoJsonDeclarations
 ): TExoCursorDeclaration<TPorts>;
 export function createExoSchema<TPorts extends Readonly<Record<string, TExoAnyPort>>>(
     ports: TPorts,
@@ -26,7 +29,8 @@ export function createExoSchema<TPorts>(
     first:
         | ((cursor: TExoSchemaCursor<TPorts>) => TPorts | void)
         | Readonly<Record<string, TExoAnyPort>>,
-    second?: TExoSchemaDecorator<TPorts> | ((emitter: TExoEmitter<TPorts>) => void)
+    second?: TExoSchemaDecorator<TPorts> | ((emitter: TExoEmitter<TPorts>) => void),
+    jsonDeclarations?: TExoJsonDeclarations
 ): TExoCursorDeclaration<TPorts> {
     const declared = typeof first === 'function' ? null : first;
     const build = (declared === null ? first : second) as (
@@ -119,6 +123,7 @@ export function createExoSchema<TPorts>(
         portList: ports,
         build: build as unknown as TExoSchemaBuild,
         declaredPorts,
+        jsonDeclarations: jsonDeclarations ?? null,
     };
     // A decorator is there to EXAMINE the markup, so composing one asks for it to be examined:
     // that is the whole of what `withExoSchemaAsserts` does, and it has no backend to wait for.

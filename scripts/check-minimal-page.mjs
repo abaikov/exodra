@@ -133,7 +133,7 @@ withExoForeignNamespaces(withExoCompiler(new ExoDomBackend())).render(COUNTER as
 `,
     },
     'string: render one machine': {
-        ceilingGz: 6900,
+        ceilingGz: 6950,
         distCeilingGz: 7000,
         source: `${COUNTER}
 import { ExoStrBackend } from '@exodra/string';

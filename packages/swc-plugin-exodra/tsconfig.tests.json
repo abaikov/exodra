@@ -21,8 +21,8 @@
   // program rather than two builds that agree by luck. A `rootDir` would make every file it drags
   // in a TS6059, so none is set and none is inherited.
   //
-  // That relative import is also why there are no `paths` overrides: `src/index.ts` reaches only
-  // `@babel/core` and `@babel/types` (both typed by `@types/babel__*`) and its own siblings.
+  // No `paths` overrides: the Babel plugin's sources reach `@exodra/core`, `@exodra/dom` and
+  // `@exodra/string` through the root config's mapping, which is why `lib` names the DOM.
   //
   // ── `files` REACHES INTO THE OTHER PACKAGE FOR ONE DECLARATION ───────────────────────────────
   //
@@ -43,6 +43,7 @@
   "files": ["../babel-plugin-exodra-schema/types/babel-plugin-syntax-jsx.d.ts"],
   "compilerOptions": {
     "noEmit": true,
+    "lib": ["ES2020", "DOM"],
     "composite": false,
     "declaration": false,
     "declarationMap": false,

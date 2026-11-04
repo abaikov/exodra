@@ -13,9 +13,9 @@ import {
 import type { TExoMachineNodeOf } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
-import { withExoOimWatches } from './withExoOimWatches';
+import { withOIMEffects } from '@oimdb/exodra';
 import { TodoUiAxon } from './TodoUiAxon';
-import { TodoEnvironment } from './TodoEnvironment';
+import { injectCNS, withCNSReceptors } from '@cnstra/exodra';
 import type { TTodoRowState } from './types/TTodoRowState';
 import type { TTodoServices } from './types/TTodoServices';
 import type { TTodoSlot } from './types/TTodoSlot';
@@ -101,13 +101,13 @@ function commitEditing(c: TExoMachineNodeOf<typeof todoRowBase>, field: EventTar
     if (!c.state.editing || id === undefined) return;
     stopEditing(c);
     const title = readExoControlValue(field) as string;
-    TodoEnvironment.cnsOf(c).stimulate(TodoUiAxon.titleEdited.createSignal({ id, title }));
+    injectCNS(c).stimulate(TodoUiAxon.titleEdited.createSignal({ id, title }));
 }
 
 export const todoRowMachine = composeExoMachine(
     todoRowBase,
     (m) =>
-        TodoEnvironment.withReceptors(m, (receptor) => {
+        withCNSReceptors(m, (receptor) => {
             receptor(TodoRowPorts.TOGGLE, TodoUiAxon.toggleClicked, (c, event) => {
                 const id = c.state.slot.entity?.id;
                 if (id === undefined) return undefined;
@@ -128,20 +128,14 @@ export const todoRowMachine = composeExoMachine(
             on(TodoRowPorts.DRAFT_FOCUSOUT, (c, event) => commitEditing(c, event.target));
         }),
     (m) =>
-        withExoOimWatches(m, (watch) => {
-            watch(
-                (c) => c.state.slot,
-                (c, todo) => {
-                    if (todo !== undefined) c.text(TodoRowPorts.TITLE, todo.title);
-                },
-                ['title']
-            );
-            watch(
-                (c) => c.state.slot,
-                (c, todo) => {
-                    if (todo !== undefined) showDone(c, todo.done);
-                },
-                ['done']
-            );
+        withOIMEffects(m, (effect) => {
+            effect((c) => {
+                const todo = c.state.slot.entity;
+                if (todo !== undefined) c.text(TodoRowPorts.TITLE, todo.title);
+            });
+            effect((c) => {
+                const todo = c.state.slot.entity;
+                if (todo !== undefined) showDone(c, todo.done);
+            });
         })
 );

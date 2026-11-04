@@ -69,10 +69,22 @@ const _s0 = createExoNamedSchema((_b0) => {
             _b2.text('+');
         });
     });
+}, undefined, {
+    dom: { html: '<div class="counter"><span class="counter__value"></span><button type="button">+</button></div>', walk: [/* … */] /* … */ },
+    string: { pieces: ['<div class="counter"', '><span class="counter__value">', /* … */], /* … */ },
 });
 
 const counterSchema = _s0;
 ```
+
+The third argument is the declaration **already compiled**. The plugin runs the real
+`compileExoDomSchema` and the string compiler over the markup at build time and writes
+their results down as data (`TExoDomJsonDeclaration`, `TExoStrJsonDeclaration`). A page
+composed with `withExoBuiltSchemas(new ExoDomBackend())` instead of `withExoCompiler(...)`
+builds every schema from that data, never runs the markup and ships no compiler at all;
+`withExoCompiler` ignores the data and compiles as before. `@exodra/string` uses the data
+whenever it is there. The SWC plugin does not do this yet:
+it emits the first argument alone, and the backends compile it on first render.
 
 The result of `exoJsx` is a schema, so it is named like one — `counterSchema`.
 Every port is created under the name written after `$.`, so
@@ -130,6 +142,67 @@ export const checkboxSchema = exoJsx(() => (
 A string, a number, a boolean, or a bare attribute meaning `true`. It is folded
 into the schema and never touched again. A declaration with no ports takes no
 parameter.
+
+A `const` string of the same module counts as a literal too, and so does a
+template literal made only of literals and such strings:
+
+```tsx
+import { exoJsx } from '@exodra/jsx';
+
+const ZONE = 'border:1px solid var(--border);border-radius:8px';
+
+export const panelSchema = exoJsx(($) => (
+    <div style={`flex:none;padding:12px;${ZONE}`}>
+        <$.rows />
+    </div>
+));
+```
+
+The compiler reads the value at build time, so the schema holds the same string a
+hand-written `style="flex:none;padding:12px;border:…"` would: nothing is read when
+the page runs. Only a `const` declared by an **earlier statement of this module**
+folds.
+
+### Imports and module constants are read once
+
+A value the compiler cannot see at build, such as a CSS Modules class or a token
+from another file, still goes straight into the markup when its root is an import
+or a module-level `const`:
+
+```tsx no-check
+import { exoJsx } from '@exodra/jsx';
+import styles from './Row.module.css';
+import { PANEL } from './theme';
+
+export const rowSchema = exoJsx(($) => (
+    <li class={styles['row-active']} style={PANEL}>
+        {$.title}
+    </li>
+));
+```
+
+The expression lands in the element's markup as written and is read when the
+schema compiles, once per machine and backend, never per instance. Allowed forms
+are a name, `a.b.c`, and `a['x-y']`, rooted at an import or at a `const` declared
+by an earlier statement of the module. A `let`, a value local to a function, a
+parameter, and a call are refused: after the schema is hoisted to module scope
+they would mean something else, or nothing.
+
+What follows from reading the value once:
+
+- **It does not change.** The markup holds what the value was when the schema
+  compiled. Anything that changes is a port.
+- **It is written as a string.** `undefined` from a mistyped CSS Modules key
+  becomes `class="undefined"`, and `false` becomes `disabled="false"`. A port
+  leaves the attribute out for `null`, `undefined` and `false`; a value read this
+  way does not.
+- **There is no build-time form.** The Babel plugin cannot run the markup at build
+  when it reads an import, so that declaration ships without the JSON forms, and a
+  page rendered with `withExoBuiltSchemas` needs `withExoCompiler` for it.
+- **Hydration does not repair it.** If the server and the client resolve the import
+  to different strings, the server's attribute stays.
+
+Children are never read this way: `{ZONE}` as a child is refused.
 
 ### `attr={$.name}` is an attribute port
 
@@ -331,8 +404,9 @@ store directly and calls `showRows` — see [Lists](./lists.md).
 There is no runtime under this JSX to defer a decision to, so everything outside
 the table above is a **compile error**, naming the element and the fix:
 
-- Any expression other than `$.name`: a closure (`onClick={() => …}`), a value
-  (`data-id={item.id}`), a conditional, a template literal, a call.
+- Any other expression in an attribute: a closure (`onClick={() => …}`), a value
+  local to the function (`data-id={item.id}`), a conditional, a template literal
+  with a part that is not a module `const` string, a call.
 - A component tag (`<Row />`, `<Ui.Row />`) — declare `<$.rows />` and build the
   instances from the machine. There is no `list=` or `props=` operand.
 - Attributes or children on `<$.name />`.
@@ -385,7 +459,7 @@ The bundler plugins ([Vite](../tooling/vite-plugin.md),
 project using one of them configures nothing else. They forward `schemaSource`;
 the preset forwards all three options.
 
-Plugin options — all three are for a build that renames things, and most
+Plugin options — the first three are for a build that renames things, and most
 projects set none of them:
 
 | option | default | what it is |
@@ -393,6 +467,7 @@ projects set none of them:
 | `schemaSource` | `'@exodra/core'` | where the schema factory is imported from |
 | `schemaImport` | `'createExoNamedSchema'` | the exported name of the schema factory |
 | `markerName` | `'exoJsx'` | the marker call the plugin compiles away |
+| `jsonDeclarations` | `true` | compile each declaration at build time and emit its DOM and string forms; `false` emits the declaration alone |
 
 ### TypeScript
 

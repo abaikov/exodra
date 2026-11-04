@@ -1,6 +1,6 @@
 {
   "name": "swc-plugin-exodra",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "swc_plugin_exodra.wasm",
   "license": "MIT",
   "description": "SWC plugin that compiles Exodra JSX (Rust/Wasm port of the Babel transform)",
@@ -30,8 +30,8 @@
   ],
   "_comment_peers": "The only specifier this plugin EMITS is `@exodra/core` (src/schema/mod.rs), or whatever `schemaSource` overrides it with. `@exodra/jsx` is here because it owns the JSX types this dialect is written against — the plugin's INPUT, which is the one other package a build cannot compile this dialect without.",
   "peerDependencies": {
-    "@exodra/core": "^0.3.0",
-    "@exodra/jsx": "^0.3.0"
+    "@exodra/core": "^0.4.0",
+    "@exodra/jsx": "^0.4.0"
   },
   "peerDependenciesMeta": {
     "@exodra/core": {

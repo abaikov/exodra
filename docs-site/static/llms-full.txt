@@ -706,17 +706,6 @@ rule on purpose: a letter, then letters, digits or hyphens, which covers div, sv
 and my-widget. The name ships with the code because a tag can be assembled from data, which is the
 bug this most often is; check it against the elements you mean to allow before it reaches el().
 
-### EXO0014 {#exo0014}
-
-A schema declares static text immediately after a children port, where the two backends would place
-that port's children differently.
-
-A region is anchored on the NEXT STATIC ELEMENT, so the rows filled into the port would land AFTER
-that text in the browser while the server prints them before it: one schema, two trees. An EMPTY run
-is not a refusal, because it occupies no position and moves no anchor. Wrap the text in an element,
-or make it part of what the wiring puts in the region. A development build names the element and
-prints the start of the text.
-
 ### EXO0015 {#exo0015}
 
 A schema declares a value port on a select or an output element, and the server can print no
@@ -1409,13 +1398,14 @@ roots all land here, and all of them mean the JSON declaration is not one exoDom
 
 ### EXO0099 {#exo0099}
 
-A child was handed as a DECLARATION to a backend that has no compiler composed into it.
+A machine whose declaration carries no DOM JSON form reached a backend that has no compiler composed
+into it.
 
-one/list/build take a component, a component carries a declaration, and turning that into
-a schema is the compiler's job — which is a PACK, so a backend built without it cannot do
-this. Either compose withExoCompiler(new ExoDomBackend()), or hand the child a schema this
-backend already holds: that is what a page whose schemas came off a build does, and it is
-the whole reason such a page links no compiler at all.
+render under withExoBuiltSchemas, and one/list/build on any backend, turn a machine's declaration
+into a schema. With no compiler composed, the only way to do that is the JSON form a build writes
+onto the declaration, and this declaration has none. Either compose withExoCompiler(new
+ExoDomBackend()), or declare the component with exoJsx under @exodra/babel-plugin-schema, which
+compiles the declaration at build time and writes that form onto it.
 
 ### EXO0100 {#exo0100}
 
@@ -1530,6 +1520,7 @@ one of these; if you are holding a console log with one in it, this table is the
 | `EXO0084` | mergeAttrs was called on @exodra/attrs, a tombstone that only threw. Retired with the package itself: it was deleted, because a package kept only so an old import resolves is the compatibility shim this project does not keep. |
 | `EXO0094` | A wire returned leaving ports that it declared and nobody filled, which is reported at the end because until then not yet and never are the same state. Retired with @exodra/wire and its withExoWiringAsserts decorator, which never shipped. |
 | `EXO0086` | A machine declared its initial state twice. Retired when createInitialState moved into the options object of createExoMachine: an object literal has one createInitialState key, so a second declaration cannot be written. |
+| `EXO0014` | A schema declared static text immediately after a children port. Retired when the DOM compiler learned to anchor the region on that Text node, and to put an empty comment before it where the server's parser would otherwise merge it into the text before the region or eat its newline; the string compiler prints the same comment, so both backends build one tree. |
 | `EXO0025` | A machine was given a keep, an effect or a handler after done() had compiled it. Retired with the machine builder: createExoMachine and the decorators withExoTransitions, withExoWire, withExoHandlers and withExoEffects each return a new machine and leave their input unchanged, so there is no compiled machine for a late declaration to miss. |
 | `EXO0027` | A machine builder's done() was called a second time. Retired with the machine builder: a machine is the value createExoMachine or a decorator returns, and there is no compile step to run twice. |
 | `EXO0028` | attachExoKeyedList refused the same key twice while reconciling one children port. The keyed list is now createExoKeyedList in @exodra/list-reconcile (c.keyedList through EXO_KEYED_LIST_VOCABULARY), and the reconcileExoOrder pass under it gives each occurrence of a repeated key its own row, so a repeated key is two rows rather than an error. |
@@ -3327,7 +3318,7 @@ attribute and for the ordinary case
 (`packages/dom/src/dom/factories/createExoAttrWrite.ts:27-67`); the choice is made ONCE per
 port when the schema compiles, not per write, because the PORT KIND already carries it — the
 builder mints a different kind for a plain attribute, a string attribute and a toggle
-(`packages/string/src/schema/compileExoStrSchema.ts:294-308`), and the server reads the same
+(`packages/string/src/schema/compileExoStrJsonDeclaration.ts:309-327`), and the server reads the same
 kinds.
 A fifth branch for `href`, `src`, `action`, `formAction` and `xlink:href` would
 therefore leave every other port's writer byte-identical, and the whole price
@@ -6375,10 +6366,22 @@ const _s0 = createExoNamedSchema((_b0) => {
             _b2.text('+');
         });
     });
+}, undefined, {
+    dom: { html: '<div class="counter"><span class="counter__value"></span><button type="button">+</button></div>', walk: [/* … */] /* … */ },
+    string: { pieces: ['<div class="counter"', '><span class="counter__value">', /* … */], /* … */ },
 });
 
 const counterSchema = _s0;
 ```
+
+The third argument is the declaration **already compiled**. The plugin runs the real
+`compileExoDomSchema` and the string compiler over the markup at build time and writes
+their results down as data (`TExoDomJsonDeclaration`, `TExoStrJsonDeclaration`). A page
+composed with `withExoBuiltSchemas(new ExoDomBackend())` instead of `withExoCompiler(...)`
+builds every schema from that data, never runs the markup and ships no compiler at all;
+`withExoCompiler` ignores the data and compiles as before. `@exodra/string` uses the data
+whenever it is there. The SWC plugin does not do this yet:
+it emits the first argument alone, and the backends compile it on first render.
 
 The result of `exoJsx` is a schema, so it is named like one — `counterSchema`.
 Every port is created under the name written after `$.`, so
@@ -6436,6 +6439,67 @@ export const checkboxSchema = exoJsx(() => (
 A string, a number, a boolean, or a bare attribute meaning `true`. It is folded
 into the schema and never touched again. A declaration with no ports takes no
 parameter.
+
+A `const` string of the same module counts as a literal too, and so does a
+template literal made only of literals and such strings:
+
+```tsx
+import { exoJsx } from '@exodra/jsx';
+
+const ZONE = 'border:1px solid var(--border);border-radius:8px';
+
+export const panelSchema = exoJsx(($) => (
+    <div style={`flex:none;padding:12px;${ZONE}`}>
+        <$.rows />
+    </div>
+));
+```
+
+The compiler reads the value at build time, so the schema holds the same string a
+hand-written `style="flex:none;padding:12px;border:…"` would: nothing is read when
+the page runs. Only a `const` declared by an **earlier statement of this module**
+folds.
+
+### Imports and module constants are read once
+
+A value the compiler cannot see at build, such as a CSS Modules class or a token
+from another file, still goes straight into the markup when its root is an import
+or a module-level `const`:
+
+```tsx no-check
+import { exoJsx } from '@exodra/jsx';
+import styles from './Row.module.css';
+import { PANEL } from './theme';
+
+export const rowSchema = exoJsx(($) => (
+    <li class={styles['row-active']} style={PANEL}>
+        {$.title}
+    </li>
+));
+```
+
+The expression lands in the element's markup as written and is read when the
+schema compiles, once per machine and backend, never per instance. Allowed forms
+are a name, `a.b.c`, and `a['x-y']`, rooted at an import or at a `const` declared
+by an earlier statement of the module. A `let`, a value local to a function, a
+parameter, and a call are refused: after the schema is hoisted to module scope
+they would mean something else, or nothing.
+
+What follows from reading the value once:
+
+- **It does not change.** The markup holds what the value was when the schema
+  compiled. Anything that changes is a port.
+- **It is written as a string.** `undefined` from a mistyped CSS Modules key
+  becomes `class="undefined"`, and `false` becomes `disabled="false"`. A port
+  leaves the attribute out for `null`, `undefined` and `false`; a value read this
+  way does not.
+- **There is no build-time form.** The Babel plugin cannot run the markup at build
+  when it reads an import, so that declaration ships without the JSON forms, and a
+  page rendered with `withExoBuiltSchemas` needs `withExoCompiler` for it.
+- **Hydration does not repair it.** If the server and the client resolve the import
+  to different strings, the server's attribute stays.
+
+Children are never read this way: `{ZONE}` as a child is refused.
 
 ### `attr={$.name}` is an attribute port
 
@@ -6637,8 +6701,9 @@ store directly and calls `showRows` — see [Lists](./lists.md).
 There is no runtime under this JSX to defer a decision to, so everything outside
 the table above is a **compile error**, naming the element and the fix:
 
-- Any expression other than `$.name`: a closure (`onClick={() => …}`), a value
-  (`data-id={item.id}`), a conditional, a template literal, a call.
+- Any other expression in an attribute: a closure (`onClick={() => …}`), a value
+  local to the function (`data-id={item.id}`), a conditional, a template literal
+  with a part that is not a module `const` string, a call.
 - A component tag (`<Row />`, `<Ui.Row />`) — declare `<$.rows />` and build the
   instances from the machine. There is no `list=` or `props=` operand.
 - Attributes or children on `<$.name />`.
@@ -6691,7 +6756,7 @@ The bundler plugins ([Vite](../tooling/vite-plugin.md),
 project using one of them configures nothing else. They forward `schemaSource`;
 the preset forwards all three options.
 
-Plugin options — all three are for a build that renames things, and most
+Plugin options — the first three are for a build that renames things, and most
 projects set none of them:
 
 | option | default | what it is |
@@ -6699,6 +6764,7 @@ projects set none of them:
 | `schemaSource` | `'@exodra/core'` | where the schema factory is imported from |
 | `schemaImport` | `'createExoNamedSchema'` | the exported name of the schema factory |
 | `markerName` | `'exoJsx'` | the marker call the plugin compiles away |
+| `jsonDeclarations` | `true` | compile each declaration at build time and emit its DOM and string forms; `false` emits the declaration alone |
 
 ### TypeScript
 
@@ -9013,7 +9079,7 @@ refusal on every hydrated page
 (`packages/dom/src/hydrate/compileExoHydrateSchema.ts`).
 
 **The server's writers.** `@exodra/string` compiles through `EXO_STR_WRITERS` by
-module import (`packages/string/src/schema/compileExoStrSchema.ts`), so replacing
+module import (`packages/string/src/schema/exoStrWriterOf.ts`), so replacing
 what stands in `writers` is choosing a client-side behaviour the server does not
 know about.
 
@@ -11816,7 +11882,6 @@ notice. These live here so the wording and the rule are one thing:
 | Export                                     | Refuses                                                                                                                                                                                                                                                                                 |
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `assertExoChildrenPort(port, method, who)` | a nested instance placed anywhere but a children port.                                                                                                                                                                                                                                  |
-| `assertExoNoTextAfterChildrenPort(…)`      | static text **after** a children port. The region anchors on the next static element, so its rows would land after that text in the browser and before it on the server.                                                                                                                |
 | `assertExoIntactRawTextBoundary(…)`        | a static inside `<script>` / `<style>` (see `EXO_RAW_TEXT_ELEMENTS`) that carries the element's own closing sequence. Text in there is emitted verbatim by both compilers, so escaping it produced the same broken bytes on both sides — which is exactly why no parity test caught it. |
 
 `exoDomPropertyKind(tag, name)` answers, of an _element_, the question
@@ -12588,6 +12653,7 @@ numbering.
 | `exoDomSchemaOf(machine, backend)` | The schema for a machine, compiled on first use and cached at `machine.forms[backend.backendType]`, so build the backend once at module level — one constructed per render is a fresh index and recompiles every schema, markup parse included. |
 | `createExoDomSchema` / `exoDomJsonDeclaration` | The two halves of shipping schemas off a build: the build makes the JSON declaration, the page turns it into a schema without the compiler. |
 | `mountExoSchema(…)` / `mountExoInstance(…)` | Put one instance of an already compiled schema in a parent. |
+| `withExoBuiltSchemas(base)` | `render`, `buildRoot` and `mountRoot` for a page whose declarations carry the JSON forms `@exodra/babel-plugin-schema` writes at build time: every schema, children's included, is built from that form, and nothing it imports reaches the compiler. A declaration without one is refused with [EXO0099](../errors.md#exo0099). `withExoCompiler` ignores the form and compiles the markup, so a compiling page never links the JSON path. |
 | `EXO_WALK_FIRST_CHILD`, `EXO_WALK_NEXT_SIBLING` | The two walk operations a schema's render walk is made of. |
 | `EXO_WALK_FROM_END` | The hydration walk's third operation: `op - EXO_WALK_FROM_END` steps back from `lastChild`, for a node standing behind a child list. |
 | `TExoDomSchema`, `TExoDomSetter`, `TExoHydrateSchema` (types) | The schema shapes. |
@@ -14924,8 +14990,8 @@ what every example below does.
 The module build is `dist/exodra.esm.js`, named outright in the URL:
 
 ```
-https://cdn.jsdelivr.net/npm/@exodra/dom@0.3.0/dist/exodra.esm.js
-https://unpkg.com/@exodra/dom@0.3.0/dist/exodra.esm.js
+https://cdn.jsdelivr.net/npm/@exodra/dom@0.4.0/dist/exodra.esm.js
+https://unpkg.com/@exodra/dom@0.4.0/dist/exodra.esm.js
 ```
 
 **Use an import map.** `@exodra/dom` and `@exodra/router` do not re-bundle the
@@ -14937,11 +15003,11 @@ what resolves it, and it pins every version in one place as a bonus:
 ```html
 <script type="importmap">
 { "imports": {
-  "@exodra/core":       "https://cdn.jsdelivr.net/npm/@exodra/core@0.3.0/dist/exodra.esm.js",
+  "@exodra/core":       "https://cdn.jsdelivr.net/npm/@exodra/core@0.4.0/dist/exodra.esm.js",
   "@exodra/context":    "https://cdn.jsdelivr.net/npm/@exodra/context@0.3.0/dist/index.js",
-  "@exodra/dom":        "https://cdn.jsdelivr.net/npm/@exodra/dom@0.3.0/dist/exodra.esm.js",
-  "@exodra/router":     "https://cdn.jsdelivr.net/npm/@exodra/router@0.3.0/dist/exodra.esm.js",
-  "@exodra/forms":      "https://cdn.jsdelivr.net/npm/@exodra/forms@0.3.0/dist/exodra.esm.js",
+  "@exodra/dom":        "https://cdn.jsdelivr.net/npm/@exodra/dom@0.4.0/dist/exodra.esm.js",
+  "@exodra/router":     "https://cdn.jsdelivr.net/npm/@exodra/router@0.4.0/dist/exodra.esm.js",
+  "@exodra/forms":      "https://cdn.jsdelivr.net/npm/@exodra/forms@0.4.0/dist/exodra.esm.js",
   "@exodra/list-reconcile": "https://cdn.jsdelivr.net/npm/@exodra/list-reconcile@0.3.0/dist/exodra.esm.js"
 }}
 </script>
@@ -15019,7 +15085,7 @@ reach for it from an application you bundle — it is a pre-minified copy with
 
 ### `/+esm` is jsDelivr's file, not this repository's
 
-jsDelivr also answers `…/@exodra/dom@0.3.0/+esm`. That is jsDelivr's own transform
+jsDelivr also answers `…/@exodra/dom@0.4.0/+esm`. That is jsDelivr's own transform
 of `dist/index.js`, produced on their servers — it resolves the internal
 `@exodra/*` imports for you, so it needs no import map, but it is not a file this
 repository publishes, measures or can promise anything about. `dist/exodra.esm.js`
@@ -15053,7 +15119,7 @@ For no-module pages, each of those five packages also ships a minified IIFE that
 attaches to a single `window.Exodra` namespace. jsDelivr serves it from the bare
 package URL (via the package's `jsdelivr` / `unpkg` field, which points at
 `./dist/exodra.global.js`); naming that path outright —
-`…/@exodra/core@0.3.0/dist/exodra.global.js` — works too and does not depend on
+`…/@exodra/core@0.4.0/dist/exodra.global.js` — works too and does not depend on
 the CDN resolving the field.
 
 Those two manifest fields keep pointing at the IIFE now that there is a module
@@ -15064,8 +15130,8 @@ internet into `Uncaught SyntaxError: Unexpected token 'export'`.
 
 ```html
 <!-- load the shared runtime FIRST, then the pieces that use it -->
-<script src="https://cdn.jsdelivr.net/npm/@exodra/core@0.3"></script>
-<script src="https://cdn.jsdelivr.net/npm/@exodra/dom@0.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@exodra/core@0.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@exodra/dom@0.4"></script>
 <script>
   const {
     EXO_PORT_EVENT,
@@ -15140,7 +15206,7 @@ What each namespace holds:
 
 ## Versions
 
-CDNs serve exactly what's **published to npm**. Pin an exact version (`@exodra/core@0.3.0`)
+CDNs serve exactly what's **published to npm**. Pin an exact version (`@exodra/core@0.4.0`)
 for production so a future release can't shift under you; use a range (`@0.3`) to
 follow patch/minor. Whatever code is on the CDN is the last published version — to
 get a change onto the CDN, publish a new version to npm.
@@ -15642,6 +15708,9 @@ enforced separately by `npm run graph:check`.
 
 ```mermaid
 graph TD
+    babel_plugin_exodra_schema --> core
+    babel_plugin_exodra_schema --> dom
+    babel_plugin_exodra_schema --> string
     babel_preset_exodra --> babel_plugin_exodra_schema
     benchmarks --> computed
     benchmarks --> context

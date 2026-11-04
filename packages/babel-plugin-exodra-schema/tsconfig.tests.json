@@ -22,9 +22,8 @@
   //   names the same file by relative path, so the two programs share one declaration rather than
   //   one each.
   //
-  // `paths` names the built declarations of `@exodra/core` and `@exodra/dom`, which
-  // `declaration.test.ts` renders a compiled declaration through; sources would sit outside
-  // `rootDir` and raise TS6059.
+  // `paths` names the built declarations of the runtime packages the plugin and its suites import;
+  // sources would sit outside `rootDir` and raise TS6059.
   "extends": "./tsconfig.typecheck.json",
   "compilerOptions": {
     "noEmit": true,
@@ -36,8 +35,10 @@
     "rootDir": ".",
     "lib": ["ES2020", "DOM"],
     "paths": {
+      "@exodra/context": ["../context/.tsbuild/index.d.ts"],
       "@exodra/core": ["../core/.tsbuild/index.d.ts"],
       "@exodra/dom": ["../dom/.tsbuild/index.d.ts"],
+      "@exodra/string": ["../string/.tsbuild/index.d.ts"],
       "@exodra/list-reconcile": ["../list-reconcile/.tsbuild/index.d.ts"],
       "@exodra/react-compat": ["../react-compat/.tsbuild/index.d.ts"],
       "@exodra/react-compat/jsx-runtime": ["../react-compat/.tsbuild/jsx-runtime.d.ts"],

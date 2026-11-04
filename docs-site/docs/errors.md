@@ -242,17 +242,6 @@ rule on purpose: a letter, then letters, digits or hyphens, which covers div, sv
 and my-widget. The name ships with the code because a tag can be assembled from data, which is the
 bug this most often is; check it against the elements you mean to allow before it reaches el().
 
-### EXO0014 {#exo0014}
-
-A schema declares static text immediately after a children port, where the two backends would place
-that port's children differently.
-
-A region is anchored on the NEXT STATIC ELEMENT, so the rows filled into the port would land AFTER
-that text in the browser while the server prints them before it: one schema, two trees. An EMPTY run
-is not a refusal, because it occupies no position and moves no anchor. Wrap the text in an element,
-or make it part of what the wiring puts in the region. A development build names the element and
-prints the start of the text.
-
 ### EXO0015 {#exo0015}
 
 A schema declares a value port on a select or an output element, and the server can print no
@@ -945,13 +934,14 @@ roots all land here, and all of them mean the JSON declaration is not one exoDom
 
 ### EXO0099 {#exo0099}
 
-A child was handed as a DECLARATION to a backend that has no compiler composed into it.
+A machine whose declaration carries no DOM JSON form reached a backend that has no compiler composed
+into it.
 
-one/list/build take a component, a component carries a declaration, and turning that into
-a schema is the compiler's job — which is a PACK, so a backend built without it cannot do
-this. Either compose withExoCompiler(new ExoDomBackend()), or hand the child a schema this
-backend already holds: that is what a page whose schemas came off a build does, and it is
-the whole reason such a page links no compiler at all.
+render under withExoBuiltSchemas, and one/list/build on any backend, turn a machine's declaration
+into a schema. With no compiler composed, the only way to do that is the JSON form a build writes
+onto the declaration, and this declaration has none. Either compose withExoCompiler(new
+ExoDomBackend()), or declare the component with exoJsx under @exodra/babel-plugin-schema, which
+compiles the declaration at build time and writes that form onto it.
 
 ### EXO0100 {#exo0100}
 
@@ -1066,6 +1056,7 @@ one of these; if you are holding a console log with one in it, this table is the
 | `EXO0084` | mergeAttrs was called on @exodra/attrs, a tombstone that only threw. Retired with the package itself: it was deleted, because a package kept only so an old import resolves is the compatibility shim this project does not keep. |
 | `EXO0094` | A wire returned leaving ports that it declared and nobody filled, which is reported at the end because until then not yet and never are the same state. Retired with @exodra/wire and its withExoWiringAsserts decorator, which never shipped. |
 | `EXO0086` | A machine declared its initial state twice. Retired when createInitialState moved into the options object of createExoMachine: an object literal has one createInitialState key, so a second declaration cannot be written. |
+| `EXO0014` | A schema declared static text immediately after a children port. Retired when the DOM compiler learned to anchor the region on that Text node, and to put an empty comment before it where the server's parser would otherwise merge it into the text before the region or eat its newline; the string compiler prints the same comment, so both backends build one tree. |
 | `EXO0025` | A machine was given a keep, an effect or a handler after done() had compiled it. Retired with the machine builder: createExoMachine and the decorators withExoTransitions, withExoWire, withExoHandlers and withExoEffects each return a new machine and leave their input unchanged, so there is no compiled machine for a late declaration to miss. |
 | `EXO0027` | A machine builder's done() was called a second time. Retired with the machine builder: a machine is the value createExoMachine or a decorator returns, and there is no compile step to run twice. |
 | `EXO0028` | attachExoKeyedList refused the same key twice while reconciling one children port. The keyed list is now createExoKeyedList in @exodra/list-reconcile (c.keyedList through EXO_KEYED_LIST_VOCABULARY), and the reconcileExoOrder pass under it gives each occurrence of a repeated key its own row, so a repeated key is two rows rather than an error. |

@@ -8,16 +8,14 @@ import {
     createExoSchema,
     exoEventPortKind,
     exoPorts,
-    withExoEffects,
-    withExoHandlers,
 } from '@exodra/core';
 import type { TExoAttrPort, TExoEventPort, TExoMachineNodeOf } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
 import { todoRowMachine } from './todoRowMachine';
 import { TodoUiAxon } from './TodoUiAxon';
-import { TodoEnvironment } from './TodoEnvironment';
-import { withExoOimBucketList } from './withExoOimBucketList';
+import { withCNSReceptors } from '@cnstra/exodra';
+import { withOIMBucketList, withOIMEffects } from '@oimdb/exodra';
 import type { TTodoBucket } from './types/TTodoBucket';
 import type { TTodoServices } from './types/TTodoServices';
 import type { TTodoAppState } from './types/TTodoAppState';
@@ -184,20 +182,18 @@ function showFilter(c: TExoMachineNodeOf<typeof todoAppBase>): void {
 export const todoAppMachine = composeExoMachine(
     todoAppBase,
     (m) =>
-        withExoEffects(m, (effect) => {
-            effect((c) => c.oimdb.createEffect(() => showCounts(c)));
-            effect((c) => c.oimdb.createEffect(() => showFilter(c)));
+        withOIMEffects(m, (effect) => {
+            effect((c) => showCounts(c));
+            effect((c) => showFilter(c));
         }),
     (m) =>
-        withExoOimBucketList(m, {
-            rows: (c) => c.state.rows,
-            cell: (c) => c.todoRowCell,
-            row: todoRowMachine,
-            bucket: (c) => shownBucket(c.todoDb, shownFilter(c.todoDb)),
-            reselectOn: (c) => [c.todoDb.filter.getSingleSlot()],
+        withOIMBucketList(m, {
+            selectChildList: (c) => c.state.rows,
+            memberMachine: todoRowMachine,
+            selectBucketSlot: (c) => shownBucket(c.todoDb, shownFilter(c.todoDb)),
         }),
     (m) =>
-        TodoEnvironment.withReceptors(m, (receptor) => {
+        withCNSReceptors(m, (receptor) => {
             receptor(TodoAppPorts.TOGGLE_ALL_CHANGE, TodoUiAxon.toggleAllClicked, (c, event) => ({
                 done: readExoControlValue(event.target) as boolean,
             }));
@@ -208,17 +204,12 @@ export const todoAppMachine = composeExoMachine(
                 });
             }
             receptor(TodoAppPorts.CLEAR_COMPLETED, TodoUiAxon.clearCompletedClicked);
-        }),
-    (m) =>
-        withExoHandlers(m, (on) => {
-            on(TodoAppPorts.DRAFT_KEYDOWN, (c, event) => {
-                if (event.key !== 'Enter') return;
+            receptor(TodoAppPorts.DRAFT_KEYDOWN, TodoUiAxon.newTodoEntered, (c, event) => {
+                if (event.key !== 'Enter') return undefined;
                 const title = (readExoControlValue(event.target) as string).trim();
-                if (title === '') return;
-                TodoEnvironment.cnsOf(c).stimulate(
-                    TodoUiAxon.newTodoEntered.createSignal({ title })
-                );
+                if (title === '') return undefined;
                 c.attr(TodoAppPorts.DRAFT, '');
+                return { title };
             });
         })
 );

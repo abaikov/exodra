@@ -142,6 +142,34 @@
         "violations": []
       },
       {
+        "id": "compileExoStrJsonDeclaration",
+        "label": "compileExoStrJsonDeclaration",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(schema): TExoStrJsonDeclarat…",
+            "full": "(schema): TExoStrJsonDeclaration",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "(schema): "
+              },
+              {
+                "text": "TExoStrJsonDeclaration",
+                "link": "TExoStrJsonDeclaration"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The markup function runs against THIS emitter, which writes down the static pieces and which writer each port takes; `createExoStrSchema` turns that into the schema a render reads.",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
         "id": "compileExoStrSchema",
         "label": "compileExoStrSchema",
         "kind": "tooling",
@@ -163,7 +191,7 @@
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "Once per (schema, BACKEND) per process.",
+        "doc": "Once per (schema, BACKEND) per process, and the same two steps a build splits in half.",
         "width": 242,
         "height": 69,
         "violations": []
@@ -265,6 +293,32 @@
         "violations": []
       },
       {
+        "id": "createExoStrSchema",
+        "label": "createExoStrSchema",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(declaration, backend): TExoStrSchema",
+            "full": "(declaration, backend): TExoStrSchema",
+            "parts": [
+              {
+                "text": "(declaration, backend): "
+              },
+              {
+                "text": "TExoStrSchema",
+                "link": "TExoStrSchema"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 274,
+        "height": 69,
+        "violations": []
+      },
+      {
         "id": "createFrame",
         "label": "createFrame",
         "kind": "tooling",
@@ -306,6 +360,18 @@
         "stereotype": "function",
         "width": 158,
         "height": 69,
+        "violations": []
+      },
+      {
+        "id": "ELEMENT_NODE",
+        "label": "ELEMENT_NODE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
         "violations": []
       },
       {
@@ -569,15 +635,15 @@
           },
           {
             "visibility": "+",
-            "text": "writers: TExoStrWriter[]",
-            "full": "writers: TExoStrWriter[]",
+            "text": "writers: TExoStrWriterDeclaration[]",
+            "full": "writers: TExoStrWriterDeclaration[]",
             "parts": [
               {
                 "text": "writers: "
               },
               {
-                "text": "TExoStrWriter",
-                "link": "TExoStrWriter"
+                "text": "TExoStrWriterDeclaration",
+                "link": "TExoStrWriterDeclaration"
               },
               {
                 "text": "[]"
@@ -773,7 +839,7 @@
           }
         ],
         "memberCount": 30,
-        "width": 190,
+        "width": 261,
         "height": 177,
         "violations": []
       },
@@ -801,6 +867,44 @@
         "stereotype": "function",
         "width": 248,
         "height": 69,
+        "violations": []
+      },
+      {
+        "id": "exoStrWriterOf",
+        "label": "exoStrWriterOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(declared): TExoStrWriter",
+            "full": "(declared): TExoStrWriter",
+            "parts": [
+              {
+                "text": "(declared): "
+              },
+              {
+                "text": "TExoStrWriter",
+                "link": "TExoStrWriter"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 197,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "LINE_FEED",
+        "label": "LINE_FEED",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
         "violations": []
       },
       {
@@ -837,6 +941,18 @@
         "stereotype": "function",
         "width": 126,
         "height": 69,
+        "violations": []
+      },
+      {
+        "id": "NO_NODE",
+        "label": "NO_NODE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
         "violations": []
       },
       {
@@ -1360,6 +1476,12 @@
           },
           {
             "visibility": "+",
+            "text": "lastNode: number;",
+            "full": "lastNode: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
             "text": "pendingText: string;",
             "full": "pendingText: string;",
             "parts": []
@@ -1377,11 +1499,55 @@
             "parts": []
           }
         ],
-        "memberCount": 14,
+        "memberCount": 15,
         "stereotype": "type",
         "doc": "One element while it is OPEN.",
         "width": 274,
         "height": 189,
+        "violations": []
+      },
+      {
+        "id": "TExoStrJsonDeclaration",
+        "label": "TExoStrJsonDeclaration",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly pieces: readonly string[];",
+            "full": "readonly pieces: readonly string[];",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly order: readonly number[] | nul…",
+            "full": "readonly order: readonly number[] | null;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly writers: readonly TExoStrWrite…",
+            "full": "readonly writers: readonly TExoStrWriterDeclaration[];",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "readonly writers: readonly "
+              },
+              {
+                "text": "TExoStrWriterDeclaration",
+                "link": "TExoStrWriterDeclaration"
+              },
+              {
+                "text": "[];"
+              }
+            ]
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 293,
+        "height": 99,
         "violations": []
       },
       {
@@ -1919,6 +2085,38 @@
         "violations": []
       },
       {
+        "id": "TExoStrWriterDeclaration",
+        "label": "TExoStrWriterDeclaration",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "| { readonly writer: 'attribute'; reado…",
+            "full": "| { readonly writer: 'attribute'; readonly name: string | null; readonly tag: string | null } | { readonly writer: 'stringAttr' | 'toggleAttr'; readonly name: string | null } | { readonly writer: 'text'; readonly eatsLeadingNewline: boolean } | { readonly writer: 'children'; readonly ownsElement: boolean; readonly eatsLeadingNewline: boolean; } | { readonly writer: 'event' | 'ref' }",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "Which `EXO_STR_WRITERS` entry a port takes, and its arguments: a writer is a function, this is data.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TEXT_NODE",
+        "label": "TEXT_NODE",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
         "id": "TOGGLE_WRITERS",
         "label": "TOGGLE_WRITERS",
         "kind": "app",
@@ -2362,27 +2560,8 @@
         "violations": []
       },
       {
-        "id": "compileExoStrSchema→createExoMarkupFiller",
-        "from": "compileExoStrSchema",
-        "to": "createExoMarkupFiller",
-        "kinds": [
-          "value"
-        ],
-        "weight": 1,
-        "relation": "association",
-        "evidence": [
-          {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
-            "to": "packages/string/src/markup/factories/createExoMarkupFiller.ts",
-            "specifier": "calls",
-            "kind": "value"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "compileExoStrSchema→exoMarkupFillOrder",
-        "from": "compileExoStrSchema",
+        "id": "compileExoStrJsonDeclaration→exoMarkupFillOrder",
+        "from": "compileExoStrJsonDeclaration",
         "to": "exoMarkupFillOrder",
         "kinds": [
           "value"
@@ -2391,7 +2570,7 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "to": "packages/string/src/markup/exoMarkupFillOrder.ts",
             "specifier": "calls",
             "kind": "value"
@@ -2400,8 +2579,8 @@
         "violations": []
       },
       {
-        "id": "compileExoStrSchema→ExoStrEmitter",
-        "from": "compileExoStrSchema",
+        "id": "compileExoStrJsonDeclaration→ExoStrEmitter",
+        "from": "compileExoStrJsonDeclaration",
         "to": "ExoStrEmitter",
         "kinds": [
           "value"
@@ -2410,9 +2589,66 @@
         "relation": "composition",
         "evidence": [
           {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
-            "to": "packages/string/src/schema/compileExoStrSchema.ts",
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "specifier": "constructs",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileExoStrJsonDeclaration→TExoStrJsonDeclaration",
+        "from": "compileExoStrJsonDeclaration",
+        "to": "TExoStrJsonDeclaration",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/types/TExoStrJsonDeclaration.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileExoStrSchema→compileExoStrJsonDeclaration",
+        "from": "compileExoStrSchema",
+        "to": "compileExoStrJsonDeclaration",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/compileExoStrSchema.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileExoStrSchema→createExoStrSchema",
+        "from": "compileExoStrSchema",
+        "to": "createExoStrSchema",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/compileExoStrSchema.ts",
+            "to": "packages/string/src/schema/createExoStrSchema.ts",
+            "specifier": "calls",
             "kind": "value"
           }
         ],
@@ -2628,6 +2864,101 @@
         "violations": []
       },
       {
+        "id": "createExoStrSchema→createExoMarkupFiller",
+        "from": "createExoStrSchema",
+        "to": "createExoMarkupFiller",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/createExoStrSchema.ts",
+            "to": "packages/string/src/markup/factories/createExoMarkupFiller.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoStrSchema→exoStrWriterOf",
+        "from": "createExoStrSchema",
+        "to": "exoStrWriterOf",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/createExoStrSchema.ts",
+            "to": "packages/string/src/schema/exoStrWriterOf.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoStrSchema→TExoStrApi",
+        "from": "createExoStrSchema",
+        "to": "TExoStrApi",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/createExoStrSchema.ts",
+            "to": "packages/string/src/node/types/TExoStrApi.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoStrSchema→TExoStrJsonDeclaration",
+        "from": "createExoStrSchema",
+        "to": "TExoStrJsonDeclaration",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/createExoStrSchema.ts",
+            "to": "packages/string/src/schema/types/TExoStrJsonDeclaration.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoStrSchema→TExoStrSchema",
+        "from": "createExoStrSchema",
+        "to": "TExoStrSchema",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/createExoStrSchema.ts",
+            "to": "packages/string/src/schema/types/TExoStrSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "createFrame→EXO_NEWLINE_EATING_ELEMENTS",
         "from": "createFrame",
         "to": "EXO_NEWLINE_EATING_ELEMENTS",
@@ -2638,8 +2969,27 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "to": "packages/string/src/schema/constants/EXO_NEWLINE_EATING_ELEMENTS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createFrame→NO_NODE",
+        "from": "createFrame",
+        "to": "NO_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2657,8 +3007,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
-            "to": "packages/string/src/schema/compileExoStrSchema.ts",
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3436,8 +3786,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
-            "to": "packages/string/src/schema/compileExoStrSchema.ts",
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -3445,9 +3795,9 @@
         "violations": []
       },
       {
-        "id": "ExoStrEmitter→EXO_STR_WRITERS",
+        "id": "ExoStrEmitter→ELEMENT_NODE",
         "from": "ExoStrEmitter",
-        "to": "EXO_STR_WRITERS",
+        "to": "ELEMENT_NODE",
         "kinds": [
           "type-only"
         ],
@@ -3455,8 +3805,46 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
-            "to": "packages/string/src/writers/EXO_STR_WRITERS.ts",
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoStrEmitter→LINE_FEED",
+        "from": "ExoStrEmitter",
+        "to": "LINE_FEED",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoStrEmitter→NO_NODE",
+        "from": "ExoStrEmitter",
+        "to": "NO_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3474,8 +3862,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
-            "to": "packages/string/src/schema/compileExoStrSchema.ts",
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3483,9 +3871,9 @@
         "violations": []
       },
       {
-        "id": "ExoStrEmitter→TExoStrWriter",
+        "id": "ExoStrEmitter→TExoStrWriterDeclaration",
         "from": "ExoStrEmitter",
-        "to": "TExoStrWriter",
+        "to": "TExoStrWriterDeclaration",
         "kinds": [
           "type-only"
         ],
@@ -3493,8 +3881,27 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/string/src/schema/compileExoStrSchema.ts",
-            "to": "packages/string/src/writers/types/TExoStrWriter.ts",
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/types/TExoStrWriterDeclaration.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "ExoStrEmitter→TEXT_NODE",
+        "from": "ExoStrEmitter",
+        "to": "TEXT_NODE",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/compileExoStrJsonDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3521,6 +3928,25 @@
         "violations": []
       },
       {
+        "id": "exoStrSchemaOf→createExoStrSchema",
+        "from": "exoStrSchemaOf",
+        "to": "createExoStrSchema",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/exoStrSchemaOf.ts",
+            "to": "packages/string/src/schema/createExoStrSchema.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "exoStrSchemaOf→TExoStrApi",
         "from": "exoStrSchemaOf",
         "to": "TExoStrApi",
@@ -3540,6 +3966,25 @@
         "violations": []
       },
       {
+        "id": "exoStrSchemaOf→TExoStrJsonDeclaration",
+        "from": "exoStrSchemaOf",
+        "to": "TExoStrJsonDeclaration",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/exoStrSchemaOf.ts",
+            "to": "packages/string/src/schema/types/TExoStrJsonDeclaration.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "exoStrSchemaOf→TExoStrSchema",
         "from": "exoStrSchemaOf",
         "to": "TExoStrSchema",
@@ -3552,6 +3997,63 @@
           {
             "from": "packages/string/src/schema/exoStrSchemaOf.ts",
             "to": "packages/string/src/schema/types/TExoStrSchema.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoStrWriterOf→EXO_STR_WRITERS",
+        "from": "exoStrWriterOf",
+        "to": "EXO_STR_WRITERS",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/exoStrWriterOf.ts",
+            "to": "packages/string/src/writers/EXO_STR_WRITERS.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoStrWriterOf→TExoStrWriter",
+        "from": "exoStrWriterOf",
+        "to": "TExoStrWriter",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/exoStrWriterOf.ts",
+            "to": "packages/string/src/writers/types/TExoStrWriter.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "exoStrWriterOf→TExoStrWriterDeclaration",
+        "from": "exoStrWriterOf",
+        "to": "TExoStrWriterDeclaration",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/exoStrWriterOf.ts",
+            "to": "packages/string/src/schema/types/TExoStrWriterDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -3894,6 +4396,25 @@
           {
             "from": "packages/string/src/foreign/types/TExoStrForeignApi.ts",
             "to": "packages/string/src/schema/types/TExoStrMark.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoStrJsonDeclaration→TExoStrWriterDeclaration",
+        "from": "TExoStrJsonDeclaration",
+        "to": "TExoStrWriterDeclaration",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/string/src/schema/types/TExoStrJsonDeclaration.ts",
+            "to": "packages/string/src/schema/types/TExoStrWriterDeclaration.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -4266,145 +4787,166 @@
   },
   "layout": {
     "width": 5412,
-    "height": 3669.5,
+    "height": 3691.5,
     "nodes": [
       {
         "id": "attrWriter",
         "x": 3958.5,
-        "y": 3156.5,
+        "y": 2135.5,
         "width": 203,
         "height": 69
       },
       {
         "id": "attrWriterFor",
         "x": 4322,
-        "y": 3022.5,
+        "y": 1633,
         "width": 171,
         "height": 69
       },
       {
         "id": "booleanPropertyWriterFor",
         "x": 4318.5,
-        "y": 2925.5,
+        "y": 2147.8,
         "width": 178,
         "height": 69
       },
       {
         "id": "buildExoStrInstance",
         "x": 1736,
-        "y": 3576.5,
+        "y": 3534.3,
         "width": 338,
         "height": 69
       },
       {
         "id": "classWriterFor",
         "x": 4322,
-        "y": 3119.5,
+        "y": 1730,
         "width": 171,
         "height": 69
       },
       {
+        "id": "compileExoStrJsonDeclaration",
+        "x": 2884,
+        "y": 1978.3,
+        "width": 229,
+        "height": 69
+      },
+      {
         "id": "compileExoStrSchema",
-        "x": 2877.5,
-        "y": 2163,
+        "x": 2520.5,
+        "y": 1659.3,
         "width": 242,
         "height": 69
       },
       {
         "id": "createExoMarkupFiller",
         "x": 3222,
-        "y": 1608.8,
+        "y": 3241,
         "width": 267,
         "height": 69
       },
       {
         "id": "createExoStrChildList",
         "x": 1398,
-        "y": 1196.3,
+        "y": 1186,
         "width": 274,
         "height": 69
       },
       {
         "id": "createExoStrInstanceFactory",
         "x": 1787.5,
-        "y": 169.3,
+        "y": 197.8,
         "width": 235,
+        "height": 69
+      },
+      {
+        "id": "createExoStrSchema",
+        "x": 2861.5,
+        "y": 2355.3,
+        "width": 274,
         "height": 69
       },
       {
         "id": "createFrame",
         "x": 3607.5,
-        "y": 3376,
+        "y": 1616.3,
         "width": 210,
         "height": 69
       },
       {
         "id": "disposeExoStrInstance",
         "x": 2205.5,
-        "y": 2526.5,
+        "y": 3396.5,
         "width": 158,
         "height": 69
       },
       {
+        "id": "ELEMENT_NODE",
+        "x": 3652.5,
+        "y": 1729.8,
+        "width": 120,
+        "height": 46
+      },
+      {
         "id": "escaped",
         "x": 4698,
-        "y": 3135,
+        "y": 1976,
         "width": 133,
         "height": 69
       },
       {
         "id": "EXO_NEWLINE_EATING_ELEMENTS",
         "x": 3961.5,
-        "y": 3397.5,
+        "y": 1585.8,
         "width": 197,
         "height": 46
       },
       {
         "id": "EXO_STR_FOREIGN_METHODS",
         "x": 4322,
-        "y": 524.3,
+        "y": 485.8,
         "width": 171,
         "height": 46
       },
       {
         "id": "EXO_STR_FOREIGN_VOCABULARY",
         "x": 3965,
-        "y": 524.3,
+        "y": 485.8,
         "width": 190,
         "height": 46
       },
       {
         "id": "EXO_STR_MARK",
         "x": 5268,
-        "y": 583.8,
+        "y": 576,
         "width": 120,
         "height": 46
       },
       {
         "id": "EXO_STR_NODE_METHODS",
         "x": 1182,
-        "y": 943.8,
+        "y": 896.3,
         "width": 152,
         "height": 46
       },
       {
         "id": "EXO_STR_NODE_VOCABULARY",
         "x": 947,
-        "y": 943.8,
+        "y": 896.3,
         "width": 171,
         "height": 46
       },
       {
         "id": "EXO_STR_WRITERS",
         "x": 3652.5,
-        "y": 2392.8,
+        "y": 2657,
         "width": 120,
         "height": 46
       },
       {
         "id": "EXO_STRING_PROPERTY_NAMES",
         "x": 4315.5,
-        "y": 3216.5,
+        "y": 1827,
         "width": 184,
         "height": 46
       },
@@ -4418,105 +4960,126 @@
       {
         "id": "exoMarkupFillOrder",
         "x": 3222,
-        "y": 1705.8,
+        "y": 2103,
         "width": 267,
         "height": 69
       },
       {
         "id": "ExoStrBackend",
         "x": 24,
-        "y": 1838,
+        "y": 1858.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "ExoStrBackendBase",
         "x": 565,
-        "y": 3516.3,
+        "y": 3557.3,
         "width": 318,
         "height": 102
       },
       {
         "id": "ExoStrEmitter",
-        "x": 3260.5,
-        "y": 2109,
-        "width": 190,
+        "x": 3225,
+        "y": 1830.3,
+        "width": 261,
         "height": 177
       },
       {
         "id": "exoStrSchemaOf",
-        "x": 2517.5,
-        "y": 1684.3,
+        "x": 2160.5,
+        "y": 3199.8,
         "width": 248,
         "height": 69
       },
       {
+        "id": "exoStrWriterOf",
+        "x": 3257,
+        "y": 3024.3,
+        "width": 197,
+        "height": 69
+      },
+      {
+        "id": "LINE_FEED",
+        "x": 3652.5,
+        "y": 1803.8,
+        "width": 120,
+        "height": 46
+      },
+      {
         "id": "mountExoStrInstance",
         "x": 1832,
-        "y": 1029.8,
+        "y": 997,
         "width": 146,
         "height": 69
       },
       {
         "id": "namedStrAttrPort",
         "x": 3997,
-        "y": 2711.5,
+        "y": 2369.5,
         "width": 126,
         "height": 69
       },
       {
+        "id": "NO_NODE",
+        "x": 4000,
+        "y": 1768,
+        "width": 120,
+        "height": 46
+      },
+      {
         "id": "NOBODY",
         "x": 4704.5,
-        "y": 1044.8,
+        "y": 1067,
         "width": 120,
         "height": 46
       },
       {
         "id": "noExoStrNode",
         "x": 1475,
-        "y": 912.8,
+        "y": 880,
         "width": 120,
         "height": 69
       },
       {
         "id": "refuseRefWrite",
         "x": 4000,
-        "y": 2614.5,
+        "y": 2466.5,
         "width": 120,
         "height": 69
       },
       {
         "id": "refuseSharedHtml",
         "x": 3997,
-        "y": 2517.5,
+        "y": 2563.5,
         "width": 126,
         "height": 69
       },
       {
         "id": "renderExoStrInstance",
         "x": 1752,
-        "y": 1422.5,
+        "y": 1311.3,
         "width": 306,
         "height": 69
       },
       {
         "id": "STRING_WRITERS",
         "x": 4347.5,
-        "y": 2470.5,
+        "y": 2633.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "stringPropertyWriterFor",
         "x": 4322,
-        "y": 3290.5,
+        "y": 2050.8,
         "width": 171,
         "height": 69
       },
       {
         "id": "TExoStrApi",
         "x": 3566,
-        "y": 1550.3,
+        "y": 2077.5,
         "width": 293,
         "height": 69
       },
@@ -4530,63 +5093,70 @@
       {
         "id": "TExoStrBackendConstructor",
         "x": 208,
-        "y": 131,
+        "y": 121,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoStrChildList",
         "x": 4618,
-        "y": 773.5,
+        "y": 741.5,
         "width": 293,
         "height": 189
       },
       {
         "id": "TExoStrForeignApi",
         "x": 4618,
-        "y": 483.5,
+        "y": 503.5,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoStrFrame",
         "x": 3923,
-        "y": 2280.5,
+        "y": 1842,
         "width": 274,
         "height": 189
       },
       {
+        "id": "TExoStrJsonDeclaration",
+        "x": 3209,
+        "y": 2200,
+        "width": 293,
+        "height": 99
+      },
+      {
         "id": "TExoStrMachine",
         "x": 4669.5,
-        "y": 1218,
+        "y": 1225.5,
         "width": 190,
         "height": 69
       },
       {
         "id": "TExoStrMark",
         "x": 4975,
-        "y": 572.3,
+        "y": 564.5,
         "width": 229,
         "height": 69
       },
       {
         "id": "TExoStrMarkupFiller",
         "x": 3575.5,
-        "y": 1380,
+        "y": 1980.5,
         "width": 274,
         "height": 69
       },
       {
         "id": "TExoStrNode",
         "x": 2514.5,
-        "y": 1167.5,
+        "y": 1220.3,
         "width": 254,
         "height": 69
       },
       {
         "id": "TExoStrNodeApi",
         "x": 4261,
-        "y": 598.3,
+        "y": 623,
         "width": 293,
         "height": 189
       },
@@ -4600,7 +5170,7 @@
       {
         "id": "TExoStrNodeFields",
         "x": 2852,
-        "y": 1246,
+        "y": 1269.5,
         "width": 293,
         "height": 69
       },
@@ -4614,70 +5184,84 @@
       {
         "id": "TExoStrSchema",
         "x": 3209,
-        "y": 1314.5,
+        "y": 1386.5,
         "width": 293,
         "height": 174
       },
       {
         "id": "TExoStrSurface",
         "x": 4000,
-        "y": 972.8,
+        "y": 1155.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "TExoStrWriter",
         "x": 4663,
-        "y": 2592.5,
+        "y": 2320.8,
         "width": 203,
         "height": 69
       },
       {
+        "id": "TExoStrWriterDeclaration",
+        "x": 3566,
+        "y": 2337.3,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TEXT_NODE",
+        "x": 3652.5,
+        "y": 2174.5,
+        "width": 120,
+        "height": 46
+      },
+      {
         "id": "TOGGLE_WRITERS",
         "x": 4347.5,
-        "y": 2186.5,
+        "y": 2727.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "writeHtml",
         "x": 3993.5,
-        "y": 2116.5,
+        "y": 2774.5,
         "width": 133,
         "height": 69
       },
       {
         "id": "writeHtmlAfterNewlineEater",
         "x": 3965,
-        "y": 2019.5,
+        "y": 2871.5,
         "width": 190,
         "height": 69
       },
       {
         "id": "writeNothing",
         "x": 4347.5,
-        "y": 2828.5,
+        "y": 2453,
         "width": 120,
         "height": 69
       },
       {
         "id": "WRITERS",
         "x": 4347.5,
-        "y": 3407.5,
+        "y": 2275.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "writeText",
         "x": 3993.5,
-        "y": 1902.5,
+        "y": 2988.5,
         "width": 133,
         "height": 69
       },
       {
         "id": "writeTextAfterNewlineEater",
         "x": 3965,
-        "y": 1805.5,
+        "y": 3085.5,
         "width": 190,
         "height": 69
       }
@@ -4687,16 +5271,16 @@
         "id": "attrWriter→attrWriterFor",
         "points": [
           {
-            "x": 4084.9,
-            "y": 3156.5
+            "x": 4071.6,
+            "y": 2135.5
           },
           {
             "x": 4229,
-            "y": 2957.3
+            "y": 1667.5
           },
           {
-            "x": 4345.8,
-            "y": 3022.5
+            "x": 4322,
+            "y": 1667.5
           }
         ]
       },
@@ -4704,16 +5288,16 @@
         "id": "attrWriter→booleanPropertyWriterFor",
         "points": [
           {
-            "x": 4100.5,
-            "y": 3156.5
+            "x": 4102.4,
+            "y": 2135.5
           },
           {
             "x": 4229,
-            "y": 3047
+            "y": 2032.5
           },
           {
-            "x": 4336.7,
-            "y": 2994.5
+            "x": 4366.4,
+            "y": 2147.8
           }
         ]
       },
@@ -4721,16 +5305,16 @@
         "id": "attrWriter→classWriterFor",
         "points": [
           {
-            "x": 4161.5,
-            "y": 3168.8
+            "x": 4109.6,
+            "y": 2135.5
           },
           {
             "x": 4229,
-            "y": 3154
+            "y": 2052.5
           },
           {
-            "x": 4322,
-            "y": 3154
+            "x": 4386.1,
+            "y": 1799
           }
         ]
       },
@@ -4738,16 +5322,16 @@
         "id": "attrWriter→EXO_STRING_PROPERTY_NAMES",
         "points": [
           {
-            "x": 4161.5,
-            "y": 3220.1
+            "x": 4119.8,
+            "y": 2135.5
           },
           {
             "x": 4229,
-            "y": 3239.5
+            "y": 2072.5
           },
           {
-            "x": 4315.5,
-            "y": 3239.5
+            "x": 4389,
+            "y": 1873
           }
         ]
       },
@@ -4755,16 +5339,16 @@
         "id": "attrWriter→stringPropertyWriterFor",
         "points": [
           {
-            "x": 4103.5,
-            "y": 3225.5
+            "x": 4161.5,
+            "y": 2166.2
           },
           {
             "x": 4229,
-            "y": 3325
+            "y": 2163.8
           },
           {
-            "x": 4322,
-            "y": 3325
+            "x": 4329.1,
+            "y": 2119.8
           }
         ]
       },
@@ -4772,24 +5356,24 @@
         "id": "attrWriter→TExoStrWriter",
         "points": [
           {
-            "x": 4090.3,
-            "y": 3225.5
+            "x": 4131.5,
+            "y": 2204.5
           },
           {
             "x": 4229,
-            "y": 3383.5
+            "y": 2251.5
           },
           {
             "x": 4407.5,
-            "y": 3383.5
+            "y": 2251.5
           },
           {
             "x": 4586,
-            "y": 3383.5
+            "y": 2251.5
           },
           {
-            "x": 4756.4,
-            "y": 2661.5
+            "x": 4705.1,
+            "y": 2320.8
           }
         ]
       },
@@ -4797,16 +5381,16 @@
         "id": "attrWriter→writeNothing",
         "points": [
           {
-            "x": 4087,
-            "y": 3225.5
+            "x": 4115.5,
+            "y": 2204.5
           },
           {
             "x": 4229,
-            "y": 3407
+            "y": 2275
           },
           {
-            "x": 4396.2,
-            "y": 2897.5
+            "x": 4378.5,
+            "y": 2453
           }
         ]
       },
@@ -4814,16 +5398,16 @@
         "id": "attrWriter→WRITERS",
         "points": [
           {
-            "x": 4084.3,
-            "y": 3225.5
+            "x": 4105.4,
+            "y": 2204.5
           },
           {
             "x": 4229,
-            "y": 3430.5
+            "y": 2298.5
           },
           {
             "x": 4347.5,
-            "y": 3430.5
+            "y": 2298.5
           }
         ]
       },
@@ -4832,15 +5416,15 @@
         "points": [
           {
             "x": 4493,
-            "y": 3038.6
+            "y": 1685.9
           },
           {
             "x": 4586,
-            "y": 3018.5
+            "y": 1706
           },
           {
-            "x": 4723.7,
-            "y": 3135
+            "x": 4744.3,
+            "y": 1976
           }
         ]
       },
@@ -4849,15 +5433,15 @@
         "points": [
           {
             "x": 4493,
-            "y": 3075.4
+            "y": 1658.3
           },
           {
             "x": 4586,
-            "y": 3095.5
+            "y": 1648.3
           },
           {
-            "x": 4751.4,
-            "y": 2661.5
+            "x": 4755.8,
+            "y": 2320.8
           }
         ]
       },
@@ -4866,15 +5450,15 @@
         "points": [
           {
             "x": 4496.5,
-            "y": 2960
+            "y": 2182.3
           },
           {
             "x": 4586,
-            "y": 2960
+            "y": 2182.3
           },
           {
-            "x": 4746,
-            "y": 2661.5
+            "x": 4728.9,
+            "y": 2320.8
           }
         ]
       },
@@ -4883,15 +5467,15 @@
         "points": [
           {
             "x": 2074,
-            "y": 3644.6
+            "y": 3594
           },
           {
             "x": 2106,
-            "y": 3651
+            "y": 3598.8
           },
           {
-            "x": 2278.9,
-            "y": 2595.5
+            "x": 2247.8,
+            "y": 3465.5
           }
         ]
       },
@@ -4900,71 +5484,71 @@
         "points": [
           {
             "x": 2074,
-            "y": 3627.8
+            "y": 3577.2
           },
           {
             "x": 2106,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 2284.5,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 2463,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 2641.5,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 2820,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 2998.5,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 3177,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 3355.5,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 3534,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 3712.5,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 3891,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 4060,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 4229,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 4407.5,
-            "y": 3631
+            "y": 3578.8
           },
           {
             "x": 4586,
-            "y": 3631
+            "y": 3578.8
           },
           {
-            "x": 4761.9,
-            "y": 1287
+            "x": 4761.8,
+            "y": 1294.5
           }
         ]
       },
@@ -4973,23 +5557,23 @@
         "points": [
           {
             "x": 2074,
-            "y": 3611
+            "y": 3560.3
           },
           {
             "x": 2106,
-            "y": 3611
+            "y": 3558.8
           },
           {
             "x": 2284.5,
-            "y": 3611
+            "y": 3558.8
           },
           {
             "x": 2463,
-            "y": 3611
+            "y": 3558.8
           },
           {
-            "x": 2638.9,
-            "y": 1236.5
+            "x": 2638.8,
+            "y": 1289.3
           }
         ]
       },
@@ -4998,39 +5582,39 @@
         "points": [
           {
             "x": 2074,
-            "y": 3594.2
+            "y": 3543.5
           },
           {
             "x": 2106,
-            "y": 3591
+            "y": 3538.8
           },
           {
             "x": 2284.5,
-            "y": 3591
+            "y": 3538.8
           },
           {
             "x": 2463,
-            "y": 3591
+            "y": 3538.8
           },
           {
             "x": 2641.5,
-            "y": 3591
+            "y": 3538.8
           },
           {
             "x": 2820,
-            "y": 3591
+            "y": 3538.8
           },
           {
             "x": 2998.5,
-            "y": 3591
+            "y": 3538.8
           },
           {
             "x": 3177,
-            "y": 3591
+            "y": 3538.8
           },
           {
-            "x": 3348.4,
-            "y": 1488.5
+            "x": 3348,
+            "y": 1560.5
           }
         ]
       },
@@ -5038,16 +5622,16 @@
         "id": "classWriterFor→escaped",
         "points": [
           {
-            "x": 4493,
-            "y": 3135.6
+            "x": 4489.1,
+            "y": 1799
           },
           {
             "x": 4586,
-            "y": 3115.5
+            "y": 1840
           },
           {
-            "x": 4698,
-            "y": 3149.4
+            "x": 4728.4,
+            "y": 1976
           }
         ]
       },
@@ -5055,67 +5639,101 @@
         "id": "classWriterFor→TExoStrWriter",
         "points": [
           {
-            "x": 4489.1,
-            "y": 3188.5
+            "x": 4493,
+            "y": 1746.1
           },
           {
             "x": 4586,
-            "y": 3229.5
+            "y": 1726
           },
           {
-            "x": 4754.3,
-            "y": 2661.5
+            "x": 4754.7,
+            "y": 2320.8
           }
         ]
       },
       {
-        "id": "compileExoStrSchema→createExoMarkupFiller",
+        "id": "compileExoStrJsonDeclaration→exoMarkupFillOrder",
         "points": [
           {
-            "x": 3009.6,
-            "y": 2163
+            "x": 3047.9,
+            "y": 2047.3
           },
           {
             "x": 3177,
-            "y": 1643.3
+            "y": 2137.5
           },
           {
             "x": 3222,
-            "y": 1643.3
+            "y": 2137.5
           }
         ]
       },
       {
-        "id": "compileExoStrSchema→exoMarkupFillOrder",
+        "id": "compileExoStrJsonDeclaration→ExoStrEmitter",
         "points": [
           {
-            "x": 3012,
-            "y": 2163
+            "x": 3092.5,
+            "y": 1978.3
           },
           {
             "x": 3177,
-            "y": 1740.3
+            "y": 1947.3
           },
           {
-            "x": 3222,
-            "y": 1740.3
+            "x": 3225,
+            "y": 1939.6
           }
         ]
       },
       {
-        "id": "compileExoStrSchema→ExoStrEmitter",
+        "id": "compileExoStrJsonDeclaration→TExoStrJsonDeclaration",
         "points": [
           {
-            "x": 3119.5,
-            "y": 2197.5
+            "x": 3015.1,
+            "y": 1978.3
           },
           {
             "x": 3177,
-            "y": 2197.5
+            "y": 1640.8
           },
           {
-            "x": 3260.5,
-            "y": 2197.5
+            "x": 3341,
+            "y": 2200
+          }
+        ]
+      },
+      {
+        "id": "compileExoStrSchema→compileExoStrJsonDeclaration",
+        "points": [
+          {
+            "x": 2660.8,
+            "y": 1728.3
+          },
+          {
+            "x": 2820,
+            "y": 2012.8
+          },
+          {
+            "x": 2884,
+            "y": 2012.8
+          }
+        ]
+      },
+      {
+        "id": "compileExoStrSchema→createExoStrSchema",
+        "points": [
+          {
+            "x": 2739.3,
+            "y": 1659.3
+          },
+          {
+            "x": 2820,
+            "y": 1630.8
+          },
+          {
+            "x": 2990.4,
+            "y": 2355.3
           }
         ]
       },
@@ -5123,24 +5741,32 @@
         "id": "compileExoStrSchema→TExoStrApi",
         "points": [
           {
-            "x": 3003.5,
-            "y": 2232
+            "x": 2697.9,
+            "y": 1659.3
+          },
+          {
+            "x": 2820,
+            "y": 1584.5
+          },
+          {
+            "x": 2998.5,
+            "y": 1584.5
           },
           {
             "x": 3177,
-            "y": 3434
+            "y": 1584.5
           },
           {
             "x": 3355.5,
-            "y": 3434
+            "y": 1584.5
           },
           {
             "x": 3534,
-            "y": 3434
+            "y": 1584.5
           },
           {
-            "x": 3709.2,
-            "y": 1619.3
+            "x": 3700.8,
+            "y": 2077.5
           }
         ]
       },
@@ -5148,16 +5774,24 @@
         "id": "compileExoStrSchema→TExoStrSchema",
         "points": [
           {
-            "x": 3003.4,
-            "y": 2232
+            "x": 2669.5,
+            "y": 1659.3
+          },
+          {
+            "x": 2820,
+            "y": 1473.5
+          },
+          {
+            "x": 2998.5,
+            "y": 1473.5
           },
           {
             "x": 3177,
-            "y": 3454
+            "y": 1473.5
           },
           {
-            "x": 3347.9,
-            "y": 1488.5
+            "x": 3209,
+            "y": 1473.5
           }
         ]
       },
@@ -5166,15 +5800,15 @@
         "points": [
           {
             "x": 3489,
-            "y": 1643.3
+            "y": 3275.5
           },
           {
             "x": 3534,
-            "y": 1643.3
+            "y": 3275.5
           },
           {
-            "x": 3685.6,
-            "y": 1449
+            "x": 3707.6,
+            "y": 2049.5
           }
         ]
       },
@@ -5182,16 +5816,16 @@
         "id": "createExoStrChildList→mountExoStrInstance",
         "points": [
           {
-            "x": 1570,
-            "y": 1196.3
+            "x": 1565.8,
+            "y": 1186
           },
           {
             "x": 1704,
-            "y": 1064.3
+            "y": 1031.5
           },
           {
             "x": 1832,
-            "y": 1064.3
+            "y": 1031.5
           }
         ]
       },
@@ -5199,80 +5833,80 @@
         "id": "createExoStrChildList→NOBODY",
         "points": [
           {
-            "x": 1589,
-            "y": 1196.3
+            "x": 1579.7,
+            "y": 1186
           },
           {
             "x": 1704,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 1905,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 2106,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 2284.5,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 2463,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 2641.5,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 2820,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 2998.5,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 3177,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 3355.5,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 3534,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 3712.5,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 3891,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 4060,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 4229,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 4407.5,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 4586,
-            "y": 1122.8
+            "y": 1090
           },
           {
             "x": 4704.5,
-            "y": 1086.2
+            "y": 1090
           }
         ]
       },
@@ -5280,80 +5914,80 @@
         "id": "createExoStrChildList→TExoStrChildList",
         "points": [
           {
-            "x": 1601.3,
-            "y": 1196.3
+            "x": 1587.8,
+            "y": 1186
           },
           {
             "x": 1704,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 1905,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 2106,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 2284.5,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 2463,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 2641.5,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 2820,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 2998.5,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 3177,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 3355.5,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 3534,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 3712.5,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 3891,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 4060,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 4229,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 4407.5,
-            "y": 1142.8
+            "y": 1110
           },
           {
             "x": 4586,
-            "y": 1142.8
+            "y": 1110
           },
           {
-            "x": 4703.1,
-            "y": 962.5
+            "x": 4702.9,
+            "y": 930.5
           }
         ]
       },
@@ -5361,88 +5995,88 @@
         "id": "createExoStrChildList→TExoStrMark",
         "points": [
           {
-            "x": 1537.5,
-            "y": 1265.3
+            "x": 1537.6,
+            "y": 1255
           },
           {
             "x": 1704,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 1905,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 2106,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 2284.5,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 2463,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 2641.5,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 2820,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 2998.5,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 3177,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 3355.5,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 3534,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 3712.5,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 3891,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 4060,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 4229,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 4407.5,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 4586,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 4764.5,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 4943,
-            "y": 3531.8
+            "y": 3489.5
           },
           {
             "x": 5087.8,
-            "y": 641.3
+            "y": 633.5
           }
         ]
       },
@@ -5451,31 +6085,31 @@
         "points": [
           {
             "x": 1537.5,
-            "y": 1265.3
+            "y": 1255
           },
           {
             "x": 1704,
-            "y": 3551.8
+            "y": 3509.5
           },
           {
             "x": 1905,
-            "y": 3551.8
+            "y": 3509.5
           },
           {
             "x": 2106,
-            "y": 3551.8
+            "y": 3509.5
           },
           {
             "x": 2284.5,
-            "y": 3551.8
+            "y": 3509.5
           },
           {
             "x": 2463,
-            "y": 3551.8
+            "y": 3509.5
           },
           {
-            "x": 2638.9,
-            "y": 1236.5
+            "x": 2638.8,
+            "y": 1289.3
           }
         ]
       },
@@ -5483,8 +6117,8 @@
         "id": "createExoStrInstanceFactory→TExoStrNodeConstructor",
         "points": [
           {
-            "x": 2020.1,
-            "y": 238.3
+            "x": 2022.5,
+            "y": 250.8
           },
           {
             "x": 2106,
@@ -5501,7 +6135,7 @@
         "points": [
           {
             "x": 2022.5,
-            "y": 204.8
+            "y": 216.6
           },
           {
             "x": 2106,
@@ -5525,8 +6159,8 @@
         "id": "createExoStrInstanceFactory→TExoStrSchema",
         "points": [
           {
-            "x": 2022.5,
-            "y": 170.6
+            "x": 1986.3,
+            "y": 197.8
           },
           {
             "x": 2106,
@@ -5557,8 +6191,101 @@
             "y": 147
           },
           {
-            "x": 3343.1,
-            "y": 1314.5
+            "x": 3343.8,
+            "y": 1386.5
+          }
+        ]
+      },
+      {
+        "id": "createExoStrSchema→createExoMarkupFiller",
+        "points": [
+          {
+            "x": 3005.5,
+            "y": 2424.3
+          },
+          {
+            "x": 3177,
+            "y": 3275.5
+          },
+          {
+            "x": 3222,
+            "y": 3275.5
+          }
+        ]
+      },
+      {
+        "id": "createExoStrSchema→exoStrWriterOf",
+        "points": [
+          {
+            "x": 3007.7,
+            "y": 2424.3
+          },
+          {
+            "x": 3177,
+            "y": 3058.8
+          },
+          {
+            "x": 3257,
+            "y": 3058.8
+          }
+        ]
+      },
+      {
+        "id": "createExoStrSchema→TExoStrApi",
+        "points": [
+          {
+            "x": 3090.8,
+            "y": 2355.3
+          },
+          {
+            "x": 3177,
+            "y": 2323
+          },
+          {
+            "x": 3355.5,
+            "y": 2323
+          },
+          {
+            "x": 3534,
+            "y": 2323
+          },
+          {
+            "x": 3683.3,
+            "y": 2146.5
+          }
+        ]
+      },
+      {
+        "id": "createExoStrSchema→TExoStrJsonDeclaration",
+        "points": [
+          {
+            "x": 3042.4,
+            "y": 2355.3
+          },
+          {
+            "x": 3177,
+            "y": 2249.5
+          },
+          {
+            "x": 3209,
+            "y": 2249.5
+          }
+        ]
+      },
+      {
+        "id": "createExoStrSchema→TExoStrSchema",
+        "points": [
+          {
+            "x": 3029.9,
+            "y": 2355.3
+          },
+          {
+            "x": 3177,
+            "y": 2193.5
+          },
+          {
+            "x": 3333.9,
+            "y": 1560.5
           }
         ]
       },
@@ -5567,15 +6294,32 @@
         "points": [
           {
             "x": 3817.5,
-            "y": 3416.4
+            "y": 1626
           },
           {
             "x": 3891,
-            "y": 3420.5
+            "y": 1608.8
           },
           {
             "x": 3961.5,
-            "y": 3420.5
+            "y": 1608.8
+          }
+        ]
+      },
+      {
+        "id": "createFrame→NO_NODE",
+        "points": [
+          {
+            "x": 3817.5,
+            "y": 1653.7
+          },
+          {
+            "x": 3891,
+            "y": 1655.8
+          },
+          {
+            "x": 4031.3,
+            "y": 1768
           }
         ]
       },
@@ -5583,16 +6327,16 @@
         "id": "createFrame→TExoStrFrame",
         "points": [
           {
-            "x": 3817.5,
-            "y": 3391.2
+            "x": 3768.6,
+            "y": 1685.3
           },
           {
             "x": 3891,
-            "y": 3377.8
+            "y": 1760.5
           },
           {
-            "x": 4044.1,
-            "y": 2469.5
+            "x": 3969.3,
+            "y": 1842
           }
         ]
       },
@@ -5601,15 +6345,15 @@
         "points": [
           {
             "x": 2363.5,
-            "y": 2561
+            "y": 3431
           },
           {
             "x": 2463,
-            "y": 2561
+            "y": 3431
           },
           {
-            "x": 2637,
-            "y": 1236.5
+            "x": 2638.7,
+            "y": 1289.3
           }
         ]
       },
@@ -5618,15 +6362,15 @@
         "points": [
           {
             "x": 4493,
-            "y": 533.2
+            "y": 522.8
           },
           {
             "x": 4586,
-            "y": 518
+            "y": 538
           },
           {
             "x": 4618,
-            "y": 518
+            "y": 538
           }
         ]
       },
@@ -5634,24 +6378,24 @@
         "id": "EXO_STR_FOREIGN_METHODS→TExoStrMark",
         "points": [
           {
-            "x": 4485.3,
-            "y": 570.3
+            "x": 4493,
+            "y": 494.7
           },
           {
             "x": 4586,
-            "y": 600
+            "y": 479.5
           },
           {
             "x": 4764.5,
-            "y": 600
+            "y": 479.5
           },
           {
             "x": 4943,
-            "y": 600
+            "y": 479.5
           },
           {
-            "x": 4975,
-            "y": 601.5
+            "x": 5047.2,
+            "y": 564.5
           }
         ]
       },
@@ -5660,15 +6404,15 @@
         "points": [
           {
             "x": 4155,
-            "y": 547.3
+            "y": 508.8
           },
           {
             "x": 4229,
-            "y": 547.3
+            "y": 508.8
           },
           {
             "x": 4322,
-            "y": 547.3
+            "y": 508.8
           }
         ]
       },
@@ -5677,23 +6421,23 @@
         "points": [
           {
             "x": 1258.9,
-            "y": 989.8
+            "y": 942.3
           },
           {
             "x": 1366,
-            "y": 3611
+            "y": 3568.8
           },
           {
             "x": 1535,
-            "y": 3611
+            "y": 3568.8
           },
           {
             "x": 1704,
-            "y": 3611
+            "y": 3568.8
           },
           {
             "x": 1736,
-            "y": 3611
+            "y": 3568.8
           }
         ]
       },
@@ -5701,16 +6445,16 @@
         "id": "EXO_STR_NODE_METHODS→createExoStrChildList",
         "points": [
           {
-            "x": 1267.4,
-            "y": 989.8
+            "x": 1266.2,
+            "y": 942.3
           },
           {
             "x": 1366,
-            "y": 1230.8
+            "y": 1220.5
           },
           {
             "x": 1398,
-            "y": 1230.8
+            "y": 1220.5
           }
         ]
       },
@@ -5718,40 +6462,32 @@
         "id": "EXO_STR_NODE_METHODS→exoStrSchemaOf",
         "points": [
           {
-            "x": 1321.7,
-            "y": 989.8
+            "x": 1304.2,
+            "y": 942.3
           },
           {
             "x": 1366,
-            "y": 1005.8
+            "y": 973
           },
           {
             "x": 1535,
-            "y": 1005.8
+            "y": 973
           },
           {
             "x": 1704,
-            "y": 1005.8
+            "y": 973
           },
           {
             "x": 1905,
-            "y": 1005.8
+            "y": 973
           },
           {
             "x": 2106,
-            "y": 1005.8
+            "y": 973
           },
           {
-            "x": 2284.5,
-            "y": 1005.8
-          },
-          {
-            "x": 2463,
-            "y": 1005.8
-          },
-          {
-            "x": 2632.9,
-            "y": 1684.3
+            "x": 2281.8,
+            "y": 3199.8
           }
         ]
       },
@@ -5760,15 +6496,15 @@
         "points": [
           {
             "x": 1334,
-            "y": 953
+            "y": 915.9
           },
           {
             "x": 1366,
-            "y": 947.3
+            "y": 914.5
           },
           {
             "x": 1475,
-            "y": 947.3
+            "y": 914.5
           }
         ]
       },
@@ -5776,24 +6512,24 @@
         "id": "EXO_STR_NODE_METHODS→renderExoStrInstance",
         "points": [
           {
-            "x": 1289.8,
-            "y": 943.8
+            "x": 1297.3,
+            "y": 896.3
           },
           {
             "x": 1366,
-            "y": 888.8
+            "y": 856
           },
           {
             "x": 1535,
-            "y": 888.8
+            "y": 856
           },
           {
             "x": 1704,
-            "y": 888.8
+            "y": 856
           },
           {
-            "x": 1892.8,
-            "y": 1422.5
+            "x": 1890.8,
+            "y": 1311.3
           }
         ]
       },
@@ -5801,88 +6537,88 @@
         "id": "EXO_STR_NODE_METHODS→TExoStrChildList",
         "points": [
           {
-            "x": 1283.3,
-            "y": 943.8
+            "x": 1287.8,
+            "y": 896.3
           },
           {
             "x": 1366,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 1535,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 1704,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 1905,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 2106,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 2284.5,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 2463,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 2641.5,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 2820,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 2998.5,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 3177,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 3355.5,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 3534,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 3712.5,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 3891,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 4060,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 4229,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 4407.5,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 4586,
-            "y": 868.8
+            "y": 836
           },
           {
             "x": 4618,
-            "y": 868.6
+            "y": 836
           }
         ]
       },
@@ -5890,88 +6626,88 @@
         "id": "EXO_STR_NODE_METHODS→TExoStrMachine",
         "points": [
           {
-            "x": 1279.1,
-            "y": 943.8
+            "x": 1265.3,
+            "y": 896.3
           },
           {
             "x": 1366,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 1535,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 1704,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 1905,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 2106,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 2284.5,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 2463,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 2641.5,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 2820,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 2998.5,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 3177,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 3355.5,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 3534,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 3712.5,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 3891,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 4060,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 4229,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 4407.5,
-            "y": 848.8
+            "y": 580.8
           },
           {
             "x": 4586,
-            "y": 848.8
+            "y": 580.8
           },
           {
-            "x": 4749.2,
-            "y": 1218
+            "x": 4755.4,
+            "y": 1225.5
           }
         ]
       },
@@ -5979,8 +6715,8 @@
         "id": "EXO_STR_NODE_METHODS→TExoStrMark",
         "points": [
           {
-            "x": 1262.1,
-            "y": 943.8
+            "x": 1262.5,
+            "y": 896.3
           },
           {
             "x": 1366,
@@ -6067,8 +6803,8 @@
             "y": 362.5
           },
           {
-            "x": 5068.8,
-            "y": 572.3
+            "x": 5068.1,
+            "y": 564.5
           }
         ]
       },
@@ -6076,8 +6812,8 @@
         "id": "EXO_STR_NODE_METHODS→TExoStrNode",
         "points": [
           {
-            "x": 1262,
-            "y": 943.8
+            "x": 1262.3,
+            "y": 896.3
           },
           {
             "x": 1366,
@@ -6108,8 +6844,8 @@
             "y": 342.5
           },
           {
-            "x": 2634.3,
-            "y": 1167.5
+            "x": 2634.7,
+            "y": 1220.3
           }
         ]
       },
@@ -6117,8 +6853,8 @@
         "id": "EXO_STR_NODE_METHODS→TExoStrNodeApi",
         "points": [
           {
-            "x": 1261.9,
-            "y": 943.8
+            "x": 1262.2,
+            "y": 896.3
           },
           {
             "x": 1366,
@@ -6189,8 +6925,8 @@
             "y": 322.5
           },
           {
-            "x": 4361.9,
-            "y": 598.3
+            "x": 4364.8,
+            "y": 623
           }
         ]
       },
@@ -6199,15 +6935,15 @@
         "points": [
           {
             "x": 1118,
-            "y": 966.8
+            "y": 919.3
           },
           {
             "x": 1150,
-            "y": 966.8
+            "y": 919.3
           },
           {
             "x": 1182,
-            "y": 966.8
+            "y": 919.3
           }
         ]
       },
@@ -6215,16 +6951,16 @@
         "id": "EXO_STR_WRITERS→attrWriter",
         "points": [
           {
-            "x": 3717.8,
-            "y": 2438.8
+            "x": 3720.6,
+            "y": 2657
           },
           {
             "x": 3891,
-            "y": 3191
+            "y": 2170
           },
           {
             "x": 3958.5,
-            "y": 3191
+            "y": 2170
           }
         ]
       },
@@ -6232,24 +6968,24 @@
         "id": "EXO_STR_WRITERS→booleanPropertyWriterFor",
         "points": [
           {
-            "x": 3721.1,
-            "y": 2438.8
+            "x": 3724,
+            "y": 2657
           },
           {
             "x": 3891,
-            "y": 2892.3
+            "y": 2322
           },
           {
             "x": 4060,
-            "y": 2892.3
+            "y": 2322
           },
           {
             "x": 4229,
-            "y": 2892.3
+            "y": 2322
           },
           {
-            "x": 4318.5,
-            "y": 2926.2
+            "x": 4363.4,
+            "y": 2216.8
           }
         ]
       },
@@ -6257,32 +6993,32 @@
         "id": "EXO_STR_WRITERS→escaped",
         "points": [
           {
-            "x": 3723.1,
-            "y": 2438.8
+            "x": 3724.8,
+            "y": 2657
           },
           {
             "x": 3891,
-            "y": 2804.5
+            "y": 2345.5
           },
           {
             "x": 4060,
-            "y": 2804.5
+            "y": 2345.5
           },
           {
             "x": 4229,
-            "y": 2804.5
+            "y": 2345.5
           },
           {
             "x": 4407.5,
-            "y": 2804.5
+            "y": 2345.5
           },
           {
             "x": 4586,
-            "y": 2804.5
+            "y": 2345.5
           },
           {
-            "x": 4747.6,
-            "y": 3135
+            "x": 4746.1,
+            "y": 2045
           }
         ]
       },
@@ -6290,16 +7026,16 @@
         "id": "EXO_STR_WRITERS→namedStrAttrPort",
         "points": [
           {
-            "x": 3724.9,
-            "y": 2438.8
+            "x": 3727.4,
+            "y": 2657
           },
           {
             "x": 3891,
-            "y": 2746
+            "y": 2404
           },
           {
             "x": 3997,
-            "y": 2746
+            "y": 2404
           }
         ]
       },
@@ -6307,16 +7043,16 @@
         "id": "EXO_STR_WRITERS→refuseRefWrite",
         "points": [
           {
-            "x": 3730.1,
-            "y": 2438.8
+            "x": 3735.4,
+            "y": 2657
           },
           {
             "x": 3891,
-            "y": 2649
+            "y": 2501
           },
           {
             "x": 4000,
-            "y": 2649
+            "y": 2501
           }
         ]
       },
@@ -6324,16 +7060,16 @@
         "id": "EXO_STR_WRITERS→refuseSharedHtml",
         "points": [
           {
-            "x": 3742.6,
-            "y": 2438.8
+            "x": 3762.6,
+            "y": 2657
           },
           {
             "x": 3891,
-            "y": 2552
+            "y": 2598
           },
           {
             "x": 3997,
-            "y": 2552
+            "y": 2598
           }
         ]
       },
@@ -6341,24 +7077,24 @@
         "id": "EXO_STR_WRITERS→STRING_WRITERS",
         "points": [
           {
-            "x": 3765.3,
-            "y": 2438.8
+            "x": 3772.5,
+            "y": 2672.1
           },
           {
             "x": 3891,
-            "y": 2493.5
+            "y": 2656.5
           },
           {
             "x": 4060,
-            "y": 2493.5
+            "y": 2656.5
           },
           {
             "x": 4229,
-            "y": 2493.5
+            "y": 2656.5
           },
           {
             "x": 4347.5,
-            "y": 2493.5
+            "y": 2656.5
           }
         ]
       },
@@ -6366,32 +7102,32 @@
         "id": "EXO_STR_WRITERS→TExoStrWriter",
         "points": [
           {
-            "x": 3738.3,
-            "y": 2392.8
+            "x": 3772.5,
+            "y": 2687.9
           },
           {
             "x": 3891,
-            "y": 2256.5
+            "y": 2703.5
           },
           {
             "x": 4060,
-            "y": 2256.5
+            "y": 2703.5
           },
           {
             "x": 4229,
-            "y": 2256.5
+            "y": 2703.5
           },
           {
             "x": 4407.5,
-            "y": 2256.5
+            "y": 2703.5
           },
           {
             "x": 4586,
-            "y": 2256.5
+            "y": 2703.5
           },
           {
-            "x": 4747.9,
-            "y": 2592.5
+            "x": 4746.8,
+            "y": 2389.8
           }
         ]
       },
@@ -6399,24 +7135,24 @@
         "id": "EXO_STR_WRITERS→TOGGLE_WRITERS",
         "points": [
           {
-            "x": 3732.4,
-            "y": 2392.8
+            "x": 3770.7,
+            "y": 2703
           },
           {
             "x": 3891,
-            "y": 2209.5
+            "y": 2750.5
           },
           {
             "x": 4060,
-            "y": 2209.5
+            "y": 2750.5
           },
           {
             "x": 4229,
-            "y": 2209.5
+            "y": 2750.5
           },
           {
             "x": 4347.5,
-            "y": 2209.5
+            "y": 2750.5
           }
         ]
       },
@@ -6424,16 +7160,16 @@
         "id": "EXO_STR_WRITERS→writeHtml",
         "points": [
           {
-            "x": 3728,
-            "y": 2392.8
+            "x": 3744.3,
+            "y": 2703
           },
           {
             "x": 3891,
-            "y": 2151
+            "y": 2809
           },
           {
             "x": 3993.5,
-            "y": 2151
+            "y": 2809
           }
         ]
       },
@@ -6441,16 +7177,16 @@
         "id": "EXO_STR_WRITERS→writeHtmlAfterNewlineEater",
         "points": [
           {
-            "x": 3723.8,
-            "y": 2392.8
+            "x": 3730.7,
+            "y": 2703
           },
           {
             "x": 3891,
-            "y": 2054
+            "y": 2906
           },
           {
             "x": 3965,
-            "y": 2054
+            "y": 2906
           }
         ]
       },
@@ -6458,24 +7194,24 @@
         "id": "EXO_STR_WRITERS→writeNothing",
         "points": [
           {
-            "x": 3722.3,
-            "y": 2392.8
+            "x": 3726.9,
+            "y": 2703
           },
           {
             "x": 3891,
-            "y": 1995.5
+            "y": 2964.5
           },
           {
             "x": 4060,
-            "y": 1995.5
+            "y": 2964.5
           },
           {
             "x": 4229,
-            "y": 1995.5
+            "y": 2964.5
           },
           {
-            "x": 4400.4,
-            "y": 2828.5
+            "x": 4394.6,
+            "y": 2522
           }
         ]
       },
@@ -6483,16 +7219,16 @@
         "id": "EXO_STR_WRITERS→writeText",
         "points": [
           {
-            "x": 3721.1,
-            "y": 2392.8
+            "x": 3724.5,
+            "y": 2703
           },
           {
             "x": 3891,
-            "y": 1937
+            "y": 3023
           },
           {
             "x": 3993.5,
-            "y": 1937
+            "y": 3023
           }
         ]
       },
@@ -6500,16 +7236,16 @@
         "id": "EXO_STR_WRITERS→writeTextAfterNewlineEater",
         "points": [
           {
-            "x": 3719.6,
-            "y": 2392.8
+            "x": 3721.8,
+            "y": 2703
           },
           {
             "x": 3891,
-            "y": 1840
+            "y": 3120
           },
           {
             "x": 3965,
-            "y": 1840
+            "y": 3120
           }
         ]
       },
@@ -6525,8 +7261,8 @@
             "y": 421
           },
           {
-            "x": 5062.3,
-            "y": 572.3
+            "x": 5061.1,
+            "y": 564.5
           }
         ]
       },
@@ -6535,23 +7271,23 @@
         "points": [
           {
             "x": 85.2,
-            "y": 1884
+            "y": 1904.5
           },
           {
             "x": 176,
-            "y": 3596.5
+            "y": 3637.5
           },
           {
             "x": 354.5,
-            "y": 3596.5
+            "y": 3637.5
           },
           {
             "x": 533,
-            "y": 3596.5
+            "y": 3637.5
           },
           {
             "x": 565,
-            "y": 3591.6
+            "y": 3632.6
           }
         ]
       },
@@ -6560,15 +7296,15 @@
         "points": [
           {
             "x": 85.2,
-            "y": 1838
+            "y": 1858.5
           },
           {
             "x": 176,
-            "y": 165.5
+            "y": 155.5
           },
           {
             "x": 208,
-            "y": 165.5
+            "y": 155.5
           }
         ]
       },
@@ -6577,39 +7313,39 @@
         "points": [
           {
             "x": 726.9,
-            "y": 3516.3
+            "y": 3557.3
           },
           {
             "x": 915,
-            "y": 203.8
+            "y": 232.3
           },
           {
             "x": 1032.5,
-            "y": 203.8
+            "y": 232.3
           },
           {
             "x": 1150,
-            "y": 203.8
+            "y": 232.3
           },
           {
             "x": 1258,
-            "y": 203.8
+            "y": 232.3
           },
           {
             "x": 1366,
-            "y": 203.8
+            "y": 232.3
           },
           {
             "x": 1535,
-            "y": 203.8
+            "y": 232.3
           },
           {
             "x": 1704,
-            "y": 203.8
+            "y": 232.3
           },
           {
             "x": 1787.5,
-            "y": 203.8
+            "y": 232.3
           }
         ]
       },
@@ -6617,16 +7353,16 @@
         "id": "ExoStrBackendBase→EXO_STR_NODE_VOCABULARY",
         "points": [
           {
-            "x": 727.7,
-            "y": 3516.3
+            "x": 727.6,
+            "y": 3557.3
           },
           {
             "x": 915,
-            "y": 966.8
+            "y": 919.3
           },
           {
             "x": 947,
-            "y": 966.8
+            "y": 919.3
           }
         ]
       },
@@ -6634,56 +7370,48 @@
         "id": "ExoStrBackendBase→exoStrSchemaOf",
         "points": [
           {
-            "x": 810.2,
-            "y": 3618.3
+            "x": 883,
+            "y": 3624.7
           },
           {
             "x": 915,
-            "y": 3680.3
+            "y": 3628
           },
           {
             "x": 1032.5,
-            "y": 3680.3
+            "y": 3628
           },
           {
             "x": 1150,
-            "y": 3680.3
+            "y": 3628
           },
           {
             "x": 1258,
-            "y": 3680.3
+            "y": 3628
           },
           {
             "x": 1366,
-            "y": 3680.3
+            "y": 3628
           },
           {
             "x": 1535,
-            "y": 3680.3
+            "y": 3628
           },
           {
             "x": 1704,
-            "y": 3680.3
+            "y": 3628
           },
           {
             "x": 1905,
-            "y": 3680.3
+            "y": 3628
           },
           {
             "x": 2106,
-            "y": 3680.3
+            "y": 3628
           },
           {
-            "x": 2284.5,
-            "y": 3680.3
-          },
-          {
-            "x": 2463,
-            "y": 3680.3
-          },
-          {
-            "x": 2638.4,
-            "y": 1753.3
+            "x": 2268.9,
+            "y": 3268.8
           }
         ]
       },
@@ -6691,40 +7419,40 @@
         "id": "ExoStrBackendBase→renderExoStrInstance",
         "points": [
           {
-            "x": 797.2,
-            "y": 3618.3
+            "x": 883,
+            "y": 3641.3
           },
           {
             "x": 915,
-            "y": 3700.3
+            "y": 3648
           },
           {
             "x": 1032.5,
-            "y": 3700.3
+            "y": 3648
           },
           {
             "x": 1150,
-            "y": 3700.3
+            "y": 3648
           },
           {
             "x": 1258,
-            "y": 3700.3
+            "y": 3648
           },
           {
             "x": 1366,
-            "y": 3700.3
+            "y": 3648
           },
           {
             "x": 1535,
-            "y": 3700.3
+            "y": 3648
           },
           {
             "x": 1704,
-            "y": 3700.3
+            "y": 3648
           },
           {
-            "x": 1901.9,
-            "y": 1491.5
+            "x": 1902,
+            "y": 1380.3
           }
         ]
       },
@@ -6732,80 +7460,80 @@
         "id": "ExoStrBackendBase→TExoStrApi",
         "points": [
           {
-            "x": 787.7,
-            "y": 3618.3
+            "x": 883,
+            "y": 3658
           },
           {
             "x": 915,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 1032.5,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 1150,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 1258,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 1366,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 1535,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 1704,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 1905,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 2106,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 2284.5,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 2463,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 2641.5,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 2820,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 2998.5,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 3177,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 3355.5,
-            "y": 3720.3
+            "y": 3668
           },
           {
             "x": 3534,
-            "y": 3720.3
+            "y": 3668
           },
           {
-            "x": 3709.6,
-            "y": 1619.3
+            "x": 3708.5,
+            "y": 2146.5
           }
         ]
       },
@@ -6813,104 +7541,104 @@
         "id": "ExoStrBackendBase→TExoStrMachine",
         "points": [
           {
-            "x": 780.3,
-            "y": 3618.3
+            "x": 846.1,
+            "y": 3659.3
           },
           {
             "x": 915,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 1032.5,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 1150,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 1258,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 1366,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 1535,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 1704,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 1905,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 2106,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 2284.5,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 2463,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 2641.5,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 2820,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 2998.5,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 3177,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 3355.5,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 3534,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 3712.5,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 3891,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 4060,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 4229,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 4407.5,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 4586,
-            "y": 3740.3
+            "y": 3688
           },
           {
             "x": 4762,
-            "y": 1287
+            "y": 1294.5
           }
         ]
       },
@@ -6918,64 +7646,64 @@
         "id": "ExoStrBackendBase→TExoStrNodeFields",
         "points": [
           {
-            "x": 774.5,
-            "y": 3618.3
+            "x": 821.7,
+            "y": 3659.3
           },
           {
             "x": 915,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 1032.5,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 1150,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 1258,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 1366,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 1535,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 1704,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 1905,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 2106,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 2284.5,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 2463,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 2641.5,
-            "y": 3760.3
+            "y": 3708
           },
           {
             "x": 2820,
-            "y": 3760.3
+            "y": 3708
           },
           {
-            "x": 2996,
-            "y": 1315
+            "x": 2995.9,
+            "y": 1338.5
           }
         ]
       },
@@ -6983,72 +7711,72 @@
         "id": "ExoStrBackendBase→TExoStrSchema",
         "points": [
           {
-            "x": 769.7,
-            "y": 3618.3
+            "x": 805.3,
+            "y": 3659.3
           },
           {
             "x": 915,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 1032.5,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 1150,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 1258,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 1366,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 1535,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 1704,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 1905,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 2106,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 2284.5,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 2463,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 2641.5,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 2820,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 2998.5,
-            "y": 3780.3
+            "y": 3728
           },
           {
             "x": 3177,
-            "y": 3780.3
+            "y": 3728
           },
           {
-            "x": 3349,
-            "y": 1488.5
+            "x": 3348.6,
+            "y": 1560.5
           }
         ]
       },
@@ -7056,33 +7784,75 @@
         "id": "ExoStrEmitter→createFrame",
         "points": [
           {
-            "x": 3368.5,
-            "y": 2286
+            "x": 3414.4,
+            "y": 1830.3
           },
           {
             "x": 3534,
-            "y": 3410.5
+            "y": 1650.8
           },
           {
             "x": 3607.5,
-            "y": 3410.5
+            "y": 1650.8
           }
         ]
       },
       {
-        "id": "ExoStrEmitter→EXO_STR_WRITERS",
+        "id": "ExoStrEmitter→ELEMENT_NODE",
         "points": [
           {
-            "x": 3427.9,
-            "y": 2286
+            "x": 3450.7,
+            "y": 1830.3
           },
           {
             "x": 3534,
-            "y": 2415.8
+            "y": 1752.8
           },
           {
             "x": 3652.5,
-            "y": 2415.8
+            "y": 1752.8
+          }
+        ]
+      },
+      {
+        "id": "ExoStrEmitter→LINE_FEED",
+        "points": [
+          {
+            "x": 3486,
+            "y": 1851.5
+          },
+          {
+            "x": 3534,
+            "y": 1826.8
+          },
+          {
+            "x": 3652.5,
+            "y": 1826.8
+          }
+        ]
+      },
+      {
+        "id": "ExoStrEmitter→NO_NODE",
+        "points": [
+          {
+            "x": 3486,
+            "y": 1885.9
+          },
+          {
+            "x": 3534,
+            "y": 1873.8
+          },
+          {
+            "x": 3712.5,
+            "y": 1873.8
+          },
+          {
+            "x": 3891,
+            "y": 1873.8
+          },
+          {
+            "x": 4013,
+            "y": 1814
           }
         ]
       },
@@ -7090,65 +7860,58 @@
         "id": "ExoStrEmitter→TExoStrFrame",
         "points": [
           {
-            "x": 3395,
-            "y": 2109
+            "x": 3486,
+            "y": 1946.3
           },
           {
             "x": 3534,
-            "y": 1797.3
+            "y": 1956.5
           },
           {
             "x": 3712.5,
-            "y": 1797.3
+            "y": 1956.5
           },
           {
             "x": 3891,
-            "y": 1797.3
+            "y": 1956.5
           },
           {
-            "x": 4032.4,
-            "y": 2280.5
+            "x": 3923,
+            "y": 1952.7
           }
         ]
       },
       {
-        "id": "ExoStrEmitter→TExoStrWriter",
+        "id": "ExoStrEmitter→TExoStrWriterDeclaration",
         "points": [
           {
-            "x": 3393.1,
-            "y": 2109
+            "x": 3486,
+            "y": 1969
           },
           {
             "x": 3534,
-            "y": 1777.3
+            "y": 1987.5
           },
           {
-            "x": 3712.5,
-            "y": 1777.3
+            "x": 3696.5,
+            "y": 2337.3
+          }
+        ]
+      },
+      {
+        "id": "ExoStrEmitter→TEXT_NODE",
+        "points": [
+          {
+            "x": 3439,
+            "y": 2007.3
           },
           {
-            "x": 3891,
-            "y": 1777.3
+            "x": 3534,
+            "y": 2108
           },
           {
-            "x": 4060,
-            "y": 1777.3
-          },
-          {
-            "x": 4229,
-            "y": 1777.3
-          },
-          {
-            "x": 4407.5,
-            "y": 1777.3
-          },
-          {
-            "x": 4586,
-            "y": 1777.3
-          },
-          {
-            "x": 4757.3,
-            "y": 2592.5
+            "x": 3666.6,
+            "y": 2174.5
           }
         ]
       },
@@ -7156,16 +7919,41 @@
         "id": "exoStrSchemaOf→compileExoStrSchema",
         "points": [
           {
-            "x": 2654.4,
-            "y": 1753.3
+            "x": 2288.5,
+            "y": 3199.8
+          },
+          {
+            "x": 2463,
+            "y": 1693.8
+          },
+          {
+            "x": 2520.5,
+            "y": 1693.8
+          }
+        ]
+      },
+      {
+        "id": "exoStrSchemaOf→createExoStrSchema",
+        "points": [
+          {
+            "x": 2294.1,
+            "y": 3199.8
+          },
+          {
+            "x": 2463,
+            "y": 2589.5
+          },
+          {
+            "x": 2641.5,
+            "y": 2589.5
           },
           {
             "x": 2820,
-            "y": 2197.5
+            "y": 2589.5
           },
           {
-            "x": 2877.5,
-            "y": 2197.5
+            "x": 2967.7,
+            "y": 2424.3
           }
         ]
       },
@@ -7173,32 +7961,73 @@
         "id": "exoStrSchemaOf→TExoStrApi",
         "points": [
           {
-            "x": 2687.5,
-            "y": 1684.3
+            "x": 2346.2,
+            "y": 3268.8
+          },
+          {
+            "x": 2463,
+            "y": 3334
+          },
+          {
+            "x": 2641.5,
+            "y": 3334
           },
           {
             "x": 2820,
-            "y": 1584.8
+            "y": 3334
           },
           {
             "x": 2998.5,
-            "y": 1584.8
+            "y": 3334
           },
           {
             "x": 3177,
-            "y": 1584.8
+            "y": 3334
           },
           {
             "x": 3355.5,
-            "y": 1584.8
+            "y": 3334
           },
           {
             "x": 3534,
-            "y": 1584.8
+            "y": 3334
           },
           {
-            "x": 3566,
-            "y": 1584.8
+            "x": 3707.5,
+            "y": 2146.5
+          }
+        ]
+      },
+      {
+        "id": "exoStrSchemaOf→TExoStrJsonDeclaration",
+        "points": [
+          {
+            "x": 2329,
+            "y": 3268.8
+          },
+          {
+            "x": 2463,
+            "y": 3372.5
+          },
+          {
+            "x": 2641.5,
+            "y": 3372.5
+          },
+          {
+            "x": 2820,
+            "y": 3372.5
+          },
+          {
+            "x": 2998.5,
+            "y": 3372.5
+          },
+          {
+            "x": 3177,
+            "y": 3372.5
+          },
+          {
+            "x": 3347.6,
+            "y": 2299
           }
         ]
       },
@@ -7206,24 +8035,107 @@
         "id": "exoStrSchemaOf→TExoStrSchema",
         "points": [
           {
-            "x": 2679.2,
-            "y": 1684.3
+            "x": 2323.4,
+            "y": 3268.8
+          },
+          {
+            "x": 2463,
+            "y": 3392.5
+          },
+          {
+            "x": 2641.5,
+            "y": 3392.5
           },
           {
             "x": 2820,
-            "y": 1555.5
+            "y": 3392.5
           },
           {
             "x": 2998.5,
-            "y": 1555.5
+            "y": 3392.5
           },
           {
             "x": 3177,
-            "y": 1555.5
+            "y": 3392.5
           },
           {
-            "x": 3254.7,
-            "y": 1488.5
+            "x": 3347.4,
+            "y": 1560.5
+          }
+        ]
+      },
+      {
+        "id": "exoStrWriterOf→EXO_STR_WRITERS",
+        "points": [
+          {
+            "x": 3371.8,
+            "y": 3024.3
+          },
+          {
+            "x": 3534,
+            "y": 2680
+          },
+          {
+            "x": 3652.5,
+            "y": 2680
+          }
+        ]
+      },
+      {
+        "id": "exoStrWriterOf→TExoStrWriter",
+        "points": [
+          {
+            "x": 3406.9,
+            "y": 3093.3
+          },
+          {
+            "x": 3534,
+            "y": 3178.5
+          },
+          {
+            "x": 3712.5,
+            "y": 3178.5
+          },
+          {
+            "x": 3891,
+            "y": 3178.5
+          },
+          {
+            "x": 4060,
+            "y": 3178.5
+          },
+          {
+            "x": 4229,
+            "y": 3178.5
+          },
+          {
+            "x": 4407.5,
+            "y": 3178.5
+          },
+          {
+            "x": 4586,
+            "y": 3178.5
+          },
+          {
+            "x": 4757,
+            "y": 2389.8
+          }
+        ]
+      },
+      {
+        "id": "exoStrWriterOf→TExoStrWriterDeclaration",
+        "points": [
+          {
+            "x": 3392.1,
+            "y": 3093.3
+          },
+          {
+            "x": 3534,
+            "y": 3227
+          },
+          {
+            "x": 3705.3,
+            "y": 2406.3
           }
         ]
       },
@@ -7232,15 +8144,15 @@
         "points": [
           {
             "x": 1978,
-            "y": 1071.2
+            "y": 1038.5
           },
           {
             "x": 2106,
-            "y": 1083.5
+            "y": 1050.8
           },
           {
-            "x": 2280.3,
-            "y": 2526.5
+            "x": 2281.9,
+            "y": 3396.5
           }
         ]
       },
@@ -7249,23 +8161,23 @@
         "points": [
           {
             "x": 1978,
-            "y": 1057.3
+            "y": 1024.5
           },
           {
             "x": 2106,
-            "y": 1045
+            "y": 1012.3
           },
           {
             "x": 2284.5,
-            "y": 1045
+            "y": 1012.3
           },
           {
             "x": 2463,
-            "y": 1045
+            "y": 1012.3
           },
           {
-            "x": 2602.3,
-            "y": 1167.5
+            "x": 2616.1,
+            "y": 1220.3
           }
         ]
       },
@@ -7274,15 +8186,15 @@
         "points": [
           {
             "x": 4824.5,
-            "y": 1067.8
+            "y": 1090
           },
           {
             "x": 4943,
-            "y": 1067.8
+            "y": 1090
           },
           {
-            "x": 5078.5,
-            "y": 641.3
+            "x": 5079.2,
+            "y": 633.5
           }
         ]
       },
@@ -7290,16 +8202,16 @@
         "id": "renderExoStrInstance→disposeExoStrInstance",
         "points": [
           {
-            "x": 1911.3,
-            "y": 1491.5
+            "x": 1908.3,
+            "y": 1380.3
           },
           {
             "x": 2106,
-            "y": 2561
+            "y": 3431
           },
           {
             "x": 2205.5,
-            "y": 2561
+            "y": 3431
           }
         ]
       },
@@ -7307,72 +8219,72 @@
         "id": "renderExoStrInstance→TExoStrMachine",
         "points": [
           {
-            "x": 2022,
-            "y": 1491.5
+            "x": 2058,
+            "y": 1358.5
           },
           {
             "x": 2106,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 2284.5,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 2463,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 2641.5,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 2820,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 2998.5,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 3177,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 3355.5,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 3534,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 3712.5,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 3891,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 4060,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 4229,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 4407.5,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
             "x": 4586,
-            "y": 1516.3
+            "y": 1362.5
           },
           {
-            "x": 4741.2,
-            "y": 1287
+            "x": 4704.4,
+            "y": 1294.5
           }
         ]
       },
@@ -7380,24 +8292,24 @@
         "id": "renderExoStrInstance→TExoStrNode",
         "points": [
           {
-            "x": 2058,
-            "y": 1459.9
+            "x": 1981.2,
+            "y": 1311.3
           },
           {
             "x": 2106,
-            "y": 1460.8
+            "y": 1254.8
           },
           {
             "x": 2284.5,
-            "y": 1460.8
+            "y": 1254.8
           },
           {
             "x": 2463,
-            "y": 1460.8
+            "y": 1254.8
           },
           {
-            "x": 2617.7,
-            "y": 1236.5
+            "x": 2514.5,
+            "y": 1254.8
           }
         ]
       },
@@ -7405,40 +8317,40 @@
         "id": "renderExoStrInstance→TExoStrSchema",
         "points": [
           {
-            "x": 2029.9,
-            "y": 1422.5
+            "x": 1940.3,
+            "y": 1311.3
           },
           {
             "x": 2106,
-            "y": 1401.5
+            "y": 1149.3
           },
           {
             "x": 2284.5,
-            "y": 1401.5
+            "y": 1149.3
           },
           {
             "x": 2463,
-            "y": 1401.5
+            "y": 1149.3
           },
           {
             "x": 2641.5,
-            "y": 1401.5
+            "y": 1149.3
           },
           {
             "x": 2820,
-            "y": 1401.5
+            "y": 1149.3
           },
           {
             "x": 2998.5,
-            "y": 1401.5
+            "y": 1149.3
           },
           {
             "x": 3177,
-            "y": 1401.5
+            "y": 1149.3
           },
           {
-            "x": 3209,
-            "y": 1401.5
+            "x": 3307.6,
+            "y": 1386.5
           }
         ]
       },
@@ -7447,15 +8359,15 @@
         "points": [
           {
             "x": 4467.5,
-            "y": 2493.5
+            "y": 2656.5
           },
           {
             "x": 4586,
-            "y": 2493.5
+            "y": 2656.5
           },
           {
-            "x": 4718.4,
-            "y": 2592.5
+            "x": 4744.1,
+            "y": 2389.8
           }
         ]
       },
@@ -7463,16 +8375,16 @@
         "id": "stringPropertyWriterFor→escaped",
         "points": [
           {
-            "x": 4489.1,
-            "y": 3290.5
+            "x": 4493,
+            "y": 2103.7
           },
           {
             "x": 4586,
-            "y": 3249.5
+            "y": 2123.8
           },
           {
-            "x": 4698,
-            "y": 3199.3
+            "x": 4710.1,
+            "y": 2045
           }
         ]
       },
@@ -7480,16 +8392,16 @@
         "id": "stringPropertyWriterFor→TExoStrWriter",
         "points": [
           {
-            "x": 4493,
-            "y": 3334.2
+            "x": 4434.8,
+            "y": 2050.8
           },
           {
             "x": 4586,
-            "y": 3344.3
+            "y": 1860
           },
           {
-            "x": 4755.9,
-            "y": 2661.5
+            "x": 4752.1,
+            "y": 2320.8
           }
         ]
       },
@@ -7497,16 +8409,16 @@
         "id": "TExoStrApi→TExoStrSchema",
         "points": [
           {
-            "x": 3662.8,
-            "y": 1550.3
+            "x": 3703,
+            "y": 2077.5
           },
           {
             "x": 3534,
-            "y": 1460.8
+            "y": 1463.5
           },
           {
             "x": 3502,
-            "y": 1450.1
+            "y": 1465.3
           }
         ]
       },
@@ -7515,15 +8427,15 @@
         "points": [
           {
             "x": 3859,
-            "y": 1584.8
+            "y": 2112
           },
           {
             "x": 3891,
-            "y": 1584.8
+            "y": 2112
           },
           {
-            "x": 4053.4,
-            "y": 1018.8
+            "x": 4055.8,
+            "y": 1201.5
           }
         ]
       },
@@ -7540,7 +8452,7 @@
           },
           {
             "x": 721.2,
-            "y": 3516.3
+            "y": 3557.3
           }
         ]
       },
@@ -7636,8 +8548,8 @@
             "y": 58.5
           },
           {
-            "x": 4055.9,
-            "y": 972.8
+            "x": 4056.5,
+            "y": 1155.5
           }
         ]
       },
@@ -7645,16 +8557,16 @@
         "id": "TExoStrBackendConstructor→ExoStrBackendBase",
         "points": [
           {
-            "x": 358.1,
-            "y": 200
+            "x": 358,
+            "y": 190
           },
           {
             "x": 533,
-            "y": 1899.3
+            "y": 1919.8
           },
           {
             "x": 718.2,
-            "y": 3516.3
+            "y": 3557.3
           }
         ]
       },
@@ -7663,7 +8575,7 @@
         "points": [
           {
             "x": 501,
-            "y": 133.9
+            "y": 132.1
           },
           {
             "x": 533,
@@ -7750,8 +8662,8 @@
             "y": 127
           },
           {
-            "x": 4055.5,
-            "y": 972.8
+            "x": 4056.3,
+            "y": 1155.5
           }
         ]
       },
@@ -7760,15 +8672,15 @@
         "points": [
           {
             "x": 4911,
-            "y": 868
+            "y": 836
           },
           {
             "x": 4943,
-            "y": 868
+            "y": 836
           },
           {
-            "x": 5070.2,
-            "y": 641.3
+            "x": 5068.2,
+            "y": 633.5
           }
         ]
       },
@@ -7777,15 +8689,32 @@
         "points": [
           {
             "x": 4911,
-            "y": 518
+            "y": 538
           },
           {
             "x": 4943,
-            "y": 518
+            "y": 538
           },
           {
-            "x": 5032.6,
-            "y": 572.3
+            "x": 5006.6,
+            "y": 564.5
+          }
+        ]
+      },
+      {
+        "id": "TExoStrJsonDeclaration→TExoStrWriterDeclaration",
+        "points": [
+          {
+            "x": 3502,
+            "y": 2249.5
+          },
+          {
+            "x": 3534,
+            "y": 2249.5
+          },
+          {
+            "x": 3662.1,
+            "y": 2337.3
           }
         ]
       },
@@ -7794,55 +8723,55 @@
         "points": [
           {
             "x": 4669.5,
-            "y": 1225.6
+            "y": 1241.6
           },
           {
             "x": 4586,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 4407.5,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 4229,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 4060,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 3891,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 3712.5,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 3534,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 3355.5,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 3177,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 2998.5,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 2820,
-            "y": 1202
+            "y": 1225.5
           },
           {
             "x": 2768.5,
-            "y": 1202
+            "y": 1233.9
           }
         ]
       },
@@ -7851,15 +8780,15 @@
         "points": [
           {
             "x": 5204,
-            "y": 606.8
+            "y": 599
           },
           {
             "x": 5236,
-            "y": 606.8
+            "y": 599
           },
           {
             "x": 5268,
-            "y": 606.8
+            "y": 599
           }
         ]
       },
@@ -7867,16 +8796,16 @@
         "id": "TExoStrNode→TExoStrNodeFields",
         "points": [
           {
-            "x": 2719.9,
-            "y": 1236.5
+            "x": 2766.5,
+            "y": 1289.3
           },
           {
             "x": 2820,
-            "y": 1280.5
+            "y": 1304
           },
           {
             "x": 2852,
-            "y": 1280.5
+            "y": 1304
           }
         ]
       },
@@ -7885,39 +8814,39 @@
         "points": [
           {
             "x": 2768.5,
-            "y": 1216.2
+            "y": 1248.2
           },
           {
             "x": 2820,
-            "y": 1222
+            "y": 1245.5
           },
           {
             "x": 2998.5,
-            "y": 1222
+            "y": 1245.5
           },
           {
             "x": 3177,
-            "y": 1222
+            "y": 1245.5
           },
           {
             "x": 3355.5,
-            "y": 1222
+            "y": 1245.5
           },
           {
             "x": 3534,
-            "y": 1222
+            "y": 1245.5
           },
           {
             "x": 3712.5,
-            "y": 1222
+            "y": 1245.5
           },
           {
             "x": 3891,
-            "y": 1222
+            "y": 1245.5
           },
           {
-            "x": 4042.8,
-            "y": 1018.8
+            "x": 4002,
+            "y": 1201.5
           }
         ]
       },
@@ -7926,15 +8855,15 @@
         "points": [
           {
             "x": 4554,
-            "y": 633
+            "y": 757.9
           },
           {
             "x": 4586,
-            "y": 620
+            "y": 766.8
           },
           {
-            "x": 4696.5,
-            "y": 773.5
+            "x": 4618,
+            "y": 779.2
           }
         ]
       },
@@ -7943,15 +8872,15 @@
         "points": [
           {
             "x": 4554,
-            "y": 692.8
+            "y": 721.8
           },
           {
             "x": 4586,
-            "y": 692.8
+            "y": 722.8
           },
           {
-            "x": 4753.5,
-            "y": 1218
+            "x": 4753,
+            "y": 1225.5
           }
         ]
       },
@@ -7959,24 +8888,24 @@
         "id": "TExoStrNodeApi→TExoStrMark",
         "points": [
           {
-            "x": 4554,
-            "y": 709.2
+            "x": 4552,
+            "y": 623
           },
           {
             "x": 4586,
-            "y": 712.8
+            "y": 600.8
           },
           {
             "x": 4764.5,
-            "y": 712.8
+            "y": 600.8
           },
           {
             "x": 4943,
-            "y": 712.8
+            "y": 600.8
           },
           {
-            "x": 5041.8,
-            "y": 641.3
+            "x": 4975,
+            "y": 600.4
           }
         ]
       },
@@ -7992,8 +8921,8 @@
             "y": 244.8
           },
           {
-            "x": 2635.1,
-            "y": 1167.5
+            "x": 2635.4,
+            "y": 1220.3
           }
         ]
       },
@@ -8025,8 +8954,8 @@
             "y": 283.3
           },
           {
-            "x": 3341.6,
-            "y": 1314.5
+            "x": 3342.5,
+            "y": 1386.5
           }
         ]
       },
@@ -8035,15 +8964,15 @@
         "points": [
           {
             "x": 3145,
-            "y": 1264.7
+            "y": 1319.8
           },
           {
             "x": 3177,
-            "y": 1261.3
+            "y": 1323.3
           },
           {
-            "x": 3244.8,
-            "y": 1314.5
+            "x": 3252.1,
+            "y": 1386.5
           }
         ]
       },
@@ -8052,47 +8981,47 @@
         "points": [
           {
             "x": 3145,
-            "y": 1288.7
+            "y": 1288.2
           },
           {
             "x": 3177,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
             "x": 3355.5,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
             "x": 3534,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
             "x": 3712.5,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
             "x": 3891,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
             "x": 4060,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
             "x": 4229,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
             "x": 4407.5,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
             "x": 4586,
-            "y": 1290.5
+            "y": 1284.8
           },
           {
-            "x": 4759.9,
-            "y": 2592.5
+            "x": 4758.7,
+            "y": 2320.8
           }
         ]
       },
@@ -8108,8 +9037,8 @@
             "y": 205.5
           },
           {
-            "x": 2992.8,
-            "y": 1246
+            "x": 2992.9,
+            "y": 1269.5
           }
         ]
       },
@@ -8118,15 +9047,15 @@
         "points": [
           {
             "x": 3502,
-            "y": 1433.7
+            "y": 1436.2
           },
           {
             "x": 3534,
-            "y": 1440.8
+            "y": 1428
           },
           {
-            "x": 3669.7,
-            "y": 1550.3
+            "x": 3703.5,
+            "y": 2077.5
           }
         ]
       },
@@ -8135,15 +9064,15 @@
         "points": [
           {
             "x": 3502,
-            "y": 1412.2
+            "y": 1481.7
           },
           {
             "x": 3534,
-            "y": 1414.5
+            "y": 1483.5
           },
           {
-            "x": 3575.5,
-            "y": 1414.5
+            "x": 3700.9,
+            "y": 1980.5
           }
         ]
       },
@@ -8151,24 +9080,24 @@
         "id": "TExoStrSchema→TExoStrNode",
         "points": [
           {
-            "x": 3284.8,
-            "y": 1314.5
+            "x": 3301,
+            "y": 1386.5
           },
           {
             "x": 3177,
-            "y": 1182
+            "y": 1188.5
           },
           {
             "x": 2998.5,
-            "y": 1182
+            "y": 1188.5
           },
           {
             "x": 2820,
-            "y": 1182
+            "y": 1188.5
           },
           {
-            "x": 2768.5,
-            "y": 1187.8
+            "x": 2734.5,
+            "y": 1220.3
           }
         ]
       },
@@ -8177,39 +9106,39 @@
         "points": [
           {
             "x": 3502,
-            "y": 1364.2
+            "y": 1510.8
           },
           {
             "x": 3534,
-            "y": 1356
+            "y": 1519
           },
           {
             "x": 3712.5,
-            "y": 1356
+            "y": 1519
           },
           {
             "x": 3891,
-            "y": 1356
+            "y": 1519
           },
           {
             "x": 4060,
-            "y": 1356
+            "y": 1519
           },
           {
             "x": 4229,
-            "y": 1356
+            "y": 1519
           },
           {
             "x": 4407.5,
-            "y": 1356
+            "y": 1519
           },
           {
             "x": 4586,
-            "y": 1356
+            "y": 1519
           },
           {
-            "x": 4759.7,
-            "y": 2592.5
+            "x": 4757.1,
+            "y": 2320.8
           }
         ]
       },
@@ -8218,15 +9147,15 @@
         "points": [
           {
             "x": 4120,
-            "y": 995.8
+            "y": 1178.5
           },
           {
             "x": 4229,
-            "y": 995.8
+            "y": 1178.5
           },
           {
-            "x": 4351.8,
-            "y": 787.3
+            "x": 4370.9,
+            "y": 812
           }
         ]
       },
@@ -8235,15 +9164,15 @@
         "points": [
           {
             "x": 4467.5,
-            "y": 2209.5
+            "y": 2750.5
           },
           {
             "x": 4586,
-            "y": 2209.5
+            "y": 2750.5
           },
           {
-            "x": 4749.7,
-            "y": 2592.5
+            "x": 4748.9,
+            "y": 2389.8
           }
         ]
       },
@@ -8252,15 +9181,15 @@
         "points": [
           {
             "x": 4467.5,
-            "y": 3430.5
+            "y": 2298.5
           },
           {
             "x": 4586,
-            "y": 3430.5
+            "y": 2298.5
           },
           {
-            "x": 4756.8,
-            "y": 2661.5
+            "x": 4663,
+            "y": 2323
           }
         ]
       }

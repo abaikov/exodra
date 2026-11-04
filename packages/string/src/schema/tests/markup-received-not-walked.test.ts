@@ -110,15 +110,25 @@ describe('whether a children port OWNS its element is decided when the element C
 });
 
 describe('what the emitter knows about an element it is still inside', () => {
-    it('refuses static text after a children port, which the two backends would place apart', () => {
-        expect(() =>
-            schemaOf((b) => {
-                b.el('ul', null, (ul) => {
-                    ul.childrenPort();
-                    ul.text('tail');
-                });
-            })
-        ).toThrow(/children port/);
+    it('prints static text after a children port after its rows', () => {
+        const schema = schemaOf((b) => {
+            b.el('ul', null, (ul) => {
+                ul.childrenPort();
+                ul.text('tail');
+            });
+        });
+        expect(schema.fillMarkup(['<li>x</li>'])).toBe('<ul><li>x</li>tail</ul>');
+    });
+
+    it('puts one comment between a children port and text when text also stands before it', () => {
+        const schema = schemaOf((b) => {
+            b.el('ul', null, (ul) => {
+                ul.text('head');
+                ul.childrenPort();
+                ul.text('tail');
+            });
+        });
+        expect(schema.fillMarkup([''])).toBe('<ul>head<!---->tail</ul>');
     });
 
     it('gives the optional newline to a port that OWNS a <pre>, and the ownership is patched last', () => {

@@ -14,6 +14,8 @@ export { compileExoDomSchema } from './dom/compileExoDomSchema';
 // `createExoDomSchema` by the page, which is the half that must not reach the compiler.
 export { exoDomJsonDeclaration } from './dom/exoDomJsonDeclaration';
 export { createExoDomSchema } from './dom/createExoDomSchema';
+export { withExoBuiltSchemas } from './dom/withExoBuiltSchemas';
+export type { TExoBuiltSchemasApi } from './dom/withExoBuiltSchemas';
 export type { TExoDomJsonDeclaration } from './dom/types/TExoDomJsonDeclaration';
 export { ExoDomBackend } from './dom/ExoDomBackend';
 // The compiler as a COMPOSITION: `render(component, parent)` exists when this is merged, and the

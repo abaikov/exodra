@@ -116,13 +116,6 @@ CREATION half of that is measured; the layout half is reasoning, not a reading.
 `EXO_VOID_ELEMENTS` — a `<br>` with content. This backend could print one happily; it refuses so a
 schema is accepted or refused identically everywhere.
 
-`assertExoNoTextAfterChildrenPort` — static text after a children port. Not a fact about HTML but about the
-DOM backend, where a region has no container and is anchored on the next static element, so its rows
-land after the text in the browser and before it on the server. Here a region IS a container and the
-shape is unambiguous, but it is refused anyway: a component that renders here and throws in a browser
-is worse than one that cannot be written. This is the clearest case of a shared rule encoding one
-backend's limitation with no way for another to opt out.
-
 ## Escaping, and the test for the next backend
 
 Nothing is escaped anywhere in this package, and `EXO_RAW_TEXT_ELEMENTS` is not imported.

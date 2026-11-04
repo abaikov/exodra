@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use swc_core::common::Span;
 use swc_core::ecma::ast::*;
@@ -78,6 +78,8 @@ pub(crate) fn compile_jsx_declaration(
     marker: &str,
     names: &GeneratedNames,
     file: &mut FileState,
+    module_constants: &HashMap<Id, String>,
+    module_values: &HashSet<Id>,
 ) -> Result<CompiledJsxDeclaration, Refusal> {
     let declaration = match call_expr.args.as_slice() {
         [only] if only.spread.is_none() => match unwrap_paren(&only.expr) {
@@ -102,6 +104,8 @@ pub(crate) fn compile_jsx_declaration(
         cursor: names.cursor.clone(),
         holder: read_holder(declaration, marker, call_expr.span)?,
         port_names: HashSet::new(),
+        module_constants,
+        module_values,
     };
     let root_statement = emit_declared_element(root, &root_cursor, 1, &mut walk)?;
     let schema_name = format!("{}{}", names.schema, file.schemas);

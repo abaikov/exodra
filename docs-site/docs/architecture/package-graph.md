@@ -15,6 +15,9 @@ enforced separately by `npm run graph:check`.
 
 ```mermaid
 graph TD
+    babel_plugin_exodra_schema --> core
+    babel_plugin_exodra_schema --> dom
+    babel_plugin_exodra_schema --> string
     babel_preset_exodra --> babel_plugin_exodra_schema
     benchmarks --> computed
     benchmarks --> context

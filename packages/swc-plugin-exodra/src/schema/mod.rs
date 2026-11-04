@@ -23,10 +23,12 @@ mod ast;
 mod compile_jsx_declaration;
 mod emit_declared_element;
 mod names;
+mod read_module_constant_string;
+mod read_module_value;
 mod read_port_name;
 mod read_static_attribute;
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use swc_core::common::Span;
 use swc_core::ecma::ast::*;
@@ -35,6 +37,7 @@ use swc_core::ecma::visit::{Visit, VisitMut, VisitMutWith, VisitWith};
 use ast::{null_expr, unwrap_paren};
 use compile_jsx_declaration::compile_jsx_declaration;
 use names::{FileState, GeneratedNames};
+use read_module_constant_string::read_module_constant_string;
 
 use crate::{emit_err, import_decl, named_import_as, BindingCollector};
 
@@ -74,6 +77,8 @@ pub(crate) struct ExodraSchema {
     markers: HashSet<String>,
     hoisted: Vec<ModuleItem>,
     refused: bool,
+    module_constants: HashMap<Id, String>,
+    module_values: HashSet<Id>,
 }
 
 impl ExodraSchema {
@@ -88,6 +93,8 @@ impl ExodraSchema {
             markers,
             hoisted: vec![],
             refused: false,
+            module_constants: HashMap::new(),
+            module_values: HashSet::new(),
         }
     }
 
@@ -121,6 +128,14 @@ impl ExodraSchema {
                 _ => continue,
             };
             for spec in &import.specifiers {
+                let (local, type_only) = match spec {
+                    ImportSpecifier::Named(s) => (&s.local, import.type_only || s.is_type_only),
+                    ImportSpecifier::Default(s) => (&s.local, import.type_only),
+                    ImportSpecifier::Namespace(s) => (&s.local, import.type_only),
+                };
+                if !type_only {
+                    self.module_values.insert(local.to_id());
+                }
                 let named = match spec {
                     ImportSpecifier::Named(named) => named,
                     _ => continue,
@@ -138,6 +153,39 @@ impl ExodraSchema {
                 }
             }
         }
+    }
+
+    // A whole statement is read before any of it is kept, so a const never folds into its own statement.
+    fn collect_module_constants(&mut self, item: &ModuleItem) {
+        let var = match item {
+            ModuleItem::Stmt(Stmt::Decl(Decl::Var(var))) => var,
+            ModuleItem::ModuleDecl(ModuleDecl::ExportDecl(ExportDecl {
+                decl: Decl::Var(var),
+                ..
+            })) => var,
+            _ => return,
+        };
+        if var.kind != VarDeclKind::Const {
+            return;
+        }
+        for decl in &var.decls {
+            if let Pat::Ident(binding) = &decl.name {
+                self.module_values.insert(binding.id.to_id());
+            }
+        }
+        let folded: Vec<(Id, String)> = var
+            .decls
+            .iter()
+            .filter_map(|decl| {
+                let name = match &decl.name {
+                    Pat::Ident(binding) => binding.id.to_id(),
+                    _ => return None,
+                };
+                let value = read_module_constant_string(decl.init.as_deref()?, &self.module_constants)?;
+                Some((name, value))
+            })
+            .collect();
+        self.module_constants.extend(folded);
     }
 
     fn drop_unreferenced_markers(&self, module: &mut Module) {
@@ -179,6 +227,7 @@ impl VisitMut for ExodraSchema {
         let mut out: Vec<ModuleItem> = Vec::with_capacity(body.len());
         for mut item in body {
             item.visit_mut_with(self);
+            self.collect_module_constants(&item);
             out.append(&mut self.hoisted);
             out.push(item);
         }
@@ -204,7 +253,14 @@ impl VisitMut for ExodraSchema {
         if let Some(marker) = self.marker_callee(expr) {
             let compiled = match &*expr {
                 Expr::Call(call) => {
-                    compile_jsx_declaration(call, &marker, &self.names, &mut self.file)
+                    compile_jsx_declaration(
+                        call,
+                        &marker,
+                        &self.names,
+                        &mut self.file,
+                        &self.module_constants,
+                        &self.module_values,
+                    )
                 }
                 _ => return,
             };

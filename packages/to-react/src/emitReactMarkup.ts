@@ -119,8 +119,17 @@ function emitAttribute(
         return t.jsxAttribute(t.jsxIdentifier(name), container(expression));
     }
     const staticName = STATIC_DEFAULTS[name] ?? name;
-    if (name === 'style' && value !== null && value !== undefined && t.isStringLiteral(value)) {
-        return t.jsxAttribute(t.jsxIdentifier('style'), container(cssObject(value.value)));
+    if (name === 'style' && value !== null && value !== undefined) {
+        const style = t.isJSXExpressionContainer(value) ? value.expression : value;
+        if (t.isStringLiteral(style)) {
+            return t.jsxAttribute(t.jsxIdentifier('style'), container(cssObject(style.value)));
+        }
+        if (t.isExpression(style)) {
+            return t.jsxAttribute(
+                t.jsxIdentifier('style'),
+                container(t.callExpression(t.identifier(names.styleOf), [style]))
+            );
+        }
     }
     return t.jsxAttribute(t.jsxIdentifier(staticName), value ?? null);
 }

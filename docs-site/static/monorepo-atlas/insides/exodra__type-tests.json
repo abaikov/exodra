@@ -129,6 +129,18 @@
         "violations": []
       },
       {
+        "id": "_svg",
+        "label": "_svg",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
         "id": "_textAsEvent",
         "label": "_textAsEvent",
         "kind": "app",
@@ -3437,14 +3449,14 @@
       {
         "id": "_inlineHandler",
         "x": 30.5,
-        "y": 1130,
+        "y": 1056,
         "width": 120,
         "height": 46
       },
       {
         "id": "_literals",
         "x": 30.5,
-        "y": 1204,
+        "y": 1130,
         "width": 120,
         "height": 46
       },
@@ -3457,6 +3469,13 @@
       },
       {
         "id": "_onColon",
+        "x": 30.5,
+        "y": 1204,
+        "width": 120,
+        "height": 46
+      },
+      {
+        "id": "_svg",
         "x": 30.5,
         "y": 1278,
         "width": 120,

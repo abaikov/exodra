@@ -1,6 +1,6 @@
 {
   "name": "@exodra/forms",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -26,7 +26,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@exodra/core": "^0.3.0"
+    "@exodra/core": "^0.4.0"
   },
   "scripts": {
     "build": "tsup",

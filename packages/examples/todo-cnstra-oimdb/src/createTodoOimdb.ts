@@ -22,13 +22,13 @@ function createTodoSchema(db: OIMDB) {
     const todos = createOIMEntitySlotCollectionStoreAggregate<TTodo>(db);
     const byDoneOrder = recordedOrder();
     const todosByDone = createOIMSlotCollectionIndexStoreAggregate(todos, {
-        keyOf: (todo: TTodo): 'done' | 'active' => (todo.done ? 'done' : 'active'),
+        selectKey: (todo: TTodo): 'done' | 'active' => (todo.done ? 'done' : 'active'),
         slotContentService: byDoneOrder,
     });
     return {
         todos,
         todosInOrder: createOIMSlotCollectionIndexStoreAggregate(todos, {
-            keyOf: (): 'all' => 'all',
+            selectKey: (): 'all' => 'all',
             slotContentService: recordedOrder(),
         }),
         todosByDone,

@@ -1,18 +1,21 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use swc_core::common::Span;
 use swc_core::ecma::ast::*;
 
 use super::ast::{arrow, member_call_stmt, null_expr, object_prop, pat_ident, prop_key};
+use super::read_module_value::read_module_value;
 use super::read_port_name::read_port_name;
 use super::read_static_attribute::read_static_attribute;
 use super::Refusal;
 use crate::{clean_jsx_text, jsx_name_to_string, object, str_lit};
 
-pub(crate) struct DeclarationWalk {
+pub(crate) struct DeclarationWalk<'a> {
     pub(crate) cursor: String,
     pub(crate) holder: Option<String>,
     pub(crate) port_names: HashSet<String>,
+    pub(crate) module_constants: &'a HashMap<Id, String>,
+    pub(crate) module_values: &'a HashSet<Id>,
 }
 
 enum DeclaredKid<'a> {
@@ -61,13 +64,18 @@ fn read_attribute_port_name(
     })
 }
 
-fn expression_refusal(span: Span, place: &str) -> Refusal {
+const FOLDED_ATTRIBUTE_VALUES: &str = " A const string declared by an earlier statement of \
+    this module is folded in, and so is a template made of such strings; an import or such a \
+    const, or a.b / a[\"b\"] off one, is read once when the schema compiles; a let, a local \
+    value or a call is neither.";
+
+fn expression_refusal(span: Span, place: &str, tail: &str) -> Refusal {
     (
         span,
         format!(
             "Exodra JSX: {place} is an expression, and a declaration holds markup and named \
              ports only. Write a literal for markup, or name a port with $.name and fill it from \
-             the machine."
+             the machine.{tail}"
         ),
     )
 }
@@ -166,6 +174,7 @@ fn collect_kids<'a>(
                         return Err(expression_refusal(
                             container.span,
                             &format!("{{…}} inside <{tag}>"),
+                            "",
                         ))
                     }
                 },
@@ -288,7 +297,7 @@ pub(crate) fn emit_declared_element(
             content_taken = true;
             continue;
         }
-        if let Some(literal) = read_static_attribute(&attr.value) {
+        if let Some(literal) = read_static_attribute(&attr.value, walk.module_constants) {
             statics.push(object_prop(prop_key(&key), literal));
             continue;
         }
@@ -302,10 +311,22 @@ pub(crate) fn emit_declared_element(
         let port = match port {
             Some(port) => port,
             None => {
+                let module_value = match &attr.value {
+                    Some(JSXAttrValue::JSXExprContainer(container)) => match &container.expr {
+                        JSXExpr::Expr(expr) => read_module_value(expr, walk.module_values),
+                        JSXExpr::JSXEmptyExpr(_) => None,
+                    },
+                    _ => None,
+                };
+                if let Some(value) = module_value {
+                    statics.push(object_prop(prop_key(&key), value));
+                    continue;
+                }
                 return Err(expression_refusal(
                     attr.span,
                     &format!("{key}={{…}} on <{tag}>"),
-                ))
+                    FOLDED_ATTRIBUTE_VALUES,
+                ));
             }
         };
         let name = claim_port_name(&port, attr.span, walk)?;

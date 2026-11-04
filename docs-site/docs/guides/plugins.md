@@ -351,7 +351,7 @@ refusal on every hydrated page
 (`packages/dom/src/hydrate/compileExoHydrateSchema.ts`).
 
 **The server's writers.** `@exodra/string` compiles through `EXO_STR_WRITERS` by
-module import (`packages/string/src/schema/compileExoStrSchema.ts`), so replacing
+module import (`packages/string/src/schema/exoStrWriterOf.ts`), so replacing
 what stands in `writers` is choosing a client-side behaviour the server does not
 know about.
 

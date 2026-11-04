@@ -3,19 +3,18 @@ import { createExoSchema } from '../../factories/createExoSchema';
 import { withExoSchemaAsserts } from '../../cursor/withExoSchemaAsserts';
 
 /**
- * WHAT THIS FILE PINS: that three refusals in `@exodra/core` SHIP — that they are not deleted
+ * WHAT THIS FILE PINS: that two refusals in `@exodra/core` SHIP — that they are not deleted
  * from the bundle a user downloads — and that the source shape which makes that true cannot
  * change without a test failing.
  *
- * The three are `check-misplaced-property-port` (a `value` port on a `<select>` or an
- * `<output>`), `assertExoNoTextAfterChildrenPort` (static text after a children port) and `createExoStatic`
- * (a static component whose cursor declared ports). Written
+ * The two are `check-misplaced-property-port` (a `value` port on a `<select>` or an
+ * `<output>`) and `createExoStatic` (a static component whose cursor declared ports). Written
  * `if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && COND) throw`,
  * a refusal in this repository does not merely lose its MESSAGE: the `define` folds `NODE_ENV`
  * to "production" and the minifier deletes the WHOLE condition, `COND` with it. A production
  * build would then run no check at all and accept, in silence, a page that renders and means
  * something else — the served `<select>` on its first option while the client shows the second,
- * region rows on the wrong side of a label, an attribute stuck empty for the life of the page.
+ * an attribute stuck empty for the life of the page.
  *
  * So each uses the second shape from the two-baskets note in `createExoSchema.ts`:
  * `throw new Error(guard ? what + ' — how to fix it' : what)`. `false ? long : short` folds to

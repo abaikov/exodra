@@ -7,7 +7,7 @@
     "dev": "vite --config vite.config.ts"
   },
   "dependencies": {
-    "@exodra/babel-plugin-schema": "^0.1.0",
-    "@exodra/react-compat": "^0.1.0"
+    "@exodra/babel-plugin-schema": "^0.2.0",
+    "@exodra/react-compat": "^0.2.0"
   }
 }

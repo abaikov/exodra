@@ -8,7 +8,6 @@ import {
     EXO_PORT_TEXT,
     EXO_PORT_REF,
     EXO_VOID_ELEMENTS,
-    assertExoNoTextAfterChildrenPort,
     assertExoOneRoot,
     assertExoRootElement,
     mintExoPort,
@@ -305,9 +304,21 @@ class ExoDomEmitter implements TExoEmitter {
         let run = frame.pendingText;
         if (run === '') return;
         frame.pendingText = '';
-        // Refused in `@exodra/core`, so `compileExoStrSchema` refuses the same shape: rows insert
-        // after the text here while the server prints them before it.
-        if (frame.pendingRows !== null) assertExoNoTextAfterChildrenPort(frame.tag, run);
+        if (frame.pendingRows !== null) {
+            const before = frame.made.length === 0 ? null : frame.made[frame.made.length - 1];
+            // The server's parser would merge this run into the Text before the region when no row
+            // stands between them, or eat its newline; `compileExoStrSchema` prints the same comment.
+            if (
+                (before !== null && before.nodeType === TEXT_NODE) ||
+                (frame.eatsNewline && frame.domIndex === 0 && run.charCodeAt(0) === LINE_FEED)
+            ) {
+                const separator = this.doc.createComment('');
+                frame.el.appendChild(separator);
+                frame.made.push(separator);
+                frame.domIndex++;
+                this.resolveChild(frame, frame.domIndex - 1);
+            }
+        }
         // A browser eats this newline out of the server's bytes and nothing eats it here, so the
         // two pages would differ by a blank first line (`newline-eater-parity`).
         if (frame.eatsNewline && frame.domIndex === 0 && run.charCodeAt(0) === LINE_FEED) {
@@ -323,6 +334,7 @@ class ExoDomEmitter implements TExoEmitter {
         frame.el.appendChild(text);
         frame.made.push(text);
         frame.domIndex++;
+        if (frame.pendingRows !== null) this.resolveChild(frame, frame.domIndex - 1);
     }
 
     /**

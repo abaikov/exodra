@@ -114,7 +114,33 @@ export function createExoDomSchema(
         }
     }
 
-    const elem = declaration.elem;
+    let elem = declaration.elem;
+    let walkTable = walk;
+    let hydrateWalk = declaration.hydrateWalk;
+    let unreachable = declaration.hydrateUnreachable;
+    let slots = declaration.slots;
+    // Copied before the first text port that moves its slot: the declaration is shared by every
+    // backend that builds from it.
+    let owned: {
+        walk: number[];
+        hydrateWalk: number[] | null;
+        elem: number[];
+        unreachable: number[];
+    } | null = null;
+    const own = () => {
+        if (owned !== null) return owned;
+        owned = {
+            walk: walkTable.slice(),
+            hydrateWalk: hydrateWalk === null ? null : hydrateWalk.slice(),
+            elem: elem.slice(),
+            unreachable: unreachable.slice(),
+        };
+        walkTable = owned.walk;
+        hydrateWalk = owned.hydrateWalk;
+        elem = owned.elem;
+        unreachable = owned.unreachable;
+        return owned;
+    };
     const ownsElement = declaration.ownsElement;
     const ports: TExoAnyPort[] = [];
     const setters: TExoDomSetter[] = new Array(declaration.ports.length);
@@ -137,7 +163,39 @@ export function createExoDomSchema(
                 landing.nodeType === TEXT_NODE
                     ? (landing.parentNode as Element)
                     : (landing as Element);
-            setters[i] = writers.text(on);
+            const setter = writers.text(on);
+            setters[i] = setter;
+            // The slot follows THIS composition's writer, whichever one the build compiled under.
+            if (setter.takesTextNode === true && landing.nodeType !== TEXT_NODE) {
+                const tables = own();
+                let placeholder = on.firstChild;
+                if (placeholder === null || placeholder.nodeType !== TEXT_NODE) {
+                    placeholder = (on.ownerDocument ?? document).createTextNode('');
+                    on.insertBefore(placeholder, on.firstChild);
+                }
+                const textSlot = slots++;
+                tables.walk.push(textSlot, tables.elem[i], EXO_WALK_FIRST_CHILD);
+                tables.hydrateWalk?.push(textSlot, tables.elem[i], EXO_WALK_FIRST_CHILD);
+                probe[textSlot] = placeholder;
+                for (let b = 0; b < tables.unreachable.length; b += 2) {
+                    if (
+                        tables.elem[i] >= tables.unreachable[b] &&
+                        tables.elem[i] < tables.unreachable[b + 1]
+                    ) {
+                        tables.unreachable.push(textSlot, textSlot + 1);
+                        break;
+                    }
+                }
+                tables.elem[i] = textSlot;
+            } else if (setter.takesTextNode !== true && landing.nodeType === TEXT_NODE) {
+                const tables = own();
+                for (let k = 0; k < tables.walk.length; k += 3) {
+                    if (tables.walk[k] === tables.elem[i]) {
+                        tables.elem[i] = tables.walk[k + 1];
+                        break;
+                    }
+                }
+            }
             if (!writers.markupCarries(null, on)) {
                 if (markupMisses === null)
                     markupMisses = createExoIntTable(declaration.ports.length, 0);
@@ -171,7 +229,6 @@ export function createExoDomSchema(
         }
     }
 
-    const walkTable = walk;
     // The same literal, in the same field order, as `compileExoDomSchema`'s: two shapes here would
     // put a second hidden class at the field every render reads.
     const compiled: TExoDomSchema = {
@@ -181,8 +238,8 @@ export function createExoDomSchema(
         proto,
         protoLandings: probe,
         walk: walkTable,
-        hydrateWalk: declaration.hydrateWalk === null ? walkTable : declaration.hydrateWalk,
-        slots: declaration.slots,
+        hydrateWalk: hydrateWalk === null ? walkTable : hydrateWalk,
+        slots,
         setters,
         writeData,
         events,
@@ -197,10 +254,7 @@ export function createExoDomSchema(
         childListPrevStatics: declaration.childListPrevStatics,
         hasSeparatedChildLists: declaration.hasSeparatedChildLists,
         ownsElement,
-        hydrateUnreachable:
-            declaration.hydrateUnreachable.length === 0
-                ? NO_UNREACHABLE
-                : declaration.hydrateUnreachable,
+        hydrateUnreachable: unreachable.length === 0 ? NO_UNREACHABLE : unreachable,
         rootTag: declaration.rootTag,
         ports,
         portNames: new Array<string | null>(ports.length).fill(null),
@@ -208,7 +262,7 @@ export function createExoDomSchema(
         acquireNode: cloneExoNode,
         childUnmount: disposeExoChildSelf,
         hydrateSchema: null,
-        sharesEmptyNodes: walk.length === 0 && setters.length === 0,
+        sharesEmptyNodes: walkTable.length === 0 && setters.length === 0,
         createInstance: backend.createInstance,
         createChild: backend.createChild,
         domPortWrite: null,

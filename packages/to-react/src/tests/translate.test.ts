@@ -14,7 +14,7 @@ import * as exodraListReconcile from '@exodra/list-reconcile';
 import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
 import schemaPlugin from '../../../babel-plugin-exodra-schema/src/index';
 import { translateExoToReact } from '../translateExoToReact';
-import { COUNTER_SOURCE, FIXED_SOURCE, LIST_SOURCE } from './fixtures';
+import { COUNTER_SOURCE, FIXED_SOURCE, LIST_SOURCE, STYLED_SOURCE } from './fixtures';
 
 type TModule = Record<string, unknown>;
 
@@ -129,6 +129,18 @@ describe('translateExoToReact', () => {
         expect(sides.react.innerHTML).toBe(sides.exodra.innerHTML);
         expect(sides.react.querySelectorAll('.rows li')).toHaveLength(3);
         expect(sides.react.querySelector('.head li')?.textContent).toBe('head');
+    });
+
+    it('a style made of a module const reaches React as a style object', () => {
+        const sides = mountBoth(STYLED_SOURCE, 'STYLED');
+        const exodra = sides.exodra.querySelector('.styled') as HTMLElement;
+        const react = sides.react.querySelector('.styled') as HTMLElement;
+        for (const name of ['padding', 'color', 'borderRadius'] as const) {
+            expect(react.style[name]).toBe(exodra.style[name]);
+        }
+        expect(react.style.color).toBe('red');
+        expect(react.title).toBe('color: red; border-radius: 8px');
+        expect((sides.react.querySelector('b') as HTMLElement).style.margin).toBe('1px');
     });
 
     const HANDLERS_STEP =

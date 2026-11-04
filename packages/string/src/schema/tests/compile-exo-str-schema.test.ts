@@ -97,7 +97,7 @@ describe("the void refusal is a SOURCE-SHAPE property, and its neighbours' shape
         // The runtime assertions above cannot see the MINIFIER, which is what deletes a check
         // written `if (guard && COND) throw`, so the shape itself is asserted. Parsed rather than
         // grepped: the source's string literals contain quotes that defeat a text scanner.
-        const file = 'compileExoStrSchema.ts';
+        const file = 'compileExoStrJsonDeclaration.ts';
         const src = readFileSync(fileURLToPath(new URL('../' + file, import.meta.url)), 'utf8');
         const source = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true);
 

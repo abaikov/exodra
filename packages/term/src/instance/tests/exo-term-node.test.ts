@@ -534,12 +534,8 @@ describe('attributes, events, and what this backend refuses', () => {
         expect(() => BACKEND.renderScreen(BAD, 1)).toThrow(/void element/);
     });
 
-    it('refuses static text after a children port, though its own shape is unambiguous', () => {
-        // THE SHARED RULE THAT ENCODES ANOTHER BACKEND'S LIMITATION. A region here is a
-        // container, so rows could not possibly land on the wrong side of this text. It is
-        // refused so that a schema is accepted or refused identically everywhere — see
-        // `compileExoTermSchema`.
-        const BAD = createExoTestMachine(
+    it('prints static text after a children port after the rows', () => {
+        const PAGE = createExoTestMachine(
             (b) => {
                 let slot!: TExoChildrenPort;
                 b.el('div', null, (div) => {
@@ -550,10 +546,12 @@ describe('attributes, events, and what this backend refuses', () => {
             },
             (P): TExoMachineInitialState<TExoChildrenWiring> =>
                 (c) => {
-                    c.list(P.slot, LEAF, []);
+                    c.list(P.slot, LEAF, ['x']);
                 }
         );
-        expect(() => BACKEND.renderScreen(BAD, 1)).toThrow(/children port/);
+        expect(BACKEND.renderScreen(PAGE, 1).text()).toBe(
+            ['div', '  span class="leaf" "x"', '  "after"'].join('\n')
+        );
     });
 
     it('finds nodes through regions, which a naive walk of kids would step over', () => {

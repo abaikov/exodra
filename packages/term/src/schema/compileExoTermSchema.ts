@@ -7,7 +7,6 @@ import {
     EXO_PORT_REF,
     EXO_PORT_TEXT,
     EXO_VOID_ELEMENTS,
-    assertExoNoTextAfterChildrenPort,
     assertExoOneRoot,
     assertExoRootElement,
     mintExoPort,
@@ -53,7 +52,6 @@ type TExoTermOpenElement = {
     readonly kids: TExoTermProtoKid[];
     readonly isVoid: boolean;
     hasContent: boolean;
-    afterRegion: boolean;
     pendingText: string;
     anyText: boolean;
 };
@@ -114,7 +112,6 @@ class ExoTermEmitter implements TExoEmitter {
             kids: [],
             isVoid: false,
             hasContent: false,
-            afterRegion: false,
             pendingText: '',
             anyText: false,
         });
@@ -150,9 +147,7 @@ class ExoTermEmitter implements TExoEmitter {
         const run = frame.pendingText;
         frame.pendingText = '';
         frame.anyText = false;
-        // MERGED before the shared rule sees it: a run is the unit an HTML parser would produce,
-        // and quoting one kid would name half the text. Appended RAW.
-        if (frame.afterRegion) assertExoNoTextAfterChildrenPort(frame.tag, run);
+        // MERGED: a run is the unit an HTML parser would produce. Appended RAW.
         frame.kids.push({ text: run });
     }
 
@@ -168,7 +163,6 @@ class ExoTermEmitter implements TExoEmitter {
         } else {
             if (parent.isVoid) this.refuseVoidContent(parent.tag);
             this.flushText(parent);
-            parent.afterRegion = false;
         }
         // Normalised once, here, so `class` and `className` cannot end up as two keys.
         const normalised: Record<string, string> = Object.create(null) as Record<string, string>;
@@ -182,7 +176,6 @@ class ExoTermEmitter implements TExoEmitter {
             kids: [],
             isVoid: EXO_VOID_ELEMENTS.has(tag),
             hasContent: false,
-            afterRegion: false,
             pendingText: '',
             anyText: false,
         };
@@ -314,7 +307,6 @@ class ExoTermEmitter implements TExoEmitter {
         }
         this.take(port, frame);
         frame.kids.push({ port: port.index });
-        frame.afterRegion = true;
         return port;
     }
 }

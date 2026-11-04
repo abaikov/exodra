@@ -1,8 +1,10 @@
 ```tsx
 import { exoJsx } from '@exodra/jsx';
-import { composeExoMachine, createExoMachine, withExoHandlers, withExoTransitions, withExoWire } from '@exodra/core';
+import {
+    composeExoMachine, createExoMachine, withExoHandlers, withExoTransitions, withExoWire,
+} from '@exodra/core';
 import type { TExoEventPort, TExoTextPort } from '@exodra/core';
-import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, withExoBuiltSchemas } from '@exodra/dom';
 
 const CounterSchema = exoJsx<{ COUNT: TExoTextPort; INCREMENT: TExoEventPort }>(($) => (
     <div class="counter">
@@ -28,5 +30,5 @@ export const counterMachine = composeExoMachine(
 );
 export const { increment } = counterMachine.transitions;
 
-withExoCompiler(new ExoDomBackend()).render(counterMachine, document.body);
+withExoBuiltSchemas(new ExoDomBackend()).render(counterMachine, document.body);
 ```

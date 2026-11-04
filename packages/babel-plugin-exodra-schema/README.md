@@ -136,7 +136,9 @@ For TypeScript, point JSX at the dialect's types:
 
 Each is a compile error naming the element and the fix:
 
-- any expression other than `$.name` — closures, values (`item.id`), conditionals;
+- any expression other than `$.name`, a module `const` string (folded at build) or a name,
+  `a.b` or `a['x']` rooted at an import or a module `const` (read once when the schema
+  compiles) — closures, local values (`item.id`), conditionals, calls;
 - component tags (`<Row />`, `<Ui.Row />`), and with them any `list=` / `props=` operand;
 - fragments, `{...spread}`, a lowercase inline handler (`onclick="…"`), a namespace other
   than `on:`;

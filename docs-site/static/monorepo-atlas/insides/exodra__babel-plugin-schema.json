@@ -129,6 +129,18 @@
         "violations": []
       },
       {
+        "id": "buildDocument",
+        "label": "buildDocument",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
+        "violations": []
+      },
+      {
         "id": "childOf",
         "label": "childOf",
         "kind": "tooling",
@@ -281,6 +293,25 @@
         "violations": []
       },
       {
+        "id": "compileExoJsonDeclarations",
+        "label": "compileExoJsonDeclarations",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(markup): TExoJsonDeclarations",
+            "full": "(markup): TExoJsonDeclarations",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The generated markup function holds string literals and cursor calls and nothing else, so it is run here with the compilers the page would otherwise ship.",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
         "id": "compileHostTree",
         "label": "compileHostTree",
         "kind": "tooling",
@@ -306,12 +337,12 @@
         "layer": 0,
         "members": [
           {
-            "text": "(call, marker, names, file, producer): TExoCompiledJsxDecl…",
-            "full": "(call, marker, names, file, producer): TExoCompiledJsxDeclaration",
+            "text": "(callPath, statementStart, marker, names, file, producer): TExoCompiledJsxDecl…",
+            "full": "(callPath, statementStart, marker, names, file, producer): TExoCompiledJsxDeclaration",
             "parts": [],
             "fullParts": [
               {
-                "text": "(call, marker, names, file, producer): "
+                "text": "(callPath, statementStart, marker, names, file, producer): "
               },
               {
                 "text": "TExoCompiledJsxDeclaration",
@@ -322,7 +353,7 @@
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "width": 414,
+        "width": 542,
         "height": 69,
         "violations": []
       },
@@ -509,6 +540,18 @@
         "violations": []
       },
       {
+        "id": "FOLDED_ATTRIBUTE_VALUES",
+        "label": "FOLDED_ATTRIBUTE_VALUES",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 171,
+        "height": 46,
+        "violations": []
+      },
+      {
         "id": "HOST_TAG",
         "label": "HOST_TAG",
         "kind": "app",
@@ -610,6 +653,18 @@
         "stereotype": "function",
         "width": 248,
         "height": 69,
+        "violations": []
+      },
+      {
+        "id": "load",
+        "label": "load",
+        "kind": "app",
+        "layer": 0,
+        "members": [],
+        "memberCount": 0,
+        "stereotype": "const",
+        "width": 120,
+        "height": 46,
         "violations": []
       },
       {
@@ -964,6 +1019,44 @@
         "violations": []
       },
       {
+        "id": "readModuleConstantString",
+        "label": "readModuleConstantString",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node, scope, before): string | null",
+            "full": "(node, scope, before): string | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "A const from a statement not ended by `before` is refused: the swc port fills its table per statement.",
+        "width": 267,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "readModuleValue",
+        "label": "readModuleValue",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node, scope, before): t.Expression | null",
+            "full": "(node, scope, before): t.Expression | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "doc": "The schema is hoisted to module scope, so only a root that module scope sees means the same there.",
+        "width": 306,
+        "height": 69,
+        "violations": []
+      },
+      {
         "id": "readPortName",
         "label": "readPortName",
         "kind": "tooling",
@@ -988,15 +1081,26 @@
         "layer": 0,
         "members": [
           {
-            "text": "(value): t.Expression | null",
-            "full": "(value): t.Expression | null",
-            "parts": []
+            "text": "(value, readModuleConstantString): t.Expression | null",
+            "full": "(value, readModuleConstantString): t.Expression | null",
+            "parts": [
+              {
+                "text": "(value, "
+              },
+              {
+                "text": "readModuleConstantString",
+                "link": "readModuleConstantString"
+              },
+              {
+                "text": "): t.Expression | null"
+              }
+            ]
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
         "doc": "A LITERAL is markup, folded into the schema; `null` means the value is an expression and the attribute is a port.",
-        "width": 216,
+        "width": 382,
         "height": 69,
         "violations": []
       },
@@ -1026,14 +1130,14 @@
         "layer": 0,
         "members": [
           {
-            "text": "(where): never",
-            "full": "(where): never",
+            "text": "(where, tail): never",
+            "full": "(where, tail): never",
             "parts": []
           }
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "width": 126,
+        "width": 165,
         "height": 69,
         "violations": []
       },
@@ -1052,6 +1156,24 @@
         "memberCount": 1,
         "stereotype": "function",
         "width": 171,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "rootOf",
+        "label": "rootOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node): t.Identifier | null",
+            "full": "(node): t.Identifier | null",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 210,
         "height": 69,
         "violations": []
       },
@@ -1194,12 +1316,76 @@
             "text": "readonly portNames: Set<string>;",
             "full": "readonly portNames: Set<string>;",
             "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly readModuleConstantString: (exp…",
+            "full": "readonly readModuleConstantString: (expression: t.Node) => string | null;",
+            "parts": [
+              {
+                "text": "readonly "
+              },
+              {
+                "text": "readModuleConstantString",
+                "link": "readModuleConstantString"
+              },
+              {
+                "text": ": (exp…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "readonly "
+              },
+              {
+                "text": "readModuleConstantString",
+                "link": "readModuleConstantString"
+              },
+              {
+                "text": ": (expression: t.Node) => string | null;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readonly readModuleValue: (expression: …",
+            "full": "readonly readModuleValue: (expression: t.Node) => t.Expression | null;",
+            "parts": [
+              {
+                "text": "readonly "
+              },
+              {
+                "text": "readModuleValue",
+                "link": "readModuleValue"
+              },
+              {
+                "text": ": (expression: …"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "readonly "
+              },
+              {
+                "text": "readModuleValue",
+                "link": "readModuleValue"
+              },
+              {
+                "text": ": (expression: t.Node) => t.Expression | null;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "readsModuleValue: boolean;",
+            "full": "readsModuleValue: boolean;",
+            "parts": []
           }
         ],
-        "memberCount": 3,
+        "memberCount": 6,
         "stereotype": "type",
-        "width": 242,
-        "height": 99,
+        "width": 293,
+        "height": 144,
         "violations": []
       },
       {
@@ -1372,6 +1558,27 @@
         "violations": []
       },
       {
+        "id": "TExoJsdom",
+        "label": "TExoJsdom",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly JSDOM: new (html: string) => {…",
+            "full": "readonly JSDOM: new (html: string) => { readonly window: { readonly document: Document } };",
+            "parts": [],
+            "fullParts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "doc": "jsdom ships no types; this is the one constructor the build-time compile calls.",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
         "id": "TExoReactNames",
         "label": "TExoReactNames",
         "kind": "app",
@@ -1492,12 +1699,19 @@
             "text": "markerName?: string;",
             "full": "markerName?: string;",
             "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "jsonDeclarations?: boolean;",
+            "full": "jsonDeclarations?: boolean;",
+            "doc": "`false` emits the declaration alone and leaves the compile to the page's backends.",
+            "parts": []
           }
         ],
-        "memberCount": 3,
+        "memberCount": 4,
         "stereotype": "type",
-        "width": 178,
-        "height": 99,
+        "width": 210,
+        "height": 114,
         "violations": []
       },
       {
@@ -1517,12 +1731,36 @@
             "text": "readonly schemaImport: string;",
             "full": "readonly schemaImport: string;",
             "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly jsonDeclarations: boolean;",
+            "full": "readonly jsonDeclarations: boolean;",
+            "parts": []
           }
         ],
-        "memberCount": 2,
+        "memberCount": 3,
         "stereotype": "type",
-        "width": 229,
-        "height": 84,
+        "width": 261,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "unwrapTypeScript",
+        "label": "unwrapTypeScript",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(node): t.Node",
+            "full": "(node): t.Node",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 126,
+        "height": 69,
         "violations": []
       }
     ],
@@ -2155,6 +2393,63 @@
         "violations": []
       },
       {
+        "id": "compileExoJsonDeclarations→buildDocument",
+        "from": "compileExoJsonDeclarations",
+        "to": "buildDocument",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileExoJsonDeclarations.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/compileExoJsonDeclarations.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileExoJsonDeclarations→load",
+        "from": "compileExoJsonDeclarations",
+        "to": "load",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileExoJsonDeclarations.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/compileExoJsonDeclarations.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileExoJsonDeclarations→TExoJsdom",
+        "from": "compileExoJsonDeclarations",
+        "to": "TExoJsdom",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileExoJsonDeclarations.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/compileExoJsonDeclarations.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "compileHostTree→emitHostElement",
         "from": "compileHostTree",
         "to": "emitHostElement",
@@ -2207,6 +2502,25 @@
             "to": "packages/babel-plugin-exodra-schema/src/react/types/TExoReactNames.ts",
             "specifier": "uses",
             "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileJsxDeclaration→compileExoJsonDeclarations",
+        "from": "compileJsxDeclaration",
+        "to": "compileExoJsonDeclarations",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/compileExoJsonDeclarations.ts",
+            "specifier": "calls",
+            "kind": "value"
           }
         ],
         "violations": []
@@ -2288,6 +2602,58 @@
         "violations": []
       },
       {
+        "id": "compileJsxDeclaration→readModuleConstantString",
+        "from": "compileJsxDeclaration",
+        "to": "readModuleConstantString",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileJsxDeclaration→readModuleValue",
+        "from": "compileJsxDeclaration",
+        "to": "readModuleValue",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleValue.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleValue.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "compileJsxDeclaration→TExoCompiledJsxDeclaration",
         "from": "compileJsxDeclaration",
         "to": "TExoCompiledJsxDeclaration",
@@ -2300,6 +2666,25 @@
           {
             "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
             "to": "packages/babel-plugin-exodra-schema/src/types/TExoCompiledJsxDeclaration.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "compileJsxDeclaration→TExoDeclarationWalk",
+        "from": "compileJsxDeclaration",
+        "to": "TExoDeclarationWalk",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/compileJsxDeclaration.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -2535,6 +2920,25 @@
         "violations": []
       },
       {
+        "id": "emitDeclaredElement→FOLDED_ATTRIBUTE_VALUES",
+        "from": "emitDeclaredElement",
+        "to": "FOLDED_ATTRIBUTE_VALUES",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "emitDeclaredElement→propKey",
         "from": "emitDeclaredElement",
         "to": "propKey",
@@ -2568,6 +2972,44 @@
             "to": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
             "specifier": "calls",
             "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitDeclaredElement→readModuleConstantString",
+        "from": "emitDeclaredElement",
+        "to": "readModuleConstantString",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "emitDeclaredElement→readModuleValue",
+        "from": "emitDeclaredElement",
+        "to": "readModuleValue",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/emitDeclaredElement.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleValue.ts",
+            "specifier": "uses",
+            "kind": "type-only"
           }
         ],
         "violations": []
@@ -3580,6 +4022,146 @@
         "violations": []
       },
       {
+        "id": "readModuleConstantString→at",
+        "from": "readModuleConstantString",
+        "to": "at",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/react/emitHostElement.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readModuleConstantString→unwrapTypeScript",
+        "from": "readModuleConstantString",
+        "to": "unwrapTypeScript",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readModuleValue→rootOf",
+        "from": "readModuleValue",
+        "to": "rootOf",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/readModuleValue.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleValue.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readModuleValue→unwrapTypeScript",
+        "from": "readModuleValue",
+        "to": "unwrapTypeScript",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/readModuleValue.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "readStaticAttribute→readModuleConstantString",
+        "from": "readStaticAttribute",
+        "to": "readModuleConstantString",
+        "kinds": [
+          "type-only",
+          "value"
+        ],
+        "weight": 2,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/readStaticAttribute.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/readStaticAttribute.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoDeclarationWalk→readModuleConstantString",
+        "from": "TExoDeclarationWalk",
+        "to": "readModuleConstantString",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleConstantString.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoDeclarationWalk→readModuleValue",
+        "from": "TExoDeclarationWalk",
+        "to": "readModuleValue",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/babel-plugin-exodra-schema/src/types/TExoDeclarationWalk.ts",
+            "to": "packages/babel-plugin-exodra-schema/src/readModuleValue.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "TExoHostTreeWalk→TExoReactNames",
         "from": "TExoHostTreeWalk",
         "to": "TExoReactNames",
@@ -3602,40 +4184,40 @@
     "rules": {}
   },
   "layout": {
-    "width": 2304,
-    "height": 4417.8,
+    "width": 2942,
+    "height": 4886.3,
     "nodes": [
       {
         "id": "addValue",
-        "x": 1356.5,
-        "y": 2717,
+        "x": 1484.5,
+        "y": 2680,
         "width": 203,
         "height": 69
       },
       {
         "id": "at",
-        "x": 1327.5,
-        "y": 2620,
+        "x": 2657,
+        "y": 3695.5,
         "width": 261,
         "height": 69
       },
       {
         "id": "ATTRIBUTE_NAME",
-        "x": 1398,
+        "x": 1526,
         "y": 551,
         "width": 120,
         "height": 46
       },
       {
         "id": "attributeOf",
-        "x": 1722.5,
+        "x": 1895,
         "y": 1098.5,
         "width": 274,
         "height": 69
       },
       {
         "id": "attributeValue",
-        "x": 1372.5,
+        "x": 1500.5,
         "y": 1317.8,
         "width": 171,
         "height": 69
@@ -3650,471 +4232,534 @@
       {
         "id": "babelPluginExodraSchema",
         "x": 24,
-        "y": 3144,
+        "y": 2990,
         "width": 197,
         "height": 69
       },
       {
+        "id": "buildDocument",
+        "x": 1526,
+        "y": 4816.3,
+        "width": 120,
+        "height": 46
+      },
+      {
         "id": "childOf",
-        "x": 1295.5,
+        "x": 1423.5,
         "y": 454,
         "width": 325,
         "height": 69
       },
       {
         "id": "choose",
-        "x": 1356.5,
+        "x": 1484.5,
         "y": 966.8,
         "width": 203,
         "height": 69
       },
       {
         "id": "claimPort",
-        "x": 1356.5,
-        "y": 2523,
+        "x": 1484.5,
+        "y": 2503,
         "width": 203,
         "height": 69
       },
       {
         "id": "claimPortName",
-        "x": 1347,
-        "y": 4324.8,
+        "x": 1475,
+        "y": 4548.3,
         "width": 222,
         "height": 69
       },
       {
         "id": "cleanJsxText",
-        "x": 2115,
-        "y": 4227,
+        "x": 2380,
+        "y": 4450.5,
         "width": 120,
         "height": 69
       },
       {
         "id": "collectBoundNames",
-        "x": 390.5,
-        "y": 2997.8,
+        "x": 454.5,
+        "y": 2778,
         "width": 203,
         "height": 69
       },
       {
         "id": "collectKids",
-        "x": 1331,
-        "y": 4060.3,
+        "x": 1459,
+        "y": 4310.5,
         "width": 254,
         "height": 69
       },
       {
         "id": "COMPARISONS",
-        "x": 1398,
+        "x": 1526,
         "y": 1115.3,
         "width": 120,
         "height": 46
       },
       {
+        "id": "compileExoJsonDeclarations",
+        "x": 996.5,
+        "y": 4757.8,
+        "width": 229,
+        "height": 69
+      },
+      {
         "id": "compileHostTree",
-        "x": 297.5,
-        "y": 1528.8,
+        "x": 361.5,
+        "y": 1577.3,
         "width": 389,
         "height": 69
       },
       {
         "id": "compileJsxDeclaration",
         "x": 285,
-        "y": 3433.3,
-        "width": 414,
+        "y": 3346.3,
+        "width": 542,
         "height": 69
       },
       {
         "id": "CONTROLLED_TAGS",
-        "x": 1398,
-        "y": 2449,
+        "x": 1526,
+        "y": 2429,
         "width": 120,
         "height": 46
       },
       {
         "id": "cursorCall",
-        "x": 1327.5,
-        "y": 2921.5,
+        "x": 1455.5,
+        "y": 3302.3,
         "width": 261,
         "height": 69
       },
       {
         "id": "elementOf",
-        "x": 772.5,
+        "x": 900.5,
         "y": 261.5,
         "width": 421,
         "height": 69
       },
       {
         "id": "emitDeclaredElement",
-        "x": 843,
-        "y": 3784.8,
+        "x": 971,
+        "y": 3767.8,
         "width": 280,
         "height": 69
       },
       {
         "id": "emitHostElement",
-        "x": 763,
-        "y": 2342.5,
+        "x": 891,
+        "y": 2192.5,
         "width": 440,
         "height": 69
       },
       {
         "id": "emitRuntimeElement",
-        "x": 840,
+        "x": 968,
         "y": 1230.8,
         "width": 286,
         "height": 69
       },
       {
         "id": "exoImports",
-        "x": 923,
-        "y": 3236.3,
+        "x": 1051,
+        "y": 3024,
         "width": 120,
         "height": 46
       },
       {
         "id": "expressionOf",
-        "x": 1359.5,
+        "x": 1487.5,
         "y": 772,
         "width": 197,
         "height": 69
       },
       {
         "id": "FACTORIES",
-        "x": 1799.5,
+        "x": 1972,
         "y": 459.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "factoryOf",
-        "x": 1315,
+        "x": 1443,
         "y": 357,
         "width": 286,
         "height": 69
       },
       {
         "id": "field",
-        "x": 1340.5,
-        "y": 2352,
+        "x": 1468.5,
+        "y": 2332,
         "width": 235,
         "height": 69
       },
       {
+        "id": "FOLDED_ATTRIBUTE_VALUES",
+        "x": 1500.5,
+        "y": 4184.3,
+        "width": 171,
+        "height": 46
+      },
+      {
         "id": "HOST_TAG",
-        "x": 1398,
+        "x": 1526,
         "y": 283,
         "width": 120,
         "height": 46
       },
       {
         "id": "isChildrenPortTag",
-        "x": 1726,
-        "y": 4246.3,
+        "x": 1898.5,
+        "y": 4469.8,
         "width": 267,
         "height": 69
       },
       {
         "id": "isCompilableHost",
-        "x": 1783.5,
+        "x": 1956,
         "y": 1001.5,
         "width": 152,
         "height": 69
       },
       {
         "id": "isRepeatableTest",
-        "x": 916.5,
+        "x": 1044.5,
         "y": 1103.8,
         "width": 133,
         "height": 69
       },
       {
         "id": "isSameHost",
-        "x": 1359.5,
+        "x": 1487.5,
         "y": 869,
         "width": 197,
         "height": 69
       },
       {
         "id": "literalOf",
-        "x": 1735.5,
+        "x": 1908,
         "y": 772,
         "width": 248,
         "height": 69
       },
       {
+        "id": "load",
+        "x": 1526,
+        "y": 4742.3,
+        "width": 120,
+        "height": 46
+      },
+      {
         "id": "member",
-        "x": 1318,
-        "y": 2235,
+        "x": 1446,
+        "y": 2215,
         "width": 280,
         "height": 69
       },
       {
         "id": "merge",
-        "x": 881.5,
+        "x": 1009.5,
         "y": 694.3,
         "width": 203,
         "height": 69
       },
       {
         "id": "mergeHostBranches",
-        "x": 387,
-        "y": 830.5,
+        "x": 451,
+        "y": 838.8,
         "width": 210,
         "height": 69
       },
       {
         "id": "moduleOf",
-        "x": 1729,
+        "x": 1901.5,
         "y": 300.8,
         "width": 261,
         "height": 69
       },
       {
         "id": "moduleStatement",
-        "x": 397,
-        "y": 2702.5,
+        "x": 461,
+        "y": 2460.3,
         "width": 190,
         "height": 69
       },
       {
         "id": "PART_PROPS",
-        "x": 1398,
-        "y": 1922,
+        "x": 1526,
+        "y": 1902,
         "width": 120,
         "height": 46
       },
       {
         "id": "pickGeneratedNames",
-        "x": 387,
-        "y": 3139,
+        "x": 451,
+        "y": 2926.8,
         "width": 210,
         "height": 69
       },
       {
         "id": "pickName",
-        "x": 1372.5,
-        "y": 1996,
+        "x": 1500.5,
+        "y": 1976,
         "width": 171,
         "height": 69
       },
       {
         "id": "pickReactNames",
-        "x": 891,
+        "x": 1019,
         "y": 596.5,
         "width": 184,
         "height": 69
       },
       {
         "id": "PLAIN_KEY",
-        "x": 1799.5,
-        "y": 2656.5,
+        "x": 1972,
+        "y": 3484.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "propertyKey",
-        "x": 1350,
-        "y": 1514,
+        "x": 1478,
+        "y": 1494,
         "width": 216,
         "height": 69
       },
       {
         "id": "propKey",
-        "x": 1353,
-        "y": 3874,
+        "x": 1481,
+        "y": 4087.3,
         "width": 210,
         "height": 69
       },
       {
         "id": "readAttributePortName",
-        "x": 1334,
-        "y": 3777,
+        "x": 1462,
+        "y": 3984.5,
         "width": 248,
         "height": 69
       },
       {
         "id": "readCallElement",
-        "x": 358.5,
+        "x": 422.5,
         "y": 261.5,
         "width": 267,
         "height": 69
       },
       {
         "id": "readChildrenPortTag",
-        "x": 1786.5,
-        "y": 4149.3,
+        "x": 1959,
+        "y": 4372.8,
         "width": 146,
         "height": 69
       },
       {
         "id": "readDeclarationRoot",
-        "x": 881.5,
-        "y": 3571.5,
+        "x": 1009.5,
+        "y": 3516.3,
         "width": 203,
         "height": 69
       },
       {
         "id": "readExpression",
-        "x": 1372.5,
-        "y": 1825,
+        "x": 1500.5,
+        "y": 1805,
         "width": 171,
         "height": 69
       },
       {
         "id": "readHolder",
-        "x": 878,
-        "y": 3474.5,
+        "x": 1006,
+        "y": 3419.3,
         "width": 210,
         "height": 69
       },
       {
         "id": "readLiteralKey",
-        "x": 1340.5,
-        "y": 1728,
+        "x": 1468.5,
+        "y": 1708,
         "width": 235,
         "height": 69
       },
       {
+        "id": "readModuleConstantString",
+        "x": 2306.5,
+        "y": 3706,
+        "width": 267,
+        "height": 69
+      },
+      {
+        "id": "readModuleValue",
+        "x": 2287,
+        "y": 3482.5,
+        "width": 306,
+        "height": 69
+      },
+      {
         "id": "readPortName",
-        "x": 1745,
-        "y": 3708,
+        "x": 1917.5,
+        "y": 4160.3,
         "width": 229,
         "height": 69
       },
       {
         "id": "readStaticAttribute",
-        "x": 1350,
-        "y": 3633.3,
-        "width": 216,
+        "x": 1841,
+        "y": 3558.8,
+        "width": 382,
         "height": 69
       },
       {
         "id": "readStaticValue",
-        "x": 1748.5,
-        "y": 1773.5,
+        "x": 1921,
+        "y": 1577.3,
         "width": 222,
         "height": 69
       },
       {
         "id": "refuseExpression",
-        "x": 1796.5,
-        "y": 3611,
-        "width": 126,
+        "x": 1949.5,
+        "y": 4063.3,
+        "width": 165,
         "height": 69
       },
       {
         "id": "requiredSource",
-        "x": 2089.5,
+        "x": 2354.5,
         "y": 133,
         "width": 171,
         "height": 69
       },
       {
+        "id": "rootOf",
+        "x": 2682.5,
+        "y": 3540.5,
+        "width": 210,
+        "height": 69
+      },
+      {
         "id": "shapeKid",
-        "x": 1331,
-        "y": 1611,
+        "x": 1459,
+        "y": 1591,
         "width": 254,
         "height": 69
       },
       {
         "id": "spreadKids",
-        "x": 1267,
+        "x": 1395,
         "y": 166,
         "width": 382,
         "height": 69
       },
       {
         "id": "tagExpression",
-        "x": 1375.5,
+        "x": 1503.5,
         "y": 1220.8,
         "width": 165,
         "height": 69
       },
       {
         "id": "tagOf",
-        "x": 1786.5,
+        "x": 1959,
         "y": 675,
         "width": 146,
         "height": 69
       },
       {
         "id": "tagText",
-        "x": 1796.5,
-        "y": 3514,
+        "x": 1969,
+        "y": 3794.3,
         "width": 126,
         "height": 69
       },
       {
         "id": "TExoCompiledJsxDeclaration",
-        "x": 852.5,
-        "y": 3362.5,
+        "x": 980.5,
+        "y": 3170.3,
         "width": 261,
         "height": 84
       },
       {
         "id": "TExoDeclarationWalk",
-        "x": 1738.5,
-        "y": 3805,
-        "width": 242,
-        "height": 99
+        "x": 1885.5,
+        "y": 3891.3,
+        "width": 293,
+        "height": 144
       },
       {
         "id": "TExoDeclaredKid",
-        "x": 1713,
-        "y": 4050.8,
+        "x": 1885.5,
+        "y": 4274.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoFileState",
-        "x": 1311.5,
-        "y": 2093,
+        "x": 1439.5,
+        "y": 2073,
         "width": 293,
         "height": 114
       },
       {
         "id": "TExoGeneratedNames",
-        "x": 913.5,
-        "y": 3098.5,
+        "x": 1041.5,
+        "y": 2886.3,
         "width": 139,
         "height": 84
       },
       {
         "id": "TExoHostTreeWalk",
-        "x": 1713,
-        "y": 1528,
+        "x": 1885.5,
+        "y": 2188,
         "width": 293,
         "height": 189
       },
       {
+        "id": "TExoJsdom",
+        "x": 1439.5,
+        "y": 4645.3,
+        "width": 293,
+        "height": 69
+      },
+      {
         "id": "TExoReactNames",
-        "x": 2070,
-        "y": 707.5,
+        "x": 2335,
+        "y": 729.5,
         "width": 210,
         "height": 189
       },
       {
         "id": "TExoReactPluginOptions",
-        "x": 403,
+        "x": 467,
         "y": 24,
         "width": 178,
         "height": 84
       },
       {
         "id": "TExoSchemaPluginOptions",
-        "x": 403,
-        "y": 2819.5,
-        "width": 178,
-        "height": 99
+        "x": 451,
+        "y": 2577.3,
+        "width": 210,
+        "height": 114
       },
       {
         "id": "TExoSchemaProducer",
-        "x": 868.5,
-        "y": 2986.5,
-        "width": 229,
-        "height": 84
+        "x": 980.5,
+        "y": 2759.3,
+        "width": 261,
+        "height": 99
+      },
+      {
+        "id": "unwrapTypeScript",
+        "x": 2724.5,
+        "y": 3097.3,
+        "width": 126,
+        "height": 69
       }
     ],
     "edges": [
@@ -4122,16 +4767,16 @@
         "id": "addValue→TExoHostTreeWalk",
         "points": [
           {
-            "x": 1559.5,
-            "y": 2751.5
+            "x": 1687.5,
+            "y": 2714.5
           },
           {
-            "x": 1681,
-            "y": 2751.5
+            "x": 1809,
+            "y": 2714.5
           },
           {
-            "x": 1844.6,
-            "y": 1717
+            "x": 1983.2,
+            "y": 2377
           }
         ]
       },
@@ -4139,16 +4784,16 @@
         "id": "babelPluginExodraReact→collectBoundNames",
         "points": [
           {
-            "x": 125.3,
+            "x": 125.7,
             "y": 1119.8
           },
           {
             "x": 253,
-            "y": 2717.8
+            "y": 2475.5
           },
           {
-            "x": 465.8,
-            "y": 2997.8
+            "x": 525,
+            "y": 2778
           }
         ]
       },
@@ -4156,16 +4801,16 @@
         "id": "babelPluginExodraReact→compileHostTree",
         "points": [
           {
-            "x": 131.9,
+            "x": 131.1,
             "y": 1119.8
           },
           {
             "x": 253,
-            "y": 1563.3
+            "y": 1611.8
           },
           {
-            "x": 297.5,
-            "y": 1563.3
+            "x": 361.5,
+            "y": 1611.8
           }
         ]
       },
@@ -4181,15 +4826,15 @@
             "y": 1265.3
           },
           {
-            "x": 492,
+            "x": 556,
             "y": 1265.3
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 1265.3
           },
           {
-            "x": 840,
+            "x": 968,
             "y": 1265.3
           }
         ]
@@ -4206,16 +4851,16 @@
             "y": 1226
           },
           {
-            "x": 492,
+            "x": 556,
             "y": 1226
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 1226
           },
           {
-            "x": 980.1,
-            "y": 3236.3
+            "x": 1107.8,
+            "y": 3024
           }
         ]
       },
@@ -4231,31 +4876,31 @@
             "y": 1196.8
           },
           {
-            "x": 492,
+            "x": 556,
             "y": 1196.8
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 1196.8
           },
           {
-            "x": 983,
+            "x": 1111,
             "y": 1196.8
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1196.8
           },
           {
-            "x": 1458,
+            "x": 1586,
             "y": 1196.8
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 1196.8
           },
           {
-            "x": 1821.2,
+            "x": 1984.1,
             "y": 1070.5
           }
         ]
@@ -4264,16 +4909,16 @@
         "id": "babelPluginExodraReact→mergeHostBranches",
         "points": [
           {
-            "x": 142.9,
+            "x": 143.7,
             "y": 1050.8
           },
           {
             "x": 253,
-            "y": 865
+            "y": 873.3
           },
           {
-            "x": 387,
-            "y": 865
+            "x": 451,
+            "y": 873.3
           }
         ]
       },
@@ -4289,8 +4934,8 @@
             "y": 679.5
           },
           {
-            "x": 488,
-            "y": 2702.5
+            "x": 550.2,
+            "y": 2460.3
           }
         ]
       },
@@ -4306,15 +4951,15 @@
             "y": 631
           },
           {
-            "x": 492,
+            "x": 556,
             "y": 631
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 631
           },
           {
-            "x": 891,
+            "x": 1019,
             "y": 631
           }
         ]
@@ -4331,7 +4976,7 @@
             "y": 296
           },
           {
-            "x": 358.5,
+            "x": 422.5,
             "y": 296
           }
         ]
@@ -4348,24 +4993,24 @@
             "y": 152
           },
           {
-            "x": 492,
+            "x": 556,
             "y": 152
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 152
           },
           {
-            "x": 983,
+            "x": 1111,
             "y": 152
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 152
           },
           {
-            "x": 1451.6,
-            "y": 2093
+            "x": 1579.6,
+            "y": 2073
           }
         ]
       },
@@ -4381,40 +5026,40 @@
             "y": 132
           },
           {
-            "x": 492,
+            "x": 556,
             "y": 132
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 132
           },
           {
-            "x": 983,
+            "x": 1111,
             "y": 132
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 132
           },
           {
-            "x": 1458,
+            "x": 1586,
             "y": 132
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 132
           },
           {
-            "x": 1859.5,
+            "x": 2032,
             "y": 132
           },
           {
-            "x": 2038,
+            "x": 2255,
             "y": 132
           },
           {
-            "x": 2155.7,
-            "y": 707.5
+            "x": 2414.7,
+            "y": 729.5
           }
         ]
       },
@@ -4430,7 +5075,7 @@
             "y": 66
           },
           {
-            "x": 403,
+            "x": 467,
             "y": 66
           }
         ]
@@ -4439,16 +5084,16 @@
         "id": "babelPluginExodraSchema→collectBoundNames",
         "points": [
           {
-            "x": 137.1,
-            "y": 3213
+            "x": 134.5,
+            "y": 3059
           },
           {
             "x": 253,
-            "y": 3487.8
+            "y": 3400.8
           },
           {
-            "x": 473.9,
-            "y": 3066.8
+            "x": 538.2,
+            "y": 2847
           }
         ]
       },
@@ -4456,16 +5101,16 @@
         "id": "babelPluginExodraSchema→compileJsxDeclaration",
         "points": [
           {
-            "x": 138.1,
-            "y": 3213
+            "x": 135.1,
+            "y": 3059
           },
           {
             "x": 253,
-            "y": 3467.8
+            "y": 3380.8
           },
           {
             "x": 285,
-            "y": 3467.8
+            "y": 3380.8
           }
         ]
       },
@@ -4473,24 +5118,24 @@
         "id": "babelPluginExodraSchema→exoImports",
         "points": [
           {
-            "x": 178.3,
-            "y": 3213
+            "x": 221,
+            "y": 3041.5
           },
           {
             "x": 253,
-            "y": 3259.3
+            "y": 3047
           },
           {
-            "x": 492,
-            "y": 3259.3
+            "x": 556,
+            "y": 3047
           },
           {
-            "x": 731,
-            "y": 3259.3
+            "x": 859,
+            "y": 3047
           },
           {
-            "x": 923,
-            "y": 3259.3
+            "x": 1051,
+            "y": 3047
           }
         ]
       },
@@ -4498,16 +5143,16 @@
         "id": "babelPluginExodraSchema→moduleStatement",
         "points": [
           {
-            "x": 209.9,
-            "y": 3213
+            "x": 221,
+            "y": 3019.4
           },
           {
             "x": 253,
-            "y": 3230
+            "y": 3017.8
           },
           {
-            "x": 475.3,
-            "y": 2771.5
+            "x": 536,
+            "y": 2529.3
           }
         ]
       },
@@ -4515,16 +5160,16 @@
         "id": "babelPluginExodraSchema→pickGeneratedNames",
         "points": [
           {
-            "x": 221,
-            "y": 3174.7
+            "x": 193.7,
+            "y": 2990
           },
           {
             "x": 253,
-            "y": 3173.5
+            "y": 2961.3
           },
           {
-            "x": 387,
-            "y": 3173.5
+            "x": 451,
+            "y": 2961.3
           }
         ]
       },
@@ -4532,32 +5177,32 @@
         "id": "babelPluginExodraSchema→TExoFileState",
         "points": [
           {
-            "x": 143.3,
-            "y": 3144
+            "x": 138.1,
+            "y": 2990
           },
           {
             "x": 253,
-            "y": 2962.5
+            "y": 2735.3
           },
           {
-            "x": 492,
-            "y": 2962.5
+            "x": 556,
+            "y": 2735.3
           },
           {
-            "x": 731,
-            "y": 2962.5
+            "x": 859,
+            "y": 2735.3
           },
           {
-            "x": 983,
-            "y": 2962.5
+            "x": 1111,
+            "y": 2735.3
           },
           {
-            "x": 1235,
-            "y": 2962.5
+            "x": 1363,
+            "y": 2735.3
           },
           {
-            "x": 1442.4,
-            "y": 2207
+            "x": 1565,
+            "y": 2187
           }
         ]
       },
@@ -4565,24 +5210,24 @@
         "id": "babelPluginExodraSchema→TExoGeneratedNames",
         "points": [
           {
-            "x": 141.6,
-            "y": 3144
+            "x": 137.1,
+            "y": 2990
           },
           {
             "x": 253,
-            "y": 2942.5
+            "y": 2715.3
           },
           {
-            "x": 492,
-            "y": 2942.5
+            "x": 556,
+            "y": 2715.3
           },
           {
-            "x": 731,
-            "y": 2942.5
+            "x": 859,
+            "y": 2715.3
           },
           {
-            "x": 929.5,
-            "y": 3098.5
+            "x": 1061.3,
+            "y": 2886.3
           }
         ]
       },
@@ -4590,16 +5235,16 @@
         "id": "babelPluginExodraSchema→TExoSchemaPluginOptions",
         "points": [
           {
-            "x": 137,
-            "y": 3144
+            "x": 134,
+            "y": 2990
           },
           {
             "x": 253,
-            "y": 2869
+            "y": 2634.3
           },
           {
-            "x": 403,
-            "y": 2869
+            "x": 451,
+            "y": 2634.3
           }
         ]
       },
@@ -4607,24 +5252,24 @@
         "id": "babelPluginExodraSchema→TExoSchemaProducer",
         "points": [
           {
-            "x": 134.3,
-            "y": 3144
+            "x": 132.1,
+            "y": 2990
           },
           {
             "x": 253,
-            "y": 2795.5
+            "y": 2553.3
           },
           {
-            "x": 492,
-            "y": 2795.5
+            "x": 556,
+            "y": 2553.3
           },
           {
-            "x": 731,
-            "y": 2795.5
+            "x": 859,
+            "y": 2553.3
           },
           {
-            "x": 937.6,
-            "y": 2986.5
+            "x": 1062.2,
+            "y": 2759.3
           }
         ]
       },
@@ -4632,15 +5277,15 @@
         "id": "childOf→elementOf",
         "points": [
           {
-            "x": 1295.5,
+            "x": 1423.5,
             "y": 512.4
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 521.3
           },
           {
-            "x": 1021.6,
+            "x": 1149.6,
             "y": 330.5
           }
         ]
@@ -4649,16 +5294,16 @@
         "id": "claimPort→TExoHostTreeWalk",
         "points": [
           {
-            "x": 1559.5,
-            "y": 2557.5
+            "x": 1687.5,
+            "y": 2537.5
           },
           {
-            "x": 1681,
-            "y": 2557.5
+            "x": 1809,
+            "y": 2537.5
           },
           {
-            "x": 1841.5,
-            "y": 1717
+            "x": 1949.4,
+            "y": 2377
           }
         ]
       },
@@ -4666,16 +5311,16 @@
         "id": "claimPortName→TExoDeclarationWalk",
         "points": [
           {
-            "x": 1569,
-            "y": 4359.3
+            "x": 1697,
+            "y": 4582.8
           },
           {
-            "x": 1681,
-            "y": 4359.3
+            "x": 1809,
+            "y": 4582.8
           },
           {
-            "x": 1842,
-            "y": 3904
+            "x": 2006.1,
+            "y": 4035.3
           }
         ]
       },
@@ -4683,24 +5328,24 @@
         "id": "collectKids→cleanJsxText",
         "points": [
           {
-            "x": 1489.5,
-            "y": 4129.3
+            "x": 1621.3,
+            "y": 4379.5
           },
           {
-            "x": 1681,
-            "y": 4339.3
+            "x": 1809,
+            "y": 4562.8
           },
           {
-            "x": 1859.5,
-            "y": 4339.3
+            "x": 2032,
+            "y": 4562.8
           },
           {
-            "x": 2038,
-            "y": 4339.3
+            "x": 2255,
+            "y": 4562.8
           },
           {
-            "x": 2115,
-            "y": 4295.6
+            "x": 2380,
+            "y": 4510.2
           }
         ]
       },
@@ -4708,16 +5353,16 @@
         "id": "collectKids→isChildrenPortTag",
         "points": [
           {
-            "x": 1499.4,
-            "y": 4129.3
+            "x": 1634.3,
+            "y": 4379.5
           },
           {
-            "x": 1681,
-            "y": 4280.8
+            "x": 1809,
+            "y": 4504.3
           },
           {
-            "x": 1726,
-            "y": 4280.8
+            "x": 1898.5,
+            "y": 4504.3
           }
         ]
       },
@@ -4725,16 +5370,16 @@
         "id": "collectKids→readChildrenPortTag",
         "points": [
           {
-            "x": 1544.4,
-            "y": 4129.3
+            "x": 1709.6,
+            "y": 4379.5
           },
           {
-            "x": 1681,
-            "y": 4183.8
+            "x": 1809,
+            "y": 4407.3
           },
           {
-            "x": 1786.5,
-            "y": 4183.8
+            "x": 1959,
+            "y": 4407.3
           }
         ]
       },
@@ -4742,16 +5387,16 @@
         "id": "collectKids→readPortName",
         "points": [
           {
-            "x": 1585,
-            "y": 4106.4
+            "x": 1713,
+            "y": 4341.4
           },
           {
-            "x": 1681,
-            "y": 4115.3
+            "x": 1809,
+            "y": 4338.8
           },
           {
-            "x": 1843,
-            "y": 3777
+            "x": 1978.6,
+            "y": 4229.3
           }
         ]
       },
@@ -4759,16 +5404,16 @@
         "id": "collectKids→refuseExpression",
         "points": [
           {
-            "x": 1585,
-            "y": 4078.1
+            "x": 1713,
+            "y": 4330.1
           },
           {
-            "x": 1681,
-            "y": 4065.5
+            "x": 1809,
+            "y": 4318.8
           },
           {
-            "x": 1844.8,
-            "y": 3680
+            "x": 1997.2,
+            "y": 4132.3
           }
         ]
       },
@@ -4776,16 +5421,16 @@
         "id": "collectKids→tagText",
         "points": [
           {
-            "x": 1545.7,
-            "y": 4060.3
+            "x": 1673.7,
+            "y": 4310.5
           },
           {
-            "x": 1681,
-            "y": 4007
+            "x": 1809,
+            "y": 4257.3
           },
           {
-            "x": 1846.1,
-            "y": 3583
+            "x": 2014,
+            "y": 3863.3
           }
         ]
       },
@@ -4793,16 +5438,16 @@
         "id": "collectKids→TExoDeclarationWalk",
         "points": [
           {
-            "x": 1529.4,
-            "y": 4060.3
+            "x": 1657.4,
+            "y": 4310.5
           },
           {
-            "x": 1681,
-            "y": 3987
+            "x": 1809,
+            "y": 4237.3
           },
           {
-            "x": 1792.8,
-            "y": 3904
+            "x": 1973.4,
+            "y": 4035.3
           }
         ]
       },
@@ -4810,16 +5455,67 @@
         "id": "collectKids→TExoDeclaredKid",
         "points": [
           {
-            "x": 1518.2,
-            "y": 4060.3
+            "x": 1646.2,
+            "y": 4310.5
           },
           {
-            "x": 1681,
-            "y": 3967
+            "x": 1809,
+            "y": 4217.3
           },
           {
-            "x": 1807.4,
-            "y": 4050.8
+            "x": 1947.9,
+            "y": 4274.3
+          }
+        ]
+      },
+      {
+        "id": "compileExoJsonDeclarations→buildDocument",
+        "points": [
+          {
+            "x": 1225.5,
+            "y": 4813.6
+          },
+          {
+            "x": 1363,
+            "y": 4839.3
+          },
+          {
+            "x": 1526,
+            "y": 4839.3
+          }
+        ]
+      },
+      {
+        "id": "compileExoJsonDeclarations→load",
+        "points": [
+          {
+            "x": 1225.5,
+            "y": 4780
+          },
+          {
+            "x": 1363,
+            "y": 4765.3
+          },
+          {
+            "x": 1526,
+            "y": 4765.3
+          }
+        ]
+      },
+      {
+        "id": "compileExoJsonDeclarations→TExoJsdom",
+        "points": [
+          {
+            "x": 1188.3,
+            "y": 4757.8
+          },
+          {
+            "x": 1363,
+            "y": 4679.8
+          },
+          {
+            "x": 1439.5,
+            "y": 4679.8
           }
         ]
       },
@@ -4827,16 +5523,16 @@
         "id": "compileHostTree→emitHostElement",
         "points": [
           {
-            "x": 502.1,
-            "y": 1597.8
+            "x": 573,
+            "y": 1646.3
           },
           {
-            "x": 731,
-            "y": 2377
+            "x": 859,
+            "y": 2227
           },
           {
-            "x": 763,
-            "y": 2377
+            "x": 891,
+            "y": 2227
           }
         ]
       },
@@ -4844,32 +5540,32 @@
         "id": "compileHostTree→TExoHostTreeWalk",
         "points": [
           {
-            "x": 565.3,
-            "y": 1528.8
+            "x": 613.8,
+            "y": 1577.3
           },
           {
-            "x": 731,
-            "y": 1450.8
+            "x": 859,
+            "y": 1430.8
           },
           {
-            "x": 983,
-            "y": 1450.8
+            "x": 1111,
+            "y": 1430.8
           },
           {
-            "x": 1235,
-            "y": 1450.8
+            "x": 1363,
+            "y": 1430.8
           },
           {
-            "x": 1458,
-            "y": 1450.8
+            "x": 1586,
+            "y": 1430.8
           },
           {
-            "x": 1681,
-            "y": 1450.8
+            "x": 1809,
+            "y": 1430.8
           },
           {
-            "x": 1761.3,
-            "y": 1528
+            "x": 2007.3,
+            "y": 2188
           }
         ]
       },
@@ -4877,40 +5573,57 @@
         "id": "compileHostTree→TExoReactNames",
         "points": [
           {
-            "x": 546.1,
-            "y": 1528.8
+            "x": 608,
+            "y": 1577.3
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 1410.8
           },
           {
-            "x": 983,
+            "x": 1111,
             "y": 1410.8
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1410.8
           },
           {
-            "x": 1458,
+            "x": 1586,
             "y": 1410.8
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 1410.8
           },
           {
-            "x": 1859.5,
+            "x": 2032,
             "y": 1410.8
           },
           {
-            "x": 2038,
+            "x": 2255,
             "y": 1410.8
           },
           {
-            "x": 2153.7,
-            "y": 896.5
+            "x": 2410.2,
+            "y": 918.5
+          }
+        ]
+      },
+      {
+        "id": "compileJsxDeclaration→compileExoJsonDeclarations",
+        "points": [
+          {
+            "x": 563.4,
+            "y": 3415.3
+          },
+          {
+            "x": 859,
+            "y": 4792.3
+          },
+          {
+            "x": 996.5,
+            "y": 4792.3
           }
         ]
       },
@@ -4918,16 +5631,16 @@
         "id": "compileJsxDeclaration→emitDeclaredElement",
         "points": [
           {
-            "x": 515.5,
-            "y": 3502.3
+            "x": 580.8,
+            "y": 3415.3
           },
           {
-            "x": 731,
-            "y": 3819.3
+            "x": 859,
+            "y": 3802.3
           },
           {
-            "x": 843,
-            "y": 3819.3
+            "x": 971,
+            "y": 3802.3
           }
         ]
       },
@@ -4935,16 +5648,16 @@
         "id": "compileJsxDeclaration→exoImports",
         "points": [
           {
-            "x": 536.2,
-            "y": 3502.3
+            "x": 603.8,
+            "y": 3415.3
           },
           {
-            "x": 731,
-            "y": 3654.5
+            "x": 859,
+            "y": 3599.3
           },
           {
-            "x": 968.3,
-            "y": 3282.3
+            "x": 1100.5,
+            "y": 3070
           }
         ]
       },
@@ -4952,16 +5665,16 @@
         "id": "compileJsxDeclaration→readDeclarationRoot",
         "points": [
           {
-            "x": 551.6,
-            "y": 3502.3
+            "x": 617.5,
+            "y": 3415.3
           },
           {
-            "x": 731,
-            "y": 3606
+            "x": 859,
+            "y": 3550.8
           },
           {
-            "x": 881.5,
-            "y": 3606
+            "x": 1009.5,
+            "y": 3550.8
           }
         ]
       },
@@ -4969,16 +5682,98 @@
         "id": "compileJsxDeclaration→readHolder",
         "points": [
           {
-            "x": 691.9,
-            "y": 3502.3
+            "x": 699.2,
+            "y": 3415.3
           },
           {
-            "x": 731,
-            "y": 3509
+            "x": 859,
+            "y": 3453.8
           },
           {
-            "x": 878,
-            "y": 3509
+            "x": 1006,
+            "y": 3453.8
+          }
+        ]
+      },
+      {
+        "id": "compileJsxDeclaration→readModuleConstantString",
+        "points": [
+          {
+            "x": 827,
+            "y": 3393.7
+          },
+          {
+            "x": 859,
+            "y": 3395.3
+          },
+          {
+            "x": 1111,
+            "y": 3395.3
+          },
+          {
+            "x": 1363,
+            "y": 3395.3
+          },
+          {
+            "x": 1586,
+            "y": 3395.3
+          },
+          {
+            "x": 1809,
+            "y": 3395.3
+          },
+          {
+            "x": 2032,
+            "y": 3395.3
+          },
+          {
+            "x": 2255,
+            "y": 3395.3
+          },
+          {
+            "x": 2421.5,
+            "y": 3706
+          }
+        ]
+      },
+      {
+        "id": "compileJsxDeclaration→readModuleValue",
+        "points": [
+          {
+            "x": 658,
+            "y": 3346.3
+          },
+          {
+            "x": 859,
+            "y": 3278.3
+          },
+          {
+            "x": 1111,
+            "y": 3278.3
+          },
+          {
+            "x": 1363,
+            "y": 3278.3
+          },
+          {
+            "x": 1586,
+            "y": 3278.3
+          },
+          {
+            "x": 1809,
+            "y": 3278.3
+          },
+          {
+            "x": 2032,
+            "y": 3278.3
+          },
+          {
+            "x": 2255,
+            "y": 3278.3
+          },
+          {
+            "x": 2413.3,
+            "y": 3482.5
           }
         ]
       },
@@ -4986,16 +5781,49 @@
         "id": "compileJsxDeclaration→TExoCompiledJsxDeclaration",
         "points": [
           {
-            "x": 622.4,
-            "y": 3433.3
+            "x": 618,
+            "y": 3346.3
           },
           {
-            "x": 731,
-            "y": 3404.5
+            "x": 859,
+            "y": 3212.3
           },
           {
-            "x": 852.5,
-            "y": 3404.5
+            "x": 980.5,
+            "y": 3212.3
+          }
+        ]
+      },
+      {
+        "id": "compileJsxDeclaration→TExoDeclarationWalk",
+        "points": [
+          {
+            "x": 600.6,
+            "y": 3346.3
+          },
+          {
+            "x": 859,
+            "y": 3146.3
+          },
+          {
+            "x": 1111,
+            "y": 3146.3
+          },
+          {
+            "x": 1363,
+            "y": 3146.3
+          },
+          {
+            "x": 1586,
+            "y": 3146.3
+          },
+          {
+            "x": 1809,
+            "y": 3146.3
+          },
+          {
+            "x": 2012.3,
+            "y": 3891.3
           }
         ]
       },
@@ -5003,24 +5831,24 @@
         "id": "compileJsxDeclaration→TExoFileState",
         "points": [
           {
-            "x": 555.8,
-            "y": 3433.3
+            "x": 597.1,
+            "y": 3346.3
           },
           {
-            "x": 731,
-            "y": 3338.5
+            "x": 859,
+            "y": 3126.3
           },
           {
-            "x": 983,
-            "y": 3338.5
+            "x": 1111,
+            "y": 3126.3
           },
           {
-            "x": 1235,
-            "y": 3338.5
+            "x": 1363,
+            "y": 3126.3
           },
           {
-            "x": 1447.3,
-            "y": 2207
+            "x": 1573.2,
+            "y": 2187
           }
         ]
       },
@@ -5028,16 +5856,16 @@
         "id": "compileJsxDeclaration→TExoGeneratedNames",
         "points": [
           {
-            "x": 547.2,
-            "y": 3433.3
+            "x": 594.1,
+            "y": 3346.3
           },
           {
-            "x": 731,
-            "y": 3318.5
+            "x": 859,
+            "y": 3106.3
           },
           {
-            "x": 923.5,
-            "y": 3182.5
+            "x": 1051.5,
+            "y": 2970.3
           }
         ]
       },
@@ -5045,16 +5873,16 @@
         "id": "compileJsxDeclaration→TExoSchemaProducer",
         "points": [
           {
-            "x": 540.7,
-            "y": 3433.3
+            "x": 591.5,
+            "y": 3346.3
           },
           {
-            "x": 731,
-            "y": 3298.5
+            "x": 859,
+            "y": 3086.3
           },
           {
-            "x": 943.8,
-            "y": 3070.5
+            "x": 1066,
+            "y": 2858.3
           }
         ]
       },
@@ -5062,15 +5890,15 @@
         "id": "elementOf→ATTRIBUTE_NAME",
         "points": [
           {
-            "x": 1014.3,
+            "x": 1142.3,
             "y": 330.5
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 574
           },
           {
-            "x": 1398,
+            "x": 1526,
             "y": 574
           }
         ]
@@ -5079,15 +5907,15 @@
         "id": "elementOf→childOf",
         "points": [
           {
-            "x": 1039.5,
+            "x": 1167.5,
             "y": 330.5
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 450
           },
           {
-            "x": 1295.5,
+            "x": 1423.5,
             "y": 460.4
           }
         ]
@@ -5096,15 +5924,15 @@
         "id": "elementOf→factoryOf",
         "points": [
           {
-            "x": 1074,
+            "x": 1202,
             "y": 330.5
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 391.5
           },
           {
-            "x": 1315,
+            "x": 1443,
             "y": 391.5
           }
         ]
@@ -5113,15 +5941,15 @@
         "id": "elementOf→HOST_TAG",
         "points": [
           {
-            "x": 1193.5,
+            "x": 1321.5,
             "y": 304.4
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 306
           },
           {
-            "x": 1398,
+            "x": 1526,
             "y": 306
           }
         ]
@@ -5130,23 +5958,23 @@
         "id": "elementOf→isCompilableHost",
         "points": [
           {
-            "x": 1193.5,
+            "x": 1321.5,
             "y": 265.1
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 259
           },
           {
-            "x": 1458,
+            "x": 1586,
             "y": 259
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 259
           },
           {
-            "x": 1851.6,
+            "x": 2022.1,
             "y": 1001.5
           }
         ]
@@ -5155,15 +5983,15 @@
         "id": "elementOf→spreadKids",
         "points": [
           {
-            "x": 1074,
+            "x": 1202,
             "y": 261.5
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 200.5
           },
           {
-            "x": 1267,
+            "x": 1395,
             "y": 200.5
           }
         ]
@@ -5172,16 +6000,16 @@
         "id": "emitDeclaredElement→claimPortName",
         "points": [
           {
-            "x": 999.1,
-            "y": 3853.8
+            "x": 1122.1,
+            "y": 3836.8
           },
           {
-            "x": 1235,
-            "y": 4359.3
+            "x": 1363,
+            "y": 4582.8
           },
           {
-            "x": 1347,
-            "y": 4359.3
+            "x": 1475,
+            "y": 4582.8
           }
         ]
       },
@@ -5189,16 +6017,16 @@
         "id": "emitDeclaredElement→collectKids",
         "points": [
           {
-            "x": 1014.6,
-            "y": 3853.8
+            "x": 1127,
+            "y": 3836.8
           },
           {
-            "x": 1235,
-            "y": 4094.8
+            "x": 1363,
+            "y": 4345
           },
           {
-            "x": 1331,
-            "y": 4094.8
+            "x": 1459,
+            "y": 4345
           }
         ]
       },
@@ -5206,16 +6034,33 @@
         "id": "emitDeclaredElement→cursorCall",
         "points": [
           {
-            "x": 1046.1,
-            "y": 3853.8
+            "x": 1130.4,
+            "y": 3836.8
           },
           {
-            "x": 1235,
-            "y": 3957
+            "x": 1363,
+            "y": 4250
           },
           {
-            "x": 1450.3,
-            "y": 2990.5
+            "x": 1577.6,
+            "y": 3371.3
+          }
+        ]
+      },
+      {
+        "id": "emitDeclaredElement→FOLDED_ATTRIBUTE_VALUES",
+        "points": [
+          {
+            "x": 1132.5,
+            "y": 3836.8
+          },
+          {
+            "x": 1363,
+            "y": 4207.3
+          },
+          {
+            "x": 1500.5,
+            "y": 4207.3
           }
         ]
       },
@@ -5223,16 +6068,16 @@
         "id": "emitDeclaredElement→propKey",
         "points": [
           {
-            "x": 1080.4,
-            "y": 3853.8
+            "x": 1138.2,
+            "y": 3836.8
           },
           {
-            "x": 1235,
-            "y": 3908.5
+            "x": 1363,
+            "y": 4121.8
           },
           {
-            "x": 1353,
-            "y": 3908.5
+            "x": 1481,
+            "y": 4121.8
           }
         ]
       },
@@ -5240,16 +6085,82 @@
         "id": "emitDeclaredElement→readAttributePortName",
         "points": [
           {
-            "x": 1123,
-            "y": 3814.9
+            "x": 1151.1,
+            "y": 3836.8
           },
           {
-            "x": 1235,
-            "y": 3811.5
+            "x": 1363,
+            "y": 4019
           },
           {
-            "x": 1334,
-            "y": 3811.5
+            "x": 1462,
+            "y": 4019
+          }
+        ]
+      },
+      {
+        "id": "emitDeclaredElement→readModuleConstantString",
+        "points": [
+          {
+            "x": 1205.5,
+            "y": 3767.8
+          },
+          {
+            "x": 1363,
+            "y": 3710.3
+          },
+          {
+            "x": 1586,
+            "y": 3710.3
+          },
+          {
+            "x": 1809,
+            "y": 3710.3
+          },
+          {
+            "x": 2032,
+            "y": 3710.3
+          },
+          {
+            "x": 2255,
+            "y": 3710.3
+          },
+          {
+            "x": 2306.5,
+            "y": 3718.7
+          }
+        ]
+      },
+      {
+        "id": "emitDeclaredElement→readModuleValue",
+        "points": [
+          {
+            "x": 1168.8,
+            "y": 3767.8
+          },
+          {
+            "x": 1363,
+            "y": 3651.8
+          },
+          {
+            "x": 1586,
+            "y": 3651.8
+          },
+          {
+            "x": 1809,
+            "y": 3651.8
+          },
+          {
+            "x": 2032,
+            "y": 3651.8
+          },
+          {
+            "x": 2255,
+            "y": 3651.8
+          },
+          {
+            "x": 2392.6,
+            "y": 3551.5
           }
         ]
       },
@@ -5257,24 +6168,24 @@
         "id": "emitDeclaredElement→readPortName",
         "points": [
           {
-            "x": 1076.5,
-            "y": 3784.8
+            "x": 1159.4,
+            "y": 3767.8
           },
           {
-            "x": 1235,
-            "y": 3726.3
+            "x": 1363,
+            "y": 3622.5
           },
           {
-            "x": 1458,
-            "y": 3726.3
+            "x": 1586,
+            "y": 3622.5
           },
           {
-            "x": 1681,
-            "y": 3726.3
+            "x": 1809,
+            "y": 3622.5
           },
           {
-            "x": 1745,
-            "y": 3732.1
+            "x": 2018.6,
+            "y": 4160.3
           }
         ]
       },
@@ -5282,16 +6193,24 @@
         "id": "emitDeclaredElement→readStaticAttribute",
         "points": [
           {
-            "x": 1040.4,
-            "y": 3784.8
+            "x": 1152.6,
+            "y": 3767.8
           },
           {
-            "x": 1235,
-            "y": 3667.8
+            "x": 1363,
+            "y": 3593.3
           },
           {
-            "x": 1350,
-            "y": 3667.8
+            "x": 1586,
+            "y": 3593.3
+          },
+          {
+            "x": 1809,
+            "y": 3593.3
+          },
+          {
+            "x": 1841,
+            "y": 3593.3
           }
         ]
       },
@@ -5299,24 +6218,24 @@
         "id": "emitDeclaredElement→refuseExpression",
         "points": [
           {
-            "x": 1024.4,
-            "y": 3784.8
+            "x": 1145.1,
+            "y": 3767.8
           },
           {
-            "x": 1235,
-            "y": 3609.3
+            "x": 1363,
+            "y": 3547
           },
           {
-            "x": 1458,
-            "y": 3609.3
+            "x": 1586,
+            "y": 3547
           },
           {
-            "x": 1681,
-            "y": 3609.3
+            "x": 1809,
+            "y": 3547
           },
           {
-            "x": 1796.5,
-            "y": 3632.7
+            "x": 2018,
+            "y": 4063.3
           }
         ]
       },
@@ -5324,24 +6243,24 @@
         "id": "emitDeclaredElement→tagText",
         "points": [
           {
-            "x": 1015.4,
-            "y": 3784.8
+            "x": 1142.6,
+            "y": 3767.8
           },
           {
-            "x": 1235,
-            "y": 3550.8
+            "x": 1363,
+            "y": 3527
           },
           {
-            "x": 1458,
-            "y": 3550.8
+            "x": 1586,
+            "y": 3527
           },
           {
-            "x": 1681,
-            "y": 3550.8
+            "x": 1809,
+            "y": 3527
           },
           {
-            "x": 1796.5,
-            "y": 3549.3
+            "x": 2006.5,
+            "y": 3794.3
           }
         ]
       },
@@ -5349,24 +6268,24 @@
         "id": "emitDeclaredElement→TExoDeclarationWalk",
         "points": [
           {
-            "x": 1013.1,
-            "y": 3784.8
+            "x": 1140.4,
+            "y": 3767.8
           },
           {
-            "x": 1235,
-            "y": 3530.8
+            "x": 1363,
+            "y": 3507
           },
           {
-            "x": 1458,
-            "y": 3530.8
+            "x": 1586,
+            "y": 3507
           },
           {
-            "x": 1681,
-            "y": 3530.8
+            "x": 1809,
+            "y": 3507
           },
           {
-            "x": 1832.2,
-            "y": 3805
+            "x": 1996.8,
+            "y": 3891.3
           }
         ]
       },
@@ -5374,16 +6293,16 @@
         "id": "emitHostElement→addValue",
         "points": [
           {
-            "x": 1004,
-            "y": 2411.5
+            "x": 1128.8,
+            "y": 2261.5
           },
           {
-            "x": 1235,
-            "y": 2791.3
+            "x": 1363,
+            "y": 2714.5
           },
           {
-            "x": 1356.5,
-            "y": 2769.6
+            "x": 1484.5,
+            "y": 2714.5
           }
         ]
       },
@@ -5391,16 +6310,40 @@
         "id": "emitHostElement→at",
         "points": [
           {
-            "x": 1007.4,
-            "y": 2411.5
+            "x": 1131.3,
+            "y": 2261.5
           },
           {
-            "x": 1235,
-            "y": 2732.8
+            "x": 1363,
+            "y": 2656
           },
           {
-            "x": 1359.7,
-            "y": 2689
+            "x": 1586,
+            "y": 2656
+          },
+          {
+            "x": 1809,
+            "y": 2656
+          },
+          {
+            "x": 2032,
+            "y": 2656
+          },
+          {
+            "x": 2255,
+            "y": 2656
+          },
+          {
+            "x": 2440,
+            "y": 2656
+          },
+          {
+            "x": 2625,
+            "y": 2656
+          },
+          {
+            "x": 2782.3,
+            "y": 3695.5
           }
         ]
       },
@@ -5408,16 +6351,16 @@
         "id": "emitHostElement→claimPort",
         "points": [
           {
-            "x": 1012.2,
-            "y": 2411.5
+            "x": 1139,
+            "y": 2261.5
           },
           {
-            "x": 1235,
-            "y": 2674.3
+            "x": 1363,
+            "y": 2537.5
           },
           {
-            "x": 1392.1,
-            "y": 2592
+            "x": 1484.5,
+            "y": 2537.5
           }
         ]
       },
@@ -5425,16 +6368,16 @@
         "id": "emitHostElement→CONTROLLED_TAGS",
         "points": [
           {
-            "x": 1018.6,
-            "y": 2411.5
+            "x": 1149.6,
+            "y": 2261.5
           },
           {
-            "x": 1235,
-            "y": 2621.5
+            "x": 1363,
+            "y": 2452
           },
           {
-            "x": 1423.7,
-            "y": 2495
+            "x": 1526,
+            "y": 2452
           }
         ]
       },
@@ -5442,16 +6385,16 @@
         "id": "emitHostElement→cursorCall",
         "points": [
           {
-            "x": 1021.7,
-            "y": 2411.5
+            "x": 1158.7,
+            "y": 2261.5
           },
           {
-            "x": 1235,
-            "y": 2601.5
+            "x": 1363,
+            "y": 2409.3
           },
           {
-            "x": 1436.3,
-            "y": 2921.5
+            "x": 1577.7,
+            "y": 3302.3
           }
         ]
       },
@@ -5459,16 +6402,16 @@
         "id": "emitHostElement→field",
         "points": [
           {
-            "x": 1203,
-            "y": 2385.3
+            "x": 1173.3,
+            "y": 2261.5
           },
           {
-            "x": 1235,
-            "y": 2386.5
+            "x": 1363,
+            "y": 2366.5
           },
           {
-            "x": 1340.5,
-            "y": 2386.5
+            "x": 1468.5,
+            "y": 2366.5
           }
         ]
       },
@@ -5476,23 +6419,23 @@
         "id": "emitHostElement→isCompilableHost",
         "points": [
           {
-            "x": 1160.4,
-            "y": 2342.5
+            "x": 1218.3,
+            "y": 2261.5
           },
           {
-            "x": 1235,
-            "y": 2328
+            "x": 1363,
+            "y": 2308
           },
           {
-            "x": 1458,
-            "y": 2328
+            "x": 1586,
+            "y": 2308
           },
           {
-            "x": 1681,
-            "y": 2328
+            "x": 1809,
+            "y": 2308
           },
           {
-            "x": 1854.7,
+            "x": 2026,
             "y": 1070.5
           }
         ]
@@ -5501,16 +6444,16 @@
         "id": "emitHostElement→member",
         "points": [
           {
-            "x": 1063.9,
-            "y": 2342.5
+            "x": 1331,
+            "y": 2246.6
           },
           {
-            "x": 1235,
-            "y": 2269.5
+            "x": 1363,
+            "y": 2249.5
           },
           {
-            "x": 1318,
-            "y": 2269.5
+            "x": 1446,
+            "y": 2249.5
           }
         ]
       },
@@ -5518,16 +6461,16 @@
         "id": "emitHostElement→PART_PROPS",
         "points": [
           {
-            "x": 1003.1,
-            "y": 2342.5
+            "x": 1139.8,
+            "y": 2192.5
           },
           {
-            "x": 1235,
-            "y": 1945
+            "x": 1363,
+            "y": 1925
           },
           {
-            "x": 1398,
-            "y": 1945
+            "x": 1526,
+            "y": 1925
           }
         ]
       },
@@ -5535,16 +6478,16 @@
         "id": "emitHostElement→propertyKey",
         "points": [
           {
-            "x": 1001.3,
-            "y": 2342.5
+            "x": 1136.2,
+            "y": 2192.5
           },
           {
-            "x": 1235,
-            "y": 1902.3
+            "x": 1363,
+            "y": 1882.3
           },
           {
-            "x": 1436.3,
-            "y": 1583
+            "x": 1564.3,
+            "y": 1563
           }
         ]
       },
@@ -5552,16 +6495,16 @@
         "id": "emitHostElement→readExpression",
         "points": [
           {
-            "x": 999.8,
-            "y": 2342.5
+            "x": 1133.4,
+            "y": 2192.5
           },
           {
-            "x": 1235,
-            "y": 1859.5
+            "x": 1363,
+            "y": 1839.5
           },
           {
-            "x": 1372.5,
-            "y": 1859.5
+            "x": 1500.5,
+            "y": 1839.5
           }
         ]
       },
@@ -5569,16 +6512,16 @@
         "id": "emitHostElement→readLiteralKey",
         "points": [
           {
-            "x": 997.1,
-            "y": 2342.5
+            "x": 1128.9,
+            "y": 2192.5
           },
           {
-            "x": 1235,
-            "y": 1762.5
+            "x": 1363,
+            "y": 1742.5
           },
           {
-            "x": 1340.5,
-            "y": 1762.5
+            "x": 1468.5,
+            "y": 1742.5
           }
         ]
       },
@@ -5586,24 +6529,24 @@
         "id": "emitHostElement→readStaticValue",
         "points": [
           {
-            "x": 995.9,
-            "y": 2342.5
+            "x": 1127,
+            "y": 2192.5
           },
           {
-            "x": 1235,
-            "y": 1704
+            "x": 1363,
+            "y": 1684
           },
           {
-            "x": 1458,
-            "y": 1704
+            "x": 1586,
+            "y": 1684
           },
           {
-            "x": 1681,
-            "y": 1704
+            "x": 1809,
+            "y": 1684
           },
           {
-            "x": 1800.3,
-            "y": 1773.5
+            "x": 1925.5,
+            "y": 1646.3
           }
         ]
       },
@@ -5611,16 +6554,16 @@
         "id": "emitHostElement→shapeKid",
         "points": [
           {
-            "x": 994.9,
-            "y": 2342.5
+            "x": 1125.5,
+            "y": 2192.5
           },
           {
-            "x": 1235,
-            "y": 1645.5
+            "x": 1363,
+            "y": 1625.5
           },
           {
-            "x": 1331,
-            "y": 1645.5
+            "x": 1459,
+            "y": 1625.5
           }
         ]
       },
@@ -5628,24 +6571,24 @@
         "id": "emitHostElement→TExoHostTreeWalk",
         "points": [
           {
-            "x": 992.8,
-            "y": 2342.5
+            "x": 1122.5,
+            "y": 2192.5
           },
           {
-            "x": 1235,
-            "y": 1490
+            "x": 1363,
+            "y": 1470
           },
           {
-            "x": 1458,
-            "y": 1490
+            "x": 1586,
+            "y": 1470
           },
           {
-            "x": 1681,
-            "y": 1490
+            "x": 1809,
+            "y": 1470
           },
           {
-            "x": 1732.2,
-            "y": 1528
+            "x": 2006.1,
+            "y": 2188
           }
         ]
       },
@@ -5653,15 +6596,15 @@
         "id": "emitRuntimeElement→attributeValue",
         "points": [
           {
-            "x": 1082.9,
+            "x": 1210.9,
             "y": 1299.8
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1352.3
           },
           {
-            "x": 1372.5,
+            "x": 1500.5,
             "y": 1352.3
           }
         ]
@@ -5670,16 +6613,16 @@
         "id": "emitRuntimeElement→propertyKey",
         "points": [
           {
-            "x": 1126,
+            "x": 1254,
             "y": 1287.1
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1303.8
           },
           {
-            "x": 1426.6,
-            "y": 1514
+            "x": 1551.8,
+            "y": 1494
           }
         ]
       },
@@ -5687,15 +6630,15 @@
         "id": "emitRuntimeElement→tagExpression",
         "points": [
           {
-            "x": 1126,
+            "x": 1254,
             "y": 1259.6
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1255.3
           },
           {
-            "x": 1375.5,
+            "x": 1503.5,
             "y": 1255.3
           }
         ]
@@ -5704,16 +6647,16 @@
         "id": "exoImports→pickName",
         "points": [
           {
-            "x": 1043,
-            "y": 3268.6
+            "x": 1171,
+            "y": 3056.3
           },
           {
-            "x": 1235,
-            "y": 3298.5
+            "x": 1363,
+            "y": 3086.3
           },
           {
-            "x": 1451.9,
-            "y": 2065
+            "x": 1578.8,
+            "y": 2045
           }
         ]
       },
@@ -5721,16 +6664,16 @@
         "id": "exoImports→TExoFileState",
         "points": [
           {
-            "x": 1043,
-            "y": 3254.7
+            "x": 1171,
+            "y": 3042.4
           },
           {
-            "x": 1235,
-            "y": 3240
+            "x": 1363,
+            "y": 3027.8
           },
           {
-            "x": 1446.3,
-            "y": 2207
+            "x": 1571.8,
+            "y": 2187
           }
         ]
       },
@@ -5738,15 +6681,15 @@
         "id": "factoryOf→FACTORIES",
         "points": [
           {
-            "x": 1542.3,
+            "x": 1670.3,
             "y": 426
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 482.8
           },
           {
-            "x": 1799.5,
+            "x": 1972,
             "y": 482.8
           }
         ]
@@ -5755,15 +6698,15 @@
         "id": "factoryOf→moduleOf",
         "points": [
           {
-            "x": 1594.8,
+            "x": 1722.8,
             "y": 357
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 335.3
           },
           {
-            "x": 1729,
+            "x": 1901.5,
             "y": 335.3
           }
         ]
@@ -5772,15 +6715,15 @@
         "id": "isRepeatableTest→COMPARISONS",
         "points": [
           {
-            "x": 1049.5,
+            "x": 1177.5,
             "y": 1138.3
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1138.3
           },
           {
-            "x": 1398,
+            "x": 1526,
             "y": 1138.3
           }
         ]
@@ -5789,15 +6732,15 @@
         "id": "isSameHost→attributeOf",
         "points": [
           {
-            "x": 1556,
+            "x": 1684,
             "y": 938
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 982
           },
           {
-            "x": 1818.7,
+            "x": 1981,
             "y": 1098.5
           }
         ]
@@ -5806,15 +6749,15 @@
         "id": "isSameHost→isCompilableHost",
         "points": [
           {
-            "x": 1556.5,
+            "x": 1684.5,
             "y": 912.3
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 923.5
           },
           {
-            "x": 1804.8,
+            "x": 1963.6,
             "y": 1001.5
           }
         ]
@@ -5823,15 +6766,15 @@
         "id": "isSameHost→literalOf",
         "points": [
           {
-            "x": 1556.5,
+            "x": 1684.5,
             "y": 899.4
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 894.3
           },
           {
-            "x": 1789.3,
+            "x": 1944.3,
             "y": 841
           }
         ]
@@ -5840,15 +6783,15 @@
         "id": "isSameHost→tagOf",
         "points": [
           {
-            "x": 1556.5,
+            "x": 1684.5,
             "y": 873.6
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 835.8
           },
           {
-            "x": 1810.7,
+            "x": 1971.1,
             "y": 744
           }
         ]
@@ -5857,23 +6800,23 @@
         "id": "merge→attributeOf",
         "points": [
           {
-            "x": 1009.3,
+            "x": 1137.3,
             "y": 763.3
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1059.8
           },
           {
-            "x": 1458,
+            "x": 1586,
             "y": 1059.8
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 1059.8
           },
           {
-            "x": 1775.4,
+            "x": 1927,
             "y": 1098.5
           }
         ]
@@ -5882,15 +6825,15 @@
         "id": "merge→choose",
         "points": [
           {
-            "x": 1014.9,
+            "x": 1142.9,
             "y": 763.3
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1001.3
           },
           {
-            "x": 1356.5,
+            "x": 1484.5,
             "y": 1001.3
           }
         ]
@@ -5899,15 +6842,15 @@
         "id": "merge→expressionOf",
         "points": [
           {
-            "x": 1084.5,
+            "x": 1212.5,
             "y": 760.1
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 806.5
           },
           {
-            "x": 1359.5,
+            "x": 1487.5,
             "y": 806.5
           }
         ]
@@ -5916,15 +6859,15 @@
         "id": "merge→isSameHost",
         "points": [
           {
-            "x": 1084.5,
+            "x": 1212.5,
             "y": 748.3
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 777.3
           },
           {
-            "x": 1397.1,
+            "x": 1525.1,
             "y": 869
           }
         ]
@@ -5933,24 +6876,24 @@
         "id": "merge→literalOf",
         "points": [
           {
-            "x": 1084.5,
+            "x": 1212.5,
             "y": 736.5
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 748
           },
           {
-            "x": 1458,
+            "x": 1586,
             "y": 748
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 748
           },
           {
-            "x": 1754.2,
-            "y": 772
+            "x": 1908,
+            "y": 774
           }
         ]
       },
@@ -5958,24 +6901,24 @@
         "id": "merge→tagOf",
         "points": [
           {
-            "x": 1084.5,
+            "x": 1212.5,
             "y": 712.9
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 689.5
           },
           {
-            "x": 1458,
+            "x": 1586,
             "y": 689.5
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 689.5
           },
           {
-            "x": 1786.5,
-            "y": 701.3
+            "x": 1959,
+            "y": 703
           }
         ]
       },
@@ -5983,15 +6926,15 @@
         "id": "mergeHostBranches→isRepeatableTest",
         "points": [
           {
-            "x": 522.2,
-            "y": 899.5
+            "x": 595.4,
+            "y": 907.8
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 1138.3
           },
           {
-            "x": 916.5,
+            "x": 1044.5,
             "y": 1138.3
           }
         ]
@@ -6000,23 +6943,23 @@
         "id": "mergeHostBranches→isSameHost",
         "points": [
           {
-            "x": 530.4,
-            "y": 899.5
+            "x": 606.6,
+            "y": 907.8
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 1079.8
           },
           {
-            "x": 983,
+            "x": 1111,
             "y": 1079.8
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 1079.8
           },
           {
-            "x": 1414.3,
+            "x": 1542.3,
             "y": 938
           }
         ]
@@ -6025,15 +6968,15 @@
         "id": "mergeHostBranches→merge",
         "points": [
           {
-            "x": 552.5,
-            "y": 830.5
+            "x": 628.3,
+            "y": 838.8
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 728.8
           },
           {
-            "x": 881.5,
+            "x": 1009.5,
             "y": 728.8
           }
         ]
@@ -6042,15 +6985,15 @@
         "id": "moduleOf→requiredSource",
         "points": [
           {
-            "x": 1990,
+            "x": 2162.5,
             "y": 335.3
           },
           {
-            "x": 2038,
+            "x": 2255,
             "y": 335.3
           },
           {
-            "x": 2146.8,
+            "x": 2402,
             "y": 202
           }
         ]
@@ -6059,24 +7002,24 @@
         "id": "pickGeneratedNames→pickName",
         "points": [
           {
-            "x": 597,
-            "y": 3188
+            "x": 661,
+            "y": 2972.7
           },
           {
-            "x": 731,
-            "y": 3206.5
+            "x": 859,
+            "y": 2994.3
           },
           {
-            "x": 983,
-            "y": 3206.5
+            "x": 1111,
+            "y": 2994.3
           },
           {
-            "x": 1235,
-            "y": 3206.5
+            "x": 1363,
+            "y": 2994.3
           },
           {
-            "x": 1451.5,
-            "y": 2065
+            "x": 1578.2,
+            "y": 2045
           }
         ]
       },
@@ -6084,16 +7027,16 @@
         "id": "pickGeneratedNames→TExoGeneratedNames",
         "points": [
           {
-            "x": 597,
-            "y": 3159
+            "x": 661,
+            "y": 2949.8
           },
           {
-            "x": 731,
-            "y": 3140.5
+            "x": 859,
+            "y": 2928.3
           },
           {
-            "x": 913.5,
-            "y": 3140.5
+            "x": 1041.5,
+            "y": 2928.3
           }
         ]
       },
@@ -6101,16 +7044,16 @@
         "id": "pickReactNames→pickName",
         "points": [
           {
-            "x": 1075,
+            "x": 1203,
             "y": 645.1
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 669.5
           },
           {
-            "x": 1452.3,
-            "y": 1996
+            "x": 1580.3,
+            "y": 1976
           }
         ]
       },
@@ -6118,32 +7061,32 @@
         "id": "pickReactNames→TExoReactNames",
         "points": [
           {
-            "x": 1075,
+            "x": 1203,
             "y": 627.3
           },
           {
-            "x": 1235,
+            "x": 1363,
             "y": 621
           },
           {
-            "x": 1458,
+            "x": 1586,
             "y": 621
           },
           {
-            "x": 1681,
+            "x": 1809,
             "y": 621
           },
           {
-            "x": 1859.5,
+            "x": 2032,
             "y": 621
           },
           {
-            "x": 2038,
+            "x": 2255,
             "y": 621
           },
           {
-            "x": 2103.5,
-            "y": 707.5
+            "x": 2353.9,
+            "y": 729.5
           }
         ]
       },
@@ -6151,16 +7094,16 @@
         "id": "propertyKey→PLAIN_KEY",
         "points": [
           {
-            "x": 1566,
-            "y": 1548.5
+            "x": 1694,
+            "y": 1528.5
           },
           {
-            "x": 1681,
-            "y": 1548.5
+            "x": 1809,
+            "y": 1528.5
           },
           {
-            "x": 1855.9,
-            "y": 2656.5
+            "x": 2029.4,
+            "y": 3484.8
           }
         ]
       },
@@ -6168,16 +7111,16 @@
         "id": "propKey→PLAIN_KEY",
         "points": [
           {
-            "x": 1563,
-            "y": 3908.5
+            "x": 1691,
+            "y": 4121.8
           },
           {
-            "x": 1681,
-            "y": 3908.5
+            "x": 1809,
+            "y": 4121.8
           },
           {
-            "x": 1856.2,
-            "y": 2702.5
+            "x": 2023.6,
+            "y": 3530.8
           }
         ]
       },
@@ -6185,16 +7128,16 @@
         "id": "readAttributePortName→readPortName",
         "points": [
           {
-            "x": 1582,
-            "y": 3832.9
+            "x": 1710,
+            "y": 4043.6
           },
           {
-            "x": 1681,
-            "y": 3850
+            "x": 1809,
+            "y": 4063.3
           },
           {
-            "x": 1802.2,
-            "y": 3777
+            "x": 1973.5,
+            "y": 4160.3
           }
         ]
       },
@@ -6202,16 +7145,16 @@
         "id": "readAttributePortName→TExoDeclarationWalk",
         "points": [
           {
-            "x": 1582,
-            "y": 3805.9
+            "x": 1652.5,
+            "y": 3984.5
           },
           {
-            "x": 1681,
-            "y": 3801.5
+            "x": 1809,
+            "y": 3903.3
           },
           {
-            "x": 1738.5,
-            "y": 3818.6
+            "x": 1885.5,
+            "y": 3923.8
           }
         ]
       },
@@ -6219,15 +7162,15 @@
         "id": "readCallElement→elementOf",
         "points": [
           {
-            "x": 625.5,
+            "x": 689.5,
             "y": 296
           },
           {
-            "x": 731,
+            "x": 859,
             "y": 296
           },
           {
-            "x": 772.5,
+            "x": 900.5,
             "y": 296
           }
         ]
@@ -6236,16 +7179,16 @@
         "id": "readChildrenPortTag→cleanJsxText",
         "points": [
           {
-            "x": 1932.5,
-            "y": 4183.8
+            "x": 2105,
+            "y": 4407.3
           },
           {
-            "x": 2038,
-            "y": 4183.8
+            "x": 2255,
+            "y": 4407.3
           },
           {
-            "x": 2115,
-            "y": 4227.4
+            "x": 2380,
+            "y": 4459.8
           }
         ]
       },
@@ -6253,16 +7196,135 @@
         "id": "readLiteralKey→readStaticValue",
         "points": [
           {
-            "x": 1575.5,
-            "y": 1762.5
+            "x": 1703.5,
+            "y": 1742.5
           },
           {
-            "x": 1681,
-            "y": 1762.5
+            "x": 1809,
+            "y": 1742.5
           },
           {
-            "x": 1748.5,
-            "y": 1779.7
+            "x": 1973.2,
+            "y": 1646.3
+          }
+        ]
+      },
+      {
+        "id": "readModuleConstantString→at",
+        "points": [
+          {
+            "x": 2573.5,
+            "y": 3747.7
+          },
+          {
+            "x": 2625,
+            "y": 3750.5
+          },
+          {
+            "x": 2657,
+            "y": 3746.5
+          }
+        ]
+      },
+      {
+        "id": "readModuleConstantString→unwrapTypeScript",
+        "points": [
+          {
+            "x": 2481.2,
+            "y": 3706
+          },
+          {
+            "x": 2625,
+            "y": 3585.5
+          },
+          {
+            "x": 2775.1,
+            "y": 3166.3
+          }
+        ]
+      },
+      {
+        "id": "readModuleValue→rootOf",
+        "points": [
+          {
+            "x": 2571.6,
+            "y": 3551.5
+          },
+          {
+            "x": 2625,
+            "y": 3565.5
+          },
+          {
+            "x": 2682.5,
+            "y": 3568.9
+          }
+        ]
+      },
+      {
+        "id": "readModuleValue→unwrapTypeScript",
+        "points": [
+          {
+            "x": 2453.1,
+            "y": 3482.5
+          },
+          {
+            "x": 2625,
+            "y": 3028.3
+          },
+          {
+            "x": 2733.3,
+            "y": 3097.3
+          }
+        ]
+      },
+      {
+        "id": "readStaticAttribute→readModuleConstantString",
+        "points": [
+          {
+            "x": 2223,
+            "y": 3593.3
+          },
+          {
+            "x": 2255,
+            "y": 3593.3
+          },
+          {
+            "x": 2396.7,
+            "y": 3706
+          }
+        ]
+      },
+      {
+        "id": "TExoDeclarationWalk→readModuleConstantString",
+        "points": [
+          {
+            "x": 2104.6,
+            "y": 4035.3
+          },
+          {
+            "x": 2255,
+            "y": 4184.5
+          },
+          {
+            "x": 2425.6,
+            "y": 3775
+          }
+        ]
+      },
+      {
+        "id": "TExoDeclarationWalk→readModuleValue",
+        "points": [
+          {
+            "x": 2141.6,
+            "y": 3891.3
+          },
+          {
+            "x": 2255,
+            "y": 3816.8
+          },
+          {
+            "x": 2418.7,
+            "y": 3551.5
           }
         ]
       },
@@ -6270,16 +7332,16 @@
         "id": "TExoHostTreeWalk→TExoReactNames",
         "points": [
           {
-            "x": 2006,
-            "y": 1622.5
+            "x": 2178.5,
+            "y": 2282.5
           },
           {
-            "x": 2038,
-            "y": 1622.5
+            "x": 2255,
+            "y": 2282.5
           },
           {
-            "x": 2159.2,
-            "y": 896.5
+            "x": 2428,
+            "y": 918.5
           }
         ]
       }

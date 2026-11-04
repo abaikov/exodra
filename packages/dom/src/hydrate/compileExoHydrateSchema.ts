@@ -24,10 +24,10 @@ export function compileExoHydrateSchema(
     dom: TExoDomSchema
 ): TExoHydrateSchema {
     const surface = requireExoHydrateSurface(backend);
-    const portList = schema.portList;
+    const portList = dom.ports;
     const count = portList.length;
 
-    assertReachableExoPorts(schema, dom.hydrateUnreachable, dom.elem);
+    assertReachableExoPorts(portList, dom.hydrateUnreachable, dom.elem);
 
     const setters: TExoDomSetter[] = new Array(count);
     const elem = createExoIntTable(count, 0);

@@ -23,6 +23,7 @@ export type { TExoSchemaCursor } from './schema/cursor/types/TExoSchemaCursor';
 export type { TExoSchemaDecorator } from './schema/cursor/types/TExoSchemaDecorator';
 export type { TExoSchemaDraft } from './schema/cursor/types/TExoSchemaDraft';
 export type { TExoCursorDeclaration } from './schema/types/TExoCursorDeclaration';
+export type { TExoJsonDeclarations } from './schema/types/TExoJsonDeclarations';
 export type { TExoSchemaBuild } from './schema/types/TExoSchemaBuild';
 export type { TExoEmitter } from './schema/types/TExoEmitter';
 export { exoPorts } from './schema/ports/factories/exoPorts';
@@ -82,7 +83,6 @@ export { escapeExoText } from './escape/escapeExoText';
 export { escapeExoAttributeValue } from './escape/escapeExoAttributeValue';
 
 export { assertExoChildrenPort } from './schema/ports/asserts/assertExoChildrenPort';
-export { assertExoNoTextAfterChildrenPort } from './schema/markup/asserts/assertExoNoTextAfterChildrenPort';
 export { assertExoIntactRawTextBoundary } from './schema/markup/asserts/assertExoIntactRawTextBoundary';
 export { assertExoLegalTagName } from './schema/markup/asserts/assertExoLegalTagName';
 export { assertExoOneRoot } from './schema/markup/asserts/assertExoOneRoot';

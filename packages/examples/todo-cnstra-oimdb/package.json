@@ -9,10 +9,11 @@
   "dependencies": {
     "@cnstra/core": "^2.5.0",
     "@exodra/context": "^0.3.0",
-    "@exodra/core": "^0.3.0",
-    "@exodra/dom": "^0.3.0",
-    "@exodra/forms": "^0.3.0",
+    "@exodra/core": "^0.4.0",
+    "@exodra/dom": "^0.4.0",
+    "@exodra/forms": "^0.4.0",
     "@exodra/list-reconcile": "^0.3.0",
-    "@oimdb/core": "^4.8.0"
+    "@oimdb/core": "^4.10.0",
+    "@oimdb/exodra": "^2.0.1"
   }
 }

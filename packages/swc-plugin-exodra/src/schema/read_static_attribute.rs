@@ -1,10 +1,17 @@
+use std::collections::HashMap;
+
 use swc_core::common::DUMMY_SP;
 use swc_core::ecma::ast::*;
 
 use super::ast::{bool_expr, num_expr, unwrap_paren};
+use super::read_module_constant_string::read_module_constant_string;
+use crate::str_lit;
 
 // Rebuilt with no `raw`, so the printer writes the value and not the author's quoting.
-pub(crate) fn read_static_attribute(value: &Option<JSXAttrValue>) -> Option<Expr> {
+pub(crate) fn read_static_attribute(
+    value: &Option<JSXAttrValue>,
+    module_constants: &HashMap<Id, String>,
+) -> Option<Expr> {
     match value {
         None => Some(bool_expr(true)),
         Some(JSXAttrValue::Str(s)) => Some(rebuilt_string(s)),
@@ -13,7 +20,7 @@ pub(crate) fn read_static_attribute(value: &Option<JSXAttrValue>) -> Option<Expr
                 Expr::Lit(Lit::Str(s)) => Some(rebuilt_string(s)),
                 Expr::Lit(Lit::Num(n)) => Some(num_expr(n.value)),
                 Expr::Lit(Lit::Bool(b)) => Some(bool_expr(b.value)),
-                _ => None,
+                _ => read_module_constant_string(expr, module_constants).map(|v| str_lit(&v)),
             },
             JSXExpr::JSXEmptyExpr(_) => None,
         },

@@ -164,12 +164,6 @@
             "explanation": "A tag reaches the markup VERBATIM on every backend and cannot be escaped, since an escaped tag is not a tag. So a name carrying a greater-than, a space or a quote does not make an oddly-named element, it makes MARKUP, and a name that closes the tag and opens an img with an onerror ships a working handler from the server AND in the browser. Legal is narrower than HTML's own custom-element rule on purpose: a letter, then letters, digits or hyphens, which covers div, svg, feGaussianBlur and my-widget. The name ships with the code because a tag can be assembled from data, which is the bug this most often is; check it against the elements you mean to allow before it reaches el()."
         },
         {
-            "code": "EXO0014",
-            "pkg": "core",
-            "meaning": "A schema declares static text immediately after a children port, where the two backends would place that port's children differently.",
-            "explanation": "A region is anchored on the NEXT STATIC ELEMENT, so the rows filled into the port would land AFTER that text in the browser while the server prints them before it: one schema, two trees. An EMPTY run is not a refusal, because it occupies no position and moves no anchor. Wrap the text in an element, or make it part of what the wiring puts in the region. A development build names the element and prints the start of the text."
-        },
-        {
             "code": "EXO0015",
             "pkg": "core",
             "meaning": "A schema declares a value port on a select or an output element, and the server can print no attribute that carries it.",
@@ -572,8 +566,8 @@
         {
             "code": "EXO0099",
             "pkg": "dom",
-            "meaning": "A child was handed as a DECLARATION to a backend that has no compiler composed into it.",
-            "explanation": "one/list/build take a component, a component carries a declaration, and turning that into a schema is the compiler's job — which is a PACK, so a backend built without it cannot do this. Either compose withExoCompiler(new ExoDomBackend()), or hand the child a schema this backend already holds: that is what a page whose schemas came off a build does, and it is the whole reason such a page links no compiler at all."
+            "meaning": "A machine whose declaration carries no DOM JSON form reached a backend that has no compiler composed into it.",
+            "explanation": "render under withExoBuiltSchemas, and one/list/build on any backend, turn a machine's declaration into a schema. With no compiler composed, the only way to do that is the JSON form a build writes onto the declaration, and this declaration has none. Either compose withExoCompiler(new ExoDomBackend()), or declare the component with exoJsx under @exodra/babel-plugin-schema, which compiles the declaration at build time and writes that form onto it."
         },
         {
             "code": "EXO0100",
@@ -757,6 +751,11 @@
             "code": "EXO0096",
             "pkg": "router",
             "note": "exoRouteMatchAt was asked for a match no route boundary had filed. Retired with exoRouteMatchAt itself: a page now receives its match as the params of its wire, and createInitialState receives it as its params, so there is no side table to miss."
+        },
+        {
+            "code": "EXO0014",
+            "pkg": "core",
+            "note": "A schema declared static text immediately after a children port. Retired when the DOM compiler learned to anchor the region on that Text node, and to put an empty comment before it where the server's parser would otherwise merge it into the text before the region or eat its newline; the string compiler prints the same comment, so both backends build one tree."
         }
     ]
 }

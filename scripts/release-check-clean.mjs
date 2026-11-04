@@ -10,7 +10,7 @@
 // 4. Refuses if any check changed a file (the tree after must equal the tree before).
 // 5. Writes `.release-check-pass` with that tree's hash. `.githooks/pre-commit` and `pre-push`
 //    accept only a commit whose tree is exactly that hash.
-import { execSync, spawnSync } from 'node:child_process';
+import { execSync, spawn } from 'node:child_process';
 import { existsSync, readdirSync, rmSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -27,13 +27,32 @@ function workingTreeHash() {
     return hash;
 }
 
+// Each step runs in its own process group and Ctrl+C kills that group whole: a step-by-step chain
+// otherwise reads an interrupted step as an ordinary failure, and the loops in it go on to the next.
+let running = null;
+for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+    process.on(signal, () => {
+        if (running !== null && running.exitCode === null) process.kill(-running.pid, 'SIGKILL');
+        console.error(`\n✖ release:check:clean — interrupted (${signal}). Nothing was stamped.`);
+        process.exit(130);
+    });
+}
+
 function run(label, command, args) {
     console.log(`\n▶ ${label}`);
-    const result = spawnSync(command, args, { cwd: ROOT, stdio: 'inherit' });
-    if (result.status !== 0) {
-        console.error(`\n✖ release:check:clean — ${label} failed (exit ${result.status}). Nothing was stamped.`);
-        process.exit(1);
-    }
+    return new Promise((resolve) => {
+        running = spawn(command, args, { cwd: ROOT, stdio: 'inherit', detached: true });
+        running.on('exit', (status) => {
+            running = null;
+            if (status !== 0) {
+                console.error(
+                    `\n✖ release:check:clean — ${label} failed (exit ${status}). Nothing was stamped.`
+                );
+                process.exit(1);
+            }
+            resolve();
+        });
+    });
 }
 
 rmSync(STAMP, { force: true });
@@ -47,9 +66,9 @@ for (const entry of readdirSync(packages)) {
         if (existsSync(path)) rmSync(path, { recursive: true, force: true });
     }
 }
-run('remove compiled files under src', 'npm', ['run', '--silent', 'clean:src']);
-run('npm ci', 'npm', ['ci', '--no-audit', '--no-fund']);
-run('npm run release:check', 'npm', ['run', 'release:check']);
+await run('remove compiled files under src', 'npm', ['run', '--silent', 'clean:src']);
+await run('npm ci', 'npm', ['ci', '--no-audit', '--no-fund']);
+await run('npm run release:check', 'npm', ['run', 'release:check']);
 
 const after = workingTreeHash();
 if (after !== before) {
@@ -60,4 +79,6 @@ if (after !== before) {
     process.exit(1);
 }
 writeFileSync(STAMP, `${before}\n`);
-console.log(`\n✓ release:check:clean — tree ${before} passed from a clean state; commit and push may use it.`);
+console.log(
+    `\n✓ release:check:clean — tree ${before} passed from a clean state; commit and push may use it.`
+);

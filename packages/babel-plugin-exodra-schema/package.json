@@ -1,6 +1,6 @@
 {
   "name": "@exodra/babel-plugin-schema",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Babel plugins that compile JSX into Exodra schemas: exoJsx(($) => <markup/>) declarations into createExoNamedSchema(), and (./react) React components' host trees into hoisted schemas with ports run by @exodra/react-compat.",
   "keywords": [
     "exodra",
@@ -50,8 +50,13 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "dependencies": {
+    "@babel/generator": "^7.24.0",
     "@babel/types": "^7.24.0",
-    "@exodra/react-compat": "^0.1.0"
+    "@exodra/core": "^0.4.0",
+    "@exodra/dom": "^0.4.0",
+    "@exodra/react-compat": "^0.2.0",
+    "@exodra/string": "^0.5.0",
+    "jsdom": "^27.4.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0"
@@ -59,6 +64,8 @@
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/plugin-syntax-jsx": "^7.24.0",
-    "@types/babel__core": "^7.20.5"
+    "@babel/plugin-syntax-typescript": "^7.29.7",
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__generator": "^7.6.8"
   }
 }

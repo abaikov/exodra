@@ -88,7 +88,7 @@ function epilogue(): void {
     );
     refuse('NOT HOT — once per (schema, backend), cached on the schema:');
     refuse(
-        '  packages/string/src/schema/compileExoStrSchema.ts:382 — createExoMarkupFiller(pieces, order)'
+        '  packages/string/src/schema/createExoStrSchema.ts:19 — createExoMarkupFiller(pieces, order)'
     );
     line('');
     line(

@@ -108,10 +108,13 @@ describe('createExoSchema', () => {
         expect(Object.keys(schema).sort()).toEqual([
             'build',
             'declaredPorts',
+            'jsonDeclarations',
             'portList',
             'ports',
             'rootTag',
         ]);
+        // The one non-markup field is what a build wrote, and nothing at run time fills it.
+        expect(schema.jsonDeclarations).toBeNull();
     });
 
     it('refuses a cursor that declared no element, at the first replay of the markup', () => {

@@ -30,6 +30,7 @@ const root = resolve(import.meta.dirname, '..');
 const STRICT_ENTRIES = [
     'packages/dom/src/dom/createExoDomSchema.ts',
     'packages/dom/src/dom/mountExoSchema.ts',
+    'packages/dom/src/dom/withExoBuiltSchemas.ts',
 ];
 
 // What a page must import to have a backend at all: the writers, the events and the record
@@ -95,7 +96,7 @@ let failed = false;
         console.log(
             'check:json-render-links-no-compiler: STRICT ok — ' +
                 reached.size +
-                ' modules from the two JSON entries, no compiler among them.'
+                ` modules from the ${STRICT_ENTRIES.length} JSON entries, no compiler among them.`
         );
     }
 }

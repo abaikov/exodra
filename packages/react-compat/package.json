@@ -1,6 +1,6 @@
 {
   "name": "@exodra/react-compat",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -52,8 +52,8 @@
   },
   "peerDependencies": {
     "@exodra/context": "^0.3.0",
-    "@exodra/core": "^0.3.0",
-    "@exodra/dom": "^0.3.0",
+    "@exodra/core": "^0.4.0",
+    "@exodra/dom": "^0.4.0",
     "@exodra/list-reconcile": "^0.3.0"
   },
   "devDependencies": {

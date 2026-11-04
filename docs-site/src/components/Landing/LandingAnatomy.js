@@ -19,7 +19,7 @@ const STAGES = [
         when: 'wherever it runs',
         name: 'Backend',
         text: 'The same machine renders into the DOM, prints HTML on the server, adopts it on the client, or drives a terminal.',
-        code: 'const backend = withExoCompiler(new ExoDomBackend());\nbackend.render(mCounter.done(), document.body);',
+        code: 'withExoCompiler(new ExoDomBackend())\n    .render(counterMachine, document.body);',
     },
 ];
 

@@ -17,9 +17,9 @@
     "license": "MIT",
     "//devDependencies": "THE THREE PRIVATE PACKAGES THIS ONE IMPORTS ARE DELIBERATELY NOT LISTED — @exodra/term, @exodra/test-utils and @exodra/conformance itself. None is published, none is built to dist, and all three are reached through the root vitest alias and the root tsconfig paths rather than through an install. Declaring one would assert an install relationship that does not exist, which is the thing `no-undeclared-dep` exists to catch; tsconfig.depcruise.json carries the mappings instead, so those edges resolve OUTSIDE node_modules and the crawl types them `local`. The reasoning is `packages/benchmarks`', written out in that file beside its own private mappings.",
     "devDependencies": {
-        "@exodra/core": "^0.3.0",
-        "@exodra/dom": "^0.3.0",
-        "@exodra/string": "^0.4.1",
+        "@exodra/core": "^0.4.0",
+        "@exodra/dom": "^0.4.0",
+        "@exodra/string": "^0.5.0",
         "jsdom": "^23.0.1",
         "typescript": "^5.3.3",
         "vitest": "^4.0.16"

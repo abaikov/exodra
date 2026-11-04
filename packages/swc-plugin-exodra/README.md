@@ -59,7 +59,9 @@ In the last column `RowPorts` is `rowSchema.ports` and `on` is the registrar `wi
 | `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(RowPorts.body, markup)` |
 | `<$.rows />` | `childrenPort("rows")` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
 
-Any other expression (a closure, `item.id`, a conditional), a component tag (`<Row />`),
+An attribute may also hold a module `const` string, folded into the markup at build, or a
+name, `a.b` or `a['x']` rooted at an import or a module `const`, read once when the schema
+compiles. Any other expression (a closure, `item.id`, a conditional), a component tag (`<Row />`),
 a fragment, a spread, a lowercase inline handler (`onclick="…"`), a namespace other than
 `on:`, a text port beside other children, `unsafeHtml` beside children and a port name
 used twice are each a compile error with a sentence naming the spelling that would have
