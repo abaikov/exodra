@@ -47,16 +47,16 @@ import type {
     TExoMachineInitialState,
 } from '@exodra/core';
 import type { TExoContextToken } from '@exodra/context';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 import { describe, expect, it } from 'vitest';
 import { provideExoContext } from '../dom/provideExoContext';
 
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
-import { ExoDomBackend, withExoHydration, withExoCompiler, withExoChildList } from '@exodra/dom';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
+import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode, TExoDomPortChildList } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 
-const EXO_BACKEND = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+const EXO_BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const EXO_STR = new ExoStrBackend();
 
 /** One token for this file. Two of them would be two identities, which is the point of them. */
@@ -328,6 +328,8 @@ const servedAppOf = (items: readonly TItem[]) =>
             }
     );
 
+const reconcileStamped = createExoChildrenReconciler<TItem>(STAMPED);
+
 /** THE GROWING APPLICATION — browser only, because growing is what a reconciler does and a
  *  reconciler needs a placement door. */
 const appOf = (src: { getValue(): readonly TItem[]; onChange(cb: () => void): () => void }) => {
@@ -340,32 +342,25 @@ const appOf = (src: { getValue(): readonly TItem[]; onChange(cb: () => void): ()
         });
         return { rows };
     });
-    const m = createExoMachine<TExoDomNode, unknown, { rows: TExoChildList; shown: TItem[] }>(
-        schema,
-        {
-            createInitialState: (c) => {
-                c.provide(THEME, 'dark');
-                return { rows: c.childList(schema.ports.rows), shown: [] };
-            },
-        }
-    );
+    const m = createExoMachine<TExoDomNode>(schema, {
+        createInitialState: (c) => {
+            c.provide(THEME, 'dark');
+        },
+    });
     const machine = composeExoMachine(
         m,
         (m) =>
             withExoTransitions(m, {
                 // THE LIST IS THE RECONCILER'S, not the backend's, and that is what makes the question askable
-                // at all: a row built an hour later is built by a layer over `build` + `childList`, from inside
+                // at all: a row built an hour later is built by a layer over `createExoNode` + `portChildList`, from inside
                 // the source's subscriber, with no render on the stack. `c.list` could not grow and so could not
                 // ask.
 
                 showRows: (c) => {
-                    const want = src.getValue();
-                    c.state.shown = reconcileExoOrder(
-                        c.state.rows,
-                        c.state.shown,
-                        want,
-                        want,
-                        (item) => c.build(STAMPED, item)
+                    reconcileStamped(
+                        c as TExoDomNode & TExoDomPortChildList,
+                        schema.ports.rows,
+                        src.getValue()
                     );
                 },
             }),

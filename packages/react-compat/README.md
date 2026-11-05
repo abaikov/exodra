@@ -23,12 +23,12 @@ dependencies**, and nothing is bundled into this package.
 
 ## Entry points
 
-| Entry | Stands in for |
-| --- | --- |
-| `@exodra/react-compat` | `react` and `react-dom` |
-| `@exodra/react-compat/client` | `react-dom/client` |
-| `@exodra/react-compat/server` | `react-dom/server` |
-| `@exodra/react-compat/jsx-runtime` | `react/jsx-runtime` |
+| Entry                                  | Stands in for           |
+| -------------------------------------- | ----------------------- |
+| `@exodra/react-compat`                 | `react` and `react-dom` |
+| `@exodra/react-compat/client`          | `react-dom/client`      |
+| `@exodra/react-compat/server`          | `react-dom/server`      |
+| `@exodra/react-compat/jsx-runtime`     | `react/jsx-runtime`     |
 | `@exodra/react-compat/jsx-dev-runtime` | `react/jsx-dev-runtime` |
 
 ## Usage

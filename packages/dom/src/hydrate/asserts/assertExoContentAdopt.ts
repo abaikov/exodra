@@ -15,7 +15,7 @@ export const assertExoContentAdopt: TExoDomSetter = () => {
             ? 'createExoSchema(hydrate): this children port cannot be filled with set() — it shares ' +
               'its element with other children.' +
               ' The only way to write raw markup is innerHTML, which would destroy them. Nested ' +
-              'instances go through one(), list() or childList(); raw markup (unsafeHtml) needs ' +
+              'instances go through one(), list() or appendChild(); raw markup (unsafeHtml) needs ' +
               "a port that is its element's ONLY child. The server and a client render refuse " +
               'this same program, by design.'
             : 'EXO0033'

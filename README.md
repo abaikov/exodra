@@ -34,8 +34,8 @@ React on both.
     Against other frameworks it leads mount, reconcile and application-update in
     [the suite](https://exodra.org/docs/benchmarks), which publishes its losses too.
 -   **A strategy for the hot path.** Keep a subtree alive instead of rebuilding
-    it, or build a child with `c.build` and place it yourself when you already
-    know where it goes. Each is a choice you make where it matters.
+    it, or create a child with `c.createExoNode` and place it yourself when you
+    already know where it goes. Each is a choice you make where it matters.
 -   **Every behaviour is a decorator.** The DOM backend is assembled from packs:
     replace a named interface and everything you did not name stays what ships
     ([Plugins](https://exodra.org/docs/guides/plugins), including what is not
@@ -113,8 +113,8 @@ changed. Each `withExo*` decorator returns a new machine and leaves its input al
 `composeExoMachine` applies them in order. Following an outside source is an effect —
 `withExoEffects(m, (effect) => { effect((c) => source.onChange(() => update(c))); })` — so a
 disconnected instance stops listening and a torn-down one lets go. Reconciling a
-children port is `reconcileExoOrder` from `@exodra/list-reconcile`, called from the
-machine's own code the same way. See the
+children port is a reconciler made once with `createExoChildrenReconciler` from
+`@exodra/list-reconcile`, called from the machine's own code the same way. See the
 [Components guide](https://exodra.org/docs/guides/components).
 
 ### Schemas in JSX
@@ -222,11 +222,12 @@ const TodoList = createExoMachine<TExoChildrenWiring & TExoMachineNode>(todoList
 withExoCompiler(new ExoDomBackend()).render(TodoList, document.body);
 ```
 
-A list that DOES change opens the port with `c.childList(port)` in
-`createInitialState` and reconciles it from the machine's own code with `reconcileExoOrder`
-from `@exodra/list-reconcile`. It compares the order shown with the order wanted by
-the identity of the item objects, so a row that survives an update is the same
-element it was; an effect draws the list first and then follows the data.
+A list that DOES change is reconciled from the machine's own code by a reconciler made
+once, at module level, with `createExoChildrenReconciler(rowMachine)` from
+`@exodra/list-reconcile`. It remembers what it showed in each port, compares that with
+the order wanted by the identity of the item objects, and wires every new row with its
+item, so a row that survives an update is the same element it was; an effect draws the
+list first and then follows the data.
 
 ```ts
 import {
@@ -238,10 +239,9 @@ import {
     withExoEffects,
     withExoWire,
 } from '@exodra/core';
-import type { TExoMachineNodeOf } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
 type TTodo = { readonly id: number; readonly text: string };
 
@@ -278,34 +278,24 @@ const todoListSchema = createExoSchema(TodoListPorts, (b) => {
         ul.childrenPort(TodoListPorts.rows);
     });
 });
-type TTodoListState = { rows: TExoChildList; shown: TTodo[] };
-const todoListBase = createExoMachine(todoListSchema, {
-    createInitialState: (c: TExoDomNode): TTodoListState => ({
-        rows: c.childList(TodoListPorts.rows),
-        shown: [],
-    }),
-});
-function showRows(c: TExoMachineNodeOf<typeof todoListBase>): void {
-    const want = todos.getValue();
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (todo) =>
-        c.build(Todo, todo)
-    );
-}
+const reconcileTodos = createExoChildrenReconciler<TTodo>(Todo);
+
+const todoListBase = createExoMachine<TExoDomNode>(todoListSchema);
 const TodoList = withExoEffects(todoListBase, (effect) => {
     effect((c) => {
-        showRows(c);
-        return todos.onChange(() => showRows(c));
+        reconcileTodos(c, TodoListPorts.rows, todos.getValue());
+        return todos.onChange(() => reconcileTodos(c, TodoListPorts.rows, todos.getValue()));
     });
 });
 
-withExoChildList(withExoCompiler(new ExoDomBackend())).render(TodoList, document.body);
+withExoCompiler(new ExoDomBackend()).render(TodoList, document.body);
 todos.setValue([...todos.getValue(), { id: 2, text: 'Ship it' }]);
 ```
 
 For data with no stable identity — rows parsed fresh from JSON on every refetch —
-compose `EXO_KEYED_LIST_VOCABULARY` onto the backend and call
-`c.keyedList(port, keyOf, build, update)` in `createInitialState`: it returns
-`{ reconcile(items) }`, and a surviving key keeps its row. The two fixed and
+make the reconciler with a key: `createExoChildrenReconciler(rowMachine, { key: (row) => row.id })`.
+A surviving key keeps its row, and when a new object stands under it the row's wire runs
+again with that object. The two fixed and
 reconciled forms are different calls because they are different jobs, and the cheap
 one does not subsidise the other.
 
@@ -313,23 +303,23 @@ one does not subsidise the other.
 
 All `@exodra/*` packages are published under the `0.x` line.
 
-| Package                                                                  | Description                                                                                                                                              |
-| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Package                                                                  | Description                                                                                                                                                                                                                               |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **[@exodra/core](./packages/core)**                                      | `createExoSchema`, `createExoMachine` and its decorators `withExoTransitions`/`withExoWire`/`withExoHandlers`/`withExoEffects` (the machine: initial state, wire, transitions, effects), ports, contexts, event descriptors, the escapers |
-| **[@exodra/computed](./packages/computed)**                              | The declarative half of a machine: `withExoComputedMachine`, `exoWiring`, fields, derivations, transitions. A page that derives nothing links none of it |
-| **[@exodra/list-reconcile](./packages/list-reconcile)**                  | `reconcileExoOrder` (identity reconcile from the machine's own code), `createExoKeyedList` and the `keyedList` pack |
-| **[@exodra/dom](./packages/dom)**                                        | Browser backend: `mountExoSchema`, `withExoCompiler`'s `render`/`withExoHydration`'s `hydrate`, identity reconcile, event plugins                                                                    |
-| **[@exodra/jsx](./packages/jsx)**                                        | `exoJsx` and the types for the JSX dialect (`jsxImportSource: "@exodra/jsx/schema"`)                                                                     |
-| **[@exodra/babel-plugin-schema](./packages/babel-plugin-exodra-schema)** | The JSX compiler: `exoJsx(…)` → a module-level `createExoNamedSchema()`                                                                                                     |
-| **[@exodra/string](./packages/string)**                                  | Server backend: `ExoStrBackend.render` to markup                                                                                                         |
-| **[@exodra/ssr](./packages/ssr)**                                        | The rest of the response: `renderExoPage`, `EXO_SSR_RESPONSE`, state transfer                                                                                     |
-| **[@exodra/router](./packages/router)**                                  | Client-side router: `createExoRouter`, `provideExoRouter`, `ExoOutlet`/`exoOutlet`, `ExoLink`, history adapters                                         |
-| **[@exodra/forms](./packages/forms)**                                    | Form controls without a bound model: `readExoControlValue`, `readExoControlValues`, `writeExoChoice`                                                    |
-| **[@exodra/dom-profiler](./packages/dom-profiler)**                      | Profile the DOM backend per connector method (`profileDom`) or per port (`profilePorts`)                                                                 |
-| **[@exodra/react-mount](./packages/react-mount)**                        | Mount an Exodra component into a React-owned element                                                                                                     |
-| **[@exodra/introspect](./packages/introspect)**                          | ESLint rules for schema hoisting, and a counter of schemas, machines and reactive sources |
-| **[@exodra/vite-plugin](./packages/vite-plugin-exodra)**                 | Vite integration for Exodra projects                                                                                                                     |
-| **[create-exodra](./packages/create-exodra)**                            | `npm create exodra` project scaffolding CLI                                                                                                              |
+| **[@exodra/computed](./packages/computed)**                              | The declarative half of a machine: `withExoComputedMachine`, `exoWiring`, fields, derivations, transitions. A page that derives nothing links none of it                                                                                  |
+| **[@exodra/list-reconcile](./packages/list-reconcile)**                  | `createExoChildrenReconciler`: reconcile a children port by item identity or by key, from the machine's own code                                                                                                                          |
+| **[@exodra/dom](./packages/dom)**                                        | Browser backend: `mountExoSchema`, `withExoCompiler`'s `render`/`withExoHydration`'s `hydrate`, identity reconcile, event plugins                                                                                                         |
+| **[@exodra/jsx](./packages/jsx)**                                        | `exoJsx` and the types for the JSX dialect (`jsxImportSource: "@exodra/jsx/schema"`)                                                                                                                                                      |
+| **[@exodra/babel-plugin-schema](./packages/babel-plugin-exodra-schema)** | The JSX compiler: `exoJsx(…)` → a module-level `createExoNamedSchema()`                                                                                                                                                                   |
+| **[@exodra/string](./packages/string)**                                  | Server backend: `ExoStrBackend.render` to markup                                                                                                                                                                                          |
+| **[@exodra/ssr](./packages/ssr)**                                        | The rest of the response: `renderExoPage`, `EXO_SSR_RESPONSE`, state transfer                                                                                                                                                             |
+| **[@exodra/router](./packages/router)**                                  | Client-side router: `createExoRouter`, `provideExoRouter`, `ExoOutlet`/`exoOutlet`, `ExoLink`, history adapters                                                                                                                           |
+| **[@exodra/forms](./packages/forms)**                                    | Form controls without a bound model: `readExoControlValue`, `readExoControlValues`, `writeExoChoice`                                                                                                                                      |
+| **[@exodra/dom-profiler](./packages/dom-profiler)**                      | Profile the DOM backend per connector method (`profileDom`) or per port (`profilePorts`)                                                                                                                                                  |
+| **[@exodra/react-mount](./packages/react-mount)**                        | Mount an Exodra component into a React-owned element                                                                                                                                                                                      |
+| **[@exodra/introspect](./packages/introspect)**                          | ESLint rules for schema hoisting, and a counter of schemas, machines and reactive sources                                                                                                                                                 |
+| **[@exodra/vite-plugin](./packages/vite-plugin-exodra)**                 | Vite integration for Exodra projects                                                                                                                                                                                                      |
+| **[create-exodra](./packages/create-exodra)**                            | `npm create exodra` project scaffolding CLI                                                                                                                                                                                               |
 
 ## 🎯 Getting Started
 

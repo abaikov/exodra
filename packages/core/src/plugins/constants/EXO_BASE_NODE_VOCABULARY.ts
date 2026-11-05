@@ -1,6 +1,10 @@
 import { exoContextFrame, readExoContext } from '@exodra/context';
 import { exoVocabulary } from '../exoVocabulary';
 import { stopExoEffects } from '../../machine/stopExoEffects';
+import { wireExoNode } from '../../machine/wireExoNode';
+import type { TExoNode } from '../../schema/types/TExoNode';
+import { EXO_DISCONNECTED_EFFECT_STOPS } from '../../machine/constants/EXO_DISCONNECTED_EFFECT_STOPS';
+import { EXO_STOPPED_EFFECT } from '../../machine/constants/EXO_STOPPED_EFFECT';
 import type { TExoContextToken } from '@exodra/context';
 import type { TExoMachineEffect } from '../../machine/types/TExoMachineEffect';
 import type { TExoBaseNodeFields } from '../../wiring/types/TExoBaseNodeFields';
@@ -40,14 +44,14 @@ const EXO_BASE_NODE_METHODS: TExoBaseNodeMethods & ThisType<TExoBaseReceiver> = 
      */
     restartEffect(this: TExoEffectOwner, effect: TExoMachineEffect<TExoEffectOwner>): void {
         const held = this.effectStops;
-        if (held === null) return;
+        if (held === null || held === EXO_DISCONNECTED_EFFECT_STOPS) return;
         const at = effect.at;
         const off = held[at];
         held[at] = null;
         if (off !== null) off();
         const next = effect.start(this);
         const kept = typeof next === 'function' ? next : null;
-        if (this.effectStops === null) {
+        if (this.effectStops !== held) {
             if (kept !== null) kept();
             return;
         }
@@ -57,10 +61,13 @@ const EXO_BASE_NODE_METHODS: TExoBaseNodeMethods & ThisType<TExoBaseReceiver> = 
 
     stopEffect(this: TExoEffectOwner, effect: TExoMachineEffect<TExoEffectOwner>): void {
         const held = this.effectStops;
-        if (held === null) return;
+        if (held === null || held === EXO_DISCONNECTED_EFFECT_STOPS) return;
         const at = effect.at;
         const off = held[at];
-        if (off === null) return;
+        if (off === null) {
+            held[at] = EXO_STOPPED_EFFECT;
+            return;
+        }
         held[at] = null;
         off();
         const revived = held[at] as (() => void) | null;
@@ -68,6 +75,10 @@ const EXO_BASE_NODE_METHODS: TExoBaseNodeMethods & ThisType<TExoBaseReceiver> = 
             held[at] = null;
             revived();
         }
+    },
+
+    wireExoSelf(params?: unknown): void {
+        wireExoNode(this as unknown as TExoNode, params);
     },
 
     stopEffects(this: TExoEffectOwner): void {

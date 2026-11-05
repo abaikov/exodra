@@ -18,34 +18,44 @@ export function createExoTermChildList(region: TExoTermRegion): TExoTermChildLis
         },
 
         insert(child: TExoNode<TExoTermMark>, i?: number): void {
+            const placed = child as unknown as TExoTermChild;
+            const from = placed.placedIn;
+            if (from !== null) from.splice(from.indexOf(placed), 1);
             const to = i === undefined || i > order.length ? order.length : i;
-            order.splice(to, 0, child as unknown as TExoTermChild);
+            order.splice(to, 0, placed);
+            placed.placedIn = order;
         },
 
         remove(i: number): void {
             const child = order[i];
             if (child === undefined) return;
             order.splice(i, 1);
+            child.placedIn = null;
             disposeExoTermChild(child);
         },
 
         removeAll(): void {
             const taken = order.slice();
             order.length = 0;
-            for (let i = 0; i < taken.length; i++) disposeExoTermChild(taken[i]);
+            for (let i = 0; i < taken.length; i++) {
+                taken[i].placedIn = null;
+                disposeExoTermChild(taken[i]);
+            }
         },
 
         detach(i: number): TExoNode<TExoTermMark> | undefined {
             const child = order[i];
             if (child === undefined) return undefined;
             order.splice(i, 1);
+            child.placedIn = null;
             return child as unknown as TExoNode<TExoTermMark>;
         },
 
         detachAll(): readonly TExoNode<TExoTermMark>[] {
-            const taken = order.slice() as unknown as readonly TExoNode<TExoTermMark>[];
+            const taken = order.slice();
             order.length = 0;
-            return taken;
+            for (let i = 0; i < taken.length; i++) taken[i].placedIn = null;
+            return taken as unknown as readonly TExoNode<TExoTermMark>[];
         },
 
         move(from: number, to: number): void {

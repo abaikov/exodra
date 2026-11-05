@@ -71,8 +71,8 @@
         "layer": 0,
         "members": [
           {
-            "text": "(schema, src, show): TExoMachine<TExoMac…",
-            "full": "(schema, src, show): TExoMachine<TExoMachineNode<unknown, unknown>, unknown, unknown, unknown> & { readonly transitions: TExoMachineTransitions<TExoMachineNode<unknown, unknown>, { show: []; }>; overrides(replacements: { readonly show?: (enode: TExoMachineNode<unknown, unknown>) => void; }): TExoTransitionOverrides; }",
+            "text": "(schema, src, show): Omit<TExoMachine<TE…",
+            "full": "(schema, src, show): Omit<TExoMachine<TExoMachineNode<unknown, unknown>, unknown, unknown, unknown>, \"overrides\"> & { readonly transitions: TExoMachineTransitions<TExoMachineNode<unknown, unknown>, { show: []; }>; overrides(replacements: TExoTransitionReplacements<TExoMachineNode<unknown, unknown>, TExoMachine<TExoMachineNode<unknown, unknown>, unknown, unknown, unknown> & { readonly transitions: TExoMachineTransitions<TExoMachineNode<unknown, unknown>, { show: []; }>; }>): TExoTransitionOverrides; }",
             "parts": [],
             "fullParts": []
           }

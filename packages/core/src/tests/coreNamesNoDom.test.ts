@@ -80,8 +80,18 @@ const DOM_NAMES: readonly string[] = [
  *
  * An entry here is a claim that a DOM name in core is correct. Write the sentence, or move the code.
  */
-const EXEMPT: readonly { readonly file: string; readonly name: string; readonly why: string }[] =
-    [];
+const EXEMPT: readonly { readonly file: string; readonly name: string; readonly why: string }[] = [
+    {
+        file: 'wiring/types/TExoChildrenWiring.ts',
+        name: 'appendChild',
+        why: "the children port's own method, named after the DOM call it mirrors so the port reads like an element; it is declared on Exodra's interface and calls nothing in lib.dom",
+    },
+    {
+        file: 'wiring/types/TExoChildrenWiring.ts',
+        name: 'removeChild',
+        why: "the children port's own method, named after the DOM call it mirrors so the port reads like an element; it is declared on Exodra's interface and calls nothing in lib.dom",
+    },
+];
 
 /** Every non-test `.ts` under `src/`, as a path relative to it. */
 function sourceFiles(dir: string, prefix = ''): string[] {

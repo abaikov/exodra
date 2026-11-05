@@ -1,4 +1,10 @@
-import { assertExoArming, assertExoChildrenPort, exoVocabulary } from '@exodra/core';
+import {
+    armExoNode,
+    assertExoArming,
+    assertExoChildrenPort,
+    EXO_UNARMED_STATE,
+    exoVocabulary,
+} from '@exodra/core';
 import type {
     TExoBaseNodeFields,
     TExoBaseNodeMethods,
@@ -13,7 +19,8 @@ import type {
     TExoChildrenPort,
 } from '@exodra/core';
 import { renderExoStrInstance } from './renderExoStrInstance';
-import { buildExoStrInstance } from './buildExoStrInstance';
+import { placeExoStrChild } from './placeExoStrChild';
+import { disposeExoStrTree } from './disposeExoStrTree';
 import { createExoStrChildList } from './factories/createExoStrChildList';
 import { exoStrSchemaOf } from '../schema/exoStrSchemaOf';
 import type { TExoStrChildList } from './types/TExoStrChildList';
@@ -32,6 +39,8 @@ export type TExoStrNodeFields = TExoBaseNodeFields & {
     readonly values: string[];
     readonly writers: readonly TExoStrWriter[];
     readonly schema: TExoStrSchema;
+    portChildren: (TExoStrNode | string)[][] | null;
+    placedIn: (TExoStrNode | string)[] | null;
 };
 
 /** What this backend answers on top of `EXO_BASE_NODE_VOCABULARY` (`ports`, `onTeardown`, `provide`, `inject`). */
@@ -45,8 +54,27 @@ export interface TExoStrNodeApi {
     on(port: TExoEventPort, handler: TExoEventHandler<Event, Element>, subject?: unknown): void;
     one(port: TExoChildrenPort, machine: TExoStrMachine, params?: unknown): void;
     list(port: TExoChildrenPort, machine: TExoStrMachine, params: readonly unknown[]): void;
-    childList(port: TExoChildrenPort): TExoStrChildList;
-    build(machine: TExoStrMachine, params?: unknown): TExoNode<TExoStrMark>;
+    portChildList(port: TExoChildrenPort): TExoStrChildList;
+    createExoNode(machine: TExoStrMachine): TExoNode<TExoStrMark>;
+    armExoSelf(params: unknown): void;
+    deferExoTransition(
+        run: (enode: never, first: unknown, second: unknown) => void,
+        first: unknown,
+        second: unknown
+    ): boolean;
+    destroyExoSelf(): void;
+    appendChild<TNode extends TExoNode<TExoStrMark>>(port: TExoChildrenPort, node: TNode): TNode;
+    insertChild<TNode extends TExoNode<TExoStrMark>>(
+        port: TExoChildrenPort,
+        node: TNode,
+        at: number
+    ): TNode;
+    moveChild(node: TExoNode<TExoStrMark>, at: number): void;
+    moveChild(node: TExoNode<TExoStrMark>, port: TExoChildrenPort, at?: number): void;
+    removeChild<TNode extends TExoNode<TExoStrMark>>(node: TNode): TNode;
+    replaceChildren(port: TExoChildrenPort): void;
+    childAt(port: TExoChildrenPort, at: number): TExoNode<TExoStrMark> | undefined;
+    childCount(port: TExoChildrenPort): number;
 }
 
 /**
@@ -54,6 +82,11 @@ export interface TExoStrNodeApi {
  * alias TS2526 degrades every `this` to `any` — component parameters then accept anything.
  */
 export interface TExoStrSurface extends TExoStrNodeApi, TExoBaseNodeMethods {}
+
+function portChildrenOf(owner: TExoStrNode, port: TExoChildrenPort): (TExoStrNode | string)[] {
+    const lists = (owner.portChildren ??= []);
+    return (lists[port.index] ??= []);
+}
 
 const EXO_STR_NODE_METHODS: TExoStrNodeApi & ThisType<TExoStrNode> = {
     attr(port: TExoAttrPort, value: unknown): void {
@@ -138,19 +171,88 @@ const EXO_STR_NODE_METHODS: TExoStrNodeApi & ThisType<TExoStrNode> = {
     /** The SAME door `@exodra/dom` and `@exodra/term` answer, so a component that reconciles its
      *  children prints on the server from one wiring function. A reconciler's first pass over an
      *  empty list is insert-only, which is the whole of what a request ever needs. */
-    childList(port: TExoChildrenPort): TExoStrChildList {
-        assertExoChildrenPort(port, 'childList', 'TExoStrNode');
-        assertExoArming('childList');
-        return createExoStrChildList(this.values, port.index, []);
+    portChildList(port: TExoChildrenPort): TExoStrChildList {
+        assertExoChildrenPort(port, 'portChildList', 'TExoStrNode');
+        return createExoStrChildList(portChildrenOf(this, port));
     },
 
-    build(machine: TExoStrMachine, params?: unknown): TExoNode<TExoStrMark> {
-        return buildExoStrInstance(
-            exoStrSchemaOf(machine, this.schema.backend),
-            machine,
-            this.context,
-            params
-        ) as unknown as TExoNode<TExoStrMark>;
+    createExoNode(machine: TExoStrMachine): TExoNode<TExoStrMark> {
+        const schema = exoStrSchemaOf(machine, this.schema.backend);
+        const node = schema.createInstance(schema, this.context);
+        node.machine = machine;
+        node.state = EXO_UNARMED_STATE;
+        return node as unknown as TExoNode<TExoStrMark>;
+    },
+
+    armExoSelf(params: unknown): void {
+        try {
+            armExoNode<TExoStrNode>(this, this.machine as TExoStrMachine, params);
+        } catch (error) {
+            disposeExoStrTree(this);
+            throw error;
+        }
+    },
+
+    deferExoTransition(): boolean {
+        this.armExoSelf(undefined);
+        return false;
+    },
+
+    destroyExoSelf(): void {
+        const from = this.placedIn;
+        if (from !== null) {
+            from.splice(from.indexOf(this), 1);
+            this.placedIn = null;
+        }
+        disposeExoStrTree(this);
+    },
+
+    appendChild<TNode extends TExoNode<TExoStrMark>>(port: TExoChildrenPort, node: TNode): TNode {
+        placeExoStrChild(portChildrenOf(this, port), node as unknown as TExoStrNode | string);
+        return node;
+    },
+
+    insertChild<TNode extends TExoNode<TExoStrMark>>(
+        port: TExoChildrenPort,
+        node: TNode,
+        at: number
+    ): TNode {
+        placeExoStrChild(portChildrenOf(this, port), node as unknown as TExoStrNode | string, at);
+        return node;
+    },
+
+    moveChild(node: TExoNode<TExoStrMark>, portOrAt: TExoChildrenPort | number, at?: number): void {
+        const child = node as unknown as TExoStrNode | string;
+        if (typeof child === 'string') return;
+        if (typeof portOrAt === 'number') {
+            const from = child.placedIn;
+            if (from !== null) placeExoStrChild(from, child, portOrAt);
+            return;
+        }
+        placeExoStrChild(portChildrenOf(this, portOrAt), child, at);
+    },
+
+    removeChild<TNode extends TExoNode<TExoStrMark>>(node: TNode): TNode {
+        const child = node as unknown as TExoStrNode | string;
+        if (typeof child === 'string') return node;
+        const from = child.placedIn;
+        if (from !== null) {
+            from.splice(from.indexOf(child), 1);
+            child.placedIn = null;
+        }
+        return node;
+    },
+
+    replaceChildren(port: TExoChildrenPort): void {
+        createExoStrChildList(portChildrenOf(this, port)).removeAll();
+    },
+
+    childAt(port: TExoChildrenPort, at: number): TExoNode<TExoStrMark> | undefined {
+        return portChildrenOf(this, port)[at] as unknown as TExoNode<TExoStrMark> | undefined;
+    },
+
+    childCount(port: TExoChildrenPort): number {
+        return portChildrenOf(this, port).length;
     },
 };
 

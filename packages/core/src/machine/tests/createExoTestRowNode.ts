@@ -23,4 +23,5 @@ export const createExoTestRowNode = (): TExoBaseNodeFields & TExoMachineNode =>
         effectStops: null,
         transitionOverrides: null,
         serviceState: undefined,
+        machine: null,
     } as unknown as TExoBaseNodeFields & TExoMachineNode);

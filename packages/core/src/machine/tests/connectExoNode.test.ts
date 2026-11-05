@@ -1,3 +1,4 @@
+import { EXO_DISCONNECTED_EFFECT_STOPS } from '../constants/EXO_DISCONNECTED_EFFECT_STOPS';
 import { describe, expect, it } from 'vitest';
 import { createExoTestRowNode } from './createExoTestRowNode';
 import { createExoSchema } from '../../schema/factories/createExoSchema';
@@ -53,9 +54,9 @@ describe('disconnectExoNode / connectExoNode', () => {
 
         disconnectExoNode(row);
         expect(log).toEqual(['a on 0', 'b on 0', 'b off 0', 'a off 0']);
-        expect(row.effectStops).toEqual([null, null]);
+        expect(row.effectStops).toBe(EXO_DISCONNECTED_EFFECT_STOPS);
 
-        connectExoNode(row, ROW);
+        connectExoNode(row);
         expect(log.slice(4)).toEqual(['a on 1', 'b on 1']);
 
         stopExoEffects(row);
@@ -79,7 +80,7 @@ describe('disconnectExoNode / connectExoNode', () => {
         disconnectExoNode(row);
 
         expect(starts).toBe(1);
-        expect(row.effectStops).toEqual([null]);
+        expect(row.effectStops).toBe(EXO_DISCONNECTED_EFFECT_STOPS);
     });
 
     it('is a no-op twice in a row, and connect after a terminal stop starts nothing', () => {
@@ -93,7 +94,7 @@ describe('disconnectExoNode / connectExoNode', () => {
         expect(log).toEqual(['a on 0', 'b on 0', 'b off 0', 'a off 0']);
 
         stopExoEffects(row);
-        connectExoNode(row, ROW);
+        connectExoNode(row);
         expect(log).toHaveLength(4);
         expect(row.effectStops).toBeNull();
     });
@@ -169,5 +170,99 @@ describe('stopEffect', () => {
 
         expect(log).toEqual(['on 0', 'off 0', 'on 1', 'off 1']);
         expect(row.effectStops).toEqual([null]);
+    });
+
+    it('does not start an effect restarted while the node is disconnected', () => {
+        let starts = 0;
+        let handle!: TExoMachineEffect<TRow>;
+        const ROW = composeExoMachine(createExoMachine<TRow>(createExoSchema(buildRow)), (m) =>
+            withExoEffects(m, (effect) => {
+                handle = effect(() => {
+                    starts++;
+                    return () => undefined;
+                });
+            })
+        );
+        const row = createExoTestRowNode();
+        armExoNode(row, ROW);
+        disconnectExoNode(row);
+        row.restartEffect(handle);
+        expect(starts).toBe(1);
+        connectExoNode(row);
+        expect(starts).toBe(2);
+    });
+
+    it('ends what a start set up when the node is disconnected during that start', () => {
+        const log: string[] = [];
+        const row = createExoTestRowNode();
+        const ROW = composeExoMachine(createExoMachine<TRow>(createExoSchema(buildRow)), (m) =>
+            withExoEffects(m, (effect) => {
+                effect(() => {
+                    log.push('on');
+                    if (log.length === 1) disconnectExoNode(row);
+                    return () => log.push('off');
+                });
+            })
+        );
+        armExoNode(row, ROW);
+        expect(log).toEqual(['on', 'off']);
+        expect(row.effectStops).toBe(EXO_DISCONNECTED_EFFECT_STOPS);
+    });
+
+    it('ends an effect that stopEffect named while its own start was running', () => {
+        const log: string[] = [];
+        let handle!: TExoMachineEffect<TRow>;
+        const ROW = composeExoMachine(createExoMachine<TRow>(createExoSchema(buildRow)), (m) =>
+            withExoEffects(m, (effect) => {
+                handle = effect((c) => {
+                    log.push('on');
+                    c.stopEffect(handle);
+                    return () => log.push('off');
+                });
+            })
+        );
+        const row = createExoTestRowNode();
+        armExoNode(row, ROW);
+        expect(log).toEqual(['on', 'off']);
+        row.restartEffect(handle);
+        expect(log).toEqual(['on', 'off', 'on', 'off']);
+    });
+});
+
+describe('a throw while arming or stopping', () => {
+    it('ends the effects already started when a later start throws', () => {
+        const log: string[] = [];
+        const ROW = composeExoMachine(createExoMachine<TRow>(createExoSchema(buildRow)), (m) =>
+            withExoEffects(m, (effect) => {
+                effect(() => {
+                    log.push('a on');
+                    return () => log.push('a off');
+                });
+                effect(() => {
+                    throw new Error('b');
+                });
+            })
+        );
+        const row = createExoTestRowNode();
+        expect(() => armExoNode(row, ROW)).toThrow('b');
+        expect(log).toEqual(['a on', 'a off']);
+        expect(row.effectStops).toBeNull();
+    });
+
+    it('runs every other stop when one throws, and rethrows it', () => {
+        const log: string[] = [];
+        const ROW = composeExoMachine(createExoMachine<TRow>(createExoSchema(buildRow)), (m) =>
+            withExoEffects(m, (effect) => {
+                effect(() => () => log.push('a off'));
+                effect(() => () => {
+                    throw new Error('b off');
+                });
+                effect(() => () => log.push('c off'));
+            })
+        );
+        const row = createExoTestRowNode();
+        armExoNode(row, ROW);
+        expect(() => stopExoEffects(row)).toThrow('b off');
+        expect(log).toEqual(['c off', 'a off']);
     });
 });

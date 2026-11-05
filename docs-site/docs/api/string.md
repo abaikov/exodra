@@ -30,7 +30,7 @@ The server entry point is an **object you construct and render from**, exactly a
 [`ExoDomBackend`](./dom.md#exodombackend) is, and `render` is the same method name
 taking the component as one value — a page switches sides by switching which
 backend it holds, not by learning a second calling convention, and the return value
-*is* the difference.
+_is_ the difference.
 
 The **constructors differ**, and it is worth stating rather than discovering:
 `ExoDomBackend` takes nothing and is composed by wrapping it in `with*` decorators;
@@ -98,31 +98,32 @@ method — both are **types** rather than classes, and both name an object whose
 prototype is its backend — because a component's wiring function is the one piece written by hand
 and it must not be able to tell which backend it is filling.
 
-| Method | On the server |
-| --- | --- |
-| `attr(port, value)` | Escape for an attribute position, and store. |
-| `text(port, value)` | Escape for a text position, and store. |
-| `unsafeHtml(port, markup)` | Store the markup as given, escaping nothing. |
-| `on(port, handler, subject?)` | Accepted in **both** forms and printed as nothing. The slot is still written. |
-| `onTeardown(off)` | Filed, and run at the end of the render — after the markup has been taken. |
-| `provide(token, value)` / `inject(token)` | The same chain and the same lookup rule the browser uses. |
-| `one(port, component, params?)` | Render one nested instance into the port. |
-| `list(port, component, rows)` | One instance per entry of `rows`, armed with it as its params, concatenated. |
-| `build(component, params?)` | Render one child and hand it back as a value. |
-| `childList(port)` | The port's children, for a caller to place into. |
+| Method                                    | On the server                                                                 |
+| ----------------------------------------- | ----------------------------------------------------------------------------- |
+| `attr(port, value)`                       | Escape for an attribute position, and store.                                  |
+| `text(port, value)`                       | Escape for a text position, and store.                                        |
+| `unsafeHtml(port, markup)`                | Store the markup as given, escaping nothing.                                  |
+| `on(port, handler, subject?)`             | Accepted in **both** forms and printed as nothing. The slot is still written. |
+| `onTeardown(off)`                         | Filed, and run at the end of the render — after the markup has been taken.    |
+| `provide(token, value)` / `inject(token)` | The same chain and the same lookup rule the browser uses.                     |
+| `one(port, component, params?)`           | Render one nested instance into the port.                                     |
+| `list(port, component, rows)`             | One instance per entry of `rows`, armed with it as its params, concatenated.  |
+| `createExoNode(component)`                | Create one child, unwired, and hand it back as a value.                       |
+| `appendChild` and the other port methods  | The children-port calls, with the browser's signatures.                       |
+| `portChildList(port)`                     | The port's children, the door a reconciler drives.                            |
 
 Two of those are worth spelling out, because they look like omissions:
 
-- **`on` must accept both forms or the design breaks in half.** A component's
-  wiring function is written once and run by three backends; the moment
-  `c.on(TodoPorts.click, toggleDone, subject)` is a call the server does not have, every
-  component with a declarative handler needs a second wiring function.
-- **There is no `bind` here, and none is missing.** Following data is a
-  machine's effect: it draws through a transition, then subscribes. On this
-  backend the effect runs once while the instance is armed, the draw is the only
-  write that reaches the markup, and the render stops the effect as soon as the
-  markup is taken — so a server render reads the data once and leaves no
-  subscription behind the response.
+-   **`on` must accept both forms or the design breaks in half.** A component's
+    wiring function is written once and run by three backends; the moment
+    `c.on(TodoPorts.click, toggleDone, subject)` is a call the server does not have, every
+    component with a declarative handler needs a second wiring function.
+-   **There is no `bind` here, and none is missing.** Following data is a
+    machine's effect: it draws through a transition, then subscribes. On this
+    backend the effect runs once while the instance is armed, the draw is the only
+    write that reaches the markup, and the render stops the effect as soon as the
+    markup is taken — so a server render reads the data once and leaves no
+    subscription behind the response.
 
 A **node** on this backend is a string of markup — the type it comes back
 as (`TExoNode`) is opaque, which is what lets one wiring function assemble
@@ -163,12 +164,12 @@ compiler disagrees about is port numbering, which is shared with `@exodra/dom`
 and is the reason one wiring function can fill both backends. Every name here has
 a counterpart in the DOM package.
 
-| Export | Counterpart in `@exodra/dom` |
-| --- | --- |
-| `exoStrSchemaOf(machine, backend)` | `exoDomSchemaOf` |
-| `compileExoStrSchema(declaration, backend)` | `compileExoDomSchema` |
-| `renderExoStrInstance(schema, machine, context?, params?)` | `mountExoInstance` |
-| `EXO_STR_WRITERS` | *(none in the barrel — see below)* |
+| Export                                                     | Counterpart in `@exodra/dom`       |
+| ---------------------------------------------------------- | ---------------------------------- |
+| `exoStrSchemaOf(machine, backend)`                         | `exoDomSchemaOf`                   |
+| `compileExoStrSchema(declaration, backend)`                | `compileExoDomSchema`              |
+| `renderExoStrInstance(schema, machine, context?, params?)` | `mountExoInstance`                 |
+| `EXO_STR_WRITERS`                                          | _(none in the barrel — see below)_ |
 
 The `backend` parameter is **not optional and not defaulted**: it is the plan cache
 key as well as the argument the compiler needs, and defaulting it would mean naming
@@ -183,27 +184,27 @@ what decide an attribute's **absence** — `disabled` for `false` is no attribut
 all, not `disabled=""` — and a caller building writers by hand without them is the
 shape that produces a hydration mismatch on every conditional attribute.
 
-| Type | Purpose |
-| --- | --- |
-| `TExoStrSchema` | A schema compiled for this backend: cut into prepared strings, with a writer per port. |
-| `TExoStrWriter` | The per-port function that escapes a value for its position. |
-| `TExoStrMarkupFiller` | The prepared markup with a hole per port — hand it an instance's values, get the instance's markup. |
-| `TExoStrMachine` | `TExoMachine` with this backend's exonode in it — what `createExoMachine<TExoStrNode>(schema)` returns. |
+| Type                  | Purpose                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `TExoStrSchema`       | A schema compiled for this backend: cut into prepared strings, with a writer per port.                  |
+| `TExoStrWriter`       | The per-port function that escapes a value for its position.                                            |
+| `TExoStrMarkupFiller` | The prepared markup with a hole per port — hand it an instance's values, get the instance's markup.     |
+| `TExoStrMachine`      | `TExoMachine` with this backend's exonode in it — what `createExoMachine<TExoStrNode>(schema)` returns. |
 
 There is **no** `renderToStream`.
 
 ## API Reference
 
-| Export | Description |
-| --- | --- |
-| `ExoStrBackend` / `TExoStrBackend` / `TExoStrBackendConstructor` | The server backend: `new ExoStrBackend(...plugins)`, then `backend.render(component)`, which prints one instance as markup. The connector's methods are merged onto it first, so a pack naming one receives the shipped body as its `next`. |
-| `TExoStrNode` / `TExoStrNodeApi` / `TExoStrNodeFields` / `TExoStrSurface` | What a wiring function is handed on the server — **types**, not a class. An exonode is a plain object whose prototype is the composed backend. |
-| `createExoStrInstanceFactory` / `EXO_STR_NODE_VOCABULARY` | The factory that builds one of those objects — call it once per composed backend — and the exonode surface as the pack the backend merges onto itself. Exported for a custom entry point and for a tool that needs the list of method names. |
-| `exoStrSchemaOf` / `compileExoStrSchema` / `renderExoStrInstance` / `EXO_STR_WRITERS` | Plans, for custom entry points. Both plan functions take the **backend**. |
-| `exoForeignMarkup` / `TExoStrMark` / `EXO_STR_FOREIGN_VOCABULARY` / `TExoStrForeignApi` | Markup this backend did not print, placed like markup it did. |
-| `TExoStrApi` / `TExoStrMachine` / `TExoStrSchema` / `TExoStrWriter` / `TExoStrMarkupFiller` | Types. |
+| Export                                                                                      | Description                                                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ExoStrBackend` / `TExoStrBackend` / `TExoStrBackendConstructor`                            | The server backend: `new ExoStrBackend(...plugins)`, then `backend.render(component)`, which prints one instance as markup. The connector's methods are merged onto it first, so a pack naming one receives the shipped body as its `next`.  |
+| `TExoStrNode` / `TExoStrNodeApi` / `TExoStrNodeFields` / `TExoStrSurface`                   | What a wiring function is handed on the server — **types**, not a class. An exonode is a plain object whose prototype is the composed backend.                                                                                               |
+| `createExoStrInstanceFactory` / `EXO_STR_NODE_VOCABULARY`                                   | The factory that builds one of those objects — call it once per composed backend — and the exonode surface as the pack the backend merges onto itself. Exported for a custom entry point and for a tool that needs the list of method names. |
+| `exoStrSchemaOf` / `compileExoStrSchema` / `renderExoStrInstance` / `EXO_STR_WRITERS`       | Plans, for custom entry points. Both plan functions take the **backend**.                                                                                                                                                                    |
+| `exoForeignMarkup` / `TExoStrMark` / `EXO_STR_FOREIGN_VOCABULARY` / `TExoStrForeignApi`     | Markup this backend did not print, placed like markup it did.                                                                                                                                                                                |
+| `TExoStrApi` / `TExoStrMachine` / `TExoStrSchema` / `TExoStrWriter` / `TExoStrMarkupFiller` | Types.                                                                                                                                                                                                                                       |
 
 ## Links
 
-- npm: [`@exodra/string`](https://www.npmjs.com/package/@exodra/string)
-- GitHub: [exodra/packages/string](https://github.com/abaikov/exodra/tree/master/packages/string)
+-   npm: [`@exodra/string`](https://www.npmjs.com/package/@exodra/string)
+-   GitHub: [exodra/packages/string](https://github.com/abaikov/exodra/tree/master/packages/string)

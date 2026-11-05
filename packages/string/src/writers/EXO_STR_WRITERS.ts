@@ -113,7 +113,7 @@ function refuseSharedHtml(): string {
               'element with other children, and the DOM backend can only write raw markup ' +
               'with innerHTML, which would destroy them. Printing it here would render on ' +
               'the server and throw in the browser. Nested instances go through one(), ' +
-              'list() or childList(); raw markup (unsafeHtml) needs a port that is its ' +
+              'list() or appendChild(); raw markup (unsafeHtml) needs a port that is its ' +
               "element's ONLY child."
             : 'EXO0057'
     );

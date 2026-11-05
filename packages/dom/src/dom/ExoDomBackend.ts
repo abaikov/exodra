@@ -1,4 +1,5 @@
 import { EXO_BASE_NODE_VOCABULARY, composeExoPlugins, nextExoBackendType } from '@exodra/core';
+import { EXO_DOM_CHILD_LIST_VOCABULARY } from './constants/EXO_DOM_CHILD_LIST_VOCABULARY';
 import { EXO_DOM_NODE_VOCABULARY } from './EXO_DOM_NODE_VOCABULARY';
 import { createExoDomChildFactory } from './factories/createExoDomChildFactory';
 import { createExoDomInstanceFactory } from './factories/createExoDomInstanceFactory';
@@ -23,7 +24,12 @@ class ExoDomBackendBase implements TExoDomApi {
 
     constructor() {
         // Base pack first — merged, not declared as class methods, so a pack can WRAP these.
-        composeExoPlugins(this, EXO_BASE_NODE_VOCABULARY, EXO_DOM_NODE_VOCABULARY);
+        composeExoPlugins(
+            this,
+            EXO_BASE_NODE_VOCABULARY,
+            EXO_DOM_NODE_VOCABULARY,
+            EXO_DOM_CHILD_LIST_VOCABULARY
+        );
     }
 }
 

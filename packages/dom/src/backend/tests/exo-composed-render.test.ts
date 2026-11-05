@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { composeExoPlugins, createExoSchema } from '@exodra/core';
+import { composeExoPlugins, createExoSchema, wireExoNode } from '@exodra/core';
 import type {
     TExoAttrPort,
     TExoChildrenPort,
@@ -18,7 +18,7 @@ import type { TExoDomSchema } from '../../dom/types/TExoDomSchema';
 import type { TExoDomSetter } from '../../dom/types/TExoDomSetter';
 import { EXO_SHIPPED_WRITERS } from '../constants/EXO_SHIPPED_WRITERS';
 import type { TExoWritersApi } from '../types/TExoWritersApi';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
 type TItem = { readonly id: string };
 
@@ -138,7 +138,7 @@ describe('machine.forms, one schema per backendType', () => {
     const formsHeld = (forms: readonly unknown[]): number => Object.keys(forms).length;
 
     it('holds ONE schema for a page that uses one backend, however many renders', () => {
-        const rt = withExoChildList(withExoCompiler(new ExoDomBackend()));
+        const rt = withExoCompiler(new ExoDomBackend());
         const src = source<readonly TItem[]>(items(['a']));
         const LIST = listComponent(src);
 
@@ -152,9 +152,9 @@ describe('machine.forms, one schema per backendType', () => {
     });
 
     it('holds a SECOND schema for a second backend, the first unchanged', () => {
-        const shipped = withExoChildList(withExoCompiler(new ExoDomBackend()));
+        const shipped = withExoCompiler(new ExoDomBackend());
         const composed = composeExoPlugins(
-            withExoChildList(withExoCompiler(new ExoDomBackend())),
+            withExoCompiler(new ExoDomBackend()),
             withWriters(inert())
         );
         const src = source<readonly TItem[]>(items(['a']));
@@ -173,7 +173,7 @@ describe('machine.forms, one schema per backendType', () => {
     it('files the schema under the composition, and the composed WRITERS are what ran', () => {
         const log = asked();
         const rt = composeExoPlugins(
-            withExoChildList(withExoCompiler(new ExoDomBackend())),
+            withExoCompiler(new ExoDomBackend()),
             withWriters(counting(log))
         );
         const src = source<readonly TItem[]>(items(['a']));
@@ -243,7 +243,7 @@ describe('machine.forms, one schema per backendType', () => {
             const COMP = plain();
 
             for (let i = 0; i < 3; i++) {
-                withExoChildList(withExoCompiler(new ExoDomBackend())).render(COMP, host());
+                withExoCompiler(new ExoDomBackend()).render(COMP, host());
             }
 
             expect(formsHeld(COMP.forms)).toBe(3);
@@ -254,11 +254,11 @@ describe('machine.forms, one schema per backendType', () => {
             const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
             const COMP = plain();
 
-            // TWELVE BACKENDS, TWELVE KEYS — a fresh `withExoChildList(withExoCompiler(new ExoDomBackend()))` per render is the
+            // TWELVE BACKENDS, TWELVE KEYS — a fresh `withExoCompiler(new ExoDomBackend())` per render is the
             // mistake, written out. Each backend mints its own backendType, so every one of these
             // misses every existing schema and compiles again.
             for (let i = 0; i < 12; i++) {
-                withExoChildList(withExoCompiler(new ExoDomBackend())).render(COMP, host());
+                withExoCompiler(new ExoDomBackend()).render(COMP, host());
             }
 
             expect(warn).toHaveBeenCalledTimes(1);
@@ -277,10 +277,7 @@ describe('the composition reaches a schema c.list and c.build look up, not just 
         // up ANOTHER declaration's schema through `exoDomSchemaOf(…, schema.backend)`, one of the
         // places the composition can be dropped — and an INERT writers pack is what makes a dropped
         // one visible, because a correct-looking page is what both answers produce.
-        const rt = composeExoPlugins(
-            withExoChildList(withExoCompiler(new ExoDomBackend())),
-            withWriters(inert())
-        );
+        const rt = composeExoPlugins(withExoCompiler(new ExoDomBackend()), withWriters(inert()));
         const src = source<readonly TItem[]>(items(['a', 'b']));
         const INNER = listComponent(src);
         const OUTER = withChildrenPort((c, slot) => {
@@ -309,7 +306,7 @@ describe('the composition reaches a schema c.list and c.build look up, not just 
         // compiled by asking THIS pack.
         const log = asked();
         const rt = composeExoPlugins(
-            withExoChildList(withExoCompiler(new ExoDomBackend())),
+            withExoCompiler(new ExoDomBackend()),
             withWriters(counting(log))
         );
         const BUILT = createExoTestMachine(
@@ -336,7 +333,7 @@ describe('the composition reaches a schema c.list and c.build look up, not just 
             (P): TExoMachineInitialState<TExoDomNode> =>
                 (c) => {
                     c.text(P.label, 'made');
-                    c.build(BUILT);
+                    wireExoNode(c.createExoNode(BUILT));
                 }
         );
         const parent = host();

@@ -23,19 +23,19 @@ what was measured here.
 Measured on the mount axis of `packages/benchmarks` — the 80-card todo app,
 batch 20, 100 rounds, medians — through `scripts/compare-axis.mjs`:
 
-| | |
-|---|---|
+|                                     |           |
+| ----------------------------------- | --------- |
 | Normalised move on the `exodra` row | **+0.1%** |
-| That row's noise floor | **±3.3%** |
-| Controls in the drift estimate | 10 |
+| That row's noise floor              | **±3.3%** |
+| Controls in the drift estimate      | 10        |
 
 **What that entitles anyone to say, and it is less than it looks.** The gate
 prints it in its own words (`compare-axis.mjs:328`):
 
 > `· exodra: +0.1% — inside this row's ±3.3% floor, so this run CANNOT say the change was free`
 
-So the honest sentence is: *this pair of runs could not see a cost, and it could
-have seen one of 3.3% or more.* Anything that indirection cost on this axis is under
+So the honest sentence is: _this pair of runs could not see a cost, and it could
+have seen one of 3.3% or more._ Anything that indirection cost on this axis is under
 3.3% of a mount. It is not zero, because a run cannot measure zero; it is under
 the resolution of the best comparison this project knows how to make.
 
@@ -67,7 +67,7 @@ Four things make the number above mean something:
 2. **Drift is the median of the controls' ratios** (`compare-axis.mjs:228`), and
    our row's move is divided by it.
 3. **The resolution is what is left of the controls afterwards.** A perfect pair
-   of runs leaves every control at 1.000; how far the worst *typical* one sits
+   of runs leaves every control at 1.000; how far the worst _typical_ one sits
    from 1 is the smallest move the comparison can call a move. It is the 80th
    percentile of the residuals and not the maximum (`compare-axis.mjs:257-260`) —
    re-derived from the two recordings on 2026-08-16, the ten controls' residuals
@@ -153,15 +153,14 @@ initial map: two calls for one composition would split that composition's
 instances across two hidden classes. `new` rather than an object literal with a
 `__proto__` key is measured, and the note at that line says by how much.
 
-**Per filled children port: nothing the composition decides.** `c.childList(port)`
-is a shipped exonode method, and the reconciler is whatever function a transition
-called over it — `reconcileExoOrder`, `createExoKeyedList`'s `reconcile`, or one of
-the application's own.
+**Per filled children port: nothing the composition decides.** The port methods are
+shipped exonode methods, and the reconciler is whatever function a transition called over
+them — one from `createExoChildrenReconciler`, or one of the application's own.
 
 **Per list row, per update, per dispatched event: nothing.** Nothing below this
 line consults a composition. A plugin's factory receives `next` and runs **once**,
 at merge, in the backend's constructor — it is handed no exonode, no plan and no
-child, so there is nothing per-row it *could* consult
+child, so there is nothing per-row it _could_ consult
 (`packages/core/src/plugins/types/TExoPlugin.ts`). "Resolve once, at composition, never per
 row" is the shape of what a plugin is given rather than a rule it is asked to
 follow.
@@ -188,28 +187,28 @@ An application that builds **one backend at module level** — the shape a neste
 
 What would change it, stated plainly:
 
-- **Two compositions live at once.** A page that renders one root under the
-  shipped composition and another under a swapped one puts two different
-  writer or event-attach functions through the same call site. Whether that costs anything
-  measurable has not been measured here.
-- **A backend per render.** This is the one that is not a micro-cost. The backend
-  **is** the cache key and it is compared by pointer, so a
-  `new ExoDomBackend()` written inside a component or a route handler takes a new
-  `backendType` and **recompiles every schema, markup parse included, on every
-  render**. It is not a slower render; it is a different program.
-  `warnExoFormGrowth` (`packages/core/src/machine/warnExoFormGrowth.ts`) says so out
-  loud in development once a machine holds eight schemas.
+-   **Two compositions live at once.** A page that renders one root under the
+    shipped composition and another under a swapped one puts two different
+    writer or event-attach functions through the same call site. Whether that costs anything
+    measurable has not been measured here.
+-   **A backend per render.** This is the one that is not a micro-cost. The backend
+    **is** the cache key and it is compared by pointer, so a
+    `new ExoDomBackend()` written inside a component or a route handler takes a new
+    `backendType` and **recompiles every schema, markup parse included, on every
+    render**. It is not a slower render; it is a different program.
+    `warnExoFormGrowth` (`packages/core/src/machine/warnExoFormGrowth.ts`) says so out
+    loud in development once a machine holds eight schemas.
 
 ## What this measurement does not cover
 
-- **One interface, one axis.** The A/B was the children reconciler on the mount
-  axis. The event strategy was already threaded as a parameter before it became a
-  named field, so it was not part of this comparison, and neither were the value
-  writers.
-- **Update, reconcile and toggle axes were not compared.** The reasoning above
-  says the per-row path is untouched; the reasoning is not a measurement.
-- **Hydration was not compared.**
-- **A cost between 0% and 3.3% would be invisible here.** On a 0.405 ms mount
-  that is up to ~0.013 ms per mounted app. If that matters to you, run the gate
-  yourself: `node scripts/run-one-axis.js <axis> --record=<label>` twice, then
-  `node scripts/compare-axis.mjs <axis> <before> <after>`.
+-   **One interface, one axis.** The A/B was the children reconciler on the mount
+    axis. The event strategy was already threaded as a parameter before it became a
+    named field, so it was not part of this comparison, and neither were the value
+    writers.
+-   **Update, reconcile and toggle axes were not compared.** The reasoning above
+    says the per-row path is untouched; the reasoning is not a measurement.
+-   **Hydration was not compared.**
+-   **A cost between 0% and 3.3% would be invisible here.** On a 0.405 ms mount
+    that is up to ~0.013 ms per mounted app. If that matters to you, run the gate
+    yourself: `node scripts/run-one-axis.js <axis> --record=<label>` twice, then
+    `node scripts/compare-axis.mjs <axis> <before> <after>`.

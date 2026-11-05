@@ -17,9 +17,9 @@ import { exoOutlet } from '../../components/exoOutlet';
 import { provideExoRouter } from '../../setup/provideExoRouter';
 import type { TExoRoute, TExoRouteGuard, TExoRouter, TExoRouteMatch } from '../../types';
 import { host } from '@exodra/test-utils';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 interface TNestingNode extends TExoMachineNode {
     one(port: TExoChildrenPort, machine: TExoMachine<never>): void;

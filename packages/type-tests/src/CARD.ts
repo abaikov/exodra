@@ -1,6 +1,6 @@
 // WHAT REPLACED A RUNTIME REFUSAL. `assertExoEventPort` used to compare `port.kind` inside every
 // `on()` on every backend, and `assertExoChildrenPort` still does inside the five `bind*` doors.
-// For `on`, `one`, `list` and `childList` the compare is gone and THIS FILE IS THE REFUSAL: the
+// For `on`, `one`, `list` and `childCount` the compare is gone and THIS FILE IS THE REFUSAL: the
 // doors name `TExoEventPort` and `TExoChildrenPort`, whose `kind` fields are disjoint numeric
 // literals, so a wrong-kinded port never reaches a body.
 //
@@ -67,8 +67,8 @@ dom.on(P.rows, handler);
 dom.one(P.title, LEAF);
 // @ts-expect-error list() takes a children port; this one is an attribute
 dom.list(P.cls, LEAF, Array.from({ length: 1 }));
-// @ts-expect-error childList() takes a children port; this one is text
-dom.childList(P.title);
+// @ts-expect-error childCount() takes a children port; this one is text
+dom.childCount(P.title);
 
 // @ts-expect-error the wide union is not a children port either, so a cast is the only way in
 dom.one(P.rows as TExoPort, LEAF);
@@ -78,7 +78,7 @@ dom.on(P.click as TExoPort, handler);
 dom.on(P.click, handler);
 dom.one(P.rows, LEAF);
 dom.list(P.rows, LEAF, Array.from({ length: 2 }));
-dom.childList(P.rows);
+dom.childCount(P.rows);
 
 // The wire a page annotates, and not the exonode read straight out of the package.
 export const CARD = createExoTestMachine(

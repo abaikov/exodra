@@ -42,16 +42,16 @@ prompt.
 
 ### Options
 
-- `--ts`, `--typescript` — use TypeScript
-- `--js`, `--javascript` — use JavaScript
-- `--tailwind` — set up Tailwind CSS
-- `--eslint` — set up ESLint
-- `--src-dir` — use a `src/` directory
-- `--ssr` — scaffold a server-side-rendered app
-- `--app` — use the App Router (`@exodra/router`)
-- `--import-alias <alias>` — import alias to use (default `@/*`)
-- `--use-npm` / `--use-yarn` / `--use-pnpm` / `--use-bun` — choose the package
-  manager
+-   `--ts`, `--typescript` — use TypeScript
+-   `--js`, `--javascript` — use JavaScript
+-   `--tailwind` — set up Tailwind CSS
+-   `--eslint` — set up ESLint
+-   `--src-dir` — use a `src/` directory
+-   `--ssr` — scaffold a server-side-rendered app
+-   `--app` — use the App Router (`@exodra/router`)
+-   `--import-alias <alias>` — import alias to use (default `@/*`)
+-   `--use-npm` / `--use-yarn` / `--use-pnpm` / `--use-bun` — choose the package
+    manager
 
 ### Examples
 
@@ -80,12 +80,8 @@ A standard (non-SSR) app uses Vite with `@exodra/vite-plugin` and depends on
 when the App Router is enabled, which also gets `src/pages`, a generated route
 table from `virtual:exodra-routes`, and a `main` that provides the router inside
 a machine (`provideExoRouter(c, router)`), places the boundary with
-`c.one(port, ExoOutlet)` and inserts the nav's `ExoLink`s into `c.childList(port)`. The outlet
-and the nav both open a child list, so that `main` renders through
-`withExoChildList(withExoCompiler(new ExoDomBackend()))`; a backend without
-[`withExoChildList`](../api/dom.md#withexochildlist) refuses with
-[EXO0109](../errors.md#exo0109). Without the App Router, `main` opens no child list and composes
-`withExoCompiler` alone.
+`c.one(port, ExoOutlet)` and appends the nav's `ExoLink`s with `c.appendChild(port, node)`.
+Either way `main` renders through `withExoCompiler(new ExoDomBackend())`.
 
 An SSR app (`--ssr`) instead depends on `@exodra/string` alongside `@exodra/core`
 and `@exodra/dom`, with an Express dev/prod server. **One** component module is
@@ -232,6 +228,6 @@ that produces the same pair from markup.
 
 ## Links
 
-- npm: [create-exodra](https://www.npmjs.com/package/create-exodra)
-- GitHub:
-  [packages/create-exodra](https://github.com/abaikov/exodra/tree/master/packages/create-exodra)
+-   npm: [create-exodra](https://www.npmjs.com/package/create-exodra)
+-   GitHub:
+    [packages/create-exodra](https://github.com/abaikov/exodra/tree/master/packages/create-exodra)

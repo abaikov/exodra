@@ -64,7 +64,7 @@ export const COUNTER = composeExoMachine(
 const LIST = `
 import { composeExoMachine, createExoMachine, createExoSchema, withExoWire } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
 const ROW_SCHEMA = createExoSchema((b) => {
     let label!: TExoTextPort;
@@ -87,54 +87,51 @@ const LIST_SCHEMA = createExoSchema((b) => {
     });
     return { rows };
 });
-type TState = { rows: never; shown: string[] };
+const reconcileRows = createExoChildrenReconciler<string>(ROW);
 export const LIST = composeExoMachine(
-    createExoMachine<TExoMachineNode & { childList(p: TExoChildrenPort): never; build(m: unknown, p: string): never }, unknown, TState>(LIST_SCHEMA, {
-        createInitialState: (c) => ({ rows: c.childList(LIST_SCHEMA.ports.rows), shown: [] }),
-    }),
+    createExoMachine<TExoMachineNode & { createExoNode(m: unknown): never }>(LIST_SCHEMA),
     (m) => withExoWire(m, (c) => {
-        const want = ['a', 'b', 'c'];
-        c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item) => c.build(ROW, item));
+        reconcileRows(c, LIST_SCHEMA.ports.rows, ['a', 'b', 'c']);
     }),
 );
 `;
 
 const PAGES = {
     'dom: render one machine': {
-        ceilingGz: 8620,
-        distCeilingGz: 8730,
+        ceilingGz: 10160,
+        distCeilingGz: 10260,
         source: `${COUNTER}
 import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 withExoCompiler(new ExoDomBackend()).render(COUNTER as never, document.body);
 `,
     },
     'dom: hydrate one machine': {
-        ceilingGz: 11930,
-        distCeilingGz: 12030,
+        ceilingGz: 13760,
+        distCeilingGz: 13840,
         source: `${COUNTER}
 import { ExoDomBackend, withExoCompiler, withExoHydration } from '@exodra/dom';
 withExoHydration(withExoCompiler(new ExoDomBackend())).hydrate(COUNTER as never, document.body);
 `,
     },
     'dom: render a reconciled list': {
-        ceilingGz: 10175,
-        distCeilingGz: 10250,
+        ceilingGz: 11210,
+        distCeilingGz: 11320,
         source: `${LIST}
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-withExoChildList(withExoCompiler(new ExoDomBackend())).render(LIST as never, document.body);
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+withExoCompiler(new ExoDomBackend()).render(LIST as never, document.body);
 `,
     },
     'dom: render one machine with SVG': {
-        ceilingGz: 10210,
-        distCeilingGz: 10330,
+        ceilingGz: 11760,
+        distCeilingGz: 11860,
         source: `${COUNTER}
 import { ExoDomBackend, withExoCompiler, withExoForeignNamespaces } from '@exodra/dom';
 withExoForeignNamespaces(withExoCompiler(new ExoDomBackend())).render(COUNTER as never, document.body);
 `,
     },
     'string: render one machine': {
-        ceilingGz: 6950,
-        distCeilingGz: 7000,
+        ceilingGz: 7570,
+        distCeilingGz: 7620,
         source: `${COUNTER}
 import { ExoStrBackend } from '@exodra/string';
 console.log(new ExoStrBackend().render(COUNTER as never));

@@ -6,7 +6,7 @@
 // framework's render — becomes a child a children port can hold. The claim it has to keep is that
 // from the list's side NOTHING FOREIGN IS HAPPENING: the element is placed in order, moved rather
 // than rebuilt, dropped through the same `dropExoChild`, and swept by the same owned-child list clear as
-// every child `exonode.build(...)` produces. So most of these cases are ordinary list cases with
+// every child `exonode.createExoNode(...)` produces. So most of these cases are ordinary list cases with
 // one foreign child standing in the middle of them, and they are written that way on purpose — a
 // suite that exercised a foreign child ALONE would pass while the child was invisible to every
 // path that has a neighbour.
@@ -23,6 +23,7 @@ import type {
     TExoNode,
     TExoMachineInitialState,
 } from '@exodra/core';
+import { wireExoNode } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
@@ -33,9 +34,9 @@ import { exoOnTeardown } from '../../dom/exoTeardownScope';
 import { exoForeignNode } from '../exoForeignNode';
 import { placeExoChildrenFrom } from './placeExoChildrenFrom';
 import type { TExoDomMark } from '../../dom/types/TExoDomMark';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 /** An ordinary child, so a foreign one always has neighbours built the normal way. */
 const ROW = createExoTestMachine(
     (b) => {
@@ -51,12 +52,8 @@ const ROW = createExoTestMachine(
         }
 );
 
-const buildRow = (
-    c: { build(component: typeof ROW, params?: unknown): TExoNode<TExoDomMark> },
-    id: string
-): TExoNode<TExoDomMark> => {
-    return c.build(ROW, id);
-};
+const buildRow = (c: TExoDomNode, id: string): TExoNode<TExoDomMark> =>
+    wireExoNode(c.createExoNode(ROW), id);
 
 /**
  * A `<ul>` whose ONE child is a children port — so the port owns its element and a full clear
@@ -435,7 +432,7 @@ describe('exoForeignNode — the walls that stay up', () => {
         const src = source<readonly TExoNode<TExoDomMark>[]>([]);
         mount(src);
         const stranger = document.createElement('li') as unknown as TExoNode<TExoDomMark>;
-        expect(() => src.setValue([stranger])).toThrow(/not built by c\.build/);
+        expect(() => src.setValue([stranger])).toThrow(/not made by c\.createExoNode/);
     });
 
     it('refuses the element of a PLACED built child', () => {

@@ -6,22 +6,22 @@ the same way every other `@exodra/*` import resolves during a test run. Nothing 
 ships to a user.
 
 The bar for a helper landing here is that every copy of it was **byte-identical**
-across the suites, and that its behaviour is something a test *depends on* rather than
+across the suites, and that its behaviour is something a test _depends on_ rather than
 something a test happens to get. Two helpers that differ by one line are not one
 helper with a flag.
 
 ## The exports
 
-| Export | For |
-| --- | --- |
-| `host()` | A fresh container **in** `document.body` |
-| `detachedHost()` | A fresh container that is **not** in the document |
-| `source(initial)` | A writable cell that can be asked how many listeners it has |
-| `TExoTestSource<T>` | That cell's type |
-| `buildRow(b)` | The benchmark's row shape, built into a schema |
-| `TExoTestRowPorts` | The five ports `buildRow` returns |
-| `describeIfPresetBuilt(url)` | `describe`, or `describe.skip` if the Babel preset's dist is missing |
-| `bareImports(source)` | The non-relative import specifiers a file names, for the per-package import gates |
+| Export                       | For                                                                               |
+| ---------------------------- | --------------------------------------------------------------------------------- |
+| `host()`                     | A fresh container **in** `document.body`                                          |
+| `detachedHost()`             | A fresh container that is **not** in the document                                 |
+| `source(initial)`            | A writable cell that can be asked how many listeners it has                       |
+| `TExoTestSource<T>`          | That cell's type                                                                  |
+| `buildRow(b)`                | The benchmark's row shape, built into a schema                                    |
+| `TExoTestRowPorts`           | The five ports `buildRow` returns                                                 |
+| `describeIfPresetBuilt(url)` | `describe`, or `describe.skip` if the Babel preset's dist is missing              |
+| `bareImports(source)`        | The non-relative import specifiers a file names, for the per-package import gates |
 
 ## `host()` and `detachedHost()`
 
@@ -35,13 +35,13 @@ spelled `host()` is a trap.
 A test that renders into a **connected** element gets, from the browser and from
 jsdom, behaviour a detached tree simply does not have:
 
-- `document.querySelector` / `document.getElementById` can see what was rendered;
-- events bubble past the container to `document`, which is what every delegated
-  listener is attached to, so a delegation test can only be written against a
-  connected host;
-- focus, `document.activeElement` and the form-control activation behaviour exist at
-  all;
-- `isConnected` is `true`, and code that checks it takes its connected branch.
+-   `document.querySelector` / `document.getElementById` can see what was rendered;
+-   events bubble past the container to `document`, which is what every delegated
+    listener is attached to, so a delegation test can only be written against a
+    connected host;
+-   focus, `document.activeElement` and the form-control activation behaviour exist at
+    all;
+-   `isConnected` is `true`, and code that checks it takes its connected branch.
 
 `detachedHost()` costs exactly those four, and is the right choice when a case
 **asserts that something works while disconnected** — context lookup walking a
@@ -94,27 +94,27 @@ that question.
 
 Behavioural guarantees, because tests depend on each of them:
 
-- `setValue` notifies **synchronously**, before it returns. Every assertion in the
-  suites that use this reads the DOM on the line after a `setValue`, with no flush and
-  no `await`.
-- `setValue` notifies **unconditionally** — there is no equality check, so writing the
-  value it already holds still fires. Several cases turn on that: an "identical write"
-  must still reach the element, or must still be seen to be skipped by the code under
-  test rather than by the harness.
-- Listeners are notified over a **copy** of the set (`Array.from`), so a listener that
-  unsubscribes — or subscribes — while being notified cannot corrupt the walk.
-  Teardown caused by an update is exactly that case.
-- A `Set` backs it, so subscribing the **same** function twice counts once. No test
-  subscribes one function twice today; if one ever needs to, it wants an array-backed
-  source.
-- Unsubscribing is idempotent: calling the returned disposer twice is harmless and
-  leaves `subscribers()` where it was.
-- `getValue` does **not** count reads, and `setValue` notifies with **no** argument —
-  a plain notification, so a consumer must re-read and diff.
+-   `setValue` notifies **synchronously**, before it returns. Every assertion in the
+    suites that use this reads the DOM on the line after a `setValue`, with no flush and
+    no `await`.
+-   `setValue` notifies **unconditionally** — there is no equality check, so writing the
+    value it already holds still fires. Several cases turn on that: an "identical write"
+    must still reach the element, or must still be seen to be skipped by the code under
+    test rather than by the harness.
+-   Listeners are notified over a **copy** of the set (`Array.from`), so a listener that
+    unsubscribes — or subscribes — while being notified cannot corrupt the walk.
+    Teardown caused by an update is exactly that case.
+-   A `Set` backs it, so subscribing the **same** function twice counts once. No test
+    subscribes one function twice today; if one ever needs to, it wants an array-backed
+    source.
+-   Unsubscribing is idempotent: calling the returned disposer twice is harmless and
+    leaves `subscribers()` where it was.
+-   `getValue` does **not** count reads, and `setValue` notifies with **no** argument —
+    a plain notification, so a consumer must re-read and diff.
 
 **What it refuses.** It is not for a source that must report **reads**, and not for one
 that carries an **operation** alongside the value. A list is reconciled by handing
-`reconcileExoOrder` the whole array read back through `getValue()`, so no operation is
+a `createExoChildrenReconciler` reconciler the whole array read back through `getValue()`, so no operation is
 needed.
 
 ### Why the callback's parameter list is a rest of `never`
@@ -122,14 +122,14 @@ needed.
 `(...event: never[]) => void` is the honest statement of what this cell does, in both
 directions at once:
 
-- **Towards the caller:** `never` is the type of an argument that is never produced, so
-  the signature says "no value will reach your parameter". `setValue` notifies with
-  **no** argument — a listener that declares a parameter reads `never`, which is the
-  type that cannot be relied on, and must therefore go back to `getValue()`.
-- **Towards the consumer:** a rest parameter has no fixed arity and `never` sits under
-  every type, so a subscriber declared `(event: unknown) => void` or `() => void` is
-  accepted without a cast, and the cell can be handed to code written against a store
-  whose listeners take an event.
+-   **Towards the caller:** `never` is the type of an argument that is never produced, so
+    the signature says "no value will reach your parameter". `setValue` notifies with
+    **no** argument — a listener that declares a parameter reads `never`, which is the
+    type that cannot be relied on, and must therefore go back to `getValue()`.
+-   **Towards the consumer:** a rest parameter has no fixed arity and `never` sits under
+    every type, so a subscriber declared `(event: unknown) => void` or `() => void` is
+    accepted without a cast, and the cell can be handed to code written against a store
+    whose listeners take an event.
 
 `subscribers()` counts one entry per distinct function handed to `onChange`.
 

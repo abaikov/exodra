@@ -9,7 +9,7 @@ produces it. Every entry is written in the same order — **what you see**, **wh
 happens**, **what to do** — and every entry names the file the behaviour lives in,
 so a claim here can be checked against the code rather than believed.
 
-This page is for behaviour that is *working as designed and still surprising*.
+This page is for behaviour that is _working as designed and still surprising_.
 Behaviour that is missing or planned is in
 [Limits and plans](./limits-and-plans.md); behaviour that is simply how lists work
 is in [Lists & Reconciliation](./guides/lists.md).
@@ -34,7 +34,8 @@ one" a position with no owner. A key-based renderer never has to answer this: it
 would either refuse a duplicate key or accept two distinct keys. Identity is the
 engine here, so the question belongs to the engine.
 
-**A POSITION is a row.** `reconcileExoOrder` hands out one row per position and
+**A POSITION is a row.** The reconciler `createExoChildrenReconciler` returns hands out one
+row per position and
 consults identity only to decide which row SURVIVES an update, never how many rows
 there are (`packages/list-reconcile/src/reconcileExoOrder.ts`, "a repeated item is
 one row per occurrence"). Three entries give three rows on the client, three on the
@@ -50,17 +51,17 @@ The rule underneath: **identity decides which row survives an update, not how ma
 rows exist.** A list holding one object twice gets two rows; when the data changes,
 the row that keeps its item keeps its DOM element and its live subscriptions.
 
-### `c.list` and `reconcileExoOrder` do not behave the same way here
+### `c.list` and a reconciler do not behave the same way here
 
 This distinction is what tells you whether you are looking at this problem at all.
 
-- **`c.list(port, rowMachine, rows)`** — the fixed form. It has no reconcile at all; it builds
-  one instance per element of `rows` and hands each its element as params, so a duplicated
-  item renders twice and there is nothing here to diverge.
-- **`reconcileExoOrder(c.childList(port), shown, items, items, build)`** — the reactive
-  form, called wherever the items change. It reconciles, and reconciling is where identity is
-  consulted — but it is consulted to decide which row SURVIVES, so the count still
-  follows the positions.
+-   **`c.list(port, rowMachine, rows)`** — the fixed form. It has no reconcile at all; it builds
+    one instance per element of `rows` and hands each its element as params, so a duplicated
+    item renders twice and there is nothing here to diverge.
+-   **`reconcile(c, port, items)`**, from `createExoChildrenReconciler(rowMachine)` — the
+    reactive form, called wherever the items change. It reconciles, and reconciling is where identity is
+    consulted — but it is consulted to decide which row SURVIVES, so the count still
+    follows the positions.
 
 So a duplicate is not a latent hydration bug in either form; what identity still
 decides is which of the two rows survives an update.
@@ -68,7 +69,7 @@ decides is which of the two rows survives an update.
 ### What to do
 
 Give each row its own identity. Concretely: **one object per position**, never one
-object referenced from two positions. The item object *is* the row's name, and two
+object referenced from two positions. The item object _is_ the row's name, and two
 rows cannot share a name.
 
 ```ts
@@ -79,12 +80,10 @@ import {
     createExoMachine,
     createExoSchema,
     exoPorts,
-    withExoTransitions,
     withExoWire,
 } from '@exodra/core';
-import type { TExoMachineNodeOf } from '@exodra/core';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
+import type { TExoDomNode } from '@exodra/dom';
 
 type TTag = { readonly label: string };
 
@@ -95,14 +94,16 @@ const tagSchema = createExoSchema(TagPorts, (b) => {
         li.textPort(TagPorts.label);
     });
 });
-const tagMachine = composeExoMachine(createExoMachine<TExoDomNode>(tagSchema), (m) =>
-    withExoTransitions(m, {
-        showTag: (c, tag: TTag) => {
+const tagMachine = composeExoMachine(
+    createExoMachine(tagSchema, {
+        createInitialState: (_c: TExoDomNode, _tag: TTag) => ({}),
+    }),
+    (m) =>
+        withExoWire(m, (c, tag: TTag) => {
             c.text(TagPorts.label, tag.label);
-        },
-    })
+        })
 );
-const { showTag } = tagMachine.transitions;
+const reconcileTags = createExoChildrenReconciler<TTag>(tagMachine);
 
 const shared: TTag = { label: 'urgent' };
 
@@ -120,39 +121,29 @@ const tagsSchema = createExoSchema(TagsPorts, (b) => {
     });
 });
 const tagsBase = createExoMachine(tagsSchema, {
-    createInitialState: (c: TExoDomNode, _params: unknown): { rows: TExoChildList; shown: TTag[] } => ({
-        rows: c.childList(TagsPorts.rows),
-        shown: [],
-    }),
+    createInitialState: (_c: TExoDomNode, _params: unknown) => ({}),
 });
-function showTags(c: TExoMachineNodeOf<typeof tagsBase>, tags: readonly TTag[]): void {
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, tags, tags, (tag) => {
-        const row = c.build(tagMachine);
-        showTag(row, tag);
-        return row;
-    });
-}
 const tagsMachine = composeExoMachine(tagsBase, (m) =>
     withExoWire(m, (c) => {
-        showTags(c, distinct);
+        reconcileTags(c, TagsPorts.rows, distinct);
     })
 );
 ```
 
 Where duplicates usually come from, and what each one wants instead:
 
-- **A shared constant used as a row** — a placeholder, an "empty" sentinel, a
-  separator object hoisted to module scope and pushed into a list more than once.
-  Build a fresh object at each position, as above.
-- **A projection that returns the same cached object for two inputs** — a `map`
-  over ids where two ids resolve to one entity. Two rows showing one entity are two
-  rows, so the projection has to mint a wrapper per position; the entity can stay
-  shared inside it.
-- **A store handing back one permanent object per entity** — the shape Exodra is
-  built for, and the shape that makes this impossible by construction: one entity,
-  one slot, one row. If the same entity legitimately appears twice in one view,
-  what varies between the two appearances (a role, a position, a context) belongs
-  in the item object, which makes the two objects different objects.
+-   **A shared constant used as a row** — a placeholder, an "empty" sentinel, a
+    separator object hoisted to module scope and pushed into a list more than once.
+    Build a fresh object at each position, as above.
+-   **A projection that returns the same cached object for two inputs** — a `map`
+    over ids where two ids resolve to one entity. Two rows showing one entity are two
+    rows, so the projection has to mint a wrapper per position; the entity can stay
+    shared inside it.
+-   **A store handing back one permanent object per entity** — the shape Exodra is
+    built for, and the shape that makes this impossible by construction: one entity,
+    one slot, one row. If the same entity legitimately appears twice in one view,
+    what varies between the two appearances (a role, a position, a context) belongs
+    in the item object, which makes the two objects different objects.
 
 If your rows genuinely have no stable identity — freshly parsed JSON on every
 refetch — the keyed plugin is the documented alternative, with its own costs and

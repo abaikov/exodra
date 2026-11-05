@@ -1038,11 +1038,11 @@
         "members": [
           {
             "text": "TExoMachine< TExoChildrenWiring & TExoM…",
-            "full": "TExoMachine< TExoChildrenWiring & TExoMachineNode & { childList(port: TExoChildrenPort): TExoConformancePlacement; } >",
+            "full": "TExoMachine< TExoChildrenWiring & TExoMachineNode & { portChildList(port: TExoChildrenPort): TExoConformancePlacement; } >",
             "parts": [],
             "fullParts": [
               {
-                "text": "TExoMachine< TExoChildrenWiring & TExoMachineNode & { childList(port: TExoChildrenPort): "
+                "text": "TExoMachine< TExoChildrenWiring & TExoMachineNode & { portChildList(port: TExoChildrenPort): "
               },
               {
                 "text": "TExoConformancePlacement",

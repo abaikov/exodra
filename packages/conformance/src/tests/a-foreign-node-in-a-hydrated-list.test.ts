@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { composeExoPlugins } from '@exodra/core';
+import { composeExoPlugins, wireExoNode } from '@exodra/core';
 import type { TExoChildrenPort, TExoTextPort, TExoMachineInitialState } from '@exodra/core';
 import {
     EXO_DOM_FOREIGN_VOCABULARY,
@@ -7,7 +7,6 @@ import {
     exoForeignNode,
     withExoCompiler,
     withExoHydration,
-    withExoChildList,
 } from '@exodra/dom';
 import type { TExoDomForeignApi, TExoDomNode } from '@exodra/dom';
 import { EXO_STR_FOREIGN_VOCABULARY, ExoStrBackend, exoForeignMarkup } from '@exodra/string';
@@ -38,14 +37,14 @@ const LIST = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TExoDomNode & TExoDomForeignApi> =>
         (c) => {
-            const list = c.childList(P.rows);
-            list.insert(
+            c.appendChild(
+                P.rows,
                 c.foreign({
                     createDom: (self) => exoForeignNode(self, document.createElement('canvas')),
                     createStr: () => exoForeignMarkup('<canvas></canvas>'),
                 } as Parameters<typeof c.foreign>[0])
             );
-            list.insert(c.build(ROW));
+            c.appendChild(P.rows, wireExoNode(c.createExoNode(ROW)));
         }
 );
 
@@ -59,9 +58,8 @@ const LIST_WITH_DIRECT_FOREIGN = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TExoDomNode> =>
         (c) => {
-            const list = c.childList(P.rows);
-            list.insert(exoForeignNode(c, document.createElement('canvas')));
-            list.insert(c.build(ROW));
+            c.appendChild(P.rows, exoForeignNode(c, document.createElement('canvas')));
+            c.appendChild(P.rows, wireExoNode(c.createExoNode(ROW)));
         }
 );
 
@@ -75,7 +73,7 @@ describe('a foreign node in a hydrated child list', () => {
         document.body.appendChild(parent);
         parent.innerHTML = html;
         const client = composeExoPlugins(
-            withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend()))),
+            withExoHydration(withExoCompiler(new ExoDomBackend())),
             EXO_DOM_FOREIGN_VOCABULARY
         );
         client.hydrate(LIST, parent);
@@ -88,7 +86,7 @@ describe('a foreign node in a hydrated child list', () => {
         const parent = document.createElement('div');
         document.body.appendChild(parent);
         parent.innerHTML = server.render(LIST as unknown as Parameters<typeof server.render>[0]);
-        const client = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+        const client = withExoHydration(withExoCompiler(new ExoDomBackend()));
         client.hydrate(LIST_WITH_DIRECT_FOREIGN, parent);
 
         expect(parent.innerHTML).toBe('<ul><canvas></canvas><li>row</li></ul>');
@@ -100,7 +98,7 @@ describe('a foreign node in a hydrated child list', () => {
         const parent = document.createElement('div');
         document.body.appendChild(parent);
         parent.innerHTML = server.render(LIST as unknown as Parameters<typeof server.render>[0]);
-        const bare = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+        const bare = withExoHydration(withExoCompiler(new ExoDomBackend()));
 
         expect(() =>
             bare.hydrate(LIST as unknown as Parameters<typeof bare.hydrate>[0], parent)

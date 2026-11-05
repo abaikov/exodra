@@ -5,24 +5,18 @@ import {
     withExoHandlers,
     withExoEffects,
     createExoSchema,
+    destroyExoNode,
+    wireExoNode,
     type TExoAttrPort,
     type TExoChildrenPort,
     type TExoEventPort,
     type TExoTextPort,
 } from '@exodra/core';
-import {
-    ExoDomBackend,
-    type TExoDomNode,
-    type TExoDomMark,
-    exoNodeDom,
-    type TExoChildList,
-    withExoChildList,
-    withExoCompiler,
-} from '@exodra/dom';
+import { ExoDomBackend, type TExoDomNode, withExoCompiler } from '@exodra/dom';
 
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
-import type { TExoMachineNode, TExoNode } from '@exodra/core';
+import type { TExoMachineNode } from '@exodra/core';
 
 import { TAG, DETAILS, writeTagLabel, type TExoRegionWiring } from './exodra-shared';
 import {
@@ -54,7 +48,7 @@ import { collectingCardOps, noteCardOps, noteDeckOps } from '../../shared/card-d
 
 /** This row's own schema cache: a backend is the schema cache key, so sharing one would change a
  *  neighbouring row's cache size merely because this row exists. */
-export const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+export const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 /** THE CARD'S SCHEMA — the same nine ports in the same order as the reference `CARD`, character for
  *  character; a port added, moved, renamed or re-elemented is a byte difference at the mount. */
@@ -104,13 +98,11 @@ const P = CARD_SCHEMA.ports;
 // same statements the wire makes inline. What separates the two rows is therefore only WHERE the
 // state lives and how the update path is reached, which is the question this axis is asked.
 const m = createExoMachine<TCard>(CARD_SCHEMA, {
-    createInitialState: (c): TCardState => ({
+    createInitialState: (): TCardState => ({
         open: false,
         count: 0,
         title: '',
         pool: NO_TAGS,
-        details: c.childList(P.details),
-        tags: c.childList(P.tags),
     }),
 });
 
@@ -132,47 +124,40 @@ type TCardState = {
     count: number;
     title: string;
     pool: readonly TExoCardTag[];
-    readonly details: TExoChildList;
-    readonly tags: TExoChildList;
 };
-
-// ONE KEEP AND ONE OBJECT, which is all unmanaged state is: rows and numbers belong to the
-// COMPUTED machine, where a mark has to address them. The two regions are taken HERE and not in a
-// transition — `c.childList` resolves the port against the exonode's node table and RECORDS the
-// port as filled, and both are only true while this instance is being armed.
 
 // `attachExoChildren` registers exactly this against what a LIST builds, and a REGION has no owner —
 // so a directly written region has to say it, or this row does LESS than the row beside it.
 
 type TCard = TExoDomNode;
 
-// `insert`/`remove` AND NOT `attach`/`detach`, DELIBERATELY: the placement pair would keep a hidden
+// `destroyExoNode` AND NOT `removeChild`, DELIBERATELY: the placement half would keep a hidden
 // details block alive, which is a DIFFERENT JOB from the one every other participant does.
-// REMOVAL RUNS FROM THE END DOWNWARDS — `remove(size - 1)` re-indexes nothing.
+// REMOVAL RUNS FROM THE END DOWNWARDS — the last child re-indexes nothing.
 const showDetails = (c: TCard, open: boolean): void => {
-    const region = c.readState<TCardState>().details;
     const want = open === true ? 1 : 0;
-    for (let k = region.size; k < want; k++) region.insert(c.build(DETAILS));
-    for (let k = region.size - 1; k >= want; k--) region.remove(k);
+    for (let k = c.childCount(P.details); k < want; k++)
+        c.appendChild(P.details, wireExoNode(c.createExoNode(DETAILS)));
+    for (let k = c.childCount(P.details) - 1; k >= want; k--)
+        destroyExoNode(c.childAt(P.details, k)!);
 };
 
 const showTags = (c: TCard, state: TCardState): void => {
-    const region = c.readState<TCardState>().tags;
     // GROW AT THE TAIL, SHRINK FROM THE TAIL: the kept rows are untouched, which is what every app
     // axis's mutation gate requires.
     const want = state.count;
-    for (let k = region.size; k < want; k++) {
+    for (let k = c.childCount(P.tags); k < want; k++) {
         // THREE STATEMENTS AND NO SLOT: build the row, write its text through the transition, place
         // it. A machine takes no props, so the value crosses as a transition argument.
         const tag = state.pool[k];
-        const row = c.build(TAG);
+        const row = wireExoNode(c.createExoNode(TAG));
         writeTagLabel(
             row as unknown as TExoMachineNode,
             tagTextOf(tag.label, tag.chars.getValue())
         );
-        region.insert(row);
+        c.appendChild(P.tags, row);
     }
-    for (let k = region.size - 1; k >= want; k--) region.remove(k);
+    for (let k = c.childCount(P.tags) - 1; k >= want; k--) destroyExoNode(c.childAt(P.tags, k)!);
 };
 
 export const CARD = composeExoMachine(
@@ -200,11 +185,11 @@ export const CARD = composeExoMachine(
             reclipTags: (c: TCard, cell: TExoBenchSource<number>) => {
                 const state = c.readState<TCardState>();
                 const chars = cell.getValue();
-                for (let k = state.tags.size - 1; k >= 0; k--) {
+                for (let k = c.childCount(P.tags) - 1; k >= 0; k--) {
                     const tag = state.pool[k];
                     if (tag.chars !== cell) continue;
                     writeTagLabel(
-                        state.tags.at(k) as unknown as TExoMachineNode,
+                        c.childAt(P.tags, k) as unknown as TExoMachineNode,
                         tagTextOf(tag.label, chars)
                     );
                 }
@@ -256,12 +241,11 @@ export const CARD = composeExoMachine(
     (m) =>
         withExoEffects(m, (effect) => {
             effect((c) => {
-                const details = c.readState<TCardState>().details;
-                const tags = c.readState<TCardState>().tags;
                 return () => {
-                    for (let k = tags.size - 1; k >= 0; k--) exoNodeDom(tags.at(k)!).unmount();
-                    for (let k = details.size - 1; k >= 0; k--)
-                        exoNodeDom(details.at(k)!).unmount();
+                    for (let k = c.childCount(P.tags) - 1; k >= 0; k--)
+                        (c.childAt(P.tags, k)! as { unmount?(): void }).unmount?.();
+                    for (let k = c.childCount(P.details) - 1; k >= 0; k--)
+                        (c.childAt(P.details, k)! as { unmount?(): void }).unmount?.();
                 };
             });
         })
@@ -304,14 +288,13 @@ const DECK_SCHEMA = createExoSchema((b) => {
 const PD = DECK_SCHEMA.ports;
 
 const mDeck = createExoMachine<TDeck>(DECK_SCHEMA, {
-    createInitialState: (c): TDeckState => ({
+    createInitialState: (): TDeckState => ({
         d: 0,
         name: 0,
         // `deckDateOf(0)` and not a fresh `Date`: a slot has to be seated with something of the
         // right kind, and the spec's table is module-level and frozen.
         when: deckDateOf(0),
         detail: 0,
-        cards: c.childList(PD.cards),
     }),
 });
 
@@ -325,7 +308,6 @@ type TDeckState = {
     name: number;
     when: Date;
     detail: number;
-    readonly cards: TExoChildList;
 };
 
 // `FD_CARDS` is seeded and never written, so the region's teardown is established once.
@@ -354,9 +336,9 @@ export const DECK = composeExoMachine(
         return withExoTransitions(m, {
             /** The deck's own door off its declared start — the card's `seedCard`, one level up.
              *
-             *  THREE STATEMENTS PER ROW AND NOT ONE EXPRESSION — build, drive, place. `c.build` arms the machine
-             *  and hands back the instance with no element in the document, `seedCard` moves that instance off
-             *  its declared start, and `region.insert` is what puts the finished card in the page. */
+             *  THREE STATEMENTS PER ROW AND NOT ONE EXPRESSION — build, drive, place. `wireExoNode(c.createExoNode(...))`
+             *  arms the machine and hands back the instance with no element in the document, `seedCard` moves that
+             *  instance off its declared start, and `c.appendChild` is what puts the finished card in the page. */
             seedDeck: (c: TDeck, d: number, users: readonly TExoBenchSource<number>[]) => {
                 const state = c.readState<TDeckState>();
                 const author = deckUserOf(d);
@@ -372,12 +354,11 @@ export const DECK = composeExoMachine(
                 c.text(PD.author, userNameOf(author));
                 c.text(PD.date, dateTextOf(state.when, state.detail));
 
-                const region = c.readState<TDeckState>().cards;
                 const cards = cardsOfDeck(d);
-                for (let k = region.size; k < cards.length; k++) {
-                    const row = c.build(CARD);
+                for (let k = c.childCount(PD.cards); k < cards.length; k++) {
+                    const row = wireExoNode(c.createExoNode(CARD));
                     seedCard(row as unknown as TCard, cards[k], users);
-                    region.insert(row);
+                    c.appendChild(PD.cards, row);
                 }
                 c.onTeardown(
                     chars.onChange(() => {
@@ -394,9 +375,8 @@ export const DECK = composeExoMachine(
              *  The deck's own date needs nothing here — it listens, because it reads ONE cell and a card reads up
              *  to four. */
             reclipDeckTags: (c: TDeck, cell: TExoBenchSource<number>) => {
-                const region = c.readState<TDeckState>().cards;
-                for (let k = region.size - 1; k >= 0; k--) {
-                    reclipTags(region.at(k) as unknown as TCard, cell);
+                for (let k = c.childCount(PD.cards) - 1; k >= 0; k--) {
+                    reclipTags(c.childAt(PD.cards, k) as unknown as TCard, cell);
                 }
             },
         });
@@ -410,9 +390,9 @@ export const DECK = composeExoMachine(
     (m) =>
         withExoEffects(m, (effect) => {
             effect((c) => {
-                const region = c.readState<TDeckState>().cards;
                 return () => {
-                    for (let k = region.size - 1; k >= 0; k--) exoNodeDom(region.at(k)!).unmount();
+                    for (let k = c.childCount(PD.cards) - 1; k >= 0; k--)
+                        (c.childAt(PD.cards, k)! as { unmount?(): void }).unmount?.();
                 };
             });
         })
@@ -456,8 +436,8 @@ export const exodraAppOf = (deckList: readonly number[]) => {
                 // THE WALK, AND IT IS WHY THE TAG HAS NO SUBSCRIPTION. The deck's date moved on the line
                 // above, through the one listener a deck owns; a tag's text moves here, because the app
                 // knows which cell it just wrote and the tags do not.
-                for (let k = decks.size - 1; k >= 0; k--) {
-                    reclipDeckTags(decks.at(k) as unknown as TDeck, cell);
+                for (let k = c.childCount(Q.decks) - 1; k >= 0; k--) {
+                    reclipDeckTags(c.childAt(Q.decks, k) as unknown as TDeck, cell);
                 }
             };
             PENDING_ADVANCE = advance;
@@ -465,17 +445,19 @@ export const exodraAppOf = (deckList: readonly number[]) => {
             // THE SHELL IS DECLARED OVER THE PORTABLE NODE and the deck over the browser one, so the
             // placement crosses here — the one seam in this app where the two meet, and the cast says so
             // rather than widening the shell and losing the server render.
-            const decks = c.childList(Q.decks) as unknown as TExoChildList;
             for (let k = 0; k < deckList.length; k++) {
-                const deck = c.build(DECK as unknown as Parameters<typeof c.build>[0]);
+                const deck = wireExoNode(
+                    c.createExoNode(DECK as unknown as Parameters<typeof c.createExoNode>[0])
+                );
                 seedDeck(deck as unknown as TDeck, deckList[k], users);
-                decks.insert(deck as unknown as TExoNode<TExoDomMark>);
+                c.appendChild(Q.decks, deck);
             }
 
             // A REGION HAS NO OWNER AND REGISTERS NOTHING, so the teardown a fixed list performs for its
             // rows is written out here — the same line the deck's own region runs.
             c.onTeardown(() => {
-                for (let k = decks.size - 1; k >= 0; k--) exoNodeDom(decks.at(k)!).unmount();
+                for (let k = c.childCount(Q.decks) - 1; k >= 0; k--)
+                    (c.childAt(Q.decks, k)! as { unmount?(): void }).unmount?.();
             });
             return { users, advance };
         },

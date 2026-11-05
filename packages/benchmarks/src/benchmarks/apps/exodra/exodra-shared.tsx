@@ -20,19 +20,19 @@ import { createExoSchema } from '@exodra/core';
 import type { TExoMachineInitialState } from '@exodra/core';
 
 /**
- * WHAT THE EXODRA APP'S PARENT MACHINES DEMAND OF AN EXONODE — children, plus the region door a
- * child list is opened through. IT IS NOT A BACKEND, and that is deliberate.
+ * WHAT THE EXODRA APP'S PARENT MACHINES DEMAND OF AN EXONODE — children, plus the seam a
+ * positional child list is opened through. IT IS NOT A BACKEND, and that is deliberate.
  *
  * NOT `TExoWire<TExoDomNode>`: that would pin every component below to the browser, and
  * `tsconfig.typecheck.json`'s header records exactly that as a defect a person found months after
  * it landed. `hydrate-floor` renders these very components through `@exodra/dom` AND
- * `@exodra/string`, and both answer every call named here — `childList` included.
+ * `@exodra/string`, and both answer every call named here — `portChildList` included.
  *
  * AN `interface` AND NOT AN ALIAS: `TExoChildrenWiring` names `this`, and `this` is legal only in an
  * interface or a class — as an alias TypeScript answers TS2526 and then accepts everything.
  */
 export interface TExoRegionWiring extends TExoChildrenWiring {
-    childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
+    portChildList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
     /** WHAT A MACHINE CHILD DEMANDS OF THE NODE THAT PLACES IT: `TAG` and `DETAILS` are machines, and
      *  a machine's exonode carries its own state slot and effect list. Both backends' records have
      *  them; declaring them is what lets a narrowed parent type place a machine. */
@@ -40,6 +40,7 @@ export interface TExoRegionWiring extends TExoChildrenWiring {
     effectStops: ((() => void) | null)[] | null;
     transitionOverrides: TExoTransitionOverrides | null;
     serviceState: unknown;
+    machine: unknown;
 }
 
 const TAG_SCHEMA = createExoSchema((b) => {

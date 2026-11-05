@@ -5,7 +5,7 @@ Exodra owns everything inside it. Neither ever diffs the other's nodes, which is
 what makes the boundary a hand-off rather than a race.
 
 This is the mirror of [`@exodra/react`](https://www.npmjs.com/package/@exodra/react),
-which embeds React components *inside* an Exodra tree. They are separate packages
+which embeds React components _inside_ an Exodra tree. They are separate packages
 so you install only the direction you use.
 
 ```bash
@@ -59,7 +59,7 @@ function Panel() {
 ```
 
 `component` takes the component value itself. A **function** returning one works
-too, and is how you *choose* a component at mount time:
+too, and is how you _choose_ a component at mount time:
 
 ```tsx
 declare const mode: 'chart' | 'table';
@@ -102,27 +102,26 @@ declare const name: string;
 <ExoMount component={Greeting} params={{ name }} />
 ```
 
-A machine with no `wire` is re-mounted instead; a wire that opens children
-refuses a re-run with `EXO0103`.
+A machine with no `wire` is re-mounted instead; a wire that places children
+with `c.one` or `c.list` refuses a re-run with `EXO0103`.
 
 ### More than one instance
 
-There is no `count`, and there never can be one: `backend.buildRoot` builds a single
-instance and hands its initial state the mount's params. Rows that vary are a
+There is no `count`, and there never can be one: the mount creates a single
+instance, as `backend.createExoNode(machine)` does, and wires it with the mount's params. Rows that vary are a
 **list**, which is a property of the component rather than of the mount — a
 children port filled with `c.list(port, Row, rows)` for a fixed run of them, or
-a child list opened in `createInitialState` and driven by
-`reconcileExoOrder(rows, shown, items, items, (item) => c.build(Row, { item }))`
-from `@exodra/list-reconcile` in a transition, for a list that follows a source. Each
-row gets, as its params, what its initial state and its `wire` read: `rows[i]` from
-`c.list`, the second argument of `c.build`.
+a reconciler made once at module level with `createExoChildrenReconciler(Row)` from
+`@exodra/list-reconcile` and called as `reconcileRows(c, port, items)` from a transition or an
+effect, for a list that follows a source. Each row gets, as its params, what its initial state
+and its `wire` read: `rows[i]` from `c.list`, its item from the reconciler.
 
 So mount one component that owns the list:
 
 ```tsx
 declare const Board: typeof Chart;
-// Board's initial state opens c.childList(BoardPorts.rows); an effect does
-//   c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item) => c.build(Row, item))
+// const reconcileRows = createExoChildrenReconciler(Row); at module level, and Board's effect does
+//   reconcileRows(c, BoardPorts.rows, items)
 <ExoMount component={Board} />
 ```
 
@@ -176,24 +175,24 @@ where the page is pre-rendered React and the island must arrive as HTML.
 
 Three details are handled for you:
 
-- The container is marked `suppressHydrationWarning`. React renders the markup
-  verbatim and stops comparing it, because everything below the container belongs
-  to Exodra.
-- `hydrate` is handed **the container**, not the server's root element: it adopts
-  the container's first *element* child itself — by element and not by node, so a
-  formatting newline does not shift what is adopted.
-- When there is nothing to adopt — a client-side navigation, or StrictMode's
-  second pass, whose cleanup emptied the container — it falls back to a normal
-  render instead of failing.
-- **A reconciled children port adopts the rows it was served**, as long as its
-  effect draws synchronously when it starts: hydration hands the served rows to
-  `build` in document order, sweeps the surplus and builds the rest.
-- **Hydration is a plugin.** A backend composed without `withExoHydration` has no
-  `hydrate` at all, so an island handed such a backend renders rather than
-  adopting — which is what keeps the adopters out of a client-only bundle. That is
-  why `hydrate` is optional in the `backend` type. Left out entirely, the island
-  runs on this package's own module-level backend, which composes hydration
-  because an island over server markup is what this package is for.
+-   The container is marked `suppressHydrationWarning`. React renders the markup
+    verbatim and stops comparing it, because everything below the container belongs
+    to Exodra.
+-   `hydrate` is handed **the container**, not the server's root element: it adopts
+    the container's first _element_ child itself — by element and not by node, so a
+    formatting newline does not shift what is adopted.
+-   When there is nothing to adopt — a client-side navigation, or StrictMode's
+    second pass, whose cleanup emptied the container — it falls back to a normal
+    render instead of failing.
+-   **A reconciled children port adopts the rows it was served**, as long as its
+    effect draws synchronously when it starts: hydration hands the served rows to
+    `build` in document order, sweeps the surplus and builds the rest.
+-   **Hydration is a plugin.** A backend composed without `withExoHydration` has no
+    `hydrate` at all, so an island handed such a backend renders rather than
+    adopting — which is what keeps the adopters out of a client-only bundle. That is
+    why `hydrate` is optional in the `backend` type. Left out entirely, the island
+    runs on this package's own module-level backend, which composes hydration
+    because an island over server markup is what this package is for.
 
 **Following a source is not a plugin.** An island's component is a
 `TExoDomMachine`, and a machine that follows a source does it in an effect that
@@ -232,17 +231,17 @@ removed on the first re-mount.
 
 ### `ExoMount(props)`
 
-| prop        | type                                       | description                                                  |
-| ----------- | ------------------------------------------ | ------------------------------------------------------------ |
-| `component` | `TExoMountSource<TParams>`                 | The component to render, or a function returning one.         |
-| `params`    | `TParams`                                  | Handed to the machine's `wire`; a change re-runs it on the same instance. |
-| `html`      | `string`                                   | Server-rendered markup to hydrate. Implies `hydrate`.         |
-| `hydrate`   | `boolean`                                  | Adopt existing markup in the container instead of building.   |
+| prop        | type                                           | description                                                                                                                                                                                                       |
+| ----------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `component` | `TExoMountSource<TParams>`                     | The component to render, or a function returning one.                                                                                                                                                             |
+| `params`    | `TParams`                                      | Handed to the machine's `wire`; a change re-runs it on the same instance.                                                                                                                                         |
+| `html`      | `string`                                       | Server-rendered markup to hydrate. Implies `hydrate`.                                                                                                                                                             |
+| `hydrate`   | `boolean`                                      | Adopt existing markup in the container instead of building.                                                                                                                                                       |
 | `backend`   | `TExoDomBackend` (optionally with `adoptRoot`) | The composed backend this island renders from. Build it once, at module level — it is the schema cache key and is compared by pointer. Defaults to this package's own backend, which composes `withExoHydration`. |
-| `deps`      | `readonly unknown[]`                       | Re-mount when these change. Defaults to mounting once.        |
-| `className` | `string`                                   | Passed to the container element.                              |
-| `id`        | `string`                                   | Passed to the container element.                              |
-| `style`     | `Record<string, string \| number>`         | Passed to the container element.                              |
+| `deps`      | `readonly unknown[]`                           | Re-mount when these change. Defaults to mounting once.                                                                                                                                                            |
+| `className` | `string`                                       | Passed to the container element.                                                                                                                                                                                  |
+| `id`        | `string`                                       | Passed to the container element.                                                                                                                                                                                  |
+| `style`     | `Record<string, string \| number>`             | Passed to the container element.                                                                                                                                                                                  |
 
 There is no `count` and no `events`. `render` mounts one instance, and the event
 strategy is a field on the `backend` rather than a parameter beside it — which is

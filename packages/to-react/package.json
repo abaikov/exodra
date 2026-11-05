@@ -1,51 +1,51 @@
 {
-  "name": "@exodra/to-react",
-  "version": "0.1.1",
-  "description": "Translate Exodra source — exoJsx schemas and the machines built on them — into plain React components, so code written on Exodra keeps running without it.",
-  "main": "dist/index.cjs",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "default": "./dist/index.cjs"
+    "name": "@exodra/to-react",
+    "version": "0.2.0",
+    "description": "Translate Exodra source — exoJsx schemas and the machines built on them — into plain React components, so code written on Exodra keeps running without it.",
+    "main": "dist/index.cjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.cjs",
+            "default": "./dist/index.cjs"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "sideEffects": false,
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "rm -rf dist && tsc && mv dist/index.js dist/index.cjs",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@babel/core": "^7.24.0",
+        "@babel/types": "^7.24.0"
+    },
+    "devDependencies": {
+        "@types/babel__core": "^7.20.5",
+        "sucrase": "^3.35.1"
+    },
+    "author": "Andrei Baikov",
+    "license": "MIT",
+    "keywords": [
+        "exodra",
+        "react",
+        "translate",
+        "codemod",
+        "migration"
+    ],
+    "homepage": "https://exodra.org/docs/guides/to-react",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/abaikov/exodra.git",
+        "directory": "packages/to-react"
+    },
+    "bugs": {
+        "url": "https://github.com/abaikov/exodra/issues"
     }
-  },
-  "files": [
-    "dist"
-  ],
-  "sideEffects": false,
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "build": "rm -rf dist && tsc && mv dist/index.js dist/index.cjs",
-    "test": "vitest run"
-  },
-  "dependencies": {
-    "@babel/core": "^7.24.0",
-    "@babel/types": "^7.24.0"
-  },
-  "devDependencies": {
-    "@types/babel__core": "^7.20.5",
-    "sucrase": "^3.35.1"
-  },
-  "author": "Andrei Baikov",
-  "license": "MIT",
-  "keywords": [
-    "exodra",
-    "react",
-    "translate",
-    "codemod",
-    "migration"
-  ],
-  "homepage": "https://exodra.org/docs/guides/to-react",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abaikov/exodra.git",
-    "directory": "packages/to-react"
-  },
-  "bugs": {
-    "url": "https://github.com/abaikov/exodra/issues"
-  }
 }

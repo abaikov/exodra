@@ -119,6 +119,7 @@ function adoptElement(
                 );
                 const child = wrap(adoption.owner, own);
                 child.state = nested.state;
+                child.machine = slot.type;
                 (child.disposers ??= []).push(() => disposeExoReactHostState(nested.state));
                 slot.node = child as unknown as TExoNode<TExoDomMark>;
                 range.slots.push(slot);
@@ -191,6 +192,7 @@ export function adoptExoReactHostSlot(slot: TExoReactSlot, shape: TExoReactHostS
     node.state = adopted.state;
     (node.disposers ??= []).push(() => disposeExoReactHostState(adopted.state));
     slot.type = exoReactTagMachine(shape.tag);
+    node.machine = slot.type;
     slot.props = adopted.props;
     slot.ref = adopted.ref;
 }

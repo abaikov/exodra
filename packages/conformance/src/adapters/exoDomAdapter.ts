@@ -1,7 +1,6 @@
 import {
     ExoDomBackend,
     exoDomSchemaOf,
-    withExoChildList,
     withExoCompiler,
     withExoForeignNamespaces,
 } from '@exodra/dom';
@@ -18,9 +17,7 @@ import type {
 
 // The backend IS the schema cache key and is compared by POINTER, so `compile` and `render` must
 // hold the SAME object or they work on two different compiled schemas.
-const EXO_DOM = /*#__PURE__*/ withExoChildList(
-    withExoForeignNamespaces(withExoCompiler(new ExoDomBackend()))
-);
+const EXO_DOM = /*#__PURE__*/ withExoForeignNamespaces(withExoCompiler(new ExoDomBackend()));
 
 export const exoDomAdapter: TExoConformanceAdapter = {
     name: 'dom',

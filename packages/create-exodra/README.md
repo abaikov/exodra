@@ -32,15 +32,15 @@ npx create-exodra [project-name] [options]
 
 ### Options
 
-- `--ts`, `--typescript` - use TypeScript
-- `--js`, `--javascript` - use JavaScript
-- `--tailwind` - set up Tailwind CSS
-- `--eslint` - set up ESLint
-- `--src-dir` - use a `src/` directory
-- `--ssr` - scaffold a server-side-rendered app (`@exodra/ssr` + hydration)
-- `--app` - use the App Router (`@exodra/router`)
-- `--import-alias <alias>` - import alias to use (default `@/*`)
-- `--use-npm` / `--use-yarn` / `--use-pnpm` / `--use-bun` - choose the package manager
+-   `--ts`, `--typescript` - use TypeScript
+-   `--js`, `--javascript` - use JavaScript
+-   `--tailwind` - set up Tailwind CSS
+-   `--eslint` - set up ESLint
+-   `--src-dir` - use a `src/` directory
+-   `--ssr` - scaffold a server-side-rendered app (`@exodra/ssr` + hydration)
+-   `--app` - use the App Router (`@exodra/router`)
+-   `--import-alias <alias>` - import alias to use (default `@/*`)
+-   `--use-npm` / `--use-yarn` / `--use-pnpm` / `--use-bun` - choose the package manager
 
 Any option you don't pass is asked interactively. Passing a flag skips that prompt.
 
@@ -89,7 +89,7 @@ carry type annotations; without it they are the same code with the types dropped
 
 **There are no props.** `createInitialState` is `(exonode, params) => state`, handed to
 `createExoMachine` as an option — `createExoMachine(schema, { createInitialState })`: an instance is
-handed the params its parent passed to `c.one`, `c.list` (row i gets `rows[i]`) or `c.build`, and
+handed the params its parent passed to `c.one`, `c.list` (row i gets `rows[i]`) or `wireExoNode`, and
 nothing else — which is why the generated component declares a `{ label }` params type — and the
 wire `withExoWire` adds writes the ports from that state. A page receives the match that selected it as
 the params of its wire.
@@ -128,9 +128,8 @@ export default composeExoMachine(pageBase, m =>
 A standard (non-SSR) app uses Vite with `@exodra/vite-plugin` and depends on
 `@exodra/core`, `@exodra/jsx` and `@exodra/dom` (plus `@exodra/router` when the
 App Router is enabled). The generated `src/main` is a machine rendered
-through a module-level `withExoCompiler(new ExoDomBackend())` — with `--app`,
-`withExoChildList(withExoCompiler(new ExoDomBackend()))`, because the outlet and the nav open a
-child list and a backend without that pack refuses with `EXO0109`: its schema is an `exoJsx` declaration
+through a module-level `withExoCompiler(new ExoDomBackend())`, with or without `--app`: its
+schema is an `exoJsx` declaration
 built when the module loads, and the machine's `wire` fills its ports. The generated
 `tsconfig.json` sets `jsxImportSource: "@exodra/jsx/schema"`, which types the dialect.
 
@@ -140,7 +139,7 @@ as `virtual:exodra-routes`. `src/router.ts` constructs the router and nothing el
 so a page can import it without importing the module that renders the app. `src/main`
 provides the router with `provideExoRouter(c, router)`, places the route boundary with
 `c.one(port, ExoOutlet)`, and builds the nav as `ExoLink` machines —
-`links.insert(c.build(ExoLink, { to, label, currentWhen: 'exact' }))` — real
+`const link = c.createExoNode(ExoLink); wireExoNode(link, { to, label, currentWhen: 'exact' }); c.appendChild(AppPorts.nav, link)` — real
 `<a href>` markup that the router takes over on a plain left click, while a
 modifier-click or a new-tab click stays the browser's. A page receives the match that
 selected it as the params of its wire.
@@ -219,10 +218,11 @@ the unsubscribe: `withExoEffects(m, (effect) => { effect((c) => { show(c); retur
 
 Children are placed by the calls that take a component: `c.one(port, C)` for one
 instance, `c.list(port, C, rows)` for a fixed run of them — row i armed with `rows[i]` as
-its params — and, for a list that changes, a child list opened with `c.childList(port)` in
-`createInitialState` and reconciled, wherever the items change, with
-`reconcileExoOrder(rows, shown, items, items, (item) => c.build(C, item))` from
-`@exodra/list-reconcile`, by the identity of the item objects. Nothing scaffolded here
+its params — and, for a list that changes, a reconciler made once at module level with
+`const reconcileRows = createExoChildrenReconciler(C)` from `@exodra/list-reconcile` and called
+wherever the items change as `reconcileRows(c, port, items)`, by the identity of the item objects
+(or by key, with `createExoChildrenReconciler(C, { key: (item) => item.id })`). It remembers what it
+showed, so the machine keeps no list of its own. Nothing scaffolded here
 uses the reconciler, so `@exodra/list-reconcile` is not among the generated
 dependencies — add it when a list has to grow. A reconciled list hydrates: the served
 rows are adopted as long as the effect that drives it draws when it starts.

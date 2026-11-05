@@ -4,6 +4,7 @@ import type { TExoDomMachine } from './types/TExoDomMachine';
 import type { TExoDomInstanceRecord } from './types/TExoDomInstanceRecord';
 import type { TExoDomSchema } from './types/TExoDomSchema';
 import { buildExoDomRoot } from './buildExoDomRoot';
+import { createExoUnarmedChild } from './createExoUnarmedChild';
 import { mountExoDomNode } from './mountExoDomNode';
 
 /**
@@ -29,7 +30,10 @@ export function mountExoSchema<TNode extends TExoDomInstanceRecord>(
     params?: unknown
 ): () => void {
     return mountExoDomNode(
-        buildExoDomRoot(schema, machine as unknown as TExoDomMachine, params),
+        buildExoDomRoot(
+            createExoUnarmedChild(schema, machine as unknown as TExoDomMachine, null) as never,
+            params
+        ),
         parent,
         backend
     );

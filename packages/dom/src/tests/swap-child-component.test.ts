@@ -3,10 +3,10 @@
 // ONE POSITION, AND WHICH COMPONENT STANDS IN IT OVER TIME — a tab, a modal, a route.
 //
 // THERE IS NO DOOR FOR THIS, and the absence is the design. A position is not typed by a component:
-// `c.childList(port)` holds whatever `c.build(component, params)` hands it, so "show B where A
-// stood" is `slot.remove(0)` followed by `slot.insert(c.build(B, params))` — two commands over the two
-// doors a fixed list already uses, with no reconciler, no registry and no component-keyed table
-// anywhere in the engine. `swappingShell` below is the whole of what a renderer-side call would have
+// a child port holds whatever `wireExoNode(c.createExoNode(component), params)` hands it, so "show B
+// where A stood" is `slot.remove(0)` followed by `slot.insert(wireExoNode(c.createExoNode(B), params))`
+// — two commands over the two doors a fixed list already uses, with no reconciler, no registry and
+// no component-keyed table anywhere in the engine. `swappingShell` below is the whole of what a renderer-side call would have
 // been: the two commands, an identity compare so an unrelated notification changes nothing, and one
 // effect that follows the source.
 //
@@ -19,6 +19,7 @@ import {
     withExoTransitions,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoSchemaCursor,
@@ -35,17 +36,17 @@ import type { TExoPlacedChildren } from '@exodra/list-reconcile';
 import { describe, expect, it } from 'vitest';
 
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 /**
- * WHAT THE WIRES BELOW ASSUME ABOUT AN EXONODE. `childList` is each backend's own door — it hands
+ * WHAT THE WIRES BELOW ASSUME ABOUT AN EXONODE. `portChildList` is each backend's own door — it hands
  * out element positions, which `@exodra/core` has no word for — so the commands are named over
  * core's opaque `TExoNode` and no backend's node type.
  */
 type TExoPlacing = TExoChildrenWiring & {
-    childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
+    portChildList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
 };
 
 /** WHICH COMPONENT STANDS THERE, AND THE TEXT ITS INSTANCE IS HANDED AS PARAMS. */
@@ -83,7 +84,7 @@ const swappingShell = <TPorts>(
         { slot: TExoPlacedChildren<TExoNode>; shown: TStanding | null }
     >(schema, {
         createInitialState: (c) => {
-            const slot = c.childList(slotOf(schema.ports));
+            const slot = c.portChildList(slotOf(schema.ports));
             if (openRest !== undefined) openRest(c, schema.ports);
             return { slot, shown: null };
         },
@@ -98,7 +99,9 @@ const swappingShell = <TPorts>(
                     if (want === state.shown) return;
                     if (state.shown !== null) state.slot.remove(0);
                     state.shown = want;
-                    if (want !== null) state.slot.insert(c.build(want.component, want.text));
+                    if (want !== null) {
+                        state.slot.insert(wireExoNode(c.createExoNode(want.component), want.text));
+                    }
                 },
             }),
         (m) => {
@@ -357,7 +360,7 @@ describe('a swapped position next to another child list', () => {
             swap,
             (c, P) => {
                 node = c;
-                rows = c.childList(P.rows);
+                rows = c.portChildList(P.rows);
             }
         );
         const parent = host();
@@ -372,7 +375,7 @@ describe('a swapped position next to another child list', () => {
         // swap found in that hole renders without an error and shows a wrong tree.
         const { swap, node, rows, card } = mountTwo();
         swap.setValue(standing(PAGE_A, 'first'));
-        rows.insert(node.build(ITEM, 'A'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'A'));
         expect(card.innerHTML).toBe(
             `<h3>headline</h3>${A('first')}<i>A</i><footer>footnote</footer>`
         );
@@ -382,8 +385,8 @@ describe('a swapped position next to another child list', () => {
         // The direction that fails when the swap does not consult the chain: with rows already
         // there, "insert before the footer" puts the page behind them.
         const { swap, node, rows, card } = mountTwo();
-        rows.insert(node.build(ITEM, 'A'));
-        rows.insert(node.build(ITEM, 'B'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'A'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'B'));
         swap.setValue(standing(PAGE_A, 'first'));
         expect(card.innerHTML).toBe(
             `<h3>headline</h3>${A('first')}<i>A</i><i>B</i><footer>footnote</footer>`
@@ -393,12 +396,12 @@ describe('a swapped position next to another child list', () => {
     it('emptying the swap leaves the rows exactly where they were, and they can still grow', () => {
         const { swap, node, rows, card } = mountTwo();
         swap.setValue(standing(PAGE_A, 'first'));
-        rows.insert(node.build(ITEM, 'A'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'A'));
         swap.setValue(null);
         expect(card.innerHTML).toBe('<h3>headline</h3><i>A</i><footer>footnote</footer>');
         // The swap's published order is emptied IN PLACE and never replaced, so the rows' own
         // anchoring still reads the live array rather than a wiring-time snapshot.
-        rows.insert(node.build(ITEM, 'B'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'B'));
         expect(card.innerHTML).toBe('<h3>headline</h3><i>A</i><i>B</i><footer>footnote</footer>');
     });
 

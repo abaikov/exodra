@@ -4,7 +4,7 @@
 // THE "OP PATH" THIS FILE WAS WRITTEN TO ATTRIBUTE NO LONGER EXISTS, and that is the first thing to
 // know before reading a profile out of it. There is no door that APPLIES an operation to the child
 // list without a re-read. A list is a transition calling `reconcileExoOrder` over
-// `c.childList(port)`, which an effect fires on any notification as a bare "it moved": it re-reads
+// `c.portChildList(port)`, which an effect fires on any notification as a bare "it moved": it re-reads
 // `getValue()` and diffs. So the four calls below are
 // still the four calls an application makes, and what they reach is a DIFF: this file now
 // attributes the reconcile, and nothing here is evidence about a told-what-changed path.
@@ -19,7 +19,7 @@
 // V8 CPU profile. Nothing is instrumented and no hot path is touched; the profiler samples.
 import { type TExoChildrenPort, type TExoTextPort } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
-import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, type TExoDomNode, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
 import {
     createExoMachine,
@@ -27,8 +27,10 @@ import {
     withExoTransitions,
     withExoEffects,
 } from '@exodra/core';
+import { wireExoNode } from '@exodra/core';
+import type { TExoDomPortChildList } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 const ROWS = 300;
 // 200 rounds per mount, not the axis's 20: a profile has to be dominated by the thing it is
@@ -89,7 +91,9 @@ export async function profileListOpsExodra(times = 20): Promise<void> {
         });
         const mUL = createExoMachine(UL_SCHEMA, {
             createInitialState: (conn: TExoDomNode) => ({
-                kids: conn.childList(UL_SCHEMA.ports.rows),
+                kids: (conn as TExoDomNode & TExoDomPortChildList).portChildList(
+                    UL_SCHEMA.ports.rows
+                ),
                 shown: [] as Row[],
             }),
         });
@@ -105,7 +109,7 @@ export async function profileListOpsExodra(times = 20): Promise<void> {
                             state.shown,
                             want,
                             want,
-                            (item) => conn.build(LI, item)
+                            (item) => wireExoNode(conn.createExoNode(LI), item)
                         );
                     },
                 }),

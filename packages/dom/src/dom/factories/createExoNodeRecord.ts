@@ -6,7 +6,7 @@ import type { TExoDomNode } from '../EXO_DOM_NODE_VOCABULARY';
 import type { TExoDomChild } from '../types/TExoDomChild';
 import type { TExoDomSchema } from '../types/TExoDomSchema';
 
-export function createExoNode(
+export function createExoNodeRecord(
     schema: TExoDomSchema,
     root: Element,
     machine: TExoDomMachine,

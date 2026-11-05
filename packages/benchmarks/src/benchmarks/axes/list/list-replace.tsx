@@ -72,7 +72,7 @@ import { type TExoSchemaCursor, type TExoTextPort, type TExoChildrenPort } from 
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
-import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, type TExoDomNode, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
 import {
     createExoMachine,
@@ -80,8 +80,10 @@ import {
     withExoTransitions,
     withExoEffects,
 } from '@exodra/core';
+import { wireExoNode } from '@exodra/core';
+import type { TExoDomPortChildList } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 // 500 rows, because the hypothesis under test is specifically about a BIG dom: it predicts that
 // avoiding N subtree constructions outweighs everything a faster renderer does per row, and the
@@ -599,7 +601,9 @@ async function runListReplace(
             });
             const mUL = createExoMachine(UL_SCHEMA, {
                 createInitialState: (cc: TExoDomNode) => ({
-                    kids: cc.childList(UL_SCHEMA.ports.rows),
+                    kids: (cc as TExoDomNode & TExoDomPortChildList).portChildList(
+                        UL_SCHEMA.ports.rows
+                    ),
                     shown: [] as TRow[],
                 }),
             });
@@ -615,7 +619,7 @@ async function runListReplace(
                                 state.shown,
                                 want,
                                 want,
-                                (item) => cc.build(ITEM_ROW, item)
+                                (item) => wireExoNode(cc.createExoNode(ITEM_ROW), item)
                             );
                         },
                     }),

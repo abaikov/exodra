@@ -1,13 +1,14 @@
 import type { TExoChildrenPort, TExoNode } from '@exodra/core';
 import type { TExoDomNode } from '../../dom/EXO_DOM_NODE_VOCABULARY';
 import type { TExoDomMark } from '../../dom/types/TExoDomMark';
+import type { TExoDomPortChildList } from '../../dom/types/TExoDomPortChildList';
 
 export const placeExoChildrenFrom = (
     c: TExoDomNode,
     port: TExoChildrenPort,
     src: { getValue(): readonly TExoNode<TExoDomMark>[]; onChange(cb: () => void): () => void }
 ): void => {
-    const kids = c.childList(port);
+    const kids = (c as TExoDomNode & TExoDomPortChildList).portChildList(port);
     const apply = (): void => {
         const want = src.getValue();
         // `remove` and never `detach`: a child that LEAVES must be told, or its unmount hook never

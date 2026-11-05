@@ -4,9 +4,9 @@
 //
 // A FIXED LIST DOES NOT FOLLOW ITS DATA, and that is the contract being asserted here rather than a
 // shortcoming of the test: it builds a row per item and keeps no diff, no registry and no
-// subscription. Following a source is a reconciler layered over `build` and `childList` from
-// outside this package, and no such layer names this backend yet, so a REACTIVE term list is
-// unproven and is named here rather than left to look covered.
+// subscription. Following a source is a reconciler layered over `createExoNode` and
+// `portChildList` from outside this package, and no such layer names this backend yet, so a
+// REACTIVE term list is unproven and is named here rather than left to look covered.
 import { describe, expect, it } from 'vitest';
 import { TodoList, todos } from '../readme-todos';
 import { ExoTermBackend } from '../../backend/ExoTermBackend';

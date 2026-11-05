@@ -9,7 +9,10 @@ import type { TExoBaseNodeMethods } from '../../wiring/types/TExoBaseNodeMethods
 export interface TExoMachineNode<TEvent = unknown, TNode = unknown>
     extends TExoFillDoors,
         TExoBaseNodeMethods,
-        Pick<TExoBaseNodeFields, 'state' | 'effectStops' | 'transitionOverrides' | 'serviceState'> {
+        Pick<
+            TExoBaseNodeFields,
+            'state' | 'effectStops' | 'transitionOverrides' | 'serviceState' | 'machine'
+        > {
     /**
      * ONE function for the whole component; the SUBJECT is the exonode, and a backend that dropped
      * it would run every row's handler against `undefined`.

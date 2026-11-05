@@ -1,433 +1,432 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Exodra — a routed page, running</title>
-<link rel="stylesheet" href="./style.css">
-</head>
-<body>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Exodra — a routed page, running</title>
+        <link rel="stylesheet" href="./style.css" />
+    </head>
+    <body>
+        <header class="page-head">
+            <h1 class="page-title">A routed page, running</h1>
+            <p class="page-sub">
+                One route table, one <code>provideExoRouter</code>, one outlet — and everything
+                <code>@exodra/router</code> can do to it: a param route, a nested layout with a
+                second outlet inside it, a guard that redirects, a lazy page that arrives late, and
+                a query parameter followed both ways. Every panel below is the live application;
+                nothing is mocked and nothing is drawn twice.
+                <br />
+                <span class="slot">the packages: @exodra/core · @exodra/dom · @exodra/router</span>
+            </p>
+        </header>
 
-<header class="page-head">
-    <h1 class="page-title">A routed page, running</h1>
-    <p class="page-sub">
-        One route table, one <code>provideExoRouter</code>, one outlet — and everything
-        <code>@exodra/router</code> can do to it: a param route, a nested layout with a second
-        outlet inside it, a guard that redirects, a lazy page that arrives late, and a query
-        parameter followed both ways. Every panel below is the live application; nothing is mocked and
-        nothing is drawn twice.
-        <br>
-        <span class="slot">the packages: @exodra/core · @exodra/dom · @exodra/router</span>
-    </p>
-</header>
+        <div class="panels">
+            <section class="panel panel-wide">
+                <h2 class="panel-title">The application</h2>
+                <p class="panel-note">
+                    backend.render(APP, here) — one render, for the whole life of the page.
+                </p>
+                <div id="app"></div>
+            </section>
+            <section class="panel">
+                <h2 class="panel-title">What the router says</h2>
+                <p class="panel-note">Read off the router object on every location change.</p>
+                <pre class="readout" id="state"></pre>
+            </section>
+        </div>
 
-<div class="panels">
-    <section class="panel panel-wide">
-        <h2 class="panel-title">The application</h2>
-        <p class="panel-note">
-            backend.render(APP, here) — one render, for the whole life of the page.
+        <p id="boot" class="boot">
+            Loading three packages from this repository's own <code>dist/</code>…
         </p>
-        <div id="app"></div>
-    </section>
-    <section class="panel">
-        <h2 class="panel-title">What the router says</h2>
-        <p class="panel-note">Read off the router object on every location change.</p>
-        <pre class="readout" id="state"></pre>
-    </section>
-</div>
 
-<p id="boot" class="boot">Loading three packages from this repository's own <code>dist/</code>…</p>
+        <p class="boot">
+            It renders from one <code>withExoCompiler(new ExoDomBackend())</code> built at module
+            level; a page receives its match as the params of its <code>wire</code>, the nav bar is
+            <code>wireExoNode(c.createExoNode(ExoLink), params)</code> placed with
+            <code>c.appendChild(port, node)</code>, and the search field follows the URL from an
+            effect subscribed with <code>router.onChange</code>.
+        </p>
 
-<p class="boot">
-    It renders from one <code>withExoChildList(withExoCompiler(new ExoDomBackend()))</code> built at
-    module level — the outlet and the nav bar both open a child list, so the pack is required; a
-    page receives its match as the params of its <code>wire</code>, the nav bar is
-    <code>c.build(ExoLink, params)</code> placed with <code>c.childList(port).insert</code>, and
-    the search field follows the URL from an effect subscribed with <code>router.onChange</code>.
-</p>
+        <script type="importmap">
+            {
+              "imports": {
+                "@exodra/core": "/packages/core/dist/index.js",
+                "@exodra/context": "/packages/context/dist/index.js",
+                "@exodra/dom": "/packages/dom/dist/index.js",
+                "@exodra/router": "/packages/router/dist/index.js"
+              }
+            }
+        </script>
+        <script type="module">
+            import {
+                composeExoMachine,
+                createExoMachine,
+                createExoSchema,
+                withExoEffects,
+                withExoHandlers,
+                withExoWire,
+                wireExoNode,
+            } from '@exodra/core';
+            import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+            import * as exoRouter from '@exodra/router';
 
-<script type="importmap">
-{
-  "imports": {
-    "@exodra/core": "/packages/core/dist/index.js",
-    "@exodra/context": "/packages/context/dist/index.js",
-    "@exodra/dom": "/packages/dom/dist/index.js",
-    "@exodra/router": "/packages/router/dist/index.js"
-  }
-}
-</script>
-<script type="module">
-    import {
-        composeExoMachine,
-        createExoMachine,
-        createExoSchema,
-        withExoEffects,
-        withExoHandlers,
-        withExoWire,
-    } from '@exodra/core';
-    import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-    import * as exoRouter from '@exodra/router';
+            const {
+                ExoLink,
+                ExoOutlet,
+                createExoMemoryHistory,
+                createExoRouter,
+                exoLazy,
+                exoOutlet,
+                injectExoRouter,
+                preloadExoPage,
+                provideExoRouter,
+            } = exoRouter;
 
-    const {
-        ExoLink,
-        ExoOutlet,
-        createExoMemoryHistory,
-        createExoRouter,
-        exoLazy,
-        exoOutlet,
-        injectExoRouter,
-        preloadExoPage,
-        provideExoRouter,
-    } = exoRouter;
+            // EVERY NAME THIS PAGE USES, CHECKED AGAINST THE BUILD BEFORE ANYTHING RUNS. `dist/` is
+            // compiled output and is older than `src/` whenever nobody rebuilt it, and a missing export
+            // is otherwise a blank page and a line in the console nobody opened.
+            const boot = document.getElementById('boot');
+            const missing = [
+                'ExoLink',
+                'ExoOutlet',
+                'createExoMemoryHistory',
+                'createExoRouter',
+                'exoLazy',
+                'exoOutlet',
+                'injectExoRouter',
+                'preloadExoPage',
+                'provideExoRouter',
+            ].filter((name) => exoRouter[name] === undefined);
 
-    // EVERY NAME THIS PAGE USES, CHECKED AGAINST THE BUILD BEFORE ANYTHING RUNS. `dist/` is
-    // compiled output and is older than `src/` whenever nobody rebuilt it, and a missing export
-    // is otherwise a blank page and a line in the console nobody opened.
-    const boot = document.getElementById('boot');
-    const missing = [
-        'ExoLink',
-        'ExoOutlet',
-        'createExoMemoryHistory',
-        'createExoRouter',
-        'exoLazy',
-        'exoOutlet',
-        'injectExoRouter',
-        'preloadExoPage',
-        'provideExoRouter',
-    ].filter((name) => exoRouter[name] === undefined);
+            if (missing.length > 0) {
+                boot.className = 'boot boot-error';
+                boot.textContent =
+                    'This build of @exodra/router is missing ' + missing.join(', ') + '. ' +
+                    'Rebuild it: npm run build --workspace=@exodra/router';
+                throw new Error('router example: @exodra/router/dist is missing ' + missing.join(', '));
+            }
 
-    if (missing.length > 0) {
-        boot.className = 'boot boot-error';
-        boot.textContent =
-            'This build of @exodra/router is missing ' + missing.join(', ') + '. ' +
-            'Rebuild it: npm run build --workspace=@exodra/router';
-        throw new Error('router example: @exodra/router/dist is missing ' + missing.join(', '));
-    }
+            // ══════════════════════════════════════════════════════════════════════ THE HISTORY
+            //
+            // A MEMORY HISTORY, AND THE REASON IS THE SERVER RATHER THAN THE ROUTER. Swap this one line
+            // for `createExoBrowserHistory()` and every link below drives the real address bar through
+            // the History API — which is what an application ships. It is not what this page ships,
+            // because `python3 -m http.server` has no rewrite rule: the first time you pushed
+            // `/…/router.html/users/2` into the bar and pressed reload you would get a 404 from the
+            // server, and the page would look broken for a reason that has nothing to do with Exodra.
+            //
+            // NOTHING ELSE ON THIS PAGE KNOWS WHICH ONE IT GOT. `TExoHistory` is the seam — five methods
+            // — so the route table, the guards, the links and the outlets are identical either way.
+            const history = createExoMemoryHistory('/');
 
-    // ══════════════════════════════════════════════════════════════════════ THE HISTORY
-    //
-    // A MEMORY HISTORY, AND THE REASON IS THE SERVER RATHER THAN THE ROUTER. Swap this one line
-    // for `createExoBrowserHistory()` and every link below drives the real address bar through
-    // the History API — which is what an application ships. It is not what this page ships,
-    // because `python3 -m http.server` has no rewrite rule: the first time you pushed
-    // `/…/router.html/users/2` into the bar and pressed reload you would get a 404 from the
-    // server, and the page would look broken for a reason that has nothing to do with Exodra.
-    //
-    // NOTHING ELSE ON THIS PAGE KNOWS WHICH ONE IT GOT. `TExoHistory` is the seam — five methods
-    // — so the route table, the guards, the links and the outlets are identical either way.
-    const history = createExoMemoryHistory('/');
+            // ══════════════════════════════════════════════════════════════════════════ THE PAGES
+            //
+            // A PAGE IS AN ORDINARY MACHINE. The match that selected it — `{ params, pathname, handle }` —
+            // arrives as the params of its `wire`.
 
-    // ══════════════════════════════════════════════════════════════════════════ THE PAGES
-    //
-    // A PAGE IS AN ORDINARY MACHINE. The match that selected it — `{ params, pathname, handle }` —
-    // arrives as the params of its `wire`.
+            const HOME_SCHEMA = createExoSchema(
+                (b) => {
+                    b.el('div', { class: 'page' }, (d) => {
+                        d.el('h3', null, (h) => h.text('Home'));
+                        d.el('p', null, (p) =>
+                            p.text('Pick a link above. A different route destroys this page and builds the ' +
+                                'next one; the same route with a different param re-wires it in place.')
+                        );
+                    });
+                    return {};
+                }
+            );
+            const HOME = createExoMachine(HOME_SCHEMA);
 
-    const HOME_SCHEMA = createExoSchema(
-        (b) => {
-            b.el('div', { class: 'page' }, (d) => {
-                d.el('h3', null, (h) => h.text('Home'));
-                d.el('p', null, (p) =>
-                    p.text('Pick a link above. A different route destroys this page and builds the ' +
-                        'next one; the same route with a different param re-wires it in place.')
-                );
+            /**
+             * `/users/:id` — the param route. Moving from `/users/1` to `/users/2` RE-RUNS this wire on the
+             * same instance: the paragraph below is the same element, only its text moves.
+             */
+            const USER_SCHEMA = createExoSchema(
+                (b) => {
+                    let who;
+                    b.el('div', { class: 'page' }, (d) => {
+                        d.el('h3', null, (h) => h.text('User'));
+                        d.el('p', null, (p) => {
+                            who = p.textPort();
+                        });
+                    });
+                    return { who };
+                }
+            );
+            const USER = withExoWire(createExoMachine(USER_SCHEMA), (c, match) => {
+                c.text(USER_SCHEMA.ports.who, 'id = ' + match.params.id + '  ·  matched at ' + match.pathname);
             });
-            return {};
-        }
-    );
-    const HOME = createExoMachine(HOME_SCHEMA);
 
-    /**
-     * `/users/:id` — the param route. Moving from `/users/1` to `/users/2` RE-RUNS this wire on the
-     * same instance: the paragraph below is the same element, only its text moves.
-     */
-    const USER_SCHEMA = createExoSchema(
-        (b) => {
-            let who;
-            b.el('div', { class: 'page' }, (d) => {
-                d.el('h3', null, (h) => h.text('User'));
-                d.el('p', null, (p) => {
-                    who = p.textPort();
-                });
+            /**
+             * `/admin` — A LAYOUT, WHICH IS JUST A ROUTE WITH `children` AND AN OUTLET INSIDE IT.
+             *
+             * There is no `layout:` field to set (the one on `TExoRoute` is carried and read by nothing).
+             * A layout is a page like any other; what makes it a layout is that its own markup contains a
+             * second route boundary, and that the table nests the leaves under it.
+             *
+             * The nested boundary finds the one above it through context, so its depth is automatic.
+             */
+            const ADMIN_SCHEMA = createExoSchema(
+                (b) => {
+                    let slot;
+                    b.el('div', { class: 'page' }, (d) => {
+                        d.el('h3', null, (h) => h.text('Admin layout'));
+                        d.el('p', { class: 'hint' }, (p) =>
+                            p.text('This heading and the footer below belong to the LAYOUT. Switching ' +
+                                'between the two admin links changes only what is between them — the ' +
+                                'layout instance is kept.')
+                        );
+                        d.el('section', { class: 'inner' }, (s) => {
+                            slot = s.childrenPort();
+                        });
+                        d.el('footer', null, (f) => f.text('— end of layout —'));
+                    });
+                    return { slot };
+                }
+            );
+            const ADMIN = createExoMachine(ADMIN_SCHEMA, {
+                createInitialState: (c) => {
+                    c.one(ADMIN_SCHEMA.ports.slot, ExoOutlet);
+                },
             });
-            return { who };
-        }
-    );
-    const USER = withExoWire(createExoMachine(USER_SCHEMA), (c, match) => {
-        c.text(USER_SCHEMA.ports.who, 'id = ' + match.params.id + '  ·  matched at ' + match.pathname);
-    });
 
-    /**
-     * `/admin` — A LAYOUT, WHICH IS JUST A ROUTE WITH `children` AND AN OUTLET INSIDE IT.
-     *
-     * There is no `layout:` field to set (the one on `TExoRoute` is carried and read by nothing).
-     * A layout is a page like any other; what makes it a layout is that its own markup contains a
-     * second route boundary, and that the table nests the leaves under it.
-     *
-     * The nested boundary finds the one above it through context, so its depth is automatic.
-     */
-    const ADMIN_SCHEMA = createExoSchema(
-        (b) => {
-            let slot;
-            b.el('div', { class: 'page' }, (d) => {
-                d.el('h3', null, (h) => h.text('Admin layout'));
-                d.el('p', { class: 'hint' }, (p) =>
-                    p.text('This heading and the footer below belong to the LAYOUT. Switching ' +
-                        'between the two admin links changes only what is between them — the ' +
-                        'layout instance is kept.')
-                );
-                d.el('section', { class: 'inner' }, (s) => {
-                    slot = s.childrenPort();
-                });
-                d.el('footer', null, (f) => f.text('— end of layout —'));
+            const ADMIN_USERS_SCHEMA = createExoSchema(
+                (b) => {
+                    b.el('p', { class: 'leaf' }, (p) => p.text('admin › users'));
+                    return {};
+                }
+            );
+            const ADMIN_USERS = createExoMachine(ADMIN_USERS_SCHEMA);
+
+            const ADMIN_SETTINGS_SCHEMA = createExoSchema(
+                (b) => {
+                    b.el('p', { class: 'leaf' }, (p) => p.text('admin › settings'));
+                    return {};
+                }
+            );
+            const ADMIN_SETTINGS = createExoMachine(ADMIN_SETTINGS_SCHEMA);
+
+            const LOGIN_SCHEMA = createExoSchema(
+                (b) => {
+                    b.el('div', { class: 'page' }, (d) => {
+                        d.el('h3', null, (h) => h.text('Login'));
+                        d.el('p', null, (p) =>
+                            p.text('The guard on /secret sent you here by returning the string "/login". ' +
+                                'Returning `false` would have blocked instead, and the URL would never ' +
+                                'have moved.')
+                        );
+                    });
+                    return {};
+                }
+            );
+            const LOGIN = createExoMachine(LOGIN_SCHEMA);
+
+            /**
+             * `/search` — THE QUERY, FOLLOWED BOTH WAYS. Typing patches `q` into the URL with
+             * `{ replace: true }`, so a text field does not push one history entry per keystroke; an
+             * effect subscribed with `router.onChange` writes the URL back into the field and the echo,
+             * whoever moved it.
+             */
+            const SEARCH_SCHEMA = createExoSchema(
+                (b) => {
+                    let field;
+                    let input;
+                    let echo;
+                    b.el('div', { class: 'page' }, (d) => {
+                        d.el('h3', null, (h) => h.text('Search'));
+                        d.el('input', { type: 'text', placeholder: 'type — the URL follows' }, (i) => {
+                            field = i.port('value');
+                            input = i.eventPort('input');
+                        });
+                        d.el('p', { class: 'hint' }, (p) => {
+                            echo = p.textPort();
+                        });
+                    });
+                    return { field, input, echo };
+                }
+            );
+            const searchBase = createExoMachine(SEARCH_SCHEMA, {
+                createInitialState: (c) => ({ router: injectExoRouter(c) }),
             });
-            return { slot };
-        }
-    );
-    const ADMIN = createExoMachine(ADMIN_SCHEMA, {
-        createInitialState: (c) => {
-            c.one(ADMIN_SCHEMA.ports.slot, ExoOutlet);
-        },
-    });
+            const showUrl = (c) => {
+                const location = c.state.router.getLocation();
+                const q = c.state.router.getQuery().q;
+                c.attr(SEARCH_SCHEMA.ports.field, typeof q === 'string' ? q : '');
+                c.text(SEARCH_SCHEMA.ports.echo, 'the URL now reads: ' + location.href);
+            };
+            const SEARCH = composeExoMachine(
+                searchBase,
+                (m) => withExoHandlers(m, (on) => {
+                    on(SEARCH_SCHEMA.ports.input, (c, event) => {
+                        void c.state.router.patchQuery({ q: event.target.value || undefined }, { replace: true });
+                    });
+                }),
+                (m) => withExoEffects(m, (effect) => {
+                    effect((c) => {
+                        showUrl(c);
+                        return c.state.router.onChange(() => showUrl(c));
+                    });
+                }),
+            );
 
-    const ADMIN_USERS_SCHEMA = createExoSchema(
-        (b) => {
-            b.el('p', { class: 'leaf' }, (p) => p.text('admin › users'));
-            return {};
-        }
-    );
-    const ADMIN_USERS = createExoMachine(ADMIN_USERS_SCHEMA);
+            /**
+             * A LAZY PAGE. `exoLazy` takes anything that returns a promise for a component — an
+             * `import()` in a real application; here a promise resolved on a timer, so that the empty
+             * boundary is visible for a moment rather than being gone before the first paint.
+             */
+            const LAZY = exoLazy(
+                () =>
+                    new Promise((resolve) =>
+                        setTimeout(
+                            () =>
+                                resolve(
+                                    createExoMachine(createExoSchema(
+                                        (b) => {
+                                            b.el('div', { class: 'page' }, (d) => {
+                                                d.el('h3', null, (h) => h.text('Lazy page'));
+                                                d.el('p', null, (p) =>
+                                                    p.text('This component did not exist when you clicked. ' +
+                                                        'The boundary held an EMPTY region — no placeholder ' +
+                                                        'node — and filled itself when the chunk landed.')
+                                                );
+                                            });
+                                            return {};
+                                        }
+                                    ))
+                                ),
+                            600
+                        )
+                    )
+            );
 
-    const ADMIN_SETTINGS_SCHEMA = createExoSchema(
-        (b) => {
-            b.el('p', { class: 'leaf' }, (p) => p.text('admin › settings'));
-            return {};
-        }
-    );
-    const ADMIN_SETTINGS = createExoMachine(ADMIN_SETTINGS_SCHEMA);
+            // ═══════════════════════════════════════════════════════════════════════ THE TABLE
+            //
+            // A PLAIN ARRAY OF OBJECTS. There is no JSX route config and no builder: a route is data, and
+            // the renderer-neutral half of this package never looks inside `component`.
 
-    const LOGIN_SCHEMA = createExoSchema(
-        (b) => {
-            b.el('div', { class: 'page' }, (d) => {
-                d.el('h3', null, (h) => h.text('Login'));
-                d.el('p', null, (p) =>
-                    p.text('The guard on /secret sent you here by returning the string "/login". ' +
-                        'Returning `false` would have blocked instead, and the URL would never ' +
-                        'have moved.')
-                );
+            let guardRan = 0;
+
+            const routes = [
+                { path: '/', component: HOME, handle: { crumb: 'Home' } },
+                { path: '/users/:id', component: USER, handle: { crumb: 'User' } },
+                {
+                    path: '/admin',
+                    component: ADMIN,
+                    handle: { crumb: 'Admin' },
+                    children: [
+                        { path: 'users', component: ADMIN_USERS, handle: { crumb: 'Users' } },
+                        { path: 'settings', component: ADMIN_SETTINGS, handle: { crumb: 'Settings' } },
+                    ],
+                },
+                { path: '/login', component: LOGIN, handle: { crumb: 'Login' } },
+                { path: '/search', component: SEARCH, handle: { crumb: 'Search' } },
+                { path: '/lazy', component: LAZY, handle: { crumb: 'Lazy' } },
+                {
+                    path: '/secret',
+                    component: HOME,
+                    handle: { crumb: 'Secret' },
+                    // A GUARD. `true` allows, `false` blocks before the URL moves, and a STRING
+                    // redirects — which is the one this page takes, so /secret is never reachable.
+                    beforeEnter: async () => {
+                        guardRan += 1;
+                        await new Promise((resolve) => setTimeout(resolve, 250));
+                        return '/login';
+                    },
+                },
+            ];
+
+            const router = createExoRouter(routes, { history });
+
+            // ══════════════════════════════════════════════════════════════════════ THE SHELL
+            //
+            // ONE COMPONENT that provides the router and nests the outlet. `provideExoRouter` is a CALL in
+            // an initial state rather than a component, because `provide` is a method on the connector and a
+            // provider component would have to invent a wrapper element to carry a value that needs none.
+
+            const ROUTED = exoOutlet('main', { class: 'outlet' });
+
+            const LINKS = [
+                { to: '/', label: 'Home' },
+                { to: '/users/1', label: 'User 1' },
+                { to: '/users/2', label: 'User 2' },
+                { to: '/admin/users', label: 'Admin · users' },
+                { to: '/admin/settings', label: 'Admin · settings' },
+                { to: '/search?q=exodra', label: 'Search' },
+                { to: '/lazy', label: 'Lazy' },
+                { to: '/secret', label: 'Secret (guarded)' },
+                { to: '/nowhere', label: 'Nowhere (404)' },
+                { to: 'https://exodra.org', label: 'exodra.org ↗', target: '_blank' },
+            ];
+
+            const APP_SCHEMA = createExoSchema(
+                (b) => {
+                    let nav;
+                    let body;
+                    b.el('div', { class: 'app' }, (d) => {
+                        d.el('nav', { class: 'nav' }, (n) => {
+                            nav = n.childrenPort();
+                        });
+                        body = d.childrenPort();
+                    });
+                    return { nav, body };
+                }
+            );
+            const APP = createExoMachine(APP_SCHEMA, {
+                createInitialState: (c) => {
+                    provideExoRouter(c, router);
+                    // `ExoLink` builds a real `<a href>` — hover one and the status bar shows where it goes,
+                    // ⌘-click opens a tab, and the last one in the list is another origin and is left to
+                    // the browser entirely. That policy is `shouldIgnoreExoLinkClick`.
+                    LINKS.forEach((link) => c.appendChild(APP_SCHEMA.ports.nav, wireExoNode(c.createExoNode(ExoLink), { ...link, currentWhen: 'exact' })));
+                    c.one(APP_SCHEMA.ports.body, ROUTED);
+                },
             });
-            return {};
-        }
-    );
-    const LOGIN = createExoMachine(LOGIN_SCHEMA);
 
-    /**
-     * `/search` — THE QUERY, FOLLOWED BOTH WAYS. Typing patches `q` into the URL with
-     * `{ replace: true }`, so a text field does not push one history entry per keystroke; an
-     * effect subscribed with `router.onChange` writes the URL back into the field and the echo,
-     * whoever moved it.
-     */
-    const SEARCH_SCHEMA = createExoSchema(
-        (b) => {
-            let field;
-            let input;
-            let echo;
-            b.el('div', { class: 'page' }, (d) => {
-                d.el('h3', null, (h) => h.text('Search'));
-                d.el('input', { type: 'text', placeholder: 'type — the URL follows' }, (i) => {
-                    field = i.port('value');
-                    input = i.eventPort('input');
-                });
-                d.el('p', { class: 'hint' }, (p) => {
-                    echo = p.textPort();
-                });
-            });
-            return { field, input, echo };
-        }
-    );
-    const searchBase = createExoMachine(SEARCH_SCHEMA, {
-        createInitialState: (c) => ({ router: injectExoRouter(c) }),
-    });
-    const showUrl = (c) => {
-        const location = c.state.router.getLocation();
-        const q = c.state.router.getQuery().q;
-        c.attr(SEARCH_SCHEMA.ports.field, typeof q === 'string' ? q : '');
-        c.text(SEARCH_SCHEMA.ports.echo, 'the URL now reads: ' + location.href);
-    };
-    const SEARCH = composeExoMachine(
-        searchBase,
-        (m) => withExoHandlers(m, (on) => {
-            on(SEARCH_SCHEMA.ports.input, (c, event) => {
-                void c.state.router.patchQuery({ q: event.target.value || undefined }, { replace: true });
-            });
-        }),
-        (m) => withExoEffects(m, (effect) => {
-            effect((c) => {
-                showUrl(c);
-                return c.state.router.onChange(() => showUrl(c));
-            });
-        }),
-    );
+            // ONE BACKEND, AT MODULE LEVEL, and the placement is the whole of the advice. A backend is the
+            // schema cache key — `exoDomSchemaOf(machine, backend)` keeps one compiled schema per backend
+            // on the machine, keyed by that backend's own `backendType` — so a backend built inside a route handler recompiles
+            // every schema of every page it draws, markup parse included, on every navigation. `new
+            // ExoDomBackend()` with no plugins is the library exactly as it ships; `withExoCompiler` puts
+            // `render` on the backend.
+            const backend = withExoCompiler(new ExoDomBackend());
 
-    /**
-     * A LAZY PAGE. `exoLazy` takes anything that returns a promise for a component — an
-     * `import()` in a real application; here a promise resolved on a timer, so that the empty
-     * boundary is visible for a moment rather than being gone before the first paint.
-     */
-    const LAZY = exoLazy(
-        () =>
-            new Promise((resolve) =>
-                setTimeout(
-                    () =>
-                        resolve(
-                            createExoMachine(createExoSchema(
-                                (b) => {
-                                    b.el('div', { class: 'page' }, (d) => {
-                                        d.el('h3', null, (h) => h.text('Lazy page'));
-                                        d.el('p', null, (p) =>
-                                            p.text('This component did not exist when you clicked. ' +
-                                                'The boundary held an EMPTY region — no placeholder ' +
-                                                'node — and filled itself when the chunk landed.')
-                                        );
-                                    });
-                                    return {};
-                                }
-                            ))
-                        ),
-                    600
-                )
-            )
-    );
+            // ONE RENDER, FOR THE WHOLE LIFE OF THE PAGE. A navigation reaches the outermost outlet, which
+            // settles its level and hands the rest down; nothing here mounts twice.
+            backend.render(APP, document.getElementById('app'));
 
-    // ═══════════════════════════════════════════════════════════════════════ THE TABLE
-    //
-    // A PLAIN ARRAY OF OBJECTS. There is no JSX route config and no builder: a route is data, and
-    // the renderer-neutral half of this package never looks inside `component`.
+            // ═══════════════════════════════════════════════════════════════ THE READOUT PANEL
+            //
+            // Plain DOM, deliberately: this panel is the INSTRUMENT and is not part of the demonstration.
 
-    let guardRan = 0;
+            const state = document.getElementById('state');
+            const report = () => {
+                const location = router.getLocation();
+                const match = router.getMatch();
+                const crumbs = router
+                    .getMatches()
+                    .map((entry) => (entry.handle && entry.handle.crumb) || entry.route.path)
+                    .join(' › ');
+                state.textContent =
+                    'href            ' + location.href +
+                    '\npathname        ' + location.pathname +
+                    '\nsearch          ' + (location.search || '(none)') +
+                    '\nmatched route   ' + (match ? match.route.path : '(nothing matched — a 404)') +
+                    '\nparams          ' + JSON.stringify(match ? match.params : {}) +
+                    '\nbranch          ' + (crumbs || '(empty)') +
+                    '\nnavigationState ' + router.getNavigationState() +
+                    '\nguard ran       ' + guardRan + ' time(s)';
+            };
+            report();
+            router.onChange(report);
 
-    const routes = [
-        { path: '/', component: HOME, handle: { crumb: 'Home' } },
-        { path: '/users/:id', component: USER, handle: { crumb: 'User' } },
-        {
-            path: '/admin',
-            component: ADMIN,
-            handle: { crumb: 'Admin' },
-            children: [
-                { path: 'users', component: ADMIN_USERS, handle: { crumb: 'Users' } },
-                { path: 'settings', component: ADMIN_SETTINGS, handle: { crumb: 'Settings' } },
-            ],
-        },
-        { path: '/login', component: LOGIN, handle: { crumb: 'Login' } },
-        { path: '/search', component: SEARCH, handle: { crumb: 'Search' } },
-        { path: '/lazy', component: LAZY, handle: { crumb: 'Lazy' } },
-        {
-            path: '/secret',
-            component: HOME,
-            handle: { crumb: 'Secret' },
-            // A GUARD. `true` allows, `false` blocks before the URL moves, and a STRING
-            // redirects — which is the one this page takes, so /secret is never reachable.
-            beforeEnter: async () => {
-                guardRan += 1;
-                await new Promise((resolve) => setTimeout(resolve, 250));
-                return '/login';
-            },
-        },
-    ];
+            // THE LAZY CHUNK IS FETCHED ON DEMAND BY THE BOUNDARY, and this page deliberately does not
+            // warm it: `await preloadExoPage(LAZY)` here would make the empty-then-filled moment
+            // invisible, and that moment is the thing worth seeing. Where it IS the right call is before
+            // a SERVER render — a synchronous render cannot await a chunk, so a lazy route nobody
+            // preloaded prints nothing at all. The name is checked against the build in the guard above.
 
-    const router = createExoRouter(routes, { history });
-
-    // ══════════════════════════════════════════════════════════════════════ THE SHELL
-    //
-    // ONE COMPONENT that provides the router and nests the outlet. `provideExoRouter` is a CALL in
-    // an initial state rather than a component, because `provide` is a method on the connector and a
-    // provider component would have to invent a wrapper element to carry a value that needs none.
-
-    const ROUTED = exoOutlet('main', { class: 'outlet' });
-
-    const LINKS = [
-        { to: '/', label: 'Home' },
-        { to: '/users/1', label: 'User 1' },
-        { to: '/users/2', label: 'User 2' },
-        { to: '/admin/users', label: 'Admin · users' },
-        { to: '/admin/settings', label: 'Admin · settings' },
-        { to: '/search?q=exodra', label: 'Search' },
-        { to: '/lazy', label: 'Lazy' },
-        { to: '/secret', label: 'Secret (guarded)' },
-        { to: '/nowhere', label: 'Nowhere (404)' },
-        { to: 'https://exodra.org', label: 'exodra.org ↗', target: '_blank' },
-    ];
-
-    const APP_SCHEMA = createExoSchema(
-        (b) => {
-            let nav;
-            let body;
-            b.el('div', { class: 'app' }, (d) => {
-                d.el('nav', { class: 'nav' }, (n) => {
-                    nav = n.childrenPort();
-                });
-                body = d.childrenPort();
-            });
-            return { nav, body };
-        }
-    );
-    const APP = createExoMachine(APP_SCHEMA, {
-        createInitialState: (c) => {
-            provideExoRouter(c, router);
-            // `ExoLink` builds a real `<a href>` — hover one and the status bar shows where it goes,
-            // ⌘-click opens a tab, and the last one in the list is another origin and is left to
-            // the browser entirely. That policy is `shouldIgnoreExoLinkClick`.
-            const nav = c.childList(APP_SCHEMA.ports.nav);
-            LINKS.forEach((link) => nav.insert(c.build(ExoLink, { ...link, currentWhen: 'exact' })));
-            c.one(APP_SCHEMA.ports.body, ROUTED);
-        },
-    });
-
-    // ONE BACKEND, AT MODULE LEVEL, and the placement is the whole of the advice. A backend is the
-    // schema cache key — `exoDomSchemaOf(machine, backend)` keeps one compiled schema per backend
-    // on the machine, keyed by that backend's own `backendType` — so a backend built inside a route handler recompiles
-    // every schema of every page it draws, markup parse included, on every navigation. `new
-    // ExoDomBackend()` with no plugins is the library exactly as it ships; `withExoCompiler` puts
-    // `render` on the backend, and `withExoChildList` puts `c.childList` on it, which every outlet
-    // and the nav bar open.
-    const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
-
-    // ONE RENDER, FOR THE WHOLE LIFE OF THE PAGE. A navigation reaches the outermost outlet, which
-    // settles its level and hands the rest down; nothing here mounts twice.
-    backend.render(APP, document.getElementById('app'));
-
-    // ═══════════════════════════════════════════════════════════════ THE READOUT PANEL
-    //
-    // Plain DOM, deliberately: this panel is the INSTRUMENT and is not part of the demonstration.
-
-    const state = document.getElementById('state');
-    const report = () => {
-        const location = router.getLocation();
-        const match = router.getMatch();
-        const crumbs = router
-            .getMatches()
-            .map((entry) => (entry.handle && entry.handle.crumb) || entry.route.path)
-            .join(' › ');
-        state.textContent =
-            'href            ' + location.href +
-            '\npathname        ' + location.pathname +
-            '\nsearch          ' + (location.search || '(none)') +
-            '\nmatched route   ' + (match ? match.route.path : '(nothing matched — a 404)') +
-            '\nparams          ' + JSON.stringify(match ? match.params : {}) +
-            '\nbranch          ' + (crumbs || '(empty)') +
-            '\nnavigationState ' + router.getNavigationState() +
-            '\nguard ran       ' + guardRan + ' time(s)';
-    };
-    report();
-    router.onChange(report);
-
-    // THE LAZY CHUNK IS FETCHED ON DEMAND BY THE BOUNDARY, and this page deliberately does not
-    // warm it: `await preloadExoPage(LAZY)` here would make the empty-then-filled moment
-    // invisible, and that moment is the thing worth seeing. Where it IS the right call is before
-    // a SERVER render — a synchronous render cannot await a chunk, so a lazy route nobody
-    // preloaded prints nothing at all. The name is checked against the build in the guard above.
-
-    boot.remove();
-</script>
-
-</body>
+            boot.remove();
+        </script>
+    </body>
 </html>

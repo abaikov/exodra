@@ -35,15 +35,15 @@ Stale `insides/*.json` files from an earlier run are removed.
 
 ### Options
 
-| Flag | What it does |
-| --- | --- |
-| `--root <dir>` | The repository to read. Defaults to the working directory. |
-| `--out <dir>` | Where to write. Defaults to `<root>/public/graph`. |
-| `--check` | Write nothing; exit `1` when the files in `--out` are out of date. For CI. |
-| `--modules` | Model modules instead of packages, useful in a single-package repository. |
-| `--include-external` | Include the npm packages the workspace depends on. |
-| `--ts-config <path>` | The tsconfig used to resolve imports (path aliases). |
-| `--help`, `-h` | Print the options. |
+| Flag                 | What it does                                                               |
+| -------------------- | -------------------------------------------------------------------------- |
+| `--root <dir>`       | The repository to read. Defaults to the working directory.                 |
+| `--out <dir>`        | Where to write. Defaults to `<root>/public/graph`.                         |
+| `--check`            | Write nothing; exit `1` when the files in `--out` are out of date. For CI. |
+| `--modules`          | Model modules instead of packages, useful in a single-package repository.  |
+| `--include-external` | Include the npm packages the workspace depends on.                         |
+| `--ts-config <path>` | The tsconfig used to resolve imports (path aliases).                       |
+| `--help`, `-h`       | Print the options.                                                         |
 
 Exit codes: `0` success, `1` out of date (with `--check`) or no packages found, `2`
 an unknown or incomplete option.
@@ -97,10 +97,10 @@ background.
 
 ## Limits
 
-- It reads **static imports**, not runtime behaviour.
-- Declarations are matched **by name**: two same-named declarations in different
-  files of one package collapse into one box.
-- TypeScript and JavaScript only.
+-   It reads **static imports**, not runtime behaviour.
+-   Declarations are matched **by name**: two same-named declarations in different
+    files of one package collapse into one box.
+-   TypeScript and JavaScript only.
 
 ## Licence
 

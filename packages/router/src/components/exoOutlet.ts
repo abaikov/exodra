@@ -36,7 +36,7 @@ export function exoOutlet(
                 router: injectExoRouter(c),
                 depth: parentState === null ? 0 : parentState.depth + 1,
                 node: c,
-                childList: c.childList(schema.ports.page),
+                childList: c.portChildList(schema.ports.page),
                 parentState,
                 nestedOutletStates: [],
                 showRoute,

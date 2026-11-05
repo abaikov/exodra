@@ -20,8 +20,10 @@ export function exoForeignTermNode(node: TExoTermElement): TExoNode<TExoTermMark
         effectStops: null,
         transitionOverrides: null,
         serviceState: undefined,
+        machine: null,
         node,
         regions: [],
+        placedIn: null,
     };
     return child as unknown as TExoNode<TExoTermMark>;
 }

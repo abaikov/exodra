@@ -12,4 +12,5 @@ export interface TExoBaseNodeMethods {
     restartEffect<TOf extends TExoEffectOwner>(this: TOf, effect: TExoMachineEffect<TOf>): void;
     stopEffect<TOf extends TExoEffectOwner>(this: TOf, effect: TExoMachineEffect<TOf>): void;
     stopEffects(this: TExoEffectOwner): void;
+    wireExoSelf(params?: unknown): void;
 }

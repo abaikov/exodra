@@ -165,7 +165,7 @@ import type { TExoNode } from '@exodra/core';
 import { reconcileExoOrder, type TExoPlacedChildren } from '@exodra/list-reconcile';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
 import {
     composeExoMachine,
@@ -174,9 +174,10 @@ import {
     withExoHandlers,
     withExoTransitions,
     withExoWire,
+    wireExoNode,
 } from '@exodra/core';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 /**
  * THE FIVE USER SETTINGS AS SOLID HOLDS THEM — five signal ACCESSORS, index = user id.
@@ -386,8 +387,8 @@ const mMONO_APP = createExoMachine<TExoRegionWiring>(MONO_APP_SCHEMA, {
                 count: startCount(i),
                 title: titleOf(i),
                 pool: tagsOfCard(i).map((t) => ({ label: t.label, chars: users[t.user] })),
-                details: c.childList(MONO_CARDS[i].details),
-                tags: c.childList(MONO_CARDS[i].tags),
+                details: c.portChildList(MONO_CARDS[i].details),
+                tags: c.portChildList(MONO_CARDS[i].tags),
                 shownDetails: [],
                 shownTags: [],
             });
@@ -423,7 +424,7 @@ const MONO_APP = composeExoMachine(
                     card.shownDetails,
                     want,
                     want,
-                    () => c.build(DETAILS)
+                    () => wireExoNode(c.createExoNode(DETAILS))
                 );
             },
             showMonoCount: (c: TExoRegionWiring, i: number) => {
@@ -431,7 +432,7 @@ const MONO_APP = composeExoMachine(
                 c.text(MONO_CARDS[i].count, tagsLabel(card.count));
                 const want = card.pool.slice(0, card.count);
                 card.shownTags = reconcileExoOrder(card.tags, card.shownTags, want, want, (tag) => {
-                    const row = c.build(TAG);
+                    const row = wireExoNode(c.createExoNode(TAG));
                     writeTagLabel(
                         row as unknown as TExoMachineNode,
                         tagTextOf(tag.label, tag.chars.getValue())

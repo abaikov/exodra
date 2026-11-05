@@ -33,6 +33,7 @@ import type {
     TExoNode,
     TExoMachineInitialState,
 } from '@exodra/core';
+import { wireExoNode } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
@@ -41,9 +42,9 @@ import type { TExoDomNode } from '../../dom/EXO_DOM_NODE_VOCABULARY';
 import { exoForeignNode } from '../exoForeignNode';
 import { placeExoChildrenFrom } from './placeExoChildrenFrom';
 import type { TExoDomMark } from '../../dom/types/TExoDomMark';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 /** Where a `<template>`'s contents live in this environment — the document a prototype stays in. */
 const templateOwner = (): Document | null =>
     document.createElement('template').content.ownerDocument;
@@ -77,12 +78,8 @@ const ROW = createExoTestMachine(
         }
 );
 
-const buildRow = (
-    c: { build(component: typeof ROW, params?: unknown): TExoNode<TExoDomMark> },
-    id: string
-): TExoNode<TExoDomMark> => {
-    return c.build(ROW, id);
-};
+const buildRow = (c: TExoDomNode, id: string): TExoNode<TExoDomMark> =>
+    wireExoNode(c.createExoNode(ROW), id);
 
 /**
  * A `<ul>` whose one child is a children port.

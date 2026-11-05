@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { reconcileExoOrder } from '../reconcileExoOrder';
-import { createExoKeyedList } from '../createExoKeyedList';
+import { createExoChildrenReconciler } from '../createExoChildrenReconciler';
 import type { TExoPlacedChildren } from '../types/TExoPlacedChildren';
 
 type TRow = { readonly item: string; readonly built: number };
@@ -115,15 +115,16 @@ describe('reconcileExoOrder', () => {
     });
 });
 
-describe('createExoKeyedList', () => {
+describe('createExoChildrenReconciler by key', () => {
     type TUser = { readonly id: number; readonly name: string };
+    type TUserRow = { name: string; wireExoSelf(user: TUser): void };
     const users = (pairs: readonly (readonly [number, string])[]): TUser[] =>
         pairs.map(([id, name]) => ({ id, name }));
 
     const setup = (initial: readonly TUser[]) => {
-        const rows: { name: string }[] = [];
+        const rows: TUserRow[] = [];
         const updates: string[] = [];
-        const kids: TExoPlacedChildren<{ name: string }> = {
+        const kids: TExoPlacedChildren<TUserRow> = {
             get size() {
                 return rows.length;
             },
@@ -142,17 +143,24 @@ describe('createExoKeyedList', () => {
                 rows.length = 0;
             },
         };
-        const list = createExoKeyedList(
-            kids,
-            (user: TUser) => user.id,
-            (user) => ({ name: user.name }),
-            (row, user) => {
-                updates.push(user.name);
-                row.name = user.name;
-            }
+        const owner = {
+            portChildList: () => kids,
+            createExoNode: (): TUserRow => {
+                throw new Error('a build function never asks the owner for a node');
+            },
+        };
+        const reconcile = createExoChildrenReconciler<TUser>(
+            (_owner: never, user: TUser): TUserRow => ({
+                name: user.name,
+                wireExoSelf(next: TUser) {
+                    updates.push(next.name);
+                    this.name = next.name;
+                },
+            }),
+            { key: (user) => user.id }
         );
-        list.reconcile(initial);
-        const src = { setValue: (next: readonly TUser[]) => list.reconcile(next) };
+        reconcile(owner, 'rows', initial);
+        const src = { setValue: (next: readonly TUser[]) => reconcile(owner, 'rows', next) };
         return { rows, updates, src };
     };
 

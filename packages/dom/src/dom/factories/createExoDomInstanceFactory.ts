@@ -24,6 +24,9 @@ export function createExoDomInstanceFactory(surface: object): TExoDomSchemaBase[
         this.effectStops = null;
         this.transitionOverrides = null;
         this.serviceState = undefined;
+        this.machine = null;
+        this.portChildren = null;
+        this.placedIn = null;
         this.live = null;
     }
     // The surface is still empty of methods at this moment — `composeExoPlugins` fills it after the

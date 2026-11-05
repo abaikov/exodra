@@ -22,7 +22,8 @@ describe('foreign is a pack on the string backend', () => {
             },
             (P): TExoMachineInitialState<TExoStrNode & TExoStrForeignApi> =>
                 (c) => {
-                    c.childList(P.slot).insert(
+                    c.appendChild(
+                        P.slot,
                         c.foreign({ createStr: () => exoForeignMarkup('<canvas></canvas>') })
                     );
                 }

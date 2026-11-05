@@ -70,7 +70,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 //
 // TABLES 1 TO 3 price something that stopped being a pack and became a COMPOSITION IN THE WIRE. A
-// reactive list is a transition calling `reconcileExoOrder(c.childList(port), shown, want, want, build)`
+// reactive list is a transition calling `reconcileExoOrder(c.portChildList(port), shown, want, want, build)`
 // from `@exodra/list-reconcile`, reconciled by the IDENTITY of the item object; a bound port is a
 // transition writing `c.text` from an effect that draws and then subscribes. Neither is a backend field, neither is
 // a door, and a page that wants neither links neither. So those tables measure the shipped
@@ -211,7 +211,6 @@ import {
     type TExoDomMachine,
     type TExoDomNode,
     type TExoChildList,
-    withExoChildList,
     withExoCompiler,
 } from '@exodra/dom';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
@@ -227,6 +226,8 @@ import {
     withExoTransitions,
     withExoEffects,
 } from '@exodra/core';
+import { wireExoNode } from '@exodra/core';
+import type { TExoDomPortChildList } from '@exodra/dom';
 
 // eslint-disable-next-line no-console
 const line = (s: string): void => console.log(`✅ ${s}`);
@@ -567,7 +568,7 @@ const ROW_TWIN = rowStamped();
 
 /**
  * THE SHIPPED LIST — `<ul>` whose one children port follows the source, by the only composition
- * there is: `reconcileExoOrder` over `c.childList(port)` and `c.build`, run by a transition.
+ * there is: `reconcileExoOrder` over `c.portChildList(port)` and `wireExoNode(c.createExoNode(M))`, run by a transition.
  *
  * THE `<ul>` HOLDS NOTHING BUT THE REGION, so the port OWNS its element and the region's start anchor
  * is `null`. Every participant renders this shape, so no one of them is given a cheaper region than
@@ -592,7 +593,9 @@ const listBound = (row: TExoDomMachine): TExoDomMachine => {
     };
     const mMachine2 = createExoMachine<TExoDomNode, unknown, TListState>(MACHINE_SCHEMA2, {
         createInitialState: (c): TListState => ({
-            rows: c.childList(MACHINE_SCHEMA2.ports.rows),
+            rows: (c as TExoDomNode & TExoDomPortChildList).portChildList(
+                MACHINE_SCHEMA2.ports.rows
+            ),
             source: SOURCE,
             shown: [],
         }),
@@ -608,7 +611,7 @@ const listBound = (row: TExoDomMachine): TExoDomMachine => {
                         c.state.shown,
                         want,
                         want,
-                        (item) => c.build(row, item)
+                        (item) => wireExoNode(c.createExoNode(row), item)
                     );
                 },
             }),
@@ -727,7 +730,9 @@ const listStore = (row: TExoDomMachine): TExoDomMachine => {
     };
     const mMachine4 = createExoMachine<TExoDomNode, unknown, TStoreListState>(MACHINE_SCHEMA4, {
         createInitialState: (c): TStoreListState => ({
-            rows: c.childList(MACHINE_SCHEMA4.ports.rows),
+            rows: (c as TExoDomNode & TExoDomPortChildList).portChildList(
+                MACHINE_SCHEMA4.ports.rows
+            ),
             source: STORE.rows,
             shown: [],
         }),
@@ -743,7 +748,7 @@ const listStore = (row: TExoDomMachine): TExoDomMachine => {
                         c.state.shown,
                         want,
                         want,
-                        (item) => c.build(row, item)
+                        (item) => wireExoNode(c.createExoNode(row), item)
                     );
                 },
             }),
@@ -868,9 +873,7 @@ const WRITE_CELL_PORTS: readonly TExoTextPort[] = TEXT_CELLS_SCHEMA.ports.cells;
 /** BARE, and it is the whole thing: binding is not a pack, lists are not a door. */
 const EXO_BACKEND: TExoDomBackend & TExoCompilerApi = withExoCompiler(new ExoDomBackend());
 
-const LIST_BACKEND: TExoDomBackend & TExoCompilerApi = withExoChildList(
-    withExoCompiler(new ExoDomBackend())
-);
+const LIST_BACKEND: TExoDomBackend & TExoCompilerApi = withExoCompiler(new ExoDomBackend());
 
 /**
  * TABLE 4's NULL — a SECOND bare backend, separately constructed.
@@ -1110,7 +1113,7 @@ const TABLE1: readonly MountProgram[] = [
     // reactivity, and giving it one would stop it being the floor.
     {
         name: 'shipped',
-        what: 'as it ships: withExoChildList(withExoCompiler(new ExoDomBackend())), reconcileExoOrder over c.childList + c.build in a transition — the identity reconciler, composed in the machine.',
+        what: 'as it ships: withExoCompiler(new ExoDomBackend()), reconcileExoOrder over c.portChildList + wireExoNode(c.createExoNode) in a transition — the identity reconciler, composed in the machine.',
         mount: (parent) => LIST_BACKEND.render(LIST_BOUND, parent),
     },
     {
@@ -2057,7 +2060,9 @@ export function benchmarkPluginPrice(rounds = 100, batch = 1): void {
     line('                          there is no pack to compose and nothing to switch off.');
     line('  the DATA LAYER          NOT A PLUGIN AT ALL, and that is its claim (TABLES 2, 3).');
     line('                          `store·bound` runs the SHIPPED composition —');
-    line('                          reconcileExoOrder over c.childList and c.build — and what');
+    line(
+        '                          reconcileExoOrder over c.portChildList and wireExoNode(c.createExoNode) — and what'
+    );
     line('                          differs is that its records live in permanent slots a refetch');
     line('                          WRITES INTO, so the reconciler is handed the objects it');
     line('                          already holds, and that each mutable field is its own source');

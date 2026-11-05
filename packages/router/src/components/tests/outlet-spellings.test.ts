@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { createExoMachine, composeExoMachine, withExoWire, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { host } from '@exodra/test-utils';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import {
     ExoOutlet,
     createExoMemoryHistory,
@@ -18,7 +18,7 @@ import {
 } from '../../index';
 import type { TExoRoute, TExoRouteMatch, TExoRouter } from '../../types';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 interface TNestingNode extends TExoMachineNode {
     one(port: TExoChildrenPort, machine: TExoMachine<never>): void;

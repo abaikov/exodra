@@ -40,16 +40,16 @@ const result = await engine.analyze();
 
 Per file it reports:
 
-- **TypeScript diagnostics** — every error and warning the compiler produces.
-- **`schema-built-per-call`** (`analysis.schema`) — a suggestion wherever
-  `createExoSchema`, `createExoNamedSchema` or `createExoStatic` is called inside
-  a function instead of at module scope. A schema numbers its ports when it is
-  closed, so one built per call is a different program, not a slower one. `exoJsx`
-  is exempt: the Babel plugin hoists it to module scope.
-- **Counts** (`analysis.performance`):
-  - `components` — calls to `createExoMachine` and `createExoStatic`.
-  - `complexity` — `if` / `while` / `for` / `switch` count plus one, with a
-    `high-complexity` warning above 20.
+-   **TypeScript diagnostics** — every error and warning the compiler produces.
+-   **`schema-built-per-call`** (`analysis.schema`) — a suggestion wherever
+    `createExoSchema`, `createExoNamedSchema` or `createExoStatic` is called inside
+    a function instead of at module scope. A schema numbers its ports when it is
+    closed, so one built per call is a different program, not a slower one. `exoJsx`
+    is exempt: the Babel plugin hoists it to module scope.
+-   **Counts** (`analysis.performance`):
+    -   `components` — calls to `createExoMachine` and `createExoStatic`.
+    -   `complexity` — `if` / `while` / `for` / `switch` count plus one, with a
+        `high-complexity` warning above 20.
 
 Per project it adds `total_files` and `total_lines`.
 
@@ -76,11 +76,11 @@ export default [
 
 Rules (`recommended` warns or errors as listed; `strict` makes all of them errors):
 
-| rule | recommended | what it reports |
-|---|---|---|
-| `exodra/no-schema-in-function` | warn | a schema builder called inside a function (`exoJsx` exempt) |
-| `exodra/schema-validation` | error | `exoJsx()` given anything but a function literal |
-| `exodra/no-inline-objects` | warn | an object literal inside a JSX expression or a schema builder call |
+| rule                           | recommended | what it reports                                                    |
+| ------------------------------ | ----------- | ------------------------------------------------------------------ |
+| `exodra/no-schema-in-function` | warn        | a schema builder called inside a function (`exoJsx` exempt)        |
+| `exodra/schema-validation`     | error       | `exoJsx()` given anything but a function literal                   |
+| `exodra/no-inline-objects`     | warn        | an object literal inside a JSX expression or a schema builder call |
 
 ## License
 

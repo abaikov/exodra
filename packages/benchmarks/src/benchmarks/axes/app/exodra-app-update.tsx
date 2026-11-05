@@ -65,7 +65,7 @@ import { loadMounts, el, type AppHandle } from '../../participants/bundled/todo-
 //
 // WHAT IS LEFT IS THE WIRE ROW AND THE MACHINE ROW. `exodraDirect` has no reactive layer above the
 // shared `TAG`: ports filled with `c.set` at wire time, and the two children ports held as REGIONS
-// (`c.childList`) that the card's own handlers command — one `insert` or one `remove` for the details
+// (`c.portChildList`) that the card's own handlers command — one `insert` or one `remove` for the details
 // block, and for the tag list exactly the rows that joined or left.
 //
 // IT IS HANDED EXACTLY WHAT EVERY OTHER ROW IS HANDED: a real bubbling click from `clickAll` in

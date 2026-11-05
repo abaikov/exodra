@@ -77,16 +77,16 @@ compile it — via this preset. Tools that do **not** run Babel plugins (esbuild
 SWC, Bun's native transpiler) need a dedicated plugin that hands the file to
 Babel; those wrap this same preset, so every path compiles identically.
 
-| Tool | How | Package |
-| --- | --- | --- |
-| **Vite / Vitest** | plugin | [`@exodra/vite-plugin`](../vite-plugin-exodra) |
-| **Jest** | `babel-jest` + this preset | `babel-preset-exodra` |
-| **esbuild / tsup** | plugin | [`esbuild-plugin-exodra`](../esbuild-plugin-exodra) |
-| **Rollup** | plugin | [`rollup-plugin-exodra`](../rollup-plugin-exodra) |
-| **Bun** | plugin | [`bun-plugin-exodra`](../bun-plugin-exodra) |
-| **webpack** | `babel-loader` + this preset | *(no package — see below)* |
-| **Parcel** | `.babelrc` + this preset | *(no package — see below)* |
-| **SWC / Next.js / `swc-loader`** | native Wasm plugin (full parity) | [`swc-plugin-exodra`](../swc-plugin-exodra) |
+| Tool                             | How                              | Package                                             |
+| -------------------------------- | -------------------------------- | --------------------------------------------------- |
+| **Vite / Vitest**                | plugin                           | [`@exodra/vite-plugin`](../vite-plugin-exodra)      |
+| **Jest**                         | `babel-jest` + this preset       | `babel-preset-exodra`                               |
+| **esbuild / tsup**               | plugin                           | [`esbuild-plugin-exodra`](../esbuild-plugin-exodra) |
+| **Rollup**                       | plugin                           | [`rollup-plugin-exodra`](../rollup-plugin-exodra)   |
+| **Bun**                          | plugin                           | [`bun-plugin-exodra`](../bun-plugin-exodra)         |
+| **webpack**                      | `babel-loader` + this preset     | _(no package — see below)_                          |
+| **Parcel**                       | `.babelrc` + this preset         | _(no package — see below)_                          |
+| **SWC / Next.js / `swc-loader`** | native Wasm plugin (full parity) | [`swc-plugin-exodra`](../swc-plugin-exodra)         |
 
 ### webpack
 
@@ -138,16 +138,16 @@ const result = await transformExodraJsx(sourceCode, '/abs/path/File.tsx');
 
 ### Option types for plugin authors
 
-- `ExodraCompileOptions` — `{ schemaSource }`, the slice every bundler plugin
-  forwards. A plugin's options should extend this and nothing wider: a field a
-  plugin accepts but does not forward is taken with no error and no effect.
-- `ExodraBundlerOptions` — that plus `filter`, for hosts whose own convention
-  names the file filter `filter` (esbuild, Bun). Rollup's plugin spells the same
-  field `include`, after Rollup's convention, so it extends
-  `ExodraCompileOptions` directly; Vite's plugin has no filter at all.
-- `ExodraPresetOptions` / `ExodraTransformOptions` — the full preset options; the
-  second is an alias of the first, differing only in how `typescript` is
-  defaulted (see above).
+-   `ExodraCompileOptions` — `{ schemaSource }`, the slice every bundler plugin
+    forwards. A plugin's options should extend this and nothing wider: a field a
+    plugin accepts but does not forward is taken with no error and no effect.
+-   `ExodraBundlerOptions` — that plus `filter`, for hosts whose own convention
+    names the file filter `filter` (esbuild, Bun). Rollup's plugin spells the same
+    field `include`, after Rollup's convention, so it extends
+    `ExodraCompileOptions` directly; Vite's plugin has no filter at all.
+-   `ExodraPresetOptions` / `ExodraTransformOptions` — the full preset options; the
+    second is an alias of the first, differing only in how `typescript` is
+    defaulted (see above).
 
 `@exodra/babel-plugin-schema` declares its own `schemaSource` in
 `TExoSchemaPluginOptions` and does not reuse these: it is upstream of this

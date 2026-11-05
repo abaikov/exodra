@@ -2,7 +2,7 @@
 import { createExoMachine, createExoSchema } from '@exodra/core';
 import type { TExoAttrPort, TExoChildrenPort, TExoMachine, TExoMachineNode } from '@exodra/core';
 import { nextExoId, provideExoIds } from '@exodra/context';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { host } from '@exodra/test-utils';
 import { describe, expect, it } from 'vitest';
 import { ExoOutlet } from '../exoOutlet';
@@ -12,7 +12,7 @@ import { provideExoRouter } from '../../setup/provideExoRouter';
 import { exoLazy } from '../../pages/exoLazy';
 import type { TExoRoute, TExoRouter } from '../../types';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 interface TShellNode extends TExoMachineNode {
     one(port: TExoChildrenPort, machine: TExoMachine<never>): void;

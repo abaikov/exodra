@@ -10,10 +10,10 @@
 // page of blocks is not. Neither can hold two different schemas side by side, and neither can be
 // told later.
 //
-// AND IT IS NOT A CALL. `c.childList(port)` holds whatever `c.build(component, params)` hands it, so
+// AND IT IS NOT A CALL. A child port holds whatever `wireExoNode(c.createExoNode(component), params)` hands it, so
 // a position is not typed by a component and a port full of different schemas needs nothing the
 // engine does not already have. What makes it a LIST is `reconcileExoOrder` from
-// `@exodra/list-reconcile`, a layer over `build` and the placement door that reconciles by the
+// `@exodra/list-reconcile`, a layer over `createExoNode` and the placement door that reconciles by the
 // IDENTITY OF THE ITEM OBJECT — so the item is where "which component stands here" lives, and the
 // whole of this file's composition is one transition and one effect, `placingShell` below.
 //
@@ -29,6 +29,7 @@ import {
     withExoEffects,
     createExoSchema,
     createExoStatic,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoSchemaCursor,
@@ -46,17 +47,17 @@ import type { TExoPlacedChildren } from '@exodra/list-reconcile';
 import { describe, expect, it } from 'vitest';
 
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 /**
- * WHAT THE WIRES BELOW ASSUME ABOUT AN EXONODE. `childList` is each backend's own door — it hands
+ * WHAT THE WIRES BELOW ASSUME ABOUT AN EXONODE. `portChildList` is each backend's own door — it hands
  * out element positions, which `@exodra/core` has no word for — so the commands are named over
  * core's opaque `TExoNode` and no backend's node type.
  */
 type TExoPlacing = TExoChildrenWiring & {
-    childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
+    portChildList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
 };
 
 /** ONE POSITION'S WORTH OF A MIXED LIST: which component stands there, and the text its instance
@@ -92,7 +93,7 @@ const placingShell = <TPorts>(
         { blocks: TExoPlacedChildren<TExoNode>; shown: TStanding[] }
     >(schema, {
         createInitialState: (c) => {
-            const blocks = c.childList(blocksOf(schema.ports));
+            const blocks = c.portChildList(blocksOf(schema.ports));
             if (openRest !== undefined) openRest(c, schema.ports);
             return { blocks, shown: [] };
         },
@@ -108,7 +109,7 @@ const placingShell = <TPorts>(
                         c.state.shown,
                         want,
                         want,
-                        (item) => c.build(item.component, item.text)
+                        (item) => wireExoNode(c.createExoNode(item.component), item.text)
                     );
                 },
             }),
@@ -449,7 +450,7 @@ describe('a mixed child list next to another child list', () => {
             blocks,
             (c, P) => {
                 node = c;
-                rows = c.childList(P.rows);
+                rows = c.portChildList(P.rows);
             }
         );
         const parent = host();
@@ -464,7 +465,7 @@ describe('a mixed child list next to another child list', () => {
         // mixed list found in that hole renders without an error and shows a wrong tree.
         const { blocks, node, rows, card } = mountTwo();
         blocks.setValue([standing(BLOCK_A, 'primary')]);
-        rows.insert(node.build(ITEM, 'A'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'A'));
         expect(card.innerHTML).toBe(
             `<h3>headline</h3>${A('primary')}<i>A</i><footer>footnote</footer>`
         );
@@ -474,8 +475,8 @@ describe('a mixed child list next to another child list', () => {
         // The direction that fails when the mixed list does not consult the chain: with rows already
         // there, "insert before the footer" puts the blocks behind them.
         const { blocks, node, rows, card } = mountTwo();
-        rows.insert(node.build(ITEM, 'A'));
-        rows.insert(node.build(ITEM, 'B'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'A'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'B'));
         blocks.setValue([standing(BLOCK_A, 'primary'), standing(BLOCK_C)]);
         expect(card.innerHTML).toBe(
             `<h3>headline</h3>${A('primary')}${C}<i>A</i><i>B</i><footer>footnote</footer>`
@@ -485,12 +486,12 @@ describe('a mixed child list next to another child list', () => {
     it('emptying the blocks leaves the rows exactly where they were, and they can still grow', () => {
         const { blocks, node, rows, card } = mountTwo();
         blocks.setValue([standing(BLOCK_A, 'primary')]);
-        rows.insert(node.build(ITEM, 'A'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'A'));
         blocks.setValue([]);
         expect(card.innerHTML).toBe('<h3>headline</h3><i>A</i><footer>footnote</footer>');
         // The blocks' published order is emptied IN PLACE and never replaced, so the rows' own
         // anchoring still reads the live array rather than a wiring-time snapshot.
-        rows.insert(node.build(ITEM, 'B'));
+        rows.insert(wireExoNode(node.createExoNode(ITEM), 'B'));
         expect(card.innerHTML).toBe('<h3>headline</h3><i>A</i><i>B</i><footer>footnote</footer>');
     });
 

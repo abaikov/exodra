@@ -27,4 +27,7 @@ export type TExoChildList = {
     // `insert` minus `mount`. It does ACQUIRE an element for a child that has none yet, which is
     // construction and not a notification.
     attach(child: TExoNode<TExoDomMark>, i?: number): void;
+    indexOf(child: TExoNode<TExoDomMark>): number;
+    takeServed(at: number): Element | null;
+    dropUnclaimedServed(): void;
 };

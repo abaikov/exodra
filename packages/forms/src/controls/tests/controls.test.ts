@@ -17,7 +17,7 @@ import type {
     TExoRefPort,
     TExoTextPort,
 } from '@exodra/core';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 import type { TExoStrNode } from '@exodra/string';
@@ -26,7 +26,7 @@ import { describe, expect, it } from 'vitest';
 import { readExoControlValue, readExoControlValues, writeExoChoice } from '../../index';
 import type { TExoControlValue } from '../../index';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 const typeInto = (control: HTMLInputElement | HTMLTextAreaElement, value: string): void => {
     control.value = value;
@@ -272,9 +272,9 @@ describe('writeExoChoice — the checked or selected mark of a group, keyed by v
         const held: TExoNode[] = [];
         const Shell = createExoMachine<TExoDomNode>(SHELL, {
             createInitialState: (c) => {
-                const group = c.build(SIZE_GROUP, start);
+                const group = wireExoNode(c.createExoNode(SIZE_GROUP), start);
                 held.push(group);
-                c.childList(SHELL.ports.slot).insert(group);
+                c.appendChild(SHELL.ports.slot, group);
             },
         });
         const parent = host();
@@ -300,7 +300,7 @@ describe('writeExoChoice — the checked or selected mark of a group, keyed by v
         const { group, radios } = mount('s');
         expect(radios.map((r) => r.checked)).toEqual([true, false, false]);
 
-        wireExoNode(group, SIZE_GROUP, 'l');
+        wireExoNode(group, 'l');
         expect(radios.map((r) => r.checked)).toEqual([false, false, true]);
     });
 
@@ -308,14 +308,14 @@ describe('writeExoChoice — the checked or selected mark of a group, keyed by v
         const { group, radios } = mount('s');
         radios[1].click();
 
-        wireExoNode(group, SIZE_GROUP, 's');
+        wireExoNode(group, 's');
         expect(radios.map((r) => r.checked)).toEqual([true, false, false]);
     });
 
     it('clears every member for a value that is not in the group', () => {
         const { group, radios } = mount('m');
 
-        wireExoNode(group, SIZE_GROUP, 'none');
+        wireExoNode(group, 'none');
         expect(radios.map((r) => r.checked)).toEqual([false, false, false]);
     });
 });

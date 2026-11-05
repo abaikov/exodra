@@ -4,11 +4,20 @@ export function stopExoEffects(owner: TExoEffectOwner): void {
     const held = owner.effectStops;
     if (held === null) return;
     owner.effectStops = null;
-    for (let i = held.length - 1; i >= 0; i--) {
-        const off = held[i];
-        if (off !== null) {
-            held[i] = null;
-            off();
+    stopExoEffectsFrom(held, held.length - 1);
+}
+
+function stopExoEffectsFrom(held: ((() => void) | null)[], from: number): void {
+    let at = from;
+    try {
+        for (; at >= 0; at--) {
+            const off = held[at];
+            if (off !== null) {
+                held[at] = null;
+                off();
+            }
         }
+    } finally {
+        if (at >= 0) stopExoEffectsFrom(held, at - 1);
     }
 }

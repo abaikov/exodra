@@ -21,16 +21,16 @@ hydration.
 The guarantees are mapped to published references rather than to our own
 categories, so you can audit them against something that is not us:
 
-- **[OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)**,
-  chapter *Validation, Sanitization and Encoding*, section **V5.3 Output Encoding
-  and Injection Prevention**. The two requirements that apply to a rendering
-  library are that output encoding matches the interpreter and context, and that
-  context-aware escaping protects against reflected, stored and DOM-based XSS. We
-  cite the section rather than individual requirement numbers on purpose: ASVS 5.0
-  renumbered the chapters, and a pinned number would rot.
-- **CWE** identifiers for naming each weakness precisely.
-- Payloads from the **OWASP XSS Filter Evasion Cheat Sheet** and the **html5sec**
-  corpus.
+-   **[OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)**,
+    chapter _Validation, Sanitization and Encoding_, section **V5.3 Output Encoding
+    and Injection Prevention**. The two requirements that apply to a rendering
+    library are that output encoding matches the interpreter and context, and that
+    context-aware escaping protects against reflected, stored and DOM-based XSS. We
+    cite the section rather than individual requirement numbers on purpose: ASVS 5.0
+    renumbered the chapters, and a pinned number would rot.
+-   **CWE** identifiers for naming each weakness precisely.
+-   Payloads from the **OWASP XSS Filter Evasion Cheat Sheet** and the **html5sec**
+    corpus.
 
 There is no official conformance suite for XSS encoding — no W3C or IETF document
 defines one — so those corpora are the de-facto standard, and they are what every
@@ -38,13 +38,13 @@ framework tests against.
 
 ## What is covered
 
-| Reference | Context | Exodra's guarantee | Tests |
-|---|---|---|---|
-| ASVS V5.3 · CWE-79, CWE-80 | Untrusted data in element content | `&`, `<`, `>`, `"` are escaped before any text reaches the output. Pre-escaped input is escaped again, so there is no double-decode hole. | `packages/dom/src/tests/escape.test.ts`, `packages/dom/src/tests/dynamic-escape.test.ts` |
-| ASVS V5.3 · CWE-83 | Untrusted data in an attribute **value** | Values are always emitted in double quotes and escaped with the same table, so a payload cannot close the quote or start a new attribute. Single quotes need no escaping precisely because the quoting style is fixed. | `packages/dom/src/tests/dynamic-escape.test.ts` |
-| ASVS V5.3 · CWE-83 | Untrusted data in an attribute **name** | A name is checked when it is **declared** — `b.el('a', {href})`, `b.port('data-id')` — against an allowlist: a letter or `_`, then letters, digits, `_`, `.`, `:`, `$`, `-`. Anything else **throws**, naming the call the author made. | `packages/core/src/attr/tests/assertExoLegalAttrName.test.ts` |
-| ASVS V5.3 · CWE-116 | Server state inside a `<script>` element | HTML escaping does not apply inside `<script>`: the parser looks only for `</script`, and a JS parser treats U+2028/U+2029 as line terminators. The payload escapes `<`, `>`, `&`, U+2028 and U+2029 as JSON `\uXXXX` escapes, so it still parses back to the original value. | `packages/ssr/src/tests/security.test.ts` |
-| CWE-84 | The **scheme** of a URL in an `href`, `src` or `action` | **Nothing. This row is here because its absence read as "the question does not arise".** A `javascript:` URL is escaped as a string and rendered as written, on both backends. See [URL schemes are not filtered](#what-is-not-covered) below for what a guard would have cost and why it is not one. | — |
+| Reference                  | Context                                                 | Exodra's guarantee                                                                                                                                                                                                                                                                                    | Tests                                                                                    |
+| -------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| ASVS V5.3 · CWE-79, CWE-80 | Untrusted data in element content                       | `&`, `<`, `>`, `"` are escaped before any text reaches the output. Pre-escaped input is escaped again, so there is no double-decode hole.                                                                                                                                                             | `packages/dom/src/tests/escape.test.ts`, `packages/dom/src/tests/dynamic-escape.test.ts` |
+| ASVS V5.3 · CWE-83         | Untrusted data in an attribute **value**                | Values are always emitted in double quotes and escaped with the same table, so a payload cannot close the quote or start a new attribute. Single quotes need no escaping precisely because the quoting style is fixed.                                                                                | `packages/dom/src/tests/dynamic-escape.test.ts`                                          |
+| ASVS V5.3 · CWE-83         | Untrusted data in an attribute **name**                 | A name is checked when it is **declared** — `b.el('a', {href})`, `b.port('data-id')` — against an allowlist: a letter or `_`, then letters, digits, `_`, `.`, `:`, `$`, `-`. Anything else **throws**, naming the call the author made.                                                               | `packages/core/src/attr/tests/assertExoLegalAttrName.test.ts`                            |
+| ASVS V5.3 · CWE-116        | Server state inside a `<script>` element                | HTML escaping does not apply inside `<script>`: the parser looks only for `</script`, and a JS parser treats U+2028/U+2029 as line terminators. The payload escapes `<`, `>`, `&`, U+2028 and U+2029 as JSON `\uXXXX` escapes, so it still parses back to the original value.                         | `packages/ssr/src/tests/security.test.ts`                                                |
+| CWE-84                     | The **scheme** of a URL in an `href`, `src` or `action` | **Nothing. This row is here because its absence read as "the question does not arise".** A `javascript:` URL is escaped as a string and rendered as written, on both backends. See [URL schemes are not filtered](#what-is-not-covered) below for what a guard would have cost and why it is not one. | —                                                                                        |
 
 **Why a name is checked at all, when it is written in code.** A name cannot be
 escaped — an escaped name is a different attribute — so it goes into the markup
@@ -58,28 +58,28 @@ comes from data the name is attacker-shaped.
 
 Two details of that check are deliberate:
 
-- **It is an allowlist, not the HTML spec's blocklist.** The spec forbids
-  whitespace, quotes, `>`, `/`, `=` and the C0 controls in a name, which is the
-  right rule for a string that is only sent to a browser. The same string is also
-  *parsed as markup* here, and "the tokenizer tolerates this character" is much
-  weaker than "this character cannot mean anything but itself". `<`, a backtick,
-  `&` and every non-ASCII code point pass a blocklist, and none of them is a name
-  a real component wants.
-- **It throws instead of dropping the attribute.** The name is fixed before a
-  single request arrives, so a throw costs no availability — and dropping would
-  be worse than useless, because the port would still hold the **number** both
-  backends index their plans by, which would move every later value onto the
-  wrong element.
+-   **It is an allowlist, not the HTML spec's blocklist.** The spec forbids
+    whitespace, quotes, `>`, `/`, `=` and the C0 controls in a name, which is the
+    right rule for a string that is only sent to a browser. The same string is also
+    _parsed as markup_ here, and "the tokenizer tolerates this character" is much
+    weaker than "this character cannot mean anything but itself". `<`, a backtick,
+    `&` and every non-ASCII code point pass a blocklist, and none of them is a name
+    a real component wants.
+-   **It throws instead of dropping the attribute.** The name is fixed before a
+    single request arrives, so a throw costs no availability — and dropping would
+    be worse than useless, because the port would still hold the **number** both
+    backends index their plans by, which would move every later value onto the
+    wrong element.
 
 Beyond that name, a schema is code: it is built once when the module loads, there
 is no prop spreading, and nothing merges an object of unknown keys into an
 element. Values, and only values, arrive per render.
 
 `packages/dom/src/tests/dynamic-escape.test.ts` pins **two separate properties**, and
-the distinction is the point: *safety* (a value in a text position cannot open a
+the distinction is the point: _safety_ (a value in a text position cannot open a
 tag; a value in an attribute position cannot close the quote and start another
 attribute), asserted on the resulting **tree** rather than on the bytes, because
-a tree is what a browser acts on — and *agreement* (the bytes the server sent and
+a tree is what a browser acts on — and _agreement_ (the bytes the server sent and
 the tree the browser would have built are the same thing), because a value the
 two backends escape differently is not an error on either side, it is a page that
 adopts wrong. Two backends that are both wrong in the same way satisfy agreement
@@ -103,11 +103,11 @@ agree with each other. **React** rewrites a `javascript:` URL — on the client 
 in the server renderer — into a URL that throws when clicked, silently, with no
 warning; its pattern names that one scheme, so `data:text/html;base64,…` in an
 `<object data>` passes it. **Angular** warns in dev and rewrites the value to
-`unsafe:…`, and needs a second, stricter mechanism that *throws* for `<iframe
+`unsafe:…`, and needs a second, stricter mechanism that _throws_ for `<iframe
 src>` and script sources, where rewriting is not enough. **Vue** filters nothing
 and says so in its own security guide: "if you're ever doing URL sanitization on
 the frontend, you already have a security issue. User-provided URLs should always
-be sanitized by your backend before even being saved to a database."  **Svelte**
+be sanitized by your backend before even being saved to a database." **Svelte**
 filters nothing; its escaper handles characters only. **DOMPurify**, which is a
 sanitiser rather than a renderer, does not blocklist at all — it allowlists nine
 schemes and expects to be reconfigured, because that is the only shape of the
@@ -141,7 +141,7 @@ renders, which is exactly the false comfort this section is about. Second, a
 guard that alters the value becomes a second pair of functions that the server
 and the client must keep byte-identical or hydration adopts wrong (Angular's
 rewrite would serve `unsafe:javascript:alert(1)`), and a guard that throws turns
-an XSS *attempt* into a downed response, because it fires mid-stream on
+an XSS _attempt_ into a downed response, because it fires mid-stream on
 request-shaped data.
 
 **HTML is not sanitised, and the escape hatch says so in its own name.** A

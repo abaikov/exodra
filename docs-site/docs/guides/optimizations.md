@@ -21,21 +21,21 @@ one — a figure kept in two places drifts.
 A component's schema is built when its module loads, and the first render
 compiles it — once, for the life of the process — into three things:
 
-- **a prototype element**, parsed from the schema's markup inside an inert
-  `<template>`, which every instance is a `cloneNode` of;
-- **a walk plan**, a flat list of single hops (`firstChild` / `nextSibling`)
-  reaching only the elements that carry a port. A subtree with no ports in it is
-  emitted as markup and **never walked into** at render time;
-- **a setter per port**, already bound to its attribute name and its element's
-  namespace, so filling a port is two array loads and one indirect call with no
-  branch on the port's kind.
+-   **a prototype element**, parsed from the schema's markup inside an inert
+    `<template>`, which every instance is a `cloneNode` of;
+-   **a walk plan**, a flat list of single hops (`firstChild` / `nextSibling`)
+    reaching only the elements that carry a port. A subtree with no ports in it is
+    emitted as markup and **never walked into** at render time;
+-   **a setter per port**, already bound to its attribute name and its element's
+    namespace, so filling a port is two array loads and one indirect call with no
+    branch on the port's kind.
 
 A render is therefore: clone the prototype, replay the walk, run the wiring
 function. There is no template parsing per render, no props object, no tree
 diff and no per-node type dispatch.
 
 Clone-and-patch is not an optimization applied to code that qualifies for it
-here: it is what a component *is*, and there is no un-templated path to fall
+here: it is what a component _is_, and there is no un-templated path to fall
 back to. So there is no cache key to set, no heuristic to satisfy, and no
 "this subtree was too dynamic to hoist" case to discover in production.
 
@@ -58,12 +58,11 @@ because starting a fetch at module load would undo the inertness the
 
 ### Reconciliation is by identity, and there is a fast path per shape
 
-`reconcileExoOrder`, called from a transition, reconciles a children port against
-a list **by object identity** — the item reference is the key, and there is no `key` prop on this
-path. (Where identity is unavailable, `EXO_KEYED_LIST_VOCABULARY` from
-`@exodra/list-reconcile` is the opt-in pack, adding `c.keyedList`; it costs one
-`keyOf` call per item and a key→item `Map` per update on top of what this list
-pays.) The diff tries cheaper shapes first: the common head and tail by identity,
+A reconciler from `createExoChildrenReconciler`, called where the data changes, reconciles a
+children port against a list **by object identity** — the item reference is the key, and there
+is no `key` prop on this path. (Where identity is unavailable, its `{ key }` option reconciles
+by key; it costs one `keyOf` call per item and a key→item `Map` per update on top of what this
+list pays.) Underneath it is the `reconcileExoOrder` pass. The diff tries cheaper shapes first: the common head and tail by identity,
 then a middle that is only inserted or only removed, done in place; only a middle
 whose survivors changed order reaches the general case, which moves the minimum
 number of nodes by keeping the longest increasing subsequence in place
@@ -80,17 +79,17 @@ glitch-batching** — there is no scheduler coalescing writes
 or topologically ordering a derived graph the way Solid's or Voby's (`oby`) do.
 That is a deliberate design choice with two sides:
 
-- **The common case pays nothing.** An effect following one value into one port,
-  or a transition computing a value from a single read, has no deep dependency graph — so there is nothing to glitch
-  and nothing to batch. You skip the per-write scheduler overhead entirely.
-- **Heavy multi-source state delegates coherence upward.** If you build many
-  interdependent values or computeds over collections, batching and glitch-free
-  consistency are **not** the view layer's job — you hand them to the data layer.
-  A reactive store like [`@oimdb/*`](https://oimdb.org/llms.txt)
-  already owns a transactional queue: it coalesces writes, flushes a consistent
-  snapshot, and feeds **already-settled** values into ports as plain direct
-  writes. The batching did not disappear — it lives where a transaction model
-  already exists, instead of being duplicated inside the renderer.
+-   **The common case pays nothing.** An effect following one value into one port,
+    or a transition computing a value from a single read, has no deep dependency graph — so there is nothing to glitch
+    and nothing to batch. You skip the per-write scheduler overhead entirely.
+-   **Heavy multi-source state delegates coherence upward.** If you build many
+    interdependent values or computeds over collections, batching and glitch-free
+    consistency are **not** the view layer's job — you hand them to the data layer.
+    A reactive store like [`@oimdb/*`](https://oimdb.org/llms.txt)
+    already owns a transactional queue: it coalesces writes, flushes a consistent
+    snapshot, and feeds **already-settled** values into ports as plain direct
+    writes. The batching did not disappear — it lives where a transaction model
+    already exists, instead of being duplicated inside the renderer.
 
 So the direct-write speed in the [benchmarks](../benchmarks.md) is one face of a
 coin whose other face is "the renderer stays thin; the store owns coherence."
@@ -111,20 +110,21 @@ the same for every instance belongs in `el()`.
 value additionally subscribes, and its unsubscribe is held by the instance until it
 goes. Following a value that never changes buys a subscription for nothing.
 
-### `c.list` for a fixed run, `reconcileExoOrder` for a live one
+### `c.list` for a fixed run, a reconciler for a live one
 
 A fixed list is rendered once: no row records, no shown order, no diff, no
-teardown. It is not `reconcileExoOrder` over a constant array — the difference is
+teardown. It is not a reconciler over a constant array — the difference is
 everything the reconciler exists for.
 
 ### Let the data layer hand you the delta
 
-`reconcileExoOrder` takes the order shown and the order wanted and lets the diff
-compute the delta (`packages/list-reconcile/src/reconcileExoOrder.ts`) — that path
+A reconciler from `createExoChildrenReconciler` takes the items wanted, compares them with
+what it showed, and lets the diff compute the delta (`packages/list-reconcile/src/reconcileExoOrder.ts`) — that path
 is the one tuned for the shapes lists actually take. A producer that already knows
 the exact mutation (a command stream, a drag-reorder) and wants it performed as-is
-drives `c.childList(port)`'s `insert` / `move` / `remove` itself, from a
-transition, in `O(1)` per operation.
+drives the port methods `c.insertChild` / `c.moveChild` / `c.removeChild` itself, from a
+transition, in `O(1)` per operation; `c.removeChild` does not destroy, so a row that leaves
+for good also gets `destroyExoNode(node)`.
 
 ### A shared handler instead of a closure for a repeated handler
 
@@ -146,10 +146,10 @@ cannot tell which row it is answering for. See
 
 A child list on a hydrating page adopts the rows the server printed rather than refusing
 them, and it costs **no placeholder and no record**: opening the list collects the served
-rows into a cursor, and `c.build` wires the instance straight onto the next one
-(`packages/dom/src/dom/EXO_ADOPT_CURSOR.ts:16-21`). The initial state runs once, on the
+rows into that list's own array, and a node created and placed in the list is wired straight onto
+the row at its position (`takeServed` in `packages/dom/src/dom/factories/createExoChildList.ts:43-49`). The initial state runs once, on the
 server's element (`packages/dom/src/hydrate/buildAdoptedExoChild.ts:27-29`). When the data
-wants more rows than the markup has, the cursor answers `null` and the rest are built the
+wants more rows than the markup has, `takeServed` answers `null` and the rest are built the
 client way.
 
 How much the hydrating path costs on a real page is **unmeasured**.

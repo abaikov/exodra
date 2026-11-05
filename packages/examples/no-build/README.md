@@ -5,9 +5,8 @@ compiled — no bundler, no bundler plugin, no Babel, no codegen, no `npm instal
 They exist to make the framework's central claim checkable instead of stated.
 
 **Status: neither page has been opened in a browser in its current form.** Both
-build one `withExoChildList(withExoCompiler(new ExoDomBackend()))` at the top level — `render`
-exists only on a backend composed with `withExoCompiler`, and `c.childList`, which the
-reconciled rows open, only on one composed with `withExoChildList` — and call `backend.render(APP, root)`, which mounts one
+build one `withExoCompiler(new ExoDomBackend())` at the top level — `render`
+exists only on a backend composed with `withExoCompiler` — and call `backend.render(APP, root)`, which mounts one
 instance and hands back its disposer. Each page carries the same note.
 
 ## How to open them
@@ -23,8 +22,8 @@ python3 -m http.server 8000
 
 Then open:
 
-- <http://localhost:8000/packages/examples/no-build/esm.html>
-- <http://localhost:8000/packages/examples/no-build/global.html>
+-   <http://localhost:8000/packages/examples/no-build/esm.html>
+-   <http://localhost:8000/packages/examples/no-build/global.html>
 
 The pages load the framework from this repository's own `dist/`, so the machine
 does NOT need to be online — see the last section for why that is deliberate and
@@ -77,33 +76,34 @@ arrived.
 
 The application is deliberately not a counter. It has:
 
-- a five-line store (`getValue` / `setValue` / `onChange`) written in the page, holding the
-  tasks and a cleared count; every machine that shows it follows it with an effect that draws
-  first and then subscribes;
-- a list reconciled by item identity: `createInitialState` opens `c.childList(port)` once, and a
-  plain function the effect runs calls `reconcileExoOrder(rows, shown, want, want, (item) => c.build(TASK, item))`,
-  each row receiving its item as its wire's params;
-- event handlers on three different buttons, declared on the machines (`withExoHandlers(m, (on) => on(port, handler))`);
-- one stat schema behind two machines (`STAT_OPEN`, `STAT_CLEARED`), each mounted with `c.one`
-  and showing a different value of the store through its own function;
-- a build counter stamped into every row. Press **Move last to first**: the
-  numbers travel with their rows, which is the visible evidence that the
-  reconciler moved existing elements instead of rebuilding them.
+-   a five-line store (`getValue` / `setValue` / `onChange`) written in the page, holding the
+    tasks and a cleared count; every machine that shows it follows it with an effect that draws
+    first and then subscribes;
+-   a list reconciled by item identity: a reconciler made once at the top level with
+    `createExoChildrenReconciler(TASK)`, which the effect calls as `reconcileTasks(c, port, tasks)`,
+    each new row receiving its item as its wire's params; the reconciler remembers what it showed,
+    so the machine keeps no list of its own;
+-   event handlers on three different buttons, declared on the machines (`withExoHandlers(m, (on) => on(port, handler))`);
+-   one stat schema behind two machines (`STAT_OPEN`, `STAT_CLEARED`), each mounted with `c.one`
+    and showing a different value of the store through its own function;
+-   a build counter stamped into every row. Press **Move last to first**: the
+    numbers travel with their rows, which is the visible evidence that the
+    reconciler moved existing elements instead of rebuilding them.
 
 ## What these pages deliberately do not use
 
-- **No JSX.** Not as a stylistic choice — it is impossible here. `@exodra/jsx` is
-  a types package; its `jsx`, `jsxs` and `jsxDEV` exports are all one function
-  that throws (`packages/jsx/src/schema/jsx-runtime.ts`), because an element in
-  that dialect is compiled away into a `b.el(…)` line in a schema and machine code
-  that writes ports, and there is no runtime that could interpret one. Without a
-  compiler you write the two halves yourself, which is what `createExoSchema(build)`
-  and `createExoMachine(schema)` with its `withExo*` decorators take.
-- **No `@exodra/babel-plugin-exodra-schema`**, no `@exodra/vite-plugin-exodra`,
-  no `create-exodra`, no `npm`, no `node`.
-- **No `@exodra/router` and no `@exodra/forms`.** They are CDN-installable the
-  same way; leaving them out keeps the pages down to the three packages the claim
-  actually needs.
+-   **No JSX.** Not as a stylistic choice — it is impossible here. `@exodra/jsx` is
+    a types package; its `jsx`, `jsxs` and `jsxDEV` exports are all one function
+    that throws (`packages/jsx/src/schema/jsx-runtime.ts`), because an element in
+    that dialect is compiled away into a `b.el(…)` line in a schema and machine code
+    that writes ports, and there is no runtime that could interpret one. Without a
+    compiler you write the two halves yourself, which is what `createExoSchema(build)`
+    and `createExoMachine(schema)` with its `withExo*` decorators take.
+-   **No `@exodra/babel-plugin-exodra-schema`**, no `@exodra/vite-plugin-exodra`,
+    no `create-exodra`, no `npm`, no `node`.
+-   **No `@exodra/router` and no `@exodra/forms`.** They are CDN-installable the
+    same way; leaving them out keeps the pages down to the three packages the claim
+    actually needs.
 
 ## The one trap
 
@@ -111,7 +111,7 @@ Every `createExoSchema(…)` call in these pages is at the **top level of the sc
 and that is load-bearing rather than tidy. `createExoSchema` builds a schema on the
 spot and numbers its ports; every backend then keys its
 prepared plan on the schema's **identity**. So a component built inside a function
-— a factory, a helper, a handler — produces a *new* schema on every call, and a
+— a factory, a helper, a handler — produces a _new_ schema on every call, and a
 new schema means a new compile, a new prototype and a new plan every time. That is
 not a slower version of the same program; it is a different program, and nothing
 warns you. The Babel plugin removes the hazard by construction: it always emits
@@ -119,7 +119,6 @@ the schema as a module-level `const` and moves only the wiring function
 (`packages/babel-plugin-exodra-schema/src/index.ts`, "HOISTING IS NOT AN
 OPTIMISATION HERE"). Writing by hand, you keep that rule yourself: schemas at
 module scope, once, and per-instance work in the machine.
-
 
 ## Why these load from this repository and not from a CDN
 

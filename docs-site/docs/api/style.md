@@ -39,16 +39,16 @@ exoStyle({ color: 'red', fontSize: 12, '--gap': 8 });
 
 ### Normalization rules
 
-| Input | Output | Rule |
-| --- | --- | --- |
-| `backgroundColor: 'red'` | `background-color:red` | camelCase → kebab-case |
-| `fontSize: 12` | `font-size:12px` | numbers get `px`… |
-| `margin: 0` | `margin:0` | …except `0` |
-| `opacity: 0.5`, `zIndex: 10` | `opacity:0.5;z-index:10` | …and unitless props (`opacity`, `zIndex`, `lineHeight`, `fontWeight`, `flexGrow`, grid spans, …) |
-| `'--gap': 8` | `--gap:8` | custom properties pass through untouched (no kebab, no `px`) |
-| `padding: [4, 8]` | `padding:4px 8px` | arrays expand with per-item formatting |
-| `color: null` / `undefined` / `false` | *(omitted)* | falsy values are dropped |
-| `WebkitTransform: 'scale(2)'` | `-webkit-transform:scale(2)` | explicit vendor prefixes serialize correctly (`msFlexAlign` → `-ms-flex-align`) |
+| Input                                 | Output                       | Rule                                                                                             |
+| ------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| `backgroundColor: 'red'`              | `background-color:red`       | camelCase → kebab-case                                                                           |
+| `fontSize: 12`                        | `font-size:12px`             | numbers get `px`…                                                                                |
+| `margin: 0`                           | `margin:0`                   | …except `0`                                                                                      |
+| `opacity: 0.5`, `zIndex: 10`          | `opacity:0.5;z-index:10`     | …and unitless props (`opacity`, `zIndex`, `lineHeight`, `fontWeight`, `flexGrow`, grid spans, …) |
+| `'--gap': 8`                          | `--gap:8`                    | custom properties pass through untouched (no kebab, no `px`)                                     |
+| `padding: [4, 8]`                     | `padding:4px 8px`            | arrays expand with per-item formatting                                                           |
+| `color: null` / `undefined` / `false` | _(omitted)_                  | falsy values are dropped                                                                         |
+| `WebkitTransform: 'scale(2)'`         | `-webkit-transform:scale(2)` | explicit vendor prefixes serialize correctly (`msFlexAlign` → `-ms-flex-align`)                  |
 
 There is **no autoprefixing** — `exoStyle` serializes what you write, it
 doesn't invent prefixes. Modern targets rarely need them; when you do need one,
@@ -148,4 +148,4 @@ scope does that work once per process, exactly where a constant belongs.
 
 ## Links
 
-- source: [exodra/packages/core/src/style](https://github.com/abaikov/exodra/tree/master/packages/core/src/style)
+-   source: [exodra/packages/core/src/style](https://github.com/abaikov/exodra/tree/master/packages/core/src/style)

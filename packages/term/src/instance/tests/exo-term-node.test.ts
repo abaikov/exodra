@@ -13,6 +13,8 @@ import {
     withExoWire,
     withExoEffects,
     createExoSchema,
+    destroyExoNode,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoSchemaCursor,
@@ -115,25 +117,7 @@ const LIVE = composeExoMachine(
     }
 );
 
-/**
- * WHAT A WIRE THAT PLACES CHILDREN BY HAND ASSUMES. `childList` is each backend's own door — it
- * hands out element positions, which `@exodra/core` has no word for — so a portable wire names the
- * commands it calls over core's opaque `TExoNode` and no backend's node type.
- */
-type TExoPlacing = TExoChildrenWiring &
-    TExoMachineNode & {
-        childList(port: TExoChildrenPort): TExoPlacedChildren;
-    };
-
-type TExoPlacedChildren = {
-    readonly size: number;
-    at(i: number): TExoNode | undefined;
-    insert(child: TExoNode, i?: number): void;
-    remove(i: number): void;
-    detach(i: number): TExoNode | undefined;
-    detachAll(): readonly TExoNode[];
-    move(from: number, to: number): void;
-};
+type TExoPlacing = TExoChildrenWiring & TExoMachineNode;
 
 /** A shell with one children port, so each test below only has to supply a wire. */
 function shell(wire: (ports: { slot: TExoChildrenPort }) => TExoMachineInitialState<TExoPlacing>) {
@@ -193,113 +177,119 @@ describe('the children half of the surface', () => {
         screen.dispose();
     });
 
-    it('move() keeps the instances it reorders — a move is not a rebuild', () => {
-        let rows!: TExoPlacedChildren;
+    it('moveChild() keeps the instances it reorders — a move is not a rebuild', () => {
+        let node!: TExoPlacing;
+        let slot!: TExoChildrenPort;
         const PAGE = shell((P) => (c) => {
-            rows = c.childList(P.slot);
-            rows.insert(c.build(LEAF, 'a'));
-            rows.insert(c.build(LEAF, 'b'));
+            node = c;
+            slot = P.slot;
+            c.appendChild(P.slot, wireExoNode(c.createExoNode(LEAF), 'a'));
+            c.appendChild(P.slot, wireExoNode(c.createExoNode(LEAF), 'b'));
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(
             ['div', '  span class="leaf" "a"', '  span class="leaf" "b"'].join('\n')
         );
-        const first = rows.at(0);
-        const second = rows.at(1);
+        const first = node.childAt(slot, 0);
+        const second = node.childAt(slot, 1);
 
-        rows.move(0, 1);
+        node.moveChild(first as TExoNode, 1);
         expect(screen.text()).toBe(
             ['div', '  span class="leaf" "b"', '  span class="leaf" "a"'].join('\n')
         );
         // The same two instances, in the other order.
-        expect(rows.at(0)).toBe(second);
-        expect(rows.at(1)).toBe(first);
+        expect(node.childAt(slot, 0)).toBe(second);
+        expect(node.childAt(slot, 1)).toBe(first);
 
-        rows.remove(0);
-        expect(rows.size).toBe(1);
+        destroyExoNode(node.childAt(slot, 0) as TExoNode);
+        expect(node.childCount(slot)).toBe(1);
         expect(screen.text()).toBe(['div', '  span class="leaf" "a"'].join('\n'));
         screen.dispose();
     });
 
     it('swaps WHICH COMPONENT stands in a position, and takes the position away', () => {
         let node!: TExoPlacing;
-        let slot!: TExoPlacedChildren;
+        let slot!: TExoChildrenPort;
         const PAGE = shell((P) => (c) => {
             node = c;
-            slot = c.childList(P.slot);
-            slot.insert(c.build(LEAF, 'first'));
+            slot = P.slot;
+            c.appendChild(P.slot, wireExoNode(c.createExoNode(LEAF), 'first'));
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(['div', '  span class="leaf" "first"'].join('\n'));
 
-        // A POSITION IS NOT TYPED BY A COMPONENT: the port takes whatever `build` returns, so
+        // A POSITION IS NOT TYPED BY A COMPONENT: the port takes whatever `createExoNode` returns, so
         // changing which component stands there is two commands and no reconciler.
-        slot.remove(0);
-        slot.insert(node.build(OTHER, 'second'));
+        destroyExoNode(node.childAt(slot, 0) as TExoNode);
+        node.appendChild(slot, wireExoNode(node.createExoNode(OTHER), 'second'));
         expect(screen.text()).toBe(['div', '  em "second"'].join('\n'));
 
-        slot.remove(0);
+        destroyExoNode(node.childAt(slot, 0) as TExoNode);
         expect(screen.text()).toBe('div');
         screen.dispose();
     });
 
     it('takes children of DIFFERENT components in one port, in insertion order', () => {
         let node!: TExoPlacing;
-        let slot!: TExoPlacedChildren;
+        let slot!: TExoChildrenPort;
         const PAGE = shell((P) => (c) => {
             node = c;
-            slot = c.childList(P.slot);
-            slot.insert(c.build(OTHER, 'two'));
-            slot.insert(c.build(LEAF, 'one'), 0);
+            slot = P.slot;
+            c.appendChild(P.slot, wireExoNode(c.createExoNode(OTHER), 'two'));
+            c.insertChild(P.slot, wireExoNode(c.createExoNode(LEAF), 'one'), 0);
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(['div', '  span class="leaf" "one"', '  em "two"'].join('\n'));
 
-        slot.remove(1);
-        slot.remove(0);
-        slot.insert(node.build(OTHER, 'only'));
+        destroyExoNode(node.childAt(slot, 1) as TExoNode);
+        destroyExoNode(node.childAt(slot, 0) as TExoNode);
+        node.appendChild(slot, wireExoNode(node.createExoNode(OTHER), 'only'));
         expect(screen.text()).toBe(['div', '  em "only"'].join('\n'));
         screen.dispose();
     });
 
-    it('detach() takes a child out without telling it, so its subscriptions stay live', () => {
+    it('removeChild() takes a child out without telling it, so its subscriptions stay live', () => {
         LIVE_TEXT.setValue('before');
         DISPOSED.length = 0;
-        let slot!: TExoPlacedChildren;
+        let node!: TExoPlacing;
+        let slot!: TExoChildrenPort;
         const PAGE = shell((P) => (c) => {
-            slot = c.childList(P.slot);
-            slot.insert(c.build(LEAF, 'kept'));
-            slot.insert(c.build(LIVE));
+            node = c;
+            slot = P.slot;
+            c.appendChild(P.slot, wireExoNode(c.createExoNode(LEAF), 'kept'));
+            c.appendChild(P.slot, wireExoNode(c.createExoNode(LIVE)));
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(
             ['div', '  span class="leaf" "kept"', '  i "before"'].join('\n')
         );
 
-        const taken = slot.detach(1);
+        const taken = node.removeChild(node.childAt(slot, 1) as TExoNode);
         expect(screen.text()).toBe(['div', '  span class="leaf" "kept"'].join('\n'));
         expect(DISPOSED).toEqual([]);
 
         // THE CLAIM: it was never told it left, so the source still reaches it while it is out.
         LIVE_TEXT.setValue('after');
-        slot.insert(taken as TExoNode);
-        expect(slot.at(1)).toBe(taken);
+        node.appendChild(slot, taken);
+        expect(node.childAt(slot, 1)).toBe(taken);
         expect(screen.text()).toBe(['div', '  span class="leaf" "kept"', '  i "after"'].join('\n'));
         screen.dispose();
     });
 
-    it('remove() disposes the child it takes out', () => {
+    it('destroyExoNode() disposes the child it takes out', () => {
         LIVE_TEXT.setValue('here');
         DISPOSED.length = 0;
-        let slot!: TExoPlacedChildren;
+        let node!: TExoPlacing;
+        let slot!: TExoChildrenPort;
         const PAGE = shell((P) => (c) => {
-            slot = c.childList(P.slot);
-            slot.insert(c.build(LIVE));
+            node = c;
+            slot = P.slot;
+            c.appendChild(P.slot, wireExoNode(c.createExoNode(LIVE)));
         });
         const screen = BACKEND.renderScreen(PAGE, 1);
         expect(screen.text()).toBe(['div', '  i "here"'].join('\n'));
 
-        slot.remove(0);
+        destroyExoNode(node.childAt(slot, 0) as TExoNode);
         expect(DISPOSED).toEqual(['live']);
         expect(screen.text()).toBe('div');
         screen.dispose();
@@ -325,7 +315,7 @@ describe('contexts on a RETAINED backend', () => {
 
     it('a row added AFTER the first render still sees what its parent provided', () => {
         let node!: TExoPlacing;
-        let rows!: TExoPlacedChildren;
+        let rows!: TExoChildrenPort;
         const PAGE = createExoTestMachine(
             (b) => {
                 let slot!: TExoChildrenPort;
@@ -338,8 +328,8 @@ describe('contexts on a RETAINED backend', () => {
                 (c) => {
                     c.provide(THEME, 'dark');
                     node = c;
-                    rows = c.childList(P.slot);
-                    rows.insert(c.build(THEMED_ROW, 'a'));
+                    rows = P.slot;
+                    c.appendChild(P.slot, wireExoNode(c.createExoNode(THEMED_ROW), 'a'));
                 }
         );
 
@@ -350,7 +340,7 @@ describe('contexts on a RETAINED backend', () => {
         // returned, at a moment when the module-level context head is back to null. A backend
         // that kept only a module-level head — which is all `@exodra/string` needs — prints
         // `b:none` here.
-        rows.insert(node.build(THEMED_ROW, 'b'));
+        node.appendChild(rows, wireExoNode(node.createExoNode(THEMED_ROW), 'b'));
         expect(screen.text()).toBe(['ul', '  li "a:dark"', '  li "b:dark"'].join('\n'));
         screen.dispose();
     });

@@ -89,7 +89,7 @@ export const EXO_TERM_WRITER_FACTORIES: TExoTermWriterFactories = {
     [EXO_PORT_TEXT]: () => writeText,
     [EXO_PORT_EVENT]: () => createRefusingWriter('an EVENT port', 'on(port, handler)'),
     [EXO_PORT_CHILDREN]: () =>
-        createRefusingWriter('a CHILDREN port', 'one() / list() / childList()'),
+        createRefusingWriter('a CHILDREN port', 'one() / list() / appendChild()'),
     // A ref port has no writer; the refusal fills the slot, the table having one entry per port.
     // The ADDRESS still crosses: `portNodeReader()` hands back the node.
     [EXO_PORT_REF]: () => createRefusingWriter('a REF port', 'portNodeReader() to READ the node'),

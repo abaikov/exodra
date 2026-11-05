@@ -1,7 +1,6 @@
 import {
     ExoDomBackend,
     exoDomSchemaOf,
-    withExoChildList,
     withExoForeignNamespaces,
     withExoHydration,
     withExoCompiler,
@@ -23,7 +22,7 @@ import type {
 // suite records belongs to the composition rather than to adoption.
 const EXO_STR = /*#__PURE__*/ new ExoStrBackend();
 const EXO_HYDRATE = /*#__PURE__*/ withExoHydration(
-    withExoChildList(withExoForeignNamespaces(withExoCompiler(new ExoDomBackend())))
+    withExoForeignNamespaces(withExoCompiler(new ExoDomBackend()))
 );
 
 // `@exodra/string`'s bytes, parsed, then adopted by a DOM backend. `hydrate` adopts

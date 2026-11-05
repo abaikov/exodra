@@ -16,6 +16,7 @@ import {
     withExoTransitions,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoMachineNode,
@@ -37,7 +38,7 @@ type TItem = { readonly label: string };
 // wire names neither, because claiming a leaf can reconcile a list narrows what can run the leaf.
 type TReconciling = TExoChildrenWiring &
     TExoMachineNode & {
-        childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
+        portChildList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
     };
 
 type TListState = { readonly rows: TExoPlacedChildren<TExoNode>; shown: TItem[] };
@@ -70,7 +71,10 @@ const boundList = (initial: readonly TItem[]) => {
         return { rows };
     });
     const m = createExoMachine<TReconciling, unknown, TListState>(schema, {
-        createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] as TItem[] }),
+        createInitialState: (c) => ({
+            rows: c.portChildList(schema.ports.rows),
+            shown: [] as TItem[],
+        }),
     });
     const component = composeExoMachine(
         m,
@@ -83,7 +87,7 @@ const boundList = (initial: readonly TItem[]) => {
                         c.state.shown,
                         want,
                         want,
-                        (item) => c.build(ROW, item)
+                        (item) => wireExoNode(c.createExoNode(ROW), item)
                     );
                 },
             }),

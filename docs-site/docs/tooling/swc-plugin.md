@@ -112,16 +112,16 @@ slower one.
 same dialect to the same output, up to SWC's own codegen formatting (arrow
 spacing, quote style). In the last column `RowPorts` is `rowSchema.ports` and `on` is the registrar `withExoHandlers(m, (on) => …)` hands a machine over `rowSchema`.
 
-| written | schema call | filled by the machine with |
-| --- | --- | --- |
-| `class="row"`, `tabindex={0}`, `disabled` | folded into the markup | — |
-| `data-id={$.id}` | `port("data-id", "id")` | `c.attr(RowPorts.id, value)` |
-| `<span>{$.label}</span>` | `textPort("label")` | `c.text(RowPorts.label, value)` |
-| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `on(RowPorts.toggle, handler)` |
-| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `on(RowPorts.edit, handler)` |
-| `ref={$.box}` | `refPort("box")` | — |
-| `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(RowPorts.body, markup)` |
-| `<$.rows />` | `childrenPort("rows")` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
+| written                                   | schema call                     | filled by the machine with                                                         |
+| ----------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------- |
+| `class="row"`, `tabindex={0}`, `disabled` | folded into the markup          | —                                                                                  |
+| `data-id={$.id}`                          | `port("data-id", "id")`         | `c.attr(RowPorts.id, value)`                                                       |
+| `<span>{$.label}</span>`                  | `textPort("label")`             | `c.text(RowPorts.label, value)`                                                    |
+| `onClick={$.toggle}`                      | `eventPort("click", "toggle")`  | `on(RowPorts.toggle, handler)`                                                     |
+| `on:dblclick={$.edit}`                    | `eventPort("dblclick", "edit")` | `on(RowPorts.edit, handler)`                                                       |
+| `ref={$.box}`                             | `refPort("box")`                | —                                                                                  |
+| `unsafeHtml={$.body}`                     | `childrenPort("body")`          | `c.unsafeHtml(RowPorts.body, markup)`                                              |
+| `<$.rows />`                              | `childrenPort("rows")`          | `c.one`, `c.list`, a `createExoChildrenReconciler` reconciler, or the port methods |
 
 Everything else is a compile error naming the spelling that would have worked —
 there is no runtime under this JSX to defer a decision to. The full dialect,
@@ -131,8 +131,8 @@ including every refusal, is in the [JSX guide](../guides/jsx.md).
 
 An SWC Wasm plugin is tied to the `swc_core` version it was built against, which
 must be compatible with your `@swc/core` / Next.js version. A mismatch fails to
-load with *"ensure the version of `swc_core` … is compatible with the host
-runtime"*. Rebuild (or upgrade) the plugin against a matching `swc_core` when you
+load with _"ensure the version of `swc_core` … is compatible with the host
+runtime"_. Rebuild (or upgrade) the plugin against a matching `swc_core` when you
 upgrade SWC.
 
 If you would rather not manage that, use the [Babel pipeline](./babel-preset.md):

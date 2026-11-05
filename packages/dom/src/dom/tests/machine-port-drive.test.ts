@@ -40,11 +40,11 @@ import type { TExoMachineProgram } from '@exodra/computed';
 import { describe, expect, it } from 'vitest';
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomMachine } from '../types/TExoDomMachine';
 import type { TExoDomNode } from '../EXO_DOM_NODE_VOCABULARY';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 /**
  * EXACTLY WHAT THE WIRES BELOW TOUCH ON THE EXONODE THEY ARE HANDED, and nothing else — the point of

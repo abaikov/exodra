@@ -32,7 +32,7 @@ import { EXO_NEWLINE_EATING_TAGS } from './constants/EXO_NEWLINE_EATING_TAGS';
 import { EXO_WALK_FIRST_CHILD } from './constants/EXO_WALK_FIRST_CHILD';
 import { EXO_WALK_FROM_END } from './constants/EXO_WALK_FROM_END';
 import { EXO_WALK_NEXT_SIBLING } from './constants/EXO_WALK_NEXT_SIBLING';
-import { assertExoContentBeside } from './asserts/assertExoContentBeside';
+import { assertExoContentBeside } from '@exodra/core';
 import { assertExoVoidContent } from './asserts/assertExoVoidContent';
 import { disposeExoChildSelf } from './factories/createExoDomChildFactory';
 import { cloneExoNode } from '../backend/cloneExoNode';

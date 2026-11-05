@@ -7,7 +7,7 @@ A small TodoMVC built on the local sources of three libraries:
     the `@oimdb/exodra` plugin: `new OIMExodraPlugin({ db })` is composed onto the backend as
     `exodraPlugin`, `withOIMEffects` runs a tracked `db.createEffect` per effect (the row follows
     its todo, the app its counts and filter), and `withOIMBucketList` follows the shown bucket and
-    replays what OIMDB recorded (`insert` / `remove` / `move`) on `c.childList`. A row that leaves
+    replays what OIMDB recorded (`insert` / `remove` / `move`) on the rows port's child list. A row that leaves
     the list, by a command or by a filter switch, is parked on its todo's slot (`slot.data`) with its
     effects disconnected and taken back when it shows again; the plugin unmounts a parked row when
     its slot is released, and the list unmounts the rest when it goes.
@@ -45,12 +45,12 @@ npx vite packages/examples/todo-cnstra-oimdb
 
 ## Where things are
 
-| File                                                                                         | What it is                                                                                                                                                                                             |
-| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `src/createTodoOimdb.ts`                                                                     | the `OIMDB` and its `todos` schema: the collection, the two command-recording indexes, the filter slot, `nextTodoId` and `putInCreatedOrder`                                                           |
-| `src/TodoUiAxon.ts`                                                                          | what the user did: one collateral per interaction                                                                                                                                                      |
-| `src/TodoNeurons.ts`                                                                         | the todo and filter neurons: each binds UI collaterals and writes OIMDB                                                                                                                                |
-| `src/createTodoCns.ts`                                                                       | the CNS over those neurons and its `addDrainListener(() => oimdb.flush())`                                                                                                                             |
-| `src/main.ts`                                                                                | the database, the CNS, and the backend that carries both as services (`composeExoPlugins(..., { todoDb, cns, exodraPlugin })`) next to `createExoDelegatedEvents`                                             |
-| `src/todoAppMachine.ts`                                                                      | the app machine: header, toggle-all, footer, filters, the empty state, and the list driven by the shown bucket's commands                                                                              |
-| `src/todoRowMachine.ts`                                                                      | the row machine: its own event ports and handlers, one `withOIMEffects` effect for its title and one for `done`                                                                                         |
+| File                     | What it is                                                                                                                                                        |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/createTodoOimdb.ts` | the `OIMDB` and its `todos` schema: the collection, the two command-recording indexes, the filter slot, `nextTodoId` and `putInCreatedOrder`                      |
+| `src/TodoUiAxon.ts`      | what the user did: one collateral per interaction                                                                                                                 |
+| `src/TodoNeurons.ts`     | the todo and filter neurons: each binds UI collaterals and writes OIMDB                                                                                           |
+| `src/createTodoCns.ts`   | the CNS over those neurons and its `addDrainListener(() => oimdb.flush())`                                                                                        |
+| `src/main.ts`            | the database, the CNS, and the backend that carries both as services (`composeExoPlugins(..., { todoDb, cns, exodraPlugin })`) next to `createExoDelegatedEvents` |
+| `src/todoAppMachine.ts`  | the app machine: header, toggle-all, footer, filters, the empty state, and the list driven by the shown bucket's commands                                         |
+| `src/todoRowMachine.ts`  | the row machine: its own event ports and handlers, one `withOIMEffects` effect for its title and one for `done`                                                   |

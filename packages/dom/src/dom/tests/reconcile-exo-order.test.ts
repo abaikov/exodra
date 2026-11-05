@@ -1,12 +1,8 @@
 // @vitest-environment jsdom
 //
 // `reconcileExoOrder` DRIVING A REAL `<ul>` — the reconciler of `@exodra/list-reconcile` composed
-// over this backend's two doors, `c.build` and `c.childList(port)`, from a transition an effect runs
-// on every change of the source. It reconciles by the IDENTITY of the item object and never by a key.
-//
-// IT IS A DOM-ONLY FILE ON PURPOSE. `childList` is a door `@exodra/dom` and `@exodra/term` have and
-// `@exodra/string` does not, so a cross-backend list case belongs on `c.list(port, C, count)`
-// instead — see `src/tests/duplicate-item-parity.test.ts`. What is asserted here is the composition
+// over this backend's child port, from a transition an effect runs on every change of the source.
+// It reconciles by the IDENTITY of the item object and never by a key. What is asserted here is the composition
 // against a document: element identity across a reorder, disposal on the way out, and the climb
 // that survives another program reparenting a row.
 import {
@@ -29,11 +25,11 @@ import { describe, expect, it } from 'vitest';
 
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomMachine } from '../types/TExoDomMachine';
 import type { TExoDomNode } from '../EXO_DOM_NODE_VOCABULARY';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 type TItem = { readonly id: string };
 const items = (n: number): TItem[] => Array.from({ length: n }, (_, i) => ({ id: 'i' + i }));

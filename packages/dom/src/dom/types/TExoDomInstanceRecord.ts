@@ -4,6 +4,7 @@ import type { TExoContextFrame } from '@exodra/context';
 import type { TExoDomSchemaBase } from './TExoDomSchemaBase';
 import type { TExoDomChild } from './TExoDomChild';
 import type { TExoChildLists } from './TExoChildLists';
+import type { TExoChildList } from './TExoChildList';
 
 /** The record every instance gets, and the object a wiring function is handed; its prototype is the
  * surface `schema.createInstance` was built over. The first nine fields stand first in BOTH literals
@@ -23,4 +24,7 @@ export type TExoDomInstanceRecord = {
     effectStops: ((() => void) | null)[] | null;
     transitionOverrides: TExoTransitionOverrides | null;
     serviceState: unknown;
+    machine: unknown;
+    portChildren: (TExoChildList | undefined)[] | null;
+    placedIn: TExoChildList | null;
 } & TExoInstanceRecord;

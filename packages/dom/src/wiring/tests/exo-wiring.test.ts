@@ -22,7 +22,7 @@
 // case that compares a LATER COMMIT fires the init transition — the spelling a machine needs when
 // the value comes from outside. The server case has no choice at all: `@exodra/string`'s `one`
 // hands back nothing, so there is no exonode there to fire anything at.
-import { createExoMachine, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema, destroyExoNode, wireExoNode } from '@exodra/core';
 import type {
     TExoSchemaCursor,
     TExoChildrenPort,
@@ -41,16 +41,16 @@ import { host, createExoTestMachine } from '@exodra/test-utils';
 // ways, rendered by `@exodra/dom` and by `@exodra/string`, and a suite in `@exodra/computed` could
 // name neither of them.
 import { exoWiring } from '@exodra/computed';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 const EXO_STR = new ExoStrBackend();
 
 // WHAT THE BACKEND ABOVE ACTUALLY HANDS A WIRE, and the reason everything below is annotated
 // `TExoDomNode` flatly. `TExoDomNode` is the BARE exonode — the instance's fields and the shipped
-// methods, and not one name a pack added — which is precisely what `withExoChildList(withExoCompiler(new ExoDomBackend()))` hands out.
+// methods, and not one name a pack added — which is precisely what `withExoCompiler(new ExoDomBackend())` hands out.
 // NOTHING HERE BINDS. A wiring block drives its ports from DERIVATIONS, which is the whole subject
 // of this file, and not one wire in it names a source. If a wire here ever does name a source,
 // `c.bind` stops resolving on this type, and the repair is to compose `withExoBinding` and widen
@@ -486,23 +486,18 @@ describe('what the wire form adds', () => {
                 return { rows, head };
             },
             (P) =>
-                exoWiring<TExoDomNode, { setExoText(v: string): void; touch(): void }>((w, c) => {
+                exoWiring<TExoDomNode, { setExoText(v: string): void; touch(): void }>((w) => {
                     const text = w.field('ab');
                     const other = w.field(0);
-                    // THE CHILD LIST IS TAKEN AT DECLARATION, while the exonode is standing on
-                    // THIS instance — the moment a machine reaches through `wire`.
-                    const childList = w.field(c.childList(P.rows));
-
                     w.derive(P.head, [text], (text) => text);
-                    // `[text]` is the WAKE SET. The child list is read and never listed, which is
-                    // what stops a rebuild from depending on the child list "changing".
                     w.fill([text], (c) => {
-                        const rows = childList.get(c);
                         const value = text.get(c);
-                        for (let k = rows.size; k < value.length; k++) {
-                            rows.insert(c.build(CHIP));
+                        for (let k = c.childCount(P.rows); k < value.length; k++) {
+                            c.appendChild(P.rows, wireExoNode(c.createExoNode(CHIP)));
                         }
-                        for (let k = rows.size - 1; k >= value.length; k--) rows.remove(k);
+                        for (let k = c.childCount(P.rows) - 1; k >= value.length; k--) {
+                            destroyExoNode(c.childAt(P.rows, k)!);
+                        }
                     });
 
                     const setExoText = w.transition((c: TExoDomNode, v: string) => text.set(c, v));

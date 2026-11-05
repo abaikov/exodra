@@ -1,6 +1,7 @@
 import type { TExoContextFrame } from '@exodra/context';
 import { armExoNode } from '@exodra/core';
-import { disposeExoStrInstance } from './disposeExoStrInstance';
+import { disposeExoStrTree } from './disposeExoStrTree';
+import { fillExoStrChildren } from './fillExoStrChildren';
 import type { TExoStrNode } from './EXO_STR_NODE_VOCABULARY';
 import type { TExoStrSchema } from '../schema/types/TExoStrSchema';
 import type { TExoStrMachine } from './types/TExoStrMachine';
@@ -16,8 +17,9 @@ export function renderExoStrInstance(
     const node = schema.createInstance(schema, context);
     try {
         armExoNode<TExoStrNode>(node, machine, params);
+        fillExoStrChildren(node);
         return schema.fillMarkup(node.values);
     } finally {
-        disposeExoStrInstance(node);
+        disposeExoStrTree(node);
     }
 }

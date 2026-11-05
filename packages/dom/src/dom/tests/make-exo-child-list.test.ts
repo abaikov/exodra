@@ -1,7 +1,6 @@
 // @vitest-environment jsdom
 //
-// A CHILDREN PORT WRITTEN BY COMMANDS — `c.childList(port)`, which is `bindChildren` taken apart the
-// way `c.fillDoors()` is `bind` taken apart.
+// A CHILDREN PORT WRITTEN BY COMMANDS — the child list behind `portChildList(port)`.
 //
 // WHAT IS BEING CLAIMED, AND WHAT EACH TEST HERE HOLDS DOWN:
 //
@@ -31,6 +30,7 @@ import {
     withExoTransitions,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoChildrenPort,
@@ -40,21 +40,19 @@ import type {
 } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
-// THE CHILD LIST IS AN EXONODE METHOD — see `TExoDomNode.childList`. The cast below is this file's
-// own: `TDriving` is a narrowed exonode shape the shells are written against, and `childList` lives
-// on the full one.
 import type { TExoDomNode } from '../EXO_DOM_NODE_VOCABULARY';
 import type { TExoDomMark } from '../types/TExoDomMark';
 import type { TExoDomChild } from '../types/TExoDomChild';
 import type { TExoChildList } from '../types/TExoChildList';
+import type { TExoDomPortChildList } from '../types/TExoDomPortChildList';
 import { host, createExoTestMachine } from '@exodra/test-utils';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 /** What these wires assume about an exonode, and nothing more. */
 type TDriving = {
-    build(component: unknown, params?: unknown): TExoNode<TExoDomMark>;
+    createExoNode(component: unknown): TExoNode<TExoDomMark>;
 };
 
 /**
@@ -144,7 +142,7 @@ const { showBoundRow } = BOUND_ROW.transitions;
  *  component that is handed only a number. */
 const buildBound = (conn: TDriving, source: TCell): TExoNode<TExoDomMark> => {
     BOUND_SOURCE = source;
-    return conn.build(BOUND_ROW);
+    return wireExoNode(conn.createExoNode(BOUND_ROW));
 };
 
 /**
@@ -165,7 +163,7 @@ const SHELL = (take: (r: TExoChildList, c: TDriving) => void) =>
         },
         (P): TExoMachineInitialState<TDriving> =>
             (c) => {
-                take((c as never as TExoDomNode).childList(P.rows), c);
+                take((c as never as TExoDomNode & TExoDomPortChildList).portChildList(P.rows), c);
             }
     );
 
@@ -185,7 +183,7 @@ const OPEN_SHELL = (take: (r: TExoChildList, c: TDriving) => void) =>
         },
         (P): TExoMachineInitialState<TDriving> =>
             (c) => {
-                take((c as never as TExoDomNode).childList(P.rows), c);
+                take((c as never as TExoDomNode & TExoDomPortChildList).portChildList(P.rows), c);
             }
     );
 
@@ -213,7 +211,7 @@ const SANDWICH_SHELL = (take: (r: TExoChildList, c: TDriving) => void) =>
         },
         (P): TExoMachineInitialState<TDriving> =>
             (c) => {
-                take((c as never as TExoDomNode).childList(P.rows), c);
+                take((c as never as TExoDomNode & TExoDomPortChildList).portChildList(P.rows), c);
             }
     );
 
@@ -236,8 +234,8 @@ const TWO_PORT_SHELL = (take: (front: TExoChildList, back: TExoChildList, c: TDr
         },
         (P): TExoMachineInitialState<TDriving> =>
             (c) => {
-                const cc = c as never as TExoDomNode;
-                take(cc.childList(P.front), cc.childList(P.back), c);
+                const cc = c as never as TExoDomNode & TExoDomPortChildList;
+                take(cc.portChildList(P.front), cc.portChildList(P.back), c);
             }
     );
 
@@ -259,8 +257,8 @@ describe('a children port written by commands', () => {
 
         expect(labels(parent)).toEqual(['tail']);
 
-        childList.insert(conn.build(ROW, 'a'));
-        childList.insert(conn.build(ROW, 'b'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'a'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'b'));
 
         // THE ASSERTION THIS TEST EXISTS FOR: both landed BEFORE `tail`. A command written as
         // `parent.appendChild` would put them after it and the child list would have escaped.
@@ -280,9 +278,9 @@ describe('a children port written by commands', () => {
             parent
         );
 
-        childList.insert(conn.build(ROW, 'a'));
-        childList.insert(conn.build(ROW, 'c'));
-        childList.insert(conn.build(ROW, 'b'), 1);
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'a'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'c'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'b'), 1);
 
         expect(labels(parent)).toEqual(['a', 'b', 'c', 'tail']);
         // `order` MOVED WITH THE DOM: a command that shifted the nodes and not the record would pass
@@ -306,7 +304,7 @@ describe('a children port written by commands', () => {
             parent
         );
 
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
+        for (const t of ['a', 'b', 'c']) childList.insert(wireExoNode(conn.createExoNode(ROW), t));
         const first = childList.at(0);
 
         childList.move(0, 2);
@@ -356,15 +354,17 @@ describe('a children port written by commands', () => {
             },
             (P): TExoMachineInitialState<TDriving> =>
                 (c) => {
-                    childList = (c as never as TExoDomNode).childList(P.rows);
+                    childList = (c as never as TExoDomNode & TExoDomPortChildList).portChildList(
+                        P.rows
+                    );
                     conn = c;
                 }
         );
         EXO_BACKEND.render(OPEN, parent);
 
-        childList.insert(conn.build(ROW, 'a'));
-        childList.insert(conn.build(ROW, 'b'));
-        childList.insert(conn.build(ROW, 'z'), 0);
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'a'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'b'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'z'), 0);
 
         expect(labels(parent)).toEqual(['z', 'a', 'b']);
         expect(childList.size).toBe(3);
@@ -387,8 +387,8 @@ describe('a children port written by commands', () => {
             parent
         );
 
-        childList.insert(conn.build(ROW, 'a'));
-        childList.insert(conn.build(ROW, 'b'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'a'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'b'));
 
         let unmounted = 0;
         const doomed = childList.at(0) as unknown as TExoDomChild;
@@ -431,7 +431,7 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('hands the child back, takes its node out, and keeps `order` true', () => {
         const { childList, conn, parent } = shell();
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
+        for (const t of ['a', 'b', 'c']) childList.insert(wireExoNode(conn.createExoNode(ROW), t));
 
         const middle = childList.at(1);
         const taken = childList.detach(1);
@@ -478,7 +478,7 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('puts the very same element back, in front of the static sibling', () => {
         const { childList, conn, parent } = shell();
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
+        for (const t of ['a', 'b', 'c']) childList.insert(wireExoNode(conn.createExoNode(ROW), t));
         const child = childList.at(2) as TExoNode<TExoDomMark>;
         const element = nodeOf(child);
 
@@ -502,8 +502,8 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('appends when `attach` is given no index, at the child list end and not the parent end', () => {
         const { childList, conn, parent } = shell();
-        childList.insert(conn.build(ROW, 'a'));
-        childList.insert(conn.build(ROW, 'b'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'a'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'b'));
 
         const taken = childList.detach(0) as TExoNode<TExoDomMark>;
         childList.attach(taken);
@@ -514,7 +514,7 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('runs neither hook, where `remove` runs `unmount` on the same child', () => {
         const { childList, conn, parent } = shell();
-        const child = conn.build(ROW, 'a');
+        const child = wireExoNode(conn.createExoNode(ROW), 'a');
         const rec = child as unknown as TExoDomChild;
 
         let mounted = 0;
@@ -574,8 +574,8 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('returns `undefined` and changes nothing past the end, and below the start', () => {
         const { childList, conn, parent } = shell();
-        childList.insert(conn.build(ROW, 'a'));
-        childList.insert(conn.build(ROW, 'b'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'a'));
+        childList.insert(wireExoNode(conn.createExoNode(ROW), 'b'));
         const before = parent.innerHTML;
 
         // `at`'s SHAPE AND NOT `remove`'s. `remove(5)` reads `undefined` out of `order` and throws
@@ -596,14 +596,14 @@ describe('the placement pair — attach and detach, which tell the child nothing
 
     it('acquires an element for a child that has never been built, without mounting it', () => {
         const { childList, conn, parent } = shell();
-        const child = conn.build(ROW, 'a');
+        const child = wireExoNode(conn.createExoNode(ROW), 'a');
         const rec = child as unknown as TExoDomChild;
         let mounted = 0;
         rec.mount = function (this: TExoDomChild): void {
             mounted++;
         };
 
-        // `c.build(...)` ACQUIRES ITS ELEMENT AND WIRES THE INSTANCE, which is the whole of
+        // `c.createExoNode(...)` + `wireExoNode` ACQUIRES ITS ELEMENT AND WIRES THE INSTANCE, which is the whole of
         // create-then-place: the child is finished and merely standing nowhere. `attach` puts it
         // in the document and runs NO `mount`, which is its only difference from `insert`.
         expect(rec.node).not.toBeUndefined();
@@ -712,7 +712,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
         size: number;
         at0: unknown;
     } => {
-        const built = ['a', 'b', 'c'].map((t) => conn.build(ROW, t));
+        const built = ['a', 'b', 'c'].map((t) => wireExoNode(conn.createExoNode(ROW), t));
         for (const child of built) childList.insert(child);
         const elements = built.map((child) => nodeOf(child));
 
@@ -764,7 +764,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
 
     it('leaves the static siblings on BOTH sides of the port standing', () => {
         const { childList, conn, parent } = drive(SANDWICH_SHELL);
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
+        for (const t of ['a', 'b', 'c']) childList.insert(wireExoNode(conn.createExoNode(ROW), t));
         expect(labels(parent)).toEqual(['head', 'a', 'b', 'c', 'tail']);
 
         const taken = childList.detachAll();
@@ -800,8 +800,8 @@ describe('detachAll — every child out at once, and only sometimes in one call'
             parent
         );
 
-        for (const t of ['a', 'b']) front.insert(conn.build(ROW, t));
-        for (const t of ['x', 'y']) back.insert(conn.build(ROW, t));
+        for (const t of ['a', 'b']) front.insert(wireExoNode(conn.createExoNode(ROW), t));
+        for (const t of ['x', 'y']) back.insert(wireExoNode(conn.createExoNode(ROW), t));
         expect(labels(parent)).toEqual(['a', 'b', 'x', 'y']);
         const behind = [0, 1].map((i) => back.at(i) as TExoNode<TExoDomMark>);
         const behindElements = behind.map((child) => nodeOf(child));
@@ -823,7 +823,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
         // AND THE FRONT CHILD LIST'S END ANCHOR SURVIVED THE BULK CALL: a child attached back into it
         // goes in FRONT of the back child list's first row, which is the chain being walked and not a
         // stale node being remembered.
-        front.attach(conn.build(ROW, 'z'));
+        front.attach(wireExoNode(conn.createExoNode(ROW), 'z'));
         expect(labels(parent)).toEqual(['z', 'x', 'y']);
     });
 
@@ -861,7 +861,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
             let mounted = 0;
             let unmounted = 0;
             const built = ['a', 'b', 'c'].map((t) => {
-                const child = conn.build(ROW, t);
+                const child = wireExoNode(conn.createExoNode(ROW), t);
                 const rec = child as unknown as TExoDomChild;
                 const wasUnmount = rec.unmount;
                 rec.mount = function (this: TExoDomChild): void {
@@ -913,7 +913,7 @@ describe('detachAll — every child out at once, and only sometimes in one call'
 
     it('hands back an array of the caller’s own, not the child list’s live order', () => {
         const { childList, conn } = drive(OPEN_SHELL);
-        for (const t of ['a', 'b', 'c']) childList.insert(conn.build(ROW, t));
+        for (const t of ['a', 'b', 'c']) childList.insert(wireExoNode(conn.createExoNode(ROW), t));
 
         const taken = childList.detachAll();
         // `order`'s IDENTITY IS PUBLISHED to the child list in front of this one, so it is emptied in

@@ -250,10 +250,10 @@ async function createPackageJson(
             ...(options.eslint ? { lint: 'eslint . --ext ts,tsx,js,jsx --fix' } : {}),
         },
         dependencies: {
-            '@exodra/core': '^0.4.0',
+            '@exodra/core': '^0.4.1',
             '@exodra/jsx': '^0.4.0',
-            '@exodra/dom': '^0.4.0',
-            ...(options.app ? { '@exodra/router': '^0.4.0' } : {}),
+            '@exodra/dom': '^0.4.1',
+            ...(options.app ? { '@exodra/router': '^0.4.1' } : {}),
         },
         devDependencies: {
             vite: '^5.0.0',
@@ -407,16 +407,16 @@ export const router = createExoRouter(routes, { history: createExoBrowserHistory
         const appPortsType = useTypeScript
             ? '<{ nav: TExoChildrenPort; body: TExoChildrenPort }>'
             : '';
-        // `TExoDomNode` because `childList` hands out element positions, which `@exodra/core`
+        // `TExoDomNode` because the children port methods place DOM nodes, which `@exodra/core`
         // has no word for; this is the browser entry point, DOM-bound anyway.
         const appInitialStateArg = useTypeScript ? '(c: TExoDomNode)' : 'c';
         const root = useTypeScript
             ? "document.getElementById('app') as HTMLElement"
             : "document.getElementById('app')";
-        appContent = `import { createExoMachine } from '@exodra/core';
+        appContent = `import { createExoMachine, wireExoNode } from '@exodra/core';
 ${
     useTypeScript ? "import type { TExoChildrenPort } from '@exodra/core';\n" : ''
-}import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+}import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 ${
     useTypeScript ? "import type { TExoDomNode } from '@exodra/dom';\n" : ''
 }import { exoJsx } from '@exodra/jsx';
@@ -428,7 +428,7 @@ ${options.tailwind ? "import './styles.css';\n" : ''}
 // constructed inside a component, a route handler or a render loop is a new key every
 // time, and every schema is recompiled (markup parse included) on every render. At
 // module scope the compile happens once for the life of the page.
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 const appSchema = exoJsx${appPortsType}(($) => (
   <div class="app">
@@ -442,9 +442,8 @@ const App = createExoMachine(appSchema, {
   createInitialState: ${appInitialStateArg} => {
     provideExoRouter(c, router);
     // A real \`<a href>\` each; a plain left click navigates, every other click is the browser's.
-    const links = c.childList(AppPorts.nav);
-    links.insert(c.build(ExoLink, { to: '/', label: 'Home', currentWhen: 'exact' }));
-    links.insert(c.build(ExoLink, { to: '/about', label: 'About', currentWhen: 'exact' }));
+    c.appendChild(AppPorts.nav, wireExoNode(c.createExoNode(ExoLink), { to: '/', label: 'Home', currentWhen: 'exact' }));
+    c.appendChild(AppPorts.nav, wireExoNode(c.createExoNode(ExoLink), { to: '/about', label: 'About', currentWhen: 'exact' }));
     // The route boundary: the page the URL matches stands inside it.
     c.one(AppPorts.body, ExoOutlet);
   },
@@ -617,8 +616,8 @@ async function createSsrPackageJson(
         },
         dependencies: {
             '@exodra/context': '^0.3.0',
-            '@exodra/core': '^0.4.0',
-            '@exodra/dom': '^0.4.0',
+            '@exodra/core': '^0.4.1',
+            '@exodra/dom': '^0.4.1',
             '@exodra/ssr': '^0.4.0',
             '@exodra/string': '^0.5.0',
         },

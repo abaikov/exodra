@@ -69,7 +69,8 @@ const RULES = [
     },
 ];
 
-const FOREIGN_CODE = `c.childList(ChartPorts.BODY).insert(
+const FOREIGN_CODE = `c.appendChild(
+    ChartPorts.BODY,
     c.foreign({ createDom: (self) => exoForeignNode(self, chartCanvas) }),
 );`;
 
@@ -104,18 +105,30 @@ export default function LandingHiddenRules() {
             <div className="container">
                 <Reveal>
                     <p className={styles.eyebrow}>Rules nobody wrote in your code</p>
-                    <h2 className={styles.statement}>Every one of these is in the official docs.</h2>
+                    <h2 className={styles.statement}>
+                        Every one of these is in the official docs.
+                    </h2>
                     <p className={styles.lead}>
-                        None of them is a bug report. Each is documented behaviour, and in each the program you wrote reads
-                        as correct: it runs twice, or once too few, or stops updating, and nothing is thrown.
+                        None of them is a bug report. Each is documented behaviour, and in each the
+                        program you wrote reads as correct: it runs twice, or once too few, or stops
+                        updating, and nothing is thrown.
                     </p>
                 </Reveal>
                 <div className={`${styles.anatomy} ${styles.anatomyFlat}`}>
                     {RULES.map((rule, at) => (
-                        <Reveal key={rule.name} delayMs={(at % 3) * 120} className={styles.anatomyCell}>
+                        <Reveal
+                            key={rule.name}
+                            delayMs={(at % 3) * 120}
+                            className={styles.anatomyCell}
+                        >
                             <div className={styles.anatomyCard}>
                                 <h3 className={styles.anatomyName}>{rule.name}</h3>
-                                <a className={styles.anatomyWhen} href={rule.href} target="_blank" rel="noopener noreferrer">
+                                <a
+                                    className={styles.anatomyWhen}
+                                    href={rule.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     {rule.when}
                                 </a>
                                 <p className={styles.anatomyText}>{rule.text}</p>
@@ -126,23 +139,33 @@ export default function LandingHiddenRules() {
                 </div>
                 <Reveal className={styles.subsection}>
                     <p className={styles.eyebrow}>Somebody else's DOM</p>
-                    <h2 className={styles.statement}>A translator rewrites your page. Who fixes it?</h2>
+                    <h2 className={styles.statement}>
+                        A translator rewrites your page. Who fixes it?
+                    </h2>
                     <p className={`${styles.lead} ${styles.leadTight}`}>
-                        Google Translate and the browser’s own translator move text into a <code>&lt;font&gt;</code> of
-                        their own. React can then crash with <code>Failed to execute 'removeChild' on 'Node'</code>. The{' '}
-                        <a href="https://github.com/facebook/react/issues/11538#issuecomment-417504600" target="_blank" rel="noopener noreferrer">
+                        Google Translate and the browser’s own translator move text into a{' '}
+                        <code>&lt;font&gt;</code> of their own. React can then crash with{' '}
+                        <code>Failed to execute 'removeChild' on 'Node'</code>. The{' '}
+                        <a
+                            href="https://github.com/facebook/react/issues/11538#issuecomment-417504600"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             issue
                         </a>{' '}
-                        was closed in 2018 with “I don’t think we can fix this in React without making legitimate mistakes
-                        hard to find, or making performance worse for common cases”, and no release since lists a fix. What
-                        a React app can do is patch the browser’s <code>Node.prototype</code> for every library on the page.
+                        was closed in 2018 with “I don’t think we can fix this in React without
+                        making legitimate mistakes hard to find, or making performance worse for
+                        common cases”, and no release since lists a fix. What a React app can do is
+                        patch the browser’s <code>Node.prototype</code> for every library on the
+                        page.
                     </p>
                     <p className={styles.lead}>
-                        In Exodra, how text reaches the DOM is a plugin. The default bundle, <code>withExoDefaults</code>,
-                        already re-checks the element on every write: the page keeps updating, and the translator's{' '}
-                        <code>&lt;font&gt;</code> is replaced by the new text. If your page needs a different policy, say
-                        keeping the <code>&lt;font&gt;</code> and writing into it, you write a writer and compose it: no
-                        fork, no patch to the platform, nothing from us.
+                        In Exodra, how text reaches the DOM is a plugin. The default bundle,{' '}
+                        <code>withExoDefaults</code>, already re-checks the element on every write:
+                        the page keeps updating, and the translator's <code>&lt;font&gt;</code> is
+                        replaced by the new text. If your page needs a different policy, say keeping
+                        the <code>&lt;font&gt;</code> and writing into it, you write a writer and
+                        compose it: no fork, no patch to the platform, nothing from us.
                     </p>
                     <div className={styles.pairingGrid}>
                         <div className={styles.codeWindow}>
@@ -169,7 +192,9 @@ export default function LandingHiddenRules() {
                         </div>
                     </div>
                     <p className={styles.footnote}>
-                        <Link to="/docs/guides/plugins">Writers and the packs that ship, in the plugins guide →</Link>
+                        <Link to="/docs/guides/plugins">
+                            Writers and the packs that ship, in the plugins guide →
+                        </Link>
                     </p>
                 </Reveal>
                 <Reveal className={styles.subsection}>
@@ -177,15 +202,17 @@ export default function LandingHiddenRules() {
                     <h2 className={styles.statement}>Exodra has rules too. They fail out loud.</h2>
                     <p className={`${styles.lead} ${styles.leadTight}`}>
                         A schema is one root element, and markup the HTML parser would rearrange — a{' '}
-                        <code>&lt;div&gt;</code> inside a <code>&lt;p&gt;</code>, a <code>&lt;tr&gt;</code> straight
-                        inside a <code>&lt;table&gt;</code> — is refused, because the server's page and the browser's
-                        would come out as two different trees. Each refusal is an error with a code, thrown when the
+                        <code>&lt;div&gt;</code> inside a <code>&lt;p&gt;</code>, a{' '}
+                        <code>&lt;tr&gt;</code> straight inside a <code>&lt;table&gt;</code> — is
+                        refused, because the server's page and the browser's would come out as two
+                        different trees. Each refusal is an error with a code, thrown when the
                         schema compiles, never a screen that quietly stops updating.
                     </p>
                     <p className={styles.lead}>
-                        And none of them is part of the language. The compiler is a plugin, a backend compiles the same
-                        declaration by its own rules, and a children port holds an element that anything else built — a
-                        chart library's canvas, a template engine's clone:
+                        And none of them is part of the language. The compiler is a plugin, a
+                        backend compiles the same declaration by its own rules, and a children port
+                        holds an element that anything else built — a chart library's canvas, a
+                        template engine's clone:
                     </p>
                     <div className={styles.codeWindow}>
                         <div className={styles.codeWindowBar}>

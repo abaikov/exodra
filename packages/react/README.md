@@ -81,11 +81,11 @@ was torn down is ignored.
 The helper asks the **connector** which backend is filling, so the same machine
 serves all three:
 
-| Backend | What the island does |
-| --- | --- |
-| `ExoStrBackend.render` | renders the component to HTML and writes it into the port, so the island is in the initial payload |
-| `backend.hydrate` | finds that markup in the host and hands it to `hydrateRoot` — React takes the server's DOM over in place |
-| `backend.render` | finds the host empty and mounts fresh with `createRoot` |
+| Backend                | What the island does                                                                                     |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| `ExoStrBackend.render` | renders the component to HTML and writes it into the port, so the island is in the initial payload       |
+| `backend.hydrate`      | finds that markup in the host and hands it to `hydrateRoot` — React takes the server's DOM over in place |
+| `backend.render`       | finds the host empty and mounts fresh with `createRoot`                                                  |
 
 ```ts
 declare const c: TExoReactWiring;
@@ -113,12 +113,12 @@ a handle kept past that is ignored.
 
 ## Notes & limits
 
-- **Context does not cross the boundary:** Exodra `provide`/`inject` and React
-  Context are separate — pass anything an island needs through its props.
-- **One React root per island:** prefer a few larger islands over many tiny ones.
-- **Bundle note:** the helper imports `react-dom/server` as well as
-  `react-dom/client`, so a client bundle carries the server renderer. A future
-  `@exodra/react/server` entry will split them.
+-   **Context does not cross the boundary:** Exodra `provide`/`inject` and React
+    Context are separate — pass anything an island needs through its props.
+-   **One React root per island:** prefer a few larger islands over many tiny ones.
+-   **Bundle note:** the helper imports `react-dom/server` as well as
+    `react-dom/client`, so a client bundle carries the server renderer. A future
+    `@exodra/react/server` entry will split them.
 
 ## What the helper needs from a connector
 
@@ -128,7 +128,7 @@ and that machine is run by all three backends, so naming a
 backend here would make the helper server-only or browser-only and force the
 author to write the component twice.
 
-`unsafeHtml` is the **server half**. It is the one write door that takes *markup* — the
+`unsafeHtml` is the **server half**. It is the one write door that takes _markup_ — the
 server prints the string where the children port stands, rather than escaping it
 as text. That is exactly what "React rendered this subtree" is.
 
@@ -139,7 +139,7 @@ makes an island inside a list row go away with that row.
 
 Both are a **slice** of `TExoWiring` rather than a second spelling of their
 signatures, so there stays one place where what they mean is decided. The cost of
-using `Pick` is that the members become *properties* with function types instead
+using `Pick` is that the members become _properties_ with function types instead
 of methods, and a property's parameters are contravariant under
 `strictFunctionTypes` where a method's are bivariant. That cannot bite here: both
 are declared identically on every backend, and identical signatures relate under
@@ -150,22 +150,22 @@ exonode, and no field the island does not read — the object a machine is hande
 the backend's instance record, so a stand-in naming a field the island never
 reaches for cannot report when that field moves:
 
-- `nodes` holds the resolved nodes of the instance being wired.
-- `schema` carries the port → slot table. `schema.elem[port.index]` is the slot of the
-  element a port stands on, **except** on an adopting pass: a hydrate schema carries
-  a second, silenced `elem` whose children-port entries are all slot 0, and its
-  `liveElem` is the table that addresses the page. The island therefore prefers
-  `liveElem` wherever it exists. Handing `hydrateRoot` the wrong element is silent
-  — React finds a mismatch, client-renders, and deletes the host.
+-   `nodes` holds the resolved nodes of the instance being wired.
+-   `schema` carries the port → slot table. `schema.elem[port.index]` is the slot of the
+    element a port stands on, **except** on an adopting pass: a hydrate schema carries
+    a second, silenced `elem` whose children-port entries are all slot 0, and its
+    `liveElem` is the table that addresses the page. The island therefore prefers
+    `liveElem` wherever it exists. Handing `hydrateRoot` the wrong element is silent
+    — React finds a mismatch, client-renders, and deletes the host.
 
 ## API Reference
 
-| Export | Description |
-| --- | --- |
+| Export                                             | Description                              |
+| -------------------------------------------------- | ---------------------------------------- |
 | `reactIsland(c, port, Component, props, options?)` | mounts the island and returns its handle |
-| `TExoReactIsland<TProps>` | the handle: `{ render(props): void }` |
-| `TExoReactIslandOptions` | `{ ssr?: boolean }` |
-| `TExoReactWiring` / `TExoReactDomWiring` | what the helper needs from a connector |
+| `TExoReactIsland<TProps>`                          | the handle: `{ render(props): void }`    |
+| `TExoReactIslandOptions`                           | `{ ssr?: boolean }`                      |
+| `TExoReactWiring` / `TExoReactDomWiring`           | what the helper needs from a connector   |
 
 ---
 

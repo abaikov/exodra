@@ -155,6 +155,6 @@ The backend is in the cache key because an instance takes its methods off `schem
 prototype, so a schema shared between two backends hands one backend's instances the other's methods.
 A BACKEND BUILT PER RENDER IS THEREFORE A COMPILE PER RENDER, of every declaration it touches. A
 reconciled list whose rows are not all one component pays a schema lookup per row per update, because
-`c.build` resolves `exoTermSchemaOf(component, backend)` for whichever component that row's
+`c.createExoNode` resolves `exoTermSchemaOf(component, backend)` for whichever component that row's
 builder named; what a lookup costs is UNMEASURED —
 `packages/benchmarks/measurements/` holds no recording that prices one.

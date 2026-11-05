@@ -13,21 +13,21 @@ pointer. A pack written by hand is composed with `composeExoPlugins(base, pack)`
 
 The backend declares two swappable fields (`packages/dom/src/dom/ExoDomBackend.ts`):
 
-- `events` — how a listener reaches the DOM. Shipped: `EXO_DIRECT_EVENTS`, one
-  `addEventListener` per event port.
-- `writers` — how a port's value reaches the element. Shipped: `EXO_SHIPPED_WRITERS`, attributes
-  as attributes.
+-   `events` — how a listener reaches the DOM. Shipped: `EXO_DIRECT_EVENTS`, one
+    `addEventListener` per event port.
+-   `writers` — how a port's value reaches the element. Shipped: `EXO_SHIPPED_WRITERS`, attributes
+    as attributes.
 
-Everything else a pack adds is a method on the exonode a machine is handed: `c.childList` from
-`withExoChildList` (`@exodra/dom`), which every reconciled list opens, and `c.keyedList` from
-`EXO_KEYED_LIST_VOCABULARY`, which opens a child list in turn.
+Everything else a pack adds is a method on the exonode a machine is handed. Lists need no pack:
+the children-port calls are on every DOM backend, and a reconciler from
+`createExoChildrenReconciler` (`@exodra/list-reconcile`) is a plain function over them.
 
-| Page | What is composed | What it removes |
-|---|---|---|
-| `events.html` | `events`: `createExoDelegatedEvents(['click'])` | one `addEventListener` per row: the delegating pack puts one on the render root |
-| `value-writers.html` | `writers`: `withExoPropertyWriters` | a value having to be a string: the port lands on a custom element as an Array |
-| `keyed-list.html` | packs, not fields: `EXO_KEYED_LIST_VOCABULARY` from `@exodra/list-reconcile` over `withExoChildList` | keys being the framework's rule: the left panel reconciles by object **identity** with `reconcileExoOrder` in an effect, the right one opens `c.keyedList(port, keyOf, build, update)` and calls its `reconcile(items)` from an effect; the row's `setLabel` is a `withExoTransitions` transition the list calls from outside the row |
-| `nested-mounts.html` | `withExoChildList` for the row list; the subject is not a plugin interface | a context reaching past the render that provided it |
+| Page                 | What is composed                                                                                      | What it removes                                                                                                                                                                                                                                                                                  |
+| -------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `events.html`        | `events`: `createExoDelegatedEvents(['click'])`                                                       | one `addEventListener` per row: the delegating pack puts one on the render root                                                                                                                                                                                                                  |
+| `value-writers.html` | `writers`: `withExoPropertyWriters`                                                                   | a value having to be a string: the port lands on a custom element as an Array                                                                                                                                                                                                                    |
+| `keyed-list.html`    | nothing on the backend: two reconcilers from `createExoChildrenReconciler` (`@exodra/list-reconcile`) | keys being the framework's rule: the left panel's reconciler is made with the row machine alone and reconciles by object **identity**, the right one is made with `{ key: (item) => item.id }`; both are called from an effect, and a kept key under a new object re-runs the row's wire with it |
+| `nested-mounts.html` | nothing for the row list; the subject is not a plugin interface                                       | a context reaching past the render that provided it                                                                                                                                                                                                                                              |
 
 ## How data reaches the ports on these pages
 
@@ -73,8 +73,8 @@ placeholder standing beside the live property is expected.
 
 Both panels follow the same refetch. A refetch returns **freshly parsed objects**, so the identity
 panel rebuilds every row while the keyed panel matches each by `item.id` and keeps it — the build
-stamps stand still. *Refetch with changed labels* shows `update` running on a kept row; *refetch
-with a duplicate id* shows a repeated key getting one row per occurrence. The page measures row
+stamps stand still. _Refetch with changed labels_ shows `update` running on a kept row; _refetch
+with a duplicate id_ shows a repeated key getting one row per occurrence. The page measures row
 **reuse**, not time.
 
 ## `nested-mounts.html`
@@ -93,7 +93,7 @@ The same widget machine, in the same place in the document, three times; every h
 A context is not reactive: what is provided is what a consumer holds. Holding a **store** is what
 lets control 1 work — panels 1 and 3 follow the host's theme through their effects, panel 2 never
 received it. Control 2 adds a row built inside a subscriber with no render on the stack, and it
-resolves the token off the widget's chain, which `c.build` hands every row. The page is a client
+resolves the token off the widget's chain, which `c.createExoNode` hands every row. The page is a client
 render and says nothing about hydration.
 
 ## Status

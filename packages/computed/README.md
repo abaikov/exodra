@@ -41,10 +41,10 @@ that implementation is. Import all four from `@exodra/core`.
 
 ## The two doors
 
-| door | where the declarations are made | compiled |
-| --- | --- | --- |
-| `withExoComputedMachine(createExoMachine(SCHEMA), (b) => …)` | once, at module load, inside the callback | once, when the callback returns |
-| `exoWiring((w, c, params) => …)` | inside a **wire**, per instance | once, by the first instance; the program is then shared |
+| door                                                         | where the declarations are made           | compiled                                                |
+| ------------------------------------------------------------ | ----------------------------------------- | ------------------------------------------------------- |
+| `withExoComputedMachine(createExoMachine(SCHEMA), (b) => …)` | once, at module load, inside the callback | once, when the callback returns                         |
+| `exoWiring((w, c, params) => …)`                             | inside a **wire**, per instance           | once, by the first instance; the program is then shared |
 
 The first is what an application writes. The second exists for a component
 whose derivations are only known per instance — the block is the same vocabulary
@@ -70,15 +70,15 @@ const cardMachine = withExoComputedMachine(createExoMachine(cardSchema), (b) => 
 });
 ```
 
-| call | what it declares |
-| --- | --- |
-| `b.field(seed)` | a value the instance holds, given a bit in the pending word |
-| `b.mounted()` | a field the engine sets once the instance is in its document |
+| call                       | what it declares                                                                        |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| `b.field(seed)`            | a value the instance holds, given a bit in the pending word                             |
+| `b.mounted()`              | a field the engine sets once the instance is in its document                            |
 | `b.derive(port, from, by)` | this port **is** `by(...from)`; it runs inside the commit's walk and may not disturb it |
-| `b.fill(from, run)` | run this when any of `from` moves — the instance is handed over, not the values |
-| `b.effectOn(from, start)` | the same wake set, for something with a teardown |
-| `b.effect(start)` | an effect with no wake set; returns its handle |
-| `b.transition(apply)` | a function that applies `apply` and then **settles**: one commit, whatever moved |
+| `b.fill(from, run)`        | run this when any of `from` moves — the instance is handed over, not the values         |
+| `b.effectOn(from, start)`  | the same wake set, for something with a teardown                                        |
+| `b.effect(start)`          | an effect with no wake set; returns its handle                                          |
+| `b.transition(apply)`      | a function that applies `apply` and then **settles**: one commit, whatever moved        |
 
 **For a derivation the declared list is both the wake set and the argument
 list. For `fill` and `effectOn` it is the wake set alone** — each is handed the

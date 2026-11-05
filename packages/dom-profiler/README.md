@@ -13,10 +13,10 @@ indirect call per **port**. None of the first two is a method with a name, so
 there is nothing there to patch. Two things do have names, and this package
 instruments both:
 
-| instrument       | patches                       | answers                                                     |
-| ---------------- | ----------------------------- | ----------------------------------------------------------- |
-| `profileDom(B)`  | one backend's **connector methods** | which **calls my wiring makes** cost — `attr`, `text`, `list` |
-| `profilePorts(C)`| one schema's **setter table** | which **place in my template** costs — `attr:style`, `text`  |
+| instrument        | patches                             | answers                                                       |
+| ----------------- | ----------------------------------- | ------------------------------------------------------------- |
+| `profileDom(B)`   | one backend's **connector methods** | which **calls my wiring makes** cost — `attr`, `text`, `list` |
+| `profilePorts(C)` | one schema's **setter table**       | which **place in my template** costs — `attr:style`, `text`   |
 
 Neither sees the clone or the walk. If a report accounts for a fraction of a
 render you measured elsewhere, the rest is those two, and it is not addressable
@@ -77,10 +77,10 @@ console.table(profiler.stop());      // per-method count / total / avg / max (ms
 ```
 
 **It takes the backend, and it must be the one your page renders through.** A
-connector is data whose prototype *is* the composed backend, so `attr`, `text`,
-`html`, `on`, `one`, `list`, `build`, `childList`, `onTeardown` and the rest of
+connector is data whose prototype _is_ the composed backend, so `attr`, `text`,
+`html`, `on`, `one`, `list`, `createExoNode`, the port methods, `onTeardown` and the rest of
 `EXO_DOM_NODE_VOCABULARY` are that object's own properties — that is the surface,
-and it is exactly what a wiring function calls. Hand it a *different* backend,
+and it is exactly what a wiring function calls. Hand it a _different_ backend,
 even one composed identically, and you get an empty report: composition is
 compared by pointer, which is the same rule `profilePorts` states.
 
@@ -96,16 +96,16 @@ list, so a method added to or removed from the DOM connector is picked up or
 dropped without touching this package. The exclusions that follow from it are a
 correctness rule, not tidiness:
 
-- **The plugin-interface fields** on a backend — `events`, `writers`,
-  `createInstance`, `createChild` and the `hydrateSurface` a hydrating composition
-  adds — are functions too, and every
-  one of them is **spent into a schema** when that schema compiles. Wrapping one would
-  do nothing for a declaration already compiled, because the schema holds the unwrapped
-  function; and it would **bake the wrapper permanently** into any schema first
-  rendered while profiling was on, surviving `stop()`. That is the "nothing left
-  patched" promise broken silently, in whichever schema happened to be new.
-- **`render` and `hydrate`**, for the plainer reason that they are entry points
-  rather than anything a wiring function calls.
+-   **The plugin-interface fields** on a backend — `events`, `writers`,
+    `createInstance`, `createChild` and the `hydrateSurface` a hydrating composition
+    adds — are functions too, and every
+    one of them is **spent into a schema** when that schema compiles. Wrapping one would
+    do nothing for a declaration already compiled, because the schema holds the unwrapped
+    function; and it would **bake the wrapper permanently** into any schema first
+    rendered while profiling was on, surviving `stop()`. That is the "nothing left
+    patched" promise broken silently, in whichever schema happened to be new.
+-   **`render` and `hydrate`**, for the plainer reason that they are entry points
+    rather than anything a wiring function calls.
 
 ### Why it patches instead of composing
 
@@ -115,41 +115,41 @@ implementation as `next`, which is exactly "wrap the shipped method". A
 `withExoProfiling()` pack would need no patching at all. Two things it cannot do,
 and they are this instrument's whole contract:
 
-- **It cannot be turned on after the fact.** A pack is an argument to the
-  constructor, and a backend is built once, at module level, because it is the
-  schema cache key. Composing a profiler means building a *second* backend — a
-  second key, a recompile of every declaration, and a profile of a composition the page
-  does not render through.
-- **It cannot be turned off.** `composeExoPlugins` writes own properties and keeps
-  no record of what stood under them, so nothing can un-compose a pack. The
-  nearest thing is a permanent wrapper holding a flag — a branch on every `attr` of
-  every row for the life of the process, in exchange for a `stop()` that leaves
-  the program changed.
+-   **It cannot be turned on after the fact.** A pack is an argument to the
+    constructor, and a backend is built once, at module level, because it is the
+    schema cache key. Composing a profiler means building a _second_ backend — a
+    second key, a recompile of every declaration, and a profile of a composition the page
+    does not render through.
+-   **It cannot be turned off.** `composeExoPlugins` writes own properties and keeps
+    no record of what stood under them, so nothing can un-compose a pack. The
+    nearest thing is a permanent wrapper holding a flag — a branch on every `attr` of
+    every row for the life of the process, in exchange for a `stop()` that leaves
+    the program changed.
 
 So patching stays, and the target is legitimate: an object the application
 constructs and names, not a class's shared prototype.
 
 **The connector is the surface there is.** A render is a clone, a replay of a walk
 over an `Int32Array`, and `schema.setters[i]` — none of which is a method anyone can
-name. What a *wiring function* does is entirely calls into the connector, so
+name. What a _wiring function_ does is entirely calls into the connector, so
 patching it answers "which of the things my components ask for cost the most",
 which is the question a component author can act on.
 
-- `getReport()` — aggregated timings so far (heaviest first).
-- `reset()` — clear samples, keep profiling active.
-- `stop()` — restore the backend's own methods and return the final report.
+-   `getReport()` — aggregated timings so far (heaviest first).
+-   `reset()` — clear samples, keep profiling active.
+-   `stop()` — restore the backend's own methods and return the final report.
 
 Two things it will not show you:
 
-- **A static component's instances.** They never touch a connector — they are a
-  clone and a walk.
-- **Hydration.** A hydrating render answers on `TExoHydrateNode`:
-  `withExoHydration` merges `EXO_HYDRATE_NODE_VOCABULARY` onto a *second* object whose
-  prototype is the backend, so every name hydration declares — `attr`, `text`,
-  `html`, `on`, `one`, `list`, `build`, `openChildList`, `portNodeWriter`,
-  `portNodeReader`, the child-list anchors — shadows the
-  wrapped one and is timed by nothing. The three it does not declare (`onTeardown`,
-  `portTable`, `childList`) still reach this profiler.
+-   **A static component's instances.** They never touch a connector — they are a
+    clone and a walk.
+-   **Hydration.** A hydrating render answers on `TExoHydrateNode`:
+    `withExoHydration` merges `EXO_HYDRATE_NODE_VOCABULARY` onto a _second_ object whose
+    prototype is the backend, so every name hydration declares — `attr`, `text`,
+    `html`, `on`, `one`, `list`, `createExoNode`, `openChildList`, `portNodeWriter`,
+    `portNodeReader`, the child-list anchors — shadows the
+    wrapped one and is timed by nothing. The three it does not declare (`onTeardown`,
+    `portTable`, `portChildList`) still reach this profiler.
 
 ## Per-port: `profilePorts(component)`
 
@@ -179,19 +179,19 @@ and there is no registry of schemas to walk.
 
 Two rules, both structural rather than incidental:
 
-- **Start it before the render to see the render.** Every fill indexes
-  `schema.setters[port.index]` afresh — `attr`, `text` and `html` all do, and so
-  does the shared writer `portNodeWriter()` hands out — so a profiler started
-  after the render still times every later update; what it loses is the initial
-  fills, which is most of the mount.
-- **An event port and a ref port are invisible, and they always will be.** `on`
-  reads the event pack's body off the schema rather than the setter table, and a
-  ref port has no writer at all; the table's entries for both are
-  `exoUnsettableEvent` and `exoUnsettableRef`, which exist to throw. They are
-  labelled in the report so a declaration's whole port list shows, and they can never
-  carry a non-zero time. A **text** port, by contrast, *is* timed: the Text node
-  it writes is a slot in the walk, so the write goes through the table like any
-  attribute.
+-   **Start it before the render to see the render.** Every fill indexes
+    `schema.setters[port.index]` afresh — `attr`, `text` and `html` all do, and so
+    does the shared writer `portNodeWriter()` hands out — so a profiler started
+    after the render still times every later update; what it loses is the initial
+    fills, which is most of the mount.
+-   **An event port and a ref port are invisible, and they always will be.** `on`
+    reads the event pack's body off the schema rather than the setter table, and a
+    ref port has no writer at all; the table's entries for both are
+    `exoUnsettableEvent` and `exoUnsettableRef`, which exist to throw. They are
+    labelled in the report so a declaration's whole port list shows, and they can never
+    carry a non-zero time. A **text** port, by contrast, _is_ timed: the Text node
+    it writes is a slot in the walk, so the write goes through the table like any
+    attribute.
 
 **Pass it the same backend you render from.** The second parameter is the
 `ExoDomBackend` itself, and it is **required** — there is nothing to default it to

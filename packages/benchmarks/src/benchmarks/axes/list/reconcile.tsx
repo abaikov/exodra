@@ -1,5 +1,5 @@
 // DIAGNOSTIC — DECLARATIVE LIST RECONCILE: isolates the schema core's reconcile path
-// (`reconcileExoOrder` composed over `c.childList(port)` and `c.build`) against Solid <For> /
+// (`reconcileExoOrder` composed over `c.portChildList(port)` and `wireExoNode(c.createExoNode(M))`) against Solid <For> /
 // Svelte {#each} / React keyed map / voby / Marko / Lit `repeat()` / Mikado. A list of N keyed rows
 // is REPLACED with a shuffled array M times — no imperative move/insert; every framework gets "here
 // is the new order, reconcile it". Rows are IDENTITY-STABLE per id (the schema core reconciles by
@@ -74,7 +74,7 @@ import { type TExoChildrenPort, type TExoTextPort } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
-import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, type TExoDomNode, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
 import {
     createExoMachine,
@@ -82,8 +82,10 @@ import {
     withExoTransitions,
     withExoEffects,
 } from '@exodra/core';
+import { wireExoNode } from '@exodra/core';
+import type { TExoDomPortChildList } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 const N = 200;
 const OPS = 30; // shuffle-and-replace this many times per measured batch
@@ -166,7 +168,7 @@ function mountExodraRows(
     });
     const mUL = createExoMachine(UL_SCHEMA, {
         createInitialState: (cc: TExoDomNode) => ({
-            kids: cc.childList(UL_SCHEMA.ports.rows),
+            kids: (cc as TExoDomNode & TExoDomPortChildList).portChildList(UL_SCHEMA.ports.rows),
             shown: [] as TShuffleRow[],
         }),
     });
@@ -178,7 +180,7 @@ function mountExodraRows(
                     const state = cc.state;
                     const want = rows.getValue();
                     state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item) =>
-                        cc.build(SHUFFLE_ROW, item)
+                        wireExoNode(cc.createExoNode(SHUFFLE_ROW), item)
                     );
                 },
             }),

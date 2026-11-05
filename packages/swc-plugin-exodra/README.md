@@ -48,16 +48,16 @@ a different program, not a slower one.
 
 In the last column `RowPorts` is `rowSchema.ports` and `on` is the registrar `withExoHandlers(machine, (on) => …)` hands its callback.
 
-| written | schema call | filled by the machine with |
-|---|---|---|
-| `class="row"`, `tabindex={0}`, `disabled` | folded into the markup | — |
-| `data-id={$.id}` | `port("data-id", "id")` | `c.attr(RowPorts.id, value)` |
-| `<span>{$.label}</span>` | `textPort("label")` | `c.text(RowPorts.label, value)` |
-| `onClick={$.toggle}` | `eventPort("click", "toggle")` | `on(RowPorts.toggle, handler)` |
-| `on:dblclick={$.edit}` | `eventPort("dblclick", "edit")` | `on(RowPorts.edit, handler)` |
-| `ref={$.box}` | `refPort("box")` | — |
-| `unsafeHtml={$.body}` | `childrenPort("body")` | `c.unsafeHtml(RowPorts.body, markup)` |
-| `<$.rows />` | `childrenPort("rows")` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
+| written                                   | schema call                     | filled by the machine with                                       |
+| ----------------------------------------- | ------------------------------- | ---------------------------------------------------------------- |
+| `class="row"`, `tabindex={0}`, `disabled` | folded into the markup          | —                                                                |
+| `data-id={$.id}`                          | `port("data-id", "id")`         | `c.attr(RowPorts.id, value)`                                     |
+| `<span>{$.label}</span>`                  | `textPort("label")`             | `c.text(RowPorts.label, value)`                                  |
+| `onClick={$.toggle}`                      | `eventPort("click", "toggle")`  | `on(RowPorts.toggle, handler)`                                   |
+| `on:dblclick={$.edit}`                    | `eventPort("dblclick", "edit")` | `on(RowPorts.edit, handler)`                                     |
+| `ref={$.box}`                             | `refPort("box")`                | —                                                                |
+| `unsafeHtml={$.body}`                     | `childrenPort("body")`          | `c.unsafeHtml(RowPorts.body, markup)`                            |
+| `<$.rows />`                              | `childrenPort("rows")`          | `c.one`, `c.list`, or a `createExoChildrenReconciler` reconciler |
 
 An attribute may also hold a module `const` string, folded into the markup at build, or a
 name, `a.b` or `a['x']` rooted at an import or a module `const`, read once when the schema

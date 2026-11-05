@@ -22,12 +22,18 @@ import type { TExoDomSchema } from './types/TExoDomSchema';
 import type { TExoDomChild } from './types/TExoDomChild';
 import type { TExoDomMachine } from './types/TExoDomMachine';
 import type { TExoChildList } from './types/TExoChildList';
-import { buildLiveExoChild } from './buildLiveExoChild';
 import { exoDomSchemaForChild } from './exoDomSchemaForChild';
 import { mountExoInstance } from './mountExoInstance';
 import { exoOnTeardown } from './exoTeardownScope';
 import { exoNextNodeAfterList } from './exoNextNodeAfterList';
 import { EXO_ARMED_INSTANCE } from './constants/EXO_ARMED_INSTANCE';
+import { walkExoNodeTable } from './walkExoNodeTable';
+import { EXO_FIXED_PORT_CHILDREN } from './constants/EXO_FIXED_PORT_CHILDREN';
+import { createExoUnarmedChild } from './createExoUnarmedChild';
+import type { TExoDomChildPortApi } from './types/TExoDomChildPortApi';
+import type { TExoDomPortChildList } from './types/TExoDomPortChildList';
+import { armExoDomChild } from './armExoDomChild';
+import { disposeExoChildSelf } from './factories/createExoDomChildFactory';
 
 const EMPTY_CHILD_LIST: readonly TExoChildListEntry[] = [];
 
@@ -38,7 +44,7 @@ export type TExoDomNode = TExoDomInstanceRecord & TExoDomSurface;
 export type TExoDomRenderNode = TExoDomNode & { schema: TExoDomSchema };
 
 /** `TExoMachine<this, …>` and not a flat spelling: the type is contravariant in its exonode, so a flat one refuses a child whose wire uses a method a PACK added. Why this is an `interface` and never an alias: ../../README.md § How the exonode's types and pack are spelled. */
-export interface TExoDomNodeApi {
+export interface TExoDomNodeApi extends TExoDomChildPortApi {
     attr(port: TExoAttrPort, value: unknown): void;
     text(port: TExoTextPort, value: unknown): void;
     unsafeHtml(port: TExoChildrenPort, markup: unknown): void;
@@ -58,11 +64,16 @@ export interface TExoDomNodeApi {
         machine: TExoMachine<this, unknown, TParams>,
         params: readonly TParams[]
     ): void;
-    build<TParams>(
-        machine: TExoMachine<this, unknown, TParams>,
-        params?: TParams
+    createExoNode<TParams>(
+        machine: TExoMachine<this, unknown, TParams>
     ): this & TExoNode<TExoDomMark>;
-    childList(port: TExoChildrenPort): TExoChildList;
+    armExoSelf(params: unknown): void;
+    deferExoTransition(
+        run: (enode: never, first: unknown, second: unknown) => void,
+        first: unknown,
+        second: unknown
+    ): boolean;
+    destroyExoSelf(): void;
 }
 
 /**
@@ -79,13 +90,15 @@ export interface TExoDomNodeApi {
 export interface TExoDomPhaseSeams {
     childListEndNode(port: TExoPort): Node | null | (() => Node | null);
     childListStartNode(port: TExoPort): Node | null;
-    openChildList(port: TExoPort): TExoDomChild[];
+    openChildList(port: TExoPort, served?: Element[]): TExoDomChild[];
+    materializeExoChild(child: TExoDomChild, list: TExoChildList, at: number): void;
 }
 
-export interface TExoDomSurface extends TExoDomNodeApi, TExoBaseNodeMethods {}
+export interface TExoDomSurface extends TExoDomNodeApi, TExoBaseNodeMethods, TExoDomPortChildList {}
 
 /** No body here may be an arrow: `this` is the exonode, and an arrow has none. The factories are arrows — they run once, at merge, where `this` means nothing. When this table is merged, and what that lets a plugin do: ../../README.md § How the exonode's types and pack are spelled. */
-const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
+const EXO_DOM_NODE_METHODS: Omit<TExoDomNodeApi, keyof TExoDomChildPortApi> &
+    ThisType<TExoDomRenderNode> = {
     attr(port: TExoAttrPort, value: unknown): void {
         const index = port.index;
         const schema = this.schema;
@@ -185,6 +198,7 @@ const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
         params?: unknown
     ): TExoDomNodeApi & TExoNode<TExoDomMark> {
         assertExoArming('one');
+        (this.portChildren ??= [])[port.index] = EXO_FIXED_PORT_CHILDREN;
         const parent = this.nodes[this.schema.elem[port.index]] as Element;
         const end = this.childListEndNode(port);
         const before = typeof end === 'function' ? end() : end;
@@ -210,6 +224,7 @@ const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
         params: readonly unknown[]
     ): void {
         assertExoArming('list');
+        (this.portChildren ??= [])[port.index] = EXO_FIXED_PORT_CHILDREN;
         const schema = this.schema;
         const parent = this.nodes[schema.elem[port.index]] as Element;
         const end = this.childListEndNode(port);
@@ -235,21 +250,25 @@ const EXO_DOM_NODE_METHODS: TExoDomNodeApi & ThisType<TExoDomRenderNode> = {
         }
     },
 
-    /** Builds a child, wires it and places it NOWHERE — the caller drives it and decides where it goes. It inherits THIS instance's context chain, the same one `one` and `list` hand their children, so a reconciled row reads what the parent provided; a child placed under a different parent carries this chain and not that one's. */
-    build(machine: TExoDomMachine, params?: unknown): TExoDomNodeApi & TExoNode<TExoDomMark> {
+    createExoNode(machine: TExoDomMachine): TExoDomNodeApi & TExoNode<TExoDomMark> {
         const schema = exoDomSchemaForChild(machine, this.schema.backend);
-        const child = buildLiveExoChild(schema, machine, this.context, params);
+        const child = createExoUnarmedChild(schema, machine, this.context);
         return child as unknown as TExoDomNodeApi & TExoNode<TExoDomMark>;
     },
 
-    childList(): TExoChildList {
-        throw new Error(
-            typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-                ? 'childList() is a pack: compose withExoChildList once, at module level — ' +
-                  '`withExoChildList(withExoCompiler(new ExoDomBackend()))` — on the backend ' +
-                  'that renders a machine which opens a child list.'
-                : 'EXO0109'
-        );
+    armExoSelf(this: TExoDomChild, params: unknown): void {
+        armExoDomChild(this, params);
+    },
+
+    deferExoTransition(this: TExoDomChild): boolean {
+        armExoDomChild(this, undefined);
+        return false;
+    },
+
+    destroyExoSelf(this: TExoDomChild): void {
+        const list = this.placedIn;
+        if (list !== null) list.detach(list.indexOf(this as unknown as TExoNode<TExoDomMark>));
+        disposeExoChildSelf.call(this);
     },
 };
 
@@ -287,6 +306,13 @@ const EXO_DOM_PHASE_SEAMS: TExoDomPhaseSeams & ThisType<TExoDomRenderNode> = {
             order.length = 0;
         });
         return order;
+    },
+
+    materializeExoChild(child: TExoDomChild): void {
+        const schema = child.schema as TExoDomSchema;
+        const element = schema.acquireNode(schema);
+        child.node = element;
+        walkExoNodeTable(schema, element, child);
     },
 };
 

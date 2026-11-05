@@ -7,6 +7,7 @@ import type {
     TExoRefPort,
 } from '@exodra/core';
 import type { TExoDomNode, TExoDomRenderNode } from '@exodra/dom';
+import type { TExoDomPortChildList } from '@exodra/dom';
 import { EXO_REACT_RENDER } from '../constants/EXO_REACT_RENDER';
 import { createExoReactSyntheticEvent } from './createExoReactSyntheticEvent';
 import { createExoReactHostState } from './createExoReactHostState';
@@ -43,7 +44,7 @@ export function createExoReactHost(
             const regions: TExoReactRange[] = regionPorts.length === 0 ? NO_REGIONS : [];
             for (let i = 0; i < regionPorts.length; i++) {
                 regions.push({
-                    list: c.childList(regionPorts[i]),
+                    list: (c as typeof c & TExoDomPortChildList).portChildList(regionPorts[i]),
                     owner: c as TExoDomRenderNode,
                     component,
                     parentSlot: null,

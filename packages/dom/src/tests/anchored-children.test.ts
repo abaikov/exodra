@@ -21,6 +21,7 @@ import {
     withExoTransitions,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoMachineNode,
@@ -43,10 +44,10 @@ import { exoNodeDom } from '../dom/exoNodeDom';
 import type { TExoDomMark } from '../dom/types/TExoDomMark';
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
-import { ExoDomBackend, withExoHydration, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 
-const EXO_BACKEND = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+const EXO_BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const EXO_STR = new ExoStrBackend();
 
 /**
@@ -62,7 +63,7 @@ type TPortable = TExoChildrenWiring<Event, Element>;
  * wires run on this backend and on `@exodra/term`, and never on the server.
  */
 type TPlacing = TPortable & {
-    childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
+    portChildList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
 };
 
 /** What a row's wire needs of an exonode: its label, and a listener where the case has one. */
@@ -100,7 +101,7 @@ type TFollowing = {
 const following =
     <TItem>(src: TExoTestSource<readonly TItem[]>, build: (c: TPlacing, item: TItem) => TExoNode) =>
     (c: TPlacing, port: TExoChildrenPort): TFollowing => {
-        const kids = c.childList(port);
+        const kids = c.portChildList(port);
         let shown: TItem[] = [];
         return {
             src,
@@ -114,7 +115,7 @@ const following =
 /** Each row is built with the label it stands for in the source that drives the list. */
 const rowsFrom = (src: TExoTestSource<readonly string[]>) => {
     const ROW = itemOf();
-    return following(src, (c, item) => c.build(ROW, item));
+    return following(src, (c, item) => wireExoNode(c.createExoNode(ROW), item));
 };
 
 /** A component whose initial state opens its child lists, and whose effect draws each and follows
@@ -364,7 +365,7 @@ describe('a child list whose neighbour fills from a `mount` hook', () => {
         let exonode!: TPlacing;
         const placeChild = (_c: TPlacing, child: TExoNode<TExoDomMark>): TExoNode => child;
         const CARD = followingCard(buildTwo, (c, P) => {
-            // Kept so the cases can build more children later. Legal for `build` alone,
+            // Kept so the cases can build more children later. Legal for `createExoNode` alone,
             // and for the reason that method documents.
             exonode = c;
             return [following(first, placeChild)(c, P.a), following(second, placeChild)(c, P.c)];
@@ -376,7 +377,7 @@ describe('a child list whose neighbour fills from a `mount` hook', () => {
             second,
             card: parent.querySelector('.card') as HTMLElement,
             item: (label: string): TExoNode<TExoDomMark> =>
-                exonode.build(HOOK_ITEM, label) as TExoNode<TExoDomMark>,
+                wireExoNode(exonode.createExoNode(HOOK_ITEM), label) as TExoNode<TExoDomMark>,
         };
     };
 

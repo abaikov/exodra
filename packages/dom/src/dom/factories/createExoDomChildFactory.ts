@@ -59,6 +59,9 @@ export function createExoDomChildFactory(surface: object): TExoDomSchemaBase['cr
         this.effectStops = null;
         this.transitionOverrides = null;
         this.serviceState = undefined;
+        this.machine = null;
+        this.portChildren = null;
+        this.placedIn = null;
         this.node = node as Element;
         this.mount = EXO_NO_MOUNT;
         this.unmount = unmount;

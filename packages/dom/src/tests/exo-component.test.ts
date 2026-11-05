@@ -29,10 +29,10 @@ import { describe, expect, it } from 'vitest';
 
 import { EXO_HYDRATE_NODE_VOCABULARY } from '../hydrate/EXO_HYDRATE_NODE_VOCABULARY';
 import { host, createExoTestMachine } from '@exodra/test-utils';
-import { ExoDomBackend, withExoHydration, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 
-const EXO_BACKEND = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+const EXO_BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const EXO_STR = new ExoStrBackend();
 
 type TSetting = {
@@ -133,14 +133,14 @@ describe("a component cannot be filled by another component's wire", () => {
         expect(EXO_BACKEND.one.length).toBe(3); // port, component, params for its own wire
         expect(EXO_BACKEND.list.length).toBe(3); // port, component, count
         // AND NO BACKEND HAS A REACTIVE-LIST DOOR AT ALL. A list that follows a source is
-        // `reconcileExoOrder` composed over `childList` and `build`, so there is no `bindList`
+        // `createExoChildrenReconciler` composed over `portChildList` and `createExoNode`, so there is no `bindList`
         // for an argument position to be wrong on — the absence is the claim.
         expect('bindList' in EXO_BACKEND).toBe(false);
-        expect(EXO_BACKEND.childList.length).toBe(1); // port
+        expect(EXO_BACKEND.appendChild.length).toBe(2); // port, node
         expect(EXO_STR.one.length).toBe(3);
         expect(EXO_STR.list.length).toBe(3);
         expect('bindList' in EXO_STR).toBe(false);
-        expect(EXO_STR.childList.length).toBe(1);
+        expect(EXO_STR.appendChild.length).toBe(2);
         // AND THE ADOPTING SURFACE, ASKED OF THE PACK. `TExoHydrateNode.prototype` stood here
         // and there is no class left to have one: the adopting bodies are merge entries, so the
         // function a wire reaches is what each entry hands back. `pack[name](undefined)` is what

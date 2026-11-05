@@ -53,16 +53,16 @@ const { bump } = BADGE.transitions;
 
 const BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 
-describe('buildRoot, then mountRoot', () => {
+describe('createExoNode and wireExoNode, then mountRoot', () => {
     it('builds a root nowhere, lets transitions and re-wires run on it, then places it', () => {
         const parent = document.createElement('div');
-        const node = BACKEND.buildRoot(BADGE as never, { label: 'first' });
+        const node = wireExoNode(BACKEND.createExoNode(BADGE as never), { label: 'first' });
         expect(parent.innerHTML).toBe('');
         bump(node as never);
-        wireExoNode(node, BADGE, { label: 'second' });
+        wireExoNode(node, { label: 'second' });
         const dispose = BACKEND.mountRoot(node, parent);
         expect(parent.innerHTML).toBe('<span class="badge">second</span>');
-        wireExoNode(node, BADGE, { label: 'third' });
+        wireExoNode(node, { label: 'third' });
         expect(parent.textContent).toBe('third');
         dispose();
     });
@@ -71,7 +71,7 @@ describe('buildRoot, then mountRoot', () => {
         log.length = 0;
         const parent = document.createElement('div');
         const dispose = BACKEND.mountRoot(
-            BACKEND.buildRoot(BADGE as never, { label: 'x' }),
+            wireExoNode(BACKEND.createExoNode(BADGE as never), { label: 'x' }),
             parent
         );
         expect(log).toEqual(['start']);
@@ -80,11 +80,11 @@ describe('buildRoot, then mountRoot', () => {
         expect(log).toEqual(['start', 'stop']);
     });
 
-    it('render is mountRoot over buildRoot: the same markup', () => {
+    it('render is mountRoot over a wired createExoNode: the same markup', () => {
         const a = document.createElement('div');
         const b = document.createElement('div');
         BACKEND.render(BADGE as never, a, { label: 'same' });
-        BACKEND.mountRoot(BACKEND.buildRoot(BADGE as never, { label: 'same' }), b);
+        BACKEND.mountRoot(wireExoNode(BACKEND.createExoNode(BADGE as never), { label: 'same' }), b);
         expect(b.innerHTML).toBe(a.innerHTML);
     });
 });
@@ -97,7 +97,7 @@ describe('adoptRoot, then mountRoot', () => {
         const node = BACKEND.adoptRoot(BADGE as never, parent, { label: 'server' });
         const dispose = BACKEND.mountRoot(node, parent);
         expect(parent.firstElementChild).toBe(printed);
-        wireExoNode(node, BADGE, { label: 'client' });
+        wireExoNode(node, { label: 'client' });
         expect(parent.innerHTML).toBe('<span class="badge">client</span>');
         dispose();
     });

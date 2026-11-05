@@ -2,7 +2,7 @@
 //
 // EVERY WAY A CHILD LEAVES A CHILDREN PORT, and the two nodes that bound the port it leaves.
 //
-// `make-exo-child-list.test.ts` owns the arriving half of `c.childList(port)` — `insert`, `move`,
+// `make-exo-child-list.test.ts` owns the arriving half of a port's child list — `insert`, `move`,
 // `attach`, `detach`, `detachAll`. This file owns the half that DISPOSES: `remove`, `removeAll`,
 // the render's own teardown, and the one override that turns a departure back into a detachment.
 // Following a source is `reconcile-exo-order.test.ts`'s subject; nothing here watches anything.
@@ -20,18 +20,20 @@ import {
     withExoWire,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import { describe, expect, it } from 'vitest';
 
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { exoNodeDom } from '../exoNodeDom';
 import type { TExoDomNode, TExoDomPhaseSeams } from '../EXO_DOM_NODE_VOCABULARY';
 import type { TExoChildList } from '../types/TExoChildList';
 import type { TExoDomMark } from '../types/TExoDomMark';
+import type { TExoDomPortChildList } from '../types/TExoDomPortChildList';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 const ROW = createExoTestMachine(
     (b) => {
@@ -120,7 +122,7 @@ const mountOwned = () => {
                 // CAST ON PURPOSE: the anchor cases interrogate a SEAM, which a wire’s surface hides.
                 exonode = c as TExoDomNode & TExoDomPhaseSeams;
                 port = P.rows;
-                kids = c.childList(P.rows);
+                kids = (c as TExoDomNode & TExoDomPortChildList).portChildList(P.rows);
             }
     );
     const parent = host();
@@ -131,9 +133,9 @@ const mountOwned = () => {
         ul,
         kids,
         startAnchor: (): Node | null => exonode.childListStartNode(port),
-        build: (id: string): TExoNode<TExoDomMark> => exonode.build(ROW, id),
+        build: (id: string): TExoNode<TExoDomMark> => wireExoNode(exonode.createExoNode(ROW), id),
         boundBuild: (component: TBoundRow, id: string): TExoNode<TExoDomMark> =>
-            exonode.build(component, id),
+            wireExoNode(exonode.createExoNode(component), id),
         shown: (): string =>
             Array.from(ul.children)
                 .map((el) => el.getAttribute('data-id'))
@@ -165,7 +167,7 @@ const mountShared = () => {
                 // CAST ON PURPOSE: the anchor cases interrogate a SEAM, which a wire’s surface hides.
                 exonode = c as TExoDomNode & TExoDomPhaseSeams;
                 port = P.rows;
-                kids = c.childList(P.rows);
+                kids = (c as TExoDomNode & TExoDomPortChildList).portChildList(P.rows);
             }
     );
     const parent = host();
@@ -177,7 +179,7 @@ const mountShared = () => {
         kids,
         startAnchor: (): Node | null => exonode.childListStartNode(port),
         endAnchor: (): Node | null | (() => Node | null) => exonode.childListEndNode(port),
-        build: (id: string): TExoNode<TExoDomMark> => exonode.build(ROW, id),
+        build: (id: string): TExoNode<TExoDomMark> => wireExoNode(exonode.createExoNode(ROW), id),
         tags: (): string[] => Array.from(div.children).map((el) => el.tagName),
     };
 };
@@ -186,14 +188,14 @@ const mountShared = () => {
 const nodeOf = (child: TExoNode<TExoDomMark>): Element => exoNodeDom(child).node;
 
 describe('a child list refuses what it did not build', () => {
-    it('names `c.build` at the call that was made, for both placements', () => {
+    it('names `c.createExoNode` at the call that was made, for both placements', () => {
         // The one mistake this API can still be made to commit: a hand-made element, which carries
         // no lifecycle and therefore cannot be unmounted. It fails where it happens rather than
         // somewhere inside a placement, as `insertBefore: parameter 1 is not of type 'Node'`.
         const list = mountOwned();
         const stranger = document.createElement('li') as unknown as TExoNode<TExoDomMark>;
-        expect(() => list.kids.insert(stranger)).toThrow(/not built by c\.build/);
-        expect(() => list.kids.attach(stranger)).toThrow(/not built by c\.build/);
+        expect(() => list.kids.insert(stranger)).toThrow(/not made by c\.createExoNode/);
+        expect(() => list.kids.attach(stranger)).toThrow(/not made by c\.createExoNode/);
         expect(list.ul.childNodes.length).toBe(0);
     });
 });

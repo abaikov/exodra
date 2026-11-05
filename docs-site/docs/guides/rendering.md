@@ -138,52 +138,17 @@ builds.
 
 ## Where children come from
 
-A **children port** is declared as `EXO_PORT_CHILDREN` in `exoPorts` and placed
-with `childrenPort(Ports.x)`, and it *is* a child: it
-renders exactly where the call appears in the schema builder. There are four ways to
-fill one, and choosing between them is most of what this page is about.
-
-| Call | What stands there | Reactive? |
-| --- | --- | --- |
-| `c.one(port, component, params?)` | one instance, fixed | no |
-| `c.list(port, component, rows)` | a fixed run, one instance per element of `rows`, handed that element as params | no |
-| `c.build(component, params?)` | an instance placed **nowhere** — the caller decides where it goes | no |
-| `reconcileExoOrder(c.state.rows, c.state.shown, want, want, build)` over `c.childList(port)` | rows that follow the array the machine hands it | yes |
-
-The three fixed forms subscribe to nothing and keep no row records — a list whose
-contents cannot change should not pay for the possibility that they might.
-
-The live form is **one function and not four doors**, because its `build(item)`
-callback is handed the item and returns the node: a callback that always
-names the same component is a list of one kind, and one that picks a component per
-item is a list of many kinds. The difference is in the callback the application
-writes, so the engine carries no case for it. `reconcileExoOrder` comes from
-`@exodra/list-reconcile`, which no backend depends on — a page that never
-reconciles anything never links it.
-
-:::note A reconciled list ADOPTS what the server printed
-It used to refuse by name. It does not any more — opening a child list on a hydrating page
-collects the rows the server printed, and `c.build` wires the instance straight onto the
-next one, through `hydrateExoInstance`
-(`packages/dom/src/hydrate/buildAdoptedExoChild.ts:27-29`).
-
-The child list is opened in `createInitialState`, which runs **once** per instance, and there is nothing to pay for it: no placeholder element and no
-record. A row is taken once because the cursor advances — `takeExoAdoptedRow` returns the
-element at its position and moves on (`packages/dom/src/dom/EXO_ADOPT_CURSOR.ts:28-36`)
-— so the same row cannot be claimed twice, by the shape of the reader rather than by a
-check. Once the printed rows run out, `build` goes on constructing client-side, which is
-why a list that **grew** between the server's render and the client's is not a special
-case.
-
-How much the adoption saves over simply rebuilding has never been measured. See
-[Lists & Reconciliation](./lists.md)
-for the full cost list.
-:::
+A **children port** is declared as `EXO_PORT_CHILDREN` in `exoPorts` and placed with
+`childrenPort(Ports.x)`, and it renders exactly where that call stands in the markup. What stands
+in it is placed with the port's own calls — `c.createExoNode(machine)`, `wireExoNode(node, params)`,
+`c.appendChild(port, node)`, `c.insertChild`, `c.moveChild`, `c.removeChild` — or with the sugar
+over them: `c.one`, `c.list`, and the reconciled lists of [Lists](./lists.md). The whole lifecycle,
+its corner cases, the server and hydration are on [Children](./children.md).
 
 ## Conditional rendering
 
 Pick the idiom by whether the hidden branch should be **removed** or merely
-**hidden**, and by whether the *component* changes or only the data.
+**hidden**, and by whether the _component_ changes or only the data.
 
 ### One component, present or absent — a reconciled list of one item or none
 
@@ -203,11 +168,11 @@ import {
     withExoWire,
 } from '@exodra/core';
 import type { TExoMachineNodeOf } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 
 const DetailsPorts = exoPorts({ text: EXO_PORT_TEXT });
 
@@ -225,6 +190,7 @@ const detailsMachine = composeExoMachine(
             c.text(DetailsPorts.text, c.state);
         })
 );
+const reconcileDetails = createExoChildrenReconciler<string>(detailsMachine);
 
 const RowPorts = exoPorts({ toggle: EXO_PORT_EVENT, body: EXO_PORT_CHILDREN });
 
@@ -237,20 +203,12 @@ const rowSchema = createExoSchema(RowPorts, (b) => {
         div.childrenPort(RowPorts.body);
     });
 });
-type TRowState = { open: boolean; body: TExoChildList; shown: string[] };
 const rowBase = createExoMachine(rowSchema, {
-    createInitialState: (c: TExoDomNode, _params: unknown): TRowState => ({
-        open: false,
-        body: c.childList(RowPorts.body),
-        shown: [],
-    }),
+    createInitialState: (_c: TExoDomNode, _params: unknown) => ({ open: false }),
 });
 // One item when open, none when closed.
 function showBody(c: TExoMachineNodeOf<typeof rowBase>): void {
-    const want = c.state.open ? ['Everything about this row'] : [];
-    c.state.shown = reconcileExoOrder(c.state.body, c.state.shown, want, want, (item) =>
-        c.build(detailsMachine, item)
-    );
+    reconcileDetails(c, RowPorts.body, c.state.open ? ['Everything about this row'] : []);
 }
 const rowMachine = composeExoMachine(
     rowBase,
@@ -275,7 +233,7 @@ subscriptions.
 
 ### A different component in the same place
 
-A tab, a modal, a route: the *component* standing in the position changes, not
+A tab, a modal, a route: the _component_ standing in the position changes, not
 just its data. That is a list of **one item, and the item is the component** —
 the reconciler compares items by identity, so a new component value drops the
 old instance and builds the new one in its place. An empty array empties the
@@ -289,14 +247,15 @@ import {
     createExoMachine,
     createExoSchema,
     exoPorts,
+    wireExoNode,
     withExoEffects,
     withExoWire,
 } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-import type { TExoChildList, TExoDomMachine, TExoDomNode } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomMachine, TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 
 function createStore<TValue>(value: TValue) {
     const listeners = new Set<() => void>();
@@ -346,6 +305,11 @@ const settingsMachine = composeExoMachine(createExoMachine<TExoDomNode>(settings
 );
 
 // The ITEM is the component. One of them, or none.
+const reconcilePage = createExoChildrenReconciler<TExoDomMachine>((c: TExoDomNode, component) => {
+    const node = c.createExoNode(component);
+    wireExoNode(node);
+    return node;
+});
 const page = createStore<readonly TExoDomMachine[]>([overviewMachine]);
 
 const ShellPorts = exoPorts({ outlet: EXO_PORT_CHILDREN });
@@ -355,31 +319,14 @@ const shellSchema = createExoSchema(ShellPorts, (b) => {
         main.childrenPort(ShellPorts.outlet);
     });
 });
-type TShellState = { outlet: TExoChildList; shown: TExoDomMachine[] };
-const shellMachine = composeExoMachine(
-    createExoMachine(shellSchema, {
-        createInitialState: (c: TExoDomNode, _params: unknown): TShellState => ({
-            outlet: c.childList(ShellPorts.outlet),
-            shown: [],
-        }),
-    }),
-    (m) =>
-        withExoEffects(m, (effect) => {
-            effect((c) => {
-                const showPage = () => {
-                    const want = page.getValue();
-                    c.state.shown = reconcileExoOrder(
-                        c.state.outlet,
-                        c.state.shown,
-                        want,
-                        want,
-                        (component) => c.build(component)
-                    );
-                };
-                showPage();
-                return page.onChange(showPage);
-            });
-        })
+const shellMachine = composeExoMachine(createExoMachine<TExoDomNode>(shellSchema), (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            const showPage = () => reconcilePage(c, ShellPorts.outlet, page.getValue());
+            showPage();
+            return page.onChange(showPage);
+        });
+    })
 );
 
 backend.render(shellMachine, document.body);
@@ -394,7 +341,7 @@ comes out and its subscriptions end.
 **Many** mixed positions at once — a page of blocks, a feed of mixed card types,
 a form generated from a schema — is the same call with a longer array. Nothing
 in the engine distinguishes the two cases, because nothing in it knows how the
-callback picks: `build` is handed the item and returns a node, so a source of
+build function picks: it is handed the item and returns a node, so a source of
 components gives mixed kinds and a source of data gives one kind, from one
 reconciler with no case for either.
 
@@ -444,7 +391,7 @@ backend.render(panelMachine, document.body);
 
 A handler that sets `c.state.expanded` and runs `showPanel(c)` opens and closes it.
 
-**Rule of thumb:** *remove* when the branch is heavy or must reset; *hide* when
+**Rule of thumb:** _remove_ when the branch is heavy or must reset; _hide_ when
 it is light and should keep its state.
 
 ## Mixing static and dynamic — no fragments needed
@@ -463,11 +410,11 @@ import {
     withExoEffects,
     withExoWire,
 } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 
 function createStore<TValue>(value: TValue) {
     const listeners = new Set<() => void>();
@@ -504,6 +451,7 @@ const tagMachine = composeExoMachine(
             c.text(TagPorts.label, c.state.label);
         })
 );
+const reconcileTags = createExoChildrenReconciler<TTag>(tagMachine);
 
 const tags = createStore<readonly TTag[]>([{ id: 'a', label: 'urgent' }]);
 
@@ -523,27 +471,14 @@ const tagBarSchema = createExoSchema(TagBarPorts, (b) => {
         });
     });
 });
-type TTagBarState = { rows: TExoChildList; shown: TTag[] };
-const tagBarMachine = composeExoMachine(
-    createExoMachine(tagBarSchema, {
-        createInitialState: (c: TExoDomNode, _params: unknown): TTagBarState => ({
-            rows: c.childList(TagBarPorts.rows),
-            shown: [],
-        }),
-    }),
-    (m) =>
-        withExoEffects(m, (effect) => {
-            effect((c) => {
-                const showTags = () => {
-                    const want = tags.getValue();
-                    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (tag) =>
-                        c.build(tagMachine, tag)
-                    );
-                };
-                showTags();
-                return tags.onChange(showTags);
-            });
-        })
+const tagBarMachine = composeExoMachine(createExoMachine<TExoDomNode>(tagBarSchema), (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            const showTags = () => reconcileTags(c, TagBarPorts.rows, tags.getValue());
+            showTags();
+            return tags.onChange(showTags);
+        });
+    })
 );
 
 backend.render(tagBarMachine, document.body);
@@ -556,7 +491,7 @@ next to each other — two conditionals in a row is an ordinary shape, and the
 runtime resolves which region ends where, including when one of them is
 currently empty.
 
-:::caution Static *text* directly after a children port is refused
+:::caution Static _text_ directly after a children port is refused
 A region is anchored on the next static **element**, so text is not something it
 can end at: the rows would land after that text on the client and before it on
 the server. The schema compiler refuses this at module load, naming the text.
@@ -577,10 +512,10 @@ saying so. As everywhere, raw markup is your promise that the string is safe.
 Conditional children and lists are governed by one rule: children are
 reconciled by **object identity**. No key is involved, and none is required.
 
-- the **same item object** as last time → the same element, moved if its
-  position changed, never rebuilt;
-- a **new item object** → a child is built;
-- an item that **disappeared** → its child is removed and its subscriptions end.
+-   the **same item object** as last time → the same element, moved if its
+    position changed, never rebuilt;
+-   a **new item object** → a child is built;
+-   an item that **disappeared** → its child is removed and its subscriptions end.
 
 So whether a node survives an update is entirely about whether you hand back the
 same object. See [Lists & Reconciliation](./lists.md) for what that means for a
@@ -598,7 +533,8 @@ In [Exodra JSX](./jsx.md) a children port is written where it stands, as
 <main><$.page /></main>
 ```
 
-The machine makes the choice this page describes — `c.one`, `c.list`, or
-`c.childList` reconciled with `reconcileExoOrder` — with the same consequences.
+The machine makes the choice this page describes — `c.one`, `c.list`, the port methods of
+[Children](./children.md), or a reconciler from `createExoChildrenReconciler` — with the same
+consequences.
 A component tag such as `<Row />` is a compile error: a schema has no notion of a
 component.

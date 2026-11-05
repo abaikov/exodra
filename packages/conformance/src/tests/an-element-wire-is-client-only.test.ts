@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
+import { wireExoNode } from '@exodra/core';
 import type { TExoChildrenPort, TExoTextPort, TExoMachineInitialState } from '@exodra/core';
-import { ExoDomBackend, exoNodeDom, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, exoNodeDom, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 import { describe, expect, it } from 'vitest';
@@ -30,23 +31,23 @@ const LIST = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TExoDomNode> =>
         (c) => {
-            const row = c.build(ROW);
+            const row = wireExoNode(c.createExoNode(ROW));
             exoNodeDom(row).node.setAttribute('data-touched', '');
-            c.childList(P.rows).insert(row);
+            c.appendChild(P.rows, row);
         }
 );
 
 describe('a wire that reaches for an element is a client-side wire', () => {
     it('renders in the browser', () => {
         const parent = document.createElement('div');
-        withExoChildList(withExoCompiler(new ExoDomBackend())).render(LIST, parent);
+        withExoCompiler(new ExoDomBackend()).render(LIST, parent);
         expect(parent.innerHTML).toBe('<ul><li data-touched="">row</li></ul>');
     });
 
     it('throws on the server, at the exoNodeDom call, during the render', () => {
         const server = new ExoStrBackend();
         expect(() => server.render(LIST as unknown as Parameters<typeof server.render>[0])).toThrow(
-            /not built by c\.build/
+            /not made by c\.createExoNode/
         );
     });
 });

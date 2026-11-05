@@ -43,8 +43,10 @@ export function createExoTermInstanceFactory(backend: object): TExoTermSchema['c
         this.effectStops = null;
         this.transitionOverrides = null;
         this.serviceState = undefined;
+        this.machine = null;
         this.node = node;
         this.regions = regions;
+        this.placedIn = null;
         this.schema = schema;
         this.slots = slots;
         this.writers = schema.writers;

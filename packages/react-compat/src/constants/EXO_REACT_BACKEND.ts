@@ -1,10 +1,3 @@
-import {
-    ExoDomBackend,
-    withExoChildList,
-    withExoCompiler,
-    withExoForeignNamespaces,
-} from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler, withExoForeignNamespaces } from '@exodra/dom';
 
-export const EXO_REACT_BACKEND = withExoChildList(
-    withExoForeignNamespaces(withExoCompiler(new ExoDomBackend()))
-);
+export const EXO_REACT_BACKEND = withExoForeignNamespaces(withExoCompiler(new ExoDomBackend()));

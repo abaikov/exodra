@@ -2,7 +2,7 @@
 import { createExoMachine, composeExoMachine, withExoWire, createExoSchema } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
-import { ExoDomBackend, withExoCompiler, withExoHydration, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler, withExoHydration } from '@exodra/dom';
 import { describe, expect, it } from 'vitest';
 import { exoOutlet } from '../exoOutlet';
 import { createExoMemoryHistory } from '../../history/createExoMemoryHistory';
@@ -75,10 +75,7 @@ describe('a nested route boundary on every backend', () => {
 
     it('renders the same tree on the client', () => {
         const parent = document.createElement('div');
-        withExoChildList(withExoCompiler(new ExoDomBackend())).render(
-            appAt('/users/7').app as never,
-            parent
-        );
+        withExoCompiler(new ExoDomBackend()).render(appAt('/users/7').app as never, parent);
         expect(parent.innerHTML).toBe(NESTED);
     });
 
@@ -89,10 +86,7 @@ describe('a nested route boundary on every backend', () => {
         const servedHeading = parent.querySelector('h1');
         const { app, router } = appAt('/users/7');
 
-        withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend()))).hydrate(
-            app as never,
-            parent
-        );
+        withExoHydration(withExoCompiler(new ExoDomBackend())).hydrate(app as never, parent);
         expect(parent.innerHTML).toBe(NESTED);
         expect(parent.querySelector('h1')).toBe(servedHeading);
 

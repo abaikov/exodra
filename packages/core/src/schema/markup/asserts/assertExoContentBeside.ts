@@ -4,7 +4,7 @@
 export function assertExoContentBeside(tag: string): never {
     throw new Error(
         typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-            ? `createExoSchema(dom): <${tag}> has both a content port and static children` +
+            ? `<${tag}> has both a content port and static children` +
               ' — a port stands for EVERYTHING inside its element, so the children ' +
               'vanish from the tree while their ports keep the indices this schema ' +
               'addresses by, and every setter after them is built against the wrong ' +

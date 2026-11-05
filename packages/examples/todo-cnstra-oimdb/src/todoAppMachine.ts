@@ -10,7 +10,7 @@ import {
     exoPorts,
 } from '@exodra/core';
 import type { TExoAttrPort, TExoEventPort, TExoMachineNodeOf } from '@exodra/core';
-import type { TExoDomNode } from '@exodra/dom';
+import type { TExoDomNode, TExoDomPortChildList } from '@exodra/dom';
 import { readExoControlValue } from '@exodra/forms';
 import { todoRowMachine } from './todoRowMachine';
 import { TodoUiAxon } from './TodoUiAxon';
@@ -140,12 +140,13 @@ const TodoAppSchema = createExoSchema(TodoAppPorts, (b) => {
     });
 });
 
-const todoAppBase = createExoMachine<TExoDomNode & TTodoServices, unknown, TTodoAppState>(
-    TodoAppSchema,
-    {
-        createInitialState: (c): TTodoAppState => ({ rows: c.childList(TodoAppPorts.ROWS) }),
-    }
-);
+const todoAppBase = createExoMachine<
+    TExoDomNode & TExoDomPortChildList & TTodoServices,
+    unknown,
+    TTodoAppState
+>(TodoAppSchema, {
+    createInitialState: (c): TTodoAppState => ({ rows: c.portChildList(TodoAppPorts.ROWS) }),
+});
 
 function shownFilter(db: TTodoDb): TTodoFilter {
     return db.filter.getSingleSlot().entity?.filter ?? 'all';

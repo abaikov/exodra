@@ -14,4 +14,5 @@ export type TExoBaseNodeFields = {
     effectStops: ((() => void) | null)[] | null;
     transitionOverrides: TExoTransitionOverrides | null;
     serviceState: unknown;
+    machine: unknown;
 };

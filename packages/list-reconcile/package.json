@@ -1,62 +1,62 @@
 {
-  "name": "@exodra/list-reconcile",
-  "version": "0.3.0",
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "unpkg": "./dist/exodra.global.js",
-  "jsdelivr": "./dist/exodra.global.js",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+    "name": "@exodra/list-reconcile",
+    "version": "0.3.1",
+    "type": "module",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "unpkg": "./dist/exodra.global.js",
+    "jsdelivr": "./dist/exodra.global.js",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        },
+        "./browser": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/exodra.esm.js"
+        }
     },
-    "./browser": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/exodra.esm.js"
+    "files": [
+        "dist"
+    ],
+    "sideEffects": false,
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
+        "build": "tsup",
+        "prepublishOnly": "npm run build",
+        "clean": "rm -rf dist .tsbuild tsconfig.tsbuildinfo",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "bench:sequence": "tsx bench/exo-get-sequence-bench.ts"
+    },
+    "description": "Identity and keyed list reconciliation for Exodra over a backend's child-list door, with the longest-increasing-subsequence pass underneath",
+    "keywords": [
+        "exodra",
+        "reconcile",
+        "reconciliation",
+        "list",
+        "longest-increasing-subsequence",
+        "fine-grained",
+        "performance",
+        "typescript"
+    ],
+    "author": "Andrei Baikov",
+    "license": "MIT",
+    "homepage": "https://exodra.org",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/abaikov/exodra.git",
+        "directory": "packages/list-reconcile"
+    },
+    "bugs": {
+        "url": "https://github.com/abaikov/exodra/issues"
+    },
+    "devDependencies": {
+        "vitest": "^4.0.16"
     }
-  },
-  "files": [
-    "dist"
-  ],
-  "sideEffects": false,
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
-    "build": "tsup",
-    "prepublishOnly": "npm run build",
-    "clean": "rm -rf dist .tsbuild tsconfig.tsbuildinfo",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "bench:sequence": "tsx bench/exo-get-sequence-bench.ts"
-  },
-  "description": "Identity and keyed list reconciliation for Exodra over a backend's child-list door, with the longest-increasing-subsequence pass underneath",
-  "keywords": [
-    "exodra",
-    "reconcile",
-    "reconciliation",
-    "list",
-    "longest-increasing-subsequence",
-    "fine-grained",
-    "performance",
-    "typescript"
-  ],
-  "author": "Andrei Baikov",
-  "license": "MIT",
-  "homepage": "https://exodra.org",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abaikov/exodra.git",
-    "directory": "packages/list-reconcile"
-  },
-  "bugs": {
-    "url": "https://github.com/abaikov/exodra/issues"
-  },
-  "devDependencies": {
-    "vitest": "^4.0.16"
-  }
 }

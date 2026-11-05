@@ -58,16 +58,20 @@ element is in the tree, which is also when a widget wants to be measured or
 focused:
 
 ```ts no-check
+import { wireExoNode } from '@exodra/core';
 import { exoNodeDom } from '@exodra/dom';
 
-const child = c.build(Select, params);
+const child = c.createExoNode(Select);
+wireExoNode(child, params);
 exoNodeDom(child).mount = function () {
     (this.node as HTMLElement & { options: unknown }).options = items;
 };
+c.appendChild(FormPorts.select, child);
 ```
 
 That hook is called by the children stack, so it fires for anything placed
-through a children port — `c.one`, `c.list`, a child list (`c.childList`) or `c.keyedList` — and
+through a children port — `c.one`, `c.list`, the port methods (`c.appendChild`, `c.insertChild`;
+see [Children](./guides/children.md)) or a reconciler made by `createExoChildrenReconciler` — and
 not for the root instance `backend.render` puts in a parent itself.
 
 ## Pages that other software has edited
@@ -87,22 +91,22 @@ its element's one and only child, and when it is not, the write falls back to
 (`packages/dom/src/dom/tests/text-binding.test.ts`). That covers any software that
 replaces the node, and both shapes a translator produces in particular:
 
-- **Wrapped** — your `Text` node is moved inside a `<font>` that took its place.
-  Without the guard, `cached.data = …` would keep succeeding on a node the
-  element no longer renders, and the page would freeze at the translated text
-  with no error anywhere. The fallback writes through and the wrapper goes with
-  it.
-- **Replaced** — your node is discarded and a copy of the text appears inside the
-  translator's element. There is nothing to recover the mapping from, so the most
-  any renderer can do is notice and rebuild, which is what happens: the next
-  update prints the new value and clears the wrapper.
+-   **Wrapped** — your `Text` node is moved inside a `<font>` that took its place.
+    Without the guard, `cached.data = …` would keep succeeding on a node the
+    element no longer renders, and the page would freeze at the translated text
+    with no error anywhere. The fallback writes through and the wrapper goes with
+    it.
+-   **Replaced** — your node is discarded and a copy of the text appears inside the
+    translator's element. There is nothing to recover the mapping from, so the most
+    any renderer can do is notice and rebuild, which is what happens: the next
+    update prints the new value and clears the wrapper.
 
 Lists are covered by the same rule at the element level: every insertion and
 removal asks the document who a node's parent currently is rather than trusting
 what it cached, so removing a row takes the `<font>` that swallowed it with it
 (`packages/dom/src/dom/tests/reconcile-exo-order.test.ts`).
 
-What no renderer can restore is the *translation*: after a rebuild the text is
+What no renderer can restore is the _translation_: after a rebuild the text is
 your value, untranslated, until the translator gets to it again.
 
 If a page mixes heavy reactivity with text that translators will attack, the

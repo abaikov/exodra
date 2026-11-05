@@ -3,7 +3,6 @@ import { assertDetachedExoElement } from './asserts/assertDetachedExoElement';
 import { assertInPlaceExoElement } from './asserts/assertInPlaceExoElement';
 import { assertUnadoptedExoElement } from './asserts/assertUnadoptedExoElement';
 import { assertOncePlacedExoElement } from './asserts/assertOncePlacedExoElement';
-import { takeExoAdoptedRow } from '../dom/EXO_ADOPT_CURSOR';
 import type { TExoDomSchemaBase } from '../dom/types/TExoDomSchemaBase';
 import type { TExoDomMark } from '../dom/types/TExoDomMark';
 import type { TExoDomChild } from '../dom/types/TExoDomChild';
@@ -31,9 +30,6 @@ export function exoForeignNode(
         assertDetachedExoElement(element);
     }
     ADOPTED.add(element);
-    // A foreign node is built fresh and never adopted, so the row the server printed for it is taken off the cursor here — otherwise the next `build` adopts it.
-    const served = takeExoAdoptedRow();
-    if (served !== null) served.remove();
     // FROM THE COMPOSITION'S FACTORY, NOT A LITERAL: this child's leading fields must share OFFSETS
     // with every other's — the shared dispose walk reads `effectStops`/`disposers`.
     const nodeDom = c.schema.createChild(c.schema, element);

@@ -32,12 +32,12 @@ Take the three backends in this repository as the three implementors. Three are
 packages and the fourth is a path, and all four are already registered together in
 one array, which is where a lot of this page's evidence comes from.
 
-| Implementor | Entry point | Host it needs | What it hands back |
-|---|---|---|---|
-| `@exodra/dom` | `ExoDomBackend.render(component, parent)` | an `Element` | a disposer |
-| `@exodra/dom` (hydrate) | `backend.hydrate(component, parent)`, from `withExoHydration` | an `Element` already holding the markup | a disposer |
-| `@exodra/string` | `ExoStrBackend.render(component)` | none | markup |
-| `@exodra/term` | `ExoTermBackend.renderScreen(component, n)` | none | a screen: roots, a serialiser, a disposer |
+| Implementor             | Entry point                                                   | Host it needs                           | What it hands back                        |
+| ----------------------- | ------------------------------------------------------------- | --------------------------------------- | ----------------------------------------- |
+| `@exodra/dom`           | `ExoDomBackend.render(component, parent)`                     | an `Element`                            | a disposer                                |
+| `@exodra/dom` (hydrate) | `backend.hydrate(component, parent)`, from `withExoHydration` | an `Element` already holding the markup | a disposer                                |
+| `@exodra/string`        | `ExoStrBackend.render(component)`                             | none                                    | markup                                    |
+| `@exodra/term`          | `ExoTermBackend.renderScreen(component, n)`                   | none                                    | a screen: roots, a serialiser, a disposer |
 
 Read from the four signatures: `packages/dom/src/dom/ExoDomBackend.ts`,
 `packages/dom/src/hydrate/withExoHydration.ts`,
@@ -49,7 +49,7 @@ here before the disagreements are counted. `render` is the same method name on b
 shipped backends, both take the component as one value, and **neither takes an
 instance count**: each mounts ONE instance and hands its initial state the
 render's own `params`, because rows that vary are a LIST — a children port filled by `c.list`
-or by `reconcileExoOrder` over `c.childList` — rather than a parameter. `@exodra/term` is the one that still
+or by a reconciler from `createExoChildrenReconciler` — rather than a parameter. `@exodra/term` is the one that still
 takes a count, and its own header states why rather than leaving it to be read as
 an oversight: its output is a text SCREEN rather than a document, so there is no
 parent to append roots into and no children port above them, and `roots` being an
@@ -85,16 +85,16 @@ rather than an omission — a text tree has nothing to be inserted into
 (`packages/term/src/backend/ExoTermBackend.ts`). Three ways out, and only one of
 them is not a lie:
 
-- typing it `unknown` and casting inside each implementation — which is the
-  boundary cast, priced in section 2;
-- a second type parameter for the host — which has exactly the problem the output
-  type has, in section 2, and doubles it;
-- **the implementation owns its host and the member does not take one.** This is
-  what the conformance adapter does: the DOM adapter creates its own container
-  and appends it to the document before rendering
-  (`packages/conformance/src/adapters/exoDomAdapter.ts:34-40`), and the
-  hydrating one renders markup with `@exodra/string` first, fills a container
-  with it, and adopts (`packages/conformance/src/adapters/exoHydrateAdapter.ts:52-64`).
+-   typing it `unknown` and casting inside each implementation — which is the
+    boundary cast, priced in section 2;
+-   a second type parameter for the host — which has exactly the problem the output
+    type has, in section 2, and doubles it;
+-   **the implementation owns its host and the member does not take one.** This is
+    what the conformance adapter does: the DOM adapter creates its own container
+    and appends it to the document before rendering
+    (`packages/conformance/src/adapters/exoDomAdapter.ts:34-40`), and the
+    hydrating one renders markup with `@exodra/string` first, fills a container
+    with it, and adopts (`packages/conformance/src/adapters/exoHydrateAdapter.ts:52-64`).
 
 The third works. Its price is that **the caller can no longer say where**, which
 for a browser application is the parameter it most wanted to pass.
@@ -150,7 +150,7 @@ the process, so one name meant one fixed interface for every consumer of it, and
 "generic over its output" was unspellable.
 
 **What is still unspellable, stated exactly.** A merged name resolves per
-composition, but the three backends do not differ by *composition* — they differ by
+composition, but the three backends do not differ by _composition_ — they differ by
 which package produced the object. `ExoStrBackend` and `ExoDomBackend` are two
 classes with two `render` methods returning two unrelated types. To get `string`
 out of one and `() => void` out of the other, a caller has to hold the right
@@ -328,13 +328,13 @@ question being asked.
 
 So the honest ledger of what a composed `render` adds over a separate entry point:
 
-- **A name a third-party backend could be discovered under** rather than imported.
-  Real, and small: the discovery is still an import — of the plugin instead of the
-  class.
-- **A diagnostic for which backend is standing there.** There is always exactly one
-  and it is the import at the top of the file.
-- **The README sentence.** Which is section 5, and is the only item on this list
-  anybody actually wants.
+-   **A name a third-party backend could be discovered under** rather than imported.
+    Real, and small: the discovery is still an import — of the plugin instead of the
+    class.
+-   **A diagnostic for which backend is standing there.** There is always exactly one
+    and it is the import at the top of the file.
+-   **The README sentence.** Which is section 5, and is the only item on this list
+    anybody actually wants.
 
 **The conclusion, plainly: it buys nothing, and the separate entry point is the
 right shape.** The reason fits in one sentence — an entry point is what a page
@@ -346,7 +346,7 @@ one-answer-for-many-consumers, and the renderer has one consumer.
 ## 5. The condition the owner set
 
 The condition is recorded in the foreign backend's own barrel: the project "has
-deliberately withheld the phrase *adapter over any backend* from its README until
+deliberately withheld the phrase _adapter over any backend_ from its README until
 something proved it", and names `src/doc/` as that proof — two components copied
 character for character out of `README.md`, checked against it by a test,
 rendered with no cast and no adaptation
@@ -373,7 +373,7 @@ of at the call (`packages/term/src/backend/ExoTermBackend.ts`).
 1. **What ran through the composed name is one call at the top.** Nothing below it
    reaches that name, so nothing about the renderer became replaceable. The element
    builder, the plan compiler, the region anchoring and hydration's adoption are
-   exactly as welded afterwards as before — and the *create* direction of a child
+   exactly as welded afterwards as before — and the _create_ direction of a child
    is deliberately not replaceable either, because a second way in is the drift
    that arrangement exists to prevent. A reader who hears "adapter over any
    backend" will believe something about the inside of a render, and a composed
@@ -417,30 +417,30 @@ and it needs nothing composed at all.
 
 Written down so this page can be refuted rather than merely disagreed with.
 
-- **A second consumer that must not know the backend.** A router that mounts
-  routes, a devtools that re-mounts a subtree, a test harness shipped inside a
-  product. Today the only multi-backend consumer is the conformance suite, and it
-  needs all four at once, which is an array and not a composed name. Two consumers
-  that each need exactly one, and must agree, is the shape that makes coherence
-  worth paying for — and it is the shape the `events` field had, and the shape
-  `hydrate` has now.
-- **A renderer reachable below the entry point.** If a children port could be
-  handed to another backend, a composed `render` would be answering a question
-  nothing else can. That question is asked per filled port and per row, so it is a
-  different design with a different cost sheet, and section 3 says what it would
-  have to beat.
-- ~~**A backend that genuinely cannot edit `@exodra/core`.**~~ **DISCHARGED, and by
-  something other than a composed renderer.** This item said that every backend can
-  and does add one line to `TExoCursorDeclaration` for its plan slot, that a composed renderer
-  would create the first backend in the other position, and that the plan-slot
-  enumeration would then have to be re-argued with a non-empty population. The
-  enumeration was re-argued in 2026-08 anyway, on the evidence that the line had
-  been added twice inside this repository, and `TExoCursorDeclaration` now carries two fields
-  named for the two kinds of OUTPUT with a chain under each
-  (`packages/core/src/schema/types/TExoCursorDeclaration.ts`). A backend that cannot edit core
-  therefore needs nothing composed to cache a plan, and this item is kept — struck
-  rather than deleted — because it is a worked case of a trigger discharging
-  without the change it was attached to.
+-   **A second consumer that must not know the backend.** A router that mounts
+    routes, a devtools that re-mounts a subtree, a test harness shipped inside a
+    product. Today the only multi-backend consumer is the conformance suite, and it
+    needs all four at once, which is an array and not a composed name. Two consumers
+    that each need exactly one, and must agree, is the shape that makes coherence
+    worth paying for — and it is the shape the `events` field had, and the shape
+    `hydrate` has now.
+-   **A renderer reachable below the entry point.** If a children port could be
+    handed to another backend, a composed `render` would be answering a question
+    nothing else can. That question is asked per filled port and per row, so it is a
+    different design with a different cost sheet, and section 3 says what it would
+    have to beat.
+-   ~~**A backend that genuinely cannot edit `@exodra/core`.**~~ **DISCHARGED, and by
+    something other than a composed renderer.** This item said that every backend can
+    and does add one line to `TExoCursorDeclaration` for its plan slot, that a composed renderer
+    would create the first backend in the other position, and that the plan-slot
+    enumeration would then have to be re-argued with a non-empty population. The
+    enumeration was re-argued in 2026-08 anyway, on the evidence that the line had
+    been added twice inside this repository, and `TExoCursorDeclaration` now carries two fields
+    named for the two kinds of OUTPUT with a chain under each
+    (`packages/core/src/schema/types/TExoCursorDeclaration.ts`). A backend that cannot edit core
+    therefore needs nothing composed to cache a plan, and this item is kept — struck
+    rather than deleted — because it is a worked case of a trigger discharging
+    without the change it was attached to.
 
 Until one of those changes, the renderer stays where it is: chosen by an import,
 typed by its own signature, and free.

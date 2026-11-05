@@ -3,6 +3,7 @@ import type { TExoMachine, TExoNode } from '@exodra/core';
 import { exoDomSchemaOf } from './exoDomSchemaOf';
 import { buildExoDomRoot } from './buildExoDomRoot';
 import { mountExoDomNode } from './mountExoDomNode';
+import { createExoUnarmedChild } from './createExoUnarmedChild';
 import type { TExoDomNodeApi } from './EXO_DOM_NODE_VOCABULARY';
 import type { TExoDomMachine } from './types/TExoDomMachine';
 import type { TExoDomMark } from './types/TExoDomMark';
@@ -17,17 +18,16 @@ export interface TExoCompilerApi {
     schema(machine: TExoMachine<never>): TExoDomSchema;
     /** `this & TExoDomInstanceRecord` and not a flat exonode, for the reason the class's own
      *  `render` was generic over `this`: a component is CONTRAVARIANT in the exonode its wire is
-     *  written against, so a flat parameter refuses a wire that names a pack-added `c.keyedList`. */
+     *  written against, so a flat parameter refuses a wire that names a method a pack added. */
     render<TParams>(
         machine: TExoMachine<this & TExoDomInstanceRecord, unknown, TParams>,
         parent: Element,
         params?: TParams
     ): () => void;
-    buildRoot<TParams>(
-        machine: TExoMachine<this & TExoDomInstanceRecord, unknown, TParams>,
-        params?: TParams
-    ): TExoDomNodeApi & TExoNode<TExoDomMark>;
     mountRoot(node: TExoNode<TExoDomMark>, parent: Element): () => void;
+    createExoNode<TParams>(
+        machine: TExoMachine<this & TExoDomInstanceRecord, unknown, TParams>
+    ): TExoDomNodeApi & TExoNode<TExoDomMark>;
 }
 
 /**
@@ -53,17 +53,18 @@ export const withExoCompiler = <TBase extends TExoDomApi>(base: TBase): TBase & 
             function (this: TExoDomApi, machine: TExoMachine<never>) {
                 return exoDomSchemaOf(machine, this);
             },
-        buildRoot: (_next: unknown) =>
+        createExoNode: (_next: unknown) =>
             function (
-                this: TExoDomApi,
-                machine: TExoMachine<TExoDomInstanceRecord>,
-                params?: unknown
+                this: TExoDomApi & Partial<TExoDomInstanceRecord>,
+                machine: TExoMachine<TExoDomInstanceRecord>
             ) {
-                return buildExoDomRoot(
-                    exoDomSchemaOf(machine, this),
+                const backend = ((this.schema as TExoDomSchema | undefined)?.backend ??
+                    this) as TExoDomApi;
+                return createExoUnarmedChild(
+                    exoDomSchemaOf(machine as unknown as TExoMachine<never>, backend),
                     machine as unknown as TExoDomMachine,
-                    params
-                );
+                    this.context ?? null
+                ) as unknown as TExoDomNodeApi & TExoNode<TExoDomMark>;
             },
         mountRoot: (_next: unknown) =>
             function (this: TExoDomApi, node: TExoNode<TExoDomMark>, parent: Element) {
@@ -76,6 +77,9 @@ export const withExoCompiler = <TBase extends TExoDomApi>(base: TBase): TBase & 
                 parent: Element,
                 params?: unknown
             ) {
-                return this.mountRoot(this.buildRoot(machine as never, params), parent);
+                return this.mountRoot(
+                    buildExoDomRoot(this.createExoNode(machine as never), params),
+                    parent
+                );
             },
     }) as TBase & TExoCompilerApi;

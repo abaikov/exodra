@@ -15,6 +15,7 @@ import {
     withExoTransitions,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoChildrenPort,
@@ -23,7 +24,6 @@ import type {
     TExoMachineInitialState,
 } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
-import type { TExoPlacedChildren } from '@exodra/list-reconcile';
 import { describe, expect, it } from 'vitest';
 import { createExoTestMachine } from '@exodra/test-utils';
 
@@ -49,11 +49,6 @@ const ROW = createExoTestMachine(
             c.text(P.label, (item as TItem).label);
         }
 );
-
-/** What a wire that follows a source assumes: core's children surface plus the placement door. */
-type TPlacing = TExoChildrenWiring & {
-    childList(port: TExoChildrenPort): TExoPlacedChildren<unknown>;
-};
 
 const shell = (wire: (ports: { rows: TExoChildrenPort }) => TExoMachineInitialState<never>) =>
     createExoTestMachine((b) => {
@@ -85,7 +80,10 @@ const reconciledListOf = (items: readonly TItem[]): TExoStrMachine => {
         return { rows };
     });
     const m = createExoMachine<TExoStrNode, unknown, TListState>(schema, {
-        createInitialState: (c) => ({ rows: c.childList(schema.ports.rows), shown: [] as TItem[] }),
+        createInitialState: (c) => ({
+            rows: c.portChildList(schema.ports.rows),
+            shown: [] as TItem[],
+        }),
     });
     const machine = composeExoMachine(
         m,
@@ -98,7 +96,7 @@ const reconciledListOf = (items: readonly TItem[]): TExoStrMachine => {
                         c.state.shown,
                         want,
                         want,
-                        (item) => c.build(ROW, item)
+                        (item) => wireExoNode(c.createExoNode(ROW), item)
                     );
                 },
             }),
@@ -152,16 +150,16 @@ describe('a component that reconciles its children, rendered by @exodra/string',
         );
     });
 
-    it('hands back a live instance from build, printed only when it is inserted', () => {
+    it('hands back a live instance from createExoNode, printed only when it is inserted', () => {
         const LABEL = ROW.declaration.ports.label as TExoTextPort;
         const LIST = shell(
             (P) =>
-                ((c: TPlacing & TExoChildrenWiring) => {
-                    const row = c.build(ROW, A) as unknown as {
+                ((c: TExoChildrenWiring) => {
+                    const row = wireExoNode(c.createExoNode(ROW), A) as unknown as {
                         text(port: TExoTextPort, value: unknown): void;
                     };
                     row.text(LABEL, 'driven before insert');
-                    c.childList(P.rows).insert(row as never);
+                    c.appendChild(P.rows, row as never);
                 }) as unknown as TExoMachineInitialState<never>
         );
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

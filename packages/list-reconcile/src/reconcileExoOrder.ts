@@ -90,7 +90,6 @@ function reconcileExoMiddle<TKey, TItem, TNode>(
     }
 }
 
-/** One pass over an order of keys: the identity list hands the items themselves, the keyed list `keyOf(item)`. */
 export function reconcileExoOrder<TKey, TItem, TNode>(
     kids: TExoPlacedChildren<TNode>,
     shown: TKey[],

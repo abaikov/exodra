@@ -19,9 +19,11 @@ imperative hot spot, done almost vanilla**.
 `.node` is the element (`packages/dom/src/dom/exoNodeDom.ts:10-15`):
 
 ```ts no-check
+import { wireExoNode } from '@exodra/core';
 import { exoNodeDom, exoOnTeardown } from '@exodra/dom';
 
-const panel = c.build(Details);
+const panel = c.createExoNode(Details);
+wireExoNode(panel);
 
 const element = exoNodeDom(panel).node;   // the real Element, right now
 exoOnTeardown(exoNodeDom(panel), () => socket.close());   // run this when it leaves
@@ -37,17 +39,17 @@ measure.
 
 ### What the two hooks guarantee
 
-- **`onUnmount` runs while the element is still attached.** `dropExoChild` calls
-  `child.unmount()` first and removes the node afterwards
-  (`packages/dom/src/dom/dropExoChild.ts:12-17`), and `clearOwnedExoChildList` calls
-  every one of them with the whole child list still in the document. A widget that has to
-  tear itself down against a live tree can.
-- **`onMount` runs after the element has been put in its parent.** The child list's
-  `insert` calls it after its `appendChild`/`insertBefore`
-  (`packages/dom/src/dom/factories/createExoChildList.ts:53-67`); `attach` is the one
-  placement that skips it (`createExoChildList.ts:160-171`).
-- **Both fire again on every re-entry and re-exit.** A child that leaves a list
-  and comes back is moved, not rebuilt, so its hooks run again.
+-   **`onUnmount` runs while the element is still attached.** `dropExoChild` calls
+    `child.unmount()` first and removes the node afterwards
+    (`packages/dom/src/dom/dropExoChild.ts:12-17`), and `clearOwnedExoChildList` calls
+    every one of them with the whole child list still in the document. A widget that has to
+    tear itself down against a live tree can.
+-   **`onMount` runs after the element has been put in its parent.** The child list's
+    `insert` calls it after its `appendChild`/`insertBefore`
+    (`packages/dom/src/dom/factories/createExoChildList.ts:53-67`); `attach` is the one
+    placement that skips it (`createExoChildList.ts:160-171`).
+-   **Both fire again on every re-entry and re-exit.** A child that leaves a list
+    and comes back is moved, not rebuilt, so its hooks run again.
 
 ### The trap: the first `onMount` is not in the document
 
@@ -59,7 +61,7 @@ children are inserted and mounted — and inserts the whole clone into the page
 ```ts no-check
 // packages/dom/src/dom/mountExoInstance.ts:23-47, cut to the four lines that matter
 const root = schema.acquireNode(schema);
-createExoNode(schema, root, machine, ownerChild, record, context, params);
+createExoNodeRecord(schema, root, machine, ownerChild, record, context, params);
 if (before === null) parent.appendChild(root);
 else parent.insertBefore(root, before);
 ```
@@ -81,8 +83,8 @@ that reads layout has to check `isConnected` rather than assume it. There is no
 function.** This is not a style rule; it is a throw.
 
 The same machine runs on `@exodra/string`, where a `TExoNode` **is** a string of
-markup. `c.build` there hands back markup, so `exoNodeDom` refuses with *"this
-node was not built by c.build(...)"* — during the **server render**, before the
+markup. A node `c.createExoNode` makes there is not a DOM child, so `exoNodeDom`
+refuses with _"this node was not made by c.createExoNode(...)"_ — during the **server render**, before the
 browser is anywhere near it. The type system says so first: a machine built with
 `createExoMachine<TExoDomNode>` is not one `ExoStrBackend.render` accepts, and the
 case that pins the runtime half casts past that on purpose
@@ -91,7 +93,9 @@ case that pins the runtime half casts past that on purpose
 Two consequences:
 
 1. **The declarative surface is the portable one** — `attr`, `text`, `on`, `one`,
-   `list`, `build`, `childList`, and `reconcileExoOrder` over them.
+   `list`, `createExoNode` with `wireExoNode`, the port methods (`appendChild`,
+   `insertChild`, `moveChild`, `removeChild`), and a reconciler from
+   `createExoChildrenReconciler` over them ([Children](../guides/children.md)).
    `exoNodeDom` and `exoForeignNode` are `@exodra/dom`'s doors to a DOM node, and
    importing one pins the module that calls it to the browser — `exoForeignNode`
    takes an `Element` in its signature (`packages/dom/src/foreign/exoForeignNode.ts:21-25`).
@@ -100,7 +104,7 @@ Two consequences:
    `EXO_TERM_FOREIGN_VOCABULARY`). `t` carries one half per backend — `createDom`,
    `createStr`, `createTerm` — and each backend calls its own, so the element is
    only ever touched by the browser half. `exoBackendCompatible(BACKENDS,
-   'foreign', t)` checks at compile time that `t` has a half for every backend the
+'foreign', t)` checks at compile time that `t` has a half for every backend the
    application lists, and that every listed backend composed the door. There is
    still no capability query: nothing in a machine asks which backend it is on.
 
@@ -113,7 +117,7 @@ The view: a long body of text, and a search box. Every hit of the query has to b
 wrapped in a `<mark>`, live, as the user types.
 
 **Why a schema tree is the wrong shape here.** The number of nodes is a function
-of the *query*, not of the data — one keystroke can take the text from one node
+of the _query_, not of the data — one keystroke can take the text from one node
 to two hundred and back to one. Expressing that declaratively means turning a
 string into an array of segments on every keystroke, diffing that array,
 building a child per segment and reconciling them, to produce a result the
@@ -128,7 +132,7 @@ The right shape is the imperative one: **one element you own, repainted.**
 ```ts no-check
 import { EXO_PORT_CHILDREN, EXO_PORT_EVENT, createExoMachine, createExoSchema, exoPorts, withExoHandlers } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
-import { ExoDomBackend, exoForeignNode, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, exoForeignNode, withExoCompiler } from '@exodra/dom';
 
 /** What the user typed: a tiny store of the application's own, nothing Exodra about it. */
 function createTextStore(initial: string) {
@@ -220,8 +224,8 @@ const readerSchema = createExoSchema(ReaderPorts, (b) => {
 const readerBaseMachine = createExoMachine(readerSchema, {
     createInitialState: (c: TExoDomNode) => {
         // ONE CHILD THAT NEVER CHANGES, built by the CALLER and placed through the
-        // child list's own `insert` — there is no order to reconcile.
-        c.childList(ReaderPorts.body).insert(highlightedText(c, ARTICLE));
+        // port's own `appendChild` — there is no order to reconcile.
+        c.appendChild(ReaderPorts.body, highlightedText(c, ARTICLE));
     },
 });
 const readerMachine = withExoHandlers(readerBaseMachine, (on) => {
@@ -230,50 +234,50 @@ const readerMachine = withExoHandlers(readerBaseMachine, (on) => {
     });
 });
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 backend.render(readerMachine, document.getElementById('root') as Element);
 ```
 
 This matches the idiom in `packages/examples/escape-hatches/index.html`, which
 does the same thing for a canvas widget: a container the widget owns, an `onMount`
-that starts it, an `onUnmount` that stops it, and `c.childList(port).insert(node)`
-as the door.
+that starts it, an `onUnmount` that stops it, and a children port as the door —
+`c.appendChild(port, node)` here, a reconciler from `createExoChildrenReconciler` there.
 
 ### Where the boundary sits
 
-- **The box is the boundary, and it never moves.** Hand in an element and render
-  *inside* it. Removal and placement both climb `parentNode`, so a wrapper put
-  around the box travels with it, but **an element moved out of the parent is
-  beyond the climb** — it is `exoForeignNode`'s one rule for the caller, stated
-  in its own header (`packages/dom/src/foreign/exoForeignNode.ts:14-19`). Never
-  let the imperative code move or replace the element you handed over.
-- **The search input is ordinary Exodra.** It has a port, its handler is a normal
-  machine handler, and it writes into a plain store. Only the repaint is imperative.
-- **The query store is the seam.** The foreign node subscribes to it and the
-  input's handler writes it; neither knows anything about the other.
+-   **The box is the boundary, and it never moves.** Hand in an element and render
+    _inside_ it. Removal and placement both climb `parentNode`, so a wrapper put
+    around the box travels with it, but **an element moved out of the parent is
+    beyond the climb** — it is `exoForeignNode`'s one rule for the caller, stated
+    in its own header (`packages/dom/src/foreign/exoForeignNode.ts:14-19`). Never
+    let the imperative code move or replace the element you handed over.
+-   **The search input is ordinary Exodra.** It has a port, its handler is a normal
+    machine handler, and it writes into a plain store. Only the repaint is imperative.
+-   **The query store is the seam.** The foreign node subscribes to it and the
+    input's handler writes it; neither knows anything about the other.
 
 ### What you give up in that port
 
-- **Server rendering, unless you hand the server its own half.** `c.foreign(t)` —
-  a pack, composed on each backend — calls `t.createDom(c)` on the DOM backend and
-  `t.createStr()` on the server
-  (`packages/string/src/foreign/constants/EXO_STR_FOREIGN_VOCABULARY.ts:7-9`), so one `t`
-  carrying both serves both, and `exoBackendCompatible(BACKENDS, 'foreign', t)`
-  refuses at compile time a `t` that misses a backend the application lists; `exoForeignMarkup(markup)` builds the server half,
-  and it does not escape — the caller owns that string.
-- **Nothing is adopted for the foreign node itself.** While hydrating,
-  `exoForeignNode` takes the server's row for that position off the adoption
-  cursor and removes it, and builds a fresh element in its place;
-  the rows around it are adopted as usual
-  (`packages/conformance/src/tests/a-foreign-node-in-a-hydrated-list.test.ts`).
-  `exoForeignNode` called directly, not through `c.foreign`, takes its row the same way.
-- **Ports and bindings inside it.** A foreign node has no schema, so `c.attr`,
-  `c.text` and `c.on` have nothing to address
-  (`packages/dom/src/foreign/exoForeignNode.ts`). The two hooks are the
-  whole interface.
-- **Contexts.** A foreign node is not a wiring, so it neither provides nor
-  injects. A machine that wants the foreign renderer to see a context value injects
-  it in its initial state and hands it over as data.
+-   **Server rendering, unless you hand the server its own half.** `c.foreign(t)` —
+    a pack, composed on each backend — calls `t.createDom(c)` on the DOM backend and
+    `t.createStr()` on the server
+    (`packages/string/src/foreign/constants/EXO_STR_FOREIGN_VOCABULARY.ts:7-9`), so one `t`
+    carrying both serves both, and `exoBackendCompatible(BACKENDS, 'foreign', t)`
+    refuses at compile time a `t` that misses a backend the application lists; `exoForeignMarkup(markup)` builds the server half,
+    and it does not escape — the caller owns that string.
+-   **Nothing is adopted for the foreign node itself.** While hydrating,
+    `exoForeignNode` takes the server's row for that position off the adoption
+    cursor and removes it, and builds a fresh element in its place;
+    the rows around it are adopted as usual
+    (`packages/conformance/src/tests/a-foreign-node-in-a-hydrated-list.test.ts`).
+    `exoForeignNode` called directly, not through `c.foreign`, takes its row the same way.
+-   **Ports and bindings inside it.** A foreign node has no schema, so `c.attr`,
+    `c.text` and `c.on` have nothing to address
+    (`packages/dom/src/foreign/exoForeignNode.ts`). The two hooks are the
+    whole interface.
+-   **Contexts.** A foreign node is not a wiring, so it neither provides nor
+    injects. A machine that wants the foreign renderer to see a context value injects
+    it in its initial state and hands it over as data.
 
 ## Open questions
 
@@ -286,16 +290,16 @@ consequence is that a component with one imperative hot spot cannot be
 server-rendered at all — it throws during SSR. Three shapes have been named and
 none chosen:
 
-- *A capability test* (`c.isDom`, or a kind tag on the connector). Cheapest to
-  add; it also puts a branch into wiring functions and invites `if` ladders that
-  each backend has to keep true.
-- *A second, client-only initial state on the component.* Keeps every machine honest about
-  its backend and makes the split visible at the component boundary; it is a new
-  member on the component value and a second thing hydration has to reason about.
-- *A backend-tagged escape that no-ops on the server* — `exoForeignNode` returning
-  an empty string on `@exodra/string`. Least disruptive to write against; it also
-  makes a page that silently renders a hole on the server look like a page that
-  worked.
+-   _A capability test_ (`c.isDom`, or a kind tag on the connector). Cheapest to
+    add; it also puts a branch into wiring functions and invites `if` ladders that
+    each backend has to keep true.
+-   _A second, client-only initial state on the component._ Keeps every machine honest about
+    its backend and makes the split visible at the component boundary; it is a new
+    member on the component value and a second thing hydration has to reason about.
+-   _A backend-tagged escape that no-ops on the server_ — `exoForeignNode` returning
+    an empty string on `@exodra/string`. Least disruptive to write against; it also
+    makes a page that silently renders a hole on the server look like a page that
+    worked.
 
 **2. Which channel ends an imperative subscription — the hook or `exoOnTeardown`?** Both
 exist and they have different lifetimes. `exoOnTeardown` pushes onto `disposers`, and
@@ -308,17 +312,17 @@ fires on every entry and exit, which is why the example above subscribes in
 silent — a hot spot that stops updating after its first round trip through a
 list.
 
-**3. Is the child list the right and only door?** `reconcileExoOrder` is handed a *build
-callback* and places whatever it returns
-(`packages/list-reconcile/src/reconcileExoOrder.ts`), so a foreign node travels
-through it only as an item of an order of nodes, with `(node) => node` as the callback.
-Underneath is the imperative door the example above uses directly —
-`c.childList(port)` and its `insert`
-(`packages/dom/src/dom/factories/createExoChildList.ts`). An imperative hot spot
+**3. Is the child list the right and only door?** `createExoChildrenReconciler` takes a
+_build function_ in place of a machine and places whatever it returns
+(`packages/list-reconcile/src/createExoChildrenReconciler.ts`), so a foreign node travels
+through it only as an item of an order of nodes, with `(c, node) => node` as the function.
+Underneath is the imperative door the example above uses directly — the port
+methods, `c.appendChild(port, node)` and its siblings, over the same child list a
+reconciler drives
+(`packages/dom/src/dom/constants/EXO_DOM_CHILD_LIST_VOCABULARY.ts`). An imperative hot spot
 **inside a reconciled row of data** therefore means that row's own children are a second,
 node-valued order. Whether the reconciler should accept a "this one is already built"
 entry beside data items is open.
-
 
 **4. Should a foreign node be able to declare what it depends on?** In the example
 the box reaches `query` itself, from module scope. The machine cannot see that

@@ -12,4 +12,5 @@ export type TExoTermRegion = {
 export type TExoTermChild = TExoBaseNodeFields & {
     readonly node: TExoTermElement;
     readonly regions: readonly (TExoTermRegion | null)[];
+    placedIn: TExoTermChild[] | null;
 };

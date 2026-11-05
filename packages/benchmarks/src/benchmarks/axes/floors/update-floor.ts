@@ -228,7 +228,7 @@
 // THE LIST RECONCILER THEY WERE ALL DIFFERENCES AGAINST IS DELETED. `attach-exo-children.ts` and
 // `attachExoList` are gone; `bindList`, `bindChildren`, `bindOne`, `bindMany` and `keyedList` are
 // gone as doors on an exonode. A reactive list is now one composition —
-// `reconcileExoOrder(c.childList(port), shown, want, want, build)` in a transition — which keeps an array mirror of the
+// `reconcileExoOrder(c.portChildList(port), shown, want, want, build)` in a transition — which keeps an array mirror of the
 // order. It reads no `index` off a child and stamps no `mark`; it trims the common head and tail
 // by identity, does an insert-only or remove-only middle in place, and only a middle whose
 // survivors changed order gets an item→position `Map` and `getExoSequence`.
@@ -249,7 +249,7 @@
 // WHAT SURVIVES AND WHAT IT NOW NAMES: E1 `floor·record` (the per-child record, still built by
 // `createExoDomChildFactory` for every reconciled row), E4 `exodra·kept` (keep-alive, now composed
 // as `reconcileExoOrder` over a source whose items ARE the children, with an identity build),
-// and E5 `floor·wire` — which called `createExoWiredNode` and now calls `createExoNode`, the
+// and E5 `floor·wire` — which called `createExoWiredNode` and now calls `createExoNodeRecord`, the
 // function `buildLiveExoChild` itself calls.
 //
 // EVERY RECORDED NUMBER IS LEFT WHERE IT STANDS. They are what the only recording says about the
@@ -585,7 +585,7 @@
 //   (Q9) THE COMPONENT BOUNDARY IS 8-20 µs OF IT — `floor·wire − floor·record`, over the 100
 //        children this app builds per flip, i.e. 80 to 200 ns per instance.
 //        MECHANISM: `floor·wire` is `floor·record` and one thing more, and the one thing is THE
-//        SHIPPED FUNCTION rather than an imitation of it — `createExoNode` out of
+//        SHIPPED FUNCTION rather than an imitation of it — `createExoNodeRecord` out of
 //        `@exodra/dom`, over the real `DETAILS` and `TAG` schemas, with the real components. Per
 //        instance that is the `component` load and the pass-through call, the `walk.length`
 //        and `setters.length` loads with their compare, the one-slot `nodes` array and its store,
@@ -621,7 +621,7 @@
 //        one-to-one and pretending it were is how a cross-check becomes a story: (i) THE CLONE —
 //        `exodra·kept` builds nothing, so its side of that difference has no `cloneNode` at all,
 //        where `floor` and `floor·wire` both clone and the clone cancels out of the floor's own
-//        difference; (ii) the schema resolution `exodra·children`'s `c.build` performs 100 times a
+//        difference; (ii) the schema resolution `exodra·children`'s `c.createExoNode` performs 100 times a
 //        flip and `attachExoList` hoists, already written down above as an understatement of the
 //        façade and equally an OVERstatement of this one; (iii) whatever collecting ~200 objects
 //        a flip costs, which is on the renderer side of (Q8) and on neither side of the floor's.
@@ -643,7 +643,7 @@
 //        not siblings — the details port is one of the five children of `.card`, and the tags port
 //        is the sole child of `.tags` — and `compileExoDomSchema` sets `hasAdjacentChildLists` only where a
 //        port follows another port under the SAME parent. So this schema has no chain,
-//        `createExoNode` stores `null` into the `childLists` slot of the instance's own record
+//        `createExoNodeRecord` stores `null` into the `childLists` slot of the instance's own record
 //        (which IS the exonode the wire is handed), `childListEndNode` hands back a
 //        plain `Node` for the details port and `null` for the tags port, and no anchor
 //        closure is ever built. Per update the anchors cost ONE `typeof` compare on each of the
@@ -735,9 +735,10 @@ import {
     type TExoChildrenPort,
     type TExoEventPort,
     type TExoTextPort,
+    wireExoNode,
 } from '@exodra/core';
-import { exoDomSchemaOf, exoNodeDom, createExoNode } from '@exodra/dom';
-import type { TExoDomMark, TExoDomNode, TExoDomChild } from '@exodra/dom';
+import { exoDomSchemaOf, exoNodeDom, createExoNodeRecord } from '@exodra/dom';
+import type { TExoDomMark, TExoDomNode, TExoDomChild, TExoDomPortChildList } from '@exodra/dom';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
 import {
@@ -778,7 +779,7 @@ import {
     deckDateOf,
     dateTextOf,
 } from '../../shared/todo-spec';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
 import {
     createExoMachine,
@@ -787,7 +788,7 @@ import {
     withExoEffects,
 } from '@exodra/core';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 // eslint-disable-next-line no-console
 const line = (s: string): void => console.log(`✅ ${s}`);
@@ -1424,7 +1425,7 @@ function mountListExodra(
     });
     const mUL = createExoMachine(UL_SCHEMA, {
         createInitialState: (c: TExoDomNode) => ({
-            kids: c.childList(UL_SCHEMA.ports.rows),
+            kids: (c as TExoDomNode & TExoDomPortChildList).portChildList(UL_SCHEMA.ports.rows),
             shown: [] as TRow[],
         }),
     });
@@ -1436,7 +1437,7 @@ function mountListExodra(
                     const state = c.state;
                     const want = rows.getValue();
                     state.shown = reconcileExoOrder(state.kids, state.shown, want, want, (item) =>
-                        c.build(LI, item)
+                        wireExoNode(c.createExoNode(LI), item)
                     );
                 },
             }),
@@ -2214,8 +2215,12 @@ const mWIDE_CARD = createExoMachine(WIDE_CARD_SCHEMA, {
         // directly, so the ports are filled with one shared no-op. Both apps therefore attach
         // the same 160 listeners at mount, which is untimed for every row in this file.
         c.on(WIDE_CARD_SCHEMA.ports.toggle, NOOP);
-        const detailsList = c.childList(WIDE_CARD_SCHEMA.ports.details);
-        const tagList = c.childList(WIDE_CARD_SCHEMA.ports.tags);
+        const detailsList = (c as TExoDomNode & TExoDomPortChildList).portChildList(
+            WIDE_CARD_SCHEMA.ports.details
+        );
+        const tagList = (c as TExoDomNode & TExoDomPortChildList).portChildList(
+            WIDE_CARD_SCHEMA.ports.tags
+        );
         card.reclip = (cell) => {
             const items = card.tags.getValue();
             const chars = cell.getValue();
@@ -2253,7 +2258,7 @@ const WIDE_CARD = composeExoMachine(
                     state.shownDetails,
                     kids,
                     kids,
-                    () => c.build(DETAILS)
+                    () => wireExoNode(c.createExoNode(DETAILS))
                 );
             },
             showWideTags: (c) => {
@@ -2266,7 +2271,7 @@ const WIDE_CARD = composeExoMachine(
                     tags,
                     tags,
                     (tag) => {
-                        const row = c.build(TAG);
+                        const row = wireExoNode(c.createExoNode(TAG));
                         writeTagLabel(
                             row as unknown as TExoMachineNode,
                             tagTextOf(tag.label, tag.chars.getValue())
@@ -2940,10 +2945,10 @@ function wideFloorBound(): Instance {
 // the registry, `remap`'s loop, the op-translating closure and the two façade objects.
 //
 // THE MECHANISM IS DELETED. There is no `attachExoList`, no `bindList`, no `bindChildren` and no
-// registry: a reactive list is `reconcileExoOrder` over `c.childList(port)` in a transition, which
+// registry: a reactive list is `reconcileExoOrder` over `c.portChildList(port)` in a transition, which
 // keeps an array mirror of the order, and the `registry`
 // and `registryKey` fields the child maker still writes are read by nothing. So E2 was a floor-side
-// imitation of a `Map` nobody consults, and E3 differed from `exodra` only in who calls `c.build` —
+// imitation of a `Map` nobody consults, and E3 differed from `exodra` only in who calls `c.createExoNode` —
 // its number would have been noise under a name that claims a façade.
 //
 // WHAT WENT WITH THEM: (Q3), (Q4) and the registry half of (Q5) in the header above, the `E2`,
@@ -3358,17 +3363,17 @@ function wideFloorRecord(): Instance {
 //
 // `floor·record` AND ONE THING MORE, AND THE ONE THING IS THE SHIPPED FUNCTION. E1 is an imitation
 // — a record-shaped literal written out here — and it is worth only as much as the reader's belief
-// that the imitation is faithful. This row imports `createExoNode` out of `@exodra/dom` and calls
+// that the imitation is faithful. This row imports `createExoNodeRecord` out of `@exodra/dom` and calls
 // it, over the app's OWN `DETAILS` and `TAG` schemas, with the app's OWN components, on the node
-// the floor just cloned. There is nothing to be faithful to: it IS the `createExoNode` line of
+// the floor just cloned. There is nothing to be faithful to: it IS the `createExoNodeRecord` line of
 // `buildLiveExoChild`, which is how every reconciled row in the `exodra` row comes to exist.
 //
-// WHY `createExoNode` AND NOT `createExoMachineNode`: the two are the same body — the first is a
+// WHY `createExoNodeRecord` AND NOT `createExoMachineNode`: the two are the same body — the first is a
 // seven-line pass-through that reads `component` and calls the second — and the shipped
 // build path calls the FIRST, so this row hands over the component, exactly as `buildLiveExoChild`
 // does, rather than reaching past it for the machine plan.
 //
-// WHAT THAT ONE CALL CONTAINS, per instance, read out of `createExoNode.ts`,
+// WHAT THAT ONE CALL CONTAINS, per instance, read out of `createExoNodeRecord.ts`,
 // `createExoMachineNode.ts` and `armExoNode.ts`: the `component` load and the
 // pass-through call; the `walk.length`/`setters.length` loads with their compare and the one-slot
 // `nodes` array; the `nodes` store; the walk replay over the schema's `walk`; the
@@ -3402,7 +3407,7 @@ function wideFloorRecord(): Instance {
 
 /**
  * THE APP'S OWN SCHEMAS, resolved once at module load under the very backend the `exodra` row renders
- * from — `EXO_BACKEND`, the one module-level `withExoChildList(withExoCompiler(new ExoDomBackend()))` in this file, and the schema cache
+ * from — `EXO_BACKEND`, the one module-level `withExoCompiler(new ExoDomBackend())` in this file, and the schema cache
  * compares it by POINTER. So this is the SAME compiled schema the `exodra` row's rows are built from,
  * out of the same cache slot on the same declaration — not a second schema for an identical shape.
  */
@@ -3422,11 +3427,11 @@ function wideWireDetails(f: TWideFloor, r: TWideRecords, k: number): void {
     } else {
         const d = DETAILS_PROTO.cloneNode(true) as Element;
         const record = makeFloorRecord(d);
-        // `buildLiveExoChild`'s `createExoNode` line, in its order: the record exists, and the
+        // `buildLiveExoChild`'s `createExoNodeRecord` line, in its order: the record exists, and the
         // instance is wired before it is placed. The owner IS the child, exactly as
         // `buildLiveExoChild` passes it, and the context is `null` because nothing in this app
         // provides anything — which is what the `exodra` row's own children inherit too.
-        createExoNode(
+        createExoNodeRecord(
             DETAILS_PLAN,
             d,
             DETAILS,
@@ -3480,7 +3485,7 @@ function wideWireTags(
         // same `POOL` — so the DOM is the floor's and the byte-gate is a formality it still has
         // to pass. The text crosses as a TRANSITION ARGUMENT, fired right after the node is
         // armed, so this rung pays one call where it used to pay one array store.
-        createExoNode(
+        createExoNodeRecord(
             TAG_PLAN,
             t,
             TAG,
@@ -3587,7 +3592,7 @@ const KEEP_ALIVE = function keepAlive(): void {
 
 // STRUCK: E3 `exodra·children` priced the `bindList` façade by wiring the same app with
 // `c.bindChildren` over harness-built children. Both doors are deleted and both spellings are now
-// the one `reconcileExoOrder`, so the row differed from `exodra` only in who calls `c.build` and
+// the one `reconcileExoOrder`, so the row differed from `exodra` only in who calls `c.createExoNode` and
 // its number could not be the façade. The connector it parked in a module field went with it.
 
 /** What the harness keeps for one card of `exodra·kept` — everything, built once. */
@@ -3676,11 +3681,11 @@ const mWIDE_CARD_KEPT = createExoMachine(WIDE_CARD_KEPT_SCHEMA, {
         c.text(WIDE_CARD_KEPT_SCHEMA.ports.user, userNameOf(cardUserOf(card.i)));
         c.on(WIDE_CARD_KEPT_SCHEMA.ports.toggle, NOOP);
         const hold = card.hold;
-        const d = c.build(DETAILS);
+        const d = wireExoNode(c.createExoNode(DETAILS));
         exoNodeDom(d).unmount = KEEP_ALIVE;
         hold.detailsOpen[0] = d;
         for (let t = 0; t < POOL.length; t++) {
-            const kid = c.build(TAG);
+            const kid = wireExoNode(c.createExoNode(TAG));
             writeTagLabel(
                 kid as unknown as TExoMachineNode,
                 tagTextOf(hold.pool[t].label, hold.pool[t].chars.getValue())
@@ -3705,8 +3710,12 @@ const mWIDE_CARD_KEPT = createExoMachine(WIDE_CARD_KEPT_SCHEMA, {
         return {
             card,
             title,
-            detailsList: c.childList(WIDE_CARD_KEPT_SCHEMA.ports.details),
-            tagList: c.childList(WIDE_CARD_KEPT_SCHEMA.ports.tags),
+            detailsList: (c as TExoDomNode & TExoDomPortChildList).portChildList(
+                WIDE_CARD_KEPT_SCHEMA.ports.details
+            ),
+            tagList: (c as TExoDomNode & TExoDomPortChildList).portChildList(
+                WIDE_CARD_KEPT_SCHEMA.ports.tags
+            ),
             shownDetails: [] as TExoNode<TExoDomMark>[],
             shownTags: [] as TExoNode<TExoDomMark>[],
         };
@@ -4326,7 +4335,7 @@ const TRANSITIONS: readonly Transition[] = [
             {
                 name: 'floor·wire',
                 what:
-                    'E5 — floor·record plus the SHIPPED createExoNode on each of the ' +
+                    'E5 — floor·record plus the SHIPPED createExoNodeRecord on each of the ' +
                     `${WIDE_CENSUS.built} children it builds: the DETAILS and TAG schemas and ` +
                     'components the app itself renders, the walk replay, the four field stores, ' +
                     'the arming and the publish. NOT an imitation — the imported function, the ' +
@@ -4405,7 +4414,7 @@ const TRANSITIONS: readonly Transition[] = [
                 of: 'floor·wire',
                 against: 'floor·record',
                 scale: 'floor',
-                what: `E5, createExoNode over the ${WIDE_CENSUS.built} children built per flip`,
+                what: `E5, createExoNodeRecord over the ${WIDE_CENSUS.built} children built per flip`,
             },
         ],
         ladder: (m, resolution, rendererResolution) => [
@@ -4442,7 +4451,7 @@ const TRANSITIONS: readonly Transition[] = [
             `  E5 the boundary         ${sign(
                 m('floor·wire') - m('floor·record')
             )}   floor·wire − ` +
-                `floor·record: the SHIPPED createExoNode, over ${WIDE_CENSUS.built} instances ` +
+                `floor·record: the SHIPPED createExoNodeRecord, over ${WIDE_CENSUS.built} instances ` +
                 'per flip — the machine load and pass-through, the walk replay, the four field ' +
                 'stores, the arming and the publish, and the wire itself. 40 of those wires belong ' +
                 `to DETAILS, which has no ports and does nothing. ${f4(
@@ -5438,7 +5447,7 @@ export function benchmarkUpdateFloor(rounds = 100, batch = 1): void {
     line(
         'THE FOURTH PREDICTION — whether this transition can attribute anything at all. Two rows ' +
             'were added for it: a THIRD declaration of the renderer program placed next to the ' +
-            'first, and the floor plus the shipped createExoNode. Neither is a floor and ' +
+            'first, and the floor plus the shipped createExoNodeRecord. Neither is a floor and ' +
             'neither may be quoted as a bound.'
     );
     line(
@@ -5500,7 +5509,7 @@ export function benchmarkUpdateFloor(rounds = 100, batch = 1): void {
             wBoundary
         )} µs = ${f4((wBoundary * 1000) / WIDE_CENSUS.built)} ns per instance over ${
             WIDE_CENSUS.built
-        } of them — the shipped createExoNode, not ` +
+        } of them — the shipped createExoNodeRecord, not ` +
             'an imitation of it: the machine load and pass-through, the walk replay, the four ' +
             'field stores, the arming, the publish and the wire. 40 of those wires belong to ' +
             'DETAILS, which has no ports and whose wiring half is () => undefined, so this row ' +

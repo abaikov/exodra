@@ -65,7 +65,7 @@
 // the new `shown`.
 //
 // `removeAll` is `ExoChildList`'s own method (`createExoChildList.ts`, lines 105-127) and it
-// branches on the `ownsParent` flag `c.childList(port)` handed it out of `schema.ownsElement`:
+// branches on the `ownsParent` flag `c.portChildList(port)` handed it out of `schema.ownsElement`:
 //
 //   ownsParent   →  N × `unmount()`, then N × `index = -1`, then ONE `parent.textContent = ''`
 //   otherwise    →  N × `unmount()`, then per child a parentNode CLIMB, a `removeChild` and
@@ -82,8 +82,8 @@
 //   2. a null compare on `this.effectStops`, and `stopExoEffects(this)` if a machine declared any;
 //   3. run and empty this child's own disposers.
 //
-// THERE IS ONE RECONCILER AND IT IS NOT A PACK. `reconcileExoOrder` is a layer over `c.build`
-// and `c.childList`, composed by the application's own transition; a backend carries no `children`
+// THERE IS ONE RECONCILER AND IT IS NOT A PACK. `reconcileExoOrder` is a layer over `wireExoNode(c.createExoNode(M))`
+// and `c.portChildList`, composed by the application's own transition; a backend carries no `children`
 // field to swap, so there is no second clear path an application could be on.
 //
 // TWO THINGS THE CODE DOES **NOT** DO ON TEARDOWN, both of which a reader expects and both of
@@ -245,7 +245,7 @@ import {
 } from '@exodra/dom';
 import { el } from '../../shared/todo-spec';
 import type { Scenario } from '../../../harness';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
 import {
     createExoMachine,
@@ -255,9 +255,10 @@ import {
 } from '@exodra/core';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
 import type { TExoBenchSource } from '../../shared/types/TExoBenchSource';
-import type { TExoChildList } from '@exodra/dom';
+import { wireExoNode } from '@exodra/core';
+import type { TExoDomPortChildList } from '@exodra/dom';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 // ---------------------------------------------------------------------------------------
 // THE BLOCK. The `exodra` row of `toggle.tsx` with every other participant removed.
@@ -302,7 +303,7 @@ const NO_ROWS: readonly TPanelRow[] = [];
  * wrote on every element it built; that mark has been removed. A panel is caught inside its own
  * wire, where the OWNER CHILD on the instance's own record IS that child — `c.child`, read straight
  * off the exonode, because the exonode a wire is handed IS the instance record and nothing is
- * pooled. `c.build` hands the same object back to the host's reconcile callback, and the reason the
+ * pooled. `wireExoNode(c.createExoNode(M))` hands the same object back to the host's reconcile callback, and the reason the
  * push is here and not there is the TYPE: a wire reads a `TExoDomChild` field, while `build`'s
  * published return is the node surface and reaching the record through it takes two casts.
  *
@@ -376,7 +377,9 @@ const HOST_SET_SCHEMA = createExoSchema((b) => {
 });
 const mHOST_SET = createExoMachine(HOST_SET_SCHEMA, {
     createInitialState: (cc: TExoDomNode) => ({
-        panels: cc.childList(HOST_SET_SCHEMA.ports.panels) as TExoChildList,
+        panels: (cc as TExoDomNode & TExoDomPortChildList).portChildList(
+            HOST_SET_SCHEMA.ports.panels
+        ),
         shown: [] as TPanelRow[],
         source: CURRENT_ROWS,
     }),
@@ -389,7 +392,7 @@ const HOST_SET = composeExoMachine(
                 const state = cc.state;
                 const want = state.source.getValue();
                 state.shown = reconcileExoOrder(state.panels, state.shown, want, want, (row) =>
-                    cc.build(PANEL_SET, row)
+                    wireExoNode(cc.createExoNode(PANEL_SET), row)
                 );
             },
         }),

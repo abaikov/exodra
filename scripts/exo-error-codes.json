@@ -272,8 +272,8 @@
         {
             "code": "EXO0036",
             "pkg": "dom",
-            "meaning": "A node that was not built by the connector's build call was handed to bindChildren.",
-            "explanation": "What arrives is a bare Element with no mount, no unmount and no disposers, so it carries no lifecycle of its own and a list cannot know when to end subscriptions it never made. Children handed to bindChildren must come from build. Without this check the page gets a DOM exception about insertBefore's first parameter from inside a diff, naming nothing. The message carries no runtime value, because the offending node is by definition not one of ours and there is nothing of it this function may read."
+            "meaning": "A node that was not made by createExoNode was placed in a children port.",
+            "explanation": "What arrives is a bare Element with no mount, no unmount and no disposers, so it carries no lifecycle of its own and a list cannot know when to end subscriptions it never made. Children placed in a children port must come from createExoNode. Without this check the page gets a DOM exception about insertBefore's first parameter from inside a diff, naming nothing. The message carries no runtime value, because the offending node is by definition not one of ours and there is nothing of it this function may read."
         },
         {
             "code": "EXO0037",
@@ -289,7 +289,7 @@
         },
         {
             "code": "EXO0039",
-            "pkg": "dom",
+            "pkg": "core",
             "meaning": "A schema gives one element both a content port and static children.",
             "explanation": "A content port stands for EVERYTHING inside its element, so the static children vanish from the markup while their ports keep the indices this plan addresses by, and every setter after them is built against the wrong element. Move the static children into the wiring, or drop the port."
         },
@@ -590,8 +590,8 @@
         {
             "code": "EXO0103",
             "pkg": "core",
-            "meaning": "A structural door (childList, one or list) was called from a wire that wireExoNode re-ran on a live instance.",
-            "explanation": "A re-run wire may only write ports. Children are placed once, while the instance is armed, so a second placement would stack a second set beside the first; open them in createInitialState and let the wire fill the ports they hold."
+            "meaning": "c.one or c.list was called from a wire that wireExoNode re-ran on a live instance.",
+            "explanation": "c.one and c.list place their children once, while the instance is armed, so a second call would stack a second set beside the first. Call them in createInitialState, or place children with the children port methods (createExoNode, appendChild, insertChild, moveChild, removeChild), which any wire, transition or effect may call at any time."
         },
         {
             "code": "EXO0104",
@@ -626,12 +626,6 @@
             "explanation": "The SVG and MathML tables — tag and attribute case adjustment, namespaced attributes, HTML integration points — are a pack, so a page with no SVG links none of them. Compose withExoForeignNamespaces once, at module level, on the backend that renders a schema with svg, math or an SVG-only element in it."
         },
         {
-            "code": "EXO0109",
-            "pkg": "dom",
-            "meaning": "A machine opened a child list on a DOM backend composed without withExoChildList.",
-            "explanation": "The commanded child list — childList(port) and the insert, move and remove it hands back — is a pack, so a page that fills its children ports only with one and list links none of it. Compose withExoChildList once, at module level, on the backend that renders a machine which opens a child list: the reconcilers, the keyed list and the router outlet all do."
-        },
-        {
             "code": "EXO0110",
             "pkg": "dom",
             "payload": "the namespace of the element whose attribute was refused, in double quotes.",
@@ -644,6 +638,26 @@
             "payload": "the index of the event port that already had a handler.",
             "meaning": "A machine registered a second handler on an event port that already had one.",
             "explanation": "An element keeps one handler per event: both events packs store it in one field, so a second registration on the same port would silently replace the first. Handle the port once — a handler can do several things — and keep it in one withExoHandlers step or one plugin step, not both."
+        },
+        {
+            "code": "EXO0112",
+            "pkg": "core",
+            "payload": "the name.",
+            "meaning": "withExoEffects was given a dictionary with a name that is already taken on the machine's effects array.",
+            "explanation": "The dictionary form sets each effect's handle on the effects array under its name, so the name must be free there: a second withExoEffects step that repeats a name would leave two effects and reach only the newer one by name, and a name such as push, slice or length would shadow the array member the next step copies with. A name made of digits is refused as well, because it would write an element of the array instead of a name on it. Pick another name."
+        },
+        {
+            "code": "EXO0113",
+            "pkg": "core",
+            "payload": "the name.",
+            "meaning": "withExoTransitions was given a name the machine already has as a transition, or a name that is an array index.",
+            "explanation": "A later step that repeats a name would leave two wrappers: a step that already destructured m.transitions keeps calling the first, and overrides() reaches only the first slot, so an override of the name would silently miss the newer one. A name made of digits is refused because object keys that look like indices change their order, and the override table is laid out by order. Give the transition its own name."
+        },
+        {
+            "code": "EXO0114",
+            "pkg": "dom",
+            "meaning": "A children port filled by c.one or c.list was given to a children port method or a reconciler.",
+            "explanation": "c.one and c.list place their children past the port's child list, so a port method or a reconciler on the same port would count none of them and insert in the wrong place. Place those children with createExoNode and appendChild / insertChild (or a reconciler) instead, or keep the hand-placed ones in a separate children port."
         }
     ],
     "retired": [
@@ -756,6 +770,11 @@
             "code": "EXO0014",
             "pkg": "core",
             "note": "A schema declared static text immediately after a children port. Retired when the DOM compiler learned to anchor the region on that Text node, and to put an empty comment before it where the server's parser would otherwise merge it into the text before the region or eat its newline; the string compiler prints the same comment, so both backends build one tree."
+        },
+        {
+            "code": "EXO0109",
+            "pkg": "dom",
+            "note": "A machine placed children on a DOM backend composed without withExoChildList. Retired when the children port methods moved into every DOM backend: withExoChildList is now a deprecated call that returns its backend unchanged, so there is no composition left that lacks them."
         }
     ]
 }

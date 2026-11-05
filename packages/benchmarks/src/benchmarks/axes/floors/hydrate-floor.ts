@@ -392,7 +392,7 @@
 // IT IS 18 PHASES AND IT TAKES MINUTES. Cut `rounds` to 60 for a first look at the ordering; do
 // not quote a size off a 60-round run, because every headline here is a RATIO of two medians and
 // the control is a DIFFERENCE of two more.
-import { ExoDomBackend, withExoChildList, withExoHydration, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 import type { TExoMachine } from '@exodra/core';
 import type { TExoRegionWiring } from '../../apps/exodra/exodra-shared';
@@ -418,7 +418,7 @@ import type { Scenario } from '../../../harness';
 // more: `withExoHydration` merges the adopting bodies ONTO the object it is handed and returns that
 // same object, so this is the identical single backend the variadic constructor produced and the
 // identical schema-cache key. No timed region moved.
-const EXO_BACKEND = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+const EXO_BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const EXO_STR = new ExoStrBackend();
 
 // eslint-disable-next-line no-console
@@ -429,8 +429,8 @@ const refuse = (s: string): void => console.log(`❌ ${s}`);
 /** What both entry points accept, and the type `exodra.tsx` deliberately gives its four components
  *  so that one value can be served, rendered and hydrated with no cast. The demand is declared in
  *  `apps/exodra/exodra-shared.tsx` and names CALLS rather than a backend or a pack — `children`
- *  plus `childList`, which a reactive list is composed over and which `@exodra/string`'s exonode
- *  answers too (`packages/string/src/node/EXO_STR_NODE_VOCABULARY.ts:52`, read before relying on it). */
+ *  plus `portChildList`, which a reactive list is composed over and which `@exodra/string`'s exonode
+ *  answers too (`packages/string/src/node/EXO_STR_NODE_VOCABULARY.ts:174`, read before relying on it). */
 type TPortableComponent = TExoMachine<TExoRegionWiring>;
 
 /** Nothing to dispose — `parse` leaves no subscription behind because it runs no wire. */

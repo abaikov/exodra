@@ -10,23 +10,15 @@ import {
     wireExoNode,
     swapExoParams,
 } from '@exodra/core';
-import type {
-    TExoChildrenPort,
-    TExoEventPort,
-    TExoMachineNode,
-    TExoNode,
-    TExoTextPort,
-} from '@exodra/core';
+import type { TExoChildrenPort, TExoEventPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
-import { createExoKeyedList } from '@exodra/list-reconcile';
-import type { TExoKeyedList } from '@exodra/list-reconcile';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 import { source } from '@exodra/test-utils';
 import { describe, expect, it } from 'vitest';
 import { ExoDomBackend } from '../dom/ExoDomBackend';
 import { withExoCompiler } from '../dom/withExoCompiler';
-import { withExoChildList } from '../dom/withExoChildList';
 import type { TExoDomNode } from '../dom/EXO_DOM_NODE_VOCABULARY';
-import type { TExoDomMark } from '../dom/types/TExoDomMark';
+import type { TExoDomPortChildList } from '../dom/types/TExoDomPortChildList';
 
 type TCardParams = { readonly label: string; readonly compact: boolean };
 
@@ -74,7 +66,7 @@ const CARD = composeExoMachine(
 );
 const COMPACT = CARD.overrides({ press: pressCompact });
 
-const BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const BACKEND = withExoCompiler(new ExoDomBackend());
 
 describe('a machine wire and per-instance transition overrides', () => {
     it('runs the wire after createInitialState, with the params render was handed', () => {
@@ -95,9 +87,15 @@ describe('a machine wire and per-instance transition overrides', () => {
         });
         const LIST = createExoMachine<TExoDomNode>(LIST_SCHEMA, {
             createInitialState: (c) => {
-                const rows = c.childList(LIST_SCHEMA.ports.rows);
-                rows.insert(c.build(CARD as never, { label: 'plain', compact: false }));
-                rows.insert(c.build(CARD as never, { label: 'small', compact: true }));
+                const rows = LIST_SCHEMA.ports.rows;
+                c.appendChild(
+                    rows,
+                    wireExoNode(c.createExoNode(CARD as never), { label: 'plain', compact: false })
+                );
+                c.appendChild(
+                    rows,
+                    wireExoNode(c.createExoNode(CARD as never), { label: 'small', compact: true })
+                );
             },
         });
         const parent = document.createElement('div');
@@ -189,7 +187,7 @@ describe('a machine wire and per-instance transition overrides', () => {
         expect(writes).toEqual(['title', 'note']);
 
         writes.length = 0;
-        wireExoNode(row, ROW, { title: 'b', note: 'n' });
+        wireExoNode(row, { title: 'b', note: 'n' });
         expect(writes).toEqual(['title']);
         expect(parent.textContent).toBe('bn');
         expect(row.state).toEqual({ mine: true });
@@ -222,25 +220,20 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { rows };
         });
-        const mShop = createExoMachine<TExoDomNode, unknown, { list: TExoKeyedList<TProduct> }>(
-            SHOP_SCHEMA,
-            {
-                createInitialState: (c) => ({
-                    list: createExoKeyedList<TProduct, number, TExoNode<TExoDomMark>>(
-                        c.childList(SHOP_SCHEMA.ports.rows),
-                        (product) => product.id,
-                        (product) => c.build(ITEM, product),
-                        (row, product) => wireExoNode(row, ITEM, product)
-                    ),
-                }),
-            }
-        );
+        const reconcileProducts = createExoChildrenReconciler<TProduct>(ITEM, {
+            key: (product) => product.id,
+        });
+        const mShop = createExoMachine<TExoDomNode>(SHOP_SCHEMA);
         const SHOP = composeExoMachine(
             mShop,
             (m) =>
                 withExoTransitions(m, {
                     showProducts: (c) => {
-                        c.state.list.reconcile(products.getValue());
+                        reconcileProducts(
+                            c as TExoDomNode & TExoDomPortChildList,
+                            SHOP_SCHEMA.ports.rows,
+                            products.getValue()
+                        );
                     },
                 }),
             (m) => {
@@ -358,7 +351,7 @@ describe('a machine wire and per-instance transition overrides', () => {
         const mBox = createExoMachine<TExoDomNode>(BOX_SCHEMA);
         const BOX = composeExoMachine(mBox, (m) =>
             withExoWire(m, (c) => {
-                c.childList(BOX_SCHEMA.ports.slot);
+                c.one(BOX_SCHEMA.ports.slot, mBox);
             })
         );
         let box!: TExoDomNode;
@@ -368,10 +361,10 @@ describe('a machine wire and per-instance transition overrides', () => {
             },
         });
         BACKEND.render(HOST, document.createElement('div'));
-        expect(() => wireExoNode(box, BOX)).toThrow(/re-ran/);
+        expect(() => wireExoNode(box)).toThrow(/re-ran/);
     });
 
-    it('arms a child built inside a re-run wire as a first run, so it may open its child list', () => {
+    it('arms a child built inside a re-run wire as a first run, and appends it to the same port', () => {
         const BOX_SCHEMA = createExoSchema((b) => {
             let slot!: TExoChildrenPort;
             b.el('div', null, (div) => {
@@ -379,18 +372,19 @@ describe('a machine wire and per-instance transition overrides', () => {
             });
             return { slot };
         });
-        const mLeaf = createExoMachine<TExoDomNode>(BOX_SCHEMA, {
-            createInitialState: (c) => c.childList(BOX_SCHEMA.ports.slot),
+        const EMPTY = createExoMachine<TExoDomNode>(BOX_SCHEMA);
+        const LEAF = createExoMachine<TExoDomNode>(BOX_SCHEMA, {
+            createInitialState: (c) => {
+                c.list(BOX_SCHEMA.ports.slot, EMPTY, []);
+            },
         });
-        const LEAF = mLeaf;
-        const mHost = createExoMachine<TExoDomNode, number>(BOX_SCHEMA, {
-            createInitialState: (c) => c.childList(BOX_SCHEMA.ports.slot),
-        });
+        const mHost = createExoMachine<TExoDomNode, number>(BOX_SCHEMA);
         const HOST = composeExoMachine(mHost, (m) =>
             withExoWire(m, (c, count) => {
-                const rows = c.state as ReturnType<TExoDomNode['childList']>;
-                while (rows.size < count) rows.insert(c.build(LEAF));
-                if (count > 1) expect(() => c.childList(BOX_SCHEMA.ports.slot)).toThrow(/re-ran/);
+                const slot = BOX_SCHEMA.ports.slot;
+                while (c.childCount(slot) < count) {
+                    c.appendChild(slot, wireExoNode(c.createExoNode(LEAF)));
+                }
             })
         );
         let host!: TExoDomNode;
@@ -401,7 +395,7 @@ describe('a machine wire and per-instance transition overrides', () => {
         });
         const parent = document.createElement('div');
         BACKEND.render(ROOT, parent);
-        wireExoNode(host, HOST, 3);
+        wireExoNode(host, 3);
         expect(parent.querySelectorAll('div > div > div > div')).toHaveLength(3);
     });
 });

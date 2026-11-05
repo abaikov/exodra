@@ -2,15 +2,15 @@
 
 Form controls for Exodra without a bound model. Five functions and two types:
 
-| Export | What it does |
-| --- | --- |
-| `readExoControlValue(target)` | Reads any form control — usually `event.target` — as the value its type means. |
-| `readExoControlValues(c, refPorts)` | Reads the live controls behind ref ports, at the moment you ask: on submit, on validate. |
-| `writeExoChoice(c, markPorts, values, chosen)` | Puts the `checked` mark of a radio group, or the `selected` mark of a `<select>`'s options, on the member whose value is `chosen` — one write. |
-| `checkExoControlValues(values, rules)` | Runs one rule per value and answers its error or `null`. Touches no document, so the same rules run on an API server. |
-| `setExoControlErrors(c, refPorts, errors)` | Hands each error to its control's `setCustomValidity` (`null` clears it), so `:invalid`, `:user-invalid` and `checkValidity()` see what the machine decided. |
-| `TExoControlValue` | `string \| number \| boolean \| readonly string[] \| FileList` — what a control reads as. |
-| `TExoControlRule` | `(value, values) => string \| null` — one field's rule; `values` lets it compare fields. |
+| Export                                         | What it does                                                                                                                                                 |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `readExoControlValue(target)`                  | Reads any form control — usually `event.target` — as the value its type means.                                                                               |
+| `readExoControlValues(c, refPorts)`            | Reads the live controls behind ref ports, at the moment you ask: on submit, on validate.                                                                     |
+| `writeExoChoice(c, markPorts, values, chosen)` | Puts the `checked` mark of a radio group, or the `selected` mark of a `<select>`'s options, on the member whose value is `chosen` — one write.               |
+| `checkExoControlValues(values, rules)`         | Runs one rule per value and answers its error or `null`. Touches no document, so the same rules run on an API server.                                        |
+| `setExoControlErrors(c, refPorts, errors)`     | Hands each error to its control's `setCustomValidity` (`null` clears it), so `:invalid`, `:user-invalid` and `checkValidity()` see what the machine decided. |
+| `TExoControlValue`                             | `string \| number \| boolean \| readonly string[] \| FileList` — what a control reads as.                                                                    |
+| `TExoControlRule`                              | `(value, values) => string \| null` — one field's rule; `values` lets it compare fields.                                                                     |
 
 The package imports nothing at runtime. There is no binding, no source, no subscription and
 no listener inside it: the field holds its own value, the machine listens where it chooses,
@@ -109,29 +109,29 @@ backend.render(Signup, document.getElementById('root') as HTMLElement);
 
 What this shape decides:
 
-- **One listener, not one per field.** `input` and `change` bubble, so a port on any element
-  that contains the fields hears every one of them — a `<form>`, a `<fieldset>`, a panel
-  `<div>`. Fields do not need a `<form>` around them, and a single field can carry its own
-  event port when it is the only one.
-- **The field's own `value` is never written back.** The browser already holds what the
-  person typed; writing it again on every keystroke is a DOM write that changes nothing.
-  The machine writes only what *depends* on the value: a read-out, an error text, a
-  `disabled` flag.
-- **The value lives in `c.state`** when something else needs it later — the
-  `createInitialState` option of `createExoMachine` returns the starting value, and its
-  return type is the state's type. When nothing needs it later, keep no state at all.
-- **A function the handler calls is typed by the base machine**:
-  `TExoMachineNodeOf<typeof signupBase>` is the exonode with its `state`. A transition
-  declared with `withExoTransitions` is for the case where something outside the machine fires it.
+-   **One listener, not one per field.** `input` and `change` bubble, so a port on any element
+    that contains the fields hears every one of them — a `<form>`, a `<fieldset>`, a panel
+    `<div>`. Fields do not need a `<form>` around them, and a single field can carry its own
+    event port when it is the only one.
+-   **The field's own `value` is never written back.** The browser already holds what the
+    person typed; writing it again on every keystroke is a DOM write that changes nothing.
+    The machine writes only what _depends_ on the value: a read-out, an error text, a
+    `disabled` flag.
+-   **The value lives in `c.state`** when something else needs it later — the
+    `createInitialState` option of `createExoMachine` returns the starting value, and its
+    return type is the state's type. When nothing needs it later, keep no state at all.
+-   **A function the handler calls is typed by the base machine**:
+    `TExoMachineNodeOf<typeof signupBase>` is the exonode with its `state`. A transition
+    declared with `withExoTransitions` is for the case where something outside the machine fires it.
 
 ### Which field fired
 
 Two ways to tell, and both cost nothing per field:
 
-- **By `name`**, as above: a static attribute in the schema, compared in the handler.
-- **By identity**, against the elements behind ref ports. `c.portNode(port)` reads a ref
-  port's element out of the instance's port table; read it once, in `createInitialState`, and
-  keep it in the state:
+-   **By `name`**, as above: a static attribute in the schema, compared in the handler.
+-   **By identity**, against the elements behind ref ports. `c.portNode(port)` reads a ref
+    port's element out of the instance's port table; read it once, in `createInitialState`, and
+    keep it in the state:
 
 ```ts
 import {
@@ -301,10 +301,10 @@ the person moved by hand is simply overridden. A `chosen` that is not in `values
 
 It is used in two places:
 
-- **In `createInitialState`, for the starting mark.** The server prints `checked=""` on that
-  radio, or `selected` on that option, so the page arrives chosen before any JavaScript runs.
-- **In a handler or a wire, for a choice the application makes.** A person's own click moves the
-  mark natively; there is nothing to write for it.
+-   **In `createInitialState`, for the starting mark.** The server prints `checked=""` on that
+    radio, or `selected` on that option, so the page arrives chosen before any JavaScript runs.
+-   **In a handler or a wire, for a choice the application makes.** A person's own click moves the
+    mark natively; there is nothing to write for it.
 
 ```ts
 import { EXO_PORT_ATTR, EXO_PORT_EVENT, createExoMachine, createExoSchema, exoPorts, withExoHandlers } from '@exodra/core';
@@ -366,7 +366,7 @@ export const Size = withExoHandlers(sizeBase, (on) => {
 ### A group whose value comes from a parent
 
 When the chosen value belongs to a parent, the group is its own machine whose **wire** takes
-the value as params and writes the mark. The parent builds it with the starting value and
+the value as params and writes the mark. The parent creates it, wires it with the starting value and
 re-runs the wire with `wireExoNode` when the value changes:
 
 ```ts
@@ -427,15 +427,16 @@ const accountBase = createExoMachine<TExoDomNode, unknown, { group: TExoNode }>(
     accountSchema,
     {
         createInitialState: (c) => {
-            const group = c.build(PlanGroup, 'team');
-            c.childList(AccountPorts.slot).insert(group);
+            const group = c.createExoNode(PlanGroup);
+            wireExoNode(group, 'team');
+            c.appendChild(AccountPorts.slot, group);
             return { group };
         },
     }
 );
 export const Account = withExoHandlers(accountBase, (on) => {
     on(AccountPorts.downgrade, (c) => {
-        wireExoNode(c.state.group, PlanGroup, 'free');
+        wireExoNode(c.state.group, 'free');
     });
 });
 ```
@@ -519,11 +520,11 @@ const sumOf = (quantities: readonly number[]): number =>
 
 const cartBase = createExoMachine<TExoDomNode, unknown, TCart>(cartSchema, {
     createInitialState: (c) => {
-        const list = c.childList(CartPorts.rows);
         const quantities = PRICES.map(() => 1);
         const rows = PRICES.map((price, i) => {
-            const row = c.build(Row, { at: i, price, quantity: quantities[i] });
-            list.insert(row);
+            const row = c.createExoNode(Row);
+            wireExoNode(row, { at: i, price, quantity: quantities[i] });
+            c.appendChild(CartPorts.rows, row);
             return row;
         });
         return { quantities, rows };
@@ -540,7 +541,7 @@ function setQuantity(
     quantity: number
 ): void {
     c.state.quantities[at] = quantity;
-    wireExoNode(c.state.rows[at], Row, { at, price: PRICES[at], quantity });
+    wireExoNode(c.state.rows[at], { at, price: PRICES[at], quantity });
     showSum(c);
 }
 
@@ -564,17 +565,17 @@ server prints and nothing writes it again.
 
 `readExoControlValue` looks at the element's `localName` and, for an `<input>`, its `type`:
 
-| Control | Reads | As |
-| --- | --- | --- |
-| `<input type="checkbox">` | `checked` | `boolean` |
-| `<input type="number">`, `<input type="range">` | `valueAsNumber` | `number` |
-| `<input type="radio">` | `value` while checked, else nothing | `string` or `undefined` |
-| `<input type="file">` | `files` | `FileList` |
-| any other `<input>` (text, email, date, …) | `value` | `string` |
-| `<select>` | `value` | `string` |
-| `<select multiple>` | the `value` of every selected option | `string[]` |
-| `<textarea>` | `value` | `string` |
-| anything else — including a form-associated custom element and a `contenteditable` element — and `null`, `undefined` | — | `undefined` |
+| Control                                                                                                              | Reads                                | As                      |
+| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ----------------------- |
+| `<input type="checkbox">`                                                                                            | `checked`                            | `boolean`               |
+| `<input type="number">`, `<input type="range">`                                                                      | `valueAsNumber`                      | `number`                |
+| `<input type="radio">`                                                                                               | `value` while checked, else nothing  | `string` or `undefined` |
+| `<input type="file">`                                                                                                | `files`                              | `FileList`              |
+| any other `<input>` (text, email, date, …)                                                                           | `value`                              | `string`                |
+| `<select>`                                                                                                           | `value`                              | `string`                |
+| `<select multiple>`                                                                                                  | the `value` of every selected option | `string[]`              |
+| `<textarea>`                                                                                                         | `value`                              | `string`                |
+| anything else — including a form-associated custom element and a `contenteditable` element — and `null`, `undefined` | —                                    | `undefined`             |
 
 **A number field reads `NaN` when it is empty or half-typed** (`1e`). That is the browser's
 own parse under the field's type: `Number('')` is `0`, and a form that turns "the person
@@ -588,37 +589,37 @@ reads as whether it is ticked, not its `value` attribute.
 
 ## What runs where
 
-- **Browser (`@exodra/dom`)** — everything above.
-- **Server (`@exodra/string`)** — `writeExoChoice` in `createInitialState` or in a wire
-  prints the starting mark (`checked=""`, `selected`). Event handlers never run, because there are no events.
-  `readExoControlValues` answers `undefined` for every port, because there is no document to
-  read. `readExoControlValue` checks `localName` rather than `instanceof`, so it touches no
-  DOM global, is safe in a server bundle, and reads a control from another realm (an iframe).
-- **Hydration** — adopts the served controls, including whatever a person typed into them
-  before the bundle arrived; `readExoControlValues` reads that text back.
+-   **Browser (`@exodra/dom`)** — everything above.
+-   **Server (`@exodra/string`)** — `writeExoChoice` in `createInitialState` or in a wire
+    prints the starting mark (`checked=""`, `selected`). Event handlers never run, because there are no events.
+    `readExoControlValues` answers `undefined` for every port, because there is no document to
+    read. `readExoControlValue` checks `localName` rather than `instanceof`, so it touches no
+    DOM global, is safe in a server bundle, and reads a control from another realm (an iframe).
+-   **Hydration** — adopts the served controls, including whatever a person typed into them
+    before the bundle arrived; `readExoControlValues` reads that text back.
 
 All of it is pinned in `packages/forms/src/controls/tests/controls.test.ts`, including the
 served radio group and the `undefined` answers on `@exodra/string`.
 
 ## Known limits
 
-- **A `<select>` has no `value` port that the server can print.** `attrPort(port, 'value')` on a
-  `<select>` is refused when the schema is built (`EXO0015`): the markup for "this option is
-  chosen" is `selected` on the `<option>`, a different element, so the server would serve the
-  first option whatever the state says. Mark the options with `attrPort(port, 'selected')` and write
-  the mark with `writeExoChoice`. The same refusal covers a `value` port on an `<output>`, whose
-  value is its text: use a `textPort(port)`.
-- **`form.reset()` on a client-rendered field empties it.** A `value` port is written as the
-  `value` property only, never the attribute, so a field rendered in the browser has no
-  default to reset to. A served field resets to what the server printed. `checked` and
-  `selected` write the attribute as well, so they reset the same way on both. The header of
-  `packages/dom/src/tests/property-parity.test.ts` states both rules.
-- **Controls inside a shadow root are not read by a container outside it.** An event that
-  crosses a shadow boundary is retargeted, so the container's handler sees the **host** as
-  `event.target`, and `change` is not composed at all, so it does not cross. Read
-  `event.composedPath()[0]` yourself, or listen inside the component.
-- **Form-associated custom elements and `contenteditable` read as `undefined`.**
-  `readExoControlValue` knows `<input>`, `<select>` and `<textarea>` only.
+-   **A `<select>` has no `value` port that the server can print.** `attrPort(port, 'value')` on a
+    `<select>` is refused when the schema is built (`EXO0015`): the markup for "this option is
+    chosen" is `selected` on the `<option>`, a different element, so the server would serve the
+    first option whatever the state says. Mark the options with `attrPort(port, 'selected')` and write
+    the mark with `writeExoChoice`. The same refusal covers a `value` port on an `<output>`, whose
+    value is its text: use a `textPort(port)`.
+-   **`form.reset()` on a client-rendered field empties it.** A `value` port is written as the
+    `value` property only, never the attribute, so a field rendered in the browser has no
+    default to reset to. A served field resets to what the server printed. `checked` and
+    `selected` write the attribute as well, so they reset the same way on both. The header of
+    `packages/dom/src/tests/property-parity.test.ts` states both rules.
+-   **Controls inside a shadow root are not read by a container outside it.** An event that
+    crosses a shadow boundary is retargeted, so the container's handler sees the **host** as
+    `event.target`, and `change` is not composed at all, so it does not cross. Read
+    `event.composedPath()[0]` yourself, or listen inside the component.
+-   **Form-associated custom elements and `contenteditable` read as `undefined`.**
+    `readExoControlValue` knows `<input>`, `<select>` and `<textarea>` only.
 
 ## License
 

@@ -53,11 +53,10 @@ convention, and the return value is the difference.
 **It renders ONE instance and takes no count.** **There are no props anywhere**: an
 instance is handed its params and nothing else, so a row's datum arrives as the params it was
 armed with. Rows that vary are a **list** — a children port filled with
-`c.list(port, C, rows)` for a fixed run of them (row i armed with `rows[i]`), or a child list
-opened with `c.childList(port)` in `createInitialState` and driven by
-`reconcileExoOrder(rows, shown, items, items, (item) => c.build(C, item))` from
-`@exodra/list-reconcile` in a transition, through the same door on this backend as in the
-browser. A request only ever needs the reconciler's first pass, which is insert-only.
+`c.list(port, C, rows)` for a fixed run of them (row i armed with `rows[i]`), or a reconciler
+made once at module level with `createExoChildrenReconciler(C)` from `@exodra/list-reconcile` and
+called as `reconcileRows(c, port, items)` from a transition or an effect, through the same door
+on this backend as in the browser. A request only ever needs the reconciler's first pass, which is insert-only.
 
 `render` takes an optional second argument: the `TExoContextFrame` the root inherits.
 
@@ -83,27 +82,28 @@ compiled schema is cached per **(declaration, backend)** rather than per declara
 **build the backend once, at module level**, or every request recompiles every
 declaration on the page.
 
-| Method | On the server |
-| --- | --- |
-| `attr(port, value)` | escape for wherever this port is, and store |
-| `text(port, value)` / `html(port, markup)` | the same slot write, through the port's own writer |
-| `on(port, handler, subject?)` | accepted in **both** forms and printed as nothing; the slot is still written |
-| `provide(token, value)` / `inject(token)` | the same chain and lookup rule the browser uses |
-| `one(port, C, params?)` / `list(port, C, rows)` | render nested instances into a children port |
-| `build(component, params?)` | render one child and hand it back as a value |
-| `childList(port)` | the placement door a reconciler drives, over this port's slot |
-| `onTeardown(off)` | file a disposer; `render` runs them when it returns |
+| Method                                                                                      | On the server                                                                                          |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `attr(port, value)`                                                                         | escape for wherever this port is, and store                                                            |
+| `text(port, value)` / `html(port, markup)`                                                  | the same slot write, through the port's own writer                                                     |
+| `on(port, handler, subject?)`                                                               | accepted in **both** forms and printed as nothing; the slot is still written                           |
+| `provide(token, value)` / `inject(token)`                                                   | the same chain and lookup rule the browser uses                                                        |
+| `one(port, C, params?)` / `list(port, C, rows)`                                             | render nested instances into a children port                                                           |
+| `createExoNode(component)`                                                                  | create one child, unwired, and hand it back as a value; `wireExoNode(node, params)` wires it           |
+| `appendChild` / `insertChild` / `moveChild` / `removeChild` / `replaceChildren` / `childAt` | the children-port calls, with the browser's signatures; a child's markup is taken when its parent's is |
+| `portChildList(port)`                                                                       | the placement door a reconciler drives, over this port's slot                                          |
+| `onTeardown(off)`                                                                           | file a disposer; `render` runs them when it returns                                                    |
 
 Two of those look like omissions and are not:
 
-- **`on` must accept both forms or the design breaks in half.** The moment
-  `c.on(TodoPorts.click, toggleDone, item)` is a call this backend does not have, every
-  component with a declarative handler needs a second machine.
-- **An effect reads its source once and subscribes to nothing it keeps.**
-  It draws what the source holds now and returns its unsubscribe, and the render stops every
-  effect on the way out — so there is no callback outliving the request and no second render
-  to update. The same machine runs here and in the browser because following data is the
-  machine's, not the backend's.
+-   **`on` must accept both forms or the design breaks in half.** The moment
+    `c.on(TodoPorts.click, toggleDone, item)` is a call this backend does not have, every
+    component with a declarative handler needs a second machine.
+-   **An effect reads its source once and subscribes to nothing it keeps.**
+    It draws what the source holds now and returns its unsubscribe, and the render stops every
+    effect on the way out — so there is no callback outliving the request and no second render
+    to update. The same machine runs here and in the browser because following data is the
+    machine's, not the backend's.
 
 A **node** here is a string of markup. The type it comes back as
 (`TExoNode`) is opaque, which is what lets one machine assemble
@@ -175,7 +175,7 @@ flatten, in which case the head is cheaper than the table says and the flatten
 dearer.
 
 **Baking the head back in cannot be taken back.** It was built, measured and
-removed. Eligibility was written over the *value* rules — which attributes have
+removed. Eligibility was written over the _value_ rules — which attributes have
 no "absent" branch, i.e. `class` and the string properties — and that says
 nothing about a port the machine **never fills at all**: a baked head prints
 unconditionally, so an unfilled `class` port serves ` class=""` where
@@ -192,7 +192,7 @@ straight-line program accumulating with `+=` — at **0.1125 ms**, on output gat
 byte-identical before anything is timed. V8 builds cons-strings for `+=`; the
 array is pure garbage. This is why `list` accumulates its rows with `+=` into the port's
 one slot rather than collecting them and joining, and why the shipped closure is a
-*filler* and never a *joiner* (the key that prices it in that recording is
+_filler_ and never a _joiner_ (the key that prices it in that recording is
 `CENSUS/+fill`).
 
 ### The filler's shape
@@ -262,47 +262,47 @@ page — the whole markup cut, every time.
 
 ## Traps
 
-- **Void elements** (`<br>`, `<img>`) refuse content, and the check survives a
-  production build: emitting `<br>…</br>` re-parses into **two** `<br>` elements
-  with the content between them, while `@exodra/dom` builds the element and drops
-  the content. One schema, two pages.
-- **`<pre>`, `<listing>`, `<textarea>` eat a leading newline.** The parser throws
-  away a single U+000A after those three start tags, so a text port whose value
-  begins with one is served short. The writer emits the spec's optional newline
-  exactly when the content begins with one. `\r` is **not** handled: the input
-  preprocessor turns CR into LF before tokenisation, and the fix belongs to
-  `escapeExoText` in `@exodra/core`.
-- **Raw-text elements are not escaped.** Inside `<script>`/`<style>` the
-  serialisation algorithm writes a Text node's data as it stands, so escaping
-  turned `.a > .b` into a CSS rule matching nothing and `a && b` into a syntax
-  error — on both backends identically, which is why no parity test objected.
-  The element's boundary is refused at schema-build time instead
-  (`assertExoIntactRawTextBoundary`).
-- **Static text after a children port is refused**, out of one file shared with
-  the DOM compiler: a region is anchored on the next static element there, so its
-  rows land after that text in the browser and before it here.
-- **A children port that shares its element refuses `html`.** Raw markup is
-  written with `innerHTML` in the browser, and `innerHTML` takes the whole
-  element, siblings included. Printing it here would render on the server and
-  throw the moment a browser touched it.
-- **A property with no markup form prints nothing** (`indeterminate`, `value` on
-  a `<textarea>`) — which is what makes hydration's `repair-attribute` fire. Open
-  gap: a `<textarea>`'s markup form is only its **default** value, so a served
-  textarea is empty where the data is not.
-- **`el.value = undefined`** stringifies through IDL `DOMString`, so a client
-  render puts the literal text "undefined" in an `<input>` where the server
-  prints the empty value. Neither side is worth copying; pinned by name in
-  `property-parity.test.ts`.
-- **`exoForeignMarkup` does not escape**, and cannot — at a child list's `insert` a
-  foreign child and a rendered one are the same `string`. The caller owns the
-  string. Hydration, lifecycle and well-formedness are not supported for it.
-- **A reconciled children port cannot be hydrated** — not this backend's refusal but its
-  consequence. The server will happily print a reconciler's first pass; the adopting
-  `openChildList` in `@exodra/dom` then refuses, rather than insert a second set of rows
-  beside the ones served. A page that hydrates keeps `c.one` and `c.list`.
-- **A pack replacing a DOM-only field** (`events`, `writers`, `createChild`,
-  `hydrateSurface`) composes here and is **silently inert**: this backend
-  has none of those fields — only `createInstance` — and `composeExoPlugins` refuses no name.
+-   **Void elements** (`<br>`, `<img>`) refuse content, and the check survives a
+    production build: emitting `<br>…</br>` re-parses into **two** `<br>` elements
+    with the content between them, while `@exodra/dom` builds the element and drops
+    the content. One schema, two pages.
+-   **`<pre>`, `<listing>`, `<textarea>` eat a leading newline.** The parser throws
+    away a single U+000A after those three start tags, so a text port whose value
+    begins with one is served short. The writer emits the spec's optional newline
+    exactly when the content begins with one. `\r` is **not** handled: the input
+    preprocessor turns CR into LF before tokenisation, and the fix belongs to
+    `escapeExoText` in `@exodra/core`.
+-   **Raw-text elements are not escaped.** Inside `<script>`/`<style>` the
+    serialisation algorithm writes a Text node's data as it stands, so escaping
+    turned `.a > .b` into a CSS rule matching nothing and `a && b` into a syntax
+    error — on both backends identically, which is why no parity test objected.
+    The element's boundary is refused at schema-build time instead
+    (`assertExoIntactRawTextBoundary`).
+-   **Static text after a children port is refused**, out of one file shared with
+    the DOM compiler: a region is anchored on the next static element there, so its
+    rows land after that text in the browser and before it here.
+-   **A children port that shares its element refuses `html`.** Raw markup is
+    written with `innerHTML` in the browser, and `innerHTML` takes the whole
+    element, siblings included. Printing it here would render on the server and
+    throw the moment a browser touched it.
+-   **A property with no markup form prints nothing** (`indeterminate`, `value` on
+    a `<textarea>`) — which is what makes hydration's `repair-attribute` fire. Open
+    gap: a `<textarea>`'s markup form is only its **default** value, so a served
+    textarea is empty where the data is not.
+-   **`el.value = undefined`** stringifies through IDL `DOMString`, so a client
+    render puts the literal text "undefined" in an `<input>` where the server
+    prints the empty value. Neither side is worth copying; pinned by name in
+    `property-parity.test.ts`.
+-   **`exoForeignMarkup` does not escape**, and cannot — at a child list's `insert` a
+    foreign child and a rendered one are the same `string`. The caller owns the
+    string. Hydration, lifecycle and well-formedness are not supported for it.
+-   **A reconciled children port cannot be hydrated** — not this backend's refusal but its
+    consequence. The server will happily print a reconciler's first pass; the adopting
+    `openChildList` in `@exodra/dom` then refuses, rather than insert a second set of rows
+    beside the ones served. A page that hydrates keeps `c.one` and `c.list`.
+-   **A pack replacing a DOM-only field** (`events`, `writers`, `createChild`,
+    `hydrateSurface`) composes here and is **silently inert**: this backend
+    has none of those fields — only `createInstance` — and `composeExoPlugins` refuses no name.
 
 ## Escaping
 

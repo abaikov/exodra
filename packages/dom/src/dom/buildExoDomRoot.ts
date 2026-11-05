@@ -1,22 +1,18 @@
 import type { TExoNode } from '@exodra/core';
-import { buildLiveExoChild } from './buildLiveExoChild';
+import { armExoDomChild } from './armExoDomChild';
 import { exoOnTeardown, exoTeardownScope } from './exoTeardownScope';
-import type { TExoDomMachine } from './types/TExoDomMachine';
 import type { TExoDomChild } from './types/TExoDomChild';
 import type { TExoDomMark } from './types/TExoDomMark';
 import type { TExoDomNodeApi } from './EXO_DOM_NODE_VOCABULARY';
-import type { TExoDomSchema } from './types/TExoDomSchema';
 
 export function buildExoDomRoot(
-    schema: TExoDomSchema,
-    machine: TExoDomMachine,
+    node: TExoDomNodeApi & TExoNode<TExoDomMark>,
     params?: unknown
 ): TExoDomNodeApi & TExoNode<TExoDomMark> {
-    let child: TExoDomChild | null = null;
+    const root = node as unknown as TExoDomChild;
     const ambient = exoTeardownScope(() => {
-        child = buildLiveExoChild(schema, machine, null, params);
+        armExoDomChild(root, params);
     });
-    const root = child as unknown as TExoDomChild;
     exoOnTeardown(root, ambient);
-    return root as unknown as TExoDomNodeApi & TExoNode<TExoDomMark>;
+    return node;
 }

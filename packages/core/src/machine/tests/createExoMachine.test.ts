@@ -76,6 +76,7 @@ const nodeOf = (backend: ExoCardBackend, context: TExoContextFrame | null = null
         effectStops: null,
         transitionOverrides: null,
         serviceState: undefined,
+        machine: null,
     } as unknown as TCard);
 
 /** What a host that is not an exonode does to end what a wire started. */
@@ -237,6 +238,7 @@ describe('an instance a machine wired', () => {
             'effectStops',
             'transitionOverrides',
             'serviceState',
+            'machine',
         ]);
         expect(first.state).not.toBe(second.state);
         expect(first.attr).toBe(second.attr);

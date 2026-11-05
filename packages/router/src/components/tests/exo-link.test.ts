@@ -8,7 +8,7 @@
 //
 // The href is the other half: it is in the MARKUP, which is what a crawler follows, what the
 // browser shows on hover, and what still works while the bundle is downloading.
-import { createExoMachine, createExoSchema } from '@exodra/core';
+import { createExoMachine, createExoSchema, wireExoNode } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachine, TExoMachineNode, TExoNode } from '@exodra/core';
 import { ExoStrBackend } from '@exodra/string';
 import { describe, expect, it } from 'vitest';
@@ -19,14 +19,14 @@ import { createExoRouter } from '../../setup/createExoRouter';
 import { ExoLink } from '../exoLink';
 import { provideExoRouter } from '../../setup/provideExoRouter';
 import { shouldIgnoreExoLinkClick } from '../shouldIgnoreExoLinkClick';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoLinkParams, TExoRoute, TExoRouter } from '../../types';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 interface TPlacingNode extends TExoMachineNode {
-    build<TParams>(machine: TExoMachine<never, unknown, TParams>, params?: TParams): TExoNode;
-    childList(port: TExoChildrenPort): { insert(child: TExoNode, i?: number): void };
+    createExoNode<TParams>(machine: TExoMachine<never, unknown, TParams>): TExoNode;
+    appendChild(port: TExoChildrenPort, node: TExoNode): TExoNode;
 }
 
 const page = (name: string) =>
@@ -57,8 +57,12 @@ const navWith = (router: TExoRouter | null, links: readonly TExoLinkParams[]) =>
     const m = createExoMachine<TPlacingNode>(NAV_SCHEMA, {
         createInitialState: (c) => {
             if (router !== null) provideExoRouter(c, router);
-            const bar = c.childList(NAV_SCHEMA.ports.items);
-            for (let i = 0; i < links.length; i++) bar.insert(c.build(ExoLink, links[i]));
+            for (let i = 0; i < links.length; i++) {
+                c.appendChild(
+                    NAV_SCHEMA.ports.items,
+                    wireExoNode(c.createExoNode(ExoLink), links[i])
+                );
+            }
         },
     });
     return m as never;
@@ -311,5 +315,27 @@ describe('ExoLink — currentWhen', () => {
 
         await router.navigate('/about');
         expect(currentOf(parent)).toEqual([null, 'page']);
+    });
+    it('starts and stops following navigation when a re-wire adds or drops currentWhen', async () => {
+        const router = createExoRouter(ROUTES, { history: createExoMemoryHistory('/') });
+        const parent = detachedHost();
+        let link!: TExoNode;
+        const host = createExoMachine<TPlacingNode>(NAV_SCHEMA, {
+            createInitialState: (c) => {
+                provideExoRouter(c, router);
+                link = wireExoNode(c.createExoNode(ExoLink), { to: '/about', label: 'about' });
+                c.appendChild(NAV_SCHEMA.ports.items, link);
+            },
+        });
+        EXO_BACKEND.render(host as never, parent);
+        wireExoNode(link, { to: '/about', label: 'about', currentWhen: 'exact' });
+        await router.navigate('/about');
+        expect(currentOf(parent)).toEqual(['page']);
+
+        wireExoNode(link, { to: '/about', label: 'about' });
+        expect(currentOf(parent)).toEqual([null]);
+        await router.navigate('/');
+        await router.navigate('/about');
+        expect(currentOf(parent)).toEqual([null]);
     });
 });

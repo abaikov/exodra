@@ -86,6 +86,7 @@ export { assertExoChildrenPort } from './schema/ports/asserts/assertExoChildrenP
 export { assertExoIntactRawTextBoundary } from './schema/markup/asserts/assertExoIntactRawTextBoundary';
 export { assertExoLegalTagName } from './schema/markup/asserts/assertExoLegalTagName';
 export { assertExoOneRoot } from './schema/markup/asserts/assertExoOneRoot';
+export { assertExoContentBeside } from './schema/markup/asserts/assertExoContentBeside';
 export { assertExoRootElement } from './schema/markup/asserts/assertExoRootElement';
 export { assertExoLegalAttrName } from './attr/asserts/assertExoLegalAttrName';
 export type { TExoEventHandler } from './wiring/types/TExoEventHandler';
@@ -106,6 +107,8 @@ export type { TExoVocabularyPlugin } from './plugins/types/TExoVocabularyPlugin'
 export {
     armExoNode,
     wireExoNode,
+    destroyExoNode,
+    EXO_UNARMED_STATE,
     swapExoParams,
     assertExoArming,
     connectExoNode,
@@ -114,6 +117,7 @@ export {
     withExoWire,
     withExoHandlers,
     withExoEffects,
+    withExoParamsEffects,
     composeExoMachine,
     disconnectExoNode,
     stopExoEffects,
@@ -132,10 +136,13 @@ export type {
     TExoMachineTransitions,
     TExoTransitionArgs,
     TExoMachineEffect,
+    TExoArmableNode,
+    TExoDestroyableNode,
     TExoMachineHandler,
     TExoMachineInitialState,
     TExoMachineNode,
     TExoTransitionOverrides,
+    TExoTransitionReplacements,
     TExoWire,
 } from './machine';
 // THE DECLARATIVE HALF IS NOT HERE. `withExoComputedMachine`, `exoTransition`, `exoWiring`,

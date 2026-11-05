@@ -19,10 +19,10 @@ A render in the schema core is a **clone**, a **replay of a walk**, and one
 indirect call per **port**. Neither the clone nor the walk is a method with a
 name, so there is nothing there to patch. Two things do have names:
 
-| instrument | patches | answers |
-| --- | --- | --- |
+| instrument            | patches                              | answers                                                                |
+| --------------------- | ------------------------------------ | ---------------------------------------------------------------------- |
 | `profileDom(backend)` | the **composed backend** you hand it | which **calls your wiring makes** cost — `attr`, `text`, `list`, `one` |
-| `profilePorts(C)` | one schema's **setter table** | which **place in your template** costs — `attr:style`, `text` |
+| `profilePorts(C)`     | one schema's **setter table**        | which **place in your template** costs — `attr:style`, `text`          |
 
 :::caution Wrapping the hot path measures a different program
 A setter's body is often a single `setAttribute`; the wrapper around it — two
@@ -80,9 +80,9 @@ permanently into any schema first rendered while profiling was on — surviving
 `stop()`. `render` and `hydrate` are excluded too, as entry points rather than
 things a wiring function calls.
 
-- `getReport()` — aggregated timings so far, heaviest first.
-- `reset()` — clear collected samples, keep profiling active.
-- `stop()` — put the backend's own methods back and return the final report.
+-   `getReport()` — aggregated timings so far, heaviest first.
+-   `reset()` — clear collected samples, keep profiling active.
+-   `stop()` — put the backend's own methods back and return the final report.
 
 An update is timed too: a transition writes through `c.attr` / `c.text`, which are
 the wrapped names, so every write an effect or a handler makes while profiling is
@@ -90,10 +90,10 @@ on lands in the report.
 
 Two things it will not show you:
 
-- **A static component's instances.** They never touch a connector.
-- **Hydration.** The adopting surface is a separate object — its prototype is the
-  backend, but its own methods shadow the ones this patched — so an adopted page is
-  not profiled by this.
+-   **A static component's instances.** They never touch a connector.
+-   **Hydration.** The adopting surface is a separate object — its prototype is the
+    backend, but its own methods shadow the ones this patched — so an adopted page is
+    not profiled by this.
 
 ## Per-port: `profilePorts(component)`
 
@@ -117,17 +117,17 @@ belongs to one plan, and there is no registry of plans to walk.
 
 Two rules, both structural:
 
-- **Start it before the render to see the render.** Every fill indexes
-  `schema.setters[port.index]` afresh — `attr`, `text` and `html` all do, and so
-  does the shared writer `portNodeWriter()` hands out — so a profiler started
-  after the render still times every later update; what it loses is the initial
-  fills, which is most of the mount.
-- **An event port and a ref port are invisible, and they always will be.** `on`
-  reads the event pack's body off the schema rather than the setter table, and a
-  ref port has no writer at all; the table's entries for both are
-  `exoUnsettableEvent` and `exoUnsettableRef`, which exist to throw. A **text**
-  port, by contrast, *is* timed: the Text node it writes is a slot in the walk,
-  so the write goes through the table like any attribute.
+-   **Start it before the render to see the render.** Every fill indexes
+    `schema.setters[port.index]` afresh — `attr`, `text` and `html` all do, and so
+    does the shared writer `portNodeWriter()` hands out — so a profiler started
+    after the render still times every later update; what it loses is the initial
+    fills, which is most of the mount.
+-   **An event port and a ref port are invisible, and they always will be.** `on`
+    reads the event pack's body off the schema rather than the setter table, and a
+    ref port has no writer at all; the table's entries for both are
+    `exoUnsettableEvent` and `exoUnsettableRef`, which exist to throw. A **text**
+    port, by contrast, _is_ timed: the Text node it writes is a slot in the walk,
+    so the write goes through the table like any attribute.
 
 **Pass it the backend the page renders from.** The second parameter is
 **required** and it must be the **same object**:
@@ -230,5 +230,5 @@ restore(); // put the original methods back
 
 ## Links
 
-- npm: [`@exodra/dom-profiler`](https://www.npmjs.com/package/@exodra/dom-profiler)
-- GitHub: [`packages/dom-profiler`](https://github.com/abaikov/exodra/tree/master/packages/dom-profiler)
+-   npm: [`@exodra/dom-profiler`](https://www.npmjs.com/package/@exodra/dom-profiler)
+-   GitHub: [`packages/dom-profiler`](https://github.com/abaikov/exodra/tree/master/packages/dom-profiler)

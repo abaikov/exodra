@@ -30,6 +30,7 @@ import {
     withExoTransitions,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoMachineNode,
@@ -42,17 +43,17 @@ import type {
 } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import type { TExoPlacedChildren } from '@exodra/list-reconcile';
-import { ExoDomBackend, withExoHydration, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 import { createExoTestMachine, source } from '@exodra/test-utils';
 import type { TExoTestSource } from '@exodra/test-utils';
 
-const EXO_BACKEND = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+const EXO_BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const EXO_STR = new ExoStrBackend();
 
 type TItem = { readonly label: string };
 
-/** NO PROPS: a row is handed its item and its position as params by `c.build`. */
+/** NO PROPS: a row is handed its item and its position as params by `wireExoNode`. */
 type TRowParams = { readonly item: TItem; readonly at: number };
 
 type TRowSurface = {
@@ -81,8 +82,8 @@ const ROW = createExoTestMachine(
 );
 
 type TShellSurface = TExoMachineNode & {
-    childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode<unknown>>;
-    build(component: typeof ROW, params?: unknown): TExoNode<unknown>;
+    portChildList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode<unknown>>;
+    createExoNode(component: typeof ROW): TExoNode<unknown>;
 };
 
 type TShellState = {
@@ -129,7 +130,7 @@ const shellOver = (build: TBuild, items: TExoTestSource<readonly TItem[]>) => {
     const schema = createExoSchema(build);
     const P = schema.ports;
     const m = createExoMachine<TShellSurface, unknown, TShellState>(schema, {
-        createInitialState: (c) => ({ rows: c.childList(P.rows), shown: [] as TItem[] }),
+        createInitialState: (c) => ({ rows: c.portChildList(P.rows), shown: [] as TItem[] }),
     });
     const machine = composeExoMachine(
         m,
@@ -142,7 +143,8 @@ const shellOver = (build: TBuild, items: TExoTestSource<readonly TItem[]>) => {
                         c.state.shown,
                         want,
                         want,
-                        (item) => c.build(ROW, { item, at: want.indexOf(item) })
+                        (item) =>
+                            wireExoNode(c.createExoNode(ROW), { item, at: want.indexOf(item) })
                     );
                 },
             }),

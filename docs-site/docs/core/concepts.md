@@ -16,10 +16,10 @@ follows from these four.
 
 A component is one value carrying two halves:
 
-| Half | When it runs | What it is |
-| --- | --- | --- |
-| the **schema** | once, at module load | the constant shape — static markup, plus the ports where values may later be put |
-| the **wiring function** | once per instance | the code that fills those ports |
+| Half                    | When it runs         | What it is                                                                       |
+| ----------------------- | -------------------- | -------------------------------------------------------------------------------- |
+| the **schema**          | once, at module load | the constant shape — static markup, plus the ports where values may later be put |
+| the **wiring function** | once per instance    | the code that fills those ports                                                  |
 
 That split is where the performance comes from. Deciding what the markup is,
 which attribute lives where, how deep a node sits — all of it happens once per
@@ -102,40 +102,40 @@ nothing else.
 
 ## Identity & reconciliation
 
-`reconcileExoOrder(kids, shown, keys, want, build)` from `@exodra/list-reconcile`,
-called from the machine over `c.childList(port)`, makes a children port equal to
-the array it is handed, reconciled by **object identity**, and returns the new
-order shown for the machine to keep in its state:
+A reconciler made once, at module level, by `createExoChildrenReconciler(rowMachine)` from
+`@exodra/list-reconcile` and called from the machine as `reconcile(c, port, items)`, makes a
+children port equal to the array it is handed, reconciled by **object identity**. It
+remembers what it showed in each node and port itself, so the machine keeps no order in its
+state:
 
-- **Same item object** as before → the **same element is reused** (moved if its
-  position changed, never rebuilt).
-- **A new item object** → a child is built and inserted.
-- **An item that disappeared** → its child is removed and its effects are
-  stopped.
+-   **Same item object** as before → the **same element is reused** (moved if its
+    position changed, never rebuilt).
+-   **A new item object** → a row is created, wired with the item as its params, and
+    inserted.
+-   **An item that disappeared** → its row is destroyed.
 
-There is no `key` prop on this path and no heuristic: the reference *is* the key.
+There is no `key` prop on this path and no heuristic: the reference _is_ the key.
 Whether a row survives an update depends entirely on whether you hand back the same
 object — which is what preserves input focus, scroll position and per-row state.
 
-A key is available as an **opt-in plugin**, never as a core default:
-`EXO_KEYED_LIST_VOCABULARY` from `@exodra/list-reconcile` puts
-`c.keyedList(port, keyOf, build, update)` on the exonode of a backend that
-composed it — it returns a list whose `reconcile(items)` the machine calls — over
-the free function `createExoKeyedList`, for the case where
-identity genuinely is not available — rows arriving as freshly parsed JSON on every
-refetch. See
+A key is available as an **opt-in**, never as a core default:
+`createExoChildrenReconciler(rowMachine, { key: (item) => item.id })` matches rows by the
+key instead, for the case where identity genuinely is not available — rows arriving as
+freshly parsed JSON on every refetch. A key that stays under a new object keeps its row and
+re-wires it with the new item. See
 [Keys, when identity is not available](../guides/lists.md#keys-when-identity-is-not-available).
 
 This is the functional idiom of **structural sharing**: keep the reference for
 what is unchanged, mint a new one for what changed. React hides identity and
 hands you `key` / `memo` as escape hatches; Exodra makes identity first-class.
 
-Underneath the reconciler, a child is a value you can hold: `c.build(component,
-params)` returns one, and `c.childList(port)` is the placement door — `insert`,
-`move`, `remove` — that holds whatever is put in it. Whoever drives that door
-decides everything else — which item reuses which child, and what a key would mean
-if you wanted one. See
-[Lists & Reconciliation](../guides/lists.md).
+Underneath the reconciler, a child is a value you can hold:
+`c.createExoNode(component)` makes one and `wireExoNode(node, params)` wires it, and the
+port methods — `c.appendChild(port, node)`, `c.insertChild(port, node, at)`,
+`c.moveChild(node, at)`, `c.removeChild(node)` — place it, the same way an element is
+placed in the DOM. Whoever drives those calls decides everything else — which item
+reuses which child, and what a key would mean if you wanted one. See
+[Children](../guides/children.md) and [Lists & Reconciliation](../guides/lists.md).
 
 ## State, transitions and effects
 
@@ -216,11 +216,12 @@ cell of its own, and a derived value is computed in the transition that writes i
 A component nests another by filling a **children port** with it. There are three
 calls, and the difference between them is how much may change later:
 
-| Call | What it puts in the port |
-| --- | --- |
-| `c.one(port, component, params?)` | one instance, built now |
-| `c.list(port, component, rows)` | a fixed list, one instance per element of `rows`, each handed its element as params — rendered once, never reconciled |
-| `reconcileExoOrder(c.state.rows, c.state.shown, want, want, build)` over `c.childList(port)` | a live list, reconciled by object identity |
+| Call                                                                                     | What it puts in the port                                                                                              |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `c.one(port, component, params?)`                                                        | one instance, built now                                                                                               |
+| `c.list(port, component, rows)`                                                          | a fixed list, one instance per element of `rows`, each handed its element as params — rendered once, never reconciled |
+| `reconcile(c, port, items)`, from `createExoChildrenReconciler(component)`               | a live list, reconciled by object identity                                                                            |
+| `c.createExoNode(component)` + `wireExoNode(node, params)` + `c.appendChild(port, node)` | children under your own control — see [Children](../guides/children.md)                                               |
 
 A children port **is a child**: it renders exactly where `childrenPort(Ports.x)` was
 called, so it may stand between static siblings.
@@ -261,7 +262,6 @@ An effect's stop — the function it returns — runs when the instance leaves.
 Something started outside an effect is registered against the child being wired
 with `c.onTeardown`:
 
-
 ```ts
 import type { TExoDomNode } from '@exodra/dom';
 
@@ -283,20 +283,20 @@ page that made it.
 Correctness never depends on an optimization: the fast path is the only path.
 The shape is compiled once per process into a prototype element, a walk plan and
 a setter per port, and a render is a clone plus one indirect call per port. There
-is no hoisting switch to forget and no cache key to name — the schema *is* the
+is no hoisting switch to forget and no cache key to name — the schema _is_ the
 hoisted template.
 
 Two things are worth knowing anyway:
 
-- **A list pass costs what changed.** `reconcileExoOrder` trims the common head
-  and tail first and runs the identity match only over the middle, so an append
-  or a single edit is a short pass, not a walk of the whole array.
+-   **A list pass costs what changed.** The reconciler trims the common head
+    and tail first and runs the identity match only over the middle, so an append
+    or a single edit is a short pass, not a walk of the whole array.
 
-- **Event delegation is a choice.** `createExoDelegatedEvents(names)` puts one listener
-  on the root for every row instead of one per element. It requires a **subject**
-  in every fill — `c.on(port, handler, subject)` — because the subject is how one
-  module-level function learns which row it fired on, rather than one closure
-  per row carrying its own.
+-   **Event delegation is a choice.** `createExoDelegatedEvents(names)` puts one listener
+    on the root for every row instead of one per element. It requires a **subject**
+    in every fill — `c.on(port, handler, subject)` — because the subject is how one
+    module-level function learns which row it fired on, rather than one closure
+    per row carrying its own.
 
 See **[Optimizations](../guides/optimizations.md)** for what you get for free and
 what you reach for by hand.

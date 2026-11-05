@@ -9,12 +9,12 @@ Exodra — or an Exodra app can embed React — without installing the other
 direction, and so both resolve the same `@exodra/*` instances through peer
 dependencies instead of each pinning its own copy.
 
-| Package | Direction |
-| --- | --- |
-| [`@exodra/react`](#react-inside-exodra) | a React component inside an Exodra component |
-| [`@exodra/react-mount`](#exodra-inside-react) | an Exodra component inside a React tree |
-| [`@exodra/react-compat`](./react-compat.md) | React code running on Exodra |
-| [`@exodra/to-react`](./to-react.md) | Exodra code translated into plain React |
+| Package                                       | Direction                                    |
+| --------------------------------------------- | -------------------------------------------- |
+| [`@exodra/react`](#react-inside-exodra)       | a React component inside an Exodra component |
+| [`@exodra/react-mount`](#exodra-inside-react) | an Exodra component inside a React tree      |
+| [`@exodra/react-compat`](./react-compat.md)   | React code running on Exodra                 |
+| [`@exodra/to-react`](./to-react.md)           | Exodra code translated into plain React      |
 
 ## React inside Exodra
 
@@ -120,13 +120,13 @@ The helper asks the **connector** which backend is filling, not the environment 
 `typeof document === 'undefined'` is wrong twice over, since a server suite under
 jsdom has a `document` and no element to mount into.
 
-- **Server:** the component is rendered to HTML and written into the port, so the
-  island's content is in the initial payload (SEO, no layout shift).
-- **Hydration:** the served markup is found in the host and handed to
-  `hydrateRoot` — React taking over the server's DOM in place. Exodra writes
-  nothing into the host itself.
-- **Client render:** the host is empty, so the island mounts fresh with
-  `createRoot`.
+-   **Server:** the component is rendered to HTML and written into the port, so the
+    island's content is in the initial payload (SEO, no layout shift).
+-   **Hydration:** the served markup is found in the host and handed to
+    `hydrateRoot` — React taking over the server's DOM in place. Exodra writes
+    nothing into the host itself.
+-   **Client render:** the host is empty, so the island mounts fresh with
+    `createRoot`.
 
 Which of the last two runs is decided by what is already in the host, and nothing
 else can decide it: hydration and a client render run the **same** machine, so the
@@ -156,17 +156,17 @@ unmounts React and drops the subscription. Emits after that are ignored.
 
 ### Exports
 
-- `reactIsland(connector, port, Component, props, options?)`
-- Types: `TExoReactIslandOptions`, `TExoReactWiring`,
-  `TExoReactDomWiring`, `TExoReadableSource`
+-   `reactIsland(connector, port, Component, props, options?)`
+-   Types: `TExoReactIslandOptions`, `TExoReactWiring`,
+    `TExoReactDomWiring`, `TExoReadableSource`
 
 ### Notes & limits
 
-- **Context does not cross the boundary.** Exodra `provide` / `inject` and React
-  Context are separate — pass anything an island needs through its props.
-- **One React root per island.** Prefer a few larger islands over many tiny ones.
-- Server rendering pulls in `react-dom/server`. Use `{ ssr: false }` where you do
-  not need it.
+-   **Context does not cross the boundary.** Exodra `provide` / `inject` and React
+    Context are separate — pass anything an island needs through its props.
+-   **One React root per island.** Prefer a few larger islands over many tiny ones.
+-   Server rendering pulls in `react-dom/server`. Use `{ ssr: false }` where you do
+    not need it.
 
 ## Exodra inside React
 
@@ -214,16 +214,16 @@ export function Panel() {
 
 ### Options
 
-| Option | Meaning |
-| --- | --- |
-| `hydrate` | adopt server markup already in the container instead of building; falls back to a fresh render when there is nothing to adopt |
-| `params` | handed to the machine's `wire`. When they change — compared key by key, so a fresh object with the same values is no change — the wire re-runs on the same instance, without re-mounting |
-| `deps` | re-mount when one of these changes, like a `useEffect` dependency array; defaults to "mount once" |
+| Option    | Meaning                                                                                                                                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hydrate` | adopt server markup already in the container instead of building; falls back to a fresh render when there is nothing to adopt                                                                                                   |
+| `params`  | handed to the machine's `wire`. When they change — compared key by key, so a fresh object with the same values is no change — the wire re-runs on the same instance, without re-mounting                                        |
+| `deps`    | re-mount when one of these changes, like a `useEffect` dependency array; defaults to "mount once"                                                                                                                               |
 | `backend` | the backend this island renders from — the object your application composed. Left out, the island runs on this package's own, which composes `withExoHydration` because an island over server markup is what the package is for |
 
 There is **no instance count**. `backend.render` mounts one instance, which is
 exactly what an island is; rows that vary inside it are a list, filled by
-`c.list` or by a transition calling `reconcileExoOrder` over `c.childList` in the component's own machine.
+`c.list`, by the port methods of [Children](./children.md), or by a reconciler from `createExoChildrenReconciler` called in the component's own machine.
 
 `ExoMount` takes those plus `html`, `className`, `id` and `style`. Passing `html`
 (from `new ExoStrBackend().render(...)`) ships the markup inside the
@@ -263,17 +263,19 @@ export function Profile({ name }: { name: string }) {
 }
 ```
 
-The instance is built with `backend.buildRoot` and placed with
+The instance is a root like any other: created and wired once — what
+`backend.createExoNode(Greeting)` and `wireExoNode(node, params)` do — and placed with
 `backend.mountRoot` (see [Build, then mount](../api/dom.md#build-then-mount));
-a params change is `wireExoNode(node, Greeting, params)` on that same node, so
+a params change is `wireExoNode(node, params)` on that same node, so
 the elements, the machine state and the effects all stay.
 
 Two limits come from the machine, not from this package:
 
-- a machine with **no `wire`** has nothing to re-run, so a params change
-  re-mounts it;
-- a wire that **opens children** (`childList`, `one`, `list`) refuses a re-run
-  with `EXO0103` — open them in `createInitialState`.
+-   a machine with **no `wire`** has nothing to re-run, so a params change
+    re-mounts it;
+-   a wire that places children with **`one` or `list`** refuses a re-run
+    with `EXO0103` — call them in `createInitialState`, or place the children with the
+    port methods of [Children](./children.md), which any wire may call.
 
 To reach the instance from React — to fire a transition from a React event
 handler — read `node.current` from the hook:
@@ -299,7 +301,7 @@ export function GreetingIsland() {
 is the normal thing to pass: `createExoSchema` builds the schema once at module
 
 load, so there is nothing to rebuild per mount. The function form is how a
-component gets *chosen* — `() => tab === 'chart' ? Chart : Table` — and it runs
+component gets _chosen_ — `() => tab === 'chart' ? Chart : Table` — and it runs
 once per mount, never per React render, with `deps` deciding when that choice is
 made again.
 
@@ -312,7 +314,7 @@ it; without it, a `deps` change would append a second copy beside the first.
 
 ## Links
 
-- npm: [`@exodra/react`](https://www.npmjs.com/package/@exodra/react) ·
-  [`@exodra/react-mount`](https://www.npmjs.com/package/@exodra/react-mount)
-- GitHub: [`packages/react`](https://github.com/abaikov/exodra/tree/master/packages/react) ·
-  [`packages/react-mount`](https://github.com/abaikov/exodra/tree/master/packages/react-mount)
+-   npm: [`@exodra/react`](https://www.npmjs.com/package/@exodra/react) ·
+    [`@exodra/react-mount`](https://www.npmjs.com/package/@exodra/react-mount)
+-   GitHub: [`packages/react`](https://github.com/abaikov/exodra/tree/master/packages/react) ·
+    [`packages/react-mount`](https://github.com/abaikov/exodra/tree/master/packages/react-mount)

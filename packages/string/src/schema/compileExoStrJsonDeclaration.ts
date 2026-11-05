@@ -1,4 +1,5 @@
 import {
+    assertExoContentBeside,
     EXO_PORT_ATTR,
     EXO_PORT_ATTR_STRING,
     EXO_PORT_ATTR_TOGGLE,
@@ -49,6 +50,7 @@ type TExoStrFrame = {
     endOfStartTagPiece: number;
     endOfStartTagOffset: number;
     kids: number;
+    contentPort: number;
     soleChildPort: number;
     soleChildEatsNewline: boolean;
     afterRegion: boolean;
@@ -76,6 +78,7 @@ function createFrame(tag: string, kidsNs: string = EXO_HTML_NS): TExoStrFrame {
         endOfStartTagPiece: -1,
         endOfStartTagOffset: -1,
         kids: 0,
+        contentPort: -1,
         soleChildPort: -1,
         soleChildEatsNewline: false,
         afterRegion: false,
@@ -226,6 +229,7 @@ class ExoStrEmitter implements TExoEmitter {
     private openKid(): TExoStrFrame {
         const frame = this.frame;
         if (frame.isVoid) this.refuseVoidContent(frame.tag);
+        if (frame.contentPort >= 0) assertExoContentBeside(frame.tag);
         this.closeStartTag();
         this.flushText();
         return frame;
@@ -289,6 +293,7 @@ class ExoStrEmitter implements TExoEmitter {
             this.roots.push(`the static text ${JSON.stringify(String(value))}`);
         }
         if (frame.isVoid) this.refuseVoidContent(frame.tag);
+        if (frame.contentPort >= 0) assertExoContentBeside(frame.tag);
         this.closeStartTag();
         frame.kids++;
         // MERGED because the parser merges the run into ONE Text node. Inside a raw-text element it
@@ -354,7 +359,9 @@ class ExoStrEmitter implements TExoEmitter {
     textPort(portName?: string): TExoTextPort;
     textPort(given?: TExoTextPort | string): TExoTextPort {
         const frame = this.openKid();
+        if (frame.kids > 0) assertExoContentBeside(frame.tag);
         const port = this.mintedOrGiven<TExoTextPort>(EXO_PORT_TEXT, given);
+        frame.contentPort = port.index;
         this.cut(port.index, {
             writer: 'text',
             eatsLeadingNewline: frame.eatsLeadingNewline && frame.kids === 0,

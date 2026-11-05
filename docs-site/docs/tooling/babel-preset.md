@@ -99,13 +99,13 @@ module.exports = {
 };
 ```
 
-| option | default | what it is |
-| --- | --- | --- |
-| `typescript` | `true` | include `@babel/preset-typescript` |
-| `schemaSource` | `'@exodra/core'` | where the schema factory is imported from |
-| `schemaImport` | `'createExoNamedSchema'` | the exported name of the schema factory |
-| `markerName` | `'exoJsx'` | the marker call the compiler compiles away |
-| `mode` | `'schema'` | which compiler runs — and there is only one, so this names it rather than choosing it |
+| option         | default                  | what it is                                                                            |
+| -------------- | ------------------------ | ------------------------------------------------------------------------------------- |
+| `typescript`   | `true`                   | include `@babel/preset-typescript`                                                    |
+| `schemaSource` | `'@exodra/core'`         | where the schema factory is imported from                                             |
+| `schemaImport` | `'createExoNamedSchema'` | the exported name of the schema factory                                               |
+| `markerName`   | `'exoJsx'`               | the marker call the compiler compiles away                                            |
+| `mode`         | `'schema'`               | which compiler runs — and there is only one, so this names it rather than choosing it |
 
 `'schema'` is the only legal value of `mode`. Any other value — `'legacy'`,
 `'dom'` and `'ssr'` included — makes the preset **throw** by name rather than

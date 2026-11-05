@@ -7,7 +7,7 @@
 // `one` AND `list` ARE NO LONGER AMONG THEM. Both name `TExoChildrenPort` on all three exonodes
 // now, so the wrong kind is a compile error and the runtime compare that used to stand in them is
 // gone; `packages/type-tests`' `port-kind-doors.ts` is where the refusal is asserted instead.
-// What is left here is `childList`, the door a reconciled list is composed over.
+// What is left here is `portChildList`, the door a reconciled list is composed over.
 //
 // `assertExoChildrenPort` lives in `@exodra/core` precisely so the rule cannot be given differently
 // by `TExoDomNode`, `TExoStrNode` and `TExoHydrateNode`. Its own header records the
@@ -26,21 +26,21 @@ import type {
     TExoTextPort,
     TExoMachineInitialState,
 } from '@exodra/core';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 import type { TExoPlacedChildren } from '@exodra/list-reconcile';
 import { describe, expect, it } from 'vitest';
 
 import { host, createExoTestMachine } from '@exodra/test-utils';
-import { ExoDomBackend, withExoHydration, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 
-const EXO_BACKEND = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+const EXO_BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const EXO_STR = new ExoStrBackend();
 
-/** The reconciling form: the placement door on top of `build`, which is what a reactive list is now. */
+/** The reconciling form: the placement door on top of `createExoNode`, which is what a reactive list is now. */
 type TReconciling = {
-    build(component: TExoMachine<never>, params?: unknown): TExoNode;
-    childList(port: TExoPort): TExoPlacedChildren<TExoNode>;
+    createExoNode(component: TExoMachine<never>): TExoNode;
+    portChildList(port: TExoPort): TExoPlacedChildren<TExoNode>;
 };
 
 /** Only the calls these wires make, as methods, so all three exonodes satisfy it. */
@@ -83,11 +83,13 @@ const GOOD = createExoTestMachine(
         }
 );
 
+const reconcileLeaves = createExoChildrenReconciler<number>(LEAF);
+
 const RECONCILED_LIST = createExoTestMachine(
     buildAttrPort,
     (P): TExoMachineInitialState<TReconciling> =>
         (c) => {
-            reconcileExoOrder(c.childList(P.slot), [], [0], [0], (item) => c.build(LEAF, item));
+            reconcileLeaves(c, P.slot, [0]);
         }
 );
 
@@ -115,17 +117,17 @@ const CAST_LIST = createExoTestMachine(
 );
 
 describe('an attribute port handed to a method that places children', () => {
-    // A RECONCILED LIST IS COMPOSED OVER `childList`, so the refusal is that door's — and the door
+    // A RECONCILED LIST IS COMPOSED OVER `portChildList`, so the refusal is that door's — and the door
     // is on all three backends, so the refusal is ONE function in `@exodra/core` rather than a
     // sentence per backend. The server used to have no such door and answered "not a function",
     // which said nothing about the port; now it names the port, as the browser does.
     it('is refused by every backend that has the door, with one message', () => {
         expect(() => EXO_STR.render(RECONCILED_LIST)).toThrow(
-            /TExoStrNode: childList\(\) needs a children port/
+            /TExoStrNode: portChildList\(\) needs a children port/
         );
 
         expect(() => EXO_BACKEND.render(RECONCILED_LIST, host())).toThrow(
-            /TExoDomNode: childList\(\) needs a children port/
+            /TExoDomNode: portChildList\(\) needs a children port/
         );
 
         // AND THROUGH HYDRATION, which inherits the door and therefore the refusal: the markup is
@@ -133,7 +135,7 @@ describe('an attribute port handed to a method that places children', () => {
         const parent = host();
         parent.innerHTML = EXO_STR.render(GOOD);
         expect(() => EXO_BACKEND.hydrate(RECONCILED_LIST, parent)).toThrow(
-            /TExoDomNode: childList\(\) needs a children port/
+            /TExoDomNode: portChildList\(\) needs a children port/
         );
     });
 });

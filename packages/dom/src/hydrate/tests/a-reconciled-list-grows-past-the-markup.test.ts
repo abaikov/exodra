@@ -25,16 +25,17 @@ import type {
     TExoTextPort,
     TExoMachineInitialState,
 } from '@exodra/core';
+import { wireExoNode } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import type { TExoPlacedChildren } from '@exodra/list-reconcile';
 import { describe, expect, it } from 'vitest';
 
 import { host, createExoTestMachine } from '@exodra/test-utils';
-import { ExoDomBackend, withExoHydration, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
 import type { TExoDomMachine } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 
-const EXO_BACKEND = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+const EXO_BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const EXO_STR = new ExoStrBackend();
 
 /** The rows BOTH renders read. The server renders what it holds at request time and the client
@@ -45,8 +46,8 @@ let rows: readonly string[] = [];
  *  both satisfy it and ONE wiring function drives both. */
 type TRowSurface = { text(port: TExoTextPort, value: unknown): void };
 type TListSurface = {
-    childList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
-    build(component: TExoDomMachine, params?: unknown): TExoNode;
+    portChildList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode>;
+    createExoNode(component: TExoDomMachine): TExoNode;
 };
 
 const ROW = createExoTestMachine(
@@ -73,7 +74,9 @@ const LIST = createExoTestMachine(
     },
     (P): TExoMachineInitialState<TListSurface> =>
         (c) => {
-            reconcileExoOrder(c.childList(P.kids), [], rows, rows, (row) => c.build(ROW, row));
+            reconcileExoOrder(c.portChildList(P.kids), [], rows, rows, (row) =>
+                wireExoNode(c.createExoNode(ROW), row)
+            );
         }
 );
 

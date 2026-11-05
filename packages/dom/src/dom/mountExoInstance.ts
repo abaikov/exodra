@@ -2,7 +2,7 @@ import type { TExoContextFrame } from '@exodra/context';
 import { stopExoEffects } from '@exodra/core';
 import { EXO_ARMED_INSTANCE } from './constants/EXO_ARMED_INSTANCE';
 import { exoOnTeardown } from './exoTeardownScope';
-import { createExoNode } from './factories/createExoNode';
+import { createExoNodeRecord } from './factories/createExoNodeRecord';
 import type { TExoDomChild } from './types/TExoDomChild';
 import type { TExoDomSchema } from './types/TExoDomSchema';
 import type { TExoDomMachine } from './types/TExoDomMachine';
@@ -24,7 +24,7 @@ export function mountExoInstance(
     // Through the COMPOSITION'S factory: a record is built by one constructor per shape, and a slot
     // added afterwards would grow the object past its in-object store.
     const record = schema.createInstance(schema);
-    createExoNode(schema, root, machine, ownerChild, record, context, params);
+    createExoNodeRecord(schema, root, machine, ownerChild, record, context, params);
     // EVERY INSTANCE THIS FUNCTION MAKES HAS A RECORD THAT IS NOT ITS OWN CHILD, so the dispose
     // walk — which reads `effectStops` off the child it is handed — can never reach these. The
     // field read covers the path where the two are one object (`materialiseExoChild`), which is
@@ -50,7 +50,7 @@ export function mountExoInstance(
         const live = record.live;
         if (live !== null) live.setMounted?.(live, true);
     } finally {
-        // In the `finally`, unlike `createExoNode`'s publish: this PUTS BACK a value already
+        // In the `finally`, unlike `createExoNodeRecord`'s publish: this PUTS BACK a value already
         // published — this instance's own — that the block may have overwritten.
         EXO_ARMED_INSTANCE.value = out;
     }

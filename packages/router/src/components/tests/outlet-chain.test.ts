@@ -7,6 +7,7 @@ import {
     withExoEffects,
     createExoSchema,
     disconnectExoNode,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoChildrenPort,
@@ -15,7 +16,7 @@ import type {
     TExoNode,
     TExoTextPort,
 } from '@exodra/core';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import { host } from '@exodra/test-utils';
 import { describe, expect, it } from 'vitest';
 import { ExoOutlet } from '../exoOutlet';
@@ -26,12 +27,12 @@ import { provideExoRouter } from '../../setup/provideExoRouter';
 import { exoLazy } from '../../pages/exoLazy';
 import type { TExoOutletState, TExoRoute, TExoRouteMatch, TExoRouter } from '../../types';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 interface TNestingNode extends TExoMachineNode {
     one(port: TExoChildrenPort, machine: TExoMachine<never>): void;
-    build(machine: TExoMachine<never>): TExoNode;
-    childList(port: TExoChildrenPort): { insert(child: TExoNode): void };
+    createExoNode(machine: TExoMachine<never>): TExoNode;
+    appendChild(port: TExoChildrenPort, node: TExoNode): TExoNode;
 }
 
 const log: string[] = [];
@@ -102,9 +103,9 @@ const shellFor = (router: TExoRouter, held: TExoNode[]) => {
     const m = createExoMachine<TNestingNode>(schema, {
         createInitialState: (c) => {
             provideExoRouter(c, router);
-            const outlet = c.build(ExoOutlet);
+            const outlet = wireExoNode(c.createExoNode(ExoOutlet));
             held.push(outlet);
-            c.childList(schema.ports.body).insert(outlet);
+            c.appendChild(schema.ports.body, outlet);
         },
     });
     return m;
@@ -290,7 +291,7 @@ describe('nested route boundaries', () => {
         expect(parent.querySelector('p.home')).not.toBe(null);
         expect(log).toEqual([]);
 
-        connectExoNode(outlet, ExoOutlet);
+        connectExoNode(outlet);
         expect(parent.querySelector('p.home')).toBe(null);
         expect(parent.querySelector('p.about')).not.toBe(null);
     });

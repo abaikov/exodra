@@ -44,7 +44,7 @@
 // ═══ THE SCHEMA CORE IS HERE AS TWO WAYS OF SPELLING THE SAME APP ═══
 //
 //   `exodraDirect`  the WIRE row: `c.set` at wire time, and the two children ports held as
-//                   REGIONS (`c.childList`) that the card's own handlers command. No cell, no
+//                   REGIONS (`c.portChildList`) that the card's own handlers command. No cell, no
 //                   subscription, no disposer, no diff above the shared `TAG`. It is also this
 //                   axis's markup reference — every other participant's tree is diffed against it.
 //   `exodraMachine` the STATE MACHINE row: the whole card compiled — values, state AND children —
@@ -78,7 +78,7 @@ import { mountExodraApp } from '../../participants/exodra/app';
 // card is now a MACHINE with no props and no index, whose state is seeded once and whose every later
 // change arrives as a transition.
 //
-// WHAT SEPARATES IT FROM `exodraDirect` IS STILL ONE THING: both drive the same two `c.childList`
+// WHAT SEPARATES IT FROM `exodraDirect` IS STILL ONE THING: both drive the same two `c.portChildList`
 // regions with the same commands, and what differs is whether a click dispatches through a compiled
 // program — four derivations, two fills, one mask per field — or through two closures that already
 // know what moved. Read `apps/exodra/exodra.md` before reading the number.

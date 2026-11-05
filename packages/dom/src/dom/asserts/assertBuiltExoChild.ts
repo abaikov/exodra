@@ -6,8 +6,8 @@
 export function assertBuiltExoChild(): never {
     throw new Error(
         typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-            ? 'createExoSchema(dom): this node was not built by c.build(...). Children handed to ' +
-              'a child list must come from build().' +
+            ? 'createExoSchema(dom): this node was not made by c.createExoNode(...). Children placed ' +
+              'in a children port must come from createExoNode().' +
               ' It carries no lifecycle of its own, so a list cannot know when to end its ' +
               'subscriptions.'
             : 'EXO0036'

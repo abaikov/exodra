@@ -105,14 +105,14 @@ import Mikado from 'mikado';
 // PROPS. `c.list(port, C, params)` is the FIXED list call every row on this axis uses; it takes a
 // `TExoMachine` and one params value per row, and it hands nothing back. A row reads what it needs
 // from its params, which is what the two rows below do. A declared machine has no such closure to read from and no return for
-// the caller to catch. The two calls that DO hand an instance back — `c.one` and `c.build` — place
+// the caller to catch. The two calls that DO hand an instance back — `c.one` and `wireExoNode(c.createExoNode(M))` — place
 // one child each, so a row built on either of them is no longer the fixed-list program the rows
 // beside it are, and a benchmark row that quietly stopped being its neighbours' program is worse
 // than an absent one.
 //
 // WHAT WENT WITH THEM. The machine spelling's cost against the wire spelling is unmeasured on this
 // axis — `toggle.tsx` still prices it on its kept block, where the panels are built one at a time by
-// `c.build` and the machine form is expressible. And this axis is back to having NO CONTROL of any
+// `wireExoNode(c.createExoNode(M))` and the machine form is expressible. And this axis is back to having NO CONTROL of any
 // kind: `reportResolution` below now refuses on every run rather than printing a floor, so no gap in
 // its table may be quoted as a SIZE until a null pair that is expressible stands in it again.
 import { abBench, type Scenario } from '../../../harness';

@@ -147,17 +147,17 @@ The definition-time cursor. It walks the shape once, when the module loads, and
 records what it saw. Every port-placing call takes the declared port first and
 hands it back — one object per template, shared by every row.
 
-| Method                          | What it places                                                                                                                                             | Hands back         |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| `el(tag, attrs?, fn?)`          | A child element with its **static** attributes, and optionally a body. Everything in `attrs` is folded into the prepared markup and costs nothing per row. | the builder        |
-| `text(value)`                   | Static text inside the current element.                                                                                                                    | the builder        |
-| `attrPort(port, name)`          | A port for **one attribute** of the current element.                                                                                                       | `TExoAttrPort`     |
-| `stringPort(port, name)`        | An attribute port whose value is always a string.                                                                                                          | `TExoAttrPort`     |
-| `togglePort(port, name)`        | A boolean attribute: present or absent.                                                                                                                    | `TExoAttrPort`     |
-| `eventPort(port, name)`         | A port for **one event listener**. It emits no markup and still takes a slot.                                                                              | `TExoEventPort`    |
-| `textPort(port)`                | A port standing for the **whole text content** of the current element.                                                                                     | `TExoTextPort`     |
-| `childrenPort(port)`            | A port holding a **variable-length sequence of children** — a list, or one nested instance.                                                                | `TExoChildrenPort` |
-| `refPort(port)`                 | A **reference to the current element** and no way to write to it.                                                                                          | `TExoRefPort`      |
+| Method                   | What it places                                                                                                                                             | Hands back         |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `el(tag, attrs?, fn?)`   | A child element with its **static** attributes, and optionally a body. Everything in `attrs` is folded into the prepared markup and costs nothing per row. | the builder        |
+| `text(value)`            | Static text inside the current element.                                                                                                                    | the builder        |
+| `attrPort(port, name)`   | A port for **one attribute** of the current element.                                                                                                       | `TExoAttrPort`     |
+| `stringPort(port, name)` | An attribute port whose value is always a string.                                                                                                          | `TExoAttrPort`     |
+| `togglePort(port, name)` | A boolean attribute: present or absent.                                                                                                                    | `TExoAttrPort`     |
+| `eventPort(port, name)`  | A port for **one event listener**. It emits no markup and still takes a slot.                                                                              | `TExoEventPort`    |
+| `textPort(port)`         | A port standing for the **whole text content** of the current element.                                                                                     | `TExoTextPort`     |
+| `childrenPort(port)`     | A port holding a **variable-length sequence of children** — a list, or one nested instance.                                                                | `TExoChildrenPort` |
+| `refPort(port)`          | A **reference to the current element** and no way to write to it.                                                                                          | `TExoRefPort`      |
 
 The alternative forms call the same methods without the port (`attrPort(name)`,
 `port(name)`, `textPort()`, …) and the call mints one; the self-naming form adds the
@@ -280,7 +280,15 @@ interface TExoWiring<TEvent = unknown, TNode = unknown>
 
 interface TExoChildrenWiring<TEvent = unknown, TNode = unknown>
     extends TExoWiring<TEvent, TNode> {
-    build<TParams>(machine: TExoMachine<this, unknown, TParams>, params?: TParams): TExoNode;
+    createExoNode<TParams>(machine: TExoMachine<this, unknown, TParams>): TExoNode;
+    appendChild(port: TExoChildrenPort, node: TExoNode): TExoNode;
+    insertChild(port: TExoChildrenPort, node: TExoNode, at: number): TExoNode;
+    moveChild(node: TExoNode, at: number): void;
+    moveChild(node: TExoNode, port: TExoChildrenPort, at?: number): void;
+    removeChild(node: TExoNode): TExoNode;
+    replaceChildren(port: TExoChildrenPort): void;
+    childAt(port: TExoChildrenPort, at: number): TExoNode | undefined;
+    childCount(port: TExoChildrenPort): number;
     one<TParams>(
         port: TExoChildrenPort,
         machine: TExoMachine<this, unknown, TParams>,
@@ -294,14 +302,13 @@ interface TExoChildrenWiring<TEvent = unknown, TNode = unknown>
 }
 ```
 
-`childList(port)` is **not** in either: handing back a port's live children is a
-backend's own door, so a wire that drives one names that backend's exonode —
-`TExoMachineInitialState<TExoDomNode>` — and is browser-only by saying so.
+A child made with `c.createExoNode(machine)` is wired with `wireExoNode(node, params)` and placed
+with the port methods — see [Children](../guides/children.md).
 
 **Two of them, and the line is drawn by what the call names.** Every call in
 `TExoWiring` names a port and a plain value, so it can be spelled flatly and
 a backend satisfies it by writing the methods out. Every call `TExoChildrenWiring`
-adds takes another **component**, and a component is generic over the exonode
+adds takes another **component** or a node of one, and a component is generic over the exonode
 it is wired against — so those signatures name the exonode recursively. Said in
 behaviour: the first is what a wire does to the instance it was handed, the
 second is what it mounts below it.
@@ -309,9 +316,9 @@ second is what it mounts below it.
 **There is no third surface for watching data**, and the absence is the
 design. A machine keeps ports in step with outside data through a **transition**
 that writes them and an **effect** that runs the transition once and then
-subscribes to the data layer; a reactive list is `reconcileExoOrder` from
-`@exodra/list-reconcile`, called inside such a transition over
-`childList(port)`. None of it is a door, so no backend declares it, no wire has
+subscribes to the data layer; a reactive list is a reconciler made once by
+`createExoChildrenReconciler` from `@exodra/list-reconcile` and called inside such a
+transition as `reconcile(c, port, items)`. None of it is a door, so no backend declares it, no wire has
 to name a wider surface to use it, and a page that watches nothing links none
 of it.
 
@@ -340,7 +347,7 @@ attachment is the whole content of hydration. See
 A hand-written surface narrower still is always allowed and sometimes better:
 `@exodra/forms` asks `writeExoChoice` for `Pick<TExoFillDoors, 'attr'>` and
 `readExoControlValues` for `portTable` plus `portNodeReader`, and `@exodra/router`
-declares `TExoOutletWiring` as `TExoMachineNode` plus `build` and `childList`,
+declares `TExoOutletWiring` as `TExoMachineNode` plus `createExoNode` and `portChildList`,
 precisely so a helper can be run by anything that has those calls.
 
 These types are erased: they emit no JavaScript and change nothing about the
@@ -359,15 +366,15 @@ type TExoPort = {
 The seven kinds are exported as plain constants — a plugin that compiles its own
 plan switches on exactly these, and there is no enum object to load them from:
 
-| Constant               | Value | Placed by                         |
-| ---------------------- | ----- | --------------------------------- |
-| `EXO_PORT_ATTR`        | `0`   | `attrPort(port, name)`            |
-| `EXO_PORT_TEXT`        | `1`   | `textPort(port)`                  |
-| `EXO_PORT_CHILDREN`    | `2`   | `childrenPort(port)`              |
-| `EXO_PORT_EVENT`       | `3`   | `eventPort(port, name)`           |
-| `EXO_PORT_REF`         | `4`   | `refPort(port)`                   |
-| `EXO_PORT_ATTR_STRING` | `5`   | `stringPort(port, name)`          |
-| `EXO_PORT_ATTR_TOGGLE` | `6`   | `togglePort(port, name)`          |
+| Constant               | Value | Placed by                |
+| ---------------------- | ----- | ------------------------ |
+| `EXO_PORT_ATTR`        | `0`   | `attrPort(port, name)`   |
+| `EXO_PORT_TEXT`        | `1`   | `textPort(port)`         |
+| `EXO_PORT_CHILDREN`    | `2`   | `childrenPort(port)`     |
+| `EXO_PORT_EVENT`       | `3`   | `eventPort(port, name)`  |
+| `EXO_PORT_REF`         | `4`   | `refPort(port)`          |
+| `EXO_PORT_ATTR_STRING` | `5`   | `stringPort(port, name)` |
+| `EXO_PORT_ATTR_TOGGLE` | `6`   | `togglePort(port, name)` |
 
 `EXO_PORT_REF` is deliberately not in `TExoPortKind`: a ref port is read, never
 written, so `c.set(refPort, …)` does not compile.
@@ -604,9 +611,9 @@ told which.
 
 ## Nodes
 
-`TExoNode` is the value `c.build(machine, params)` hands back and the
-only thing a `childList(port)` will insert — whatever the backend produced for
-that position. It is nominal and opaque on purpose: what it
+`TExoNode` is the value `c.createExoNode(machine)` hands back and the
+only thing a children port will take — through `appendChild`, `insertChild` or a
+reconciler — whatever the backend produced for that position. It is nominal and opaque on purpose: what it
 is made of is the backend's business (a DOM node on the client, a string on the
 server), what it is to everyone else is an identity.
 
@@ -676,13 +683,15 @@ handler is one function object for the whole component; the instance arrives as
 its argument. A decorator never changes the machine it is handed: it returns a new one,
 and the input stays usable as it was.
 
-| Call | What it declares | Hands back |
-| ---- | ---------------- | ---------- |
-| `createExoMachine(schema, { createInitialState: make })` | The bare machine. `make(instance, params)` makes the instance's state once per instance. `make` must be a **function**: a value handed here would be one object shared by every instance, each seeing every other's writes, so it is refused ([`EXO0026`](../errors.md#exo0026)). | `TExoMachine` (`c.state`) |
-| `withExoTransitions(m, { name: (c, a?, b?) => … })` | Named transitions, at most two data arguments each. They are reached through `machine.transitions.name(node, …)`, with a node or the opaque `TExoNode` from `build`, and replaced per instance by assigning `machine.overrides({ name: alt })` to `c.transitionOverrides`; a name the machine does not have is refused ([`EXO0102`](../errors.md#exo0102)). | the machine plus `transitions` and `overrides` |
-| `withExoWire(m, (c, params) => …)` | The wire: a transition that writes ports and may run again with new `params` through `wireExoNode`. A machine has one; a second is refused ([`EXO0101`](../errors.md#exo0101)). | the machine with `wire` |
-| `withExoHandlers(m, (on) => { on(port, handler) })` | Listeners on event ports. You write `handler(instance, event)`; the decorator transposes it once per component into the `(event, subject)` shape a dispatcher calls, so nothing is allocated per row. | the machine with `handlers` |
-| `withExoEffects(m, (effect) => { effect(start) })` | Effects. `start(instance)` returns its own stop function or `null`; `effect` hands back the handle the instance re-runs through `restartEffect(handle)`. | the machine with `effects` |
+| Call                                                     | What it declares                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Hands back                                          |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `createExoMachine(schema, { createInitialState: make })` | The bare machine. `make(instance, params)` makes the instance's state once per instance. `make` must be a **function**: a value handed here would be one object shared by every instance, each seeing every other's writes, so it is refused ([`EXO0026`](../errors.md#exo0026)).                                                                                                                                                                                                                                                                     | `TExoMachine` (`c.state`)                           |
+| `withExoTransitions(m, { name: (c, a?, b?) => … })`      | Named transitions, at most two data arguments each. They are reached through `machine.transitions.name(node, …)`, with a node or the opaque `TExoNode` from `createExoNode`, and replaced per instance by assigning `machine.overrides({ name: alt })` to `c.transitionOverrides`; `overrides` takes names from every `withExoTransitions` step at once, and a name the machine does not have is refused ([`EXO0102`](../errors.md#exo0102)). A name an earlier step declared, or one made of digits, is refused ([`EXO0113`](../errors.md#exo0113)). | the machine plus `transitions` and `overrides`      |
+| `withExoWire(m, (c, params) => …)`                       | The wire: a transition that writes ports and may run again with new `params` through `wireExoNode`. A machine has one; a second is refused ([`EXO0101`](../errors.md#exo0101)).                                                                                                                                                                                                                                                                                                                                                                       | the machine with `wire`                             |
+| `withExoHandlers(m, (on) => { on(port, handler) })`      | Listeners on event ports. You write `handler(instance, event)`; the decorator transposes it once per component into the `(event, subject)` shape a dispatcher calls, so nothing is allocated per row.                                                                                                                                                                                                                                                                                                                                                 | the machine with `handlers`                         |
+| `withExoEffects(m, (effect) => { effect(start) })`       | Effects. `start(instance)` returns its own stop function or `null`; `effect` hands back the handle the instance re-runs through `restartEffect(handle)`.                                                                                                                                                                                                                                                                                                                                                                                              | the machine with `effects`                          |
+| `withExoEffects(m, { name: start })`                     | The same effects, named. Each handle is appended to `effects` as above and also set on that array under its name, so a later step reads `m.effects.name` and restarts it with `c.restartEffect(m.effects.name)`; positional `m.effects[i]` still works. A name already on the array, declared earlier or an array member such as `push` or `length`, is refused ([`EXO0112`](../errors.md#exo0112)).                                                                                                                                                  | the machine with `effects` and its names            |
+| `withExoParamsEffects(m, { name: { key, start } })`      | Effects that follow the wire's params: `start(instance, params)`, restarted by `wireExoNode` when `key(params)` changes under `Object.is`. The last params are kept in `serviceState`; a restart from a transition or `connectExoNode` hands them to `start`. Works before or after `withExoWire`. Names share `m.effects` with `withExoEffects`.                                                                                                                                                                                                     | the machine with `wire` and `effects` and its names |
 
 A function written outside the decorators names the instance it is handed as
 `TExoMachineNodeOf<typeof baseMachine>`, where `baseMachine` is the machine `createExoMachine`
@@ -704,15 +713,30 @@ being armed and is the only thing that writes `state`; `c.state` (or
 `c.readState()`) reads it back.
 
 Anything that belongs to ONE instance arrives instead as a **transition
-argument**. `c.build(component)` arms the machine and hands back the exonode
-with no element in the document, which is the moment a caller fires an init
-transition at it before placing it — and an init transition is, in substance,
+argument**. `c.createExoNode(component)` hands back the exonode, and
+`wireExoNode(node, params)` arms it while it is placed nowhere, which is the moment a
+caller fires an init transition at it before placing it — and an init transition is, in substance,
 what `withExoWire(m, (c, params) => …)` declares once for the whole machine: a transition that writes
 ports only and may run again with new `params`.
 
+### Node lifecycle
+
+A node is created by its backend (`c.createExoNode(machine)` below a parent,
+`backend.createExoNode(machine)` for a root — see [the DOM renderer](./dom.md)) and
+driven from then on by four calls from this package. The node knows its machine, so
+none of them takes one. How creating, wiring and placing combine is
+[Children](../guides/children.md).
+
+| Call                                               | What it does                                                                                                                                                                                                            |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `wireExoNode(node, params?)`                       | The **first** call runs `createInitialState(c, params)`, then the wire, then starts the effects. Every later call re-runs the wire with the new `params`; state survives. Nothing keeps `params` after the call returns |
+| `destroyExoNode(node)`                             | Ends the node: takes it out of its port if it stands in one, stops its effects, runs its teardowns and destroys the nodes in its own ports                                                                              |
+| `disconnectExoNode(node)` / `connectExoNode(node)` | Stop the node's effects, and start them again from its current state                                                                                                                                                    |
+
 ## Placement primitives — not here
 
-`reconcileExoOrder`, `createExoKeyedList` and `TExoPlacedChildren` are
+`createExoChildrenReconciler` (the list helper), `TExoPlacedChildren` and the low-level
+`reconcileExoOrder` pass that adapters and backends build on are
 **`@exodra/list-reconcile`**, and this package exports none of them.
 
 They move nodes: `parent.insertBefore(node, after)`, `parent.removeChild(out)`.
@@ -736,9 +760,9 @@ exports none of them.
 What stays here is the **imperative** machine of
 [the section above](#machines): `createExoMachine`, `withExoTransitions`, `withExoWire`,
 `withExoHandlers`, `withExoEffects`, `composeExoMachine`,
-`armExoNode`, `stopExoEffects`, `disconnectExoNode`,
-`connectExoNode` (effects off and on again on a kept instance — see
-`packages/core/README.md`), and `TExoMachine`, `TExoMachineNodeOf`,
+`armExoNode`, `stopExoEffects`, `wireExoNode`, `destroyExoNode`,
+`disconnectExoNode`, `connectExoNode` (effects off and on again on a kept instance — see
+[Node lifecycle](#node-lifecycle)), and `TExoMachine`, `TExoMachineNodeOf`,
 `TExoMachineTransitions`, `TExoMachineEffect`, `TExoFillDoors`,
 `TExoMachineOptions`, `TExoMachineNode`, `TExoMachineHandler`,
 `TExoMachineInitialState`, `TExoTransitionOverrides` and `TExoWire`. A handler on one of those reads its state
@@ -771,8 +795,8 @@ the end of hydration.
 | `escapeExoAttributeValue(value)` | Escape a string for inside a quoted attribute value — including `<` and `>`, which nothing but the quote could actually end a value with, but which a browser writes escaped and hydration therefore has to match. |
 | `EXO_VOID_ELEMENTS`              | The `Set` of tags with no end tag.                                                                                                                                                                                 |
 | `EXO_DOM_PROPERTIES`             | Which names are DOM properties rather than attributes.                                                                                                                                                             |
-| `EXO_DOM_STRING_PROPERTIES`      | The DOM properties whose value is a string the browser keeps as live state (`value`).                                                                                                                             |
-| `EXO_RAW_TEXT_ELEMENTS`          | The tags the HTML serialiser emits as raw text (`<script>`, `<style>`, `<noscript>` and five more), verbatim on both sides.                                                                                      |
+| `EXO_DOM_STRING_PROPERTIES`      | The DOM properties whose value is a string the browser keeps as live state (`value`).                                                                                                                              |
+| `EXO_RAW_TEXT_ELEMENTS`          | The tags the HTML serialiser emits as raw text (`<script>`, `<style>`, `<noscript>` and five more), verbatim on both sides.                                                                                        |
 
 ## The shape rules the two compilers share
 
@@ -804,12 +828,12 @@ export type TExoPlugin = {
 };
 ```
 
-| Export                              | Purpose                                                                                                                                                                                                                          |
-| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Export                                | Purpose                                                                                                                                                                                                                          |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `composeExoPlugins(base, ...plugins)` | Write every plugin's names onto `base`, left to right, once. Returns `base` typed as itself intersected with everything the plugins added. A backend calls it in its own constructor, so an application never calls it directly. |
-| `TExoPlugin`                        | The shape above — what an author annotates a pack with.                                                                                                                                                                          |
-| `TExoPluginMethods<TPack>`          | What one pack contributes, read off its factories' return types.                                                                                                                                                                 |
-| `TExoMergedPluginMethods<TPacks>`                | Everything a list of packs adds, intersected in order — the whole of the capability check.                                                                                                                                       |
+| `TExoPlugin`                          | The shape above — what an author annotates a pack with.                                                                                                                                                                          |
+| `TExoPluginMethods<TPack>`            | What one pack contributes, read off its factories' return types.                                                                                                                                                                 |
+| `TExoMergedPluginMethods<TPacks>`     | Everything a list of packs adds, intersected in order — the whole of the capability check.                                                                                                                                       |
 
 There is **no** namespace, no slot registry, no `needs` / `provides` and no
 resolution pass. Four properties are worth stating because they are structural
@@ -823,7 +847,7 @@ rather than requested:
     `next` leave only the second, with nothing thrown.
 -   **The capability check is the type of the composed object.** Nobody declares a
     capability set: `TExoMergedPluginMethods` computes it from the constructor arguments, so a
-    wire that touches `c.keyedList` infers a connector that has it, and handing that
+    wire that touches a method a plugin merged in infers a connector that has it, and handing that
     component to a backend composed without that plugin fails to compile — at the line
     that composed it, rather than as a call landing on `undefined` inside a render.
 -   **A plugin cannot resolve on a hot path**, because it is never on one. A factory
@@ -842,8 +866,7 @@ The replaceable pieces themselves are a backend's, not core's. See
 [`@exodra/dom`](./dom.md#composing-plugins) for its replaceable fields —
 `events`, `writers`, `createInstance` and `createChild` — and for the packs that ship —
 `withExoCompiler`, `withExoHydration`, `withExoPropertyWriters`,
-`withExoReclaimingText` and the `withExoDefaults` bundle; the keyed list is
-`EXO_KEYED_LIST_VOCABULARY`, in `@exodra/list-reconcile`.
+`withExoReclaimingText` and the `withExoDefaults` bundle.
 `new ExoDomBackend()` — which takes **no** arguments at all — is a complete working
 composition; customisation is wrapping it in a decorator, or merging one plugin
 that claims one name.

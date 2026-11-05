@@ -2,26 +2,18 @@ import type { TExoNode } from '@exodra/core';
 import type { TExoStrChildList } from '../types/TExoStrChildList';
 import type { TExoStrMark } from '../../schema/types/TExoStrMark';
 import type { TExoStrNode } from '../EXO_STR_NODE_VOCABULARY';
-import { mountExoStrInstance } from '../mountExoStrInstance';
+import { disposeExoStrTree } from '../disposeExoStrTree';
+import { placeExoStrChild } from '../placeExoStrChild';
 
 const NOBODY: readonly TExoNode<TExoStrMark>[] = [];
 
-/**
- * THE PORT'S VALUE IS REWRITTEN AFTER EVERY COMMAND, by joining the order. A request is one pass,
- * so the joins are bounded by the number of commands the wire makes and not by anything reactive;
- * `list` accumulates with `+=` for the same reason in the other direction — it never revisits.
- */
-export function createExoStrChildList(
-    values: string[],
-    at: number,
-    order: string[]
-): TExoStrChildList {
-    const flush = (): void => {
-        let html = '';
-        for (let i = 0; i < order.length; i++) html += order[i];
-        values[at] = html;
-    };
+const release = (child: TExoStrNode | string): void => {
+    if (typeof child === 'string') return;
+    child.placedIn = null;
+    disposeExoStrTree(child);
+};
 
+export function createExoStrChildList(order: (TExoStrNode | string)[]): TExoStrChildList {
     return {
         get size(): number {
             return order.length;
@@ -32,18 +24,11 @@ export function createExoStrChildList(
         },
 
         insert(child: TExoNode<TExoStrMark>, i?: number): void {
-            const to = i === undefined || i > order.length ? order.length : i;
-            const markup =
-                typeof child === 'string'
-                    ? (child as string)
-                    : mountExoStrInstance(child as unknown as TExoStrNode);
-            order.splice(to, 0, markup);
-            flush();
+            placeExoStrChild(order, child as unknown as TExoStrNode | string, i);
         },
 
-        // `insert` with no mount to skip: nothing was ever mounted.
         attach(child: TExoNode<TExoStrMark>, i?: number): void {
-            this.insert(child, i);
+            placeExoStrChild(order, child as unknown as TExoStrNode | string, i);
         },
 
         move(from: number, to: number): void {
@@ -51,35 +36,36 @@ export function createExoStrChildList(
             if (child === undefined) return;
             order.splice(from, 1);
             order.splice(to > order.length ? order.length : to, 0, child);
-            flush();
         },
 
         remove(i: number): void {
-            if (order[i] === undefined) return;
+            const child = order[i];
+            if (child === undefined) return;
             order.splice(i, 1);
-            flush();
+            release(child);
         },
 
         removeAll(): void {
-            if (order.length === 0) return;
-            order.length = 0;
-            flush();
+            const taken = order.splice(0, order.length);
+            for (let i = 0; i < taken.length; i++) release(taken[i]);
         },
 
         detach(i: number): TExoNode<TExoStrMark> | undefined {
             const child = order[i];
             if (child === undefined) return undefined;
             order.splice(i, 1);
-            flush();
+            if (typeof child !== 'string') child.placedIn = null;
             return child as unknown as TExoNode<TExoStrMark>;
         },
 
         detachAll(): readonly TExoNode<TExoStrMark>[] {
             if (order.length === 0) return NOBODY;
-            const taken = order.slice() as unknown as readonly TExoNode<TExoStrMark>[];
-            order.length = 0;
-            flush();
-            return taken;
+            const taken = order.splice(0, order.length);
+            for (let i = 0; i < taken.length; i++) {
+                const child = taken[i];
+                if (typeof child !== 'string') child.placedIn = null;
+            }
+            return taken as unknown as readonly TExoNode<TExoStrMark>[];
         },
     };
 }

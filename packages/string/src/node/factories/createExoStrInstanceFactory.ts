@@ -31,9 +31,12 @@ export function createExoStrInstanceFactory(backend: object): TExoStrSchema['cre
         this.effectStops = null;
         this.transitionOverrides = null;
         this.serviceState = undefined;
+        this.machine = null;
         this.values = values;
         this.writers = schema.writers;
         this.schema = schema;
+        this.portChildren = null;
+        this.placedIn = null;
     }
     // The backend is still EMPTY of methods here; sound because what is stored is the POINTER.
     ExoStrInstanceBody.prototype = backend;

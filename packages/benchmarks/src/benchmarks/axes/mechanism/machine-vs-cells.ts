@@ -319,13 +319,13 @@
 //                        and an initial paint made by a FOURTH TRANSITION the shell fires at each
 //                        row between building it and inserting it, because a machine takes no props
 //                        and a row with no derivation has no fill to paint it. That mount shape —
-//                        `c.build`, drive, `insert` — is the ONE way this row is not comparable to
+//                        `wireExoNode(c.createExoNode(M))`, drive, `insert` — is the ONE way this row is not comparable to
 //                        its neighbours; its own block prices it. UNTIL THIS ROW EVERY WIDE COMPARISON PUT THE
 //                        MACHINE'S MOST EXPENSIVE SPELLING AGAINST THE WIRE'S ONLY ONE — `machine`
 //                        carries twenty declarations, an inverted table, a mask, a pending word and
 //                        a commit walk, and the spelling an author reaches for when the rules are
 //                        three lines he is happy to write out was on no table. It allocates TWO
-//                        objects per instance (plus the child `c.build` makes) against `machine`'s
+//                        objects per instance (plus the child `wireExoNode(c.createExoNode(M))` makes) against `machine`'s
 //                        ONE and `wire`'s SIX, and NOTHING
 //                        per door: that is the form's whole point, and a row that handed back bound
 //                        callbacks would be `wire` wearing another name. Its prediction (P23)
@@ -560,7 +560,6 @@ import {
     type TExoDomNode,
     type TExoDomMachine,
     type TExoDomSetter,
-    withExoChildList,
     withExoCompiler,
 } from '@exodra/dom';
 // FORM B'S OWN MACHINERY, WHICH THE LIBRARY DOES NOT SHIP. Its constructor is imported under
@@ -586,6 +585,8 @@ import {
 import { gateMarkup, markupOf } from '../../gates/markup-gate';
 import { el } from '../../shared/todo-spec';
 import { emitRecordedRows, type Scenario } from '../../../harness';
+import { wireExoNode } from '@exodra/core';
+import type { TExoDomPortChildList } from '@exodra/dom';
 
 // eslint-disable-next-line no-console
 const line = (s: string): void => console.log(`✅ ${s}`);
@@ -2355,7 +2356,7 @@ const SHELL_WIRE_TWIN = makeWireShell(TAG_WIRE_TWIN);
 // hand the cache a fresh key every time and recompile every declaration — markup parse
 // included — inside a timed region, and every number below would be a measurement of the compiler.
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 // ═══════════════════════════════════════════════════════════════════════════════════════════
 // THE FLOOR — the same tree by hand: no declaration, no schema, no port, no source, no connector
@@ -3659,7 +3660,7 @@ const WIDE_SHELL_WIRE_TWIN = makeWideWireShell(WIDE_ROW_WIRE_TWIN);
 // `TExoDomChild` CHILD PER ROW. A MACHINE HAS NO PROPS AT ALL — `TExoMachine` is a schema
 // and a plan — so no starting state can travel with the row and `c.list`, which hands nothing back,
 // cannot be used: there would be no instance to fire a transition at. This row therefore BUILDS
-// each instance (`c.build`), drives it, and INSERTS it into a hand-held child list, and the child
+// each instance (`wireExoNode(c.createExoNode(M))`), drives it, and INSERTS it into a hand-held child list, and the child
 // object is what that costs. The shell's own note prices the whole trade against `c.list`.
 //
 // WHAT NO LONGER COSTS ANYTHING PER ROW: the starting state. It is one transition declared once per
@@ -3679,7 +3680,7 @@ const WIDE_SHELL_WIRE_TWIN = makeWideWireShell(WIDE_ROW_WIRE_TWIN);
 // mount-stage divergence from the floor.
 //
 // AND THE TRANSITION IS FIRED BEFORE THE INSERTION, which is the one ordering this row depends on:
-// `c.build` ARMS a machine on the spot (`EXO_DOM_NODE_VOCABULARY.ts`'s `build` materialises a machine child
+// `wireExoNode(c.createExoNode(M))` ARMS a machine on the spot (`EXO_DOM_NODE_VOCABULARY.ts`'s `build` materialises a machine child
 // rather than deferring it), so the instance the shell drives is a complete one whose element is
 // simply not in the document yet. Every one of these nineteen writes therefore lands on a detached
 // node, which is where the floor's do too.
@@ -3759,7 +3760,7 @@ const WIDE_SHELL_WIRE_TWIN = makeWideWireShell(WIDE_ROW_WIRE_TWIN);
 // Every other wide row is mounted by `c.list`; this one is built, filled and inserted a row at a
 // time, because that is the only way a machine can be given a per-row starting state. TABLE 5 is
 // therefore measuring TWO differences at once — the machine's own mount against its neighbours',
-// and `c.build`+`insert` against `c.list` — and the shell's note is where the second one is priced.
+// and `wireExoNode(c.createExoNode(M))`+`insert` against `c.list` — and the shell's note is where the second one is priced.
 // TABLES 6, 7 and 8 are untouched by it: they drive instances that are already standing.
 
 /** What this row's transitions and its driver are all handed — the instance itself. */
@@ -3794,7 +3795,7 @@ let WIDE_DIRECT_DATA: readonly TExoWideHandle<TExoWideDirectInstance>[] = [];
 /**
  * WHICH ROW THE MACHINE BEING ARMED IS, AND WHY IT CANNOT BE ANYTHING BUT A COUNTER.
  *
- * A machine takes no props, so nothing can be handed to `c.build`, and its keep-seeder is the only
+ * A machine takes no props, so nothing can be handed to `wireExoNode(c.createExoNode(M))`, and its keep-seeder is the only
  * code that runs while the instance is being made. The seeder is what files the instance on this
  * row's handle — the shell then has something to fire transitions at — and the handle it files
  * against is this cursor's. The shell resets it before it builds anything, inside the timed region,
@@ -3931,7 +3932,7 @@ const makeWideDirectPack = (): TExoWideDirectPack => {
              * value table, then twenty seed writes over them), moved from the table into the object.
              *
              * AND IT FILES THE INSTANCE ON THIS ROW'S HANDLE, which is the one line that makes the row
-             * drivable at all. `c.build` hands back a CHILD, not an exonode; the seeder is handed the
+             * drivable at all. `wireExoNode(c.createExoNode(M))` hands back a CHILD, not an exonode; the seeder is handed the
              * exonode itself, and the cursor says which row is being armed. One property store per row,
              * which is the same one every other participant makes inside its mount.
              */
@@ -4082,7 +4083,7 @@ const makeWideDirectPack = (): TExoWideDirectPack => {
  * why `TExoDomNodeApi.list` takes the wired arm alone, and the refusal is deliberate rather than an
  * oversight. So this row spells the three steps a machine is made by:
  *
- *     const built = c.build(pack.component);   // created and ARMED, placed nowhere
+ *     const built = wireExoNode(c.createExoNode(pack.component));   // created and ARMED, placed nowhere
  *     pack.seed(handle.state, handle.seed);    // its starting state, by hand
  *     region.insert(built);                    // inserted, by hand
  *
@@ -4105,13 +4106,15 @@ const makeWideDirectShell = (pack: TExoWideDirectPack): TExoDomMachine => {
     const mMachine21 = createExoMachine<TExoDomNode>(MACHINE_SCHEMA21, {
         createInitialState: (c) => {
             const data = WIDE_DIRECT_DATA;
-            const region = c.childList(MACHINE_SCHEMA21.ports.rows);
+            const region = (c as TExoDomNode & TExoDomPortChildList).portChildList(
+                MACHINE_SCHEMA21.ports.rows
+            );
             // BEFORE THE FIRST BUILD, inside the timed region: the keep-seeder of every row
             // about to be armed reads this cursor, and a render that did not reset it would
             // file its instances past the end of the handle array.
             WIDE_DIRECT_NEXT = 0;
             for (let i = 0; i < data.length; i++) {
-                const built = c.build(pack.component);
+                const built = wireExoNode(c.createExoNode(pack.component));
                 const handle = data[i];
                 const enode = handle.state;
                 if (enode === null) {
@@ -4877,7 +4880,7 @@ const wideDirectProgram = (
     allocs:
         '4 — the instance object, its 1-SLOT VALUE TABLE (this component declares NO FIELD, so the ' +
         'one slot is the CACHE), THE CACHED OBJECT of twenty named properties of the same ' +
-        '`TExoWideFields` shape `machine` holds, and THE `TExoDomChild` CHILD `c.build` makes — the ' +
+        '`TExoWideFields` shape `machine` holds, and THE `TExoDomChild` CHILD `wireExoNode(c.createExoNode(M))` makes — the ' +
         'fourth is not the machine`s, it is what building a row by hand costs against the ' +
         '`c.list` every other row on this table uses, and the shell`s own note prices the rest of ' +
         'that trade. NO DOOR CLOSURE (the four transitions are declared ONCE PER COMPONENT and take ' +
@@ -4961,7 +4964,7 @@ const WIDE_WIRE_TWIN = wideWireProgram(
 );
 const WIDE_DIRECT = wideDirectProgram(
     'machine·imperative',
-    `THE IMPERATIVE MACHINE, STATE IN THE CACHE — the machine's cheap spelling. It declares NO DERIVATION, NO FILL and NO FIELD; its ${WIDE_FIELDS} values live in ONE CACHE SLOT (\`m.keep\`, one object of named properties per instance, written with an ordinary property store) and its THREE TRANSITIONS — declared once per COMPONENT, taking the instance — write the ports themselves with \`c.text\`. It runs the same derivations \`machine\` and \`wire\` run; what differs from \`machine\` is that the rules live in transition bodies instead of in declarations (so nothing can wake and every commit returns on its first comparison), and what differs from \`wire\` is that nothing whatever is allocated per instance for a door. The initial paint is a FOURTH TRANSITION's ${WIDE_PORTS} \`c.text\` calls, fired by the shell at each row after \`c.build\` and before \`insert\`, because a machine takes no props and a row with no derivation has no fill to paint it — WHICH ALSO MAKES THIS THE ONE ROW HERE NOT MOUNTED BY \`c.list\`, so read its mount against its twin and not against its neighbours. THE VALUES USED TO BE ${WIDE_FIELDS} \`m.field\`s: a field is an address for waking and nothing here can wake, and moving them REMOVED the second term its gap to \`machine\` used to carry — both rows now hold twenty NAMED PROPERTIES, so that subtraction is now where the RULES live and nothing else.`,
+    `THE IMPERATIVE MACHINE, STATE IN THE CACHE — the machine's cheap spelling. It declares NO DERIVATION, NO FILL and NO FIELD; its ${WIDE_FIELDS} values live in ONE CACHE SLOT (\`m.keep\`, one object of named properties per instance, written with an ordinary property store) and its THREE TRANSITIONS — declared once per COMPONENT, taking the instance — write the ports themselves with \`c.text\`. It runs the same derivations \`machine\` and \`wire\` run; what differs from \`machine\` is that the rules live in transition bodies instead of in declarations (so nothing can wake and every commit returns on its first comparison), and what differs from \`wire\` is that nothing whatever is allocated per instance for a door. The initial paint is a FOURTH TRANSITION's ${WIDE_PORTS} \`c.text\` calls, fired by the shell at each row after \`wireExoNode(c.createExoNode(M))\` and before \`insert\`, because a machine takes no props and a row with no derivation has no fill to paint it — WHICH ALSO MAKES THIS THE ONE ROW HERE NOT MOUNTED BY \`c.list\`, so read its mount against its twin and not against its neighbours. THE VALUES USED TO BE ${WIDE_FIELDS} \`m.field\`s: a field is an address for waking and nothing here can wake, and moving them REMOVED the second term its gap to \`machine\` used to carry — both rows now hold twenty NAMED PROPERTIES, so that subtraction is now where the RULES live and nothing else.`,
     WIDE_SHELL_DIRECT,
     WIDE_PACK_DIRECT
 );
@@ -9357,7 +9360,7 @@ export function benchmarkMachineVsCells(rounds = 100, batch = 1): void {
             'work point opposite ways. FOUR allocations per instance against `machine`s ONE and `wire`s ' +
             'SIX — the instance, a ONE-SLOT value table (no field is declared, so the slot is the ' +
             'cache), the cached object of twenty named properties, and the `TExoDomChild` child ' +
-            '`c.build` makes; no fillDoors() wrapper, no door ' +
+            '`wireExoNode(c.createExoNode(M))` makes; no fillDoors() wrapper, no door ' +
             'closure, no handler closure, no disposer array per row, ' +
             'because a machine`s transitions are the COMPONENT`s and this one declares no effect. ' +
             'THE THIRD ALLOCATION IS WHAT THE CACHE COSTS AND IT ARRIVED WITH IT: while the twenty ' +

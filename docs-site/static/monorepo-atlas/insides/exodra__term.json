@@ -1002,6 +1002,24 @@
         "violations": []
       },
       {
+        "id": "placeExoTermChild",
+        "label": "placeExoTermChild",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(owner, port, child, at): void",
+            "full": "(owner, port, child, at): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 229,
+        "height": 69,
+        "violations": []
+      },
+      {
         "id": "renderExoTermInstance",
         "label": "renderExoTermInstance",
         "kind": "tooling",
@@ -1065,6 +1083,24 @@
         "stereotype": "const",
         "width": 120,
         "height": 46,
+        "violations": []
+      },
+      {
+        "id": "takeExoTermChildOut",
+        "label": "takeExoTermChildOut",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(child): void",
+            "full": "(child): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 146,
+        "height": 69,
         "violations": []
       },
       {
@@ -1207,7 +1243,7 @@
         "members": [
           {
             "text": "TExoBaseNodeFields & { readonly node: T…",
-            "full": "TExoBaseNodeFields & { readonly node: TExoTermElement; readonly regions: readonly (TExoTermRegion | null)[]; }",
+            "full": "TExoBaseNodeFields & { readonly node: TExoTermElement; readonly regions: readonly (TExoTermRegion | null)[]; placedIn: TExoTermChild[] | null; }",
             "parts": [],
             "fullParts": [
               {
@@ -1225,7 +1261,14 @@
                 "link": "TExoTermRegion"
               },
               {
-                "text": " | null)[]; }"
+                "text": " | null)[]; placedIn: "
+              },
+              {
+                "text": "TExoTermChild",
+                "link": "TExoTermChild"
+              },
+              {
+                "text": "[] | null; }"
               }
             ]
           }
@@ -1777,24 +1820,6 @@
           },
           {
             "visibility": "+",
-            "text": "build<TParams>( machine: TExoMachine<th…",
-            "full": "build<TParams>( machine: TExoMachine<this, unknown, TParams>, params?: TParams ): TExoNode<TExoTermMark>;",
-            "parts": [],
-            "fullParts": [
-              {
-                "text": "build<TParams>( machine: TExoMachine<this, unknown, TParams>, params?: TParams ): TExoNode<"
-              },
-              {
-                "text": "TExoTermMark",
-                "link": "TExoTermMark"
-              },
-              {
-                "text": ">;"
-              }
-            ]
-          },
-          {
-            "visibility": "+",
             "text": "one<TParams>( port: TExoChildrenPort, m…",
             "full": "one<TParams>( port: TExoChildrenPort, machine: TExoMachine<this, unknown, TParams>, params?: TParams ): void;",
             "parts": [],
@@ -1809,12 +1834,12 @@
           },
           {
             "visibility": "+",
-            "text": "childList(port: TExoChildrenPort): TExo…",
-            "full": "childList(port: TExoChildrenPort): TExoTermChildList;",
+            "text": "portChildList(port: TExoChildrenPort): …",
+            "full": "portChildList(port: TExoChildrenPort): TExoTermChildList;",
             "parts": [],
             "fullParts": [
               {
-                "text": "childList(port: TExoChildrenPort): "
+                "text": "portChildList(port: TExoChildrenPort): "
               },
               {
                 "text": "TExoTermChildList",
@@ -1824,9 +1849,190 @@
                 "text": ";"
               }
             ]
+          },
+          {
+            "visibility": "+",
+            "text": "createExoNode<TParams>(machine: TExoMac…",
+            "full": "createExoNode<TParams>(machine: TExoMachine<this, unknown, TParams>): TExoNode<TExoTermMark>;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "createExoNode<TParams>(machine: TExoMachine<this, unknown, TParams>): TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": ">;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "armExoSelf(params: unknown): void;",
+            "full": "armExoSelf(params: unknown): void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "deferExoTransition( run: (enode: never,…",
+            "full": "deferExoTransition( run: (enode: never, first: unknown, second: unknown) => void, first: unknown, second: unknown ): boolean;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "destroyExoSelf(): void;",
+            "full": "destroyExoSelf(): void;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "appendChild<TNode extends TExoNode<TExo…",
+            "full": "appendChild<TNode extends TExoNode<TExoTermMark>>(port: TExoChildrenPort, node: TNode): TNode;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "appendChild<TNode extends TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": ">>(port: TExoChildrenPort, node: TNode): TNode;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "insertChild<TNode extends TExoNode<TExo…",
+            "full": "insertChild<TNode extends TExoNode<TExoTermMark>>( port: TExoChildrenPort, node: TNode, at: number ): TNode;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "insertChild<TNode extends TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": ">>( port: TExoChildrenPort, node: TNode, at: number ): TNode;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "moveChild(node: TExoNode<TExoTermMark>,…",
+            "full": "moveChild(node: TExoNode<TExoTermMark>, at: number): void;",
+            "parts": [
+              {
+                "text": "moveChild(node: TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": ">,…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "moveChild(node: TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": ">, at: number): void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "moveChild(node: TExoNode<TExoTermMark>,…",
+            "full": "moveChild(node: TExoNode<TExoTermMark>, port: TExoChildrenPort, at?: number): void;",
+            "parts": [
+              {
+                "text": "moveChild(node: TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": ">,…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "moveChild(node: TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": ">, port: TExoChildrenPort, at?: number): void;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "removeChild<TNode extends TExoNode<TExo…",
+            "full": "removeChild<TNode extends TExoNode<TExoTermMark>>(node: TNode): TNode;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "removeChild<TNode extends TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": ">>(node: TNode): TNode;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "replaceChildren(port: TExoChildrenPort)…",
+            "full": "replaceChildren(port: TExoChildrenPort): void;",
+            "parts": [],
+            "fullParts": []
+          },
+          {
+            "visibility": "+",
+            "text": "childAt(port: TExoChildrenPort, at: num…",
+            "full": "childAt(port: TExoChildrenPort, at: number): TExoNode<TExoTermMark> | undefined;",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "childAt(port: TExoChildrenPort, at: number): TExoNode<"
+              },
+              {
+                "text": "TExoTermMark",
+                "link": "TExoTermMark"
+              },
+              {
+                "text": "> | undefined;"
+              }
+            ]
+          },
+          {
+            "visibility": "+",
+            "text": "childCount(port: TExoChildrenPort): num…",
+            "full": "childCount(port: TExoChildrenPort): number;",
+            "parts": [],
+            "fullParts": []
           }
         ],
-        "memberCount": 11,
+        "memberCount": 22,
         "stereotype": "interface",
         "width": 293,
         "height": 189,
@@ -3641,6 +3847,25 @@
         "violations": []
       },
       {
+        "id": "EXO_TERM_NODE_METHODS→disposeExoTermChild",
+        "from": "EXO_TERM_NODE_METHODS",
+        "to": "disposeExoTermChild",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/disposeExoTermChild.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "EXO_TERM_NODE_METHODS→exoTermSchemaOf",
         "from": "EXO_TERM_NODE_METHODS",
         "to": "exoTermSchemaOf",
@@ -3679,6 +3904,25 @@
         "violations": []
       },
       {
+        "id": "EXO_TERM_NODE_METHODS→placeExoTermChild",
+        "from": "EXO_TERM_NODE_METHODS",
+        "to": "placeExoTermChild",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "EXO_TERM_NODE_METHODS→renderExoTermInstance",
         "from": "EXO_TERM_NODE_METHODS",
         "to": "renderExoTermInstance",
@@ -3701,6 +3945,25 @@
         "id": "EXO_TERM_NODE_METHODS→requireExoTermRegion",
         "from": "EXO_TERM_NODE_METHODS",
         "to": "requireExoTermRegion",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "EXO_TERM_NODE_METHODS→takeExoTermChildOut",
+        "from": "EXO_TERM_NODE_METHODS",
+        "to": "takeExoTermChildOut",
         "kinds": [
           "value"
         ],
@@ -4895,6 +5158,82 @@
         "violations": []
       },
       {
+        "id": "placeExoTermChild→requireExoTermRegion",
+        "from": "placeExoTermChild",
+        "to": "requireExoTermRegion",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "placeExoTermChild→takeExoTermChildOut",
+        "from": "placeExoTermChild",
+        "to": "takeExoTermChildOut",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "placeExoTermChild→TExoTermChild",
+        "from": "placeExoTermChild",
+        "to": "TExoTermChild",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "placeExoTermChild→TExoTermNode",
+        "from": "placeExoTermChild",
+        "to": "TExoTermNode",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
         "id": "renderExoTermInstance→disposeExoTermChild",
         "from": "renderExoTermInstance",
         "to": "disposeExoTermChild",
@@ -5040,6 +5379,25 @@
           {
             "from": "packages/term/src/instance/exoTermText.ts",
             "to": "packages/term/src/instance/exoTermText.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "takeExoTermChildOut→TExoTermChild",
+        "from": "takeExoTermChildOut",
+        "to": "TExoTermChild",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/term/src/instance/EXO_TERM_NODE_VOCABULARY.ts",
+            "to": "packages/term/src/instance/types/TExoTermChild.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -6476,299 +6834,313 @@
   },
   "layout": {
     "width": 5497,
-    "height": 4491.5,
+    "height": 4841,
     "nodes": [
       {
         "id": "BOLD",
         "x": 1381.5,
-        "y": 1478.5,
+        "y": 1750,
         "width": 120,
         "height": 46
       },
       {
         "id": "compileExoTermSchema",
         "x": 2040.5,
-        "y": 2712.8,
+        "y": 3021.3,
         "width": 248,
         "height": 69
       },
       {
         "id": "Counter",
         "x": 2104.5,
-        "y": 363.8,
+        "y": 521.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "counterBase",
         "x": 2461.5,
-        "y": 387.3,
+        "y": 545.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "CounterPorts",
         "x": 3175.5,
-        "y": 363.8,
+        "y": 521.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "counterSchema",
         "x": 2818.5,
-        "y": 387.3,
+        "y": 545.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "createAttrWriter",
         "x": 3503.5,
-        "y": 3537.8,
+        "y": 3803.3,
         "width": 178,
         "height": 69
       },
       {
         "id": "createClassWriter",
         "x": 3841.5,
-        "y": 3615.5,
+        "y": 3832.5,
         "width": 216,
         "height": 69
       },
       {
         "id": "createExoTermChildList",
-        "x": 3487.5,
-        "y": 4053.8,
+        "x": 2416.5,
+        "y": 4403.3,
         "width": 210,
         "height": 69
       },
       {
         "id": "createExoTermInstanceFactory",
         "x": 1661.5,
-        "y": 4292,
+        "y": 4641,
         "width": 235,
         "height": 69
       },
       {
         "id": "createMissingWriter",
         "x": 3857.5,
-        "y": 3719.5,
+        "y": 3929.5,
         "width": 184,
         "height": 69
       },
       {
         "id": "createRefusingWriter",
         "x": 3832,
-        "y": 3401.5,
+        "y": 3715.5,
         "width": 235,
         "height": 69
       },
       {
         "id": "createStringAttrWriter",
         "x": 3860.5,
-        "y": 3304.5,
+        "y": 3618.5,
         "width": 178,
         "height": 69
       },
       {
         "id": "createToggleAttrWriter",
         "x": 3860.5,
-        "y": 3207.5,
+        "y": 3521.5,
         "width": 178,
         "height": 69
       },
       {
         "id": "DIM",
         "x": 1381.5,
-        "y": 1404.5,
+        "y": 1676,
         "width": 120,
         "height": 46
       },
       {
         "id": "disposeExoTermChild",
-        "x": 3876.5,
-        "y": 3518.5,
+        "x": 2805.5,
+        "y": 4214.3,
         "width": 146,
         "height": 69
       },
       {
         "id": "ESC",
         "x": 1719,
-        "y": 1312.3,
+        "y": 1579.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "EXO_TERM_FOREIGN_METHODS",
         "x": 4217.5,
-        "y": 1730.3,
+        "y": 1592,
         "width": 178,
         "height": 46
       },
       {
         "id": "EXO_TERM_FOREIGN_VOCABULARY",
         "x": 3851,
-        "y": 1730.3,
+        "y": 1592,
         "width": 197,
         "height": 46
       },
       {
         "id": "EXO_TERM_MARK",
         "x": 5292,
-        "y": 1859.3,
+        "y": 1787.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "EXO_TERM_NODE_METHODS",
         "x": 1362.5,
-        "y": 3838,
+        "y": 3990.3,
         "width": 158,
         "height": 46
       },
       {
         "id": "EXO_TERM_NODE_VOCABULARY",
         "x": 1043.5,
-        "y": 3838,
+        "y": 3990.3,
         "width": 178,
         "height": 46
       },
       {
         "id": "EXO_TERM_WRITER_FACTORIES",
         "x": 3143.5,
-        "y": 3389.3,
+        "y": 3626.5,
         "width": 184,
         "height": 46
       },
       {
         "id": "exoForeignTermNode",
-        "x": 3841.5,
-        "y": 1870.8,
+        "x": 2770.5,
+        "y": 238.8,
         "width": 216,
         "height": 69
       },
       {
         "id": "ExoTermBackend",
         "x": 24,
-        "y": 513,
+        "y": 755.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "ExoTermBackendBase",
         "x": 565,
-        "y": 957.8,
+        "y": 1339,
         "width": 357,
         "height": 102
       },
       {
         "id": "exoTermContextSlot",
         "x": 1063,
-        "y": 1621.5,
+        "y": 1869.8,
         "width": 139,
         "height": 46
       },
       {
         "id": "ExoTermEmitter",
         "x": 2397.5,
-        "y": 2915.3,
+        "y": 3223.8,
         "width": 248,
         "height": 177
       },
       {
         "id": "exoTermFind",
         "x": 4182.5,
-        "y": 543.5,
+        "y": 171,
         "width": 248,
         "height": 69
       },
       {
         "id": "exoTermFire",
         "x": 4198.5,
-        "y": 640.5,
+        "y": 268,
         "width": 216,
         "height": 69
       },
       {
         "id": "exoTermSchemaOf",
         "x": 1652,
-        "y": 2644.3,
+        "y": 2513.3,
         "width": 254,
         "height": 69
       },
       {
         "id": "exoTermText",
         "x": 1040.5,
-        "y": 1223.8,
+        "y": 1516.5,
         "width": 184,
         "height": 69
       },
       {
         "id": "exoTermWriterForPort",
         "x": 2741.5,
-        "y": 3192.3,
+        "y": 3498,
         "width": 274,
         "height": 69
       },
       {
         "id": "GREEN",
         "x": 1381.5,
-        "y": 1330.5,
+        "y": 1602,
         "width": 120,
         "height": 46
       },
       {
         "id": "HERE",
-        "x": 2104.5,
-        "y": 4011.8,
+        "x": 2818.5,
+        "y": 4311.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "instantiateExoTermProto",
         "x": 3089,
-        "y": 4398.5,
+        "y": 4748,
         "width": 293,
         "height": 69
       },
       {
         "id": "namedAttrPort",
         "x": 3529.5,
-        "y": 3149,
+        "y": 3463,
         "width": 126,
+        "height": 69
+      },
+      {
+        "id": "placeExoTermChild",
+        "x": 2050,
+        "y": 4090.8,
+        "width": 229,
         "height": 69
       },
       {
         "id": "renderExoTermInstance",
         "x": 1604,
-        "y": 1837.8,
+        "y": 1885.5,
         "width": 350,
         "height": 69
       },
       {
         "id": "requireExoTermRegion",
-        "x": 1642,
-        "y": 3947.5,
+        "x": 2384.5,
+        "y": 4135.8,
         "width": 274,
         "height": 69
       },
       {
         "id": "RESET",
         "x": 1381.5,
-        "y": 1256.5,
+        "y": 1528,
         "width": 120,
         "height": 46
       },
       {
+        "id": "takeExoTermChildOut",
+        "x": 2448.5,
+        "y": 4008,
+        "width": 146,
+        "height": 69
+      },
+      {
         "id": "TAssert",
         "x": 2104.5,
-        "y": 752.3,
+        "y": 899.5,
         "width": 120,
         "height": 69
       },
       {
         "id": "TExoTermApi",
         "x": 3446,
-        "y": 2271.3,
+        "y": 2487.5,
         "width": 293,
         "height": 69
       },
@@ -6782,315 +7154,315 @@
       {
         "id": "TExoTermBackendConstructor",
         "x": 208,
-        "y": 121,
+        "y": 131,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermChild",
-        "x": 4160,
-        "y": 2772.3,
+        "x": 3089,
+        "y": 2723,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermChildList",
         "x": 4517,
-        "y": 3774,
+        "y": 2278,
         "width": 293,
         "height": 174
       },
       {
         "id": "TExoTermElement",
         "x": 4517,
-        "y": 1910,
+        "y": 2101,
         "width": 293,
         "height": 129
       },
       {
         "id": "TExoTermEvent",
         "x": 5231,
-        "y": 2108.8,
+        "y": 2183,
         "width": 242,
         "height": 84
       },
       {
         "id": "TExoTermForeignApi",
         "x": 4517,
-        "y": 1748,
+        "y": 1614,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermKid",
         "x": 4874,
-        "y": 2018.5,
+        "y": 2156,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermListener",
         "x": 4874,
-        "y": 2253,
+        "y": 2453.8,
         "width": 293,
         "height": 84
       },
       {
         "id": "TExoTermMachine",
         "x": 2066,
-        "y": 985.5,
+        "y": 1095.8,
         "width": 197,
         "height": 69
       },
       {
         "id": "TExoTermMark",
         "x": 4903,
-        "y": 1847.8,
+        "y": 2042.5,
         "width": 235,
         "height": 69
       },
       {
         "id": "TExoTermNode",
         "x": 2388,
-        "y": 1619,
+        "y": 1964,
         "width": 267,
         "height": 69
       },
       {
         "id": "TExoTermNodeApi",
         "x": 4160,
-        "y": 1509.8,
+        "y": 1722,
         "width": 293,
         "height": 189
       },
       {
         "id": "TExoTermNodeConstructor",
         "x": 2018,
-        "y": 4280.8,
+        "y": 4630.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermNodeFields",
         "x": 2732,
-        "y": 2018.5,
+        "y": 2623.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermNodeInit",
         "x": 2375,
-        "y": 4212.3,
+        "y": 4561.8,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermOpenElement",
         "x": 3449.5,
-        "y": 2653,
+        "y": 2967,
         "width": 286,
         "height": 174
       },
       {
         "id": "TExoTermProtoElement",
         "x": 3446,
-        "y": 2855,
+        "y": 3169,
         "width": 293,
         "height": 129
       },
       {
         "id": "TExoTermProtoKid",
         "x": 3803,
-        "y": 2753.8,
+        "y": 3109.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermProtoRegion",
         "x": 4217.5,
-        "y": 2966.3,
+        "y": 3005.3,
         "width": 178,
         "height": 69
       },
       {
         "id": "TExoTermProtoText",
         "x": 4217.5,
-        "y": 2869.3,
+        "y": 2821.5,
         "width": 178,
         "height": 69
       },
       {
         "id": "TExoTermRegion",
         "x": 5250.5,
-        "y": 4034.3,
+        "y": 4258.5,
         "width": 203,
         "height": 69
       },
       {
         "id": "TExoTermRunsTheReadmeCounter",
         "x": 1632.5,
-        "y": 342.3,
+        "y": 490.3,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermRunsTheReadmeTodoList",
         "x": 1632.5,
-        "y": 564.3,
+        "y": 684.8,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermRunsTheReadmeTodoRow",
         "x": 1632.5,
-        "y": 733,
+        "y": 851,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermSatisfiesCoreChildren",
         "x": 1632.5,
-        "y": 830,
+        "y": 958,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermSatisfiesCoreValues",
         "x": 1632.5,
-        "y": 927,
+        "y": 1055,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermSchema",
         "x": 3089,
-        "y": 2181.3,
+        "y": 2486,
         "width": 293,
         "height": 189
       },
       {
         "id": "TExoTermScreen",
         "x": 986,
-        "y": 171,
+        "y": 343.3,
         "width": 293,
         "height": 99
       },
       {
         "id": "TExoTermStaticText",
         "x": 5263,
-        "y": 1933.3,
+        "y": 1861.5,
         "width": 178,
         "height": 69
       },
       {
         "id": "TExoTermSurface",
         "x": 3889.5,
-        "y": 1620.5,
+        "y": 1701.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "TExoTermTextOptions",
         "x": 1343,
-        "y": 602,
+        "y": 1222,
         "width": 197,
         "height": 84
       },
       {
         "id": "TExoTermWriter",
         "x": 4160,
-        "y": 3141.8,
+        "y": 3419,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermWriterFactories",
         "x": 3446,
-        "y": 3032,
+        "y": 3346,
         "width": 293,
         "height": 69
       },
       {
         "id": "TExoTermWriterFactory",
         "x": 3806.5,
-        "y": 3032,
+        "y": 3346,
         "width": 286,
         "height": 69
       },
       {
         "id": "Todo",
         "x": 2461.5,
-        "y": 695.3,
+        "y": 832.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "todoBase",
         "x": 2818.5,
-        "y": 800.8,
+        "y": 1018.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "TodoList",
         "x": 2104.5,
-        "y": 555.3,
+        "y": 686.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "TodoListPorts",
         "x": 2818.5,
-        "y": 545.3,
+        "y": 703.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "todoListSchema",
         "x": 2461.5,
-        "y": 521.8,
+        "y": 679.8,
         "width": 120,
         "height": 46
       },
       {
         "id": "TodoPorts",
         "x": 3532.5,
-        "y": 695.3,
+        "y": 832.5,
         "width": 120,
         "height": 46
       },
       {
         "id": "todos",
         "x": 2818.5,
-        "y": 461.3,
+        "y": 619.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "todoSchema",
         "x": 3175.5,
-        "y": 847.3,
+        "y": 1081.3,
         "width": 120,
         "height": 46
       },
       {
         "id": "TTodo",
         "x": 3150,
-        "y": 735.3,
+        "y": 953.3,
         "width": 171,
         "height": 84
       },
       {
         "id": "writeText",
         "x": 4227.5,
-        "y": 3457,
+        "y": 3715.5,
         "width": 158,
         "height": 69
       },
       {
         "id": "YELLOW",
         "x": 1381.5,
-        "y": 1162.5,
+        "y": 1434,
         "width": 120,
         "height": 46
       }
@@ -7101,15 +7473,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1501.5
+            "y": 1773
           },
           {
             "x": 1572,
-            "y": 1501.5
+            "y": 1773
           },
           {
-            "x": 1750.4,
-            "y": 1358.3
+            "x": 1751.1,
+            "y": 1625.3
           }
         ]
       },
@@ -7118,15 +7490,15 @@
         "points": [
           {
             "x": 2188.5,
-            "y": 2781.8
+            "y": 3090.3
           },
           {
             "x": 2343,
-            "y": 3003.8
+            "y": 3312.3
           },
           {
             "x": 2397.5,
-            "y": 3003.8
+            "y": 3312.3
           }
         ]
       },
@@ -7134,40 +7506,40 @@
         "id": "compileExoTermSchema→TExoTermApi",
         "points": [
           {
-            "x": 2209,
-            "y": 2712.8
+            "x": 2210.9,
+            "y": 3021.3
           },
           {
             "x": 2343,
-            "y": 2609
+            "y": 2923
           },
           {
             "x": 2521.5,
-            "y": 2609
+            "y": 2923
           },
           {
             "x": 2700,
-            "y": 2609
+            "y": 2923
           },
           {
             "x": 2878.5,
-            "y": 2609
+            "y": 2923
           },
           {
             "x": 3057,
-            "y": 2609
+            "y": 2923
           },
           {
             "x": 3235.5,
-            "y": 2609
+            "y": 2923
           },
           {
             "x": 3414,
-            "y": 2609
+            "y": 2923
           },
           {
-            "x": 3572.2,
-            "y": 2340.3
+            "x": 3577.1,
+            "y": 2556.5
           }
         ]
       },
@@ -7175,40 +7547,40 @@
         "id": "compileExoTermSchema→TExoTermProtoElement",
         "points": [
           {
-            "x": 2203.4,
-            "y": 2712.8
+            "x": 2204.8,
+            "y": 3021.3
           },
           {
             "x": 2343,
-            "y": 2589
+            "y": 2903
           },
           {
             "x": 2521.5,
-            "y": 2589
+            "y": 2903
           },
           {
             "x": 2700,
-            "y": 2589
+            "y": 2903
           },
           {
             "x": 2878.5,
-            "y": 2589
+            "y": 2903
           },
           {
             "x": 3057,
-            "y": 2589
+            "y": 2903
           },
           {
             "x": 3235.5,
-            "y": 2589
+            "y": 2903
           },
           {
             "x": 3414,
-            "y": 2589
+            "y": 2903
           },
           {
             "x": 3557.7,
-            "y": 2855
+            "y": 3169
           }
         ]
       },
@@ -7216,32 +7588,32 @@
         "id": "compileExoTermSchema→TExoTermSchema",
         "points": [
           {
-            "x": 2199,
-            "y": 2712.8
+            "x": 2198.3,
+            "y": 3021.3
           },
           {
             "x": 2343,
-            "y": 2569
+            "y": 2873.8
           },
           {
             "x": 2521.5,
-            "y": 2569
+            "y": 2873.8
           },
           {
             "x": 2700,
-            "y": 2569
+            "y": 2873.8
           },
           {
             "x": 2878.5,
-            "y": 2569
+            "y": 2873.8
           },
           {
             "x": 3057,
-            "y": 2569
+            "y": 2873.8
           },
           {
             "x": 3178,
-            "y": 2370.3
+            "y": 2675
           }
         ]
       },
@@ -7250,15 +7622,15 @@
         "points": [
           {
             "x": 2224.5,
-            "y": 394.6
+            "y": 552.6
           },
           {
             "x": 2343,
-            "y": 410.3
+            "y": 568.3
           },
           {
             "x": 2461.5,
-            "y": 410.3
+            "y": 568.3
           }
         ]
       },
@@ -7267,31 +7639,31 @@
         "points": [
           {
             "x": 2224.5,
-            "y": 378.9
+            "y": 534.9
           },
           {
             "x": 2343,
-            "y": 363.3
+            "y": 515.5
           },
           {
             "x": 2521.5,
-            "y": 363.3
+            "y": 515.5
           },
           {
             "x": 2700,
-            "y": 363.3
+            "y": 515.5
           },
           {
             "x": 2878.5,
-            "y": 363.3
+            "y": 515.5
           },
           {
             "x": 3057,
-            "y": 363.3
+            "y": 515.5
           },
           {
             "x": 3175.5,
-            "y": 378.9
+            "y": 534.9
           }
         ]
       },
@@ -7300,15 +7672,15 @@
         "points": [
           {
             "x": 2581.5,
-            "y": 410.3
+            "y": 568.3
           },
           {
             "x": 2700,
-            "y": 410.3
+            "y": 568.3
           },
           {
             "x": 2818.5,
-            "y": 410.3
+            "y": 568.3
           }
         ]
       },
@@ -7317,15 +7689,15 @@
         "points": [
           {
             "x": 2938.5,
-            "y": 410.3
+            "y": 568.3
           },
           {
             "x": 3057,
-            "y": 410.3
+            "y": 568.3
           },
           {
             "x": 3175.5,
-            "y": 394.6
+            "y": 552.6
           }
         ]
       },
@@ -7333,16 +7705,16 @@
         "id": "createAttrWriter→createClassWriter",
         "points": [
           {
-            "x": 3671.7,
-            "y": 3606.8
+            "x": 3681.5,
+            "y": 3852.3
           },
           {
             "x": 3771,
-            "y": 3650
+            "y": 3867
           },
           {
             "x": 3841.5,
-            "y": 3650
+            "y": 3867
           }
         ]
       },
@@ -7350,24 +7722,24 @@
         "id": "createAttrWriter→TExoTermWriter",
         "points": [
           {
-            "x": 3671.7,
-            "y": 3537.8
+            "x": 3681.5,
+            "y": 3823.2
           },
           {
             "x": 3771,
-            "y": 3494.5
+            "y": 3808.5
           },
           {
             "x": 3949.5,
-            "y": 3494.5
+            "y": 3808.5
           },
           {
             "x": 4128,
-            "y": 3494.5
+            "y": 3808.5
           },
           {
-            "x": 4287.1,
-            "y": 3210.8
+            "x": 4289.2,
+            "y": 3488
           }
         ]
       },
@@ -7376,15 +7748,15 @@
         "points": [
           {
             "x": 4057.5,
-            "y": 3650
+            "y": 3867
           },
           {
             "x": 4128,
-            "y": 3650
+            "y": 3867
           },
           {
-            "x": 4293.5,
-            "y": 3210.8
+            "x": 4291.6,
+            "y": 3488
           }
         ]
       },
@@ -7392,16 +7764,16 @@
         "id": "createExoTermChildList→disposeExoTermChild",
         "points": [
           {
-            "x": 3697.5,
-            "y": 4111.8
+            "x": 2626.5,
+            "y": 4461.3
           },
           {
-            "x": 3771,
-            "y": 4128.3
+            "x": 2700,
+            "y": 4477.8
           },
           {
-            "x": 3938.8,
-            "y": 3587.5
+            "x": 2851.6,
+            "y": 4283.3
           }
         ]
       },
@@ -7409,24 +7781,24 @@
         "id": "createExoTermChildList→TExoTermChild",
         "points": [
           {
-            "x": 3697.5,
-            "y": 4100
+            "x": 2626.5,
+            "y": 4449.5
           },
           {
-            "x": 3771,
-            "y": 4108.3
+            "x": 2700,
+            "y": 4457.8
           },
           {
-            "x": 3949.5,
-            "y": 4108.3
+            "x": 2878.5,
+            "y": 4457.8
           },
           {
-            "x": 4128,
-            "y": 4108.3
+            "x": 3057,
+            "y": 4457.8
           },
           {
-            "x": 4301.8,
-            "y": 2841.3
+            "x": 3231.9,
+            "y": 2792
           }
         ]
       },
@@ -7434,32 +7806,56 @@
         "id": "createExoTermChildList→TExoTermChildList",
         "points": [
           {
-            "x": 3697.5,
-            "y": 4088.3
+            "x": 2626.5,
+            "y": 4437.8
+          },
+          {
+            "x": 2700,
+            "y": 4437.8
+          },
+          {
+            "x": 2878.5,
+            "y": 4437.8
+          },
+          {
+            "x": 3057,
+            "y": 4437.8
+          },
+          {
+            "x": 3235.5,
+            "y": 4437.8
+          },
+          {
+            "x": 3414,
+            "y": 4437.8
+          },
+          {
+            "x": 3592.5,
+            "y": 4437.8
           },
           {
             "x": 3771,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
             "x": 3949.5,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
             "x": 4128,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
             "x": 4306.5,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
             "x": 4485,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
-            "x": 4595.2,
-            "y": 3948
+            "x": 4656,
+            "y": 2452
           }
         ]
       },
@@ -7467,40 +7863,64 @@
         "id": "createExoTermChildList→TExoTermMark",
         "points": [
           {
-            "x": 3697.5,
-            "y": 4057.2
+            "x": 2626.5,
+            "y": 4426
+          },
+          {
+            "x": 2700,
+            "y": 4417.8
+          },
+          {
+            "x": 2878.5,
+            "y": 4417.8
+          },
+          {
+            "x": 3057,
+            "y": 4417.8
+          },
+          {
+            "x": 3235.5,
+            "y": 4417.8
+          },
+          {
+            "x": 3414,
+            "y": 4417.8
+          },
+          {
+            "x": 3592.5,
+            "y": 4417.8
           },
           {
             "x": 3771,
-            "y": 4035.5
+            "y": 4417.8
           },
           {
             "x": 3949.5,
-            "y": 4035.5
+            "y": 4417.8
           },
           {
             "x": 4128,
-            "y": 4035.5
+            "y": 4417.8
           },
           {
             "x": 4306.5,
-            "y": 4035.5
+            "y": 4417.8
           },
           {
             "x": 4485,
-            "y": 4035.5
+            "y": 4417.8
           },
           {
             "x": 4663.5,
-            "y": 4035.5
+            "y": 4417.8
           },
           {
             "x": 4842,
-            "y": 4035.5
+            "y": 4417.8
           },
           {
-            "x": 5017.6,
-            "y": 1916.8
+            "x": 5017.9,
+            "y": 2111.5
           }
         ]
       },
@@ -7508,48 +7928,72 @@
         "id": "createExoTermChildList→TExoTermRegion",
         "points": [
           {
-            "x": 3677.1,
-            "y": 4053.8
+            "x": 2626.5,
+            "y": 4414.2
+          },
+          {
+            "x": 2700,
+            "y": 4397.8
+          },
+          {
+            "x": 2878.5,
+            "y": 4397.8
+          },
+          {
+            "x": 3057,
+            "y": 4397.8
+          },
+          {
+            "x": 3235.5,
+            "y": 4397.8
+          },
+          {
+            "x": 3414,
+            "y": 4397.8
+          },
+          {
+            "x": 3592.5,
+            "y": 4397.8
           },
           {
             "x": 3771,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
             "x": 3949.5,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
             "x": 4128,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
             "x": 4306.5,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
             "x": 4485,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
             "x": 4663.5,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
             "x": 4842,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
             "x": 5020.5,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
             "x": 5199,
-            "y": 4015.5
+            "y": 4397.8
           },
           {
-            "x": 5252.9,
-            "y": 4034.3
+            "x": 5301.6,
+            "y": 4327.5
           }
         ]
       },
@@ -7557,40 +8001,40 @@
         "id": "createExoTermInstanceFactory→instantiateExoTermProto",
         "points": [
           {
-            "x": 1846.1,
-            "y": 4361
+            "x": 1845.7,
+            "y": 4710
           },
           {
             "x": 1986,
-            "y": 4433
+            "y": 4782.5
           },
           {
             "x": 2164.5,
-            "y": 4433
+            "y": 4782.5
           },
           {
             "x": 2343,
-            "y": 4433
+            "y": 4782.5
           },
           {
             "x": 2521.5,
-            "y": 4433
+            "y": 4782.5
           },
           {
             "x": 2700,
-            "y": 4433
+            "y": 4782.5
           },
           {
             "x": 2878.5,
-            "y": 4433
+            "y": 4782.5
           },
           {
             "x": 3057,
-            "y": 4433
+            "y": 4782.5
           },
           {
             "x": 3089,
-            "y": 4433
+            "y": 4782.5
           }
         ]
       },
@@ -7599,71 +8043,71 @@
         "points": [
           {
             "x": 1896.5,
-            "y": 4353.3
+            "y": 4702.6
           },
           {
             "x": 1986,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 2164.5,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 2343,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 2521.5,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 2700,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 2878.5,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 3057,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 3235.5,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 3414,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 3592.5,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 3771,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 3949.5,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 4128,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 4306.5,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
             "x": 4485,
-            "y": 4373.8
+            "y": 4723.3
           },
           {
-            "x": 4658.7,
-            "y": 2039
+            "x": 4659,
+            "y": 2230
           }
         ]
       },
@@ -7672,15 +8116,15 @@
         "points": [
           {
             "x": 1896.5,
-            "y": 4320.1
+            "y": 4669.4
           },
           {
             "x": 1986,
-            "y": 4315.3
+            "y": 4664.8
           },
           {
             "x": 2018,
-            "y": 4315.3
+            "y": 4664.8
           }
         ]
       },
@@ -7688,24 +8132,24 @@
         "id": "createExoTermInstanceFactory→TExoTermNodeInit",
         "points": [
           {
-            "x": 1868.5,
-            "y": 4292
+            "x": 1869.1,
+            "y": 4641
           },
           {
             "x": 1986,
-            "y": 4246.8
+            "y": 4596.3
           },
           {
             "x": 2164.5,
-            "y": 4246.8
+            "y": 4596.3
           },
           {
             "x": 2343,
-            "y": 4246.8
+            "y": 4596.3
           },
           {
             "x": 2375,
-            "y": 4246.8
+            "y": 4596.3
           }
         ]
       },
@@ -7713,88 +8157,88 @@
         "id": "createExoTermInstanceFactory→TExoTermRegion",
         "points": [
           {
-            "x": 1830.7,
-            "y": 4292
+            "x": 1830.8,
+            "y": 4641
           },
           {
             "x": 1986,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 2164.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 2343,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 2521.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 2700,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 2878.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 3057,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 3235.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 3414,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 3592.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 3771,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 3949.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 4128,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 4306.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 4485,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 4663.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 4842,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 5020.5,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
             "x": 5199,
-            "y": 4188.3
+            "y": 4537.8
           },
           {
-            "x": 5307.8,
-            "y": 4103.3
+            "x": 5330.4,
+            "y": 4327.5
           }
         ]
       },
@@ -7802,40 +8246,40 @@
         "id": "createExoTermInstanceFactory→TExoTermSchema",
         "points": [
           {
-            "x": 1824.1,
-            "y": 4292
+            "x": 1824.3,
+            "y": 4641
           },
           {
             "x": 1986,
-            "y": 4168.3
+            "y": 4517.8
           },
           {
             "x": 2164.5,
-            "y": 4168.3
+            "y": 4517.8
           },
           {
             "x": 2343,
-            "y": 4168.3
+            "y": 4517.8
           },
           {
             "x": 2521.5,
-            "y": 4168.3
+            "y": 4517.8
           },
           {
             "x": 2700,
-            "y": 4168.3
+            "y": 4517.8
           },
           {
             "x": 2878.5,
-            "y": 4168.3
+            "y": 4517.8
           },
           {
             "x": 3057,
-            "y": 4168.3
+            "y": 4517.8
           },
           {
-            "x": 3226.6,
-            "y": 2370.3
+            "x": 3226.8,
+            "y": 2675
           }
         ]
       },
@@ -7844,15 +8288,15 @@
         "points": [
           {
             "x": 4041.5,
-            "y": 3754
+            "y": 3964
           },
           {
             "x": 4128,
-            "y": 3754
+            "y": 3964
           },
           {
-            "x": 4295.8,
-            "y": 3210.8
+            "x": 4294.4,
+            "y": 3488
           }
         ]
       },
@@ -7861,15 +8305,15 @@
         "points": [
           {
             "x": 4067,
-            "y": 3436
+            "y": 3750
           },
           {
             "x": 4128,
-            "y": 3436
+            "y": 3750
           },
           {
-            "x": 4282.8,
-            "y": 3210.8
+            "x": 4285.7,
+            "y": 3488
           }
         ]
       },
@@ -7878,15 +8322,15 @@
         "points": [
           {
             "x": 4038.5,
-            "y": 3339
+            "y": 3653
           },
           {
             "x": 4128,
-            "y": 3339
+            "y": 3653
           },
           {
-            "x": 4268.7,
-            "y": 3210.8
+            "x": 4275.6,
+            "y": 3488
           }
         ]
       },
@@ -7895,15 +8339,15 @@
         "points": [
           {
             "x": 4038.5,
-            "y": 3242
+            "y": 3556
           },
           {
             "x": 4128,
-            "y": 3242
+            "y": 3556
           },
           {
-            "x": 4212.8,
-            "y": 3210.8
+            "x": 4246.4,
+            "y": 3488
           }
         ]
       },
@@ -7912,15 +8356,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1427.5
+            "y": 1699
           },
           {
             "x": 1572,
-            "y": 1427.5
+            "y": 1699
           },
           {
-            "x": 1727.4,
-            "y": 1358.3
+            "x": 1729.8,
+            "y": 1625.3
           }
         ]
       },
@@ -7928,16 +8372,16 @@
         "id": "disposeExoTermChild→TExoTermChild",
         "points": [
           {
-            "x": 4022.5,
-            "y": 3553
+            "x": 2951.5,
+            "y": 4248.8
           },
           {
-            "x": 4128,
-            "y": 3553
+            "x": 3057,
+            "y": 4248.8
           },
           {
-            "x": 4298.2,
-            "y": 2841.3
+            "x": 3231.4,
+            "y": 2792
           }
         ]
       },
@@ -7946,15 +8390,15 @@
         "points": [
           {
             "x": 4395.5,
-            "y": 1767.8
+            "y": 1631.7
           },
           {
             "x": 4485,
-            "y": 1782.5
+            "y": 1648.5
           },
           {
             "x": 4517,
-            "y": 1782.5
+            "y": 1648.5
           }
         ]
       },
@@ -7962,24 +8406,24 @@
         "id": "EXO_TERM_FOREIGN_METHODS→TExoTermMark",
         "points": [
           {
-            "x": 4371.9,
-            "y": 1730.3
+            "x": 4395.5,
+            "y": 1600.4
           },
           {
             "x": 4485,
-            "y": 1690.5
+            "y": 1585.8
           },
           {
             "x": 4663.5,
-            "y": 1690.5
+            "y": 1585.8
           },
           {
             "x": 4842,
-            "y": 1690.5
+            "y": 1585.8
           },
           {
-            "x": 4988.4,
-            "y": 1847.8
+            "x": 5008,
+            "y": 2042.5
           }
         ]
       },
@@ -7988,15 +8432,15 @@
         "points": [
           {
             "x": 4048,
-            "y": 1753.3
+            "y": 1615
           },
           {
             "x": 4128,
-            "y": 1753.3
+            "y": 1615
           },
           {
             "x": 4217.5,
-            "y": 1753.3
+            "y": 1615
           }
         ]
       },
@@ -8004,56 +8448,73 @@
         "id": "EXO_TERM_NODE_METHODS→createExoTermChildList",
         "points": [
           {
-            "x": 1454.7,
-            "y": 3884
+            "x": 1448.6,
+            "y": 4036.3
           },
           {
             "x": 1572,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
             "x": 1779,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
             "x": 1986,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
             "x": 2164.5,
-            "y": 4088.3
+            "y": 4437.8
           },
           {
             "x": 2343,
-            "y": 4088.3
+            "y": 4437.8
+          },
+          {
+            "x": 2416.5,
+            "y": 4437.8
+          }
+        ]
+      },
+      {
+        "id": "EXO_TERM_NODE_METHODS→disposeExoTermChild",
+        "points": [
+          {
+            "x": 1451,
+            "y": 4036.3
+          },
+          {
+            "x": 1572,
+            "y": 4329.3
+          },
+          {
+            "x": 1779,
+            "y": 4329.3
+          },
+          {
+            "x": 1986,
+            "y": 4329.3
+          },
+          {
+            "x": 2164.5,
+            "y": 4329.3
+          },
+          {
+            "x": 2343,
+            "y": 4329.3
           },
           {
             "x": 2521.5,
-            "y": 4088.3
+            "y": 4329.3
           },
           {
             "x": 2700,
-            "y": 4088.3
+            "y": 4329.3
           },
           {
-            "x": 2878.5,
-            "y": 4088.3
-          },
-          {
-            "x": 3057,
-            "y": 4088.3
-          },
-          {
-            "x": 3235.5,
-            "y": 4088.3
-          },
-          {
-            "x": 3414,
-            "y": 4088.3
-          },
-          {
-            "x": 3487.5,
-            "y": 4088.3
+            "x": 2805.5,
+            "y": 4281.7
           }
         ]
       },
@@ -8061,16 +8522,16 @@
         "id": "EXO_TERM_NODE_METHODS→exoTermSchemaOf",
         "points": [
           {
-            "x": 1456.2,
-            "y": 3884
+            "x": 1451.6,
+            "y": 4036.3
           },
           {
             "x": 1572,
-            "y": 4064.8
+            "y": 4309.3
           },
           {
-            "x": 1773.8,
-            "y": 2713.3
+            "x": 1774.9,
+            "y": 2582.3
           }
         ]
       },
@@ -8078,24 +8539,65 @@
         "id": "EXO_TERM_NODE_METHODS→HERE",
         "points": [
           {
-            "x": 1457.8,
-            "y": 3884
+            "x": 1452.4,
+            "y": 4036.3
           },
           {
             "x": 1572,
-            "y": 4044.8
+            "y": 4289.3
           },
           {
             "x": 1779,
-            "y": 4044.8
+            "y": 4289.3
           },
           {
             "x": 1986,
-            "y": 4044.8
+            "y": 4289.3
           },
           {
-            "x": 2104.5,
-            "y": 4038.1
+            "x": 2164.5,
+            "y": 4289.3
+          },
+          {
+            "x": 2343,
+            "y": 4289.3
+          },
+          {
+            "x": 2521.5,
+            "y": 4289.3
+          },
+          {
+            "x": 2700,
+            "y": 4289.3
+          },
+          {
+            "x": 2818.5,
+            "y": 4319.1
+          }
+        ]
+      },
+      {
+        "id": "EXO_TERM_NODE_METHODS→placeExoTermChild",
+        "points": [
+          {
+            "x": 1468.3,
+            "y": 4036.3
+          },
+          {
+            "x": 1572,
+            "y": 4125.3
+          },
+          {
+            "x": 1779,
+            "y": 4125.3
+          },
+          {
+            "x": 1986,
+            "y": 4125.3
+          },
+          {
+            "x": 2050,
+            "y": 4125.3
           }
         ]
       },
@@ -8103,16 +8605,16 @@
         "id": "EXO_TERM_NODE_METHODS→renderExoTermInstance",
         "points": [
           {
-            "x": 1460.9,
-            "y": 3884
+            "x": 1479.7,
+            "y": 4036.3
           },
           {
             "x": 1572,
-            "y": 4015.5
+            "y": 4091.8
           },
           {
             "x": 1775.7,
-            "y": 1906.8
+            "y": 1954.5
           }
         ]
       },
@@ -8120,16 +8622,65 @@
         "id": "EXO_TERM_NODE_METHODS→requireExoTermRegion",
         "points": [
           {
-            "x": 1466.3,
-            "y": 3884
+            "x": 1502.4,
+            "y": 4036.3
           },
           {
             "x": 1572,
-            "y": 3982
+            "y": 4062.5
           },
           {
-            "x": 1642,
-            "y": 3982
+            "x": 1779,
+            "y": 4062.5
+          },
+          {
+            "x": 1986,
+            "y": 4062.5
+          },
+          {
+            "x": 2164.5,
+            "y": 4062.5
+          },
+          {
+            "x": 2343,
+            "y": 4062.5
+          },
+          {
+            "x": 2464.3,
+            "y": 4135.8
+          }
+        ]
+      },
+      {
+        "id": "EXO_TERM_NODE_METHODS→takeExoTermChildOut",
+        "points": [
+          {
+            "x": 1520.5,
+            "y": 4031
+          },
+          {
+            "x": 1572,
+            "y": 4042.5
+          },
+          {
+            "x": 1779,
+            "y": 4042.5
+          },
+          {
+            "x": 1986,
+            "y": 4042.5
+          },
+          {
+            "x": 2164.5,
+            "y": 4042.5
+          },
+          {
+            "x": 2343,
+            "y": 4042.5
+          },
+          {
+            "x": 2448.5,
+            "y": 4042.5
           }
         ]
       },
@@ -8138,71 +8689,47 @@
         "points": [
           {
             "x": 1520.5,
-            "y": 3882.9
+            "y": 3995.5
           },
           {
             "x": 1572,
-            "y": 3897.3
+            "y": 3984
           },
           {
             "x": 1779,
-            "y": 3897.3
+            "y": 3984
           },
           {
             "x": 1986,
-            "y": 3897.3
+            "y": 3984
           },
           {
             "x": 2164.5,
-            "y": 3897.3
+            "y": 3984
           },
           {
             "x": 2343,
-            "y": 3897.3
+            "y": 3984
           },
           {
             "x": 2521.5,
-            "y": 3897.3
+            "y": 3984
           },
           {
             "x": 2700,
-            "y": 3897.3
+            "y": 3984
           },
           {
             "x": 2878.5,
-            "y": 3897.3
+            "y": 3984
           },
           {
             "x": 3057,
-            "y": 3897.3
+            "y": 3984
           },
           {
-            "x": 3235.5,
-            "y": 3897.3
-          },
-          {
-            "x": 3414,
-            "y": 3897.3
-          },
-          {
-            "x": 3592.5,
-            "y": 3897.3
-          },
-          {
-            "x": 3771,
-            "y": 3897.3
-          },
-          {
-            "x": 3949.5,
-            "y": 3897.3
-          },
-          {
-            "x": 4128,
-            "y": 3897.3
-          },
-          {
-            "x": 4300.9,
-            "y": 2841.3
+            "x": 3230.5,
+            "y": 2792
           }
         ]
       },
@@ -8210,80 +8737,80 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermChildList",
         "points": [
           {
-            "x": 1520.5,
-            "y": 3861
+            "x": 1443.3,
+            "y": 3990.3
           },
           {
             "x": 1572,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 1779,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 1986,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 2164.5,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 2343,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 2521.5,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 2700,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 2878.5,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 3057,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 3235.5,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 3414,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 3592.5,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 3771,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 3949.5,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 4128,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 4306.5,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 4485,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 4517,
-            "y": 3861
+            "y": 2365
           }
         ]
       },
@@ -8291,80 +8818,80 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermElement",
         "points": [
           {
-            "x": 1443.5,
-            "y": 3838
+            "x": 1443.3,
+            "y": 3990.3
           },
           {
             "x": 1572,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 1779,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 1986,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 2164.5,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 2343,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 2521.5,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 2700,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 2878.5,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 3057,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 3235.5,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 3414,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 3592.5,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 3771,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 3949.5,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 4128,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 4306.5,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
             "x": 4485,
-            "y": 2394.3
+            "y": 2309.5
           },
           {
-            "x": 4636.1,
-            "y": 2039
+            "x": 4583.5,
+            "y": 2230
           }
         ]
       },
@@ -8372,96 +8899,96 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermEvent",
         "points": [
           {
-            "x": 1443.3,
-            "y": 3838
+            "x": 1443.2,
+            "y": 3990.3
           },
           {
             "x": 1572,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 1779,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 1986,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 2164.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 2343,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 2521.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 2700,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 2878.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 3057,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 3235.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 3414,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 3592.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 3771,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 3949.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 4128,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 4306.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 4485,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 4663.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 4842,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 5020.5,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 5199,
-            "y": 2157.3
+            "y": 2254
           },
           {
             "x": 5231,
-            "y": 2155.9
+            "y": 2247.9
           }
         ]
       },
@@ -8469,24 +8996,24 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermMachine",
         "points": [
           {
-            "x": 1443.2,
-            "y": 3838
+            "x": 1443.1,
+            "y": 3990.3
           },
           {
             "x": 1572,
-            "y": 2137.3
+            "y": 2165.5
           },
           {
             "x": 1779,
-            "y": 2137.3
+            "y": 2165.5
           },
           {
             "x": 1986,
-            "y": 2137.3
+            "y": 2165.5
           },
           {
-            "x": 2159,
-            "y": 1054.5
+            "x": 2158.6,
+            "y": 1164.8
           }
         ]
       },
@@ -8494,88 +9021,88 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermMark",
         "points": [
           {
-            "x": 1443.2,
-            "y": 3838
+            "x": 1443.1,
+            "y": 3990.3
           },
           {
             "x": 1572,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 1779,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 1986,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 2164.5,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 2343,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 2521.5,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 2700,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 2878.5,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 3057,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 3235.5,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 3414,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 3592.5,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 3771,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 3949.5,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 4128,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 4306.5,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 4485,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 4663.5,
-            "y": 2117.3
+            "y": 2077
           },
           {
             "x": 4842,
-            "y": 2117.3
+            "y": 2077
           },
           {
-            "x": 4994.3,
-            "y": 1916.8
+            "x": 4903,
+            "y": 2077
           }
         ]
       },
@@ -8583,32 +9110,32 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermNode",
         "points": [
           {
-            "x": 1443.2,
-            "y": 3838
+            "x": 1442.9,
+            "y": 3990.3
           },
           {
             "x": 1572,
-            "y": 2062.3
+            "y": 1860
           },
           {
             "x": 1779,
-            "y": 2062.3
+            "y": 1860
           },
           {
             "x": 1986,
-            "y": 2062.3
+            "y": 1860
           },
           {
             "x": 2164.5,
-            "y": 2062.3
+            "y": 1860
           },
           {
             "x": 2343,
-            "y": 2062.3
+            "y": 1860
           },
           {
-            "x": 2506.4,
-            "y": 1688
+            "x": 2477,
+            "y": 1964
           }
         ]
       },
@@ -8616,72 +9143,72 @@
         "id": "EXO_TERM_NODE_METHODS→TExoTermNodeApi",
         "points": [
           {
-            "x": 1442.8,
-            "y": 3838
+            "x": 1442.9,
+            "y": 3990.3
           },
           {
             "x": 1572,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 1779,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 1986,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 2164.5,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 2343,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 2521.5,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 2700,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 2878.5,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 3057,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 3235.5,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 3414,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 3592.5,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 3771,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 3949.5,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 4128,
-            "y": 1574.3
+            "y": 1840
           },
           {
             "x": 4160,
-            "y": 1579.6
+            "y": 1835.8
           }
         ]
       },
@@ -8690,15 +9217,15 @@
         "points": [
           {
             "x": 1221.5,
-            "y": 3861
+            "y": 4013.3
           },
           {
             "x": 1311,
-            "y": 3861
+            "y": 4013.3
           },
           {
             "x": 1362.5,
-            "y": 3861
+            "y": 4013.3
           }
         ]
       },
@@ -8706,16 +9233,16 @@
         "id": "EXO_TERM_WRITER_FACTORIES→createAttrWriter",
         "points": [
           {
-            "x": 3261.2,
-            "y": 3435.3
+            "x": 3257.3,
+            "y": 3672.5
           },
           {
             "x": 3414,
-            "y": 3572.3
+            "y": 3837.8
           },
           {
             "x": 3503.5,
-            "y": 3572.3
+            "y": 3837.8
           }
         ]
       },
@@ -8723,24 +9250,24 @@
         "id": "EXO_TERM_WRITER_FACTORIES→createRefusingWriter",
         "points": [
           {
-            "x": 3327.5,
-            "y": 3424.5
+            "x": 3276.4,
+            "y": 3672.5
           },
           {
             "x": 3414,
-            "y": 3436
+            "y": 3750
           },
           {
             "x": 3592.5,
-            "y": 3436
+            "y": 3750
           },
           {
             "x": 3771,
-            "y": 3436
+            "y": 3750
           },
           {
             "x": 3832,
-            "y": 3436
+            "y": 3750
           }
         ]
       },
@@ -8748,24 +9275,24 @@
         "id": "EXO_TERM_WRITER_FACTORIES→createStringAttrWriter",
         "points": [
           {
-            "x": 3291.5,
-            "y": 3389.3
+            "x": 3327.5,
+            "y": 3651.3
           },
           {
             "x": 3414,
-            "y": 3339
+            "y": 3653
           },
           {
             "x": 3592.5,
-            "y": 3339
+            "y": 3653
           },
           {
             "x": 3771,
-            "y": 3339
+            "y": 3653
           },
           {
             "x": 3860.5,
-            "y": 3339
+            "y": 3653
           }
         ]
       },
@@ -8773,24 +9300,24 @@
         "id": "EXO_TERM_WRITER_FACTORIES→createToggleAttrWriter",
         "points": [
           {
-            "x": 3259.6,
-            "y": 3389.3
+            "x": 3279.4,
+            "y": 3626.5
           },
           {
             "x": 3414,
-            "y": 3242
+            "y": 3556
           },
           {
             "x": 3592.5,
-            "y": 3242
+            "y": 3556
           },
           {
             "x": 3771,
-            "y": 3242
+            "y": 3556
           },
           {
             "x": 3860.5,
-            "y": 3242
+            "y": 3556
           }
         ]
       },
@@ -8798,16 +9325,16 @@
         "id": "EXO_TERM_WRITER_FACTORIES→namedAttrPort",
         "points": [
           {
-            "x": 3253.4,
-            "y": 3389.3
+            "x": 3262.5,
+            "y": 3626.5
           },
           {
             "x": 3414,
-            "y": 3183.5
+            "y": 3497.5
           },
           {
             "x": 3529.5,
-            "y": 3183.5
+            "y": 3497.5
           }
         ]
       },
@@ -8815,16 +9342,16 @@
         "id": "EXO_TERM_WRITER_FACTORIES→TExoTermWriterFactories",
         "points": [
           {
-            "x": 3251.4,
-            "y": 3389.3
+            "x": 3258.2,
+            "y": 3626.5
           },
           {
             "x": 3414,
-            "y": 3154.3
+            "y": 3468.3
           },
           {
             "x": 3522.3,
-            "y": 3101
+            "y": 3415
           }
         ]
       },
@@ -8832,32 +9359,32 @@
         "id": "EXO_TERM_WRITER_FACTORIES→writeText",
         "points": [
           {
-            "x": 3249.8,
-            "y": 3389.3
+            "x": 3255,
+            "y": 3626.5
           },
           {
             "x": 3414,
-            "y": 3125
+            "y": 3439
           },
           {
             "x": 3592.5,
-            "y": 3125
+            "y": 3439
           },
           {
             "x": 3771,
-            "y": 3125
+            "y": 3439
           },
           {
             "x": 3949.5,
-            "y": 3125
+            "y": 3439
           },
           {
             "x": 4128,
-            "y": 3125
+            "y": 3439
           },
           {
-            "x": 4289.7,
-            "y": 3457
+            "x": 4286.7,
+            "y": 3715.5
           }
         ]
       },
@@ -8865,16 +9392,16 @@
         "id": "exoForeignTermNode→TExoTermChild",
         "points": [
           {
-            "x": 4057.5,
-            "y": 1916.9
+            "x": 2931.1,
+            "y": 307.8
           },
           {
-            "x": 4128,
-            "y": 1924.5
+            "x": 3057,
+            "y": 390.3
           },
           {
-            "x": 4299.5,
-            "y": 2772.3
+            "x": 3232.9,
+            "y": 2723
           }
         ]
       },
@@ -8882,24 +9409,48 @@
         "id": "exoForeignTermNode→TExoTermElement",
         "points": [
           {
-            "x": 4057.5,
-            "y": 1899.2
+            "x": 2948.7,
+            "y": 307.8
+          },
+          {
+            "x": 3057,
+            "y": 361
+          },
+          {
+            "x": 3235.5,
+            "y": 361
+          },
+          {
+            "x": 3414,
+            "y": 361
+          },
+          {
+            "x": 3592.5,
+            "y": 361
+          },
+          {
+            "x": 3771,
+            "y": 361
+          },
+          {
+            "x": 3949.5,
+            "y": 361
           },
           {
             "x": 4128,
-            "y": 1895.3
+            "y": 361
           },
           {
             "x": 4306.5,
-            "y": 1895.3
+            "y": 361
           },
           {
             "x": 4485,
-            "y": 1895.3
+            "y": 361
           },
           {
-            "x": 4518.2,
-            "y": 1910
+            "x": 4657.1,
+            "y": 2101
           }
         ]
       },
@@ -8907,32 +9458,56 @@
         "id": "exoForeignTermNode→TExoTermMark",
         "points": [
           {
-            "x": 4045.3,
-            "y": 1870.8
+            "x": 2927.3,
+            "y": 238.8
+          },
+          {
+            "x": 3057,
+            "y": 147
+          },
+          {
+            "x": 3235.5,
+            "y": 147
+          },
+          {
+            "x": 3414,
+            "y": 147
+          },
+          {
+            "x": 3592.5,
+            "y": 147
+          },
+          {
+            "x": 3771,
+            "y": 147
+          },
+          {
+            "x": 3949.5,
+            "y": 147
           },
           {
             "x": 4128,
-            "y": 1841
+            "y": 147
           },
           {
             "x": 4306.5,
-            "y": 1841
+            "y": 147
           },
           {
             "x": 4485,
-            "y": 1841
+            "y": 147
           },
           {
             "x": 4663.5,
-            "y": 1841
+            "y": 147
           },
           {
             "x": 4842,
-            "y": 1841
+            "y": 147
           },
           {
-            "x": 4903,
-            "y": 1855.1
+            "x": 5017.3,
+            "y": 2042.5
           }
         ]
       },
@@ -8940,24 +9515,24 @@
         "id": "ExoTermBackend→ExoTermBackendBase",
         "points": [
           {
-            "x": 88.4,
-            "y": 559
+            "x": 87.4,
+            "y": 801.5
           },
           {
             "x": 176,
-            "y": 1018.8
+            "y": 1400
           },
           {
             "x": 354.5,
-            "y": 1018.8
+            "y": 1400
           },
           {
             "x": 533,
-            "y": 1018.8
+            "y": 1400
           },
           {
             "x": 565,
-            "y": 1017.2
+            "y": 1398.5
           }
         ]
       },
@@ -8965,16 +9540,16 @@
         "id": "ExoTermBackend→TExoTermBackendConstructor",
         "points": [
           {
-            "x": 89.6,
-            "y": 513
+            "x": 87.5,
+            "y": 755.5
           },
           {
             "x": 176,
-            "y": 155.5
+            "y": 165.5
           },
           {
             "x": 208,
-            "y": 155.5
+            "y": 165.5
           }
         ]
       },
@@ -8982,32 +9557,32 @@
         "id": "ExoTermBackendBase→createExoTermInstanceFactory",
         "points": [
           {
-            "x": 746.7,
-            "y": 1059.8
+            "x": 746.8,
+            "y": 1441
           },
           {
             "x": 954,
-            "y": 4326.5
+            "y": 4675.5
           },
           {
             "x": 1132.5,
-            "y": 4326.5
+            "y": 4675.5
           },
           {
             "x": 1311,
-            "y": 4326.5
+            "y": 4675.5
           },
           {
             "x": 1441.5,
-            "y": 4326.5
+            "y": 4675.5
           },
           {
             "x": 1572,
-            "y": 4326.5
+            "y": 4675.5
           },
           {
             "x": 1661.5,
-            "y": 4326.5
+            "y": 4675.5
           }
         ]
       },
@@ -9015,80 +9590,56 @@
         "id": "ExoTermBackendBase→disposeExoTermChild",
         "points": [
           {
-            "x": 746.9,
-            "y": 1059.8
+            "x": 747,
+            "y": 1441
           },
           {
             "x": 954,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 1132.5,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 1311,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 1441.5,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 1572,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 1779,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 1986,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 2164.5,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 2343,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 2521.5,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
             "x": 2700,
-            "y": 4148.3
+            "y": 4497.8
           },
           {
-            "x": 2878.5,
-            "y": 4148.3
-          },
-          {
-            "x": 3057,
-            "y": 4148.3
-          },
-          {
-            "x": 3235.5,
-            "y": 4148.3
-          },
-          {
-            "x": 3414,
-            "y": 4148.3
-          },
-          {
-            "x": 3592.5,
-            "y": 4148.3
-          },
-          {
-            "x": 3771,
-            "y": 4148.3
-          },
-          {
-            "x": 3939.2,
-            "y": 3587.5
+            "x": 2853.8,
+            "y": 4283.3
           }
         ]
       },
@@ -9096,16 +9647,16 @@
         "id": "ExoTermBackendBase→EXO_TERM_NODE_VOCABULARY",
         "points": [
           {
-            "x": 747.3,
-            "y": 1059.8
+            "x": 747.6,
+            "y": 1441
           },
           {
             "x": 954,
-            "y": 3861
+            "y": 4013.3
           },
           {
             "x": 1043.5,
-            "y": 3861
+            "y": 4013.3
           }
         ]
       },
@@ -9113,16 +9664,16 @@
         "id": "ExoTermBackendBase→exoTermContextSlot",
         "points": [
           {
-            "x": 760.4,
-            "y": 1059.8
+            "x": 764.9,
+            "y": 1441
           },
           {
             "x": 954,
-            "y": 1644.5
+            "y": 1892.8
           },
           {
             "x": 1063,
-            "y": 1644.5
+            "y": 1892.8
           }
         ]
       },
@@ -9130,32 +9681,32 @@
         "id": "ExoTermBackendBase→exoTermSchemaOf",
         "points": [
           {
-            "x": 763.2,
-            "y": 1059.8
+            "x": 768.5,
+            "y": 1441
           },
           {
             "x": 954,
-            "y": 1554.3
+            "y": 1820
           },
           {
             "x": 1132.5,
-            "y": 1554.3
+            "y": 1820
           },
           {
             "x": 1311,
-            "y": 1554.3
+            "y": 1820
           },
           {
             "x": 1441.5,
-            "y": 1554.3
+            "y": 1820
           },
           {
             "x": 1572,
-            "y": 1554.3
+            "y": 1820
           },
           {
-            "x": 1772.6,
-            "y": 2644.3
+            "x": 1769.2,
+            "y": 2513.3
           }
         ]
       },
@@ -9163,16 +9714,16 @@
         "id": "ExoTermBackendBase→exoTermText",
         "points": [
           {
-            "x": 786.5,
-            "y": 1059.8
+            "x": 810.2,
+            "y": 1441
           },
           {
             "x": 954,
-            "y": 1258.3
+            "y": 1551
           },
           {
             "x": 1040.5,
-            "y": 1258.3
+            "y": 1551
           }
         ]
       },
@@ -9180,32 +9731,32 @@
         "id": "ExoTermBackendBase→renderExoTermInstance",
         "points": [
           {
-            "x": 826.2,
-            "y": 1059.8
+            "x": 922,
+            "y": 1407
           },
           {
             "x": 954,
-            "y": 1138.5
+            "y": 1410
           },
           {
             "x": 1132.5,
-            "y": 1138.5
+            "y": 1410
           },
           {
             "x": 1311,
-            "y": 1138.5
+            "y": 1410
           },
           {
             "x": 1441.5,
-            "y": 1138.5
+            "y": 1410
           },
           {
             "x": 1572,
-            "y": 1138.5
+            "y": 1410
           },
           {
-            "x": 1769.3,
-            "y": 1837.8
+            "x": 1765,
+            "y": 1885.5
           }
         ]
       },
@@ -9213,72 +9764,72 @@
         "id": "ExoTermBackendBase→TExoTermApi",
         "points": [
           {
-            "x": 841.3,
-            "y": 1059.8
+            "x": 922,
+            "y": 1390
           },
           {
             "x": 954,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 1132.5,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 1311,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 1441.5,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 1572,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 1779,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 1986,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 2164.5,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 2343,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 2521.5,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 2700,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 2878.5,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 3057,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 3235.5,
-            "y": 1118.5
+            "y": 1390
           },
           {
             "x": 3414,
-            "y": 1118.5
+            "y": 1390
           },
           {
-            "x": 3587.3,
-            "y": 2271.3
+            "x": 3587.1,
+            "y": 2487.5
           }
         ]
       },
@@ -9286,88 +9837,64 @@
         "id": "ExoTermBackendBase→TExoTermChild",
         "points": [
           {
-            "x": 863.1,
-            "y": 1059.8
+            "x": 922,
+            "y": 1373
           },
           {
             "x": 954,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 1132.5,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 1311,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 1441.5,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 1572,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 1779,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 1986,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 2164.5,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 2343,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 2521.5,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 2700,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 2878.5,
-            "y": 1098.5
+            "y": 1370
           },
           {
             "x": 3057,
-            "y": 1098.5
+            "y": 1370
           },
           {
-            "x": 3235.5,
-            "y": 1098.5
-          },
-          {
-            "x": 3414,
-            "y": 1098.5
-          },
-          {
-            "x": 3592.5,
-            "y": 1098.5
-          },
-          {
-            "x": 3771,
-            "y": 1098.5
-          },
-          {
-            "x": 3949.5,
-            "y": 1098.5
-          },
-          {
-            "x": 4128,
-            "y": 1098.5
-          },
-          {
-            "x": 4302.9,
-            "y": 2772.3
+            "x": 3231.1,
+            "y": 2723
           }
         ]
       },
@@ -9375,96 +9902,96 @@
         "id": "ExoTermBackendBase→TExoTermElement",
         "points": [
           {
-            "x": 897.4,
-            "y": 1059.8
+            "x": 922,
+            "y": 1356.1
           },
           {
             "x": 954,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 1132.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 1311,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 1441.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 1572,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 1779,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 1986,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 2164.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 2343,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 2521.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 2700,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 2878.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 3057,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 3235.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 3414,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 3592.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 3771,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 3949.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 4128,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 4306.5,
-            "y": 1078.5
+            "y": 1350
           },
           {
             "x": 4485,
-            "y": 1078.5
+            "y": 1350
           },
           {
-            "x": 4650.7,
-            "y": 1910
+            "x": 4649.4,
+            "y": 2101
           }
         ]
       },
@@ -9473,39 +10000,39 @@
         "points": [
           {
             "x": 922,
-            "y": 1018.3
+            "y": 1339.1
           },
           {
             "x": 954,
-            "y": 1020
+            "y": 1330
           },
           {
             "x": 1132.5,
-            "y": 1020
+            "y": 1330
           },
           {
             "x": 1311,
-            "y": 1020
+            "y": 1330
           },
           {
             "x": 1441.5,
-            "y": 1020
+            "y": 1330
           },
           {
             "x": 1572,
-            "y": 1020
+            "y": 1330
           },
           {
             "x": 1779,
-            "y": 1020
+            "y": 1330
           },
           {
             "x": 1986,
-            "y": 1020
+            "y": 1330
           },
           {
-            "x": 2066,
-            "y": 1020
+            "x": 2133.7,
+            "y": 1164.8
           }
         ]
       },
@@ -9513,56 +10040,56 @@
         "id": "ExoTermBackendBase→TExoTermNodeFields",
         "points": [
           {
-            "x": 759,
-            "y": 957.8
+            "x": 799.4,
+            "y": 1339
           },
           {
             "x": 954,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 1132.5,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 1311,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 1441.5,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 1572,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 1779,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 1986,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 2164.5,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 2343,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 2521.5,
-            "y": 314
+            "y": 1198
           },
           {
             "x": 2700,
-            "y": 314
+            "y": 1198
           },
           {
-            "x": 2875,
-            "y": 2018.5
+            "x": 2874.3,
+            "y": 2623.3
           }
         ]
       },
@@ -9570,64 +10097,64 @@
         "id": "ExoTermBackendBase→TExoTermSchema",
         "points": [
           {
-            "x": 758.5,
-            "y": 957.8
+            "x": 755.1,
+            "y": 1339
           },
           {
             "x": 954,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 1132.5,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 1311,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 1441.5,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 1572,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 1779,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 1986,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 2164.5,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 2343,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 2521.5,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 2700,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 2878.5,
-            "y": 294
+            "y": 466.3
           },
           {
             "x": 3057,
-            "y": 294
+            "y": 466.3
           },
           {
-            "x": 3227,
-            "y": 2181.3
+            "x": 3227.5,
+            "y": 2486
           }
         ]
       },
@@ -9635,16 +10162,16 @@
         "id": "ExoTermBackendBase→TExoTermScreen",
         "points": [
           {
-            "x": 757.1,
-            "y": 957.8
+            "x": 754.3,
+            "y": 1339
           },
           {
             "x": 954,
-            "y": 220.5
+            "y": 392.8
           },
           {
             "x": 986,
-            "y": 220.5
+            "y": 392.8
           }
         ]
       },
@@ -9652,24 +10179,24 @@
         "id": "ExoTermBackendBase→TExoTermTextOptions",
         "points": [
           {
-            "x": 756,
-            "y": 957.8
+            "x": 752.3,
+            "y": 1339
           },
           {
             "x": 954,
-            "y": 147
+            "y": 174.5
           },
           {
             "x": 1132.5,
-            "y": 147
+            "y": 174.5
           },
           {
             "x": 1311,
-            "y": 147
+            "y": 174.5
           },
           {
-            "x": 1430.5,
-            "y": 602
+            "x": 1436.5,
+            "y": 1222
           }
         ]
       },
@@ -9677,40 +10204,40 @@
         "id": "ExoTermEmitter→createMissingWriter",
         "points": [
           {
-            "x": 2542.6,
-            "y": 3092.3
+            "x": 2545.7,
+            "y": 3400.8
           },
           {
             "x": 2700,
-            "y": 3754
+            "y": 3964
           },
           {
             "x": 2878.5,
-            "y": 3754
+            "y": 3964
           },
           {
             "x": 3057,
-            "y": 3754
+            "y": 3964
           },
           {
             "x": 3235.5,
-            "y": 3754
+            "y": 3964
           },
           {
             "x": 3414,
-            "y": 3754
+            "y": 3964
           },
           {
             "x": 3592.5,
-            "y": 3754
+            "y": 3964
           },
           {
             "x": 3771,
-            "y": 3754
+            "y": 3964
           },
           {
             "x": 3857.5,
-            "y": 3754
+            "y": 3964
           }
         ]
       },
@@ -9718,16 +10245,16 @@
         "id": "ExoTermEmitter→exoTermWriterForPort",
         "points": [
           {
-            "x": 2592.3,
-            "y": 3092.3
+            "x": 2593.2,
+            "y": 3400.8
           },
           {
             "x": 2700,
-            "y": 3226.8
+            "y": 3532.5
           },
           {
             "x": 2741.5,
-            "y": 3226.8
+            "y": 3532.5
           }
         ]
       },
@@ -9736,31 +10263,31 @@
         "points": [
           {
             "x": 2645.5,
-            "y": 2962.6
+            "y": 3231.8
           },
           {
             "x": 2700,
-            "y": 2944.5
+            "y": 3196.5
           },
           {
             "x": 2878.5,
-            "y": 2944.5
+            "y": 3196.5
           },
           {
             "x": 3057,
-            "y": 2944.5
+            "y": 3196.5
           },
           {
             "x": 3235.5,
-            "y": 2944.5
+            "y": 3196.5
           },
           {
             "x": 3414,
-            "y": 2944.5
+            "y": 3196.5
           },
           {
-            "x": 3516.6,
-            "y": 2827
+            "x": 3483.5,
+            "y": 3141
           }
         ]
       },
@@ -9768,32 +10295,32 @@
         "id": "ExoTermEmitter→TExoTermProtoElement",
         "points": [
           {
-            "x": 2645.5,
-            "y": 2945.2
+            "x": 2633.7,
+            "y": 3223.8
           },
           {
             "x": 2700,
-            "y": 2919.5
+            "y": 3171.5
           },
           {
             "x": 2878.5,
-            "y": 2919.5
+            "y": 3171.5
           },
           {
             "x": 3057,
-            "y": 2919.5
+            "y": 3171.5
           },
           {
             "x": 3235.5,
-            "y": 2919.5
+            "y": 3171.5
           },
           {
             "x": 3414,
-            "y": 2919.5
+            "y": 3171.5
           },
           {
             "x": 3446,
-            "y": 2919.5
+            "y": 3182.6
           }
         ]
       },
@@ -9801,48 +10328,48 @@
         "id": "ExoTermEmitter→TExoTermWriter",
         "points": [
           {
-            "x": 2563.7,
-            "y": 2915.3
+            "x": 2564.3,
+            "y": 3223.8
           },
           {
             "x": 2700,
-            "y": 2629
+            "y": 2943
           },
           {
             "x": 2878.5,
-            "y": 2629
+            "y": 2943
           },
           {
             "x": 3057,
-            "y": 2629
+            "y": 2943
           },
           {
             "x": 3235.5,
-            "y": 2629
+            "y": 2943
           },
           {
             "x": 3414,
-            "y": 2629
+            "y": 2943
           },
           {
             "x": 3592.5,
-            "y": 2629
+            "y": 2943
           },
           {
             "x": 3771,
-            "y": 2629
+            "y": 2943
           },
           {
             "x": 3949.5,
-            "y": 2629
+            "y": 2943
           },
           {
             "x": 4128,
-            "y": 2629
+            "y": 2943
           },
           {
-            "x": 4295.2,
-            "y": 3141.8
+            "x": 4294.4,
+            "y": 3419
           }
         ]
       },
@@ -9851,15 +10378,15 @@
         "points": [
           {
             "x": 4430.5,
-            "y": 578
+            "y": 205.5
           },
           {
             "x": 4485,
-            "y": 578
+            "y": 205.5
           },
           {
-            "x": 4655.3,
-            "y": 1910
+            "x": 4657.6,
+            "y": 2101
           }
         ]
       },
@@ -9868,15 +10395,15 @@
         "points": [
           {
             "x": 4414.5,
-            "y": 686.6
+            "y": 314.1
           },
           {
             "x": 4485,
-            "y": 694.3
+            "y": 321.8
           },
           {
-            "x": 4654.5,
-            "y": 1910
+            "x": 4657.3,
+            "y": 2101
           }
         ]
       },
@@ -9885,31 +10412,31 @@
         "points": [
           {
             "x": 4414.5,
-            "y": 651.7
+            "y": 279.2
           },
           {
             "x": 4485,
-            "y": 636.5
+            "y": 264
           },
           {
             "x": 4663.5,
-            "y": 636.5
+            "y": 264
           },
           {
             "x": 4842,
-            "y": 636.5
+            "y": 264
           },
           {
             "x": 5020.5,
-            "y": 636.5
+            "y": 264
           },
           {
             "x": 5199,
-            "y": 636.5
+            "y": 264
           },
           {
-            "x": 5347.8,
-            "y": 2108.8
+            "x": 5348.7,
+            "y": 2183
           }
         ]
       },
@@ -9917,16 +10444,16 @@
         "id": "exoTermSchemaOf→compileExoTermSchema",
         "points": [
           {
-            "x": 1883.3,
-            "y": 2713.3
+            "x": 1793.1,
+            "y": 2582.3
           },
           {
             "x": 1986,
-            "y": 2747.3
+            "y": 3055.8
           },
           {
             "x": 2040.5,
-            "y": 2747.3
+            "y": 3055.8
           }
         ]
       },
@@ -9934,48 +10461,48 @@
         "id": "exoTermSchemaOf→TExoTermApi",
         "points": [
           {
-            "x": 1830.4,
-            "y": 2644.3
+            "x": 1836.5,
+            "y": 2513.3
           },
           {
             "x": 1986,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
             "x": 2164.5,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
             "x": 2343,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
             "x": 2521.5,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
             "x": 2700,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
             "x": 2878.5,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
             "x": 3057,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
             "x": 3235.5,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
             "x": 3414,
-            "y": 2539.8
+            "y": 2423.5
           },
           {
-            "x": 3566.2,
-            "y": 2340.3
+            "x": 3530,
+            "y": 2487.5
           }
         ]
       },
@@ -9983,40 +10510,40 @@
         "id": "exoTermSchemaOf→TExoTermSchema",
         "points": [
           {
-            "x": 1823.9,
-            "y": 2644.3
+            "x": 1825.5,
+            "y": 2513.3
           },
           {
             "x": 1986,
-            "y": 2519.8
+            "y": 2394.3
           },
           {
             "x": 2164.5,
-            "y": 2519.8
+            "y": 2394.3
           },
           {
             "x": 2343,
-            "y": 2519.8
+            "y": 2394.3
           },
           {
             "x": 2521.5,
-            "y": 2519.8
+            "y": 2394.3
           },
           {
             "x": 2700,
-            "y": 2519.8
+            "y": 2394.3
           },
           {
             "x": 2878.5,
-            "y": 2519.8
+            "y": 2394.3
           },
           {
             "x": 3057,
-            "y": 2519.8
+            "y": 2394.3
           },
           {
-            "x": 3166.4,
-            "y": 2370.3
+            "x": 3144.9,
+            "y": 2486
           }
         ]
       },
@@ -10024,16 +10551,16 @@
         "id": "exoTermText→BOLD",
         "points": [
           {
-            "x": 1157.8,
-            "y": 1292.8
+            "x": 1160.2,
+            "y": 1585.5
           },
           {
             "x": 1311,
-            "y": 1501.5
+            "y": 1773
           },
           {
             "x": 1381.5,
-            "y": 1501.5
+            "y": 1773
           }
         ]
       },
@@ -10041,16 +10568,16 @@
         "id": "exoTermText→DIM",
         "points": [
           {
-            "x": 1168.9,
-            "y": 1292.8
+            "x": 1174.1,
+            "y": 1585.5
           },
           {
             "x": 1311,
-            "y": 1427.5
+            "y": 1699
           },
           {
             "x": 1381.5,
-            "y": 1427.5
+            "y": 1699
           }
         ]
       },
@@ -10058,16 +10585,16 @@
         "id": "exoTermText→GREEN",
         "points": [
           {
-            "x": 1197.2,
-            "y": 1292.8
+            "x": 1215.7,
+            "y": 1585.5
           },
           {
             "x": 1311,
-            "y": 1353.5
+            "y": 1625
           },
           {
             "x": 1381.5,
-            "y": 1353.5
+            "y": 1625
           }
         ]
       },
@@ -10076,15 +10603,15 @@
         "points": [
           {
             "x": 1224.5,
-            "y": 1269.2
+            "y": 1551
           },
           {
             "x": 1311,
-            "y": 1279.5
+            "y": 1551
           },
           {
             "x": 1381.5,
-            "y": 1279.5
+            "y": 1551
           }
         ]
       },
@@ -10093,87 +10620,87 @@
         "points": [
           {
             "x": 1224.5,
-            "y": 1245
+            "y": 1526.8
           },
           {
             "x": 1311,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 1441.5,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 1572,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 1779,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 1986,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 2164.5,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 2343,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 2521.5,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 2700,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 2878.5,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 3057,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 3235.5,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 3414,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 3592.5,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 3771,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 3949.5,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 4128,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 4306.5,
-            "y": 1232.5
+            "y": 1504
           },
           {
             "x": 4485,
-            "y": 1232.5
+            "y": 1504
           },
           {
-            "x": 4648,
-            "y": 1910
+            "x": 4646.1,
+            "y": 2101
           }
         ]
       },
@@ -10181,16 +10708,16 @@
         "id": "exoTermText→TExoTermTextOptions",
         "points": [
           {
-            "x": 1224.5,
-            "y": 1232.9
+            "x": 1219.9,
+            "y": 1516.5
           },
           {
             "x": 1311,
-            "y": 1209
+            "y": 1480.5
           },
           {
-            "x": 1431.8,
-            "y": 686
+            "x": 1416.2,
+            "y": 1306
           }
         ]
       },
@@ -10198,16 +10725,16 @@
         "id": "exoTermText→YELLOW",
         "points": [
           {
-            "x": 1217.1,
-            "y": 1223.8
+            "x": 1198,
+            "y": 1516.5
           },
           {
             "x": 1311,
-            "y": 1185.5
+            "y": 1457
           },
           {
             "x": 1381.5,
-            "y": 1185.5
+            "y": 1457
           }
         ]
       },
@@ -10215,16 +10742,16 @@
         "id": "exoTermWriterForPort→EXO_TERM_WRITER_FACTORIES",
         "points": [
           {
-            "x": 2911.7,
-            "y": 3261.3
+            "x": 2931.1,
+            "y": 3567
           },
           {
             "x": 3057,
-            "y": 3412.3
+            "y": 3649.5
           },
           {
             "x": 3143.5,
-            "y": 3412.3
+            "y": 3649.5
           }
         ]
       },
@@ -10232,40 +10759,40 @@
         "id": "exoTermWriterForPort→TExoTermWriter",
         "points": [
           {
-            "x": 2906.7,
-            "y": 3192.3
+            "x": 2907.8,
+            "y": 3498
           },
           {
             "x": 3057,
-            "y": 3008
+            "y": 3322
           },
           {
             "x": 3235.5,
-            "y": 3008
+            "y": 3322
           },
           {
             "x": 3414,
-            "y": 3008
+            "y": 3322
           },
           {
             "x": 3592.5,
-            "y": 3008
+            "y": 3322
           },
           {
             "x": 3771,
-            "y": 3008
+            "y": 3322
           },
           {
             "x": 3949.5,
-            "y": 3008
+            "y": 3322
           },
           {
             "x": 4128,
-            "y": 3008
+            "y": 3322
           },
           {
-            "x": 4269.9,
-            "y": 3141.8
+            "x": 4259.7,
+            "y": 3419
           }
         ]
       },
@@ -10273,24 +10800,24 @@
         "id": "exoTermWriterForPort→TExoTermWriterFactories",
         "points": [
           {
-            "x": 2902.8,
-            "y": 3192.3
+            "x": 2898.6,
+            "y": 3498
           },
           {
             "x": 3057,
-            "y": 2973.8
+            "y": 3225.8
           },
           {
             "x": 3235.5,
-            "y": 2973.8
+            "y": 3225.8
           },
           {
             "x": 3414,
-            "y": 2973.8
+            "y": 3225.8
           },
           {
-            "x": 3526.1,
-            "y": 3032
+            "x": 3552.7,
+            "y": 3346
           }
         ]
       },
@@ -10299,15 +10826,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1353.5
+            "y": 1625
           },
           {
             "x": 1572,
-            "y": 1353.5
+            "y": 1625
           },
           {
             "x": 1719,
-            "y": 1340.5
+            "y": 1608.8
           }
         ]
       },
@@ -10316,39 +10843,39 @@
         "points": [
           {
             "x": 3382,
-            "y": 4457.6
+            "y": 4807.1
           },
           {
             "x": 3414,
-            "y": 4463
+            "y": 4812.5
           },
           {
             "x": 3592.5,
-            "y": 4463
+            "y": 4812.5
           },
           {
             "x": 3771,
-            "y": 4463
+            "y": 4812.5
           },
           {
             "x": 3949.5,
-            "y": 4463
+            "y": 4812.5
           },
           {
             "x": 4128,
-            "y": 4463
+            "y": 4812.5
           },
           {
             "x": 4306.5,
-            "y": 4463
+            "y": 4812.5
           },
           {
             "x": 4485,
-            "y": 4463
+            "y": 4812.5
           },
           {
-            "x": 4658.9,
-            "y": 2039
+            "x": 4659.2,
+            "y": 2230
           }
         ]
       },
@@ -10357,47 +10884,47 @@
         "points": [
           {
             "x": 3382,
-            "y": 4441.2
+            "y": 4790.7
           },
           {
             "x": 3414,
-            "y": 4443
+            "y": 4792.5
           },
           {
             "x": 3592.5,
-            "y": 4443
+            "y": 4792.5
           },
           {
             "x": 3771,
-            "y": 4443
+            "y": 4792.5
           },
           {
             "x": 3949.5,
-            "y": 4443
+            "y": 4792.5
           },
           {
             "x": 4128,
-            "y": 4443
+            "y": 4792.5
           },
           {
             "x": 4306.5,
-            "y": 4443
+            "y": 4792.5
           },
           {
             "x": 4485,
-            "y": 4443
+            "y": 4792.5
           },
           {
             "x": 4663.5,
-            "y": 4443
+            "y": 4792.5
           },
           {
             "x": 4842,
-            "y": 4443
+            "y": 4792.5
           },
           {
-            "x": 5017,
-            "y": 2337
+            "x": 5017.2,
+            "y": 2537.8
           }
         ]
       },
@@ -10406,15 +10933,15 @@
         "points": [
           {
             "x": 3382,
-            "y": 4424.8
+            "y": 4774.3
           },
           {
             "x": 3414,
-            "y": 4423
+            "y": 4772.5
           },
           {
-            "x": 3584.8,
-            "y": 2984
+            "x": 3585,
+            "y": 3298
           }
         ]
       },
@@ -10423,55 +10950,139 @@
         "points": [
           {
             "x": 3382,
-            "y": 4408.4
+            "y": 4757.9
           },
           {
             "x": 3414,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 3592.5,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 3771,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 3949.5,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 4128,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 4306.5,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 4485,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 4663.5,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 4842,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 5020.5,
-            "y": 4403
+            "y": 4752.5
           },
           {
             "x": 5199,
-            "y": 4403
+            "y": 4752.5
           },
           {
-            "x": 5336.2,
-            "y": 4103.3
+            "x": 5340.5,
+            "y": 4327.5
+          }
+        ]
+      },
+      {
+        "id": "placeExoTermChild→requireExoTermRegion",
+        "points": [
+          {
+            "x": 2279,
+            "y": 4154.1
+          },
+          {
+            "x": 2343,
+            "y": 4170.3
+          },
+          {
+            "x": 2384.5,
+            "y": 4170.3
+          }
+        ]
+      },
+      {
+        "id": "placeExoTermChild→takeExoTermChildOut",
+        "points": [
+          {
+            "x": 2279,
+            "y": 4135.4
+          },
+          {
+            "x": 2343,
+            "y": 4141
+          },
+          {
+            "x": 2459,
+            "y": 4077
+          }
+        ]
+      },
+      {
+        "id": "placeExoTermChild→TExoTermChild",
+        "points": [
+          {
+            "x": 2279,
+            "y": 4116.6
+          },
+          {
+            "x": 2343,
+            "y": 4111.8
+          },
+          {
+            "x": 2521.5,
+            "y": 4111.8
+          },
+          {
+            "x": 2700,
+            "y": 4111.8
+          },
+          {
+            "x": 2878.5,
+            "y": 4111.8
+          },
+          {
+            "x": 3057,
+            "y": 4111.8
+          },
+          {
+            "x": 3231,
+            "y": 2792
+          }
+        ]
+      },
+      {
+        "id": "placeExoTermChild→TExoTermNode",
+        "points": [
+          {
+            "x": 2279,
+            "y": 4103.8
+          },
+          {
+            "x": 2343,
+            "y": 4091.8
+          },
+          {
+            "x": 2518.6,
+            "y": 2033
           }
         ]
       },
@@ -10479,56 +11090,32 @@
         "id": "renderExoTermInstance→disposeExoTermChild",
         "points": [
           {
-            "x": 1843,
-            "y": 1906.8
+            "x": 1831.1,
+            "y": 1954.5
           },
           {
             "x": 1986,
-            "y": 1983.8
+            "y": 2057
           },
           {
             "x": 2164.5,
-            "y": 1983.8
+            "y": 2057
           },
           {
             "x": 2343,
-            "y": 1983.8
+            "y": 2057
           },
           {
             "x": 2521.5,
-            "y": 1983.8
+            "y": 2057
           },
           {
             "x": 2700,
-            "y": 1983.8
+            "y": 2057
           },
           {
-            "x": 2878.5,
-            "y": 1983.8
-          },
-          {
-            "x": 3057,
-            "y": 1983.8
-          },
-          {
-            "x": 3235.5,
-            "y": 1983.8
-          },
-          {
-            "x": 3414,
-            "y": 1983.8
-          },
-          {
-            "x": 3592.5,
-            "y": 1983.8
-          },
-          {
-            "x": 3771,
-            "y": 1983.8
-          },
-          {
-            "x": 3945.6,
-            "y": 3518.5
+            "x": 2875.7,
+            "y": 4214.3
           }
         ]
       },
@@ -10536,64 +11123,40 @@
         "id": "renderExoTermInstance→TExoTermChild",
         "points": [
           {
-            "x": 1857,
-            "y": 1906.8
+            "x": 1954,
+            "y": 1936.9
           },
           {
             "x": 1986,
-            "y": 1963.8
+            "y": 1940
           },
           {
             "x": 2164.5,
-            "y": 1963.8
+            "y": 1940
           },
           {
             "x": 2343,
-            "y": 1963.8
+            "y": 1940
           },
           {
             "x": 2521.5,
-            "y": 1963.8
+            "y": 1940
           },
           {
             "x": 2700,
-            "y": 1963.8
+            "y": 1940
           },
           {
             "x": 2878.5,
-            "y": 1963.8
+            "y": 1940
           },
           {
             "x": 3057,
-            "y": 1963.8
+            "y": 1940
           },
           {
-            "x": 3235.5,
-            "y": 1963.8
-          },
-          {
-            "x": 3414,
-            "y": 1963.8
-          },
-          {
-            "x": 3592.5,
-            "y": 1963.8
-          },
-          {
-            "x": 3771,
-            "y": 1963.8
-          },
-          {
-            "x": 3949.5,
-            "y": 1963.8
-          },
-          {
-            "x": 4128,
-            "y": 1963.8
-          },
-          {
-            "x": 4299.2,
-            "y": 2772.3
+            "x": 3228,
+            "y": 2723
           }
         ]
       },
@@ -10601,16 +11164,16 @@
         "id": "renderExoTermInstance→TExoTermMachine",
         "points": [
           {
-            "x": 1922.5,
-            "y": 1837.8
+            "x": 1954,
+            "y": 1920
           },
           {
             "x": 1986,
-            "y": 1822.5
+            "y": 1920
           },
           {
-            "x": 2156.8,
-            "y": 1054.5
+            "x": 2156.7,
+            "y": 1164.8
           }
         ]
       },
@@ -10618,24 +11181,24 @@
         "id": "renderExoTermInstance→TExoTermNode",
         "points": [
           {
-            "x": 1811.6,
-            "y": 1837.8
+            "x": 1954,
+            "y": 1903.1
           },
           {
             "x": 1986,
-            "y": 1653.5
+            "y": 1900
           },
           {
             "x": 2164.5,
-            "y": 1653.5
+            "y": 1900
           },
           {
             "x": 2343,
-            "y": 1653.5
+            "y": 1900
           },
           {
-            "x": 2388,
-            "y": 1653.5
+            "x": 2459,
+            "y": 1964
           }
         ]
       },
@@ -10643,40 +11206,40 @@
         "id": "renderExoTermInstance→TExoTermSchema",
         "points": [
           {
-            "x": 1804.7,
-            "y": 1837.8
+            "x": 1954,
+            "y": 1886.2
           },
           {
             "x": 1986,
-            "y": 1594.3
+            "y": 1880
           },
           {
             "x": 2164.5,
-            "y": 1594.3
+            "y": 1880
           },
           {
             "x": 2343,
-            "y": 1594.3
+            "y": 1880
           },
           {
             "x": 2521.5,
-            "y": 1594.3
+            "y": 1880
           },
           {
             "x": 2700,
-            "y": 1594.3
+            "y": 1880
           },
           {
             "x": 2878.5,
-            "y": 1594.3
+            "y": 1880
           },
           {
             "x": 3057,
-            "y": 1594.3
+            "y": 1880
           },
           {
-            "x": 3210.7,
-            "y": 2181.3
+            "x": 3211.4,
+            "y": 2486
           }
         ]
       },
@@ -10684,16 +11247,16 @@
         "id": "requireExoTermRegion→HERE",
         "points": [
           {
-            "x": 1916,
-            "y": 3997.6
+            "x": 2607,
+            "y": 4204.8
           },
           {
-            "x": 1986,
-            "y": 4005.5
+            "x": 2700,
+            "y": 4242.3
           },
           {
-            "x": 2104.5,
-            "y": 4024.9
+            "x": 2833.9,
+            "y": 4311.3
           }
         ]
       },
@@ -10701,88 +11264,72 @@
         "id": "requireExoTermRegion→TExoTermRegion",
         "points": [
           {
-            "x": 1916,
-            "y": 3975.4
-          },
-          {
-            "x": 1986,
-            "y": 3972
-          },
-          {
-            "x": 2164.5,
-            "y": 3972
-          },
-          {
-            "x": 2343,
-            "y": 3972
-          },
-          {
-            "x": 2521.5,
-            "y": 3972
+            "x": 2658.5,
+            "y": 4155.5
           },
           {
             "x": 2700,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 2878.5,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 3057,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 3235.5,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 3414,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 3592.5,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 3771,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 3949.5,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 4128,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 4306.5,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 4485,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 4663.5,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 4842,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 5020.5,
-            "y": 3972
+            "y": 4151
           },
           {
             "x": 5199,
-            "y": 3972
+            "y": 4151
           },
           {
-            "x": 5297.4,
-            "y": 4034.3
+            "x": 5314.8,
+            "y": 4258.5
           }
         ]
       },
@@ -10791,15 +11338,40 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1279.5
+            "y": 1551
           },
           {
             "x": 1572,
-            "y": 1279.5
+            "y": 1551
           },
           {
             "x": 1719,
-            "y": 1319.1
+            "y": 1587.4
+          }
+        ]
+      },
+      {
+        "id": "takeExoTermChildOut→TExoTermChild",
+        "points": [
+          {
+            "x": 2594.5,
+            "y": 4042.5
+          },
+          {
+            "x": 2700,
+            "y": 4042.5
+          },
+          {
+            "x": 2878.5,
+            "y": 4042.5
+          },
+          {
+            "x": 3057,
+            "y": 4042.5
+          },
+          {
+            "x": 3230.7,
+            "y": 2792
           }
         ]
       },
@@ -10807,16 +11379,16 @@
         "id": "TExoTermApi→TExoTermSchema",
         "points": [
           {
-            "x": 3446,
-            "y": 2321.5
+            "x": 3544.3,
+            "y": 2556.5
           },
           {
             "x": 3414,
-            "y": 2325
+            "y": 2649.8
           },
           {
             "x": 3382,
-            "y": 2316.2
+            "y": 2637.3
           }
         ]
       },
@@ -10825,15 +11397,15 @@
         "points": [
           {
             "x": 3739,
-            "y": 2305.8
+            "y": 2522
           },
           {
             "x": 3771,
-            "y": 2305.8
+            "y": 2522
           },
           {
-            "x": 3943.3,
-            "y": 1666.5
+            "x": 3944.4,
+            "y": 1747.8
           }
         ]
       },
@@ -10849,8 +11421,8 @@
             "y": 107
           },
           {
-            "x": 731.6,
-            "y": 957.8
+            "x": 735.1,
+            "y": 1339
           }
         ]
       },
@@ -10938,8 +11510,8 @@
             "y": 58.5
           },
           {
-            "x": 3946.9,
-            "y": 1620.5
+            "x": 3947,
+            "y": 1701.8
           }
         ]
       },
@@ -10947,16 +11519,16 @@
         "id": "TExoTermBackendConstructor→ExoTermBackendBase",
         "points": [
           {
-            "x": 366.6,
-            "y": 190
+            "x": 364.1,
+            "y": 200
           },
           {
             "x": 533,
-            "y": 665.8
+            "y": 804.5
           },
           {
-            "x": 712.2,
-            "y": 957.8
+            "x": 725.2,
+            "y": 1339
           }
         ]
       },
@@ -10965,7 +11537,7 @@
         "points": [
           {
             "x": 501,
-            "y": 132.1
+            "y": 133.9
           },
           {
             "x": 533,
@@ -11044,8 +11616,8 @@
             "y": 127
           },
           {
-            "x": 3946.8,
-            "y": 1620.5
+            "x": 3946.9,
+            "y": 1701.8
           }
         ]
       },
@@ -11053,16 +11625,40 @@
         "id": "TExoTermChild→TExoTermElement",
         "points": [
           {
-            "x": 4331.9,
-            "y": 2841.3
+            "x": 3382,
+            "y": 2773.9
+          },
+          {
+            "x": 3414,
+            "y": 2777.5
+          },
+          {
+            "x": 3592.5,
+            "y": 2777.5
+          },
+          {
+            "x": 3771,
+            "y": 2777.5
+          },
+          {
+            "x": 3949.5,
+            "y": 2777.5
+          },
+          {
+            "x": 4128,
+            "y": 2777.5
+          },
+          {
+            "x": 4306.5,
+            "y": 2777.5
           },
           {
             "x": 4485,
-            "y": 3049.5
+            "y": 2777.5
           },
           {
-            "x": 4652.8,
-            "y": 2039
+            "x": 4644.7,
+            "y": 2230
           }
         ]
       },
@@ -11070,32 +11666,56 @@
         "id": "TExoTermChild→TExoTermRegion",
         "points": [
           {
-            "x": 4322.6,
-            "y": 2772.3
+            "x": 3382,
+            "y": 2733.5
+          },
+          {
+            "x": 3414,
+            "y": 2728.3
+          },
+          {
+            "x": 3592.5,
+            "y": 2728.3
+          },
+          {
+            "x": 3771,
+            "y": 2728.3
+          },
+          {
+            "x": 3949.5,
+            "y": 2728.3
+          },
+          {
+            "x": 4128,
+            "y": 2728.3
+          },
+          {
+            "x": 4306.5,
+            "y": 2728.3
           },
           {
             "x": 4485,
-            "y": 2423.5
+            "y": 2728.3
           },
           {
             "x": 4663.5,
-            "y": 2423.5
+            "y": 2728.3
           },
           {
             "x": 4842,
-            "y": 2423.5
+            "y": 2728.3
           },
           {
             "x": 5020.5,
-            "y": 2423.5
+            "y": 2728.3
           },
           {
             "x": 5199,
-            "y": 2423.5
+            "y": 2728.3
           },
           {
-            "x": 5348.8,
-            "y": 4034.3
+            "x": 5348.6,
+            "y": 4258.5
           }
         ]
       },
@@ -11104,15 +11724,15 @@
         "points": [
           {
             "x": 4810,
-            "y": 3861
+            "y": 2365
           },
           {
             "x": 4842,
-            "y": 3861
+            "y": 2365
           },
           {
-            "x": 5017.4,
-            "y": 1916.8
+            "x": 4999.1,
+            "y": 2111.5
           }
         ]
       },
@@ -11121,15 +11741,15 @@
         "points": [
           {
             "x": 4810,
-            "y": 1990.3
+            "y": 2177.8
           },
           {
             "x": 4842,
-            "y": 1993.8
+            "y": 2180.5
           },
           {
-            "x": 4916.6,
-            "y": 2018.5
+            "x": 4874,
+            "y": 2182.3
           }
         ]
       },
@@ -11137,16 +11757,16 @@
         "id": "TExoTermElement→TExoTermListener",
         "points": [
           {
-            "x": 4792.5,
-            "y": 1910
+            "x": 4810,
+            "y": 2129.2
           },
           {
             "x": 4842,
-            "y": 1885.3
+            "y": 2121.3
           },
           {
-            "x": 5002.2,
-            "y": 2253
+            "x": 5000.5,
+            "y": 2453.8
           }
         ]
       },
@@ -11155,15 +11775,15 @@
         "points": [
           {
             "x": 4810,
-            "y": 1782.5
+            "y": 1648.5
           },
           {
             "x": 4842,
-            "y": 1782.5
+            "y": 1648.5
           },
           {
-            "x": 4958.8,
-            "y": 1847.8
+            "x": 5006.1,
+            "y": 2042.5
           }
         ]
       },
@@ -11172,15 +11792,15 @@
         "points": [
           {
             "x": 4874,
-            "y": 2061.2
+            "y": 2206.3
           },
           {
             "x": 4842,
-            "y": 2063
+            "y": 2209.8
           },
           {
-            "x": 4793.6,
-            "y": 2039
+            "x": 4810,
+            "y": 2201.8
           }
         ]
       },
@@ -11189,15 +11809,15 @@
         "points": [
           {
             "x": 5167,
-            "y": 2077.6
+            "y": 2206.3
           },
           {
             "x": 5199,
-            "y": 2083
+            "y": 2209.8
           },
           {
-            "x": 5349.3,
-            "y": 4034.3
+            "x": 5349.5,
+            "y": 4258.5
           }
         ]
       },
@@ -11206,15 +11826,15 @@
         "points": [
           {
             "x": 5167,
-            "y": 2031.9
+            "y": 2181.1
           },
           {
             "x": 5199,
-            "y": 2027.3
+            "y": 2179
           },
           {
-            "x": 5263.3,
-            "y": 2002.3
+            "x": 5333.3,
+            "y": 1930.5
           }
         ]
       },
@@ -11222,16 +11842,16 @@
         "id": "TExoTermListener→TExoTermElement",
         "points": [
           {
-            "x": 5001.3,
-            "y": 2253
+            "x": 4999.4,
+            "y": 2453.8
           },
           {
             "x": 4842,
-            "y": 1905.3
+            "y": 2141.3
           },
           {
             "x": 4810,
-            "y": 1917.7
+            "y": 2145.6
           }
         ]
       },
@@ -11240,15 +11860,15 @@
         "points": [
           {
             "x": 5167,
-            "y": 2295
+            "y": 2495.8
           },
           {
             "x": 5199,
-            "y": 2295
+            "y": 2495.8
           },
           {
-            "x": 5307.5,
-            "y": 2192.8
+            "x": 5328.3,
+            "y": 2267
           }
         ]
       },
@@ -11257,15 +11877,15 @@
         "points": [
           {
             "x": 2263,
-            "y": 1020
+            "y": 1130.3
           },
           {
             "x": 2343,
-            "y": 1020
+            "y": 1130.3
           },
           {
-            "x": 2511.8,
-            "y": 1619
+            "x": 2514.4,
+            "y": 1964
           }
         ]
       },
@@ -11274,15 +11894,15 @@
         "points": [
           {
             "x": 5138,
-            "y": 1882.3
+            "y": 2077
           },
           {
             "x": 5199,
-            "y": 1882.3
+            "y": 2077
           },
           {
-            "x": 5292,
-            "y": 1882.3
+            "x": 5338.8,
+            "y": 1833.5
           }
         ]
       },
@@ -11290,16 +11910,16 @@
         "id": "TExoTermNode→TExoTermNodeFields",
         "points": [
           {
-            "x": 2560.2,
-            "y": 1688
+            "x": 2655,
+            "y": 2020.4
           },
           {
             "x": 2700,
-            "y": 1812.5
+            "y": 2027.8
           },
           {
-            "x": 2852.9,
-            "y": 2018.5
+            "x": 2868.7,
+            "y": 2623.3
           }
         ]
       },
@@ -11308,39 +11928,39 @@
         "points": [
           {
             "x": 2655,
-            "y": 1646
+            "y": 1998.5
           },
           {
             "x": 2700,
-            "y": 1643.5
+            "y": 1998.5
           },
           {
             "x": 2878.5,
-            "y": 1643.5
+            "y": 1998.5
           },
           {
             "x": 3057,
-            "y": 1643.5
+            "y": 1998.5
           },
           {
             "x": 3235.5,
-            "y": 1643.5
+            "y": 1998.5
           },
           {
             "x": 3414,
-            "y": 1643.5
+            "y": 1998.5
           },
           {
             "x": 3592.5,
-            "y": 1643.5
+            "y": 1998.5
           },
           {
             "x": 3771,
-            "y": 1643.5
+            "y": 1998.5
           },
           {
-            "x": 3889.5,
-            "y": 1643.5
+            "x": 3934.5,
+            "y": 1747.8
           }
         ]
       },
@@ -11348,16 +11968,16 @@
         "id": "TExoTermNodeApi→TExoTermChildList",
         "points": [
           {
-            "x": 4453,
-            "y": 1658.6
+            "x": 4425.3,
+            "y": 1911
           },
           {
             "x": 4485,
-            "y": 1670.5
+            "y": 1958.5
           },
           {
-            "x": 4656.4,
-            "y": 3774
+            "x": 4625.3,
+            "y": 2278
           }
         ]
       },
@@ -11365,16 +11985,16 @@
         "id": "TExoTermNodeApi→TExoTermElement",
         "points": [
           {
-            "x": 4453,
-            "y": 1563.2
+            "x": 4444.8,
+            "y": 1911
           },
           {
             "x": 4485,
-            "y": 1554.3
+            "y": 1938.5
           },
           {
-            "x": 4636.1,
-            "y": 1910
+            "x": 4612.8,
+            "y": 2101
           }
         ]
       },
@@ -11382,32 +12002,32 @@
         "id": "TExoTermNodeApi→TExoTermEvent",
         "points": [
           {
-            "x": 4398.3,
-            "y": 1509.8
+            "x": 4453,
+            "y": 1743
           },
           {
             "x": 4485,
-            "y": 1420.5
+            "y": 1727
           },
           {
             "x": 4663.5,
-            "y": 1420.5
+            "y": 1727
           },
           {
             "x": 4842,
-            "y": 1420.5
+            "y": 1727
           },
           {
             "x": 5020.5,
-            "y": 1420.5
+            "y": 1727
           },
           {
             "x": 5199,
-            "y": 1420.5
+            "y": 1727
           },
           {
-            "x": 5343.2,
-            "y": 2108.8
+            "x": 5339.1,
+            "y": 2183
           }
         ]
       },
@@ -11415,24 +12035,24 @@
         "id": "TExoTermNodeApi→TExoTermMark",
         "points": [
           {
-            "x": 4389.3,
-            "y": 1509.8
+            "x": 4453,
+            "y": 1726.6
           },
           {
             "x": 4485,
-            "y": 1400.5
+            "y": 1707
           },
           {
             "x": 4663.5,
-            "y": 1400.5
+            "y": 1707
           },
           {
             "x": 4842,
-            "y": 1400.5
+            "y": 1707
           },
           {
-            "x": 5007.7,
-            "y": 1847.8
+            "x": 5003.9,
+            "y": 2042.5
           }
         ]
       },
@@ -11441,15 +12061,15 @@
         "points": [
           {
             "x": 2311,
-            "y": 4331
+            "y": 4680.5
           },
           {
             "x": 2343,
-            "y": 4334.5
+            "y": 4684
           },
           {
             "x": 2519.2,
-            "y": 1688
+            "y": 2033
           }
         ]
       },
@@ -11458,31 +12078,31 @@
         "points": [
           {
             "x": 2311,
-            "y": 4307
+            "y": 4656.5
           },
           {
             "x": 2343,
-            "y": 4305.3
+            "y": 4654.8
           },
           {
             "x": 2521.5,
-            "y": 4305.3
+            "y": 4654.8
           },
           {
             "x": 2700,
-            "y": 4305.3
+            "y": 4654.8
           },
           {
             "x": 2878.5,
-            "y": 4305.3
+            "y": 4654.8
           },
           {
             "x": 3057,
-            "y": 4305.3
+            "y": 4654.8
           },
           {
-            "x": 3227.2,
-            "y": 2370.3
+            "x": 3227.4,
+            "y": 2675
           }
         ]
       },
@@ -11490,40 +12110,16 @@
         "id": "TExoTermNodeFields→TExoTermChild",
         "points": [
           {
-            "x": 3025,
-            "y": 2069.4
+            "x": 2940.2,
+            "y": 2692.3
           },
           {
             "x": 3057,
-            "y": 2073
+            "y": 2757.5
           },
           {
-            "x": 3235.5,
-            "y": 2073
-          },
-          {
-            "x": 3414,
-            "y": 2073
-          },
-          {
-            "x": 3592.5,
-            "y": 2073
-          },
-          {
-            "x": 3771,
-            "y": 2073
-          },
-          {
-            "x": 3949.5,
-            "y": 2073
-          },
-          {
-            "x": 4128,
-            "y": 2073
-          },
-          {
-            "x": 4298.1,
-            "y": 2772.3
+            "x": 3089,
+            "y": 2757.5
           }
         ]
       },
@@ -11532,47 +12128,47 @@
         "points": [
           {
             "x": 3025,
-            "y": 2053
+            "y": 2691.6
           },
           {
             "x": 3057,
-            "y": 2053
+            "y": 2699
           },
           {
             "x": 3235.5,
-            "y": 2053
+            "y": 2699
           },
           {
             "x": 3414,
-            "y": 2053
+            "y": 2699
           },
           {
             "x": 3592.5,
-            "y": 2053
+            "y": 2699
           },
           {
             "x": 3771,
-            "y": 2053
+            "y": 2699
           },
           {
             "x": 3949.5,
-            "y": 2053
+            "y": 2699
           },
           {
             "x": 4128,
-            "y": 2053
+            "y": 2699
           },
           {
             "x": 4306.5,
-            "y": 2053
+            "y": 2699
           },
           {
             "x": 4485,
-            "y": 2053
+            "y": 2699
           },
           {
-            "x": 4517,
-            "y": 2038.9
+            "x": 4641.9,
+            "y": 2230
           }
         ]
       },
@@ -11580,16 +12176,16 @@
         "id": "TExoTermNodeFields→TExoTermSchema",
         "points": [
           {
-            "x": 3025,
-            "y": 2036.6
+            "x": 2958.2,
+            "y": 2623.3
           },
           {
             "x": 3057,
-            "y": 2033
+            "y": 2580.5
           },
           {
-            "x": 3166,
-            "y": 2181.3
+            "x": 3089,
+            "y": 2580.5
           }
         ]
       },
@@ -11597,40 +12193,40 @@
         "id": "TExoTermNodeFields→TExoTermWriter",
         "points": [
           {
-            "x": 3025,
-            "y": 2020.2
+            "x": 2907.2,
+            "y": 2623.3
           },
           {
             "x": 3057,
-            "y": 2013
+            "y": 2443.5
           },
           {
             "x": 3235.5,
-            "y": 2013
+            "y": 2443.5
           },
           {
             "x": 3414,
-            "y": 2013
+            "y": 2443.5
           },
           {
             "x": 3592.5,
-            "y": 2013
+            "y": 2443.5
           },
           {
             "x": 3771,
-            "y": 2013
+            "y": 2443.5
           },
           {
             "x": 3949.5,
-            "y": 2013
+            "y": 2443.5
           },
           {
             "x": 4128,
-            "y": 2013
+            "y": 2443.5
           },
           {
-            "x": 4301.2,
-            "y": 3141.8
+            "x": 4300.4,
+            "y": 3419
           }
         ]
       },
@@ -11639,15 +12235,15 @@
         "points": [
           {
             "x": 2668,
-            "y": 4246.8
+            "y": 4596.3
           },
           {
             "x": 2700,
-            "y": 4246.8
+            "y": 4596.3
           },
           {
-            "x": 2875.7,
-            "y": 2087.5
+            "x": 2875.3,
+            "y": 2692.3
           }
         ]
       },
@@ -11656,15 +12252,15 @@
         "points": [
           {
             "x": 3735.5,
-            "y": 2740
+            "y": 3054
           },
           {
             "x": 3771,
-            "y": 2740
+            "y": 3054
           },
           {
-            "x": 3821.9,
-            "y": 2753.8
+            "x": 3880.9,
+            "y": 3109.3
           }
         ]
       },
@@ -11672,16 +12268,16 @@
         "id": "TExoTermProtoElement→TExoTermProtoKid",
         "points": [
           {
-            "x": 3739,
-            "y": 2855.3
+            "x": 3736.9,
+            "y": 3169
           },
           {
             "x": 3771,
-            "y": 2841.3
+            "y": 3153.8
           },
           {
-            "x": 3833.3,
-            "y": 2822.8
+            "x": 3803,
+            "y": 3152
           }
         ]
       },
@@ -11689,16 +12285,16 @@
         "id": "TExoTermProtoKid→TExoTermProtoElement",
         "points": [
           {
-            "x": 3912.3,
-            "y": 2822.8
+            "x": 3899.8,
+            "y": 3178.3
           },
           {
             "x": 3771,
-            "y": 2953.8
+            "y": 3267.8
           },
           {
             "x": 3739,
-            "y": 2947.6
+            "y": 3261.6
           }
         ]
       },
@@ -11707,15 +12303,15 @@
         "points": [
           {
             "x": 3999.2,
-            "y": 2822.8
+            "y": 3178.3
           },
           {
             "x": 4128,
-            "y": 2912.3
+            "y": 3267.8
           },
           {
-            "x": 4236.9,
-            "y": 2966.3
+            "x": 4279.5,
+            "y": 3074.3
           }
         ]
       },
@@ -11723,16 +12319,16 @@
         "id": "TExoTermProtoKid→TExoTermProtoText",
         "points": [
           {
-            "x": 4021.7,
-            "y": 2753.8
+            "x": 3995,
+            "y": 3109.3
           },
           {
             "x": 4128,
-            "y": 2703
+            "y": 3008.5
           },
           {
-            "x": 4275.8,
-            "y": 2869.3
+            "x": 4266.1,
+            "y": 2890.5
           }
         ]
       },
@@ -11740,32 +12336,56 @@
         "id": "TExoTermRegion→TExoTermChild",
         "points": [
           {
-            "x": 5347.5,
-            "y": 4034.3
+            "x": 5348.6,
+            "y": 4258.5
           },
           {
             "x": 5199,
-            "y": 2906
+            "y": 2757.5
           },
           {
             "x": 5020.5,
-            "y": 2906
+            "y": 2757.5
           },
           {
             "x": 4842,
-            "y": 2906
+            "y": 2757.5
           },
           {
             "x": 4663.5,
-            "y": 2906
+            "y": 2757.5
           },
           {
             "x": 4485,
-            "y": 2906
+            "y": 2757.5
           },
           {
-            "x": 4368.5,
-            "y": 2841.3
+            "x": 4306.5,
+            "y": 2757.5
+          },
+          {
+            "x": 4128,
+            "y": 2757.5
+          },
+          {
+            "x": 3949.5,
+            "y": 2757.5
+          },
+          {
+            "x": 3771,
+            "y": 2757.5
+          },
+          {
+            "x": 3592.5,
+            "y": 2757.5
+          },
+          {
+            "x": 3414,
+            "y": 2757.5
+          },
+          {
+            "x": 3382,
+            "y": 2757.5
           }
         ]
       },
@@ -11774,15 +12394,15 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 383.8
+            "y": 538.9
           },
           {
             "x": 1986,
-            "y": 386.8
+            "y": 544.8
           },
           {
             "x": 2104.5,
-            "y": 386.8
+            "y": 544.8
           }
         ]
       },
@@ -11791,15 +12411,15 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 367.2
+            "y": 524.8
           },
           {
             "x": 1986,
-            "y": 363.3
+            "y": 524.8
           },
           {
-            "x": 2150,
-            "y": 752.3
+            "x": 2149.5,
+            "y": 899.5
           }
         ]
       },
@@ -11808,15 +12428,15 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 353
+            "y": 504
           },
           {
             "x": 1986,
-            "y": 343.3
+            "y": 495.5
           },
           {
-            "x": 2155.4,
-            "y": 985.5
+            "x": 2154.8,
+            "y": 1095.8
           }
         ]
       },
@@ -11824,16 +12444,16 @@
         "id": "TExoTermRunsTheReadmeTodoList→TAssert",
         "points": [
           {
-            "x": 1925.5,
-            "y": 631.7
+            "x": 1875.5,
+            "y": 753.8
           },
           {
             "x": 1986,
-            "y": 645.3
+            "y": 793.3
           },
           {
-            "x": 2121,
-            "y": 752.3
+            "x": 2120.7,
+            "y": 899.5
           }
         ]
       },
@@ -11842,15 +12462,15 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 604.4
+            "y": 744.4
           },
           {
             "x": 1986,
-            "y": 606.8
+            "y": 754.8
           },
           {
-            "x": 2149.6,
-            "y": 985.5
+            "x": 2148.1,
+            "y": 1095.8
           }
         ]
       },
@@ -11859,15 +12479,15 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 584.2
+            "y": 712.2
           },
           {
             "x": 1986,
-            "y": 578.3
+            "y": 709.3
           },
           {
             "x": 2104.5,
-            "y": 578.3
+            "y": 709.3
           }
         ]
       },
@@ -11876,15 +12496,15 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 781.1
+            "y": 919.8
           },
           {
             "x": 1986,
-            "y": 786.8
+            "y": 934
           },
           {
             "x": 2104.5,
-            "y": 786.8
+            "y": 934
           }
         ]
       },
@@ -11893,15 +12513,15 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 753.9
+            "y": 899.1
           },
           {
             "x": 1986,
-            "y": 748.3
+            "y": 904.8
           },
           {
-            "x": 2141.8,
-            "y": 985.5
+            "x": 2137.2,
+            "y": 1095.8
           }
         ]
       },
@@ -11910,23 +12530,23 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 739.7
+            "y": 878.4
           },
           {
             "x": 1986,
-            "y": 728.3
+            "y": 875.5
           },
           {
             "x": 2164.5,
-            "y": 728.3
+            "y": 875.5
           },
           {
             "x": 2343,
-            "y": 728.3
+            "y": 875.5
           },
           {
             "x": 2461.5,
-            "y": 721.6
+            "y": 862.2
           }
         ]
       },
@@ -11934,16 +12554,16 @@
         "id": "TExoTermSatisfiesCoreChildren→TAssert",
         "points": [
           {
-            "x": 1925.5,
-            "y": 891.7
+            "x": 1899.5,
+            "y": 1027
           },
           {
             "x": 1986,
-            "y": 903
+            "y": 1051.8
           },
           {
-            "x": 2111.5,
-            "y": 821.3
+            "x": 2112.2,
+            "y": 968.5
           }
         ]
       },
@@ -11952,23 +12572,23 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 850.9
+            "y": 992.5
           },
           {
             "x": 1986,
-            "y": 845.3
+            "y": 992.5
           },
           {
             "x": 2164.5,
-            "y": 845.3
+            "y": 992.5
           },
           {
             "x": 2343,
-            "y": 845.3
+            "y": 992.5
           },
           {
-            "x": 2513.9,
-            "y": 1619
+            "x": 2515.4,
+            "y": 1964
           }
         ]
       },
@@ -11976,16 +12596,16 @@
         "id": "TExoTermSatisfiesCoreValues→TAssert",
         "points": [
           {
-            "x": 1925.5,
-            "y": 975.1
+            "x": 1882.1,
+            "y": 1124
           },
           {
             "x": 1986,
-            "y": 980.8
+            "y": 1158.8
           },
           {
-            "x": 2132.8,
-            "y": 821.3
+            "x": 2137.1,
+            "y": 968.5
           }
         ]
       },
@@ -11994,23 +12614,23 @@
         "points": [
           {
             "x": 1925.5,
-            "y": 934.3
+            "y": 1076.9
           },
           {
             "x": 1986,
-            "y": 923
+            "y": 1071.8
           },
           {
             "x": 2164.5,
-            "y": 923
+            "y": 1071.8
           },
           {
             "x": 2343,
-            "y": 923
+            "y": 1071.8
           },
           {
-            "x": 2513.1,
-            "y": 1619
+            "x": 2514.9,
+            "y": 1964
           }
         ]
       },
@@ -12019,15 +12639,15 @@
         "points": [
           {
             "x": 3382,
-            "y": 2284.6
+            "y": 2620.9
           },
           {
             "x": 3414,
-            "y": 2286.5
+            "y": 2629.8
           },
           {
-            "x": 3446,
-            "y": 2290
+            "x": 3535.3,
+            "y": 2556.5
           }
         ]
       },
@@ -12036,39 +12656,39 @@
         "points": [
           {
             "x": 3382,
-            "y": 2251.7
+            "y": 2580.5
           },
           {
             "x": 3414,
-            "y": 2246.5
+            "y": 2580.5
           },
           {
             "x": 3592.5,
-            "y": 2246.5
+            "y": 2580.5
           },
           {
             "x": 3771,
-            "y": 2246.5
+            "y": 2580.5
           },
           {
             "x": 3949.5,
-            "y": 2246.5
+            "y": 2580.5
           },
           {
             "x": 4128,
-            "y": 2246.5
+            "y": 2580.5
           },
           {
             "x": 4306.5,
-            "y": 2246.5
+            "y": 2580.5
           },
           {
             "x": 4485,
-            "y": 2246.5
+            "y": 2580.5
           },
           {
-            "x": 4621.2,
-            "y": 2039
+            "x": 4635.8,
+            "y": 2230
           }
         ]
       },
@@ -12076,24 +12696,24 @@
         "id": "TExoTermSchema→TExoTermNode",
         "points": [
           {
-            "x": 3209.6,
-            "y": 2181.3
+            "x": 3207.9,
+            "y": 2486
           },
           {
             "x": 3057,
-            "y": 1623.5
+            "y": 1969.3
           },
           {
             "x": 2878.5,
-            "y": 1623.5
+            "y": 1969.3
           },
           {
             "x": 2700,
-            "y": 1623.5
+            "y": 1969.3
           },
           {
             "x": 2655,
-            "y": 1631.1
+            "y": 1976.6
           }
         ]
       },
@@ -12102,15 +12722,15 @@
         "points": [
           {
             "x": 3382,
-            "y": 2235.3
+            "y": 2532.5
           },
           {
             "x": 3414,
-            "y": 2226.5
+            "y": 2522
           },
           {
-            "x": 3575.9,
-            "y": 2855
+            "x": 3576.3,
+            "y": 3169
           }
         ]
       },
@@ -12118,32 +12738,32 @@
         "id": "TExoTermSchema→TExoTermWriter",
         "points": [
           {
-            "x": 3382,
-            "y": 2218.9
+            "x": 3379.7,
+            "y": 2486
           },
           {
             "x": 3414,
-            "y": 2206.5
+            "y": 2463.5
           },
           {
             "x": 3592.5,
-            "y": 2206.5
+            "y": 2463.5
           },
           {
             "x": 3771,
-            "y": 2206.5
+            "y": 2463.5
           },
           {
             "x": 3949.5,
-            "y": 2206.5
+            "y": 2463.5
           },
           {
             "x": 4128,
-            "y": 2206.5
+            "y": 2463.5
           },
           {
-            "x": 4300.1,
-            "y": 3141.8
+            "x": 4300.3,
+            "y": 3419
           }
         ]
       },
@@ -12152,87 +12772,87 @@
         "points": [
           {
             "x": 1279,
-            "y": 242.5
+            "y": 414.7
           },
           {
             "x": 1311,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 1441.5,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 1572,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 1779,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 1986,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 2164.5,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 2343,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 2521.5,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 2700,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 2878.5,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 3057,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 3235.5,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 3414,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 3592.5,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 3771,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 3949.5,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 4128,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 4306.5,
-            "y": 247.3
+            "y": 419.5
           },
           {
             "x": 4485,
-            "y": 247.3
+            "y": 419.5
           },
           {
-            "x": 4656.8,
-            "y": 1910
+            "x": 4656.9,
+            "y": 2101
           }
         ]
       },
@@ -12240,16 +12860,16 @@
         "id": "TExoTermScreen→TExoTermTextOptions",
         "points": [
           {
-            "x": 1279,
-            "y": 198.5
+            "x": 1202.5,
+            "y": 343.3
           },
           {
             "x": 1311,
-            "y": 193.8
+            "y": 266.5
           },
           {
-            "x": 1429.3,
-            "y": 602
+            "x": 1436,
+            "y": 1222
           }
         ]
       },
@@ -12258,15 +12878,15 @@
         "points": [
           {
             "x": 4009.5,
-            "y": 1643.5
+            "y": 1724.8
           },
           {
             "x": 4128,
-            "y": 1643.5
+            "y": 1724.8
           },
           {
             "x": 4160,
-            "y": 1636.5
+            "y": 1741.2
           }
         ]
       },
@@ -12275,15 +12895,15 @@
         "points": [
           {
             "x": 4453,
-            "y": 3176.3
+            "y": 3453.5
           },
           {
             "x": 4485,
-            "y": 3176.3
+            "y": 3453.5
           },
           {
-            "x": 4653.9,
-            "y": 2039
+            "x": 4654.6,
+            "y": 2230
           }
         ]
       },
@@ -12292,15 +12912,15 @@
         "points": [
           {
             "x": 3739,
-            "y": 3066.5
+            "y": 3380.5
           },
           {
             "x": 3771,
-            "y": 3066.5
+            "y": 3380.5
           },
           {
             "x": 3806.5,
-            "y": 3066.5
+            "y": 3380.5
           }
         ]
       },
@@ -12309,15 +12929,15 @@
         "points": [
           {
             "x": 4092.5,
-            "y": 3066.5
+            "y": 3380.5
           },
           {
             "x": 4128,
-            "y": 3066.5
+            "y": 3380.5
           },
           {
-            "x": 4250.4,
-            "y": 3141.8
+            "x": 4222.1,
+            "y": 3419
           }
         ]
       },
@@ -12325,16 +12945,16 @@
         "id": "Todo→todoBase",
         "points": [
           {
-            "x": 2560.4,
-            "y": 741.3
+            "x": 2543.5,
+            "y": 878.5
           },
           {
             "x": 2700,
-            "y": 823.8
+            "y": 1041.8
           },
           {
             "x": 2818.5,
-            "y": 823.8
+            "y": 1041.8
           }
         ]
       },
@@ -12342,32 +12962,32 @@
         "id": "Todo→TodoPorts",
         "points": [
           {
-            "x": 2573.1,
-            "y": 695.3
+            "x": 2581.5,
+            "y": 835.8
           },
           {
             "x": 2700,
-            "y": 638.8
+            "y": 796.8
           },
           {
             "x": 2878.5,
-            "y": 638.8
+            "y": 796.8
           },
           {
             "x": 3057,
-            "y": 638.8
+            "y": 796.8
           },
           {
             "x": 3235.5,
-            "y": 638.8
+            "y": 796.8
           },
           {
             "x": 3414,
-            "y": 638.8
+            "y": 796.8
           },
           {
-            "x": 3540.9,
-            "y": 695.3
+            "x": 3532.5,
+            "y": 835.8
           }
         ]
       },
@@ -12376,15 +12996,15 @@
         "points": [
           {
             "x": 2938.5,
-            "y": 839.4
+            "y": 1062.8
           },
           {
             "x": 3057,
-            "y": 870.3
+            "y": 1104.3
           },
           {
             "x": 3175.5,
-            "y": 870.3
+            "y": 1104.3
           }
         ]
       },
@@ -12393,15 +13013,15 @@
         "points": [
           {
             "x": 2938.5,
-            "y": 808.1
+            "y": 1026.1
           },
           {
             "x": 3057,
-            "y": 777.3
+            "y": 995.3
           },
           {
             "x": 3150,
-            "y": 777.3
+            "y": 995.3
           }
         ]
       },
@@ -12409,16 +13029,16 @@
         "id": "TodoList→Todo",
         "points": [
           {
-            "x": 2224.5,
-            "y": 594
+            "x": 2220,
+            "y": 732.3
           },
           {
             "x": 2343,
-            "y": 625.3
+            "y": 783.3
           },
           {
-            "x": 2477.4,
-            "y": 695.3
+            "x": 2464.7,
+            "y": 832.5
           }
         ]
       },
@@ -12427,23 +13047,23 @@
         "points": [
           {
             "x": 2224.5,
-            "y": 582.8
+            "y": 722.9
           },
           {
             "x": 2343,
-            "y": 591.8
+            "y": 749.8
           },
           {
             "x": 2521.5,
-            "y": 591.8
+            "y": 749.8
           },
           {
             "x": 2700,
-            "y": 591.8
+            "y": 749.8
           },
           {
             "x": 2818.5,
-            "y": 576.1
+            "y": 734.1
           }
         ]
       },
@@ -12452,15 +13072,15 @@
         "points": [
           {
             "x": 2224.5,
-            "y": 567
+            "y": 707.1
           },
           {
             "x": 2343,
-            "y": 544.8
+            "y": 702.8
           },
           {
             "x": 2461.5,
-            "y": 544.8
+            "y": 702.8
           }
         ]
       },
@@ -12468,24 +13088,24 @@
         "id": "TodoList→todos",
         "points": [
           {
-            "x": 2208.2,
-            "y": 555.3
+            "x": 2224.5,
+            "y": 686.7
           },
           {
             "x": 2343,
-            "y": 484.3
+            "y": 642.3
           },
           {
             "x": 2521.5,
-            "y": 484.3
+            "y": 642.3
           },
           {
             "x": 2700,
-            "y": 484.3
+            "y": 642.3
           },
           {
             "x": 2818.5,
-            "y": 484.3
+            "y": 642.3
           }
         ]
       },
@@ -12494,15 +13114,15 @@
         "points": [
           {
             "x": 2581.5,
-            "y": 544.8
+            "y": 702.8
           },
           {
             "x": 2700,
-            "y": 544.8
+            "y": 702.8
           },
           {
             "x": 2818.5,
-            "y": 560.4
+            "y": 718.4
           }
         ]
       },
@@ -12511,15 +13131,15 @@
         "points": [
           {
             "x": 2938.5,
-            "y": 484.3
+            "y": 642.3
           },
           {
             "x": 3057,
-            "y": 484.3
+            "y": 642.3
           },
           {
-            "x": 3209.9,
-            "y": 735.3
+            "x": 3214.3,
+            "y": 953.3
           }
         ]
       },
@@ -12528,15 +13148,15 @@
         "points": [
           {
             "x": 3295.5,
-            "y": 870.3
+            "y": 1104.3
           },
           {
             "x": 3414,
-            "y": 870.3
+            "y": 1104.3
           },
           {
-            "x": 3565.5,
-            "y": 741.3
+            "x": 3576,
+            "y": 878.5
           }
         ]
       },
@@ -12545,15 +13165,15 @@
         "points": [
           {
             "x": 4385.5,
-            "y": 3491.5
+            "y": 3750
           },
           {
             "x": 4485,
-            "y": 3491.5
+            "y": 3750
           },
           {
-            "x": 4655.9,
-            "y": 2039
+            "x": 4656.2,
+            "y": 2230
           }
         ]
       },
@@ -12562,15 +13182,15 @@
         "points": [
           {
             "x": 1501.5,
-            "y": 1185.5
+            "y": 1457
           },
           {
             "x": 1572,
-            "y": 1185.5
+            "y": 1457
           },
           {
-            "x": 1747.2,
-            "y": 1312.3
+            "x": 1746.2,
+            "y": 1579.3
           }
         ]
       }

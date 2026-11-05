@@ -13,7 +13,7 @@ export const exoUnsettableSharedContent: TExoDomSetter = (node) => {
             ? `createExoSchema(dom): the children port on <${node.tagName.toLowerCase()}> cannot be ` +
               'filled with set() — it shares its element with other children.' +
               ' The only way to write raw markup is innerHTML, which would destroy them. Nested ' +
-              'instances go through one(), list() or childList(); raw markup (unsafeHtml) needs ' +
+              'instances go through one(), list() or appendChild(); raw markup (unsafeHtml) needs ' +
               "a port that is its element's ONLY child."
             : 'EXO0047'
     );

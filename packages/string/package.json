@@ -1,64 +1,64 @@
 {
-  "name": "@exodra/string",
-  "version": "0.5.0",
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+    "name": "@exodra/string",
+    "version": "0.5.1",
+    "type": "module",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "sideEffects": false,
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
+        "build": "tsup",
+        "prepublishOnly": "npm run build",
+        "clean": "rm -rf dist .tsbuild tsconfig.tsbuildinfo",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "bench:escape": "tsx bench/escape/exo-escape-bench.ts",
+        "bench:fill-markup": "tsx bench/markup/exo-fill-markup-bench.ts",
+        "bench:str-set": "tsx bench/node/exo-str-set-bench.ts"
+    },
+    "description": "Fast HTML string rendering for Exodra - converts components to HTML for SSR and static generation",
+    "keywords": [
+        "exodra",
+        "string-renderer",
+        "html",
+        "ssr",
+        "static-site-generation",
+        "server-rendering",
+        "html-generation",
+        "performance",
+        "typescript"
+    ],
+    "author": "Andrei Baikov",
+    "license": "MIT",
+    "homepage": "https://exodra.org",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/abaikov/exodra.git",
+        "directory": "packages/string"
+    },
+    "bugs": {
+        "url": "https://github.com/abaikov/exodra/issues"
+    },
+    "devDependencies": {
+        "@exodra/bench-harness": "*",
+        "vitest": "^4.0.16"
+    },
+    "peerDependencies": {
+        "@exodra/context": "^0.3.0",
+        "@exodra/core": "^0.4.1"
     }
-  },
-  "files": [
-    "dist"
-  ],
-  "sideEffects": false,
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "prebuild": "find src -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' -o -name '*.d.ts.map' | xargs rm -f 2>/dev/null || true",
-    "build": "tsup",
-    "prepublishOnly": "npm run build",
-    "clean": "rm -rf dist .tsbuild tsconfig.tsbuildinfo",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "bench:escape": "tsx bench/escape/exo-escape-bench.ts",
-    "bench:fill-markup": "tsx bench/markup/exo-fill-markup-bench.ts",
-    "bench:str-set": "tsx bench/node/exo-str-set-bench.ts"
-  },
-  "description": "Fast HTML string rendering for Exodra - converts components to HTML for SSR and static generation",
-  "keywords": [
-    "exodra",
-    "string-renderer",
-    "html",
-    "ssr",
-    "static-site-generation",
-    "server-rendering",
-    "html-generation",
-    "performance",
-    "typescript"
-  ],
-  "author": "Andrei Baikov",
-  "license": "MIT",
-  "homepage": "https://exodra.org",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abaikov/exodra.git",
-    "directory": "packages/string"
-  },
-  "bugs": {
-    "url": "https://github.com/abaikov/exodra/issues"
-  },
-  "devDependencies": {
-    "@exodra/bench-harness": "*",
-    "vitest": "^4.0.16"
-  },
-  "peerDependencies": {
-    "@exodra/context": "^0.3.0",
-    "@exodra/core": "^0.4.0"
-  }
 }

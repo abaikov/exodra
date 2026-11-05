@@ -117,17 +117,17 @@ backend.render(counterMachine, document.body);
 A declaration holds **markup and named ports, and nothing else**. Every JSX form
 maps to exactly one schema call:
 
-| written in JSX | what it is | schema call | filled by the machine with |
-| --- | --- | --- | --- |
-| `class="row"`, `tabindex={0}`, `disabled` | markup | folded into `el(tag, attrs)` | — |
-| plain text between tags | markup | `text('…')` | — |
-| `data-id={$.id}` | attribute port `id` | `port('data-id', 'id')` | `c.attr(RowPorts.id, value)` |
-| `<span>{$.label}</span>` | text port `label` | `textPort('label')` | `c.text(RowPorts.label, value)` |
-| `onClick={$.toggle}` | event port `toggle`, event `click` | `eventPort('click', 'toggle')` | `withExoHandlers(m, (on) => on(RowPorts.toggle, handler))` |
-| `on:dblclick={$.edit}` | event port `edit`, event `dblclick` | `eventPort('dblclick', 'edit')` | `withExoHandlers(m, (on) => on(RowPorts.edit, handler))` |
-| `ref={$.box}` | ref port `box` | `refPort('box')` | read, never written |
-| `<div unsafeHtml={$.body} />` | children port `body` | `childrenPort('body')` | `c.unsafeHtml(RowPorts.body, markup)` |
-| `<$.rows />` | children port `rows` | `childrenPort('rows')` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
+| written in JSX                            | what it is                          | schema call                     | filled by the machine with                                                                |
+| ----------------------------------------- | ----------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
+| `class="row"`, `tabindex={0}`, `disabled` | markup                              | folded into `el(tag, attrs)`    | —                                                                                         |
+| plain text between tags                   | markup                              | `text('…')`                     | —                                                                                         |
+| `data-id={$.id}`                          | attribute port `id`                 | `port('data-id', 'id')`         | `c.attr(RowPorts.id, value)`                                                              |
+| `<span>{$.label}</span>`                  | text port `label`                   | `textPort('label')`             | `c.text(RowPorts.label, value)`                                                           |
+| `onClick={$.toggle}`                      | event port `toggle`, event `click`  | `eventPort('click', 'toggle')`  | `withExoHandlers(m, (on) => on(RowPorts.toggle, handler))`                                |
+| `on:dblclick={$.edit}`                    | event port `edit`, event `dblclick` | `eventPort('dblclick', 'edit')` | `withExoHandlers(m, (on) => on(RowPorts.edit, handler))`                                  |
+| `ref={$.box}`                             | ref port `box`                      | `refPort('box')`                | read, never written                                                                       |
+| `<div unsafeHtml={$.body} />`             | children port `body`                | `childrenPort('body')`          | `c.unsafeHtml(RowPorts.body, markup)`                                                     |
+| `<$.rows />`                              | children port `rows`                | `childrenPort('rows')`          | `c.one`, `c.list`, the port methods (`c.appendChild` …), or `createExoChildrenReconciler` |
 
 ### Literal attributes are markup
 
@@ -190,17 +190,17 @@ they would mean something else, or nothing.
 
 What follows from reading the value once:
 
-- **It does not change.** The markup holds what the value was when the schema
-  compiled. Anything that changes is a port.
-- **It is written as a string.** `undefined` from a mistyped CSS Modules key
-  becomes `class="undefined"`, and `false` becomes `disabled="false"`. A port
-  leaves the attribute out for `null`, `undefined` and `false`; a value read this
-  way does not.
-- **There is no build-time form.** The Babel plugin cannot run the markup at build
-  when it reads an import, so that declaration ships without the JSON forms, and a
-  page rendered with `withExoBuiltSchemas` needs `withExoCompiler` for it.
-- **Hydration does not repair it.** If the server and the client resolve the import
-  to different strings, the server's attribute stays.
+-   **It does not change.** The markup holds what the value was when the schema
+    compiled. Anything that changes is a port.
+-   **It is written as a string.** `undefined` from a mistyped CSS Modules key
+    becomes `class="undefined"`, and `false` becomes `disabled="false"`. A port
+    leaves the attribute out for `null`, `undefined` and `false`; a value read this
+    way does not.
+-   **There is no build-time form.** The Babel plugin cannot run the markup at build
+    when it reads an import, so that declaration ships without the JSON forms, and a
+    page rendered with `withExoBuiltSchemas` needs `withExoCompiler` for it.
+-   **Hydration does not repair it.** If the server and the client resolve the import
+    to different strings, the server's attribute stays.
 
 Children are never read this way: `{ZONE}` as a child is refused.
 
@@ -272,18 +272,19 @@ export const panelSchema = exoJsx<{ body: TExoChildrenPort }>(($) => (
 ```
 
 The tag takes no attributes and no children. The machine fills it with one of
-three calls, and the choice is a choice of cost:
+these calls, and the choice is a choice of cost:
 
-| call | what it is | pays for diffs |
-| --- | --- | --- |
-| `c.one(PanelPorts.body, Machine, params?)` | one instance, for the life of this one | no |
-| `c.list(ListPorts.rows, Machine, rows)` | a fixed list, one instance per element of `rows`, each built with its element as params | no |
-| `c.childList(ListPorts.rows)` + `reconcileExoOrder` | a list that changes, reconciled by identity | yes |
+| call                                                                                             | what it is                                                                              | pays for diffs  |
+| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | --------------- |
+| `c.one(PanelPorts.body, Machine, params?)`                                                       | one instance, for the life of this one                                                  | no              |
+| `c.list(ListPorts.rows, Machine, rows)`                                                          | a fixed list, one instance per element of `rows`, each built with its element as params | no              |
+| `createExoChildrenReconciler(Machine)` called with `(c, ListPorts.rows, items)`                  | a list that changes, reconciled by identity                                             | yes             |
+| `c.createExoNode(Machine)` + `c.appendChild` / `c.insertChild` / `c.moveChild` / `c.removeChild` | children placed by hand — see [Children](./children.md)                                 | as you write it |
 
 ## A list
 
-The changing list is a children port whose child list the machine keeps in its
-state and reconciles with `reconcileExoOrder` from
+The changing list is a children port the machine reconciles with a reconciler made
+once, at module level, by `createExoChildrenReconciler` from
 `@exodra/list-reconcile`. Rows are matched by **identity of the item**: a row
 that survives an update is the same element with the same instance.
 
@@ -304,8 +305,8 @@ import type {
     TExoMachineNodeOf,
     TExoTextPort,
 } from '@exodra/core';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import type { TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
 type TTask = { id: string; title: string };
 
@@ -326,6 +327,7 @@ const taskMachine = composeExoMachine(
             c.text(TaskPorts.title, task.title);
         })
 );
+const reconcileTasks = createExoChildrenReconciler<TTask>(taskMachine);
 
 const taskListSchema = exoJsx<{
     rows: TExoChildrenPort;
@@ -347,24 +349,17 @@ const taskListSchema = exoJsx<{
 ));
 const TaskListPorts = taskListSchema.ports;
 
-type TTaskListState = { rows: TExoChildList; tasks: TTask[]; shown: TTask[] };
-
 const taskListBase = createExoMachine(taskListSchema, {
-    createInitialState: (c: TExoDomNode, _params: unknown): TTaskListState => ({
-        rows: c.childList(TaskListPorts.rows),
+    createInitialState: (_c: TExoDomNode, _params: unknown): { tasks: TTask[] } => ({
         tasks: [
             { id: 't1', title: 'Write the schema' },
             { id: 't2', title: 'Write the machine' },
         ],
-        shown: [],
     }),
 });
 
 function showRows(c: TExoMachineNodeOf<typeof taskListBase>): void {
-    const state = c.state;
-    state.shown = reconcileExoOrder(state.rows, state.shown, state.tasks, state.tasks, (task) =>
-        c.build(taskMachine, task)
-    );
+    reconcileTasks(c, TaskListPorts.rows, c.state.tasks);
 }
 
 let nextTask = 3;
@@ -393,10 +388,9 @@ export const taskListMachine = composeExoMachine(
 );
 ```
 
-`reconcileExoOrder(kids, shown, keys, items, build)` takes the child list, the
-keys it showed last time, the keys and items to show now, and a `build` for an
-item it has not seen; it returns the keys it now shows. Here the item is its own
-key. Data from a store reaches the list the same way: an effect subscribes to the
+`reconcileTasks(c, port, items)` builds a row of `taskMachine`, wired with the task, for
+an item it has not seen, keeps the row of every item that stays, and destroys the rest.
+It remembers what it showed in that port, so the machine keeps only its tasks. Data from a store reaches the list the same way: an effect subscribes to the
 store directly and calls `showRows` — see [Lists](./lists.md).
 
 ## What is refused
@@ -404,25 +398,25 @@ store directly and calls `showRows` — see [Lists](./lists.md).
 There is no runtime under this JSX to defer a decision to, so everything outside
 the table above is a **compile error**, naming the element and the fix:
 
-- Any other expression in an attribute: a closure (`onClick={() => …}`), a value
-  local to the function (`data-id={item.id}`), a conditional, a template literal
-  with a part that is not a module `const` string, a call.
-- A component tag (`<Row />`, `<Ui.Row />`) — declare `<$.rows />` and build the
-  instances from the machine. There is no `list=` or `props=` operand.
-- Attributes or children on `<$.name />`.
-- A fragment (`<></>`), anywhere.
-- `{...spread}`.
-- A lowercase inline handler, `onclick="…"` — write `onClick={$.name}`.
-- A namespace other than `on:`.
-- A text port beside other children: `<b>Hi {$.name}</b>` — write
-  `<b>Hi <span>{$.name}</span></b>`.
-- `unsafeHtml` on an element that also has children.
-- The same port name twice. A port is one place in the markup; two places that
-  show the same value are two ports the machine writes.
-- JSX outside `exoJsx(…)`.
-- A declaration that does anything but return one element: statements before
-  the `return`, a second parameter, a destructured parameter, or a function
-  declared elsewhere (`exoJsx(build)`).
+-   Any other expression in an attribute: a closure (`onClick={() => …}`), a value
+    local to the function (`data-id={item.id}`), a conditional, a template literal
+    with a part that is not a module `const` string, a call.
+-   A component tag (`<Row />`, `<Ui.Row />`) — declare `<$.rows />` and build the
+    instances from the machine. There is no `list=` or `props=` operand.
+-   Attributes or children on `<$.name />`.
+-   A fragment (`<></>`), anywhere.
+-   `{...spread}`.
+-   A lowercase inline handler, `onclick="…"` — write `onClick={$.name}`.
+-   A namespace other than `on:`.
+-   A text port beside other children: `<b>Hi {$.name}</b>` — write
+    `<b>Hi <span>{$.name}</span></b>`.
+-   `unsafeHtml` on an element that also has children.
+-   The same port name twice. A port is one place in the markup; two places that
+    show the same value are two ports the machine writes.
+-   JSX outside `exoJsx(…)`.
+-   A declaration that does anything but return one element: statements before
+    the `return`, a second parameter, a destructured parameter, or a function
+    declared elsewhere (`exoJsx(build)`).
 
 ## Setup
 
@@ -462,12 +456,12 @@ the preset forwards all three options.
 Plugin options — the first three are for a build that renames things, and most
 projects set none of them:
 
-| option | default | what it is |
-| --- | --- | --- |
-| `schemaSource` | `'@exodra/core'` | where the schema factory is imported from |
-| `schemaImport` | `'createExoNamedSchema'` | the exported name of the schema factory |
-| `markerName` | `'exoJsx'` | the marker call the plugin compiles away |
-| `jsonDeclarations` | `true` | compile each declaration at build time and emit its DOM and string forms; `false` emits the declaration alone |
+| option             | default                  | what it is                                                                                                    |
+| ------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `schemaSource`     | `'@exodra/core'`         | where the schema factory is imported from                                                                     |
+| `schemaImport`     | `'createExoNamedSchema'` | the exported name of the schema factory                                                                       |
+| `markerName`       | `'exoJsx'`               | the marker call the plugin compiles away                                                                      |
+| `jsonDeclarations` | `true`                   | compile each declaration at build time and emit its DOM and string forms; `false` emits the declaration alone |
 
 ### TypeScript
 
@@ -493,8 +487,8 @@ would otherwise render nothing and say nothing.
 
 ## Where to go next
 
-- [Components](./components.md) — schemas and machines by hand. Everything on
-  this page compiles to that.
-- [Lists & Reconciliation](./lists.md) — what `reconcileExoOrder` reconciles by.
-- [SWC plugin](../tooling/swc-plugin.md) — the same dialect in Rust, with the
-  same three options.
+-   [Components](./components.md) — schemas and machines by hand. Everything on
+    this page compiles to that.
+-   [Lists & Reconciliation](./lists.md) — what `createExoChildrenReconciler` reconciles by.
+-   [SWC plugin](../tooling/swc-plugin.md) — the same dialect in Rust, with the
+    same three options.

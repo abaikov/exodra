@@ -3,16 +3,13 @@ import { composeExoPlugins } from '@exodra/core';
 import type { TExoChildrenPort, TExoMachineInitialState } from '@exodra/core';
 import { host, createExoTestMachine } from '@exodra/test-utils';
 import { describe, expect, it } from 'vitest';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '../../dom/EXO_DOM_NODE_VOCABULARY';
 import { EXO_DOM_FOREIGN_VOCABULARY } from '../constants/EXO_DOM_FOREIGN_VOCABULARY';
 import { exoForeignNode } from '../exoForeignNode';
 import type { TExoDomForeignApi } from '../types/TExoDomForeignApi';
 
-const BACKEND = composeExoPlugins(
-    withExoChildList(withExoCompiler(new ExoDomBackend())),
-    EXO_DOM_FOREIGN_VOCABULARY
-);
+const BACKEND = composeExoPlugins(withExoCompiler(new ExoDomBackend()), EXO_DOM_FOREIGN_VOCABULARY);
 
 describe('foreign is a pack on the DOM backend', () => {
     it('places what createDom built, through the child list the wire opened', () => {
@@ -27,7 +24,8 @@ describe('foreign is a pack on the DOM backend', () => {
             },
             (P): TExoMachineInitialState<TExoDomNode & TExoDomForeignApi> =>
                 (c) => {
-                    c.childList(P.slot).insert(
+                    c.appendChild(
+                        P.slot,
                         c.foreign({ createDom: (self) => exoForeignNode(self, canvas) })
                     );
                 }

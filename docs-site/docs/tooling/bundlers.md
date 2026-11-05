@@ -10,16 +10,16 @@ run Babel plugins (esbuild, SWC, Bun's native transpiler) each have a dedicated
 plugin that hands the file to Babel; those wrap the same preset, so every path
 compiles identically.
 
-| Tool | How | Package |
-| --- | --- | --- |
-| Vite / Vitest | plugin | [`@exodra/vite-plugin`](./vite-plugin.md) |
-| Jest | `babel-jest` + preset | [`babel-preset-exodra`](./babel-preset.md) |
-| esbuild / tsup | plugin | `esbuild-plugin-exodra` |
-| Rollup | plugin | `rollup-plugin-exodra` |
-| Bun | plugin | `bun-plugin-exodra` |
-| webpack | `babel-loader` + preset | *(no package — see below)* |
-| Parcel | `.babelrc` + preset | *(no package — see below)* |
-| SWC / Next.js | native Wasm plugin | [`swc-plugin-exodra`](./swc-plugin.md) |
+| Tool           | How                     | Package                                    |
+| -------------- | ----------------------- | ------------------------------------------ |
+| Vite / Vitest  | plugin                  | [`@exodra/vite-plugin`](./vite-plugin.md)  |
+| Jest           | `babel-jest` + preset   | [`babel-preset-exodra`](./babel-preset.md) |
+| esbuild / tsup | plugin                  | `esbuild-plugin-exodra`                    |
+| Rollup         | plugin                  | `rollup-plugin-exodra`                     |
+| Bun            | plugin                  | `bun-plugin-exodra`                        |
+| webpack        | `babel-loader` + preset | _(no package — see below)_                 |
+| Parcel         | `.babelrc` + preset     | _(no package — see below)_                 |
+| SWC / Next.js  | native Wasm plugin      | [`swc-plugin-exodra`](./swc-plugin.md)     |
 
 Every one of these plugins intercepts `.jsx` / `.tsx` **before** the bundler's own
 JSX handling. That is not a preference: esbuild, Bun and friends lower JSX to a
@@ -87,10 +87,10 @@ await Bun.build({
 
 Each plugin accepts two:
 
-| option | default | what it is |
-| --- | --- | --- |
-| `filter` (`include` for Rollup) | `/\.[jt]sx$/` | which files to compile |
-| `schemaSource` | `'@exodra/core'` | where the compiled output imports `createExoSchema` from |
+| option                          | default          | what it is                                               |
+| ------------------------------- | ---------------- | -------------------------------------------------------- |
+| `filter` (`include` for Rollup) | `/\.[jt]sx$/`    | which files to compile                                   |
+| `schemaSource`                  | `'@exodra/core'` | where the compiled output imports `createExoSchema` from |
 
 Both are forwarded to `babel-preset-exodra`'s runner unchanged — there is no
 per-bundler behaviour to configure, because there is no per-bundler pipeline.

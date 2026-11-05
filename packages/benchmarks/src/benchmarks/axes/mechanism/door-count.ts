@@ -175,7 +175,7 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 // THIS BACKEND. A machine takes no props and has no wire, so the only per-instance hook a SERVER
 // render offers is a declaration: keep-seeders, handlers and effects, and of those only an effect
 // runs with `enode.state` already installed — which is what `c.kept` reads. The DOM's machines
-// reach their instances the other way (`c.build` hands back a child and the caller fires
+// reach their instances the other way (`wireExoNode(c.createExoNode(M))` hands back a child and the caller fires
 // transitions at it before inserting it); a server instance is finished the moment it is built, so
 // there is no such moment here, and the mount effect IS this backend's spelling of "fire the
 // transitions by hand". `withExoComputedMachine`'s own `m.fill` compiles to exactly one such
@@ -214,7 +214,7 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 //     module-level counter, reset at the top of each render by the list wrapper, and `c.list` hands
 //     both of them an item they ignore. THE COST OF THAT DECISION: a real application gives a
 //     machine row its data by firing a transition at the instance, which on this backend it cannot
-//     do at all (see the mount-effect note above) and on the DOM costs a `c.build` and an
+//     do at all (see the mount-effect note above) and on the DOM costs a `wireExoNode(c.createExoNode(M))` and an
 //     `insert` per row. So the intercept here is LOWER than a direct row's really is, and the
 //     honest reading of the ladder is the SLOPE, which is what this axis claims.
 //  2. BOTH LIBRARY ARMS WRITE THEIR FIVE PORTS THROUGH `c.set`, AND THERE IS NO LONGER A SECOND

@@ -28,7 +28,7 @@ export type TExoPlugin = {
 
 `new ExoDomBackend()` calls `composeExoPlugins(this, …)` once, in its constructor,
 to put the **exonode surface** on itself — `attr`, `text`, `on`, `one`, `list`,
-`build`, `childList` and the rest (`packages/dom/src/dom/ExoDomBackend.ts`,
+`createExoNode`, `appendChild` and the rest (`packages/dom/src/dom/ExoDomBackend.ts`,
 `packages/core/src/plugins/composeExoPlugins.ts`). Every pack an application composes
 is a unary decorator wrapped around that finished object:
 
@@ -50,11 +50,11 @@ exists only where it was merged.
 **The capability check is the type of the composed object.** Nobody declares a
 capability set. A decorator states its contribution in its return type —
 `withExoCompiler(base)` answers `TBase & TExoCompilerApi`,
-`composeExoPlugins(base, EXO_KEYED_LIST_VOCABULARY)` answers `typeof base &
-TExoKeyedListApi` — and they compose by intersection. A backend composed without
+`composeExoPlugins(base, EXO_DOM_FOREIGN_VOCABULARY)` answers `typeof base &
+TExoDomForeignApi` — and they compose by intersection. A backend composed without
 `withExoHydration` has no `hydrate`, in the type as well as at runtime.
 
-**Where that check lands.** A machine that calls `c.keyedList` needs an exonode type
+**Where that check lands.** A machine that calls `c.foreign` needs an exonode type
 that has it, and the compile error appears **on the line that calls it**. It comes
 from `render` and `hydrate` as well: both declare their component against
 `this & TExoDomInstanceRecord`, so a component demanding a pack the backend never
@@ -76,13 +76,13 @@ field initialisers (`packages/dom/src/dom/ExoDomBackend.ts`). `withExoHydration`
 adds two more. The API they make up is `TExoDomApi`
 (`packages/dom/src/dom/types/TExoDomApi.ts`).
 
-| Field | Interface | Shipped value | What replacing it decides |
-|---|---|---|---|
-| `events` | `TExoEventsApi` | `EXO_DIRECT_EVENTS` — one listener per element | how a listener reaches the DOM |
-| `writers` | `TExoWritersApi` | `EXO_SHIPPED_WRITERS` | how a value reaches an element |
-| `createInstance` / `createChild` | `TExoDomRecordFactories` | the two record factories built in the constructor | the shape of every record rendered |
-| `hydrateSurface` *(optional)* | `TExoDomRecordFactories` | absent — `withExoHydration` installs it | whether this backend can adopt markup |
-| `parserStability` *(optional)* | `TExoParserStability` | absent — `withExoHydration` installs it | the refusals for a schema the HTML parser would reshape |
+| Field                            | Interface                | Shipped value                                     | What replacing it decides                               |
+| -------------------------------- | ------------------------ | ------------------------------------------------- | ------------------------------------------------------- |
+| `events`                         | `TExoEventsApi`          | `EXO_DIRECT_EVENTS` — one listener per element    | how a listener reaches the DOM                          |
+| `writers`                        | `TExoWritersApi`         | `EXO_SHIPPED_WRITERS`                             | how a value reaches an element                          |
+| `createInstance` / `createChild` | `TExoDomRecordFactories` | the two record factories built in the constructor | the shape of every record rendered                      |
+| `hydrateSurface` _(optional)_    | `TExoDomRecordFactories` | absent — `withExoHydration` installs it           | whether this backend can adopt markup                   |
+| `parserStability` _(optional)_   | `TExoParserStability`    | absent — `withExoHydration` installs it           | the refusals for a schema the HTML parser would reshape |
 
 `TExoEventsApi` has four members — `name`, `port(event)`, `attach`, and an optional
 `install(root)` (`packages/dom/src/events/types/TExoEventsApi.ts`). `TExoWritersApi`
@@ -100,8 +100,9 @@ whose prototype is the composed backend — and merges the adopting bodies onto 
 through `exoVocabulary`, whose factories are `() => method`: they **ignore `next`**,
 so they replace rather than wrap (`packages/core/src/plugins/exoVocabulary.ts`). The
 names it claims are `portNodeWriter`, `portNodeReader`, `on`, `one`, `list`,
-`build` and `foreign`, the child-list seams `childListEndNode`, `childListStartNode` and
-`openChildList`, and its own `publishChildListEnd`, `adoptFromNode` and `adoptStopNode`
+`createExoNode`, `armExoSelf` and `foreign`, the child-list seams
+`childListEndNode`, `childListStartNode`, `openChildList`, `servedCursorOf` and
+`materializeExoChild`, and its own `publishChildListEnd`, `adoptFromNode` and `adoptStopNode`
 (`packages/dom/src/hydrate/EXO_HYDRATE_NODE_VOCABULARY.ts`).
 
 A name adoption does not claim falls through to the composed backend, so a wrapper
@@ -128,8 +129,8 @@ package barrel alone.
 element and must not be closed over. `markupCarries` answers "would a browser handed
 this markup, and no fill, be in the state this value asks for?" — hydration reads it
 to decide which ports it may silence and which keep their live writer. A text writer
-is handed the element unless the function it returns sets `takesTextNode`. *Inert
-case:* a pack whose `attr` and `text` return no-op setters renders an element with
+is handed the element unless the function it returns sets `takesTextNode`. _Inert
+case:_ a pack whose `attr` and `text` return no-op setters renders an element with
 neither the attribute nor the text
 (`packages/dom/src/backend/tests/exo-composed-writers.test.ts`).
 
@@ -184,46 +185,44 @@ const dispose = backend.render(greetingMachine, document.getElementById('app') a
 ```
 
 `backend.render` mounts **one** instance and takes no count. A page of rows is a
-children port filled by `c.list` or by `reconcileExoOrder` over `c.childList`
-in some component's transition — see [Lists](./lists.md).
+children port filled by `c.list`, by the port methods of [Children](./children.md), or by
+a reconciler from `createExoChildrenReconciler` in some component — see [Lists](./lists.md).
 
 Three rules that decide whether this works at all:
 
-- **Compose once, at module level.** Every backend object takes its own
-  `backendType`, the index its schemas are cached at on `machine.forms`, so one built
-  per render recompiles every schema, markup parse included, on every render.
-  `warnExoFormGrowth` (`packages/core/src/machine/warnExoFormGrowth.ts`) says so out
-  loud in a development build once a machine holds eight schemas.
-- **Order is the caller's, and nothing refuses a collision.** Packs apply
-  inside-out; the outermost decorator claims a name last and becomes the outermost
-  wrapper. `withExoPropertyWriters` and `withExoReclaimingText` both claim `writers`
-  and both delegate `text` to `next`, which is why either order keeps the reclaiming
-  text writer.
-- **A pack's factory cannot keep anything per-instance.** It runs **once**, at
-  merge, and is handed `next` and nothing else. A method it returns must reach its
-  siblings through `this` at call time, and must not be an arrow, or it has no
-  `this` at all — a silent failure in both directions
-  (`packages/core/src/plugins/types/TExoPlugin.ts`).
+-   **Compose once, at module level.** Every backend object takes its own
+    `backendType`, the index its schemas are cached at on `machine.forms`, so one built
+    per render recompiles every schema, markup parse included, on every render.
+    `warnExoFormGrowth` (`packages/core/src/machine/warnExoFormGrowth.ts`) says so out
+    loud in a development build once a machine holds eight schemas.
+-   **Order is the caller's, and nothing refuses a collision.** Packs apply
+    inside-out; the outermost decorator claims a name last and becomes the outermost
+    wrapper. `withExoPropertyWriters` and `withExoReclaimingText` both claim `writers`
+    and both delegate `text` to `next`, which is why either order keeps the reclaiming
+    text writer.
+-   **A pack's factory cannot keep anything per-instance.** It runs **once**, at
+    merge, and is handed `next` and nothing else. A method it returns must reach its
+    siblings through `this` at call time, and must not be an arrow, or it has no
+    `this` at all — a silent failure in both directions
+    (`packages/core/src/plugins/types/TExoPlugin.ts`).
 
 ## The packs that ship
 
-| Pack | Claims | Compose it when | Its cost | Its limitation |
-|---|---|---|---|---|
-| `withExoCompiler(base)` | `schema`, `render` | the page turns declarations into schemas | the compiler is in the bundle | a page whose schemas came off a build leaves it out and calls `mountExoSchema` instead |
-| `withExoHydration(base)` | `hydrate`, `hydrateSurface`, `parserStability` | the page adopts markup `@exodra/string` printed | 3.2 kB gzipped that a client-only page never links | needs `withExoCompiler` beneath it; wrappers on the names it claims do not run while adopting |
-| [`withExoChildList(base)`](../api/dom.md#withexochildlist) | `childList` on the exonode | a machine opens a child list — `reconcileExoOrder`, `c.keyedList`, the router's outlet, rows placed by hand | the commanded child list is in the bundle | without it the first `c.childList` throws [EXO0109](../errors.md#exo0109); `c.one` and a fixed `c.list` never need it |
-| [`withExoForeignNamespaces(base)`](../api/dom.md#withexoforeignnamespaces) | `foreignNamespaces` | a schema contains `<svg>`, `<math>` or an SVG-only element | the SVG and MathML tables are in the bundle | without it such a schema is refused with [EXO0108](../errors.md#exo0108), or [EXO0110](../errors.md#exo0110) from a JSON declaration |
-| `withExoDefaults(base)` | `writers` | an ordinary page — it is the safety bundle, holding `withExoReclaimingText` today | that of the pack inside it | none of its own |
-| `withExoReclaimingText(base)` | `writers` (`text` only) | anything outside the renderer may rewrite visible text — a translator, an extension | one `firstChild` load and one `nodeType` test per text write | when the test fails it assigns `textContent`, which destroys everything inside the element |
-| `withExoPropertyWriters(base, takesOver?)` | `writers` (`attr`, `markupCarries`) | a custom element takes an array, a `Date`, a `Map` or a callback | decided once per attribute port at compile time | the server is not composed, so byte parity is given up for taken-over ports |
-| `createExoDelegatedEvents(names, options?)` | a value for `events` | many rows share the same handlers | one root listener per event name; dispatch walks from `e.target` to the root | a node moved out of its root stops responding; non-bubbling names are refused, high-frequency ones unless `allowHighFrequency` is set |
-| `EXO_KEYED_LIST_VOCABULARY` (`@exodra/list-reconcile`) | `keyedList` on the exonode | rows arrive as fresh objects on every refetch, with no identity to reconcile by | one `keyOf` call per item and a key→item `Map` per update | it opens a child list, so the DOM backend needs `withExoChildList` beneath it; the row's data reaches it through the `update` argument, a transition the caller writes — there are no props |
-| `EXO_DOM_FOREIGN_VOCABULARY` | `foreign` on the exonode | a children port must hold an element this renderer did not make | — | on an adopted page a foreign node is built fresh, never adopted, and the row the server printed for it is removed |
+| Pack                                                                       | Claims                                         | Compose it when                                                                     | Its cost                                                                     | Its limitation                                                                                                                        |
+| -------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `withExoCompiler(base)`                                                    | `schema`, `render`                             | the page turns declarations into schemas                                            | the compiler is in the bundle                                                | a page whose schemas came off a build leaves it out and calls `mountExoSchema` instead                                                |
+| `withExoHydration(base)`                                                   | `hydrate`, `hydrateSurface`, `parserStability` | the page adopts markup `@exodra/string` printed                                     | 3.2 kB gzipped that a client-only page never links                           | needs `withExoCompiler` beneath it; wrappers on the names it claims do not run while adopting                                         |
+| [`withExoForeignNamespaces(base)`](../api/dom.md#withexoforeignnamespaces) | `foreignNamespaces`                            | a schema contains `<svg>`, `<math>` or an SVG-only element                          | the SVG and MathML tables are in the bundle                                  | without it such a schema is refused with [EXO0108](../errors.md#exo0108), or [EXO0110](../errors.md#exo0110) from a JSON declaration  |
+| `withExoDefaults(base)`                                                    | `writers`                                      | an ordinary page — it is the safety bundle, holding `withExoReclaimingText` today   | that of the pack inside it                                                   | none of its own                                                                                                                       |
+| `withExoReclaimingText(base)`                                              | `writers` (`text` only)                        | anything outside the renderer may rewrite visible text — a translator, an extension | one `firstChild` load and one `nodeType` test per text write                 | when the test fails it assigns `textContent`, which destroys everything inside the element                                            |
+| `withExoPropertyWriters(base, takesOver?)`                                 | `writers` (`attr`, `markupCarries`)            | a custom element takes an array, a `Date`, a `Map` or a callback                    | decided once per attribute port at compile time                              | the server is not composed, so byte parity is given up for taken-over ports                                                           |
+| `createExoDelegatedEvents(names, options?)`                                | a value for `events`                           | many rows share the same handlers                                                   | one root listener per event name; dispatch walks from `e.target` to the root | a node moved out of its root stops responding; non-bubbling names are refused, high-frequency ones unless `allowHighFrequency` is set |
+| `EXO_DOM_FOREIGN_VOCABULARY`                                               | `foreign` on the exonode                       | a children port must hold an element this renderer did not make                     | —                                                                            | on an adopted page a foreign node is built fresh, never adopted, and the row the server printed for it is removed                     |
 
 `createExoDelegatedEvents` returns a `TExoEventsApi` — a value for the `events`
 field, not a decorator — so composing it is the one-entry factory
-`() => DELEGATED`. `EXO_KEYED_LIST_VOCABULARY` and `EXO_DOM_FOREIGN_VOCABULARY` are
-plugins merged with `composeExoPlugins(backend, VOCABULARY)`.
+`() => DELEGATED`. `EXO_DOM_FOREIGN_VOCABULARY` is a plugin merged with
+`composeExoPlugins(backend, EXO_DOM_FOREIGN_VOCABULARY)`.
 
 ### `exo-reclaiming-text`
 
@@ -251,15 +250,15 @@ into JavaScript property stores, so a component that accepts an array, a `Date`,
 
 Four exports:
 
-- `withExoPropertyWriters(base, takesOver?)` — the decorator.
-- `createExoPropertyWriters(next?, takesOver?)` — the factory it is built on, for a
-  caller filling the `writers` field itself. Text is delegated to `next`; attribute
-  ports the pack declines go to `EXO_SHIPPED_WRITERS`.
-- `takesOverExoProperty(name, proto)` — the default predicate, exported so a
-  narrower rule can be written as "the default, and also…". It takes a port only on
-  a hyphenated tag, never for a name in `EXO_GLOBAL_ATTRIBUTES`, and never for a name
-  containing `-` or `:`.
-- `EXO_GLOBAL_ATTRIBUTES` — the set of global attribute names it leaves alone.
+-   `withExoPropertyWriters(base, takesOver?)` — the decorator.
+-   `createExoPropertyWriters(next?, takesOver?)` — the factory it is built on, for a
+    caller filling the `writers` field itself. Text is delegated to `next`; attribute
+    ports the pack declines go to `EXO_SHIPPED_WRITERS`.
+-   `takesOverExoProperty(name, proto)` — the default predicate, exported so a
+    narrower rule can be written as "the default, and also…". It takes a port only on
+    a hyphenated tag, never for a name in `EXO_GLOBAL_ATTRIBUTES`, and never for a name
+    containing `-` or `:`.
+-   `EXO_GLOBAL_ATTRIBUTES` — the set of global attribute names it leaves alone.
 
 The predicate runs at compile time, once per attribute port, and must be pure in
 its two arguments, because `attr` and `markupCarries` agree only by both asking it.
@@ -271,47 +270,49 @@ the stringified attribute for the same port.
 
 ### Keys
 
-The keyed pack is documented in full on [Lists](./lists.md#keys-when-identity-is-not-available).
-It is `EXO_KEYED_LIST_VOCABULARY` from `@exodra/list-reconcile`, which puts
-`c.keyedList(port, keyOf, build, update)` on the exonode over the free function
-`createExoKeyedList(kids, keyOf, build, update)`. Both return a list whose
-`reconcile(items)` a transition calls, and it runs the same `reconcileExoOrder` pass
-the identity list runs, over `keyOf(item)` instead of the item.
+Keys need no pack. `createExoChildrenReconciler(rowMachine, { key: keyOf })` from
+`@exodra/list-reconcile` runs the same pass the identity reconciler runs, over
+`keyOf(item)` instead of the item, and re-wires a row whose key stayed under a new object.
+It is documented in full on [Lists](./lists.md#keys-when-identity-is-not-available).
 
 ## Keeping a subtree instead of recycling elements
 
 There is no node source and no element pool. An element comes from one place,
 `cloneExoNode(schema)` on the schema's prototype. What an application keeps instead
-is **the whole exonode**: a child built once with `c.build` stays wired, subscribed
-and filled for as long as the application holds it, and the child list moves it in
+is **the whole exonode**: a child created and wired once stays wired, subscribed
+and filled for as long as the application holds it, and the port moves it in
 and out of the document without telling it.
 
 ```ts
+import { destroyExoNode, wireExoNode } from '@exodra/core';
 import type { TExoChildrenPort } from '@exodra/core';
 import type { TExoDomMachine, TExoDomNode } from '@exodra/dom';
 
 export function keepPanel(c: TExoDomNode, port: TExoChildrenPort, panel: TExoDomMachine) {
-    const kids = c.childList(port);
-    const kept = c.build(panel);
-    kids.insert(kept);
+    const kept = c.createExoNode(panel);
+    wireExoNode(kept);
+    c.appendChild(port, kept);
     return {
         hide: (): void => {
-            kids.detach(0);
+            c.removeChild(kept);
         },
         show: (): void => {
-            kids.attach(kept, 0);
+            c.appendChild(port, kept);
+        },
+        end: (): void => {
+            destroyExoNode(kept);
         },
     };
 }
 ```
 
-`detach(i)` takes the node out and runs **no** hook — nothing is unmounted or
+`c.removeChild(node)` takes the node out and runs **no** teardown — nothing is
 disposed, so the exonode's subscriptions stay live and keep writing into a node that
-is out of the document. `attach(child, i)` is `insert` without `mount`
-(`packages/dom/src/dom/types/TExoChildList.ts`). A kept child is ended by putting it
-back and calling `remove`, which runs its `unmount` and ends its subscriptions
-(`packages/dom/src/dom/tests/make-exo-child-list.test.ts`). `detachAll()` takes every
-child of the list in one call.
+is out of the document. `c.appendChild` puts the same node back without re-creating,
+re-wiring or re-mounting it (`packages/dom/src/dom/constants/EXO_DOM_CHILD_LIST_VOCABULARY.ts`).
+A removed node is no longer reached by its parent's teardown, so a kept child is ended with
+`destroyExoNode`, which ends its subscriptions. The whole lifecycle is on
+[Children](./children.md).
 
 ## A fourth backend
 

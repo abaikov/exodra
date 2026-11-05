@@ -20,19 +20,19 @@ This is the failure this repository keeps having, and it is why
 Checks found written and unwired, each discovered by accident, months apart, by
 somebody looking at something else:
 
-- `test:packed` asserted the API of a renderer that had been **deleted**. It
-  could not have passed since the deletion, so the release path was unguarded.
-- `check-bundle-size.mjs` was wired into nothing, failed on most packages it
-  covered, and budgeted the raw bytes of an unminified file rather than what a
-  page pays.
-- Prettier was rewriting the markup of benchmark participants, which silently
-  killed the fairness gate on the mount axis.
-- `graph:check` sat in `package.json`, in no workflow and in no other script —
-  nothing had ever cruised the package graph in CI.
-- `graph:verify` existed and passed, and was likewise invoked by nothing, so the
-  published architecture diagram was free to drift, and had: the generated page
-  was missing an entire package until it was regenerated.
-- `atlas:verify` had the same shape.
+-   `test:packed` asserted the API of a renderer that had been **deleted**. It
+    could not have passed since the deletion, so the release path was unguarded.
+-   `check-bundle-size.mjs` was wired into nothing, failed on most packages it
+    covered, and budgeted the raw bytes of an unminified file rather than what a
+    page pays.
+-   Prettier was rewriting the markup of benchmark participants, which silently
+    killed the fairness gate on the mount axis.
+-   `graph:check` sat in `package.json`, in no workflow and in no other script —
+    nothing had ever cruised the package graph in CI.
+-   `graph:verify` existed and passed, and was likewise invoked by nothing, so the
+    published architecture diagram was free to drift, and had: the generated page
+    was missing an entire package until it was regenerated.
+-   `atlas:verify` had the same shape.
 
 The pattern is not carelessness about any one check. It is that **a check's
 wiring is invisible**: the file exists, it looks maintained, it has a header
@@ -54,7 +54,7 @@ uninstalled benchmark participant.
 The mis-specification is worth stating because the two options read as
 synonyms. On a `circular` rule, `dependencyTypesNot` filters only the single
 edge from `from` to `to` — it says nothing about the hops the cycle passes
-*through*. `viaOnly` constrains **every** hop, which is what "survives type
+_through_. `viaOnly` constrains **every** hop, which is what "survives type
 erasure" actually means. With `tsPreCompilationDeps` on, an `import type` is an
 edge, so the undivided rule was reporting cycles that exist in no emitted
 output: a chain whose first hop is a value import and whose remaining hops are
@@ -95,7 +95,7 @@ declaration build legitimately consumes: the dependency's published bundle,
 produced earlier in the build order.
 
 `introspect` is the one documented exception and keeps `outDir: "./dist"`,
-because tsc *is* its publisher — no tsup writes there, so there is nothing for
+because tsc _is_ its publisher — no tsup writes there, so there is nothing for
 its output to collide with.
 
 ### Why some projects are referenced by file and not by directory
@@ -103,14 +103,14 @@ its output to collide with.
 Those packages' `tsconfig.json` is their **build** config, and the two cannot be
 the same file:
 
-- The packages whose build is `tsc && mv dist/index.js dist/index.cjs` would
-  gain `incremental` along with `composite`. A second build then skips its emit
-  — against a `dist/index.js` the previous run had already moved away, or a
-  `dist` the script had just deleted — and ships whatever was left behind.
-- The packages with no `tsconfig.tsup.json` have `tsconfig.json` as the file
-  tsup reads. `composite` there reaches tsup's declaration pass, which is handed
-  an entry list rather than the config's `include`, and answers TS6307 "not
-  listed within the file list of project".
+-   The packages whose build is `tsc && mv dist/index.js dist/index.cjs` would
+    gain `incremental` along with `composite`. A second build then skips its emit
+    — against a `dist/index.js` the previous run had already moved away, or a
+    `dist` the script had just deleted — and ships whatever was left behind.
+-   The packages with no `tsconfig.tsup.json` have `tsconfig.json` as the file
+    tsup reads. `composite` there reaches tsup's declaration pass, which is handed
+    an entry list rather than the config's `include`, and answers TS6307 "not
+    listed within the file list of project".
 
 Each therefore keeps its build config untouched and carries a
 `tsconfig.typecheck.json` beside it, emitting to `.tsbuild` like everything
@@ -204,7 +204,7 @@ inside a JSDoc block. And `.gitignore` carried `**/src/**/*.js` plus three
 siblings, so `git status` showed a clean tree the entire time.
 
 All four ignore lines are gone and the emit is stopped at its config. The gate is
-what makes the *next* emitter visible, because that class of failure announces
+what makes the _next_ emitter visible, because that class of failure announces
 itself in no other way: every number and every test result taken off such a tree
 is worthless and nothing goes red.
 
@@ -213,20 +213,20 @@ is worthless and nothing goes red.
 The chain is ordered by what a step needs and by what it costs, not by
 importance.
 
-- `check:src-emit` runs second, before `lint`: after it, `prebuild` sweeps the
-  stray files away at `build:all` and the evidence is gone.
-- `graph:check` and `graph:verify` run third, before `typecheck`: they need
-  nothing built, they are the cheapest things in the list that can fail, and a
-  layering or undeclared-dependency break is worth hearing about before eleven
-  minutes of build.
-- The two tree-shaking gates and the docs gates need nothing built either, so
-  they sit with the structural checks.
-- `check:size` and `check:numbers` sit **after** `build:all`, because they gzip
-  files in `dist/`. Before the build they would either brick a clean checkout or
-  skip themselves silently, and a gate whose half no-ops is the exact failure
-  three gates here were found to have.
-- `typecheck:tests` sits immediately after `typecheck`, because the `paths` it
-  inherits name `.tsbuild`, which that step is what produces.
+-   `check:src-emit` runs second, before `lint`: after it, `prebuild` sweeps the
+    stray files away at `build:all` and the evidence is gone.
+-   `graph:check` and `graph:verify` run third, before `typecheck`: they need
+    nothing built, they are the cheapest things in the list that can fail, and a
+    layering or undeclared-dependency break is worth hearing about before eleven
+    minutes of build.
+-   The two tree-shaking gates and the docs gates need nothing built either, so
+    they sit with the structural checks.
+-   `check:size` and `check:numbers` sit **after** `build:all`, because they gzip
+    files in `dist/`. Before the build they would either brick a clean checkout or
+    skip themselves silently, and a gate whose half no-ops is the exact failure
+    three gates here were found to have.
+-   `typecheck:tests` sits immediately after `typecheck`, because the `paths` it
+    inherits name `.tsbuild`, which that step is what produces.
 
 "Release-only" is not what the chain's name suggests: `.github/workflows/ci.yml`
 runs `npm run release:check` on every push to `main`/`master`, on every pull
@@ -299,7 +299,7 @@ from the changeset files in the commit, cascades the bump through every
 dependent and rewrites the internal ranges. The workflow then publishes whatever
 ended up with a version the registry does not have. Nobody edits a version by
 hand and there is no separate release ceremony — which is also why merging a
-changeset is not a step towards a release but *is* the release.
+changeset is not a step towards a release but _is_ the release.
 
 ## The five test layers
 
@@ -330,7 +330,7 @@ test cannot pass from its package and fail from the root.
 `ReferenceError: process is not defined` before a single element was built, and
 **nothing in this repository caught it**: the vitest run and the packed-artifact
 fixture both execute under Node, where `process` is a global that happens to
-exist. The one environment the code is *for* was the one environment nothing
+exist. The one environment the code is _for_ was the one environment nothing
 tested it in.
 
 The rule the sources already state — `@exodra/core`'s `createExoSchema.ts`, under
@@ -347,7 +347,7 @@ did not bundle.
 
 The CDN build is deliberately not scanned: `packages/browser-tsup.mjs`
 substitutes the whole member expression through esbuild's `define`, so nothing
-named `process` survives into `dist/exodra.global.js`. What *is* scanned is the
+named `process` survives into `dist/exodra.global.js`. What _is_ scanned is the
 ESM graph a browser would actually pull — the `exports["."].import` entry and
 every relative module reachable from it. That traversal doubles as the check
 that every relative specifier in the shipped graph resolves inside the tarball,

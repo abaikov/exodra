@@ -252,7 +252,7 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
  *             `exoDomSchemaOf` caches on `schema.domSchema`, so a fresh DECLARATION per repetition
  *             is what makes this a compile and not a cache hit — see the freshness note below.
  *             THE BUILD IS `mountExoInstance`'s body minus its insertion: `schema.acquireNode(schema)`,
- *             `schema.createInstance(schema)`, `createExoNode(...)` — the three lines of
+ *             `schema.createInstance(schema)`, `createExoNodeRecord(...)` — the three lines of
  *             `packages/dom/src/dom/mountExoInstance.ts` that stand in front of its
  *             `parent.appendChild(root)`. It is a REPLICA, and a replica is a claim, so the shipped
  *             `mountExoInstance` is ALSO a row (`exodra·mount`) and the run refuses the replica by
@@ -507,7 +507,7 @@ import {
     ExoDomBackend,
     compileExoDomSchema,
     createExoDomSchema,
-    createExoNode,
+    createExoNodeRecord,
     createExoDelegatedEvents,
     createExoEventPortData,
     exoDomJsonDeclaration,
@@ -1270,7 +1270,7 @@ const EXO_JSON_FORMS: readonly TExoDomJsonDeclaration[] = TOKENS.slice(0, VARIAN
 function exodraBuild(d: TCardData): Element {
     const root = EXO_PLAN.acquireNode(EXO_PLAN);
     const record = EXO_PLAN.createInstance(EXO_PLAN);
-    createExoNode(EXO_PLAN, root, EXO_CARD, null, record, null, d);
+    createExoNodeRecord(EXO_PLAN, root, EXO_CARD, null, record, null, d);
     return root;
 }
 
@@ -1579,7 +1579,7 @@ function exodraDeclaredCompile(token: string): TExoDomSchema {
 function exodraDeclaredBuild(d: TCardData): Element {
     const root = EXO_DECLARED_PLAN.acquireNode(EXO_DECLARED_PLAN);
     const record = EXO_DECLARED_PLAN.createInstance(EXO_DECLARED_PLAN);
-    createExoNode(EXO_DECLARED_PLAN, root, EXO_DECLARED_CARD, null, record, null, d);
+    createExoNodeRecord(EXO_DECLARED_PLAN, root, EXO_DECLARED_CARD, null, record, null, d);
     return root;
 }
 
@@ -1626,7 +1626,7 @@ interface TExodraKept {
 function exodraKeepBuild(d: TCardData): TExodraKept {
     const root = EXO_PLAN.acquireNode(EXO_PLAN);
     const record = EXO_PLAN.createInstance(EXO_PLAN);
-    createExoNode(EXO_PLAN, root, EXO_CARD, null, record, null, d);
+    createExoNodeRecord(EXO_PLAN, root, EXO_CARD, null, record, null, d);
     return { node: root, doors: (record as unknown as TExoDomNode).fillDoors() };
 }
 
@@ -2035,7 +2035,7 @@ function tinyExodraCompile(token: string): TExoDomSchema {
 function tinyExodraBuild(d: TCardData): Element {
     const root = TINY_PLAN.acquireNode(TINY_PLAN);
     const record = TINY_PLAN.createInstance(TINY_PLAN);
-    createExoNode(TINY_PLAN, root, TINY_CARD, null, record, null, d);
+    createExoNodeRecord(TINY_PLAN, root, TINY_CARD, null, record, null, d);
     return root;
 }
 
@@ -2078,7 +2078,7 @@ function tinyDeclaredCompile(token: string): TExoDomSchema {
 function tinyDeclaredBuild(d: TCardData): Element {
     const root = TINY_DECLARED_PLAN.acquireNode(TINY_DECLARED_PLAN);
     const record = TINY_DECLARED_PLAN.createInstance(TINY_DECLARED_PLAN);
-    createExoNode(TINY_DECLARED_PLAN, root, TINY_DECLARED_CARD, null, record, null, d);
+    createExoNodeRecord(TINY_DECLARED_PLAN, root, TINY_DECLARED_CARD, null, record, null, d);
     return root;
 }
 
@@ -2330,7 +2330,7 @@ function deepExodraCompile(token: string): TExoDomSchema {
 function deepExodraBuild(d: TCardData): Element {
     const root = DEEP_PLAN.acquireNode(DEEP_PLAN);
     const record = DEEP_PLAN.createInstance(DEEP_PLAN);
-    createExoNode(DEEP_PLAN, root, DEEP_CARD, null, record, null, d);
+    createExoNodeRecord(DEEP_PLAN, root, DEEP_CARD, null, record, null, d);
     return root;
 }
 
@@ -2395,7 +2395,7 @@ function deepDeclaredCompile(token: string): TExoDomSchema {
 function deepDeclaredBuild(d: TCardData): Element {
     const root = DEEP_DECLARED_PLAN.acquireNode(DEEP_DECLARED_PLAN);
     const record = DEEP_DECLARED_PLAN.createInstance(DEEP_DECLARED_PLAN);
-    createExoNode(DEEP_DECLARED_PLAN, root, DEEP_DECLARED_CARD, null, record, null, d);
+    createExoNodeRecord(DEEP_DECLARED_PLAN, root, DEEP_DECLARED_CARD, null, record, null, d);
     return root;
 }
 
@@ -3020,7 +3020,7 @@ function denseExodraCompile(token: string): TExoDomSchema {
 function denseExodraBuild(d: TCardData): Element {
     const root = DENSE_PLAN.acquireNode(DENSE_PLAN);
     const record = DENSE_PLAN.createInstance(DENSE_PLAN);
-    createExoNode(DENSE_PLAN, root, DENSE_CARD, null, record, null, d);
+    createExoNodeRecord(DENSE_PLAN, root, DENSE_CARD, null, record, null, d);
     return root;
 }
 
@@ -3181,7 +3181,7 @@ function denseDeclaredCompile(token: string): TExoDomSchema {
 function denseDeclaredBuild(d: TCardData): Element {
     const root = DENSE_DECLARED_PLAN.acquireNode(DENSE_DECLARED_PLAN);
     const record = DENSE_DECLARED_PLAN.createInstance(DENSE_DECLARED_PLAN);
-    createExoNode(DENSE_DECLARED_PLAN, root, DENSE_DECLARED_CARD, null, record, null, d);
+    createExoNodeRecord(DENSE_DECLARED_PLAN, root, DENSE_DECLARED_CARD, null, record, null, d);
     return root;
 }
 
@@ -3802,14 +3802,14 @@ function eventDelegatedCompile(token: string): TExoDomSchema {
 function eventDirectBuild(d: TCardData): Element {
     const root = EVENT_DIRECT_PLAN.acquireNode(EVENT_DIRECT_PLAN);
     const record = EVENT_DIRECT_PLAN.createInstance(EVENT_DIRECT_PLAN);
-    createExoNode(EVENT_DIRECT_PLAN, root, EVENT_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_DIRECT_PLAN, root, EVENT_CARD, null, record, null, d);
     return root;
 }
 
 function eventDelegatedBuild(d: TCardData): Element {
     const root = EVENT_DELEGATED_PLAN.acquireNode(EVENT_DELEGATED_PLAN);
     const record = EVENT_DELEGATED_PLAN.createInstance(EVENT_DELEGATED_PLAN);
-    createExoNode(EVENT_DELEGATED_PLAN, root, EVENT_DELEGATED_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_DELEGATED_PLAN, root, EVENT_DELEGATED_CARD, null, record, null, d);
     return root;
 }
 
@@ -4259,7 +4259,7 @@ const EVENT_NOWRITE_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_NOWRITE_CARD, EVE
 function eventNoWriteBuild(d: TCardData): Element {
     const root = EVENT_NOWRITE_PLAN.acquireNode(EVENT_NOWRITE_PLAN);
     const record = EVENT_NOWRITE_PLAN.createInstance(EVENT_NOWRITE_PLAN);
-    createExoNode(EVENT_NOWRITE_PLAN, root, EVENT_NOWRITE_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_NOWRITE_PLAN, root, EVENT_NOWRITE_CARD, null, record, null, d);
     return root;
 }
 
@@ -4315,7 +4315,7 @@ const EVENT_MERGED_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_MERGED_CARD, EVENT
 function eventMergedBuild(d: TCardData): Element {
     const root = EVENT_MERGED_PLAN.acquireNode(EVENT_MERGED_PLAN);
     const record = EVENT_MERGED_PLAN.createInstance(EVENT_MERGED_PLAN);
-    createExoNode(EVENT_MERGED_PLAN, root, EVENT_MERGED_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_MERGED_PLAN, root, EVENT_MERGED_CARD, null, record, null, d);
     return root;
 }
 
@@ -4415,14 +4415,14 @@ const EVENT_PORTS_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_PORTS_CARD, EXO_BAC
 function eventOnCopyBuild(d: TCardData): Element {
     const root = EVENT_ONCOPY_PLAN.acquireNode(EVENT_ONCOPY_PLAN);
     const record = EVENT_ONCOPY_PLAN.createInstance(EVENT_ONCOPY_PLAN);
-    createExoNode(EVENT_ONCOPY_PLAN, root, EVENT_ONCOPY_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_ONCOPY_PLAN, root, EVENT_ONCOPY_CARD, null, record, null, d);
     return root;
 }
 
 function eventPortsBuild(d: TCardData): Element {
     const root = EVENT_PORTS_PLAN.acquireNode(EVENT_PORTS_PLAN);
     const record = EVENT_PORTS_PLAN.createInstance(EVENT_PORTS_PLAN);
-    createExoNode(EVENT_PORTS_PLAN, root, EVENT_PORTS_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_PORTS_PLAN, root, EVENT_PORTS_CARD, null, record, null, d);
     return root;
 }
 
@@ -4598,28 +4598,28 @@ const EVENT_PORTS_TAIL_PLAN: TExoDomSchema = exoDomSchemaOf(EVENT_PORTS_TAIL_CAR
 function exodraTwinBuild(d: TCardData): Element {
     const root = EXO_TWIN_PLAN.acquireNode(EXO_TWIN_PLAN);
     const record = EXO_TWIN_PLAN.createInstance(EXO_TWIN_PLAN);
-    createExoNode(EXO_TWIN_PLAN, root, EXO_TWIN_CARD, null, record, null, d);
+    createExoNodeRecord(EXO_TWIN_PLAN, root, EXO_TWIN_CARD, null, record, null, d);
     return root;
 }
 
 function eventPorts12Build(d: TCardData): Element {
     const root = EVENT_PORTS12_PLAN.acquireNode(EVENT_PORTS12_PLAN);
     const record = EVENT_PORTS12_PLAN.createInstance(EVENT_PORTS12_PLAN);
-    createExoNode(EVENT_PORTS12_PLAN, root, EVENT_PORTS12_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_PORTS12_PLAN, root, EVENT_PORTS12_CARD, null, record, null, d);
     return root;
 }
 
 function eventPorts24Build(d: TCardData): Element {
     const root = EVENT_PORTS24_PLAN.acquireNode(EVENT_PORTS24_PLAN);
     const record = EVENT_PORTS24_PLAN.createInstance(EVENT_PORTS24_PLAN);
-    createExoNode(EVENT_PORTS24_PLAN, root, EVENT_PORTS24_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_PORTS24_PLAN, root, EVENT_PORTS24_CARD, null, record, null, d);
     return root;
 }
 
 function eventPortsTailBuild(d: TCardData): Element {
     const root = EVENT_PORTS_TAIL_PLAN.acquireNode(EVENT_PORTS_TAIL_PLAN);
     const record = EVENT_PORTS_TAIL_PLAN.createInstance(EVENT_PORTS_TAIL_PLAN);
-    createExoNode(EVENT_PORTS_TAIL_PLAN, root, EVENT_PORTS_TAIL_CARD, null, record, null, d);
+    createExoNodeRecord(EVENT_PORTS_TAIL_PLAN, root, EVENT_PORTS_TAIL_CARD, null, record, null, d);
     return root;
 }
 

@@ -8,21 +8,22 @@
     },
     "nodes": [
       {
-        "id": "createExoKeyedList",
-        "label": "createExoKeyedList",
+        "id": "createExoChildrenReconciler",
+        "label": "createExoChildrenReconciler",
         "kind": "tooling",
         "layer": 0,
         "members": [
           {
-            "text": "(kids, keyOf, build, update): TExoKeyedList<TItem>",
-            "full": "(kids, keyOf, build, update): TExoKeyedList<TItem>",
-            "parts": [
+            "text": "(row, options): TExoChildrenReconci…",
+            "full": "(row, options): TExoChildrenReconciler<TItem>",
+            "parts": [],
+            "fullParts": [
               {
-                "text": "(kids, keyOf, build, update): "
+                "text": "(row, options): "
               },
               {
-                "text": "TExoKeyedList",
-                "link": "TExoKeyedList"
+                "text": "TExoChildrenReconciler",
+                "link": "TExoChildrenReconciler"
               },
               {
                 "text": "<TItem>"
@@ -32,21 +33,8 @@
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "A surviving key keeps its row; `update` runs on it only when the object under the key changed.",
-        "width": 357,
+        "width": 267,
         "height": 69,
-        "violations": []
-      },
-      {
-        "id": "EXO_KEYED_LIST_VOCABULARY",
-        "label": "EXO_KEYED_LIST_VOCABULARY",
-        "kind": "app",
-        "layer": 0,
-        "members": [],
-        "memberCount": 0,
-        "stereotype": "const",
-        "width": 184,
-        "height": 46,
         "violations": []
       },
       {
@@ -101,23 +89,110 @@
         ],
         "memberCount": 1,
         "stereotype": "function",
-        "doc": "One pass over an order of keys: the identity list hands the items themselves, the keyed list `keyOf(item)`.",
         "width": 293,
         "height": 69,
         "violations": []
       },
       {
-        "id": "TExoKeyedList",
-        "label": "TExoKeyedList",
+        "id": "runOf",
+        "label": "runOf",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(shownByOwner, owner, port): TExoShownRun",
+            "full": "(shownByOwner, owner, port): TExoShownRun",
+            "parts": [
+              {
+                "text": "(shownByOwner, owner, port): "
+              },
+              {
+                "text": "TExoShownRun",
+                "link": "TExoShownRun"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 299,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "sliceOfExoChildren",
+        "label": "sliceOfExoChildren",
+        "kind": "tooling",
+        "layer": 0,
+        "members": [
+          {
+            "text": "(kids, from, length): TExoPlacedChildren<…",
+            "full": "(kids, from, length): TExoPlacedChildren<TNode>",
+            "parts": [
+              {
+                "text": "(kids, from, length): "
+              },
+              {
+                "text": "TExoPlacedChildren",
+                "link": "TExoPlacedChildren"
+              },
+              {
+                "text": "<…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(kids, from, length): "
+              },
+              {
+                "text": "TExoPlacedChildren",
+                "link": "TExoPlacedChildren"
+              },
+              {
+                "text": "<TNode>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "function",
+        "width": 306,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoBuild",
+        "label": "TExoBuild",
         "kind": "app",
         "layer": 0,
         "members": [
           {
-            "visibility": "+",
-            "text": "reconcile(items: readonly TItem[]): voi…",
-            "full": "reconcile(items: readonly TItem[]): void;",
-            "parts": [],
-            "fullParts": []
+            "text": "(owner: TExoChildrenOwner<object, unkno…",
+            "full": "(owner: TExoChildrenOwner<object, unknown>, item: TItem) => unknown",
+            "parts": [
+              {
+                "text": "(owner: "
+              },
+              {
+                "text": "TExoChildrenOwner",
+                "link": "TExoChildrenOwner"
+              },
+              {
+                "text": "<object, unkno…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "(owner: "
+              },
+              {
+                "text": "TExoChildrenOwner",
+                "link": "TExoChildrenOwner"
+              },
+              {
+                "text": "<object, unknown>, item: TItem) => unknown"
+              }
+            ]
           }
         ],
         "memberCount": 1,
@@ -127,41 +202,83 @@
         "violations": []
       },
       {
-        "id": "TExoKeyedListApi",
-        "label": "TExoKeyedListApi",
+        "id": "TExoChildrenOwner",
+        "label": "TExoChildrenOwner",
         "kind": "app",
         "layer": 0,
         "members": [
           {
             "visibility": "+",
-            "text": "keyedList< TSelf extends { childList(po…",
-            "full": "keyedList< TSelf extends { childList(port: TPort): TExoPlacedChildren<unknown> }, TPort, TItem, TKey >( this: TSelf, port: TPort, keyOf: (item: TItem) => TKey, build: (item: TItem) => TSelf, update: (node: TSelf, item: TItem) => void ): TExoKeyedList<TItem>;",
+            "text": "createExoNode(machine: TMachine): TNode;",
+            "full": "createExoNode(machine: TMachine): TNode;",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoChildrenReconciler",
+        "label": "TExoChildrenReconciler",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "text": "<TPort, TMachine, TNode>( owner: TExoCh…",
+            "full": "<TPort, TMachine, TNode>( owner: TExoChildrenOwner<TMachine, TNode>, port: TPort, items: readonly TItem[] ) => void",
             "parts": [],
             "fullParts": [
               {
-                "text": "keyedList< TSelf extends { childList(port: TPort): "
+                "text": "<TPort, TMachine, TNode>( owner: "
               },
               {
-                "text": "TExoPlacedChildren",
-                "link": "TExoPlacedChildren"
+                "text": "TExoChildrenOwner",
+                "link": "TExoChildrenOwner"
               },
               {
-                "text": "<unknown> }, TPort, TItem, TKey >( this: TSelf, port: TPort, keyOf: (item: TItem) => TKey, build: (item: TItem) => TSelf, update: (node: TSelf, item: TItem) => void ): "
-              },
-              {
-                "text": "TExoKeyedList",
-                "link": "TExoKeyedList"
-              },
-              {
-                "text": "<TItem>;"
+                "text": "<TMachine, TNode>, port: TPort, items: readonly TItem[] ) => void"
               }
             ]
           }
         ],
         "memberCount": 1,
-        "stereotype": "interface",
+        "stereotype": "type",
         "width": 293,
         "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoChildrenReconcilerOptions",
+        "label": "TExoChildrenReconcilerOptions",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "readonly key?: (item: TItem) => unknown;",
+            "full": "readonly key?: (item: TItem) => unknown;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly skipFirst?: number;",
+            "full": "readonly skipFirst?: number;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "readonly skipLast?: number;",
+            "full": "readonly skipLast?: number;",
+            "parts": []
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 293,
+        "height": 99,
         "violations": []
       },
       {
@@ -217,12 +334,116 @@
         "width": 286,
         "height": 144,
         "violations": []
+      },
+      {
+        "id": "TExoPortChildListOwner",
+        "label": "TExoPortChildListOwner",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "portChildList(port: unknown): TExoPlace…",
+            "full": "portChildList(port: unknown): TExoPlacedChildren<unknown>",
+            "parts": [],
+            "fullParts": [
+              {
+                "text": "portChildList(port: unknown): "
+              },
+              {
+                "text": "TExoPlacedChildren",
+                "link": "TExoPlacedChildren"
+              },
+              {
+                "text": "<unknown>"
+              }
+            ]
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 293,
+        "height": 69,
+        "violations": []
+      },
+      {
+        "id": "TExoShownRun",
+        "label": "TExoShownRun",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "keys: unknown[];",
+            "full": "keys: unknown[];",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "items: unknown[] | null;",
+            "full": "items: unknown[] | null;",
+            "parts": []
+          },
+          {
+            "visibility": "+",
+            "text": "slice: TExoPlacedChildren<unknown> | nu…",
+            "full": "slice: TExoPlacedChildren<unknown> | null;",
+            "parts": [
+              {
+                "text": "slice: "
+              },
+              {
+                "text": "TExoPlacedChildren",
+                "link": "TExoPlacedChildren"
+              },
+              {
+                "text": "<unknown> | nu…"
+              }
+            ],
+            "fullParts": [
+              {
+                "text": "slice: "
+              },
+              {
+                "text": "TExoPlacedChildren",
+                "link": "TExoPlacedChildren"
+              },
+              {
+                "text": "<unknown> | null;"
+              }
+            ]
+          }
+        ],
+        "memberCount": 3,
+        "stereotype": "type",
+        "width": 293,
+        "height": 99,
+        "violations": []
+      },
+      {
+        "id": "TExoWirableNode",
+        "label": "TExoWirableNode",
+        "kind": "app",
+        "layer": 0,
+        "members": [
+          {
+            "visibility": "+",
+            "text": "wireExoSelf(params?: unknown): void",
+            "full": "wireExoSelf(params?: unknown): void",
+            "parts": []
+          }
+        ],
+        "memberCount": 1,
+        "stereotype": "type",
+        "width": 261,
+        "height": 69,
+        "violations": []
       }
     ],
     "edges": [
       {
-        "id": "createExoKeyedList→reconcileExoOrder",
-        "from": "createExoKeyedList",
+        "id": "createExoChildrenReconciler→reconcileExoOrder",
+        "from": "createExoChildrenReconciler",
         "to": "reconcileExoOrder",
         "kinds": [
           "value"
@@ -231,7 +452,7 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "packages/list-reconcile/src/createExoKeyedList.ts",
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
             "to": "packages/list-reconcile/src/reconcileExoOrder.ts",
             "specifier": "calls",
             "kind": "value"
@@ -240,47 +461,9 @@
         "violations": []
       },
       {
-        "id": "createExoKeyedList→TExoKeyedList",
-        "from": "createExoKeyedList",
-        "to": "TExoKeyedList",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "packages/list-reconcile/src/createExoKeyedList.ts",
-            "to": "packages/list-reconcile/src/types/TExoKeyedList.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "createExoKeyedList→TExoPlacedChildren",
-        "from": "createExoKeyedList",
-        "to": "TExoPlacedChildren",
-        "kinds": [
-          "type-only"
-        ],
-        "weight": 1,
-        "relation": "dependency",
-        "evidence": [
-          {
-            "from": "packages/list-reconcile/src/createExoKeyedList.ts",
-            "to": "packages/list-reconcile/src/types/TExoPlacedChildren.ts",
-            "specifier": "uses",
-            "kind": "type-only"
-          }
-        ],
-        "violations": []
-      },
-      {
-        "id": "EXO_KEYED_LIST_VOCABULARY→createExoKeyedList",
-        "from": "EXO_KEYED_LIST_VOCABULARY",
-        "to": "createExoKeyedList",
+        "id": "createExoChildrenReconciler→runOf",
+        "from": "createExoChildrenReconciler",
+        "to": "runOf",
         "kinds": [
           "value"
         ],
@@ -288,8 +471,8 @@
         "relation": "association",
         "evidence": [
           {
-            "from": "packages/list-reconcile/src/constants/EXO_KEYED_LIST_VOCABULARY.ts",
-            "to": "packages/list-reconcile/src/createExoKeyedList.ts",
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
             "specifier": "calls",
             "kind": "value"
           }
@@ -297,9 +480,28 @@
         "violations": []
       },
       {
-        "id": "EXO_KEYED_LIST_VOCABULARY→TExoKeyedListApi",
-        "from": "EXO_KEYED_LIST_VOCABULARY",
-        "to": "TExoKeyedListApi",
+        "id": "createExoChildrenReconciler→sliceOfExoChildren",
+        "from": "createExoChildrenReconciler",
+        "to": "sliceOfExoChildren",
+        "kinds": [
+          "value"
+        ],
+        "weight": 1,
+        "relation": "association",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "specifier": "calls",
+            "kind": "value"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoBuild",
+        "from": "createExoChildrenReconciler",
+        "to": "TExoBuild",
         "kinds": [
           "type-only"
         ],
@@ -307,8 +509,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/list-reconcile/src/constants/EXO_KEYED_LIST_VOCABULARY.ts",
-            "to": "packages/list-reconcile/src/types/TExoKeyedListApi.ts",
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -316,9 +518,9 @@
         "violations": []
       },
       {
-        "id": "EXO_KEYED_LIST_VOCABULARY→TExoPlacedChildren",
-        "from": "EXO_KEYED_LIST_VOCABULARY",
-        "to": "TExoPlacedChildren",
+        "id": "createExoChildrenReconciler→TExoChildrenOwner",
+        "from": "createExoChildrenReconciler",
+        "to": "TExoChildrenOwner",
         "kinds": [
           "type-only"
         ],
@@ -326,8 +528,103 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/list-reconcile/src/constants/EXO_KEYED_LIST_VOCABULARY.ts",
-            "to": "packages/list-reconcile/src/types/TExoPlacedChildren.ts",
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/types/TExoChildrenOwner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoChildrenReconciler",
+        "from": "createExoChildrenReconciler",
+        "to": "TExoChildrenReconciler",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/types/TExoChildrenReconciler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoChildrenReconcilerOptions",
+        "from": "createExoChildrenReconciler",
+        "to": "TExoChildrenReconcilerOptions",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/types/TExoChildrenReconcilerOptions.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoPortChildListOwner",
+        "from": "createExoChildrenReconciler",
+        "to": "TExoPortChildListOwner",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoShownRun",
+        "from": "createExoChildrenReconciler",
+        "to": "TExoShownRun",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoWirableNode",
+        "from": "createExoChildrenReconciler",
+        "to": "TExoWirableNode",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -411,9 +708,9 @@
         "violations": []
       },
       {
-        "id": "TExoKeyedListApi→TExoKeyedList",
-        "from": "TExoKeyedListApi",
-        "to": "TExoKeyedList",
+        "id": "runOf→TExoShownRun",
+        "from": "runOf",
+        "to": "TExoShownRun",
         "kinds": [
           "type-only"
         ],
@@ -421,8 +718,8 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/list-reconcile/src/types/TExoKeyedListApi.ts",
-            "to": "packages/list-reconcile/src/types/TExoKeyedList.ts",
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
             "specifier": "uses",
             "kind": "type-only"
           }
@@ -430,8 +727,8 @@
         "violations": []
       },
       {
-        "id": "TExoKeyedListApi→TExoPlacedChildren",
-        "from": "TExoKeyedListApi",
+        "id": "sliceOfExoChildren→TExoPlacedChildren",
+        "from": "sliceOfExoChildren",
         "to": "TExoPlacedChildren",
         "kinds": [
           "type-only"
@@ -440,7 +737,83 @@
         "relation": "dependency",
         "evidence": [
           {
-            "from": "packages/list-reconcile/src/types/TExoKeyedListApi.ts",
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/types/TExoPlacedChildren.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoBuild→TExoChildrenOwner",
+        "from": "TExoBuild",
+        "to": "TExoChildrenOwner",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/types/TExoChildrenOwner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoChildrenReconciler→TExoChildrenOwner",
+        "from": "TExoChildrenReconciler",
+        "to": "TExoChildrenOwner",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/types/TExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/types/TExoChildrenOwner.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoPortChildListOwner→TExoPlacedChildren",
+        "from": "TExoPortChildListOwner",
+        "to": "TExoPlacedChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
+            "to": "packages/list-reconcile/src/types/TExoPlacedChildren.ts",
+            "specifier": "uses",
+            "kind": "type-only"
+          }
+        ],
+        "violations": []
+      },
+      {
+        "id": "TExoShownRun→TExoPlacedChildren",
+        "from": "TExoShownRun",
+        "to": "TExoPlacedChildren",
+        "kinds": [
+          "type-only"
+        ],
+        "weight": 1,
+        "relation": "dependency",
+        "evidence": [
+          {
+            "from": "packages/list-reconcile/src/createExoChildrenReconciler.ts",
             "to": "packages/list-reconcile/src/types/TExoPlacedChildren.ts",
             "specifier": "uses",
             "kind": "type-only"
@@ -452,206 +825,308 @@
     "rules": {}
   },
   "layout": {
-    "width": 1870,
-    "height": 348.8,
+    "width": 1538,
+    "height": 870.5,
     "nodes": [
       {
-        "id": "createExoKeyedList",
-        "x": 272,
-        "y": 128.8,
-        "width": 357,
+        "id": "createExoChildrenReconciler",
+        "x": 24,
+        "y": 342.5,
+        "width": 267,
         "height": 69
       },
       {
-        "id": "EXO_KEYED_LIST_VOCABULARY",
-        "x": 24,
-        "y": 33,
-        "width": 184,
-        "height": 46
-      },
-      {
         "id": "getExoSequence",
-        "x": 1636.5,
-        "y": 255.8,
+        "x": 1304.5,
+        "y": 777.5,
         "width": 133,
         "height": 69
       },
       {
         "id": "reconcileExoMiddle",
-        "x": 1050,
-        "y": 245.8,
+        "x": 718,
+        "y": 777.5,
         "width": 446,
         "height": 69
       },
       {
         "id": "reconcileExoOrder",
-        "x": 693,
-        "y": 216.5,
+        "x": 358,
+        "y": 748.3,
         "width": 293,
         "height": 69
       },
       {
-        "id": "TExoKeyedList",
-        "x": 693,
-        "y": 119.5,
+        "id": "runOf",
+        "x": 355,
+        "y": 24,
+        "width": 299,
+        "height": 69
+      },
+      {
+        "id": "sliceOfExoChildren",
+        "x": 788,
+        "y": 641.8,
+        "width": 306,
+        "height": 69
+      },
+      {
+        "id": "TExoBuild",
+        "x": 358,
+        "y": 544.8,
         "width": 293,
         "height": 69
       },
       {
-        "id": "TExoKeyedListApi",
-        "x": 304,
-        "y": 31,
+        "id": "TExoChildrenOwner",
+        "x": 794.5,
+        "y": 505.5,
         "width": 293,
         "height": 69
+      },
+      {
+        "id": "TExoChildrenReconciler",
+        "x": 358,
+        "y": 223.8,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoChildrenReconcilerOptions",
+        "x": 358,
+        "y": 320.8,
+        "width": 293,
+        "height": 99
       },
       {
         "id": "TExoPlacedChildren",
-        "x": 1560,
-        "y": 24,
+        "x": 1228,
+        "y": 604.3,
         "width": 286,
         "height": 144
+      },
+      {
+        "id": "TExoPortChildListOwner",
+        "x": 794.5,
+        "y": 164,
+        "width": 293,
+        "height": 69
+      },
+      {
+        "id": "TExoShownRun",
+        "x": 794.5,
+        "y": 37,
+        "width": 293,
+        "height": 99
+      },
+      {
+        "id": "TExoWirableNode",
+        "x": 374,
+        "y": 447.8,
+        "width": 261,
+        "height": 69
       }
     ],
     "edges": [
       {
-        "id": "createExoKeyedList→reconcileExoOrder",
+        "id": "createExoChildrenReconciler→reconcileExoOrder",
         "points": [
           {
-            "x": 533.3,
-            "y": 197.8
+            "x": 171.6,
+            "y": 411.5
           },
           {
-            "x": 661,
-            "y": 251
+            "x": 323,
+            "y": 782.8
           },
           {
-            "x": 693,
-            "y": 251
+            "x": 358,
+            "y": 782.8
           }
         ]
       },
       {
-        "id": "createExoKeyedList→TExoKeyedList",
+        "id": "createExoChildrenReconciler→runOf",
         "points": [
           {
-            "x": 629,
-            "y": 155.4
+            "x": 175.4,
+            "y": 342.5
           },
           {
-            "x": 661,
-            "y": 154
+            "x": 323,
+            "y": 58.5
           },
           {
-            "x": 693,
-            "y": 154
+            "x": 355,
+            "y": 58.5
           }
         ]
       },
       {
-        "id": "createExoKeyedList→TExoPlacedChildren",
+        "id": "createExoChildrenReconciler→sliceOfExoChildren",
         "points": [
           {
-            "x": 557.7,
-            "y": 128.8
+            "x": 176.6,
+            "y": 411.5
           },
           {
-            "x": 661,
-            "y": 95.5
+            "x": 323,
+            "y": 676.3
           },
           {
-            "x": 839.5,
-            "y": 95.5
+            "x": 504.5,
+            "y": 676.3
           },
           {
-            "x": 1018,
-            "y": 95.5
+            "x": 686,
+            "y": 676.3
           },
           {
-            "x": 1273,
-            "y": 95.5
-          },
-          {
-            "x": 1528,
-            "y": 95.5
-          },
-          {
-            "x": 1560,
-            "y": 95.6
+            "x": 788,
+            "y": 676.3
           }
         ]
       },
       {
-        "id": "EXO_KEYED_LIST_VOCABULARY→createExoKeyedList",
+        "id": "createExoChildrenReconciler→TExoBuild",
         "points": [
           {
-            "x": 142.6,
-            "y": 79
+            "x": 185.7,
+            "y": 411.5
           },
           {
-            "x": 240,
-            "y": 163.3
+            "x": 323,
+            "y": 579.3
           },
           {
-            "x": 272,
-            "y": 163.3
+            "x": 358,
+            "y": 579.3
           }
         ]
       },
       {
-        "id": "EXO_KEYED_LIST_VOCABULARY→TExoKeyedListApi",
+        "id": "createExoChildrenReconciler→TExoChildrenOwner",
         "points": [
           {
-            "x": 208,
-            "y": 63
+            "x": 178.6,
+            "y": 411.5
           },
           {
-            "x": 240,
-            "y": 65.5
+            "x": 323,
+            "y": 647
           },
           {
-            "x": 304,
-            "y": 65.5
+            "x": 504.5,
+            "y": 647
+          },
+          {
+            "x": 686,
+            "y": 647
+          },
+          {
+            "x": 858.8,
+            "y": 574.5
           }
         ]
       },
       {
-        "id": "EXO_KEYED_LIST_VOCABULARY→TExoPlacedChildren",
+        "id": "createExoChildrenReconciler→TExoChildrenReconciler",
         "points": [
           {
-            "x": 174.2,
-            "y": 33
+            "x": 205.6,
+            "y": 342.5
           },
           {
-            "x": 240,
-            "y": 7
+            "x": 323,
+            "y": 258.3
           },
           {
-            "x": 450.5,
-            "y": 7
+            "x": 358,
+            "y": 258.3
+          }
+        ]
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoChildrenReconcilerOptions",
+        "points": [
+          {
+            "x": 291,
+            "y": 371.6
           },
           {
-            "x": 661,
-            "y": 7
+            "x": 323,
+            "y": 370.3
           },
           {
-            "x": 839.5,
-            "y": 7
+            "x": 358,
+            "y": 370.3
+          }
+        ]
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoPortChildListOwner",
+        "points": [
+          {
+            "x": 189.5,
+            "y": 342.5
           },
           {
-            "x": 1018,
-            "y": 7
+            "x": 323,
+            "y": 198.5
           },
           {
-            "x": 1273,
-            "y": 7
+            "x": 504.5,
+            "y": 198.5
           },
           {
-            "x": 1528,
-            "y": 7
+            "x": 686,
+            "y": 198.5
           },
           {
-            "x": 1561.4,
-            "y": 24
+            "x": 794.5,
+            "y": 198.5
+          }
+        ]
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoShownRun",
+        "points": [
+          {
+            "x": 181,
+            "y": 342.5
+          },
+          {
+            "x": 323,
+            "y": 133.8
+          },
+          {
+            "x": 504.5,
+            "y": 133.8
+          },
+          {
+            "x": 686,
+            "y": 133.8
+          },
+          {
+            "x": 794.5,
+            "y": 113.6
+          }
+        ]
+      },
+      {
+        "id": "createExoChildrenReconciler→TExoWirableNode",
+        "points": [
+          {
+            "x": 211.7,
+            "y": 411.5
+          },
+          {
+            "x": 323,
+            "y": 482.3
+          },
+          {
+            "x": 374,
+            "y": 482.3
           }
         ]
       },
@@ -659,16 +1134,16 @@
         "id": "reconcileExoMiddle→getExoSequence",
         "points": [
           {
-            "x": 1496,
-            "y": 289
+            "x": 1164,
+            "y": 812
           },
           {
-            "x": 1528,
-            "y": 290.3
+            "x": 1196,
+            "y": 812
           },
           {
-            "x": 1636.5,
-            "y": 290.3
+            "x": 1304.5,
+            "y": 812
           }
         ]
       },
@@ -676,16 +1151,16 @@
         "id": "reconcileExoMiddle→TExoPlacedChildren",
         "points": [
           {
-            "x": 1425.3,
-            "y": 245.8
+            "x": 1164,
+            "y": 778.8
           },
           {
-            "x": 1528,
-            "y": 222.5
+            "x": 1196,
+            "y": 774
           },
           {
-            "x": 1603.4,
-            "y": 168
+            "x": 1242.1,
+            "y": 748.3
           }
         ]
       },
@@ -693,16 +1168,16 @@
         "id": "reconcileExoOrder→reconcileExoMiddle",
         "points": [
           {
-            "x": 986,
-            "y": 275
+            "x": 651,
+            "y": 806.4
           },
           {
-            "x": 1018,
-            "y": 280.3
+            "x": 686,
+            "y": 812
           },
           {
-            "x": 1050,
-            "y": 280.3
+            "x": 718,
+            "y": 812
           }
         ]
       },
@@ -710,74 +1185,126 @@
         "id": "reconcileExoOrder→TExoPlacedChildren",
         "points": [
           {
-            "x": 930.4,
-            "y": 216.5
+            "x": 635,
+            "y": 748.3
           },
           {
-            "x": 1018,
-            "y": 183.3
+            "x": 686,
+            "y": 734.8
           },
           {
-            "x": 1273,
-            "y": 183.3
+            "x": 941,
+            "y": 734.8
           },
           {
-            "x": 1528,
-            "y": 183.3
+            "x": 1196,
+            "y": 734.8
           },
           {
-            "x": 1560,
-            "y": 167.3
+            "x": 1228,
+            "y": 724.1
           }
         ]
       },
       {
-        "id": "TExoKeyedListApi→TExoKeyedList",
+        "id": "runOf→TExoShownRun",
         "points": [
           {
-            "x": 597,
-            "y": 72.5
+            "x": 654,
+            "y": 58.5
           },
           {
-            "x": 661,
-            "y": 75.5
+            "x": 686,
+            "y": 58.5
           },
           {
-            "x": 761.1,
-            "y": 119.5
+            "x": 794.5,
+            "y": 70.4
           }
         ]
       },
       {
-        "id": "TExoKeyedListApi→TExoPlacedChildren",
+        "id": "sliceOfExoChildren→TExoPlacedChildren",
         "points": [
           {
-            "x": 597,
-            "y": 52.1
+            "x": 1094,
+            "y": 676.3
           },
           {
-            "x": 661,
-            "y": 46.3
+            "x": 1196,
+            "y": 676.3
           },
           {
-            "x": 839.5,
-            "y": 46.3
+            "x": 1228,
+            "y": 676.3
+          }
+        ]
+      },
+      {
+        "id": "TExoBuild→TExoChildrenOwner",
+        "points": [
+          {
+            "x": 651,
+            "y": 579.3
           },
           {
-            "x": 1018,
-            "y": 46.3
+            "x": 686,
+            "y": 579.3
           },
           {
-            "x": 1273,
-            "y": 46.3
+            "x": 794.5,
+            "y": 562.5
+          }
+        ]
+      },
+      {
+        "id": "TExoChildrenReconciler→TExoChildrenOwner",
+        "points": [
+          {
+            "x": 651,
+            "y": 258.3
           },
           {
-            "x": 1528,
-            "y": 46.3
+            "x": 686,
+            "y": 258.3
           },
           {
-            "x": 1560,
-            "y": 55.3
+            "x": 909.8,
+            "y": 505.5
+          }
+        ]
+      },
+      {
+        "id": "TExoPortChildListOwner→TExoPlacedChildren",
+        "points": [
+          {
+            "x": 1087.5,
+            "y": 198.5
+          },
+          {
+            "x": 1196,
+            "y": 198.5
+          },
+          {
+            "x": 1344.6,
+            "y": 604.3
+          }
+        ]
+      },
+      {
+        "id": "TExoShownRun→TExoPlacedChildren",
+        "points": [
+          {
+            "x": 1087.5,
+            "y": 86.5
+          },
+          {
+            "x": 1196,
+            "y": 86.5
+          },
+          {
+            "x": 1349.6,
+            "y": 604.3
           }
         ]
       }

@@ -24,12 +24,12 @@ margin badly:
 
 <!-- gate: stale col=* reason="the arithmetic of the 2026-08 debug-build correction, kept as a record of it; neither column is a current measurement and the production-build column has itself been superseded by the axis recordings quoted below" -->
 
-| Axis | previously published (React) | measured on production builds | overstated by |
-|---|---|---|---|
-| list-update | 51.7 | 9.10 | 5.7× |
-| reconcile | 18.2 | 4.97 | 3.6× |
-| reactive-update | 9.90 | 2.00 | 5.0× |
-| app-update | 21.2 | 9.52 | 2.2× |
+| Axis            | previously published (React) | measured on production builds | overstated by |
+| --------------- | ---------------------------- | ----------------------------- | ------------- |
+| list-update     | 51.7                         | 9.10                          | 5.7×          |
+| reconcile       | 18.2                         | 4.97                          | 3.6×          |
+| reactive-update | 9.90                         | 2.00                          | 5.0×          |
+| app-update      | 21.2                         | 9.52                          | 2.2×          |
 
 **Both columns of that table are history, not results.** The middle column was
 the fix at the time; it has since been superseded in turn by the recordings this
@@ -63,17 +63,17 @@ production settings for each are stated explicitly in the suite's Vite config
 
 ## Who is in the field
 
-| Participant | What it is |
-|---|---|
-| **Exodra** | The shipped renderer — `@exodra/core` + `@exodra/dom`, measured out of `dist`. |
-| Solid, Svelte, React, voby | The comparison this suite has always run. |
-| Marko, Lit | Added since the last revision; both compile or template rather than diff a vDOM. |
-| uhtml, sinuous | Small template/reactive libraries, added with Marko and Lit. |
-| Mikado | Hand-written imperative code driving Mikado's own list and node APIs. |
-| Mikado (reactive idiom) | The same app written the way Mikado's own README says to write one — its Proxy properties, its observable array, its click routing. Runs on the two `exodra-*` axes only. |
-| *Exodra (oimdb store)* | **Not a second renderer.** The identical schemas, components and binding topology as **Exodra**, with the app's state held in an [oimdb](https://github.com/abaikov/oimdb) database and read back through selectors, instead of the plain get/set cell the **Exodra** row uses. Runs on the two `exodra-*` axes only. |
-| *stage0* | **Not a competitor — the ceiling.** ~570 B of clone-and-patch with no renderer around it: no components, no schemas, no wiring functions, no ports, no subscriptions, no disposal, no registry, and nothing to flush. Read every row above it as "stage0 plus what that library does for you" — and see [What stage0 does not do](#what-stage0-does-not-do) for what that phrase is actually naming. |
-| *floor* | Not a renderer. It is the harness's own cost, measured as a row — see [The floor](#the-floor). |
+| Participant                | What it is                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Exodra**                 | The shipped renderer — `@exodra/core` + `@exodra/dom`, measured out of `dist`.                                                                                                                                                                                                                                                                                                                       |
+| Solid, Svelte, React, voby | The comparison this suite has always run.                                                                                                                                                                                                                                                                                                                                                            |
+| Marko, Lit                 | Added since the last revision; both compile or template rather than diff a vDOM.                                                                                                                                                                                                                                                                                                                     |
+| uhtml, sinuous             | Small template/reactive libraries, added with Marko and Lit.                                                                                                                                                                                                                                                                                                                                         |
+| Mikado                     | Hand-written imperative code driving Mikado's own list and node APIs.                                                                                                                                                                                                                                                                                                                                |
+| Mikado (reactive idiom)    | The same app written the way Mikado's own README says to write one — its Proxy properties, its observable array, its click routing. Runs on the two `exodra-*` axes only.                                                                                                                                                                                                                            |
+| _Exodra (oimdb store)_     | **Not a second renderer.** The identical schemas, components and binding topology as **Exodra**, with the app's state held in an [oimdb](https://github.com/abaikov/oimdb) database and read back through selectors, instead of the plain get/set cell the **Exodra** row uses. Runs on the two `exodra-*` axes only.                                                                                |
+| _stage0_                   | **Not a competitor — the ceiling.** ~570 B of clone-and-patch with no renderer around it: no components, no schemas, no wiring functions, no ports, no subscriptions, no disposal, no registry, and nothing to flush. Read every row above it as "stage0 plus what that library does for you" — and see [What stage0 does not do](#what-stage0-does-not-do) for what that phrase is actually naming. |
+| _floor_                    | Not a renderer. It is the harness's own cost, measured as a row — see [The floor](#the-floor).                                                                                                                                                                                                                                                                                                       |
 
 **Two of the rows that finish ahead of Exodra on this page are not frameworks,
 and the tables do not lead if you count them.** `stage0` is the ceiling of the
@@ -97,16 +97,16 @@ and the two tables sourced from them below are printed from those files.
 Two rows in the `rec1` recordings below **no longer exist in the suite**, so those
 tables can be read but not reproduced:
 
-- **`exodraOimdb`** has been removed. It was a bindable Exodra app and it had gone
-  stale against the scene (its tag entity predates the per-user character counts,
-  so the shared `TAG` wire read `undefined.getValue()`). Nothing measures what a
-  real store costs now.
-- **the row printed as "Exodra"** in these two tables is the **bindable** spelling —
-  a cell per card per varying thing, `c.bindList` for each children port, a click
-  writing a cell. That row has been taken off `initial-render`,
-  `exodra-initial-render` and `exodra-app-update`. Exodra is now presented as the
-  two spellings it is meant to be read as: the **wire** row (`exodraDirect`) and the
-  **state machine** row (`exodraMachine`).
+-   **`exodraOimdb`** has been removed. It was a bindable Exodra app and it had gone
+    stale against the scene (its tag entity predates the per-user character counts,
+    so the shared `TAG` wire read `undefined.getValue()`). Nothing measures what a
+    real store costs now.
+-   **the row printed as "Exodra"** in these two tables is the **bindable** spelling —
+    a cell per card per varying thing, `c.bindList` for each children port, a click
+    writing a cell. That row has been taken off `initial-render`,
+    `exodra-initial-render` and `exodra-app-update`. Exodra is now presented as the
+    two spellings it is meant to be read as: the **wire** row (`exodraDirect`) and the
+    **state machine** row (`exodraMachine`).
 
 Every ratio below that has `exodraOimdb` or the bindable "Exodra" on one side is a
 historical figure. It is left standing rather than recomputed, because a recording
@@ -131,38 +131,38 @@ it, so here is the list. Every item is read out of that participant's own source
 (`packages/benchmarks/src/benchmarks/apps/stage0/stage0.tsx`), and every one of them is
 work the rows above it perform on the same axis.
 
-- **No components.** There is no component boundary anywhere in the app: the
-  mount is a `for` loop that clones a template per card and appends it. Nothing
-  is composed, nothing takes props, and nothing nests.
-- **No schema and no ports.** The dynamic positions are found once, by walking
-  the template for `#name` markers, and come back as a plain object of node
-  references. After that nothing describes the tree — there is no port to look
-  up, and no indirection between "the value" and "the node it lands on".
-- **No wiring functions.** Describing and filling are the same code. The mount
-  loop writes `refs.title.nodeValue` and `node.setAttribute('data-i', …)`
-  directly, in line.
-- **No subscriptions.** Nothing observes anything, so nothing has to notice a
-  change. The update path is written out by hand, per element, and only works
-  because the author knows exactly which four things in this app can change; a
-  fifth is a hand edit, not a binding.
-- **No disposal and no registry.** Teardown is `cards.length = 0`. The file's
-  own comment is the whole of it: *"Nothing to dispose. Stage0 holds no
-  subscriptions and no registry; the handlers are properties of the nodes they
-  are on"* — so they die with the container the caller removes.
-- **Nothing to flush.** Each handler writes to the DOM synchronously inside the
-  click, so an update round has committed by the time the last handler returns.
-  Where React, Svelte, voby and Marko need `flushSync` / `tick` / `run` to make
-  that true, stage0 needs the concept explained away: it has no queue to drain
-  because it has no scheduler to queue into.
-- **No conditional.** The library has none, so the details block is inserted
-  before `.tags` and removed again by hand, in the handler.
+-   **No components.** There is no component boundary anywhere in the app: the
+    mount is a `for` loop that clones a template per card and appends it. Nothing
+    is composed, nothing takes props, and nothing nests.
+-   **No schema and no ports.** The dynamic positions are found once, by walking
+    the template for `#name` markers, and come back as a plain object of node
+    references. After that nothing describes the tree — there is no port to look
+    up, and no indirection between "the value" and "the node it lands on".
+-   **No wiring functions.** Describing and filling are the same code. The mount
+    loop writes `refs.title.nodeValue` and `node.setAttribute('data-i', …)`
+    directly, in line.
+-   **No subscriptions.** Nothing observes anything, so nothing has to notice a
+    change. The update path is written out by hand, per element, and only works
+    because the author knows exactly which four things in this app can change; a
+    fifth is a hand edit, not a binding.
+-   **No disposal and no registry.** Teardown is `cards.length = 0`. The file's
+    own comment is the whole of it: _"Nothing to dispose. Stage0 holds no
+    subscriptions and no registry; the handlers are properties of the nodes they
+    are on"_ — so they die with the container the caller removes.
+-   **Nothing to flush.** Each handler writes to the DOM synchronously inside the
+    click, so an update round has committed by the time the last handler returns.
+    Where React, Svelte, voby and Marko need `flushSync` / `tick` / `run` to make
+    that true, stage0 needs the concept explained away: it has no queue to drain
+    because it has no scheduler to queue into.
+-   **No conditional.** The library has none, so the details block is inserted
+    before `.tags` and removed again by hand, in the handler.
 
 Two things it **does** have are used, and are named so the ceiling is not
 cheaper than it should be: `stage0/reconcile`, the library's own list renderer,
 drives the tag list, and one real `.onclick` per handler is attached exactly as
 every other participant attaches a listener. Its delegated-events helper
 (`stage0/syntheticEvents`), which stage0's own benchmark entry uses, is
-deliberately *not* used — delegation is a genuine architectural advantage, and
+deliberately _not_ used — delegation is a genuine architectural advantage, and
 charging it to the ceiling silently would make the ceiling cheaper than the
 thing it bounds.
 
@@ -183,22 +183,22 @@ lists per card), ms/mount, lower is better:
 
 <!-- gate: axis=initial-render label=tmpl-full-2026-11-01 map="*stage0 (hand-rolled ceiling)*:stage0;Mikado (imperative):mikado;React code on Exodra (compiled):reactCompatJsx;React code on Exodra (no compiler):reactCompat" -->
 
-| Framework | ms/mount |
-|---|---|
-| **Exodra** | **0.48** |
-| *stage0 (hand-rolled ceiling)* | *0.52* |
-| Mikado (imperative) | 0.74 |
-| Marko | 0.78 |
-| Solid | 0.82 |
-| React code on Exodra (compiled) | 0.90 |
-| React | 1.06 |
-| Svelte | 1.10 |
-| React code on Exodra (no compiler) | 1.34 |
-| Lit | 1.52 |
-| sinuous | 1.52 |
-| uhtml | 1.60 |
-| Preact | 1.86 |
-| voby | 2.08 |
+| Framework                          | ms/mount |
+| ---------------------------------- | -------- |
+| **Exodra**                         | **0.48** |
+| _stage0 (hand-rolled ceiling)_     | _0.52_   |
+| Mikado (imperative)                | 0.74     |
+| Marko                              | 0.78     |
+| Solid                              | 0.82     |
+| React code on Exodra (compiled)    | 0.90     |
+| React                              | 1.06     |
+| Svelte                             | 1.10     |
+| React code on Exodra (no compiler) | 1.34     |
+| Lit                                | 1.52     |
+| sinuous                            | 1.52     |
+| uhtml                              | 1.60     |
+| Preact                             | 1.86     |
+| voby                               | 2.08     |
 
 Printed from `.gate/initial-render.tmpl-full-2026-11-01.json`, medians, all 17
 participants sampled; the table leaves out the React compiler, React-compat with
@@ -219,15 +219,15 @@ The same mount, run by the `exodra-initial-render` axis over its own field:
 
 <!-- gate: axis=exodra-initial-render label=rec1 map="Mikado (imperative):mikado;Mikado (reactive idiom):mikadoReactive;Exodra (oimdb store):exodraOimdb" -->
 
-| Framework | ms/mount |
-|---|---|
-| Mikado (imperative) | **0.285** |
-| **Exodra** | 0.320 |
-| Mikado (reactive idiom) | 0.400 |
-| Solid | 0.405 |
-| Marko | 0.415 |
-| *Exodra (oimdb store)* | *0.815* |
-| Lit | 1.010 |
+| Framework               | ms/mount  |
+| ----------------------- | --------- |
+| Mikado (imperative)     | **0.285** |
+| **Exodra**              | 0.320     |
+| Mikado (reactive idiom) | 0.400     |
+| Solid                   | 0.405     |
+| Marko                   | 0.415     |
+| _Exodra (oimdb store)_  | _0.815_   |
+| Lit                     | 1.010     |
 
 Printed from `.gate/exodra-initial-render.rec1.json`, medians, in the order that
 file records them. This axis runs no `stage0` row.
@@ -249,7 +249,7 @@ survives its own measurement.
 **`exodraOimdb` is the row to read with the most care, and it is published rather
 than dropped.** It is not another renderer: identical schemas, identical
 components, identical binding topology, with the app's state in an oimdb database
-instead of a plain get/set cell. On *this* axis the store is built **inside** the
+instead of a plain get/set cell. On _this_ axis the store is built **inside** the
 timed region — a store shared between mounts would carry the previous mount's
 writes into the next one — so 0.815 against 0.320 (2.55×) is "mount this app out
 of a store, setup included", not the store's steady-state cost. The clean
@@ -277,21 +277,21 @@ delivery — identical work for every participant — is not in the number:
 
 <!-- gate: axis=app-update label=tmpl-full-2026-11-01 map="*stage0 (hand-rolled ceiling)*:stage0;Mikado (imperative):mikado;React code on Exodra (compiled):reactCompatJsx;React code on Exodra (no compiler):reactCompat" -->
 
-| Framework | ms/40 rounds |
-|---|---|
-| *stage0 (hand-rolled ceiling)* | *4.6* |
-| **Exodra** | **4.6** |
-| Mikado (imperative) | 8.9 |
-| Lit | 15.6 |
-| sinuous | 17.0 |
-| React code on Exodra (compiled) | 17.8 |
-| Svelte | 18.7 |
-| Solid | 19.0 |
-| React | 21.8 |
-| voby | 23.1 |
-| React code on Exodra (no compiler) | 26.2 |
-| Preact | 32.8 |
-| uhtml | 53.0 |
+| Framework                          | ms/40 rounds |
+| ---------------------------------- | ------------ |
+| _stage0 (hand-rolled ceiling)_     | _4.6_        |
+| **Exodra**                         | **4.6**      |
+| Mikado (imperative)                | 8.9          |
+| Lit                                | 15.6         |
+| sinuous                            | 17.0         |
+| React code on Exodra (compiled)    | 17.8         |
+| Svelte                             | 18.7         |
+| Solid                              | 19.0         |
+| React                              | 21.8         |
+| voby                               | 23.1         |
+| React code on Exodra (no compiler) | 26.2         |
+| Preact                             | 32.8         |
+| uhtml                              | 53.0         |
 
 Printed from `.gate/app-update.tmpl-full-2026-11-01.json`, medians, all 17
 participants sampled; the file also carries the harness's `driver` row, which
@@ -309,16 +309,16 @@ The same update, run by the `exodra-app-update` axis over its own field:
 
 <!-- gate: axis=exodra-app-update label=rec1 map="floor (harness cost, no renderer):floor;Mikado (imperative):mikado;Mikado (reactive idiom):mikadoReactive;Exodra (oimdb store):exodraOimdb" -->
 
-| Framework | ms/5 rounds |
-|---|---|
-| *floor (harness cost, no renderer)* | *2.925* |
-| Mikado (imperative) | **3.675** |
-| **Exodra** | 3.855 |
-| Marko | 3.980 |
-| Mikado (reactive idiom) | 4.100 |
-| Lit | 4.380 |
-| Solid | 4.405 |
-| *Exodra (oimdb store)* | *7.540* |
+| Framework                           | ms/5 rounds |
+| ----------------------------------- | ----------- |
+| _floor (harness cost, no renderer)_ | _2.925_     |
+| Mikado (imperative)                 | **3.675**   |
+| **Exodra**                          | 3.855       |
+| Marko                               | 3.980       |
+| Mikado (reactive idiom)             | 4.100       |
+| Lit                                 | 4.380       |
+| Solid                               | 4.405       |
+| _Exodra (oimdb store)_              | _7.540_     |
 
 Printed from `.gate/exodra-app-update.rec1.json`, medians, in the order that file
 records them. This axis runs no `stage0` row either.
@@ -345,7 +345,7 @@ survive the recording.
 3.675 — and stays behind Exodra, as it did on the mount.
 
 **`exodraOimdb` is 7.540 against 3.855 — 1.96×, or 3.685 ms per five rounds.** On
-this axis the store is built during setup, *outside* the timed region, so unlike
+this axis the store is built during setup, _outside_ the timed region, so unlike
 the mount row this is the update path alone: 160 writes into oimdb collections,
 the derived index they maintain, and the selector deliveries that follow. That
 difference is what a real data layer costs on this app, and it is published for
@@ -402,31 +402,31 @@ user can select today ([Known issues](./limits-and-plans.md#known-issues)).
 
 <!-- gate: axis=list-update label=rec1 map="Exodra (op source):exodraOps;Exodra (value source):exodra;Mikado (op source):mikado;Mikado (keyed diff):mikadoKeyed;stage0 (hand-rolled ceiling):stage0" -->
 
-| Framework | contract | ms/80 ops |
-|---|---|---|
-| **Exodra (op source)** | told *what* changed | **0.075** |
-| Mikado (op source) | told *what* changed | 0.09 |
-| *stage0 (hand-rolled ceiling)* | diffs | *0.6* |
-| Mikado (keyed diff) | diffs | 0.69 |
-| **Exodra (value source)** | told *that* something changed; diffs | **0.815** |
-| sinuous | diffs | 0.86 |
-| Solid | diffs | 1.23 |
-| Lit | diffs | 1.555 |
-| voby | diffs | 1.745 |
-| Svelte | diffs | 2.045 |
-| Marko | diffs | 2.665 |
-| uhtml | diffs | 2.87 |
-| React | diffs | 8.035 |
+| Framework                      | contract                             | ms/80 ops |
+| ------------------------------ | ------------------------------------ | --------- |
+| **Exodra (op source)**         | told _what_ changed                  | **0.075** |
+| Mikado (op source)             | told _what_ changed                  | 0.09      |
+| _stage0 (hand-rolled ceiling)_ | diffs                                | _0.6_     |
+| Mikado (keyed diff)            | diffs                                | 0.69      |
+| **Exodra (value source)**      | told _that_ something changed; diffs | **0.815** |
+| sinuous                        | diffs                                | 0.86      |
+| Solid                          | diffs                                | 1.23      |
+| Lit                            | diffs                                | 1.555     |
+| voby                           | diffs                                | 1.745     |
+| Svelte                         | diffs                                | 2.045     |
+| Marko                          | diffs                                | 2.665     |
+| uhtml                          | diffs                                | 2.87      |
+| React                          | diffs                                | 8.035     |
 
 Printed from `.gate/list-update.rec1.json`, medians, in the order that file
 records them.
 
 The difference is entirely in what the data source can say.
 
-- An **op source** reports "row 0 moved to position 150". Exodra applies that
-  move to the DOM and compares nothing. 0.075 ms.
-- A **value source** reports only "the list changed" and hands over the new
-  array. Exodra keyed-diffs it, exactly as everyone else must. 0.815 ms.
+-   An **op source** reports "row 0 moved to position 150". Exodra applies that
+    move to the DOM and compares nothing. 0.075 ms.
+-   A **value source** reports only "the list changed" and hands over the new
+    array. Exodra keyed-diffs it, exactly as everyone else must. 0.815 ms.
 
 **The diffing half of this table is no longer a tie with Solid, and it is no
 longer a lead over everything else either.** The previous revision published
@@ -447,7 +447,7 @@ of (`insertPart` / `removePart`) are only handed out inside a `Directive`'s
 it. In both cases "row 0 moved to 150" is not sayable at all.
 
 **Mikado is the exception, and it is the reason to state this axis carefully.**
-A Mikado view *is* a list — it owns its root's children and exposes
+A Mikado view _is_ a list — it owns its root's children and exposes
 `add(data, index)`, `remove(index, count)`, `move(node, position)`,
 `shift(node, offset)` and `node(i)`. "Row 0 moved to 150" is sayable to Mikado,
 so the suite runs it on **both** sides of this axis, imperative and keyed, for
@@ -471,19 +471,19 @@ order, ×30:
 
 <!-- gate: axis=reconcile label=rec1 -->
 
-| Framework | ms/30 reconciles |
-|---|---|
-| **Exodra** | **1.18** |
-| sinuous | 1.35 |
-| *stage0 (hand-rolled ceiling)* | *1.565* |
-| Marko | 1.78 |
-| voby | 1.865 |
-| Mikado (keyed) | 1.97 |
-| Solid | 2.01 |
-| uhtml | 2.125 |
-| Svelte | 3.32 |
-| Lit | 4.37 |
-| React | 4.715 |
+| Framework                      | ms/30 reconciles |
+| ------------------------------ | ---------------- |
+| **Exodra**                     | **1.18**         |
+| sinuous                        | 1.35             |
+| _stage0 (hand-rolled ceiling)_ | _1.565_          |
+| Marko                          | 1.78             |
+| voby                           | 1.865            |
+| Mikado (keyed)                 | 1.97             |
+| Solid                          | 2.01             |
+| uhtml                          | 2.125            |
+| Svelte                         | 3.32             |
+| Lit                            | 4.37             |
+| React                          | 4.715            |
 
 Printed from `.gate/reconcile.rec1.json`, medians, in the order that file
 records them.
@@ -499,7 +499,7 @@ rows that beat `stage0` are the op-source and keep-alive ones, which are not the
 default; on mount and app-update nothing of ours is ahead of it.) Read the
 1.33× as what identity reconciliation buys and nothing wider: `stage0`'s
 `reconcile()` compares items and Exodra compares nothing, because the schema
-object it was handed *is* the key.
+object it was handed _is_ the key.
 
 ## Fine-grained reactive updates
 
@@ -508,18 +508,18 @@ DOM:
 
 <!-- gate: axis=reactive-update label=rec1 -->
 
-| Framework | ms/3000 changes |
-|---|---|
-| Mikado (imperative) | **0.305** |
-| **Exodra** | 0.325 |
-| Lit | 0.595 |
-| Marko | 0.77 |
-| voby | 0.85 |
-| Solid | 0.96 |
-| React | 1.27 |
-| Svelte | 1.515 |
-| uhtml | 1.59 |
-| sinuous | 1.625 |
+| Framework           | ms/3000 changes |
+| ------------------- | --------------- |
+| Mikado (imperative) | **0.305**       |
+| **Exodra**          | 0.325           |
+| Lit                 | 0.595           |
+| Marko               | 0.77            |
+| voby                | 0.85            |
+| Solid               | 0.96            |
+| React               | 1.27            |
+| Svelte              | 1.515           |
+| uhtml               | 1.59            |
+| sinuous             | 1.625           |
 
 Printed from `.gate/reactive-update.rec1.json`, medians, in the order that file
 records them. This axis runs no `stage0` row.
@@ -544,11 +544,11 @@ if a compat row carries any React internals.
 
 <!-- gate: axis=react-libraries label=second-2026-11-01 -->
 
-| Row | ms/20 rounds |
-|---|---|
-| reactCompatJsx | **4.7** |
-| reactCompat | 5.1 |
-| react | 6.9 |
+| Row            | ms/20 rounds |
+| -------------- | ------------ |
+| reactCompatJsx | **4.7**      |
+| reactCompat    | 5.1          |
+| react          | 6.9          |
 
 Printed from `.gate/react-libraries.second-2026-11-01.json`, medians. `reactCompatJsx`
 is the JSX compiled by `@exodra/babel-plugin-schema/react`; `reactCompat` is the
@@ -570,22 +570,22 @@ been on disk the whole time.
 <!-- gate: axis=toggle label=base1 col=2 -->
 <!-- gate: axis=toggle label=base2 col=3 -->
 
-| participant | base1 (ms) | base2 (ms) |
-|---|---|---|
-| `exodraKept` | **3.3** | **3.0** |
-| `mikadoPooled` | 3.5 | 3.1 |
-| `mikado` | 7.4 | 6.6 |
-| `stage0` | 8.9 | 7.9 |
-| `solid` | 9.2 | 8.3 |
-| `exodraDelegated` | 9.6 | 8.5 |
-| `exodra` | 10.2 | 9.1 |
-| `marko` | 13.7 | 12.2 |
-| `svelte` | 14.8 | 13.4 |
-| `uhtml` | 19.8 | 17.5 |
-| `lit` | 21.3 | 18.7 |
-| `sinuous` | 21.8 | 19.6 |
-| `react` | 30.7 | 27.7 |
-| `voby` | 35.4 | 31.4 |
+| participant       | base1 (ms) | base2 (ms) |
+| ----------------- | ---------- | ---------- |
+| `exodraKept`      | **3.3**    | **3.0**    |
+| `mikadoPooled`    | 3.5        | 3.1        |
+| `mikado`          | 7.4        | 6.6        |
+| `stage0`          | 8.9        | 7.9        |
+| `solid`           | 9.2        | 8.3        |
+| `exodraDelegated` | 9.6        | 8.5        |
+| `exodra`          | 10.2       | 9.1        |
+| `marko`           | 13.7       | 12.2       |
+| `svelte`          | 14.8       | 13.4       |
+| `uhtml`           | 19.8       | 17.5       |
+| `lit`             | 21.3       | 18.7       |
+| `sinuous`         | 21.8       | 19.6       |
+| `react`           | 30.7       | 27.7       |
+| `voby`            | 35.4       | 31.4       |
 
 Read the two columns as one result with its own scatter, not as two results:
 every one of the fourteen rows shifts by 10–14% between them, all in the same
@@ -609,15 +609,15 @@ toggled fifty times — kept because the text around it refers to it:
 <!-- gate: stale reason="the old four-node toggle scenario, superseded by the 200-panel rescale recorded in toggle.base1 and toggle.base2 above; every figure in it is one or two ticks of a clock clamped at ~0.1 ms and the axis could not resolve its own participants" -->
 
 | Framework | ms/50 toggles |
-|---|---|
-| Exodra | 0.100 |
-| Marko | 0.100 |
-| Mikado | 0.100 |
-| Lit | 0.100 |
-| Svelte | 0.100 |
-| Solid | 0.200 |
-| voby | 0.200 |
-| React | 0.300 |
+| --------- | ------------- |
+| Exodra    | 0.100         |
+| Marko     | 0.100         |
+| Mikado    | 0.100         |
+| Lit       | 0.100         |
+| Svelte    | 0.100         |
+| Solid     | 0.200         |
+| voby      | 0.200         |
+| React     | 0.300         |
 
 **That table did not resolve anything.** The browser's timer is clamped at
 ~0.1 ms, so the five-way tie at the top is five participants landing on one tick;
@@ -639,13 +639,13 @@ Retained heap after one mounted app, forced GC +
 
 <!-- gate: stale reason="heap is sampled by the exodra-initial-render axis, and these figures come from the same undated run as the mount table that axis has now superseded. The axis IS recorded now (rec1), but a recording holds timing rows only — no .gate file carries a heap row at all, so nothing on disk can check these five numbers" -->
 
-| Framework | MB / mounted app |
-|---|---|
-| Mikado (imperative) | **0.05** |
-| **Exodra** | 0.10 |
-| Mikado (reactive idiom) | 0.12 |
-| Lit | 0.15 |
-| Solid | 0.25 |
+| Framework               | MB / mounted app |
+| ----------------------- | ---------------- |
+| Mikado (imperative)     | **0.05**         |
+| **Exodra**              | 0.10             |
+| Mikado (reactive idiom) | 0.12             |
+| Lit                     | 0.15             |
+| Solid                   | 0.25             |
 
 **These are stale and they are the least stable figures on the page.** They come
 from the same undated run of `exodra-initial-render` as the mount table that
@@ -656,7 +656,7 @@ sensitive to when it is sampled — it has moved more between runs than any timi
 row here. In that run Exodra retained 0.10 MB against Solid's 0.25 MB and
 hand-written imperative Mikado retained half what Exodra did. The axis samples
 two participants these five rows do not carry — `marko`, and `exodraOimdb` whose
-retained heap is the app *plus* two collections and a derived index — and neither
+retained heap is the app _plus_ two collections and a derived index — and neither
 figure has ever been published here. The safe reading is the band, not the
 ordering within it, and the
 band has not been re-measured.
@@ -676,40 +676,40 @@ hand-rolled ceiling on **app-update** (4.6 against 4.6). Where it does not
 lead, this is what is in front of it, and every figure is in the table for its own
 axis above:
 
-- **reactive-update** — second: `mikado` 0.305 against 0.325.
-- **list-update, diffing contract** — third of the diffing rows: `stage0` 0.6 and
-  `mikadoKeyed` 0.69 against 0.815.
-- **toggle** — out of the box, behind four rows: `mikado` 7.4, `stage0` 8.9,
-  `solid` 9.2 and our own delegated variant 9.6, against 10.2.
-- **exodra-initial-render** — second of seven: `mikado` 0.285 against 0.320.
-- **exodra-app-update** — third of eight: the harness `floor` at 2.925, which is
-  not a renderer, and `mikado` at 3.675, against 3.855.
+-   **reactive-update** — second: `mikado` 0.305 against 0.325.
+-   **list-update, diffing contract** — third of the diffing rows: `stage0` 0.6 and
+    `mikadoKeyed` 0.69 against 0.815.
+-   **toggle** — out of the box, behind four rows: `mikado` 7.4, `stage0` 8.9,
+    `solid` 9.2 and our own delegated variant 9.6, against 10.2.
+-   **exodra-initial-render** — second of seven: `mikado` 0.285 against 0.320.
+-   **exodra-app-update** — third of eight: the harness `floor` at 2.925, which is
+    not a renderer, and `mikado` at 3.675, against 3.855.
 
 Where it does not lead:
 
-- **`stage0` and hand-written imperative Mikado are ahead on the diffing half of
-  list-update**, and `stage0` ties app-update. Neither is a framework: `stage0` is
-  ~570 B of hand-rolled clone-and-patch and `mikado` is imperative code written
-  against Mikado's node API. On mount both are now behind:
-  `.gate/initial-render.tmpl-full-2026-11-01.json` has Exodra 0.48, `stage0` 0.52,
-  `mikado` 0.74.
-- **Mikado is ahead on reactive-update** (0.305 vs 0.325). The previous revision
-  of this page claimed this axis as a lead; it is not one.
-- **Marko is no longer ahead on app-update.** The previous revision published
-  4.660 vs 4.740 against us; `app-update.rec1` had 4.595 vs 5.045 for us, and
-  `exodra-app-update.rec1` reproduces it independently at 3.855 vs 3.980. Marko
-  is not in the current `app-update` field, which no longer dispatches events.
-- **Toggle is the loss.** Out of the box Exodra is 10.2 against Solid's 9.2 and
-  Mikado's 7.4, and it takes keeping the subtree alive — a strategy the caller
-  has to reach for — to lead at 3.3.
-- **A store WAS priced here, and is not any more.** `exodraOimdb` — the same
-  renderer reading through oimdb selectors — recorded 7.540 against 3.855 on
-  `exodra-app-update` and 0.815 against 0.320 on `exodra-initial-render`, where
-  the store's own construction is inside the timed region. **That row has been
-  removed from the suite** (it was a bindable Exodra app and it had gone stale
-  against the scene), and so has the bindable `exodra` row those figures are
-  divided by. Both numbers are historical; nothing in the suite measures what a
-  real store costs today.
+-   **`stage0` and hand-written imperative Mikado are ahead on the diffing half of
+    list-update**, and `stage0` ties app-update. Neither is a framework: `stage0` is
+    ~570 B of hand-rolled clone-and-patch and `mikado` is imperative code written
+    against Mikado's node API. On mount both are now behind:
+    `.gate/initial-render.tmpl-full-2026-11-01.json` has Exodra 0.48, `stage0` 0.52,
+    `mikado` 0.74.
+-   **Mikado is ahead on reactive-update** (0.305 vs 0.325). The previous revision
+    of this page claimed this axis as a lead; it is not one.
+-   **Marko is no longer ahead on app-update.** The previous revision published
+    4.660 vs 4.740 against us; `app-update.rec1` had 4.595 vs 5.045 for us, and
+    `exodra-app-update.rec1` reproduces it independently at 3.855 vs 3.980. Marko
+    is not in the current `app-update` field, which no longer dispatches events.
+-   **Toggle is the loss.** Out of the box Exodra is 10.2 against Solid's 9.2 and
+    Mikado's 7.4, and it takes keeping the subtree alive — a strategy the caller
+    has to reach for — to lead at 3.3.
+-   **A store WAS priced here, and is not any more.** `exodraOimdb` — the same
+    renderer reading through oimdb selectors — recorded 7.540 against 3.855 on
+    `exodra-app-update` and 0.815 against 0.320 on `exodra-initial-render`, where
+    the store's own construction is inside the timed region. **That row has been
+    removed from the suite** (it was a bindable Exodra app and it had gone stale
+    against the scene), and so has the bindable `exodra` row those figures are
+    divided by. Both numbers are historical; nothing in the suite measures what a
+    real store costs today.
 
 Three tables on this page are marked **stale** (five columns of them: the
 debug-build correction alone accounts for three) and one is **unrecorded**.
@@ -725,14 +725,14 @@ prints to the console instead of writing a `.gate` file.
 The design choices these numbers follow from are documented separately, and the
 numbers here are what those choices produce, not an argument for them:
 
-- **identity reconcile** (the schema object *is* the key) → exact node reuse and
-  the minimal-move keyed diff — see
-  [Core Concepts → Identity & reconciliation](./core/concepts.md#identity--reconciliation);
-- **direct-to-DOM writes with no scheduler** → fast updates, at the cost of no
-  glitch-batching in core — see
-  [Optimizations → the trade behind "no scheduler"](./guides/optimizations.md#the-trade-behind-no-scheduler);
-- **an op-source list contract** → O(delta) list updates when the data layer
-  knows what changed, and a keyed diff when it does not.
+-   **identity reconcile** (the schema object _is_ the key) → exact node reuse and
+    the minimal-move keyed diff — see
+    [Core Concepts → Identity & reconciliation](./core/concepts.md#identity--reconciliation);
+-   **direct-to-DOM writes with no scheduler** → fast updates, at the cost of no
+    glitch-batching in core — see
+    [Optimizations → the trade behind "no scheduler"](./guides/optimizations.md#the-trade-behind-no-scheduler);
+-   **an op-source list contract** → O(delta) list updates when the data layer
+    knows what changed, and a keyed diff when it does not.
 
 ## Methodology
 
@@ -751,64 +751,64 @@ node scripts/run-one-axis.js <axis>
 session exhausts memory — that is why the runner takes one axis name and why
 each table on this page comes from its own run.
 
-- **Harness:** headless Chromium via Playwright, launched with
-  `--js-flags=--expose-gc --enable-precise-memory-info`, over a Vite dev server.
-  One shared A/B harness (`src/harness.ts`) drives every axis; each axis is
-  `src/benchmarks/<axis>.tsx`.
-- **Production builds of every framework.** `process.env.NODE_ENV` forced to
-  `production` both at app level and inside `optimizeDeps.esbuildOptions` (the
-  top-level `define` does not reach Vite's pre-bundled dependencies, which is
-  how react-dom kept loading its development build); `resolve.conditions` set
-  explicitly in both places so Solid resolves to `dist/solid.js` rather than
-  `dist/dev.js`; `dev: false` for Solid and Svelte; `optimize: true` for Marko.
-  **Those lines are load-bearing** — this suite measured React and Solid on
-  their debug builds for its entire life because those settings were left to
-  somebody else's default. Verify with
-  `node_modules/.vite/deps/_metadata.json`.
-- **Interleaved:** all participants alternate every round, order rotated, so
-  machine load is shared rather than concentrated on one framework.
-- **GC between samples**, and only the `measure()` region is timed — setup and
-  teardown are not.
-- **Medians.** The full spread — min / p25 / median / p75 / max — is recorded per
-  participant; the medians are what this page quotes. Rounds and batch are
-  positional arguments (`run-one-axis.js <axis> [rounds] [batch]`); each axis
-  carries its own defaults when they are left off.
-- **Batching past the timer clamp:** the browser's clock is clamped at ~0.1 ms
-  and several axes measure work that lands on one or two ticks, so a `batch` of
-  N runs N independent scenarios inside one timed region and divides.
-- **What the quoted recordings were run at:** 60 rounds, batch 20. The batch is
-  written into every `.gate` file and can be read back off it; the round count is
-  not written into a recording, so that half is stated here rather than checked.
-  The two toggle recordings predate the `batch` field entirely and carry neither
-  it nor a `quantum`, which is why they cannot be fed to `compare-axis.mjs`.
-- **Idiomatic API per side:** lists are measured on both paths — the op-source
-  contract in *list-update* and the keyed diff (Solid `<For>` / Svelte
-  `{#each}` / React keyed map / Marko `by="id"` / Lit `repeat()` with its key
-  function) in *reconcile*. Conditionals via each framework's own construct.
-- **Fair flushing:** frameworks that batch DOM writes asynchronously are forced
-  to commit **inside** the timed region or they would read as a bogus ~0 ms —
-  Svelte `flush()`, React `flushSync`, voby `oby.tick()`. Exodra and Solid are
-  synchronous. A framework with no synchronous flush hook cannot be measured
-  fairly here and is excluded; that is why VanJS is not in the suite.
-- **Same markup, or it does not count:** a shared gate
-  (`src/benchmarks/markup-gate.ts`, plus `scripts/verify-structure.mjs`) mounts
-  every participant's app and **diffs its HTML against the reference** before
-  anything is timed — an element, an attribute, a text node or an order that
-  differs fails the run, and the element count is printed beside every result. A
-  framework that silently under-renders would otherwise look fast for doing
-  less. The one difference the gate forgives is comment anchors, because marking
-  a reactive child position with an empty comment versus with nothing at all is
-  a difference of strategy, not of output. The list axes
-  additionally gate on *identity*: the node that read `row 0` at mount must
-  still read `row 0` afterwards, which is what distinguishes a keyed reconcile
-  that moves nodes from a positional render that rewrites text in place. Lit and
-  Mikado both pass that gate; without it, Lit's non-keyed forms would run a
-  materially cheaper program and win for the wrong reason.
+-   **Harness:** headless Chromium via Playwright, launched with
+    `--js-flags=--expose-gc --enable-precise-memory-info`, over a Vite dev server.
+    One shared A/B harness (`src/harness.ts`) drives every axis; each axis is
+    `src/benchmarks/<axis>.tsx`.
+-   **Production builds of every framework.** `process.env.NODE_ENV` forced to
+    `production` both at app level and inside `optimizeDeps.esbuildOptions` (the
+    top-level `define` does not reach Vite's pre-bundled dependencies, which is
+    how react-dom kept loading its development build); `resolve.conditions` set
+    explicitly in both places so Solid resolves to `dist/solid.js` rather than
+    `dist/dev.js`; `dev: false` for Solid and Svelte; `optimize: true` for Marko.
+    **Those lines are load-bearing** — this suite measured React and Solid on
+    their debug builds for its entire life because those settings were left to
+    somebody else's default. Verify with
+    `node_modules/.vite/deps/_metadata.json`.
+-   **Interleaved:** all participants alternate every round, order rotated, so
+    machine load is shared rather than concentrated on one framework.
+-   **GC between samples**, and only the `measure()` region is timed — setup and
+    teardown are not.
+-   **Medians.** The full spread — min / p25 / median / p75 / max — is recorded per
+    participant; the medians are what this page quotes. Rounds and batch are
+    positional arguments (`run-one-axis.js <axis> [rounds] [batch]`); each axis
+    carries its own defaults when they are left off.
+-   **Batching past the timer clamp:** the browser's clock is clamped at ~0.1 ms
+    and several axes measure work that lands on one or two ticks, so a `batch` of
+    N runs N independent scenarios inside one timed region and divides.
+-   **What the quoted recordings were run at:** 60 rounds, batch 20. The batch is
+    written into every `.gate` file and can be read back off it; the round count is
+    not written into a recording, so that half is stated here rather than checked.
+    The two toggle recordings predate the `batch` field entirely and carry neither
+    it nor a `quantum`, which is why they cannot be fed to `compare-axis.mjs`.
+-   **Idiomatic API per side:** lists are measured on both paths — the op-source
+    contract in _list-update_ and the keyed diff (Solid `<For>` / Svelte
+    `{#each}` / React keyed map / Marko `by="id"` / Lit `repeat()` with its key
+    function) in _reconcile_. Conditionals via each framework's own construct.
+-   **Fair flushing:** frameworks that batch DOM writes asynchronously are forced
+    to commit **inside** the timed region or they would read as a bogus ~0 ms —
+    Svelte `flush()`, React `flushSync`, voby `oby.tick()`. Exodra and Solid are
+    synchronous. A framework with no synchronous flush hook cannot be measured
+    fairly here and is excluded; that is why VanJS is not in the suite.
+-   **Same markup, or it does not count:** a shared gate
+    (`src/benchmarks/markup-gate.ts`, plus `scripts/verify-structure.mjs`) mounts
+    every participant's app and **diffs its HTML against the reference** before
+    anything is timed — an element, an attribute, a text node or an order that
+    differs fails the run, and the element count is printed beside every result. A
+    framework that silently under-renders would otherwise look fast for doing
+    less. The one difference the gate forgives is comment anchors, because marking
+    a reactive child position with an empty comment versus with nothing at all is
+    a difference of strategy, not of output. The list axes
+    additionally gate on _identity_: the node that read `row 0` at mount must
+    still read `row 0` afterwards, which is what distinguishes a keyed reconcile
+    that moves nodes from a positional render that rewrites text in place. Lit and
+    Mikado both pass that gate; without it, Lit's non-keyed forms would run a
+    materially cheaper program and win for the wrong reason.
 
 **On absolute numbers.** The milliseconds move between machines, browser
 versions and sessions, and a re-run on the same commit can shift every
 participant in the same direction. What is stable is the ordering and the ratios
-*within one interleaved run*. This is visible on this page in the two toggle
+_within one interleaved run_. This is visible on this page in the two toggle
 recordings: every one of their fourteen shared rows moves by 10–14% between
 `base1` and `base2`, in the same direction, which is the machine and not the
 code. Do not compare a millisecond in one table against a millisecond in
@@ -857,12 +857,12 @@ caps throughput under load.
 <!-- gate: axis=ssr-throughput label=published col=3 -->
 <!-- gate: unrecorded col=4 cmd=ssr/exodra-measure.mts date=2026-08-20 -->
 
-| Row | Renderer | ms / render | bytes emitted |
-|---|---|---|---|
-| `exodra` | **Exodra** (`@exodra/core` + `@exodra/string`) | **0.238** | 122,692 |
-| `solid` | Solid `renderToString` | 0.292 | 155,585 |
-| `marko 6` | Marko 6 | 0.897 | 152,693 |
-| `mikado` | Mikado (hand-written, imperative) | 0.087 | 134,692 |
+| Row       | Renderer                                       | ms / render | bytes emitted |
+| --------- | ---------------------------------------------- | ----------- | ------------- |
+| `exodra`  | **Exodra** (`@exodra/core` + `@exodra/string`) | **0.238**   | 122,692       |
+| `solid`   | Solid `renderToString`                         | 0.292       | 155,585       |
+| `marko 6` | Marko 6                                        | 0.897       | 152,693       |
+| `mikado`  | Mikado (hand-written, imperative)              | 0.087       | 134,692       |
 
 **Mikado is in this table now and was not before**, and it belongs here: it is a
 hand-written imperative program and it renders this page's markup in **0.087 ms**
@@ -870,9 +870,9 @@ against our 0.238. The row that was missing is the one that makes the number
 mean something.
 
 **The millisecond column is recorded; the byte column is not.** This paragraph
-used to say the opposite — *"this table is unrecorded … `ssr/exodra-measure.mts`
+used to say the opposite — _"this table is unrecorded … `ssr/exodra-measure.mts`
 prints to the console and writes no `.gate` file, so nothing here is checked
-against a run — only that the script exists"* — and that was true when it was
+against a run — only that the script exists"_ — and that was true when it was
 written and stopped being true when the script was repaired. It now writes
 `packages/benchmarks/measurements/ssr-throughput.published.json`, a committed
 file, and the `ms / render` column is traced cell by cell against it. The claim
@@ -902,31 +902,31 @@ optimise.
 Everything in this section was measured on the **previous** renderer, before the
 replacement that produced the numbers above, and the harness has not been re-run
 since. The TTI figures below are therefore unverified against current code. They
-are kept because the *shape* of the trade-off they describe — bytes versus
+are kept because the _shape_ of the trade-off they describe — bytes versus
 resumability — is a property of the two models rather than of our renderer, and
 because deleting a result is not the same as re-measuring it. Read the ranking
 as directional and the milliseconds as stale.
 :::
 
 Server rendering gets HTML on screen fast; the interesting question is
-**time-to-interactive (TTI)** — when the first click actually *does* something —
+**time-to-interactive (TTI)** — when the first click actually _does_ something —
 and the **bytes** it costs to get there. Two models compete:
 
-- **Hydration** (Exodra, Solid, React…): the server sends HTML, the client
-  downloads a JS bundle, rebuilds the component tree, and wires up listeners.
-- **Resumability** (Qwik): the server serialises enough state into the HTML that
-  the client can *resume* without re-running components — it ships almost no JS
-  up front and lazy-loads code per interaction.
+-   **Hydration** (Exodra, Solid, React…): the server sends HTML, the client
+    downloads a JS bundle, rebuilds the component tree, and wires up listeners.
+-   **Resumability** (Qwik): the server serialises enough state into the HTML that
+    the client can _resume_ without re-running components — it ships almost no JS
+    up front and lazy-loads code per interaction.
 
 Neither is universally faster. Four apps were built, served statically, and fired
 by real Chromium under **Fast 3G + 4× CPU throttling** (the conditions where
 payload size actually matters), median of 5 runs.
 
 **Three of the four no longer have an Exodra participant, and the numbers below
-cannot be reproduced.** `ssr/land-measure.mjs` opens with *"NO EXODRA PARTICIPANT
+cannot be reproduced.** `ssr/land-measure.mjs` opens with _"NO EXODRA PARTICIPANT
 HERE. The landing app existed only for the deleted three-props renderer; no
 schema-core replacement has been written, so this comparison is Solid vs Qwik
-until one is."* Its participant map is `{S, Q}`. `ssr/todo-measure.mjs` says the
+until one is."_ Its participant map is `{S, Q}`. `ssr/todo-measure.mjs` says the
 same and runs `{S, Q, M}`. Only the **uniform list** row has an Exodra
 participant today (`ssr/measure.mjs`).
 
@@ -937,18 +937,18 @@ plain would publish a win nobody can check.
 
 The second claim in this paragraph was also wrong and is corrected here: the
 setups were **not** code-split. `build/build-exodra.mjs`, `build-marko.mjs` and
-`build-mikado.mjs` each say verbatim *"ONE file, no code-splitting"*. Every
+`build-mikado.mjs` each say verbatim _"ONE file, no code-splitting"_. Every
 sentence below that leans on "assuming you code-split" is reasoning about a
 configuration these scripts refuse to produce.
 
-## The map — TTI (ms, lower is better) — *not re-measured*
+## The map — TTI (ms, lower is better) — _not re-measured_
 
-| App | Exodra | Solid | Qwik |
-|-----|--------|-------|------|
-| Landing — static page + a few interactive islands | ~~520~~ *(no participant)* | **481** | 635 |
-| Todo — 200 cards (tags + nested comments + authors) | ~~983~~ *(no participant)* | 1197 | 1483 |
-| Todo — 1000 cards (long list) | ~~3227~~ *(no participant)* | 4468 | 4957 |
-| Uniform interactive list — 1000 rows | **1072** | 1179 | 2298 |
+| App                                                 | Exodra                      | Solid   | Qwik |
+| --------------------------------------------------- | --------------------------- | ------- | ---- |
+| Landing — static page + a few interactive islands   | ~~520~~ _(no participant)_  | **481** | 635  |
+| Todo — 200 cards (tags + nested comments + authors) | ~~983~~ _(no participant)_  | 1197    | 1483 |
+| Todo — 1000 cards (long list)                       | ~~3227~~ _(no participant)_ | 4468    | 4957 |
+| Uniform interactive list — 1000 rows                | **1072**                    | 1179    | 2298 |
 
 On the landing page Exodra and Solid did not separate reliably — two independent
 runs put them at 494 vs 492 ms and 520 vs 481 ms, so the ordering flips with the
@@ -959,16 +959,16 @@ HTML weight, gzipped, on the 1000-card todo: Exodra ~19 KB, Solid ~38 KB, Qwik
 
 ## Interpreting the numbers
 
-- **The page *appears* at essentially the same time regardless of framework.**
-  First Contentful Paint on every app here was ~200–270 ms for all three — a
-  spread below what a person notices. SSR does its job everywhere; the framework
-  choice shows up in **when it becomes interactive**, not in when it paints.
-- **The interactivity gaps are modest on light apps.** On the landing and the
-  small todo they are ~130–500 ms — real, but near the edge of perception. They
-  grow into the obviously-worth-it range only on the heavy cases.
-- **The conditions are pessimistic on purpose.** Fast 3G + 4× CPU throttling is
-  there to make payload *visible*. On a decent phone over a good connection
-  everything is far faster and the absolute gaps shrink proportionally.
+-   **The page _appears_ at essentially the same time regardless of framework.**
+    First Contentful Paint on every app here was ~200–270 ms for all three — a
+    spread below what a person notices. SSR does its job everywhere; the framework
+    choice shows up in **when it becomes interactive**, not in when it paints.
+-   **The interactivity gaps are modest on light apps.** On the landing and the
+    small todo they are ~130–500 ms — real, but near the edge of perception. They
+    grow into the obviously-worth-it range only on the heavy cases.
+-   **The conditions are pessimistic on purpose.** Fast 3G + 4× CPU throttling is
+    there to make payload _visible_. On a decent phone over a good connection
+    everything is far faster and the absolute gaps shrink proportionally.
 
 ## What each model suits
 
@@ -979,7 +979,7 @@ so it shines when **most of a large page is never interacted with**. If a team
 tends to forget to code-split, Qwik removes that failure mode by construction.
 
 **Hydration with a small eager bundle** (Exodra, Solid) wins when the
-interactive bundle is already modest: the framework loads *during* initial load,
+interactive bundle is already modest: the framework loads _during_ initial load,
 so the first interaction is instant. Qwik loads its runtime core lazily on the
 first interaction, so the very first click pays a download a hydration app
 already paid cheaply.
@@ -993,39 +993,39 @@ evidence than the TTI figures below, not proof.
 
 ## Caveats
 
-- **This assumes you code-split.** Qwik's advantage is largest — and can flip the
-  result outright — against a hydration SPA that ships one giant un-split bundle.
-  That is a configuration failure, not a property of hydration, and it is exactly
-  what Qwik's automatic chunking spares you.
-- **The "click immediately" metric is a worst case for Qwik.** The harness fires
-  the first click the instant the page commits. A real user pauses, and during
-  that pause Qwik prefetches its runtime and handler chunks.
-- **These applications are interaction-dense, which is not the scenario Qwik
-  targets.** Qwik is designed for content-heavy pages with sparse interactivity,
-  where code for everything untouched never loads. On that shape its ceiling —
-  roughly O(1) initial JS regardless of app size — is an architectural advantage
-  a hydration framework can only approach with disciplined manual splitting.
-- **On broadband the HTML-weight advantage largely stops mattering.** Re-running
-  the 1000-row cases at 30 Mbit with no CPU throttle put the whole spread under
-  200 ms (Exodra 125, Solid 122, Qwik 181 on the uniform list) — a range in which
-  a person notices nothing. *Also not re-measured.*
-- **The harness carries one deliberately synthetic counter-example**
-  (`ssr/heavy-measure.mjs`): **48** rows — not the 1,000 this page claimed until
-  2026-08-20 — whose click handlers each reference their own unique
-  multi-kilobyte function, none of which runs during render. The script reads
-  `const M = +(process.env.M || 48)`; the row count was overstated twentyfold.
-  **And it has no Exodra participant either** — its own second line says so: *"NO
-  EXODRA PARTICIPANT HERE. The heavy app is generated by `ssr/gen-heavy.mjs`,
-  which used to emit an Exodra flavour written against the deleted three-props
-  renderer."* So it is Solid against Qwik, and it says nothing about us at all.
-  Qwik splits every handler into its own lazy chunk and loads none of them; the
-  hydration side ships all of it in one un-split bundle and loses badly. Read it
-  as a demonstration of what *not* splitting your bundle costs, not as evidence
-  about hydration — and not as evidence about Exodra.
-- **The harness is in `packages/benchmarks/ssr`** (real production builds +
-  Playwright with CDP throttling): `node ssr/land-measure.mjs`,
-  `ssr/todo-measure.mjs`, `ssr/measure.mjs`, `ssr/fastnet.mjs`. `ssr/dist/` is
-  gitignored, so build the client bundles first. **Rebuild them whenever the
-  framework changes** — the server side renders through a live import, but the
-  hydration side is a bundle on disk, and a stale one silently measures old code.
-  That is the same failure mode as the debug-build error at the top of this page.
+-   **This assumes you code-split.** Qwik's advantage is largest — and can flip the
+    result outright — against a hydration SPA that ships one giant un-split bundle.
+    That is a configuration failure, not a property of hydration, and it is exactly
+    what Qwik's automatic chunking spares you.
+-   **The "click immediately" metric is a worst case for Qwik.** The harness fires
+    the first click the instant the page commits. A real user pauses, and during
+    that pause Qwik prefetches its runtime and handler chunks.
+-   **These applications are interaction-dense, which is not the scenario Qwik
+    targets.** Qwik is designed for content-heavy pages with sparse interactivity,
+    where code for everything untouched never loads. On that shape its ceiling —
+    roughly O(1) initial JS regardless of app size — is an architectural advantage
+    a hydration framework can only approach with disciplined manual splitting.
+-   **On broadband the HTML-weight advantage largely stops mattering.** Re-running
+    the 1000-row cases at 30 Mbit with no CPU throttle put the whole spread under
+    200 ms (Exodra 125, Solid 122, Qwik 181 on the uniform list) — a range in which
+    a person notices nothing. _Also not re-measured._
+-   **The harness carries one deliberately synthetic counter-example**
+    (`ssr/heavy-measure.mjs`): **48** rows — not the 1,000 this page claimed until
+    2026-08-20 — whose click handlers each reference their own unique
+    multi-kilobyte function, none of which runs during render. The script reads
+    `const M = +(process.env.M || 48)`; the row count was overstated twentyfold.
+    **And it has no Exodra participant either** — its own second line says so: _"NO
+    EXODRA PARTICIPANT HERE. The heavy app is generated by `ssr/gen-heavy.mjs`,
+    which used to emit an Exodra flavour written against the deleted three-props
+    renderer."_ So it is Solid against Qwik, and it says nothing about us at all.
+    Qwik splits every handler into its own lazy chunk and loads none of them; the
+    hydration side ships all of it in one un-split bundle and loses badly. Read it
+    as a demonstration of what _not_ splitting your bundle costs, not as evidence
+    about hydration — and not as evidence about Exodra.
+-   **The harness is in `packages/benchmarks/ssr`** (real production builds +
+    Playwright with CDP throttling): `node ssr/land-measure.mjs`,
+    `ssr/todo-measure.mjs`, `ssr/measure.mjs`, `ssr/fastnet.mjs`. `ssr/dist/` is
+    gitignored, so build the client bundles first. **Rebuild them whenever the
+    framework changes** — the server side renders through a live import, but the
+    hydration side is a bundle on disk, and a stale one silently measures old code.
+    That is the same failure mode as the debug-build error at the top of this page.

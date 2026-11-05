@@ -3,7 +3,6 @@ import { wireExoNode } from '@exodra/core';
 import type { TExoMachine, TExoNode } from '@exodra/core';
 import {
     ExoDomBackend,
-    withExoChildList,
     withExoCompiler,
     withExoForeignNamespaces,
     withExoHydration,
@@ -18,7 +17,7 @@ const MOUNT_ONCE: readonly unknown[] = [];
 // Module level, not per effect: a schema is cached per backend BY POINTER, so a backend built per
 // mount recompiles every schema in the island on every mount.
 const EXO_UNCOMPOSED = /*#__PURE__*/ withExoHydration(
-    withExoChildList(withExoForeignNamespaces(withExoCompiler(new ExoDomBackend())))
+    withExoForeignNamespaces(withExoCompiler(new ExoDomBackend()))
 );
 
 type TExoMounted<TParams> = {
@@ -78,7 +77,7 @@ export function useExoMount<TElement extends Element = HTMLDivElement, TParams =
         const root =
             adopt && adoptRoot !== undefined && element.firstElementChild !== null
                 ? adoptRoot.call(backend, machine as never, element, first)
-                : backend.buildRoot(machine as never, first);
+                : wireExoNode(backend.createExoNode(machine as never), first);
         mounted.current = {
             machine,
             root,
@@ -120,7 +119,7 @@ export function useExoMount<TElement extends Element = HTMLDivElement, TParams =
             return;
         }
         live.params = params;
-        wireExoNode(live.root, live.machine, params);
+        wireExoNode(live.root, params);
     });
 
     return { ref: container, node };

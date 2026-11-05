@@ -109,7 +109,7 @@
 // ═══ TWO EXODRA ROWS: THE WIRE AND THE STATE MACHINE ═══
 //
 // `exodraDirect` is the WIRE row — what this renderer's public API reaches with no reactive layer
-// at all: the two children ports are held as REGIONS (`c.childList`) and the card's own handlers
+// at all: the two children ports are held as REGIONS (`c.portChildList`) and the card's own handlers
 // command them, one `insert` or one `remove` for the details block, and for the tag list exactly
 // the rows that joined or left.
 //

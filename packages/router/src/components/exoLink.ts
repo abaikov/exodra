@@ -4,7 +4,7 @@ import {
     withExoTransitions,
     withExoWire,
     withExoHandlers,
-    withExoEffects,
+    withExoParamsEffects,
     createExoSchema,
     swapExoParams,
 } from '@exodra/core';
@@ -98,12 +98,15 @@ export const ExoLink = composeExoMachine(
         }),
     (m) => {
         const { showCurrent } = m.transitions;
-        return withExoEffects(m, (effect) => {
-            effect((c) => {
-                if ((c.serviceState as TExoLinkParams).currentWhen === undefined) return null;
-                showCurrent(c);
-                return c.state.router.onChange(() => showCurrent(c));
-            });
+        return withExoParamsEffects(m, {
+            followLocation: {
+                key: (params) => params.currentWhen !== undefined,
+                start: (c, params) => {
+                    if (params.currentWhen === undefined) return null;
+                    showCurrent(c);
+                    return c.state.router.onChange(() => showCurrent(c));
+                },
+            },
         });
     }
 );

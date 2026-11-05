@@ -2,7 +2,7 @@
 //
 // A declaration carrying the JSON forms a build wrote must render, hydrate and serve exactly what
 // the same declaration renders through the compilers, under either text writer.
-import { createExoSchema } from '@exodra/core';
+import { createExoSchema, wireExoNode } from '@exodra/core';
 import type {
     TExoChildrenPort,
     TExoChildrenWiring,
@@ -120,7 +120,7 @@ describe('a declaration that carries the JSON forms a build wrote', () => {
         for (const machine of [LIST, BUILT_LIST]) {
             const parent = host();
             const backend = withExoDefaults(withExoCompiler(new ExoDomBackend()));
-            const node = backend.buildRoot(machine as never);
+            const node = wireExoNode(backend.createExoNode(machine as never));
             backend.mountRoot(node, parent);
             const h2 = parent.querySelector('h2') as Element;
             const font = document.createElement('font');

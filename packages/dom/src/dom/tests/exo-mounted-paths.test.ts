@@ -8,6 +8,7 @@ import {
     withExoTransitions,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import type { TExoPlacedChildren } from '@exodra/list-reconcile';
@@ -24,11 +25,11 @@ import { withExoComputedMachine } from '@exodra/computed';
 import type { TExoComputedMachine, TExoComputedMachineNode } from '@exodra/computed';
 import { describe, expect, it } from 'vitest';
 import { host, source, createExoTestMachine } from '@exodra/test-utils';
-import { ExoDomBackend, withExoHydration, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoHydration, withExoCompiler } from '@exodra/dom';
 import type { TExoDomMark, TExoDomNode } from '@exodra/dom';
 import { ExoStrBackend } from '@exodra/string';
 
-const EXO_BACKEND = withExoHydration(withExoChildList(withExoCompiler(new ExoDomBackend())));
+const EXO_BACKEND = withExoHydration(withExoCompiler(new ExoDomBackend()));
 const EXO_STR = new ExoStrBackend();
 
 function buildCard(b: TExoSchemaCursor): { live: TExoPort } {
@@ -71,8 +72,8 @@ type TFixedList = {
 // A RECONCILED list is a composition, not a door: what the wire needs is the placement door and
 // `build`, and the reconciler is handed both.
 type TReactiveList = TExoMachineNode & {
-    build(component: TExoMachine<never>, params?: unknown): TExoNode<TExoDomMark>;
-    childList(port: TExoPort): TExoPlacedChildren<TExoNode<TExoDomMark>>;
+    createExoNode(component: TExoMachine<never>): TExoNode<TExoDomMark>;
+    portChildList(port: TExoChildrenPort): TExoPlacedChildren<TExoNode<TExoDomMark>>;
 };
 
 const liveIn = (parent: HTMLElement): string =>
@@ -134,7 +135,7 @@ describe('mounted, on every path an instance arrives by', () => {
             unknown,
             { rows: TExoPlacedChildren<TExoNode<TExoDomMark>>; shown: number[] }
         >(holder, {
-            createInitialState: (c) => ({ rows: c.childList(holder.ports.slot), shown: [] }),
+            createInitialState: (c) => ({ rows: c.portChildList(holder.ports.slot), shown: [] }),
         });
         const PARENT = composeExoMachine(
             m,
@@ -147,7 +148,7 @@ describe('mounted, on every path an instance arrives by', () => {
                             c.state.shown,
                             want,
                             want,
-                            () => c.build(CARD)
+                            () => wireExoNode(c.createExoNode(CARD))
                         );
                     },
                 }),
@@ -231,9 +232,9 @@ describe('mounted, on every path an instance arrives by', () => {
         );
         const { setName } = CARD.transitions;
 
-        // `c.build` IS THE ONLY DOOR THAT LEAVES A LINE BETWEEN ARMING AND PLACEMENT, which is the
+        // `c.createExoNode` IS THE ONLY DOOR THAT LEAVES A LINE BETWEEN ARMING AND PLACEMENT, which is the
         // line this case needs: the machine is armed and standing on a detached element, the init
-        // transition writes `data-label` there, and only then does `insert` put it in the document
+        // transition writes `data-label` there, and only then does `appendChild` put it in the document
         // and commit `mounted`. A root `render` places and commits inside one call and a caller
         // never gets between them.
         let place!: () => void;
@@ -241,11 +242,10 @@ describe('mounted, on every path an instance arrives by', () => {
             buildHolder,
             (P): TExoMachineInitialState<TExoDomNode> =>
                 (c) => {
-                    const rows = c.childList(P.slot);
-                    const card = c.build(CARD);
+                    const card = wireExoNode(c.createExoNode(CARD as never));
                     setName(card as unknown as TExoComputedMachineNode, 'Alderaan');
                     place = (): void => {
-                        rows.insert(card);
+                        c.appendChild(P.slot, card);
                     };
                 }
         );

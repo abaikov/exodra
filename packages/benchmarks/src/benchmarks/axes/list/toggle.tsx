@@ -110,7 +110,7 @@
 // THE TWO DIAGNOSTIC ROWS, which are NOT competing with anybody.
 //
 // `exodraKept` — the schema core with its panels KEPT ALIVE across the hide. A list being a
-// COMPOSITION exposes the pieces separately: `c.build(component, params)` returns
+// COMPOSITION exposes the pieces separately: `wireExoNode(c.createExoNode(component), params)` returns
 // a built, wired, DETACHED child as a VALUE, `reconcileExoOrder` over a source of THOSE
 // CHILDREN keeps the region equal to the array,
 // and a child states its own policy by replacing its `unmount` — the documented extension
@@ -232,9 +232,9 @@
 // connector, the real setters and the real `TExoDomChild`; what changes is which of the renderer's
 // layers the APPLICATION asks for, and every row is expressible by a user through the public API:
 //
-//   exodra          an effect calling `reconcileExoOrder(c.childList(port), shown, rows, rows,
-//                   (row) => c.build(PANEL, row))` — the children reconciler and the build layer.
-//   exodraPlaced    `c.build(...)` + the application's own `appendChild` and `textContent = ''`.
+//   exodra          an effect calling `reconcileExoOrder(c.portChildList(port), shown, rows, rows,
+//                   (row) => wireExoNode(c.createExoNode(PANEL), row))` — the children reconciler and the build layer.
+//   exodraPlaced    `wireExoNode(c.createExoNode(...))` + the application's own `appendChild` and `textContent = ''`.
 //                   THE CHILDREN RECONCILER IS NOT USED, nor the children port: the wire
 //                   fills nothing and the holder places the children it built.
 //   floor·rebuild·owned   no renderer at all.
@@ -284,7 +284,7 @@
 //     child for twenty shows, while a REBUILD would pay one symbol read and one field store on each
 //     of the 4000 fresh children to save one call each. And what the default does here is already
 //     nothing: `disposeExoChildSelf` (`exo-dom-child-factory.ts:23-36`) strikes the child off its
-//     registry and runs its disposers, and a child built by `c.build` outside a list has
+//     registry and runs its disposers, and a child built by `wireExoNode(c.createExoNode(M))` outside a list has
 //     `registry === null` and a `null` `disposers` slot. So the REGISTRY half of the teardown is
 //     already gone on every row here — no caller on this axis puts a child in a registry — and the
 //     call itself is left alone.
@@ -466,7 +466,7 @@
 //              competitors and NOT floors: these two exist to be SUBTRACTED, and
 //              `reportKeptLayers` is the only place their numbers mean anything.
 //   exodraDetachedKept — the same panels again, moved by the region's PLACEMENT pair: the wire fills
-//              its children port with `c.childList(P.panels)` and a hide is 200 × `detach`, a
+//              its children port with `c.portChildList(P.panels)` and a hide is 200 × `detach`, a
 //              show 200 × `attach` — the pair that runs NO `mount` and NO `unmount`, so the panels
 //              keep their elements, their subscriptions and their wiring and the measured region
 //              contains no lifecycle call at all. IT IS A PARTICIPANT AND ITS FLOOR IS `floor·kept`,
@@ -583,19 +583,20 @@ import {
     // ONE region by hand and moves its panels with `attach`/`detach`, the pair that runs no `mount`
     // and no `unmount`; every other kept row on this axis either hands its region to the reconciler
     // or leaves its port unfilled and calls `appendChild` itself. See that row's section in the
-    // header. It is an EXONODE METHOD — `cc.childList(port)` — so nothing is imported for it; only
+    // header. It is an EXONODE METHOD — `cc.portChildList(port)` — so nothing is imported for it; only
     // the type it hands back is.
     type TExoChildList,
     // WHICH BACKEND MADE A CHILD. Every `TExoNode` this file holds came out of a
-    // `TExoDomNode.build` and goes back into a `TExoChildList`, both of which say so in their
+    // `TExoDomNode.createExoNode` and goes back into a `TExoChildList`, both of which say so in their
     // signatures — so the arrays and sources below have to say it too. It is a type argument and
     // nothing else: no import is added to the measured bundle and no line of any timed region
     // changed.
     type TExoDomMark,
     type TExoDomNode,
-    withExoChildList,
     withExoCompiler,
 } from '@exodra/dom';
+import { wireExoNode } from '@exodra/core';
+import type { TExoDomPortChildList } from '@exodra/dom';
 
 /**
  * THE SHIPPED BACKEND, BUILT ONCE FOR THE PROCESS — what every `@exodra/dom` row that composes
@@ -603,7 +604,7 @@ import {
  * beside their own sections below, for the reason stated there: a backend built inside `prep` is a
  * fresh key and re-parses this panel's markup on every sample.
  */
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 /** Panels in one shown block. */
 const PANELS = 200;
@@ -772,7 +773,7 @@ const OWNED_BY_CONSTRUCTION: readonly string[] = ['exodraPlaced'];
  */
 const OWNED_CITED: readonly string[] = ['mikado', 'stage0'];
 /**
- * SETTLED: this row's region comes from `c.childList(P.panels)`, which hands
+ * SETTLED: this row's region comes from `c.portChildList(P.panels)`, which hands
  * `createExoChildList` `schema.ownsElement[port.index] === 1` as its `ownsParent`, so the hide its
  * reconciler performs is `removeAll`'s owned branch — N × `unmount`, then ONE `textContent = ''`.
  */
@@ -782,7 +783,7 @@ const KEEP_OWNED_SETTLED: readonly string[] = ['exodraKept'];
  * NAME IN THE ONE ABOVE. That one reaches the one-call clear through `reconcileExoOrder` →
  * `removeAll` → the owned branch, and its evidence sentence says so. THIS row fills no
  * reconciler at all: it drives its children port by hand and hides with `TExoChildList.detachAll`,
- * which reads the SAME `ownsElement` flag off the SAME compiled schema — `c.childList` hands it to
+ * which reads the SAME `ownsElement` flag off the SAME compiled schema — `c.portChildList` hands it to
  * `createExoChildList` as `ownsParent`, the identical expression the reconciled row's region gets
  * — and ends in the same single `parent.textContent = ''` with no `unmount` loop in front
  * of it. Same fact, same flag, different call, and an evidence string that names the wrong route is
@@ -911,7 +912,9 @@ const TOGGLE_CONTRACTS: readonly AbContract[] = [
             ...KEEP_OWNED_BY_CONSTRUCTION,
         ],
         evidence:
-            `SETTLED for ${KEEP_OWNED_SETTLED.join(', ')} — c.childList hands its reconciler the ` +
+            `SETTLED for ${KEEP_OWNED_SETTLED.join(
+                ', '
+            )} — c.portChildList hands its reconciler the ` +
             `same ownsElement flag, so its clear is removeAll's owned branch; SETTLED for ` +
             `${KEEP_OWNED_SETTLED_BY_REGION.join(
                 ', '
@@ -1098,7 +1101,7 @@ function reportFloor(rows: readonly AbRow[], quantum: number, batch: number): vo
             'floor·kept·owned',
             keptOwned,
             KEEP_OWNED_SETTLED,
-            'SETTLED — c.childList hands its reconciler the same ownsElement flag, so its clear ' +
+            'SETTLED — c.portChildList hands its reconciler the same ownsElement flag, so its clear ' +
                 "is removeAll's owned branch",
         ],
         [
@@ -1266,7 +1269,7 @@ function reportLayers(rows: readonly AbRow[], quantum: number, batch: number): v
                 'mirror and the Map it diffs against, the order splices, index and the clear ' +
                 'branch, against the holder appending what it built. Both pay one exoNodeDom() ' +
                 'per panel (insert() makes the same call) and both hand each panel its row as ' +
-                'c.build params, so neither is in it',
+                'wireExoNode params, so neither is in it',
         },
         {
             more: 'exodraPlaced',
@@ -2084,12 +2087,9 @@ const MACHINE_KEEP_TWIN_BACKEND = withExoCompiler(new ExoDomBackend());
  * a port whose event it does not list, at schema-compile time and by name, so the list and the
  * declaration cannot silently drift apart.
  */
-const DELEGATED_BACKEND = composeExoPlugins(
-    withExoChildList(withExoCompiler(new ExoDomBackend())),
-    {
-        events: () => createExoDelegatedEvents(['click']),
-    }
-);
+const DELEGATED_BACKEND = composeExoPlugins(withExoCompiler(new ExoDomBackend()), {
+    events: () => createExoDelegatedEvents(['click']),
+});
 
 /**
  * THE SUBJECT AND THE DESCRIPTOR — the delegated strategy's equivalent of `noop`, and both are
@@ -2185,7 +2185,9 @@ function createExoToggleHost<TItem>(
             createInitialState: (cc: TExoDomNode): TToggleHostState<TItem> => {
                 prepare(cc);
                 return {
-                    kids: cc.childList(schema.ports.panels),
+                    kids: (cc as TExoDomNode & TExoDomPortChildList).portChildList(
+                        schema.ports.panels
+                    ),
                     shown: [],
                     build: (item) => build(cc, item),
                 };
@@ -2228,7 +2230,9 @@ function createExoToggleHost<TItem>(
  * split for the same reason.)
  */
 function mountExodraToggle(c: HTMLElement, rows: TToggleSource): () => void {
-    const { host } = createExoToggleHost(rows, (cc, row: TToggleRow) => cc.build(PANEL, row));
+    const { host } = createExoToggleHost(rows, (cc, row: TToggleRow) =>
+        wireExoNode(cc.createExoNode(PANEL), row)
+    );
     return EXO_BACKEND.render(host, c);
 }
 
@@ -2248,7 +2252,7 @@ function mountExodraToggle(c: HTMLElement, rows: TToggleSource): () => void {
  */
 function mountExodraToggleDelegated(c: HTMLElement, rows: TToggleSource): () => void {
     const { host } = createExoToggleHost(rows, (cc, row: TToggleRow) =>
-        cc.build(PANEL_DELEGATED, row)
+        wireExoNode(cc.createExoNode(PANEL_DELEGATED), row)
     );
     return DELEGATED_BACKEND.render(host, c);
 }
@@ -2272,7 +2276,7 @@ const KEEP_ALIVE = function keepAlive(): void {};
  *
  * `exodra` above rebuilds every panel on every show, because its reconciler maps ITEMS to children
  * and a child whose item left is dropped. The pieces are separable because both are compositions
- * over the same two doors: `c.build(component, params)` returns a built, wired, DETACHED child as a
+ * over the same two doors: `wireExoNode(c.createExoNode(component), params)` returns a built, wired, DETACHED child as a
  * VALUE, and `reconcileExoOrder` over a source of THOSE CHILDREN keeps a region equal to the
  * array — it inserts, moves and removes them by identity and calls each one's `mount`/`unmount`,
  * with no idea what an item is, because here the item IS the child. So "keep the block" stops being
@@ -2285,7 +2289,7 @@ const KEEP_ALIVE = function keepAlive(): void {};
  *
  * ═══ AND "ONCE" IS NOW "IN SETUP" AGAIN, WHICH IT WAS NOT FOR TWO RUNS OF THIS AXIS ═══
  *
- * `c.build(...)` ACQUIRES THE ELEMENT, REPLAYS THE WALK AND RUNS THE WIRE, in the call — it is
+ * `wireExoNode(c.createExoNode(...))` ACQUIRES THE ELEMENT, REPLAYS THE WALK AND RUNS THE WIRE, in the call — it is
  * `buildLiveExoChild`, and the deferred child that carried `node === undefined` until its list
  * materialised it is gone, as is `materialiseExoChild`. So the 200 clones and the 200 wires of this
  * row happen in the loop below, at mount, in `prep`, OUTSIDE the measured region — which is what
@@ -2310,7 +2314,7 @@ function mountExodraToggleKept(
         (cc) => {
             // Built at MOUNT, once, and held — the whole difference from `exodra`.
             for (let i = 0; i < PANELS; i++) {
-                const child = cc.build(PANEL_BOUND, cells[i]);
+                const child = wireExoNode(cc.createExoNode(PANEL_BOUND), cells[i]);
                 exoNodeDom(child).unmount = KEEP_ALIVE;
                 kept[i] = child;
             }
@@ -2340,7 +2344,7 @@ function mountExodraToggleKept(
  * skipped them would be doing a smaller job while claiming to price a layer), and one fill per panel
  * per show dispatched through the schema's setter.
  *
- * THE PANELS ARE BUILT AT MOUNT, HERE, IN THE WIRE, which is where `c.build` builds them: it
+ * THE PANELS ARE BUILT AT MOUNT, HERE, IN THE WIRE, which is where `wireExoNode(c.createExoNode(M))` builds them: it
  * acquires the element, replays the walk and runs the wire inside the call. `exodraKept` does the
  * same, in the same place, so this row's difference from it is PLACEMENT and nothing else.
  *
@@ -2366,8 +2370,8 @@ function mountExodraTogglePlacedKept(
             // schema by someone tidying an unused binding, exactly as `exodraPlaced` names it.
             void HOST_SCHEMA4.ports.panels;
             for (let i = 0; i < PANELS; i++) {
-                // AT MOUNT, UNTIMED — `c.build` clones, walks and wires inside this call.
-                const rec = exoNodeDom(cc.build(PANEL_BOUND, cells[i]));
+                // AT MOUNT, UNTIMED — `wireExoNode(c.createExoNode(M))` clones, walks and wires inside this call.
+                const rec = exoNodeDom(wireExoNode(cc.createExoNode(PANEL_BOUND), cells[i]));
                 rec.unmount = KEEP_ALIVE;
                 held[i] = rec;
             }
@@ -2415,8 +2419,8 @@ function mountExodraToggleDirectKept(
             void HOST_SCHEMA5.ports.panels;
             for (let i = 0; i < PANELS; i++) {
                 // The wire runs INSIDE this call, which is also where `slots[i].ports` is
-                // filled: `c.build` clones, walks and wires before it returns.
-                const rec = exoNodeDom(cc.build(PANEL_DIRECT, slots[i]));
+                // filled: `wireExoNode(c.createExoNode(M))` clones, walks and wires before it returns.
+                const rec = exoNodeDom(wireExoNode(cc.createExoNode(PANEL_DIRECT), slots[i]));
                 rec.unmount = KEEP_ALIVE;
                 held[i] = rec;
             }
@@ -2436,7 +2440,7 @@ function mountExodraToggleDirectKept(
  * `held` array — is identical, so the pair differs by the panel's WIRING and by nothing about how the
  * block is held.
  *
- * THE CONSTRUCTION IS INSIDE `build`, which is `TExoDomNode.build`'s rule for every component and
+ * THE CONSTRUCTION IS INSIDE `build`, which is `TExoDomNode.createExoNode`'s rule for every component and
  * not a shortcut taken here: a machine is ARMED where it is built, so that a caller has a moment to
  * fire transitions at what it made before placing it. The direct row's panel is built by the same
  * call at the same point in the same loop.
@@ -2467,7 +2471,7 @@ function mountExodraToggleMachineKept(
         createInitialState: (cc) => {
             void HOST_SCHEMA6.ports.panels;
             for (let i = 0; i < PANELS; i++) {
-                const rec = exoNodeDom(cc.build(MACHINE_PANEL));
+                const rec = exoNodeDom(wireExoNode(cc.createExoNode(MACHINE_PANEL)));
                 rec.unmount = KEEP_ALIVE;
                 instances[i] = rec as unknown as TMachinePanel;
                 held[i] = rec;
@@ -2496,7 +2500,7 @@ function mountExodraToggleMachineKeptTwin(
         createInitialState: (cc) => {
             void HOST_TWIN_SCHEMA.ports.panels;
             for (let i = 0; i < PANELS; i++) {
-                const rec = exoNodeDom(cc.build(MACHINE_PANEL_TWIN));
+                const rec = exoNodeDom(wireExoNode(cc.createExoNode(MACHINE_PANEL_TWIN)));
                 rec.unmount = KEEP_ALIVE;
                 instances[i] = rec as unknown as TMachinePanel;
                 held[i] = rec;
@@ -2553,7 +2557,7 @@ function mountExodraToggleMachineKeptTwin(
  * region (`removeAll`'s owned branch), the placement pair was per index by construction, and that was
  * recorded here as a MISSING STRATEGY rather than as a loss. The missing strategy was then built —
  * `TExoChildList.detachAll` takes every child out at once and, where the port owns its element (the
- * same `ownsElement` flag every reconciler reads, handed to the region by `c.childList`), empties it
+ * same `ownsElement` flag every reconciler reads, handed to the region by `c.portChildList`), empties it
  * with ONE `textContent = ''`. `exodraDetachedAllKept` is that call, mounted by THIS FUNCTION,
  * measured against `floor·kept·owned`.
  *
@@ -2585,12 +2589,14 @@ function mountExodraToggleDetachedKept(
         createInitialState: (cc) => {
             // THE PORT IS FILLED, which is what separates this row from `exodraPlacedKept`: the
             // child list is a real children port with a real `order`, and every command below
-            // maintains it. `c.childList` stamps the port as written.
-            const region = cc.childList(HOST_SCHEMA7.ports.panels);
+            // maintains it. `c.portChildList` stamps the port as written.
+            const region = (cc as TExoDomNode & TExoDomPortChildList).portChildList(
+                HOST_SCHEMA7.ports.panels
+            );
             for (let i = 0; i < PANELS; i++) {
-                // AT MOUNT, UNTIMED — `c.build` clones, walks and wires inside this call, which
+                // AT MOUNT, UNTIMED — `wireExoNode(c.createExoNode(M))` clones, walks and wires inside this call, which
                 // is also where `slots[i].ports` is filled.
-                const child = cc.build(PANEL_DIRECT, slots[i]);
+                const child = wireExoNode(cc.createExoNode(PANEL_DIRECT), slots[i]);
                 held[i] = child;
             }
             // NOTHING IS PLACED HERE. The region is empty when the render returns, exactly as
@@ -2628,7 +2634,7 @@ type TToggleConnector = Parameters<TExoMachineInitialState<TExoDomNode>>[0];
 // LIST LAYER — `attachExoList`'s `remap`, its item→child registry, `rememberExoChild` and its
 // op-translating façade — as the difference between `c.bindList` and `c.bindChildren`. All of it is
 // deleted: `@exodra/dom` carries no `attachExoList`, no registry remap and neither `bind*` door, and
-// a list is now `reconcileExoOrder` over `c.childList` + `c.build` — which is the program this
+// a list is now `reconcileExoOrder` over `c.portChildList` + `wireExoNode(c.createExoNode(M))` — which is the program this
 // row WAS. There is no layer left between it and `exodra`, so the rung is gone rather than
 // re-pointed, and `reportLayers`'s chain opens at `exodra − exodraPlaced`.
 
@@ -2654,7 +2660,7 @@ type TToggleConnector = Parameters<TExoMachineInitialState<TExoDomNode>>[0];
  * notification, the `shown` mirror and the `Map` it diffs against, the `order` splices, `index` and
  * the clear branch — AGAINST what hand placement costs instead, which is one `exoNodeDom(child)`
  * call per panel that `TExoChildList.insert` makes too. BOTH SIDES hand each panel its row as
- * `c.build` params, so that is not in the difference. That is
+ * `wireExoNode(c.createExoNode(M))` params, so that is not in the difference. That is
  * why the header calls this pair a REPLACEMENT and not a removal, and why either sign of it is a
  * finding.
  */
@@ -3175,7 +3181,7 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
     // on is identical by construction.
     //
     // AND IT CHANGES CONTRACT, WHICH IS THE POINT AND NOT A SIDE EFFECT. The host `<div>` holds
-    // NOTHING but the children port, so `ownsElement` is 1 for it, so `c.childList` hands
+    // NOTHING but the children port, so `ownsElement` is 1 for it, so `c.portChildList` hands
     // `createExoChildList` an `ownsParent` of true, so `detachAll` empties the host with ONE
     // `parent.textContent = ''` instead of 200 climb-and-`removeChild`s. That puts this row under
     // `keep + OWNED parent` and pairs it with `floor·kept·owned` — the same floor `exodraKept`,
@@ -3355,7 +3361,7 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
                         continue;
                     }
                     for (let i = 0; i < PANELS; i++) {
-                        const rec = exoNodeDom(conn.build(PANEL, rows[i]));
+                        const rec = exoNodeDom(wireExoNode(conn.createExoNode(PANEL), rows[i]));
                         root.appendChild(rec.node);
                         rec.mount();
                         held[i] = rec;
@@ -3586,7 +3592,7 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
     // answer for months and `teardown-phases.tsx`'s asserted the right one, and neither of them
     // was checked here. It is proved TWICE, by two routes that share nothing:
     //
-    //   THE FLAG, off the compiled schema. `ownsElement[port] === 1` is what `c.childList` passes
+    //   THE FLAG, off the compiled schema. `ownsElement[port] === 1` is what `c.portChildList` passes
     //   `createExoChildList` as its `ownsParent`, and the schema compiler sets it exactly
     //   where the port is its element's only child. This is `teardown-phases.tsx`'s `gateSchemas`
     //   in this axis's costume, down to reading `schema.ports.panels.index`.
@@ -3612,7 +3618,7 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
         const gateRows = createExoBenchSource<readonly TToggleRow[]>(HIDDEN);
         const { schema: GATE_HOST_SCHEMA, host: GATE_HOST } = createExoToggleHost(
             gateRows,
-            (cc, row: TToggleRow) => cc.build(PANEL, row)
+            (cc, row: TToggleRow) => wireExoNode(cc.createExoNode(PANEL), row)
         );
         const portIndex = GATE_HOST_SCHEMA.ports.panels.index;
         const owns = exoDomSchemaOf(GATE_HOST, EXO_BACKEND).ownsElement[portIndex];
@@ -4208,7 +4214,7 @@ export async function benchmarkToggle(rounds = 100, batch = 1): Promise<void> {
                     return;
                 }
                 for (let i = 0; i < PANELS; i++) {
-                    const rec = exoNodeDom(conn.build(PANEL, rows[i]));
+                    const rec = exoNodeDom(wireExoNode(conn.createExoNode(PANEL), rows[i]));
                     root.appendChild(rec.node);
                     rec.mount();
                     held[i] = rec;

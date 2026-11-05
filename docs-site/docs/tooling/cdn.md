@@ -43,11 +43,11 @@ are server-side.)
 Each of the five publishes **three** files a browser can load (`dist/index.cjs` is
 the fourth and is for Node), and picking the right one is the whole of this page:
 
-| file | for | minified |
-| --- | --- | --- |
-| `dist/index.js` | anyone with a bundler — this is what `import '@exodra/dom'` resolves to | no, deliberately: your bundler minifies it and decides your own `NODE_ENV` |
-| `dist/exodra.esm.js` | `<script type="module">` on a page with no build step | yes, and `NODE_ENV` is baked to `production` |
-| `dist/exodra.global.js` | classic `<script src>`, no modules | yes, and `NODE_ENV` is baked to `production` |
+| file                    | for                                                                     | minified                                                                   |
+| ----------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `dist/index.js`         | anyone with a bundler — this is what `import '@exodra/dom'` resolves to | no, deliberately: your bundler minifies it and decides your own `NODE_ENV` |
+| `dist/exodra.esm.js`    | `<script type="module">` on a page with no build step                   | yes, and `NODE_ENV` is baked to `production`                               |
+| `dist/exodra.global.js` | classic `<script src>`, no modules                                      | yes, and `NODE_ENV` is baked to `production`                               |
 
 **Do not import `dist/index.js` from a CDN.** It is the readable, un-minified
 copy, and for `@exodra/dom` that is 55.7 KB gzip against `exodra.global.js`'s
@@ -69,8 +69,8 @@ what every example below does.
 The module build is `dist/exodra.esm.js`, named outright in the URL:
 
 ```
-https://cdn.jsdelivr.net/npm/@exodra/dom@0.4.0/dist/exodra.esm.js
-https://unpkg.com/@exodra/dom@0.4.0/dist/exodra.esm.js
+https://cdn.jsdelivr.net/npm/@exodra/dom@0.4.1/dist/exodra.esm.js
+https://unpkg.com/@exodra/dom@0.4.1/dist/exodra.esm.js
 ```
 
 **Use an import map.** `@exodra/dom` and `@exodra/router` do not re-bundle the
@@ -82,12 +82,12 @@ what resolves it, and it pins every version in one place as a bonus:
 ```html
 <script type="importmap">
 { "imports": {
-  "@exodra/core":       "https://cdn.jsdelivr.net/npm/@exodra/core@0.4.0/dist/exodra.esm.js",
+  "@exodra/core":       "https://cdn.jsdelivr.net/npm/@exodra/core@0.4.1/dist/exodra.esm.js",
   "@exodra/context":    "https://cdn.jsdelivr.net/npm/@exodra/context@0.3.0/dist/index.js",
-  "@exodra/dom":        "https://cdn.jsdelivr.net/npm/@exodra/dom@0.4.0/dist/exodra.esm.js",
-  "@exodra/router":     "https://cdn.jsdelivr.net/npm/@exodra/router@0.4.0/dist/exodra.esm.js",
+  "@exodra/dom":        "https://cdn.jsdelivr.net/npm/@exodra/dom@0.4.1/dist/exodra.esm.js",
+  "@exodra/router":     "https://cdn.jsdelivr.net/npm/@exodra/router@0.4.1/dist/exodra.esm.js",
   "@exodra/forms":      "https://cdn.jsdelivr.net/npm/@exodra/forms@0.4.0/dist/exodra.esm.js",
-  "@exodra/list-reconcile": "https://cdn.jsdelivr.net/npm/@exodra/list-reconcile@0.3.0/dist/exodra.esm.js"
+  "@exodra/list-reconcile": "https://cdn.jsdelivr.net/npm/@exodra/list-reconcile@0.3.1/dist/exodra.esm.js"
 }}
 </script>
 <script type="module">
@@ -145,7 +145,7 @@ their `exodra.esm.js` loads straight from a URL:
 
 ```html
 <script type="module">
-  import { reconcileExoOrder } from 'https://cdn.jsdelivr.net/npm/@exodra/list-reconcile@0.3.0/dist/exodra.esm.js';
+  import { createExoChildrenReconciler } from 'https://cdn.jsdelivr.net/npm/@exodra/list-reconcile@0.3.1/dist/exodra.esm.js';
 </script>
 ```
 
@@ -164,7 +164,7 @@ reach for it from an application you bundle — it is a pre-minified copy with
 
 ### `/+esm` is jsDelivr's file, not this repository's
 
-jsDelivr also answers `…/@exodra/dom@0.4.0/+esm`. That is jsDelivr's own transform
+jsDelivr also answers `…/@exodra/dom@0.4.1/+esm`. That is jsDelivr's own transform
 of `dist/index.js`, produced on their servers — it resolves the internal
 `@exodra/*` imports for you, so it needs no import map, but it is not a file this
 repository publishes, measures or can promise anything about. `dist/exodra.esm.js`
@@ -177,8 +177,7 @@ is. Prefer it.
   // A page is a machine, the router is provided by a call inside a
   // machine, and the route boundary is the `ExoOutlet` machine.
   // `@exodra/router` references core, so it needs the import map above.
-  // The outlet opens a child list, so the backend composes withExoChildList.
-  import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+  import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
   import {
     createExoRouter,
     createExoBrowserHistory,
@@ -187,7 +186,7 @@ is. Prefer it.
     ExoLink,
   } from '@exodra/router';
 
-  const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+  const backend = withExoCompiler(new ExoDomBackend());
   // ...
 </script>
 ```
@@ -198,7 +197,7 @@ For no-module pages, each of those five packages also ships a minified IIFE that
 attaches to a single `window.Exodra` namespace. jsDelivr serves it from the bare
 package URL (via the package's `jsdelivr` / `unpkg` field, which points at
 `./dist/exodra.global.js`); naming that path outright —
-`…/@exodra/core@0.4.0/dist/exodra.global.js` — works too and does not depend on
+`…/@exodra/core@0.4.1/dist/exodra.global.js` — works too and does not depend on
 the CDN resolving the field.
 
 Those two manifest fields keep pointing at the IIFE now that there is a module
@@ -261,11 +260,11 @@ instance is shared no matter how many packages a page loads. Both browser builds
 draw the same lines, in the two dialects; each package's `tsup.config.ts` is where
 they are declared:
 
-| package | `exodra.global.js` references | `exodra.esm.js` imports |
-| --- | --- | --- |
-| `@exodra/dom` | `Exodra.core` | `@exodra/core` |
-| `@exodra/router` | `Exodra.core` | `@exodra/core` |
-| `@exodra/core`, `@exodra/forms`, `@exodra/list-reconcile` | nothing — self-contained | nothing — self-contained |
+| package                                                   | `exodra.global.js` references | `exodra.esm.js` imports  |
+| --------------------------------------------------------- | ----------------------------- | ------------------------ |
+| `@exodra/dom`                                             | `Exodra.core`                 | `@exodra/core`           |
+| `@exodra/router`                                          | `Exodra.core`                 | `@exodra/core`           |
+| `@exodra/core`, `@exodra/forms`, `@exodra/list-reconcile` | nothing — self-contained      | nothing — self-contained |
 
 **Load order matters** for the two that reference something: put `core` on the
 page before `dom` / `router`. Loading all of
@@ -275,17 +274,17 @@ the one thing it is strictly easier about than the globals.
 
 What each namespace holds:
 
-| package | global |
-| --- | --- |
-| `@exodra/core` | `Exodra.core` — `createExoSchema`, `createExoMachine`, `withExoTransitions`, `withExoWire`, `withExoHandlers`, `withExoEffects`, `composeExoMachine`, `createExoNamedSchema`, `createExoStatic`, `exoPorts`, the `EXO_PORT_*` kinds, `withExoSchemaAsserts`, `composeExoPlugins` |
-| `@exodra/dom` | `Exodra.dom` — `ExoDomBackend`, `withExoCompiler`, `withExoHydration`, `exoForeignNode` |
-| `@exodra/router` | `Exodra.router` — `createExoRouter`, `createExoBrowserHistory`, `provideExoRouter`, `injectExoRouter`, `ExoOutlet`, `exoOutlet`, `ExoLink` |
-| `@exodra/list-reconcile` | `Exodra.listReconcile` — `reconcileExoOrder`, `createExoKeyedList`, `EXO_KEYED_LIST_VOCABULARY` |
-| `@exodra/forms` | `Exodra.forms` — `readExoControlValue`, `readExoControlValues`, `writeExoChoice` |
+| package                  | global                                                                                                                                                                                                                                                                           |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@exodra/core`           | `Exodra.core` — `createExoSchema`, `createExoMachine`, `withExoTransitions`, `withExoWire`, `withExoHandlers`, `withExoEffects`, `composeExoMachine`, `createExoNamedSchema`, `createExoStatic`, `exoPorts`, the `EXO_PORT_*` kinds, `withExoSchemaAsserts`, `composeExoPlugins` |
+| `@exodra/dom`            | `Exodra.dom` — `ExoDomBackend`, `withExoCompiler`, `withExoHydration`, `exoForeignNode`                                                                                                                                                                                          |
+| `@exodra/router`         | `Exodra.router` — `createExoRouter`, `createExoBrowserHistory`, `provideExoRouter`, `injectExoRouter`, `ExoOutlet`, `exoOutlet`, `ExoLink`                                                                                                                                       |
+| `@exodra/list-reconcile` | `Exodra.listReconcile` — `createExoChildrenReconciler`, and the low-level `reconcileExoOrder` pass for adapters and backends                                                                                                                                                     |
+| `@exodra/forms`          | `Exodra.forms` — `readExoControlValue`, `readExoControlValues`, `writeExoChoice`                                                                                                                                                                                                 |
 
 ## Versions
 
-CDNs serve exactly what's **published to npm**. Pin an exact version (`@exodra/core@0.4.0`)
+CDNs serve exactly what's **published to npm**. Pin an exact version (`@exodra/core@0.4.1`)
 for production so a future release can't shift under you; use a range (`@0.3`) to
 follow patch/minor. Whatever code is on the CDN is the last published version — to
 get a change onto the CDN, publish a new version to npm.

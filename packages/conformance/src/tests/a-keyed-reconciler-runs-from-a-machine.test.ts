@@ -1,26 +1,23 @@
 // @vitest-environment jsdom
 import {
-    composeExoPlugins,
     createExoMachine,
     composeExoMachine,
     withExoTransitions,
     withExoEffects,
+    withExoWire,
     createExoSchema,
 } from '@exodra/core';
 import type { TExoChildrenPort, TExoTextPort } from '@exodra/core';
-import { ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
-import { EXO_KEYED_LIST_VOCABULARY } from '@exodra/list-reconcile';
-import type { TExoKeyedList, TExoKeyedListApi } from '@exodra/list-reconcile';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 import { source } from '@exodra/test-utils';
 import { describe, expect, it } from 'vitest';
 
 type TUser = { readonly id: number; readonly name: string };
 
-type TListState = { readonly list: TExoKeyedList<TUser> };
-
-describe('a keyed list is a pack', () => {
-    it('runs from a machine: the list opened once, reconciled and refilled through transitions', () => {
+describe('a keyed reconciler', () => {
+    it('runs from a machine: reconciled and refilled through transitions', () => {
         const ROW_SCHEMA = createExoSchema((b) => {
             let name!: TExoTextPort;
             b.el('li', null, (li) => {
@@ -28,15 +25,12 @@ describe('a keyed list is a pack', () => {
             });
             return { name };
         });
-        const mRow = createExoMachine<TExoDomNode>(ROW_SCHEMA);
-        const ROW = composeExoMachine(mRow, (m) =>
-            withExoTransitions(m, {
-                setUser: (row: TExoDomNode, user: TUser) => {
-                    row.text(ROW_SCHEMA.ports.name, user.name);
-                },
+        const ROW = composeExoMachine(createExoMachine<TExoDomNode>(ROW_SCHEMA), (m) =>
+            withExoWire(m, (row: TExoDomNode, user: TUser) => {
+                row.text(ROW_SCHEMA.ports.name, user.name);
             })
         );
-        const { setUser } = ROW.transitions;
+        const reconcileUsers = createExoChildrenReconciler<TUser>(ROW, { key: (user) => user.id });
 
         const users = source<readonly TUser[]>([
             { id: 1, name: 'ada' },
@@ -49,28 +43,11 @@ describe('a keyed list is a pack', () => {
             });
             return { rows };
         });
-        const mList = createExoMachine<TExoDomNode & TExoKeyedListApi, unknown, TListState>(
-            LIST_SCHEMA,
-            {
-                createInitialState: (c) => ({
-                    list: c.keyedList(
-                        LIST_SCHEMA.ports.rows,
-                        (user: TUser) => user.id,
-                        (user: TUser) => {
-                            const row = c.build(ROW);
-                            setUser(row, user);
-                            return row;
-                        },
-                        setUser
-                    ),
-                }),
-            }
-        );
         const LIST = composeExoMachine(
-            mList,
+            createExoMachine<TExoDomNode>(LIST_SCHEMA),
             (m) =>
                 withExoTransitions(m, {
-                    showUsers: (c) => c.state.list.reconcile(users.getValue()),
+                    showUsers: (c) => reconcileUsers(c, LIST_SCHEMA.ports.rows, users.getValue()),
                 }),
             (m) => {
                 const { showUsers } = m.transitions;
@@ -83,12 +60,8 @@ describe('a keyed list is a pack', () => {
             }
         );
 
-        const backend = composeExoPlugins(
-            withExoChildList(withExoCompiler(new ExoDomBackend())),
-            EXO_KEYED_LIST_VOCABULARY
-        );
         const parent = document.createElement('div');
-        backend.render(LIST, parent);
+        withExoCompiler(new ExoDomBackend()).render(LIST, parent);
         const ada = parent.querySelector('li');
 
         users.setValue([
@@ -98,9 +71,5 @@ describe('a keyed list is a pack', () => {
 
         expect(parent.innerHTML).toBe('<ul><li>bob</li><li>ada lovelace</li></ul>');
         expect(parent.querySelectorAll('li')[1]).toBe(ada);
-    });
-
-    it('is absent from a backend that did not compose it', () => {
-        expect('keyedList' in new ExoDomBackend()).toBe(false);
     });
 });

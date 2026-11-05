@@ -9,7 +9,7 @@ runs a component through that backend with the request installed as a context, a
 hands back the markup plus everything the wiring said about the response — status,
 headers, `<head>`, and the state script the client reads back.
 
-If you want *only* markup, you do not need this package at all:
+If you want _only_ markup, you do not need this package at all:
 `new ExoStrBackend().render(App)` is the whole of it.
 
 ## renderExoPage
@@ -91,15 +91,15 @@ backend.hydrate(App, document.getElementById('app')!);   // the CONTAINER
 
 There is no count to keep in step. `renderExoPage` renders one root and `hydrate`
 adopts one root, so the two cannot disagree about how many there were. What they
-*can* disagree about is the composition, which is why the browser's backend should
+_can_ disagree about is the composition, which is why the browser's backend should
 compose the same plugins the server's did, for every name that exists on both
 sides — see below.
 
-**A reconciled list adopts the rows it was served.** A machine opens the child list
-in `createInitialState` and hands `reconcileExoOrder` its items from an effect that
-draws first; hydration hands the served rows to `build` in document order, sweeps
-the ones the client no longer wants and builds the ones it wants past them. The one
-shape it refuses is a child list standing behind another with only static markup
+**A reconciled list adopts the rows it was served.** A machine calls its reconciler
+(made once with `createExoChildrenReconciler` from `@exodra/list-reconcile`) with its
+items from an effect that draws first; hydration hands the served rows to the rows it
+creates in document order, sweeps the ones the client no longer wants and builds the
+ones it wants past them. The one shape it refuses is a list standing behind another with only static markup
 between them: there the first row of the list behind cannot be told from a surplus
 of the one in front.
 
@@ -132,7 +132,7 @@ be found by a walker over the rendered tree.
 machine, and a schema is rooted at an element — `compileExoStrSchema`'s `emit` opens
 `'<' + tag` before anything else can happen. There is no schema that renders
 nothing, so `<Status/>` would have to print a tag into the body. Nor is there a
-walk to find it in: children are attached because a machine *called* `c.one` /
+walk to find it in: children are attached because a machine _called_ `c.one` /
 `c.list`, so a "component that only writes to the context" would have to be
 invoked by the very machine that could have written to the context itself.
 
@@ -146,7 +146,7 @@ by the compiler.
 **Order becomes visible.** Two `<Status>` in a tree resolve by document order of a
 walk that runs somewhere else; two `setStatus` calls resolve by the order they are
 written, in one function you are already reading. Likewise `setHeader` overriding
-against `appendHeader` accumulating: `append` is a different *method* rather than
+against `appendHeader` accumulating: `append` is a different _method_ rather than
 a boolean prop.
 
 **It composes with things that are not markup.** A router deciding a 404, a data
@@ -168,30 +168,30 @@ and a silent no-op object would hide that.
 
 ### What this package exports
 
-- `renderExoPage(component, options?): TExoSsrPage` — the server entry point. It
-  renders **one** root; there is no instance count, because rows that vary are a
-  list inside the component rather than a repetition of it.
-  `options` (`TExoSsrPageOptions`): `backend`, `status`, `headers`, `head`, `state`,
-  `context`, `params`. `params` is handed to the page machine's `wire`. `context` is a frame the request's own is chained under, for a caller that
-  already has something to provide — a router handing the page its route. It is **passed
-  to `render`**, never installed in a module holder, so two requests rendering at once
-  cannot see each other's.
-  `backend` is the `ExoStrBackend` this page renders from — the object the
-  application composed. Left out, the page runs on a backend composed with
-  nothing. Build your own **once**, at module level, and pass the same object every
-  request: a schema is cached per backend by pointer, so one built per request
-  recompiles every declaration on every request.
-  `TExoSsrPage` carries `html`, `status`, `headers`, `head`, `stateScript`,
-  `state` and `renderDocument(options?)`.
-- `EXO_SSR_RESPONSE` — the context token a machine injects to reach the request. What it
-  resolves to is a `TExoSsrResponse`: `setStatus`, `setHeader`, `appendHeader`,
-  `addHead`, `setState`, and the getters behind them.
-- `ExoSsrResponse` — that object as a class, for a caller that drives the render
-  itself instead of going through `renderExoPage`.
-- `readExoStateScript()` — the client end of the state protocol.
-- `renderExoJsonScript(json, { id, nonce })` / `escapeExoJsonForScript(json)` — the one
-  emitter of a `<script type="application/json">` payload in this package, and its
-  escaper. The state script goes through it.
+-   `renderExoPage(component, options?): TExoSsrPage` — the server entry point. It
+    renders **one** root; there is no instance count, because rows that vary are a
+    list inside the component rather than a repetition of it.
+    `options` (`TExoSsrPageOptions`): `backend`, `status`, `headers`, `head`, `state`,
+    `context`, `params`. `params` is handed to the page machine's `wire`. `context` is a frame the request's own is chained under, for a caller that
+    already has something to provide — a router handing the page its route. It is **passed
+    to `render`**, never installed in a module holder, so two requests rendering at once
+    cannot see each other's.
+    `backend` is the `ExoStrBackend` this page renders from — the object the
+    application composed. Left out, the page runs on a backend composed with
+    nothing. Build your own **once**, at module level, and pass the same object every
+    request: a schema is cached per backend by pointer, so one built per request
+    recompiles every declaration on every request.
+    `TExoSsrPage` carries `html`, `status`, `headers`, `head`, `stateScript`,
+    `state` and `renderDocument(options?)`.
+-   `EXO_SSR_RESPONSE` — the context token a machine injects to reach the request. What it
+    resolves to is a `TExoSsrResponse`: `setStatus`, `setHeader`, `appendHeader`,
+    `addHead`, `setState`, and the getters behind them.
+-   `ExoSsrResponse` — that object as a class, for a caller that drives the render
+    itself instead of going through `renderExoPage`.
+-   `readExoStateScript()` — the client end of the state protocol.
+-   `renderExoJsonScript(json, { id, nonce })` / `escapeExoJsonForScript(json)` — the one
+    emitter of a `<script type="application/json">` payload in this package, and its
+    escaper. The state script goes through it.
 
 ## Installation
 

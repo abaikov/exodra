@@ -16,7 +16,7 @@ export function showExoOutletRoute(state: TExoOutletState): void {
                 return;
             }
             state.match = match;
-            wireExoNode(state.pageNode, pageMachine, match);
+            wireExoNode(state.pageNode, match);
         }
         showNestedRoutes(state);
         return;
@@ -37,7 +37,7 @@ function replacePage(
     state.pageMachine = pageMachine;
     if (pageMachine === null) return;
     if (state.ids !== null) state.ids.next = 0;
-    const pageNode = state.node.build(pageMachine, match);
+    const pageNode = wireExoNode(state.node.createExoNode(pageMachine), match);
     state.pageNode = pageNode;
     state.childList.insert(pageNode);
 }

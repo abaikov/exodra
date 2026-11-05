@@ -41,7 +41,7 @@ builds onto one `window.Exodra` namespace. Both were opened in a browser and run
 on 2026-08-15.
 
 **Current state.** The pages load this repository's own `dist/`, so those have to
-be built first — the last *published* `@exodra/core` is `0.2.0`, a renderer that
+be built first — the last _published_ `@exodra/core` is `0.2.0`, a renderer that
 has since been deleted, so a CDN URL would load a different program that happens
 to share a name (`packages/examples/no-build/README.md`).
 
@@ -64,16 +64,16 @@ There is no interpreter for a JSX element, and there is deliberately no
 **The common arrangement.** How children are diffed and moved is the framework's
 central algorithm, and there is no interface anybody outside it can implement.
 
-**Here.** The reconciler is not part of the backend at all. It is a free function,
-`reconcileExoOrder(kids, shown, keys, want, build)`, which a transition calls over two
-doors every exonode has — `c.childList(port)` to place a row and
-`c.build(component, params)` to make one
-(`packages/list-reconcile/src/reconcileExoOrder.ts`). It is handed the order shown
-and the order wanted and returns the new order shown, so the machine keeps that in
-its own state. A second strategy is a second function over the same doors, with no
-reconciler to subclass and nothing to opt out of. One ships beside it:
-`createExoKeyedList`, the same pass over an extracted key instead of the item
-object — see item 3.
+**Here.** The reconciler is not part of the backend at all. It is a function made once by
+`createExoChildrenReconciler(rowMachine)` from `@exodra/list-reconcile`, which a transition
+calls as `reconcile(c, port, items)` over doors every exonode has — the children port to
+place a row, and `c.createExoNode(component)` wired with the item to make one
+(`packages/list-reconcile/src/createExoChildrenReconciler.ts`). Outside a reconciler the same
+port takes `c.appendChild`, `c.insertChild`, `c.moveChild` and `c.removeChild` —
+see [Children](../guides/children.md). It remembers the order it showed per node and port,
+so the machine keeps nothing for it. A second strategy is a second function over the same
+doors, with no reconciler to subclass and nothing to opt out of. The same call takes
+`{ key }` for the same pass over an extracted key instead of the item object — see item 3.
 
 **Current state.** A reconciler that reads a child's old position off the
 **document** instead of off its own mirror — so a region repairs itself when a
@@ -88,29 +88,28 @@ a choice.
 **Here.** The core reconciles by **object identity** — a child that is still in
 the array is moved, a child that is not is dropped, and neither is rebuilt
 (`reconcileExoOrder`, `packages/list-reconcile/src/reconcileExoOrder.ts`).
-Keys are an opt-in pack, `EXO_KEYED_LIST_VOCABULARY` from `@exodra/list-reconcile`,
-which puts `c.keyedList(port, keyOf, build, update)` on the exonode of a backend
-that composed it and on no other; it returns `{ reconcile(items) }`, kept in the
-machine's state and called from a transition (`createExoKeyedList` is the same list
-as a free function over a child list). It is a case about a data layer: a caller whose rows arrive as freshly
+Keys are an opt-in: `createExoChildrenReconciler(rowMachine, { key: (item) => item.id })`
+matches rows by the key, and a key that stays under a new object keeps its row and
+re-wires it with the new item. It is a case about a data layer: a caller whose rows arrive as freshly
 parsed JSON on every poll has a new object per row per refetch, and telling them
 to build a stable object per entity first is telling them to write that file.
 
 **A page you can open.** `packages/examples/plugin-slots/keyed-list.html` renders
-one row component twice over the same data — left through `reconcileExoOrder`,
-right through `c.keyedList` with `item => item.id`. Button 1 hands both panels a
+one row component twice over the same data — left reconciled by identity, right
+keyed by `item => item.id`. Button 1 hands both panels a
 **refetch**: the same ids and labels as `JSON.parse(JSON.stringify(…))`. The left
 panel has three rows it has never seen and rebuilds all of them; the right keeps
 all three and the build stamps stand still. Button 2 changes the labels: the right
-panel's rows stay and their labels move, through the `update` argument the call
-site passes (`(row, item) => …`, the row's own transition — there are no props).
+panel's rows stay and their labels move, because the keyed side updates the row it kept
+with the new item (there are no props).
 Button 3 repeats an id: a repeated key is one row per occurrence, as a repeated
 item is in an identity list.
 
-**On the server and under hydration.** The string backend prints a row at `build`,
-so a row there takes its data inside its own initial state, and a list is printed once and
-never updated. Under hydration the child list opens an adoption cursor and each
-`build` adopts the next served row, as for an identity list; the keyed list has no
+**On the server and under hydration.** The string backend takes a row's markup when
+its parent's markup is taken, so a row's wire still reaches the page, and a list is
+printed once and never updated. Under hydration each row, the first time it is placed,
+takes the element the server printed at that position of that port, as for an identity
+list ([Children](../guides/children.md#hydration)); the keyed list has no
 hydration test of its own.
 
 ## 4. "You cannot keep a subtree alive, or pool it"
@@ -118,12 +117,13 @@ hydration test of its own.
 **The common arrangement.** A view that leaves the tree is destroyed, and reuse
 is the framework's business.
 
-**Here.** The lifecycle object *is* the child, and it is the public extension
+**Here.** The lifecycle object _is_ the child, and it is the public extension
 point:
 
 ```ts no-check
 // packages/dom/src/dom/types/TExoDomChild.ts — `mount`/`unmount` are called blindly
-const block = c.build(DETAILS);
+const block = c.createExoNode(DETAILS);
+wireExoNode(block);
 exoNodeDom(block).unmount = NOTHING;   // keep my subscriptions, I am coming back
 ```
 
@@ -136,12 +136,12 @@ block and build a different one, ms per timed region, lower is better:
 
 <!-- gate: axis=toggle label=base1 -->
 
-| Participant | ms |
-|---|---|
+| Participant                    | ms      |
+| ------------------------------ | ------- |
 | exodraKept (panels kept alive) | **3.3** |
-| mikadoPooled | 3.5 |
-| mikado | 7.4 |
-| exodra (out of the box) | 10.2 |
+| mikadoPooled                   | 3.5     |
+| mikado                         | 7.4     |
+| exodra (out of the box)        | 10.2    |
 
 Out of the box this axis is Exodra's weakest: 10.2 against mikado's 7.4, because
 the axis is dominated by rebuilding. The extension point is what closes it — 10.2 → 3.3,
@@ -159,12 +159,10 @@ old axis measured 25 panel builds per sample and landed five participants on one
 timer tick), and [Benchmarks](../benchmarks.md) now publishes both columns in
 full.
 
-**The hook-free form.** The child list itself has a placement pair that runs no hook
-at all: `detach(i)` takes a child's node out without unmounting or disposing it, and
-`attach(child, i)` puts it back without mounting it
-(`packages/dom/src/dom/types/TExoChildList.ts`). A kept child is ended by putting it
-back and calling `remove`, which disposes it
-(`packages/dom/src/dom/tests/make-exo-child-list.test.ts`).
+**The port-method form.** `c.removeChild(node)` takes a child out of the tree without
+destroying it — state, element, effects and subscriptions are kept — and
+`c.insertChild(port, node, at)` puts it back. A kept child is ended by
+`destroyExoNode(node)` ([Children](../guides/children.md)).
 
 **There is no element pool.** The pooling half of the heading — handing an element
 that served one wiring to the next — has no seam: every instance's element is
@@ -180,7 +178,7 @@ plus a lifecycle hook plus a rule about not letting the framework near it.
 **Here.** `exoForeignNode(c, element, hooks?)` gives an element the half a child
 needs — `mount`, `unmount`, disposers, the list's scratch — so that from the
 list's point of view nothing foreign is happening
-(`packages/dom/src/foreign/exoForeignNode.ts:22-63`). It travels the same lines as
+(`packages/dom/src/foreign/exoForeignNode.ts:21-59`). It travels the same lines as
 every other child: placed, moved, dropped, disposed.
 
 **Current state.** `packages/examples/escape-hatches/` runs it: one row of an
@@ -216,21 +214,21 @@ There is **no foreign backend behind a plugin interface.** An element carries no
 pointer back to its child and `exoNodeDom` takes a child and refuses anything else
 (`packages/dom/src/dom/exoNodeDom.ts`): the renderer holds children as `TExoDomChild`s
 directly and never needs an element→child read at all. What is deliberately outside every plugin interface is the
-*create* direction — `makeNodeDom` is the one place a child is constructed and is not exported. So:
+_create_ direction — `makeNodeDom` is the one place a child is constructed and is not exported. So:
 
-- What works is **one element handed in**, filled by whatever you like, treated as
-  an opaque child. Client render only.
-- What does not exist is a second *renderer* plugged into the schema — there is no plugin
-  interface for the element builder, the schema compiler, or hydration's adoption **walk**. The
-  attribute and text **setters** are behind the `writers` interface, which is
-  [item 8](#8-you-cannot-change-what-a-value-means-on-the-way-to-the-element).
-  The *children* arm of that same branch stays welded on
-  purpose — `compileExoHydrateSchema.ts:44-49` identifies a raw-markup port by
-  pointer-comparing its setter against `setExoHtml`.
-- On the server a foreign node is markup the caller supplies: `c.foreign(t)` calls
-  `t.createStr()` there (`packages/string/src/foreign/constants/EXO_STR_FOREIGN_VOCABULARY.ts:7-9`),
-  and `exoForeignMarkup(markup)` is the unescaped string it hands back. The parameter
-  type is the only guard — nothing at runtime tells markup from `[object Object]`.
+-   What works is **one element handed in**, filled by whatever you like, treated as
+    an opaque child. Client render only.
+-   What does not exist is a second _renderer_ plugged into the schema — there is no plugin
+    interface for the element builder, the schema compiler, or hydration's adoption **walk**. The
+    attribute and text **setters** are behind the `writers` interface, which is
+    [item 8](#8-you-cannot-change-what-a-value-means-on-the-way-to-the-element).
+    The _children_ arm of that same branch stays welded on
+    purpose — `compileExoHydrateSchema.ts:44-49` identifies a raw-markup port by
+    pointer-comparing its setter against `setExoHtml`.
+-   On the server a foreign node is markup the caller supplies: `c.foreign(t)` calls
+    `t.createStr()` there (`packages/string/src/foreign/constants/EXO_STR_FOREIGN_VOCABULARY.ts:7-9`),
+    and `exoForeignMarkup(markup)` is the unescaped string it hands back. The parameter
+    type is the only guard — nothing at runtime tells markup from `[object Object]`.
 
 ## 7. "How a listener gets attached is the framework's business"
 
@@ -331,20 +329,20 @@ parse.
 
 **Current state, and what it gives up.**
 
-- **The server is not composed.** `@exodra/string` compiles through its own
-  `EXO_STR_WRITERS` by module import, so it prints the stringified attribute for the
-  same port. **Byte parity between the backends is a
-  property of the shipped pack alone.**
-- **Hydration keeps the live writer for a taken-over port.** A pack declares
-  `markupCarries: false` for a port whose value no bytes could have carried, and
-  `compileExoHydrateSchema` does not give those ports a repairing fill
-  (`packages/dom/src/hydrate/compileExoHydrateSchema.ts`), so an adopted element
-  receives its first property write.
-- **One route bypasses it.** `portNodeWriter()` loads the setter table once and
-  addresses ports by number from then on, so a pack sees the write it handed over and
-  nothing after it. Every other route — `c.attr`, `c.text`, and the repeat writes
-  a transition makes through them — goes through the table on every
-  fill.
+-   **The server is not composed.** `@exodra/string` compiles through its own
+    `EXO_STR_WRITERS` by module import, so it prints the stringified attribute for the
+    same port. **Byte parity between the backends is a
+    property of the shipped pack alone.**
+-   **Hydration keeps the live writer for a taken-over port.** A pack declares
+    `markupCarries: false` for a port whose value no bytes could have carried, and
+    `compileExoHydrateSchema` does not give those ports a repairing fill
+    (`packages/dom/src/hydrate/compileExoHydrateSchema.ts`), so an adopted element
+    receives its first property write.
+-   **One route bypasses it.** `portNodeWriter()` loads the setter table once and
+    addresses ports by number from then on, so a pack sees the write it handed over and
+    nothing after it. Every other route — `c.attr`, `c.text`, and the repeat writes
+    a transition makes through them — goes through the table on every
+    fill.
 
 ## The open holes, in one place
 

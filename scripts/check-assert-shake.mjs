@@ -52,6 +52,8 @@ const UNCONDITIONAL = {
         "called by @exodra/dom's childList door, EXO_DOM_NODE_VOCABULARY.ts",
     'packages/core/src/schema/markup/asserts/assertExoNoTextAfterChildrenPort.ts':
         "called by @exodra/dom's compiler, compileExoDomSchema.ts",
+    'packages/core/src/schema/markup/asserts/assertExoContentBeside.ts':
+        "called by @exodra/dom's and @exodra/string's compilers, compileExoDomSchema.ts and compileExoStrJsonDeclaration.ts",
     'packages/core/src/machine/asserts/assertExoArming.ts':
         "called by every backend's childList/one/list door: a re-run wire may not place children",
 };

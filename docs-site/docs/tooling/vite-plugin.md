@@ -37,10 +37,10 @@ export default defineConfig({
 
 ### Options
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `pagesDir` | string | `'src/pages'` | Directory for page components. |
-| `apiDir` | string | `'src/api'` | Directory for API routes. |
+| Option         | Type   | Default          | Description                                               |
+| -------------- | ------ | ---------------- | --------------------------------------------------------- |
+| `pagesDir`     | string | `'src/pages'`    | Directory for page components.                            |
+| `apiDir`       | string | `'src/api'`      | Directory for API routes.                                 |
 | `schemaSource` | string | `'@exodra/core'` | Where the compiled output imports `createExoSchema` from. |
 
 `ssr` and `alias` are still declared on the options type but nothing in the
@@ -83,9 +83,9 @@ src/pages/
 
 ### Special files
 
-- `index.tsx` — default route for a directory.
-- A file whose name starts with `_` is ignored by the generator: it produces no
-  route and nothing else.
+-   `index.tsx` — default route for a directory.
+-   A file whose name starts with `_` is ignored by the generator: it produces no
+    route and nothing else.
 
 ### Layouts
 
@@ -99,9 +99,9 @@ boundary, so catching a throwing page is the application's job.
 
 ### Dynamic routes
 
-- `[param].tsx` — single dynamic segment (`:param`).
-- `[...params].tsx` — catch-all route.
-- `[[...params]].tsx` — optional catch-all route.
+-   `[param].tsx` — single dynamic segment (`:param`).
+-   `[...params].tsx` — catch-all route.
+-   `[[...params]].tsx` — optional catch-all route.
 
 ### Using generated routes
 
@@ -120,12 +120,12 @@ machine, or `exoOutlet(tag)` for another element.
 // main.ts
 import { EXO_PORT_CHILDREN, createExoMachine, createExoSchema, exoPorts } from '@exodra/core';
 import type { TExoChildrenWiring, TExoMachineNode } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import {
-  createExoBrowserHistory,
-  createExoRouter,
-  exoOutlet,
-  provideExoRouter,
+createExoBrowserHistory,
+createExoRouter,
+exoOutlet,
+provideExoRouter,
 } from '@exodra/router';
 import type { TExoOutletWiring } from '@exodra/router';
 import { routes } from 'virtual:exodra-routes';
@@ -136,23 +136,24 @@ const Routed = exoOutlet('main');
 const AppPorts = exoPorts({ body: EXO_PORT_CHILDREN });
 
 const appSchema = createExoSchema(AppPorts, b => {
-  b.el('div', { class: 'app' }, d => {
-    d.childrenPort(AppPorts.body);
-  });
+b.el('div', { class: 'app' }, d => {
+d.childrenPort(AppPorts.body);
+});
 });
 const appMachine = createExoMachine<TExoChildrenWiring & TExoMachineNode & TExoOutletWiring>(
-  appSchema,
-  {
-    createInitialState: c => {
-      provideExoRouter(c, router);
-      c.one(AppPorts.body, Routed);
-    },
-  }
+appSchema,
+{
+createInitialState: c => {
+provideExoRouter(c, router);
+c.one(AppPorts.body, Routed);
+},
+}
 );
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 backend.render(appMachine, document.getElementById('app') as HTMLElement);
-```
+
+````
 
 For TypeScript, declare the virtual module:
 
@@ -164,7 +165,7 @@ declare module 'virtual:exodra-routes' {
   import type { TExoRoute } from '@exodra/router';
   export const routes: TExoRoute[];
 }
-```
+````
 
 ## API routes
 
@@ -236,7 +237,7 @@ by `backend.hydrate` on a `@exodra/dom` backend composed with
 
 ## Links
 
-- npm:
-  [@exodra/vite-plugin](https://www.npmjs.com/package/@exodra/vite-plugin)
-- GitHub:
-  [packages/vite-plugin-exodra](https://github.com/abaikov/exodra/tree/master/packages/vite-plugin-exodra)
+-   npm:
+    [@exodra/vite-plugin](https://www.npmjs.com/package/@exodra/vite-plugin)
+-   GitHub:
+    [packages/vite-plugin-exodra](https://github.com/abaikov/exodra/tree/master/packages/vite-plugin-exodra)

@@ -276,11 +276,7 @@ function updateSlot(pass: TExoReactPass, slot: TExoReactSlot, element: TExoReact
         if (previous === params && slot.ref === element.ref) return;
         slot.props = params;
         slot.ref = element.ref;
-        wireExoNode(
-            slot.node as TExoNode<TExoDomMark>,
-            slot.type as TExoMachine<never, unknown, unknown>,
-            element
-        );
+        wireExoNode(slot.node as TExoNode<TExoDomMark>, element);
         return;
     }
     slot.props = element.props;
@@ -353,8 +349,10 @@ function placeElement(pass: TExoReactPass, key: string, element: TExoReactElemen
     }
     if (isHost(type)) {
         const slot = makeSlot(range, 'host', type, key, element);
-        slot.node = range.owner.build(
-            type as unknown as Parameters<typeof range.owner.build>[0],
+        slot.node = wireExoNode(
+            range.owner.createExoNode(
+                type as unknown as Parameters<typeof range.owner.createExoNode>[0]
+            ),
             element
         );
         pass.next.push(slot);

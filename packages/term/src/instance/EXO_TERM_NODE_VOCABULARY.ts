@@ -1,4 +1,4 @@
-import { assertExoArming, exoVocabulary } from '@exodra/core';
+import { armExoNode, assertExoArming, EXO_UNARMED_STATE, exoVocabulary } from '@exodra/core';
 import type {
     TExoBaseNodeMethods,
     TExoMachine,
@@ -16,6 +16,7 @@ import type {
 import { exoTermSchemaOf } from '../schema/exoTermSchemaOf';
 import { createExoTermChildList } from './factories/createExoTermChildList';
 import { renderExoTermInstance } from '../rendering/renderExoTermInstance';
+import { disposeExoTermChild } from './disposeExoTermChild';
 import type { TExoTermChildList } from './types/TExoTermChildList';
 import type { TExoTermChild, TExoTermRegion } from './types/TExoTermChild';
 import type { TExoTermMark } from '../rendering/types/TExoTermMark';
@@ -76,10 +77,6 @@ export interface TExoTermNodeApi {
         handler: TExoEventHandler<TExoTermEvent, TExoTermElement>,
         subject?: unknown
     ): void;
-    build<TParams>(
-        machine: TExoMachine<this, unknown, TParams>,
-        params?: TParams
-    ): TExoNode<TExoTermMark>;
     one<TParams>(
         port: TExoChildrenPort,
         machine: TExoMachine<this, unknown, TParams>,
@@ -90,7 +87,27 @@ export interface TExoTermNodeApi {
         machine: TExoMachine<this, unknown, TParams>,
         params: readonly TParams[]
     ): void;
-    childList(port: TExoChildrenPort): TExoTermChildList;
+    portChildList(port: TExoChildrenPort): TExoTermChildList;
+    createExoNode<TParams>(machine: TExoMachine<this, unknown, TParams>): TExoNode<TExoTermMark>;
+    armExoSelf(params: unknown): void;
+    deferExoTransition(
+        run: (enode: never, first: unknown, second: unknown) => void,
+        first: unknown,
+        second: unknown
+    ): boolean;
+    destroyExoSelf(): void;
+    appendChild<TNode extends TExoNode<TExoTermMark>>(port: TExoChildrenPort, node: TNode): TNode;
+    insertChild<TNode extends TExoNode<TExoTermMark>>(
+        port: TExoChildrenPort,
+        node: TNode,
+        at: number
+    ): TNode;
+    moveChild(node: TExoNode<TExoTermMark>, at: number): void;
+    moveChild(node: TExoNode<TExoTermMark>, port: TExoChildrenPort, at?: number): void;
+    removeChild<TNode extends TExoNode<TExoTermMark>>(node: TNode): TNode;
+    replaceChildren(port: TExoChildrenPort): void;
+    childAt(port: TExoChildrenPort, at: number): TExoNode<TExoTermMark> | undefined;
+    childCount(port: TExoChildrenPort): number;
 }
 
 // AN `interface` AND NOT AN ALIAS, because the component-taking members name `this`: `this` types
@@ -100,6 +117,25 @@ export interface TExoTermNodeApi {
 // Every member is written in METHOD SHORTHAND, and that is what makes `TExoTermNode` assignable
 // to core's connector types. See README, "The acceptance test".
 export interface TExoTermSurface extends TExoTermNodeApi, TExoBaseNodeMethods {}
+
+function takeExoTermChildOut(child: TExoTermChild): void {
+    const order = child.placedIn;
+    if (order === null) return;
+    order.splice(order.indexOf(child), 1);
+    child.placedIn = null;
+}
+
+function placeExoTermChild(
+    owner: TExoTermNode,
+    port: TExoChildrenPort,
+    child: TExoTermChild,
+    at?: number
+): void {
+    takeExoTermChildOut(child);
+    const order = requireExoTermRegion(owner.regions, port, 'appendChild').children;
+    order.splice(at === undefined || at > order.length ? order.length : at, 0, child);
+    child.placedIn = order;
+}
 
 const EXO_TERM_NODE_METHODS: TExoTermNodeApi & ThisType<TExoTermNode> = {
     attr(port: TExoAttrPort, value: unknown): void {
@@ -168,15 +204,6 @@ const EXO_TERM_NODE_METHODS: TExoTermNodeApi & ThisType<TExoTermNode> = {
 
     // A CHILD BUILT AND NEVER PLACED IS THE CALLER'S LEAK: nothing in the exported surface can
     // express ownership of a `TExoNode`, so it keeps its subscriptions until its source dies.
-    build(machine: TExoTermMachine, params?: unknown): TExoNode<TExoTermMark> {
-        return renderExoTermInstance(
-            exoTermSchemaOf(machine, this.schema.backend),
-            machine,
-            this.context,
-            params
-        ) as unknown as TExoNode<TExoTermMark>;
-    },
-
     one(port: TExoChildrenPort, machine: TExoTermMachine, params?: unknown): void {
         assertExoArming('one');
         const region = requireExoTermRegion(this.regions, port, 'one');
@@ -202,10 +229,91 @@ const EXO_TERM_NODE_METHODS: TExoTermNodeApi & ThisType<TExoTermNode> = {
         region.children = built;
     },
 
+    createExoNode(machine: TExoTermMachine): TExoNode<TExoTermMark> {
+        const schema = exoTermSchemaOf(machine, this.schema.backend);
+        const node = schema.createInstance(schema, this.context);
+        node.machine = machine;
+        node.state = EXO_UNARMED_STATE;
+        return node as unknown as TExoNode<TExoTermMark>;
+    },
+
+    armExoSelf(params: unknown): void {
+        try {
+            armExoNode<TExoTermNode>(this, this.machine as TExoTermMachine, params);
+        } catch (error) {
+            disposeExoTermChild(this);
+            throw error;
+        }
+    },
+
+    deferExoTransition(): boolean {
+        this.armExoSelf(undefined);
+        return false;
+    },
+
+    destroyExoSelf(): void {
+        takeExoTermChildOut(this);
+        disposeExoTermChild(this);
+    },
+
+    appendChild<TNode extends TExoNode<TExoTermMark>>(port: TExoChildrenPort, node: TNode): TNode {
+        placeExoTermChild(this, port, node as unknown as TExoTermChild);
+        return node;
+    },
+
+    insertChild<TNode extends TExoNode<TExoTermMark>>(
+        port: TExoChildrenPort,
+        node: TNode,
+        at: number
+    ): TNode {
+        placeExoTermChild(this, port, node as unknown as TExoTermChild, at);
+        return node;
+    },
+
+    moveChild(
+        node: TExoNode<TExoTermMark>,
+        portOrAt: TExoChildrenPort | number,
+        at?: number
+    ): void {
+        const child = node as unknown as TExoTermChild;
+        if (typeof portOrAt !== 'number') {
+            placeExoTermChild(this, portOrAt, child, at);
+            return;
+        }
+        const order = child.placedIn;
+        if (order === null) return;
+        order.splice(order.indexOf(child), 1);
+        order.splice(portOrAt > order.length ? order.length : portOrAt, 0, child);
+    },
+
+    removeChild<TNode extends TExoNode<TExoTermMark>>(node: TNode): TNode {
+        takeExoTermChildOut(node as unknown as TExoTermChild);
+        return node;
+    },
+
+    replaceChildren(port: TExoChildrenPort): void {
+        const region = requireExoTermRegion(this.regions, port, 'replaceChildren');
+        const taken = region.children;
+        region.children = [];
+        for (let i = 0; i < taken.length; i++) {
+            taken[i].placedIn = null;
+            disposeExoTermChild(taken[i]);
+        }
+    },
+
+    childAt(port: TExoChildrenPort, at: number): TExoNode<TExoTermMark> | undefined {
+        return requireExoTermRegion(this.regions, port, 'childAt').children[at] as unknown as
+            | TExoNode<TExoTermMark>
+            | undefined;
+    },
+
+    childCount(port: TExoChildrenPort): number {
+        return requireExoTermRegion(this.regions, port, 'childCount').children.length;
+    },
+
     /** The imperative half: a handle on the region, so a caller places what `build` handed it. */
-    childList(port: TExoChildrenPort): TExoTermChildList {
-        assertExoArming('childList');
-        return createExoTermChildList(requireExoTermRegion(this.regions, port, 'childList'));
+    portChildList(port: TExoChildrenPort): TExoTermChildList {
+        return createExoTermChildList(requireExoTermRegion(this.regions, port, 'portChildList'));
     },
 };
 

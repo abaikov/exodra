@@ -40,8 +40,8 @@ export default defineConfig({
 
 ### Options
 
-- `filter` — `RegExp` of files to compile. Default `/\.[jt]sx$/`.
-- `schemaSource` — where the schema factory (`createExoNamedSchema`) is imported from. Default `@exodra/core`.
+-   `filter` — `RegExp` of files to compile. Default `/\.[jt]sx$/`.
+-   `schemaSource` — where the schema factory (`createExoNamedSchema`) is imported from. Default `@exodra/core`.
 
 The dialect — `exoJsx(($) => <markup/>)` schema declarations, literal attributes
 as markup and every port named where it stands (`data-id={$.id}`, `{$.label}`,

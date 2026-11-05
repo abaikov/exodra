@@ -215,7 +215,7 @@ Compose `withExoHydration` onto the **same** backend the test renders with.
 That is not a formality: the composition decides how listeners attach and what
 owns every adopted region, and hydrating under a different one is the failure the
 one-object design exists to make unspellable — nothing throws, and the wrong
-reconciler simply owns the tree from then on. A backend composed *without* the
+reconciler simply owns the tree from then on. A backend composed _without_ the
 pack has no `hydrate` at all, so getting this wrong is a compile error rather than
 a call landing on `undefined`.
 
@@ -333,7 +333,7 @@ module.exports = { testEnvironment: 'jsdom' };
 
 :::warning ts-jest / @swc/jest do not work
 `ts-jest` and `@swc/jest` do **not** run Babel plugins, so they cannot compile
-Exodra JSX. If Jest reports an unexpected token on `<`, or *"namespace tags are
-not supported"* on `on:click`, switch the transform to `babel-jest` and add the
+Exodra JSX. If Jest reports an unexpected token on `<`, or _"namespace tags are
+not supported"_ on `on:click`, switch the transform to `babel-jest` and add the
 preset above. (SWC users can instead use the [SWC plugin](../tooling/swc-plugin.md).)
 :::

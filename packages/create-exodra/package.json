@@ -1,65 +1,65 @@
 {
-  "name": "create-exodra",
-  "version": "0.2.1",
-  "description": "Create Exodra apps with zero configuration - Next.js-like experience",
-  "bin": {
-    "create-exodra": "./dist/index.js",
-    "exodra": "./dist/cli.js"
-  },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "build": "rm -rf dist && tsc",
-    "prepublishOnly": "npm run build",
-    "dev": "tsc --watch",
-    "test": "vitest"
-  },
-  "_comment_chalk": "chalk is pinned to ^4 because this package is COMMONJS (no \"type\" field, and its dist starts with \"use strict\"). chalk@5 is pure ESM, so `require(\"chalk\")` throws ERR_REQUIRE_ESM on any Node before 22.12 \u2014 including the Node 20 all three CI workflows pin, and including whatever a user running `npx create-exodra` happens to have. Only chalk.blue/bold/cyan/dim/gray/green/red are used and all exist in 4.x. Raise this only together with making the package ESM.",
-  "dependencies": {
-    "commander": "^11.1.0",
-    "chalk": "^4.1.2",
-    "prompts": "^2.4.2",
-    "validate-npm-package-name": "^5.0.0",
-    "fs-extra": "^11.2.0"
-  },
-  "devDependencies": {
-    "@types/fs-extra": "^11.0.4",
-    "@types/prompts": "^2.4.9",
-    "@types/validate-npm-package-name": "^4.0.2",
-    "typescript": "^5.3.3",
-    "vitest": "^4.0.16"
-  },
-  "keywords": [
-    "exodra",
-    "create-exodra",
-    "create-app",
-    "scaffold",
-    "generator",
-    "starter",
-    "boilerplate",
-    "template",
-    "nextjs",
-    "file-based-routing",
-    "zero-config",
-    "typescript",
-    "cli",
-    "react-alternative"
-  ],
-  "author": "Andrei Baikov",
-  "license": "MIT",
-  "homepage": "https://exodra.org",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abaikov/exodra.git",
-    "directory": "packages/create-exodra"
-  },
-  "bugs": {
-    "url": "https://github.com/abaikov/exodra/issues"
-  }
+    "name": "create-exodra",
+    "version": "0.2.2",
+    "description": "Create Exodra apps with zero configuration - Next.js-like experience",
+    "bin": {
+        "create-exodra": "./dist/index.js",
+        "exodra": "./dist/cli.js"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "rm -rf dist && tsc",
+        "prepublishOnly": "npm run build",
+        "dev": "tsc --watch",
+        "test": "vitest"
+    },
+    "_comment_chalk": "chalk is pinned to ^4 because this package is COMMONJS (no \"type\" field, and its dist starts with \"use strict\"). chalk@5 is pure ESM, so `require(\"chalk\")` throws ERR_REQUIRE_ESM on any Node before 22.12 — including the Node 20 all three CI workflows pin, and including whatever a user running `npx create-exodra` happens to have. Only chalk.blue/bold/cyan/dim/gray/green/red are used and all exist in 4.x. Raise this only together with making the package ESM.",
+    "dependencies": {
+        "commander": "^11.1.0",
+        "chalk": "^4.1.2",
+        "prompts": "^2.4.2",
+        "validate-npm-package-name": "^5.0.0",
+        "fs-extra": "^11.2.0"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^11.0.4",
+        "@types/prompts": "^2.4.9",
+        "@types/validate-npm-package-name": "^4.0.2",
+        "typescript": "^5.3.3",
+        "vitest": "^4.0.16"
+    },
+    "keywords": [
+        "exodra",
+        "create-exodra",
+        "create-app",
+        "scaffold",
+        "generator",
+        "starter",
+        "boilerplate",
+        "template",
+        "nextjs",
+        "file-based-routing",
+        "zero-config",
+        "typescript",
+        "cli",
+        "react-alternative"
+    ],
+    "author": "Andrei Baikov",
+    "license": "MIT",
+    "homepage": "https://exodra.org",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/abaikov/exodra.git",
+        "directory": "packages/create-exodra"
+    },
+    "bugs": {
+        "url": "https://github.com/abaikov/exodra/issues"
+    }
 }

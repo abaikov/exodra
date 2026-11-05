@@ -25,7 +25,7 @@ npm install @exodra/core
 | Half            | When it runs         | What it is                                                                           |
 | --------------- | -------------------- | ------------------------------------------------------------------------------------ |
 | the **schema**  | once, at module load | the constant shape — static markup, plus the **ports** where values may later be put |
-| the **machine** | once per instance    | the code that fills those ports, through a backend's **exonode**                      |
+| the **machine** | once per instance    | the code that fills those ports, through a backend's **exonode**                     |
 
 `TExoMachine` — `{ declaration, forms, createInitialState, wire?, effects, handlers }` — is the
 whole shape and the only one. It is plain data: `createExoMachine(schema)` starts it, the
@@ -110,17 +110,17 @@ of port a value can be put in. There is no single `set`.
 
 ## The builder
 
-| Call                         | Places                                                                     | Declared with                   |
-| ---------------------------- | -------------------------------------------------------------------------- | ------------------------------- |
-| `el(tag, attrs?, fn?)`       | a child element with its **static** attributes, and optionally a body      | —                               |
-| `text(value)`                | static text                                                                | —                               |
-| `attrPort(Ports.x, name)`    | a port for one **attribute**                                               | `EXO_PORT_ATTR`                 |
-| `stringPort(Ports.x, name)`  | an attribute port whose value is always written as its string form        | `EXO_PORT_ATTR_STRING`          |
-| `togglePort(Ports.x, name)`  | an attribute port that is present-and-empty or absent                      | `EXO_PORT_ATTR_TOGGLE`          |
-| `eventPort(Ports.x, name)`   | a port for one **listener** (emits no markup, still takes a slot)          | `EXO_PORT_EVENT`, `exoEventPortKind<TEvent>()` |
-| `textPort(Ports.x)`          | a port for the **whole text content** of the current element               | `EXO_PORT_TEXT`                 |
-| `childrenPort(Ports.x)`      | a port for a **variable-length sequence of children**                      | `EXO_PORT_CHILDREN`             |
-| `refPort(Ports.x)`           | a **reference to the current element**, with no way to write to it         | `EXO_PORT_REF`, `exoRefPortKind<TNode>()` |
+| Call                        | Places                                                                | Declared with                                  |
+| --------------------------- | --------------------------------------------------------------------- | ---------------------------------------------- |
+| `el(tag, attrs?, fn?)`      | a child element with its **static** attributes, and optionally a body | —                                              |
+| `text(value)`               | static text                                                           | —                                              |
+| `attrPort(Ports.x, name)`   | a port for one **attribute**                                          | `EXO_PORT_ATTR`                                |
+| `stringPort(Ports.x, name)` | an attribute port whose value is always written as its string form    | `EXO_PORT_ATTR_STRING`                         |
+| `togglePort(Ports.x, name)` | an attribute port that is present-and-empty or absent                 | `EXO_PORT_ATTR_TOGGLE`                         |
+| `eventPort(Ports.x, name)`  | a port for one **listener** (emits no markup, still takes a slot)     | `EXO_PORT_EVENT`, `exoEventPortKind<TEvent>()` |
+| `textPort(Ports.x)`         | a port for the **whole text content** of the current element          | `EXO_PORT_TEXT`                                |
+| `childrenPort(Ports.x)`     | a port for a **variable-length sequence of children**                 | `EXO_PORT_CHILDREN`                            |
+| `refPort(Ports.x)`          | a **reference to the current element**, with no way to write to it    | `EXO_PORT_REF`, `exoRefPortKind<TNode>()`      |
 
 `exoPorts({ … })` turns each kind into a port of the matching type — `TExoAttrPort`,
 `TExoEventPort`, `TExoTextPort`, `TExoChildrenPort`, `TExoRefPort` — and each type pins
@@ -245,19 +245,28 @@ what a machine calls on itself.
 `createExoMachine<TWiring>` requires `TWiring extends TExoMachineNode`, so a machine
 for every backend names `TExoMachineNode` (the calls every backend has: `attr`, `text`,
 `html`, `on`, `provide`, `inject`, `onTeardown`, `readState`) or
-`TExoChildrenWiring & TExoMachineNode` (that plus `one`, `list`, `build`), all exported from here.
+`TExoChildrenWiring & TExoMachineNode` (that plus `createExoNode`, the port methods, `one` and `list`), all exported from here.
 
 **There are no props.** The initial state takes the exonode and the wire's `params` —
 a list row bound to one record for life can take that record there: `c.list(port, Row, rows)`
-arms row i with `rows[i]`, and `c.build(Row, item)` arms one child with `item`. An instance is
+arms row i with `rows[i]`, and `wireExoNode(node, item)` arms one child made with
+`c.createExoNode(Row)` with `item`. An instance is
 told no position — a reconciler moves nodes, it does not re-arm them, so a component that
 needs a live position is told it by a transition.
 
 **What an initial state RETURNS is what the instance keeps.** The value lands in
 `enode.state`; `enode.readState<T>()` takes no argument and reads the same value back, so
 prefer `c.state`. `c.one` and
-`c.build` both hand back **the child's exonode**, so a parent reaches a child's
+`c.createExoNode` both hand back **the child's exonode**, so a parent reaches a child's
 transitions through them.
+
+**A child is created, wired, then placed.** `c.createExoNode(machine)` makes a node with
+the context of `c` above it and runs nothing. `wireExoNode(node, params)` runs
+`createInitialState` and the wire and starts the effects the first time, and only the wire
+on every later call. A backend's children-port calls place it: `c.appendChild(port, node)`,
+`c.insertChild(port, node, at)`, `c.moveChild(node, at)`, `c.removeChild(node)` (which
+keeps the node alive) and `c.replaceChildren(port)`. `destroyExoNode(node)` ends it. See
+the [Children guide](https://github.com/abaikov/exodra/blob/master/docs-site/docs/guides/children.md).
 
 **Watching a source is an effect, not a door.** `withExoEffects(m, (effect) => { effect((c) => {
 show(c); return store.subscribe(() => show(c)); }); })` draws through a transition, which writes with the
@@ -284,7 +293,7 @@ type, not a class; the object an initial state is handed IS that instance's own 
 the composed backend is its prototype — and `TExoMachine` is contravariant in its
 exonode, so a machine built as `createExoMachine<TExoDomNode>` is browser-only and
 cannot be handed to the server's renderer. Reach for one only when the machine
-genuinely touches a member no server backend has (`c.childList`,
+genuinely touches a member no server backend has (`c.nodes`,
 `c.openChildList`, a `c.portNodeReader()` whose nodes are `Element`s).
 
 ## Contexts
@@ -340,14 +349,14 @@ compares `port.kind` for these doors.
 
 ## Everything else
 
-| Export                                                                                                   | Purpose                                                                                                                                                                                                                                                       |
-| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TExoNode`                                                                                               | the opaque value `c.build(...)` returns and a backend's child list accepts                                                                                                                                                                                     |
-| `createExoOne(component, props)`, `TExoOne`                                                              | which component stands in a position **right now**. **No door takes one today** — the `bindOne`/`bindMany` calls that read them are gone, so the pair is exported and unconsumed                                                                               |
-| `escapeExoText`, `escapeExoAttributeValue`                                                               | the escapers **both** backends use, so their bytes agree                                                                                                                                                                                                      |
-| `EXO_VOID_ELEMENTS`, `EXO_DOM_PROPERTIES`, `EXO_RAW_TEXT_ELEMENTS`, `exoAttribute`, `exoDomPropertyKind` | what an element and an attribute name mean. `exoAttribute` answers from the NAME alone and caches; `exoDomPropertyKind` is the same question asked of a TAG, and the two disagree on purpose — `value` is live state on an `<input>` and nothing on a `<div>` |
-| `assertExoChildrenPort`, `assertExoIntactRawTextBoundary`                                                | the refusals every backend shares, so the server and the browser refuse the same shapes in the same words                                                                                                                                                     |
-| `EXO_PORT_ATTR`, `EXO_PORT_ATTR_STRING`, `EXO_PORT_ATTR_TOGGLE`, `EXO_PORT_TEXT`, `EXO_PORT_CHILDREN`, `EXO_PORT_EVENT`, `EXO_PORT_REF` | the port kinds, as plain constants — what `exoPorts` takes                                                                                                                                                                                                                            |
+| Export                                                                                                                                  | Purpose                                                                                                                                                                                                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TExoNode`                                                                                                                              | the opaque value `c.createExoNode(...)` returns and a backend's children port accepts                                                                                                                                                                         |
+| `createExoOne(component, props)`, `TExoOne`                                                                                             | which component stands in a position **right now**. **No door takes one today** — the `bindOne`/`bindMany` calls that read them are gone, so the pair is exported and unconsumed                                                                              |
+| `escapeExoText`, `escapeExoAttributeValue`                                                                                              | the escapers **both** backends use, so their bytes agree                                                                                                                                                                                                      |
+| `EXO_VOID_ELEMENTS`, `EXO_DOM_PROPERTIES`, `EXO_RAW_TEXT_ELEMENTS`, `exoAttribute`, `exoDomPropertyKind`                                | what an element and an attribute name mean. `exoAttribute` answers from the NAME alone and caches; `exoDomPropertyKind` is the same question asked of a TAG, and the two disagree on purpose — `value` is live state on an `<input>` and nothing on a `<div>` |
+| `assertExoChildrenPort`, `assertExoIntactRawTextBoundary`                                                                               | the refusals every backend shares, so the server and the browser refuse the same shapes in the same words                                                                                                                                                     |
+| `EXO_PORT_ATTR`, `EXO_PORT_ATTR_STRING`, `EXO_PORT_ATTR_TOGGLE`, `EXO_PORT_TEXT`, `EXO_PORT_CHILDREN`, `EXO_PORT_EVENT`, `EXO_PORT_REF` | the port kinds, as plain constants — what `exoPorts` takes                                                                                                                                                                                                    |
 
 ### `exoAttribute` — four facts its source does not show
 
@@ -384,16 +393,16 @@ argument. `wire` is the re-runnable transition that writes ports from `params`.
 An instance's effects can be switched off and on again without losing the instance.
 `disconnectExoNode(node)` runs every effect's stop and keeps the node; a
 `restartEffect` a stop triggers on the way out establishes nothing.
-`connectExoNode(node, component)` starts every effect again from the
+`connectExoNode(node)` starts every effect again from the
 plan. `stopExoEffects` stays the terminal one: after it, `connectExoNode`
-starts nothing. Paired with a child list's `detach`/`attach`, a row can leave the
+starts nothing. Paired with `c.removeChild` and `c.insertChild`, a row can leave the
 document, stop listening to its sources, and come back listening:
 
 ```ts no-check
-const row = rows.detach(i);
+c.removeChild(row);
 disconnectExoNode(row);
-rows.attach(row, j);
-connectExoNode(row, Row);
+c.insertChild(ListPorts.rows, row, j);
+connectExoNode(row);
 ```
 
 Only machine effects are covered. A subscription an initial state registered through
@@ -402,6 +411,19 @@ Only machine effects are covered. A subscription an initial state registered thr
 One effect at a time: inside `withExoEffects`, `effect(...)` hands back the effect's handle, `c.stopEffect(handle)`
 ends that one and leaves the rest running, and `c.restartEffect(handle)` starts it again. The
 effect is off when `stopEffect` returns even if its own stop restarted it on the way out.
+
+Effects can also be declared by name: `withExoEffects(m, { showPage: (c) => … })` appends each
+handle to `m.effects` exactly as `effect(...)` does and sets it on that array under its name, so a
+later step reads `m.effects.showPage` instead of counting positions. Positional `m.effects[i]` and a
+captured handle keep working, and both forms mix in one machine. A name that is already on the
+array — declared by an earlier step, or an array member such as `push` or `length` — is refused
+(`EXO0112`).
+
+`withExoParamsEffects(m, { name: { key: (params) => …, start: (c, params) => … } })` declares
+effects that follow the wire's params: `wireExoNode` restarts each one whose `key(params)` changed
+under `Object.is`, and a restart from anywhere else hands `start` the params of the last wire,
+kept in `serviceState`. It adds no field to the exonode. The guide lists every combination of
+repeated steps and what each one does: [Components](https://github.com/abaikov/exodra/blob/master/docs-site/docs/guides/components.md).
 
 **`withExoComputedMachine`, `exoTransition`, `exoWiring` and everything that
 compiles a field into a slot are [`@exodra/computed`](https://github.com/abaikov/exodra/blob/master/packages/computed/README.md),

@@ -16,6 +16,7 @@ import {
     withExoWire,
     withExoEffects,
     createExoSchema,
+    wireExoNode,
 } from '@exodra/core';
 import type {
     TExoSchemaCursor,
@@ -24,10 +25,11 @@ import type {
     TExoTextPort,
     TExoMachineInitialState,
     TExoMachineNode,
+    TExoNode,
 } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
-import { EXO_SHIPPED_WRITERS, ExoDomBackend, withExoCompiler, withExoChildList } from '@exodra/dom';
-import type { TExoDomNode, TExoWritersApi } from '@exodra/dom';
+import { EXO_SHIPPED_WRITERS, ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoChildList, TExoDomNode, TExoDomPortChildList, TExoWritersApi } from '@exodra/dom';
 
 // The smallest source an effect follows — a value, a way to change it, a way to be told — plus the
 // listener count the teardown case asserts on. `host` is imported under the name this file
@@ -102,12 +104,12 @@ const followingLine = (label: TExoTestSource<string>) => {
     return machine;
 };
 
-type TListState<TItem> = { readonly rows: ReturnType<TExoDomNode['childList']>; shown: TItem[] };
+type TListState<TItem> = { readonly rows: TExoChildList; shown: TItem[] };
 
 /** A `<ul>` whose children port follows a source through `reconcileExoOrder`. */
 const reconciledList = <TItem>(
     items: TExoTestSource<readonly TItem[]>,
-    row: (c: TExoDomNode, item: TItem) => ReturnType<TExoDomNode['build']>
+    row: (c: TExoDomNode, item: TItem) => TExoNode
 ) => {
     const schema = createExoSchema((b: TExoSchemaCursor) => {
         let kids!: TExoChildrenPort;
@@ -116,9 +118,15 @@ const reconciledList = <TItem>(
         });
         return { kids };
     });
-    const m = createExoMachine<TExoDomNode, unknown, TListState<TItem>>(schema, {
-        createInitialState: (c) => ({ rows: c.childList(schema.ports.kids), shown: [] as TItem[] }),
-    });
+    const m = createExoMachine<TExoDomNode & TExoDomPortChildList, unknown, TListState<TItem>>(
+        schema,
+        {
+            createInitialState: (c) => ({
+                rows: c.portChildList(schema.ports.kids),
+                shown: [] as TItem[],
+            }),
+        }
+    );
     const machine = composeExoMachine(
         m,
         (m) =>
@@ -356,7 +364,7 @@ describe('ExoMount and the composition', () => {
     /** A `<ul>` whose children port is a reactive list — the only shape a reconciler shows up in. */
     const listIsland = (rows: TExoTestSource<readonly TRow[]>) => {
         const ROW = rowOf();
-        return reconciledList(rows, (c, row) => c.build(ROW, row));
+        return reconciledList(rows, (c, row) => wireExoNode(c.createExoNode(ROW), row));
     };
 
     it('renders the list through the shipped defaults when no backend is named', () => {
@@ -376,7 +384,7 @@ describe('ExoMount and the composition', () => {
         const tally = { calls: 0 };
         const rows = source<readonly TRow[]>([{ id: 'a' }, { id: 'b' }]);
         // The application's backend, built once and handed to the island.
-        const backend = composeExoPlugins(withExoChildList(withExoCompiler(new ExoDomBackend())), {
+        const backend = composeExoPlugins(withExoCompiler(new ExoDomBackend()), {
             writers: () => mute(tally),
         });
 

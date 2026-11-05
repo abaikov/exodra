@@ -52,17 +52,17 @@ const result = await engine.analyze();
 
 What it reports, per file:
 
-- **TypeScript diagnostics** — every error and warning the compiler produces.
-- **Schema scope** (`analysis.schema`) — a `schema-built-per-call` suggestion
-  wherever `createExoSchema`, `createExoNamedSchema` or `createExoStatic` is
-  called inside a function. A schema numbers its ports when it is closed and
-  every backend indexes its prepared plan by those numbers, so a schema built
-  inside a function is not a slower program but a different one. `exoJsx` is
-  exempt, because the compiler hoists it to module scope wherever it was written.
-- **Counts** (`analysis.performance`):
-  - `components` — calls to `createExoMachine` and `createExoStatic`;
-  - `complexity` — control-flow statements plus one, with a `high-complexity`
-    warning above 20.
+-   **TypeScript diagnostics** — every error and warning the compiler produces.
+-   **Schema scope** (`analysis.schema`) — a `schema-built-per-call` suggestion
+    wherever `createExoSchema`, `createExoNamedSchema` or `createExoStatic` is
+    called inside a function. A schema numbers its ports when it is closed and
+    every backend indexes its prepared plan by those numbers, so a schema built
+    inside a function is not a slower program but a different one. `exoJsx` is
+    exempt, because the compiler hoists it to module scope wherever it was written.
+-   **Counts** (`analysis.performance`):
+    -   `components` — calls to `createExoMachine` and `createExoStatic`;
+    -   `complexity` — control-flow statements plus one, with a `high-complexity`
+        warning above 20.
 
 Per project it adds `total_files` and `total_lines`. `analyzeFilePath(path)`
 runs the same pass over a single file, and a folder without a `tsconfig.json`
@@ -85,15 +85,15 @@ export default [
 ];
 ```
 
-| rule | recommended | what it reports |
-|---|---|---|
-| `exodra/no-schema-in-function` | warn | a schema builder called inside a function (`exoJsx` exempt) |
-| `exodra/schema-validation` | error | `exoJsx()` given anything but a function literal |
-| `exodra/no-inline-objects` | warn | an object literal inside a JSX expression or a schema builder call |
+| rule                           | recommended | what it reports                                                    |
+| ------------------------------ | ----------- | ------------------------------------------------------------------ |
+| `exodra/no-schema-in-function` | warn        | a schema builder called inside a function (`exoJsx` exempt)        |
+| `exodra/schema-validation`     | error       | `exoJsx()` given anything but a function literal                   |
+| `exodra/no-inline-objects`     | warn        | an object literal inside a JSX expression or a schema builder call |
 
 `configs.strict` makes every rule an error.
 
 ## Links
 
-- npm: [`@exodra/introspect`](https://www.npmjs.com/package/@exodra/introspect)
-- GitHub: [`packages/introspect`](https://github.com/abaikov/exodra/tree/master/packages/introspect)
+-   npm: [`@exodra/introspect`](https://www.npmjs.com/package/@exodra/introspect)
+-   GitHub: [`packages/introspect`](https://github.com/abaikov/exodra/tree/master/packages/introspect)

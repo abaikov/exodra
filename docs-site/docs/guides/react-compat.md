@@ -14,9 +14,9 @@ This is the third direction next to the two packages on the
 [React Interop](./react.md) page. Those put an island of one framework inside the
 other; this one replaces React underneath code that was written for React.
 
-| What you install | What it does |
-| --- | --- |
-| `@exodra/react-compat` | the runtime: `react`, `react-dom`, `react-dom/client`, `react-dom/server` and the JSX runtime, aliased to it |
+| What you install                    | What it does                                                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `@exodra/react-compat`              | the runtime: `react`, `react-dom`, `react-dom/client`, `react-dom/server` and the JSX runtime, aliased to it        |
 | `@exodra/babel-plugin-schema/react` | optional compiler: host JSX in **your** files becomes a hoisted Exodra schema instead of a `jsx()` call per element |
 
 ## Install
@@ -32,13 +32,13 @@ nothing is bundled into the package.
 
 The package has these entry points:
 
-| Entry | Stands in for |
-| --- | --- |
-| `@exodra/react-compat` | `react`, and also `react-dom` (it carries `createPortal`, `flushSync`, `findDOMNode`, `unstable_batchedUpdates` and the root functions too) |
-| `@exodra/react-compat/client` | `react-dom/client` |
-| `@exodra/react-compat/server` | `react-dom/server` |
-| `@exodra/react-compat/jsx-runtime` | `react/jsx-runtime` |
-| `@exodra/react-compat/jsx-dev-runtime` | `react/jsx-dev-runtime` (the same module as `jsx-runtime`) |
+| Entry                                  | Stands in for                                                                                                                               |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@exodra/react-compat`                 | `react`, and also `react-dom` (it carries `createPortal`, `flushSync`, `findDOMNode`, `unstable_batchedUpdates` and the root functions too) |
+| `@exodra/react-compat/client`          | `react-dom/client`                                                                                                                          |
+| `@exodra/react-compat/server`          | `react-dom/server`                                                                                                                          |
+| `@exodra/react-compat/jsx-runtime`     | `react/jsx-runtime`                                                                                                                         |
+| `@exodra/react-compat/jsx-dev-runtime` | `react/jsx-dev-runtime` (the same module as `jsx-runtime`)                                                                                  |
 
 ## Aliasing `react` to it
 
@@ -205,10 +205,10 @@ in a TypeScript project your TypeScript preset can stay where it is.
 
 It takes two options, both with defaults:
 
-| Option | Default | What it names |
-| --- | --- | --- |
+| Option         | Default                  | What it names                                                                                               |
+| -------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
 | `importSource` | `'@exodra/react-compat'` | where the compiled code imports the host runtime and `jsx` / `Fragment` (from `<importSource>/jsx-runtime`) |
-| `schemaSource` | `'@exodra/core'` | where it imports `createExoSchema` |
+| `schemaSource` | `'@exodra/core'`         | where it imports `createExoSchema`                                                                          |
 
 ### What gets compiled
 
@@ -216,19 +216,19 @@ A JSX element is compiled into a schema when its tag is a lowercase HTML or SVG
 name (letters and digits only) and every attribute is a plain named attribute.
 Nested elements that qualify join the same schema. Inside one:
 
-- a literal attribute (`className="row"`, `width={10}`) is written into the schema
-  once, as a static attribute;
-- an expression attribute (`title={label}`) becomes an attribute port, written
-  only when its value changed since the last render;
-- an event handler (`onClick={…}`) becomes an event port whose handler is swapped
-  on each render, with no listener re-attached;
-- `style`, `value`, `checked`, `selected`, `defaultValue`, `defaultChecked`,
-  `muted`, `indeterminate`, `dangerouslySetInnerHTML` and `ref`, and the handlers
-  of a controlled `input` / `textarea` / `select` and every `…Capture` handler, go
-  through the same props writer the runtime uses for uncompiled elements;
-- literal text is written into the schema; an expression child becomes a children
-  port reconciled at runtime, so components, lists and conditionals inside a
-  compiled tree work as usual.
+-   a literal attribute (`className="row"`, `width={10}`) is written into the schema
+    once, as a static attribute;
+-   an expression attribute (`title={label}`) becomes an attribute port, written
+    only when its value changed since the last render;
+-   an event handler (`onClick={…}`) becomes an event port whose handler is swapped
+    on each render, with no listener re-attached;
+-   `style`, `value`, `checked`, `selected`, `defaultValue`, `defaultChecked`,
+    `muted`, `indeterminate`, `dangerouslySetInnerHTML` and `ref`, and the handlers
+    of a controlled `input` / `textarea` / `select` and every `…Capture` handler, go
+    through the same props writer the runtime uses for uncompiled elements;
+-   literal text is written into the schema; an expression child becomes a children
+    port reconciled at runtime, so components, lists and conditionals inside a
+    compiled tree work as usual.
 
 Everything else stays a runtime `jsx()` call: components (`<Badge />`), fragments,
 member tags (`<Dialog.Root>`), custom elements (`<my-element>`), and a host element
@@ -298,13 +298,14 @@ The full field, one recorded run (`initial-render.calls-full-2026-11-01` and
 
 <!-- gate: axis=initial-render label=calls-full-2026-11-01 col=2 map="compiled JSX:reactCompatJsx;compiled `createElement` calls:reactCompatCalls;host templates, no compiler (default):reactCompatTemplates;React 19:react;React 19 + React Compiler:reactCompiler" -->
 <!-- gate: axis=app-update label=calls-full-2026-11-01 col=3 map="compiled JSX:reactCompatJsx;compiled `createElement` calls:reactCompatCalls;host templates, no compiler (default):reactCompatTemplates;React 19:react;React 19 + React Compiler:reactCompiler" -->
-| participant | mount, ms | 40 update rounds, ms |
-|---|---|---|
-| **compiled JSX** | **0.820** | **8.4** |
-| **compiled `createElement` calls** | **0.825** | **8.4** |
-| host templates, no compiler (default) | 0.915 | 9.5 |
-| React 19 | 0.980 | 11.0 |
-| React 19 + React Compiler | 1.025 | 10.1 |
+
+| participant                           | mount, ms | 40 update rounds, ms |
+| ------------------------------------- | --------- | -------------------- |
+| **compiled JSX**                      | **0.820** | **8.4**              |
+| **compiled `createElement` calls**    | **0.825** | **8.4**              |
+| host templates, no compiler (default) | 0.915     | 9.5                  |
+| React 19                              | 0.980     | 11.0                 |
+| React 19 + React Compiler             | 1.025     | 10.1                 |
 
 Mounting compiled is 1.19× faster than React in that run. `app-update` carries no
 null pair, so its column is an order, not a size: both compiled rows lead React,
@@ -317,8 +318,9 @@ measured both:
 
 <!-- gate: unrecorded col=2 cmd="node scripts/run-one-axis.js initial-render 60 20 --only=exodra,react,reactCompat,reactCompatJsx,solid (narrowed; compat3/compat4 add reactCompatTemplates)" date=2026-10-31 -->
 <!-- gate: unrecorded col=3 cmd="node scripts/run-one-axis.js initial-render 60 20 --only=exodra,react,reactCompat,reactCompatJsx,solid (narrowed; compat3/compat4 add reactCompatTemplates)" date=2026-10-31 -->
-| run | compiled | React | ratio |
-|---|---|---|---|
+
+| run                      | compiled | React    | ratio        |
+| ------------------------ | -------- | -------- | ------------ |
 | `initial-render.compat1` | 1.065 ms | 1.225 ms | 1.15× faster |
 | `initial-render.compat2` | 0.905 ms | 1.065 ms | 1.18× faster |
 | `initial-render.compat3` | 0.850 ms | 0.995 ms | 1.17× faster |
@@ -377,15 +379,15 @@ Everything below is exported and implemented; the names are the ones React uses.
 
 **`react`**
 
-| Area | Names |
-| --- | --- |
-| Elements | `createElement`, `cloneElement`, `isValidElement`, `Children` (`map`, `forEach`, `count`, `toArray`, `only`), `Fragment`, `StrictMode`, `createRef`, `version` |
-| Components | `memo` (with an optional compare function), `forwardRef`, `lazy`, `Suspense`, `Profiler`, `Component`, `PureComponent` |
-| Context | `createContext` with `Provider` and `Consumer`; the context object itself works as a provider (`<Theme value={…}>`) |
-| State hooks | `useState`, `useReducer`, `useRef`, `useMemo`, `useCallback`, `useContext`, `useId`, `useSyncExternalStore`, `useImperativeHandle`, `useDebugValue` |
-| Effect hooks | `useEffect`, `useLayoutEffect`, `useInsertionEffect` |
-| Async | `use` (a promise or a context), `startTransition`, `useTransition`, `useDeferredValue`, `useOptimistic`, `useActionState` |
-| Testing | `act` |
+| Area         | Names                                                                                                                                                          |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Elements     | `createElement`, `cloneElement`, `isValidElement`, `Children` (`map`, `forEach`, `count`, `toArray`, `only`), `Fragment`, `StrictMode`, `createRef`, `version` |
+| Components   | `memo` (with an optional compare function), `forwardRef`, `lazy`, `Suspense`, `Profiler`, `Component`, `PureComponent`                                         |
+| Context      | `createContext` with `Provider` and `Consumer`; the context object itself works as a provider (`<Theme value={…}>`)                                            |
+| State hooks  | `useState`, `useReducer`, `useRef`, `useMemo`, `useCallback`, `useContext`, `useId`, `useSyncExternalStore`, `useImperativeHandle`, `useDebugValue`            |
+| Effect hooks | `useEffect`, `useLayoutEffect`, `useInsertionEffect`                                                                                                           |
+| Async        | `use` (a promise or a context), `startTransition`, `useTransition`, `useDeferredValue`, `useOptimistic`, `useActionState`                                      |
+| Testing      | `act`                                                                                                                                                          |
 
 **`react-dom` / `react-dom/client`**: `createRoot`, `hydrateRoot`, `createPortal`,
 `flushSync`, `findDOMNode`, `unstable_batchedUpdates`.
@@ -396,65 +398,65 @@ Everything below is exported and implemented; the names are the ones React uses.
 
 How the parts behave:
 
-- **Rendering.** `root.render(…)` renders synchronously and runs layout effects
-  before it returns; `useEffect` callbacks run after it, on a later task.
-  `setState` calls made together are batched into one render on a microtask.
-  `flushSync` applies its updates, and their effects, before it returns. Keyed
-  children are moved, not rebuilt, and a re-render keeps the same DOM nodes.
-- **Effects.** Insertion effects run before refs are attached, refs before layout
-  effects, and a child's effects before its parent's. Cleanups run when deps
-  change and on unmount.
-- **Class components.** `setState` (object or updater, with a callback),
-  `forceUpdate`, `getDerivedStateFromProps`, `shouldComponentUpdate`,
-  `PureComponent`'s shallow comparison, `getSnapshotBeforeUpdate`,
-  `componentDidMount`, `componentDidUpdate`, `componentWillUnmount` and
-  `static contextType`.
-- **Error boundaries.** A class with `static getDerivedStateFromError` or
-  `componentDidCatch` catches an error thrown while it renders its children and
-  renders its fallback state.
-- **Suspense.** A component may throw a promise, or call `use(promise)`; the
-  nearest `<Suspense>` shows its `fallback` and renders the content once the
-  promise settles. `lazy` works through the same path. Content that was already
-  shown and suspends again is hidden (`display: none`), not unmounted, so its state
-  survives. A suspension with no `<Suspense>` above it is an error.
-- **Transitions.** An update inside `startTransition` is applied on a later task
-  than a plain update. `useTransition` reports pending until it lands;
-  `useDeferredValue` shows the previous value first, then the new one.
-- **Events.** Handlers receive an event object that is the native event plus
-  `nativeEvent`, `currentTarget`, `persist`, `isPersistent`, `isDefaultPrevented`
-  and `isPropagationStopped`. `onDoubleClick` listens to `dblclick`, `onFocus` /
-  `onBlur` to `focusin` / `focusout`, and `onChange` on `input` and `textarea` to
-  `input`. `…Capture` handlers listen in the capture phase.
-- **Forms.** A controlled `input` / `textarea` is put back to its `value` /
-  `checked` after a handler that did not accept the edit; a controlled `select`
-  takes its `value` after its options are placed.
-- **Server.** `renderToString` runs function components with their hooks, class
-  components, context, `memo` and `forwardRef`; it escapes text and attributes,
-  drops event handlers, prints `style` objects as CSS text, and writes
-  `defaultValue` / `defaultChecked` as `value` / `checked`.
+-   **Rendering.** `root.render(…)` renders synchronously and runs layout effects
+    before it returns; `useEffect` callbacks run after it, on a later task.
+    `setState` calls made together are batched into one render on a microtask.
+    `flushSync` applies its updates, and their effects, before it returns. Keyed
+    children are moved, not rebuilt, and a re-render keeps the same DOM nodes.
+-   **Effects.** Insertion effects run before refs are attached, refs before layout
+    effects, and a child's effects before its parent's. Cleanups run when deps
+    change and on unmount.
+-   **Class components.** `setState` (object or updater, with a callback),
+    `forceUpdate`, `getDerivedStateFromProps`, `shouldComponentUpdate`,
+    `PureComponent`'s shallow comparison, `getSnapshotBeforeUpdate`,
+    `componentDidMount`, `componentDidUpdate`, `componentWillUnmount` and
+    `static contextType`.
+-   **Error boundaries.** A class with `static getDerivedStateFromError` or
+    `componentDidCatch` catches an error thrown while it renders its children and
+    renders its fallback state.
+-   **Suspense.** A component may throw a promise, or call `use(promise)`; the
+    nearest `<Suspense>` shows its `fallback` and renders the content once the
+    promise settles. `lazy` works through the same path. Content that was already
+    shown and suspends again is hidden (`display: none`), not unmounted, so its state
+    survives. A suspension with no `<Suspense>` above it is an error.
+-   **Transitions.** An update inside `startTransition` is applied on a later task
+    than a plain update. `useTransition` reports pending until it lands;
+    `useDeferredValue` shows the previous value first, then the new one.
+-   **Events.** Handlers receive an event object that is the native event plus
+    `nativeEvent`, `currentTarget`, `persist`, `isPersistent`, `isDefaultPrevented`
+    and `isPropagationStopped`. `onDoubleClick` listens to `dblclick`, `onFocus` /
+    `onBlur` to `focusin` / `focusout`, and `onChange` on `input` and `textarea` to
+    `input`. `…Capture` handlers listen in the capture phase.
+-   **Forms.** A controlled `input` / `textarea` is put back to its `value` /
+    `checked` after a handler that did not accept the edit; a controlled `select`
+    takes its `value` after its options are placed.
+-   **Server.** `renderToString` runs function components with their hooks, class
+    components, context, `memo` and `forwardRef`; it escapes text and attributes,
+    drops event handlers, prints `style` objects as CSS text, and writes
+    `defaultValue` / `defaultChecked` as `value` / `checked`.
 
 ### Libraries run on it
 
 `packages/react-compat-libraries` runs one test per library twice — once on
 `@exodra/react-compat` and once on React itself — with the same assertions:
 
-| Library | What its test exercises |
-| --- | --- |
-| `react-router` | the matching route renders, a `Link` click navigates, `useNavigate` goes back |
-| `@tanstack/react-query` | a query resolves into the DOM and a refetch replaces it |
-| `swr` | a key resolves into the DOM and `mutate()` revalidates it |
-| `zustand` | a selecting consumer re-renders on a store update and an unrelated one does not |
-| `jotai` | an atom write reaches a reader and a derived atom |
+| Library                            | What its test exercises                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------- |
+| `react-router`                     | the matching route renders, a `Link` click navigates, `useNavigate` goes back         |
+| `@tanstack/react-query`            | a query resolves into the DOM and a refetch replaces it                               |
+| `swr`                              | a key resolves into the DOM and `mutate()` revalidates it                             |
+| `zustand`                          | a selecting consumer re-renders on a store update and an unrelated one does not       |
+| `jotai`                            | an atom write reaches a reader and a derived atom                                     |
 | `react-redux` + `@reduxjs/toolkit` | a `useSelector` consumer re-renders after a dispatch from inside and outside the tree |
-| `react-hook-form` | a validation error shows, then the typed values submit |
-| `formik` | a controlled `Field` stays in state and the typed value submits |
-| `@radix-ui/react-dialog` | the trigger opens the dialog into a portal, Escape closes it |
-| `@headlessui/react` | a `Disclosure` panel and its `aria-expanded` toggle through the button |
-| `@emotion/react` | a `css` prop becomes a class backed by an inserted `<style>`, and changes with it |
-| `styled-components` | a styled element's class maps to an inserted rule and restyles on a prop change |
-| `framer-motion` | a `motion.div` mounts with its initial style and animates to a new target |
-| `react-window` | only the rows in view render, and the window shifts on scroll |
-| `react-i18next` | `t()` renders a key and re-renders on a language change |
+| `react-hook-form`                  | a validation error shows, then the typed values submit                                |
+| `formik`                           | a controlled `Field` stays in state and the typed value submits                       |
+| `@radix-ui/react-dialog`           | the trigger opens the dialog into a portal, Escape closes it                          |
+| `@headlessui/react`                | a `Disclosure` panel and its `aria-expanded` toggle through the button                |
+| `@emotion/react`                   | a `css` prop becomes a class backed by an inserted `<style>`, and changes with it     |
+| `styled-components`                | a styled element's class maps to an inserted rule and restyles on a prop change       |
+| `framer-motion`                    | a `motion.div` mounts with its initial style and animates to a new target             |
+| `react-window`                     | only the rows in view render, and the window shifts on scroll                         |
+| `react-i18next`                    | `t()` renders a key and re-renders on a language change                               |
 
 ## What differs, and what is not there
 
@@ -477,11 +479,11 @@ of the `select`; no `<option>` is marked `selected`.
 **Events.** Each handler is a native listener on its own element, not a listener
 at the root. Two consequences:
 
-- Events follow the **DOM** tree. A click inside a portal bubbles to the portal's
-  container and its DOM ancestors, not to the React parent that rendered the
-  portal, so an `onClick` on that parent does not see it.
-- React handlers interleave with `addEventListener` listeners in plain DOM order,
-  and `stopPropagation()` stops the native event.
+-   Events follow the **DOM** tree. A click inside a portal bubbles to the portal's
+    container and its DOM ancestors, not to the React parent that rendered the
+    portal, so an `onClick` on that parent does not see it.
+-   React handlers interleave with `addEventListener` listeners in plain DOM order,
+    and `stopPropagation()` stops the native event.
 
 **Errors.** An error boundary catches what is thrown while the boundary itself
 renders its subtree. A descendant that re-renders on its own state update is

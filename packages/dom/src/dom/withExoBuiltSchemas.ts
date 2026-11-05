@@ -6,6 +6,7 @@ import { refuseExoUncompiledDeclaration } from './refuseExoUncompiledDeclaration
 import type { TExoDomSchema } from './types/TExoDomSchema';
 import { buildExoDomRoot } from './buildExoDomRoot';
 import { mountExoDomNode } from './mountExoDomNode';
+import { createExoUnarmedChild } from './createExoUnarmedChild';
 import type { TExoDomNodeApi } from './EXO_DOM_NODE_VOCABULARY';
 import type { TExoDomMachine } from './types/TExoDomMachine';
 import type { TExoDomMark } from './types/TExoDomMark';
@@ -20,11 +21,10 @@ export interface TExoBuiltSchemasApi {
         parent: Element,
         params?: TParams
     ): () => void;
-    buildRoot<TParams>(
-        machine: TExoMachine<this & TExoDomInstanceRecord, unknown, TParams>,
-        params?: TParams
-    ): TExoDomNodeApi & TExoNode<TExoDomMark>;
     mountRoot(node: TExoNode<TExoDomMark>, parent: Element): () => void;
+    createExoNode<TParams>(
+        machine: TExoMachine<this & TExoDomInstanceRecord, unknown, TParams>
+    ): TExoDomNodeApi & TExoNode<TExoDomMark>;
 }
 
 // `render` for a page whose declarations a build compiled: each schema is built from the JSON form
@@ -41,17 +41,18 @@ export const withExoBuiltSchemas = <TBase extends TExoDomApi>(
                 if (typeof next !== 'function') refuseExoUncompiledDeclaration();
                 return (next as (m: TExoMachine<never>) => TExoDomSchema).call(this, machine);
             },
-        buildRoot: (_next: unknown) =>
+        createExoNode: (_next: unknown) =>
             function (
-                this: TExoDomApi,
-                machine: TExoMachine<TExoDomInstanceRecord>,
-                params?: unknown
+                this: TExoDomApi & Partial<TExoDomInstanceRecord>,
+                machine: TExoMachine<TExoDomInstanceRecord>
             ) {
-                return buildExoDomRoot(
-                    exoDomSchemaForChild(machine as unknown as TExoMachine<never>, this),
+                const backend = ((this.schema as TExoDomSchema | undefined)?.backend ??
+                    this) as TExoDomApi;
+                return createExoUnarmedChild(
+                    exoDomSchemaForChild(machine as unknown as TExoMachine<never>, backend),
                     machine as unknown as TExoDomMachine,
-                    params
-                );
+                    this.context ?? null
+                ) as unknown as TExoDomNodeApi & TExoNode<TExoDomMark>;
             },
         mountRoot: (_next: unknown) =>
             function (this: TExoDomApi, node: TExoNode<TExoDomMark>, parent: Element) {
@@ -64,6 +65,9 @@ export const withExoBuiltSchemas = <TBase extends TExoDomApi>(
                 parent: Element,
                 params?: unknown
             ) {
-                return this.mountRoot(this.buildRoot(machine as never, params), parent);
+                return this.mountRoot(
+                    buildExoDomRoot(this.createExoNode(machine as never), params),
+                    parent
+                );
             },
     }) as TBase & TExoBuiltSchemasApi;

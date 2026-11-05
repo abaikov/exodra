@@ -5,7 +5,7 @@ import {
     withExoTransitions,
     withExoWire,
 } from '@exodra/core';
-import type { TExoMachineNode, TExoTextPort } from '@exodra/core';
+import type { TExoChildrenPort, TExoMachineNode, TExoTextPort } from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 
 const SCHEMA = createExoSchema((b) => {
@@ -40,13 +40,16 @@ ROW.overrides({ add: (c: TExoMachineNode, by: string) => void c.text(SCHEMA.port
 withExoTransitions(mRow, { probe: (c) => void c.state.missing });
 
 const HOST = createExoSchema((b) => {
-    b.el('div');
-    return {};
+    let rows!: TExoChildrenPort;
+    b.el('div', null, (div) => {
+        rows = div.childrenPort();
+    });
+    return { rows };
 });
 createExoMachine<TExoDomNode>(HOST, {
     createInitialState: (c) => {
-        c.build(ROW, { title: 'ok' });
+        c.one(HOST.ports.rows, ROW, { title: 'ok' });
         // @ts-expect-error — the params do not match the wire's TRowParams
-        c.build(ROW, { title: 42 });
+        c.one(HOST.ports.rows, ROW, { title: 42 });
     },
 });

@@ -41,6 +41,7 @@ const ORDER = [
   'guides/components',
   'guides/lists',
   'guides/rendering',
+  'guides/children',
   'guides/optimizations',
   'guides/plugins',
   'guides/ssr',

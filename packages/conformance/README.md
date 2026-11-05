@@ -27,11 +27,11 @@ This is that piece of work.
 
 ## The four backends
 
-| name | package | has |
-|---|---|---|
-| `dom` | `@exodra/dom` | element, update, live-tree, text-node |
-| `string` | `@exodra/string` | element |
-| `term` | `@exodra/term` | update, live-tree |
+| name      | package                 | has                                   |
+| --------- | ----------------------- | ------------------------------------- |
+| `dom`     | `@exodra/dom`           | element, update, live-tree, text-node |
+| `string`  | `@exodra/string`        | element                               |
+| `term`    | `@exodra/term`          | update, live-tree                     |
 | `hydrate` | `@exodra/dom` (hydrate) | element, update, live-tree, text-node |
 
 `hydrate` is the fifth PATH rather than a fifth package: it runs `@exodra/string` over the
@@ -92,15 +92,15 @@ judging, for finding out what the backends do today.
 Adding a fifth backend, or changing a fourth, must fail LOUDLY rather than drift. Both doors are
 mechanical and neither has a default:
 
-- **A rule must state what EVERY registered backend does.** Push a fifth adapter into
-  `exoConformanceTrees` and every rule in the suite fails by name until somebody answers for it.
-  There is no fallback, no skip and no snapshot to regenerate. Drifting past is exactly what happened
-  to `packages/term`, which had been in this repository long enough to answer eleven documented
-  questions differently from the two shipped backends without a single test noticing.
-- **A backend whose behaviour moves** produces a different verdict, the verdict falls into a
-  different equivalence class, and the rule's declared PARTITION no longer matches. The failure
-  prints both partitions and the whole table, so a reader sees what merged or split rather than
-  "expected X received Y".
+-   **A rule must state what EVERY registered backend does.** Push a fifth adapter into
+    `exoConformanceTrees` and every rule in the suite fails by name until somebody answers for it.
+    There is no fallback, no skip and no snapshot to regenerate. Drifting past is exactly what happened
+    to `packages/term`, which had been in this repository long enough to answer eleven documented
+    questions differently from the two shipped backends without a single test noticing.
+-   **A backend whose behaviour moves** produces a different verdict, the verdict falls into a
+    different equivalence class, and the rule's declared PARTITION no longer matches. The failure
+    prints both partitions and the whole table, so a reader sees what merged or split rather than
+    "expected X received Y".
 
 ## What it refuses
 
@@ -110,13 +110,13 @@ There is no `needs` field. CANNOT-EXPRESS is the one outcome that lets a backend
 without answering it, so the only safe way to reach it is from something the runner is ACTUALLY
 GOING TO DO. Everything is derived from the rule's own subject and probe:
 
-- `subject.update` → `EXO_CAP_UPDATE`. The runner pulls it after the render. A backend that renders
-  once and subscribes to nothing would report the unmoved artefact as a divergence.
-- `subject.fire` → `EXO_CAP_LIVE_TREE`. The runner dispatches it. There is nothing to dispatch into
-  on a backend whose artefact is a string.
-- `subject.translate` → `EXO_CAP_TEXT_NODE`. The runner replaces a Text node. A backend holding its
-  text in a FIELD has no node for anybody to replace.
-- `probe` non-empty, OR the schema puts an element in foreign content → `EXO_CAP_ELEMENT`.
+-   `subject.update` → `EXO_CAP_UPDATE`. The runner pulls it after the render. A backend that renders
+    once and subscribes to nothing would report the unmoved artefact as a divergence.
+-   `subject.fire` → `EXO_CAP_LIVE_TREE`. The runner dispatches it. There is nothing to dispatch into
+    on a backend whose artefact is a string.
+-   `subject.translate` → `EXO_CAP_TEXT_NODE`. The runner replaces a Text node. A backend holding its
+    text in a FIELD has no node for anybody to replace.
+-   `probe` non-empty, OR the schema puts an element in foreign content → `EXO_CAP_ELEMENT`.
 
 There used to be a `needs: readonly string[]` unioned into the derived set, and it was a hole
 through the registry's whole promise. Every cross-check in `assertExoConformanceRule` compares the
@@ -139,8 +139,8 @@ namespace. A schema containing one produces an artefact carrying namespace infor
 backend with no namespaces would make it diverge from all four others ON THE ELEMENT LINE for a
 reason that is the sketch's grammar rather than the renderer's.
 
-**Where that derivation under-reaches, stated:** a row component named by a `reconcileExoOrder`
-build callback, or by `c.list`, is reached from inside the WIRING closure and is not in the schema, so
+**Where that derivation under-reaches, stated:** a row component named by a
+`createExoChildrenReconciler` reconciler, or by `c.list`, is reached from inside the WIRING closure and is not in the schema, so
 foreign content inside a list row is invisible to it. That
 errs in the safe direction — the backend is ASKED rather than excused — and the rule then fails at
 the partition with the two artefacts printed, which is a loud wrong answer rather than a quiet green
@@ -402,13 +402,13 @@ not the rule's.
 
 ## The stages a refusal can arrive from
 
-- `schema-compile` — `exoStrSchemaOf`, `exoDomSchemaOf`, `exoTermSchemaOf`, once per schema per backend,
-  before any instance exists.
-- `wire` — the wiring function running against the exonode: `attr`, `text`, `html`, `on`, `one`,
-  `list`, `build`, `childList`. Following a source is not a door on that list — a machine effect
-  draws through `attr`/`text`/`html` and subscribes, so a refusal it provokes still arrives from one
-  of those names.
-- `update` — a source changing after the render, and whatever the backend does about it.
+-   `schema-compile` — `exoStrSchemaOf`, `exoDomSchemaOf`, `exoTermSchemaOf`, once per schema per backend,
+    before any instance exists.
+-   `wire` — the wiring function running against the exonode: `attr`, `text`, `html`, `on`, `one`,
+    `list`, `createExoNode` and the port methods (`appendChild` and the rest). Following a source is not a door on that list — a machine effect
+    draws through `attr`/`text`/`html` and subscribes, so a refusal it provokes still arrives from one
+    of those names.
+-   `update` — a source changing after the render, and whatever the backend does about it.
 
 The adapter's `compile` exists as a member separate from `render` for exactly one reason: the two
 children-port rules are claims about WHICH LAYER refuses a shape, and a suite that only called
@@ -440,7 +440,7 @@ one of its `n` instances the same params.
 
 That is why a subject's initial state can be written `(c) => { … }` and still be passable
 everywhere: a function of fewer parameters is assignable to one of more, and the params it ignores
-are the only thing it was ever going to be handed. A subject that *does* want a datum names it as
+are the only thing it was ever going to be handed. A subject that _does_ want a datum names it as
 its params and writes it:
 
 ```ts
@@ -542,61 +542,61 @@ did not settle it and refused to invent one.
 
 ## Unsorted
 
-- The capability list is short on purpose. Every capability is a thing some ADAPTER METHOD can be
-  asked for, which is what keeps the declaration falsifiable: a backend claiming `EXO_CAP_LIVE_TREE`
-  has to answer `fire()`, and one claiming `EXO_CAP_ELEMENT` has to hand back real elements. A
-  capability nothing could ask for would be a comment with a constant's name on it.
-- The capabilities are plain string constants, following `@exodra/core`'s port kinds — there is no
-  enum object to load, and a value read out of a failure message is the value in the source.
-- `@exodra/string` declares `EXO_CAP_ELEMENT` and that is not a technicality: the properties a rule
-  probes (`checked`, `defaultChecked`, `indeterminate`) are read off the element THE PARSER BUILT FROM
-  THE SERVER'S BYTES, which is the state a served page actually has before a line of JavaScript runs.
-- `packages/term` declares `EXO_CAP_LIVE_TREE` through `exoTermFire`. There is no event system in a
-  text tree, so a listener is RECORDED rather than attached and that function is what runs it. It is
-  enough for every rule here, because what a rule observes is the EFFECT of a handler, never its
-  presence.
-- `packages/term` declares `EXO_CAP_UPDATE`, and that is the whole reason it is not `@exodra/string`
-  with different characters at the end: a bound port keeps writing into the live tree for as long as
-  the instance is mounted.
-- `packages/term`'s missing `EXO_CAP_ELEMENT` is what routes the two property rules and the
-  namespaced-attribute rule to CANNOT-EXPRESS there, and each of those three is a place
-  `packages/term` itself already writes down that it has no third answer to give
-  (`packages/term/src/utilities/exoTermWriterForPort.ts:59-68`).
-- `packages/term`'s missing `EXO_CAP_TEXT_NODE` is a DIFFERENT absence from `@exodra/string`'s. The
-  server has no live tree; term has one and holds its text in a FIELD (`TExoTermElement.text`), so there
-  is no node for a translator to replace and the exposure
-  `rules/tests/surviving-a-third-party-dom-mutation.test.ts` is about does not exist there rather than being
-  survived. Recording both as the same absence would be the mistake this suite exists to stop.
-- The four expectation factories (`renders`, `refusesAt`, `cannotExpress`, `undeclared`) are factories
-  rather than object literals so that a rule reads as a sentence and a new field on an expectation is
-  added in one place instead of in every rule in the suite.
-- `refusesAt`'s `matching` is for the rules where the WORDS are the point — a refusal that names the
-  call which does work, say — and is left off everywhere else, because holding several backends to
-  several sentences is how a suite starts failing on improvements.
-- The registry's order — the two shipped backends, the foreign one, then the path where they meet — is
-  the order failure output is printed in, and nothing else depends on it.
-- A canonical partition (names sorted inside each group, groups sorted by their first name) exists so
-  a partition never depends on the registry's order and a rule's declaration never has to guess it.
-  Capability lists print in `EXO_CONFORMANCE_CAPABILITIES` order for the same reason.
-- `entersForeignContent` walks with a stack rather than recursion, following this repository's own
-  note that a stack beats recursion; the depth here is a schema's depth rather than a page's.
-- `exoSketchOfChildren` takes a `Node` and not a `ParentNode` because its two callers are an `Element`
-  (a rendered container) and a `DocumentFragment` (a `<template>`'s contents), and `childNodes` — which
-  is what the walk needs, since a text run between two instances is part of the artefact — lives on
-  `Node`.
-- Both sides of the hydrate adapter's `compile` are keyed on their own backend: the markup schema is
-  cached per (declaration, backend) exactly as the DOM schema beside it is, because a server connector takes
-  its methods off the backend as its prototype.
-- The `agreement` partition is what makes a DIVERGENCE a fact in the suite instead of a sentence in a
-  comment. The duplicate-item fork is the case where somebody DID settle the semantics: the classes
-  merged, and what stands in their place is an equality —
-  `packages/dom/src/tests/duplicate-item-parity.test.ts:99-104` renders the same list on both
-  backends and asserts each prints the same bytes, so the day one of them grows a list answer of its
-  own that line fails and names the rule instead of letting the regression look like a fix.
-- The partition is asserted over the backends that rendered and are NOT undeclared. An unrecorded
-  backend is left out rather than the whole assertion being abandoned: three established answers stay
-  asserted while a fourth is still open, which is the difference between a rule that says something
-  and a rule that waits.
-- The CANNOT-EXPRESS cross-check runs in both directions because the rule's claim and the adapter's
-  declaration are two statements of one fact that can come apart — which is the failure mode a comment
-  saying "a terminal has no attribute namespace" cannot have and cannot report.
+-   The capability list is short on purpose. Every capability is a thing some ADAPTER METHOD can be
+    asked for, which is what keeps the declaration falsifiable: a backend claiming `EXO_CAP_LIVE_TREE`
+    has to answer `fire()`, and one claiming `EXO_CAP_ELEMENT` has to hand back real elements. A
+    capability nothing could ask for would be a comment with a constant's name on it.
+-   The capabilities are plain string constants, following `@exodra/core`'s port kinds — there is no
+    enum object to load, and a value read out of a failure message is the value in the source.
+-   `@exodra/string` declares `EXO_CAP_ELEMENT` and that is not a technicality: the properties a rule
+    probes (`checked`, `defaultChecked`, `indeterminate`) are read off the element THE PARSER BUILT FROM
+    THE SERVER'S BYTES, which is the state a served page actually has before a line of JavaScript runs.
+-   `packages/term` declares `EXO_CAP_LIVE_TREE` through `exoTermFire`. There is no event system in a
+    text tree, so a listener is RECORDED rather than attached and that function is what runs it. It is
+    enough for every rule here, because what a rule observes is the EFFECT of a handler, never its
+    presence.
+-   `packages/term` declares `EXO_CAP_UPDATE`, and that is the whole reason it is not `@exodra/string`
+    with different characters at the end: a bound port keeps writing into the live tree for as long as
+    the instance is mounted.
+-   `packages/term`'s missing `EXO_CAP_ELEMENT` is what routes the two property rules and the
+    namespaced-attribute rule to CANNOT-EXPRESS there, and each of those three is a place
+    `packages/term` itself already writes down that it has no third answer to give
+    (`packages/term/src/utilities/exoTermWriterForPort.ts:59-68`).
+-   `packages/term`'s missing `EXO_CAP_TEXT_NODE` is a DIFFERENT absence from `@exodra/string`'s. The
+    server has no live tree; term has one and holds its text in a FIELD (`TExoTermElement.text`), so there
+    is no node for a translator to replace and the exposure
+    `rules/tests/surviving-a-third-party-dom-mutation.test.ts` is about does not exist there rather than being
+    survived. Recording both as the same absence would be the mistake this suite exists to stop.
+-   The four expectation factories (`renders`, `refusesAt`, `cannotExpress`, `undeclared`) are factories
+    rather than object literals so that a rule reads as a sentence and a new field on an expectation is
+    added in one place instead of in every rule in the suite.
+-   `refusesAt`'s `matching` is for the rules where the WORDS are the point — a refusal that names the
+    call which does work, say — and is left off everywhere else, because holding several backends to
+    several sentences is how a suite starts failing on improvements.
+-   The registry's order — the two shipped backends, the foreign one, then the path where they meet — is
+    the order failure output is printed in, and nothing else depends on it.
+-   A canonical partition (names sorted inside each group, groups sorted by their first name) exists so
+    a partition never depends on the registry's order and a rule's declaration never has to guess it.
+    Capability lists print in `EXO_CONFORMANCE_CAPABILITIES` order for the same reason.
+-   `entersForeignContent` walks with a stack rather than recursion, following this repository's own
+    note that a stack beats recursion; the depth here is a schema's depth rather than a page's.
+-   `exoSketchOfChildren` takes a `Node` and not a `ParentNode` because its two callers are an `Element`
+    (a rendered container) and a `DocumentFragment` (a `<template>`'s contents), and `childNodes` — which
+    is what the walk needs, since a text run between two instances is part of the artefact — lives on
+    `Node`.
+-   Both sides of the hydrate adapter's `compile` are keyed on their own backend: the markup schema is
+    cached per (declaration, backend) exactly as the DOM schema beside it is, because a server connector takes
+    its methods off the backend as its prototype.
+-   The `agreement` partition is what makes a DIVERGENCE a fact in the suite instead of a sentence in a
+    comment. The duplicate-item fork is the case where somebody DID settle the semantics: the classes
+    merged, and what stands in their place is an equality —
+    `packages/dom/src/tests/duplicate-item-parity.test.ts:99-104` renders the same list on both
+    backends and asserts each prints the same bytes, so the day one of them grows a list answer of its
+    own that line fails and names the rule instead of letting the regression look like a fix.
+-   The partition is asserted over the backends that rendered and are NOT undeclared. An unrecorded
+    backend is left out rather than the whole assertion being abandoned: three established answers stay
+    asserted while a fourth is still open, which is the difference between a rule that says something
+    and a rule that waits.
+-   The CANNOT-EXPRESS cross-check runs in both directions because the rule's claim and the adapter's
+    declaration are two statements of one fact that can come apart — which is the failure mode a comment
+    saying "a terminal has no attribute namespace" cannot have and cannot report.

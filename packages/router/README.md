@@ -25,7 +25,7 @@ import {
     withExoWire,
 } from '@exodra/core';
 import type { TExoMachineNode } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import {
     ExoLink,
@@ -72,17 +72,17 @@ const App = createExoMachine(appSchema, {
     },
 });
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 backend.render(App, document.getElementById('root') as HTMLElement);
 ```
 
-- The page receives the match that selected it as the **params of its wire**.
-- `provideExoRouter(c, router)` puts the router in the context; outlets and links
-  find it there.
-- A boundary opens a child list for its page, so the DOM backend is composed with
-  `withExoChildList`; without it the first outlet throws `EXO0109`.
-- The same tree renders on the server with `ExoStrBackend` (nested layouts
-  included) and hydrates with `withExoHydration`.
+-   The page receives the match that selected it as the **params of its wire**.
+-   `provideExoRouter(c, router)` puts the router in the context; outlets and links
+    find it there.
+-   A boundary places its page through the children-port calls every DOM backend has; the
+    backend needs no pack for it.
+-   The same tree renders on the server with `ExoStrBackend` (nested layouts
+    included) and hydrates with `withExoHydration`.
 
 ## Routes
 
@@ -120,12 +120,18 @@ There are no hooks. A page reads its match from its wire params; anything else
 asks the exonode for the router with `injectExoRouter(c)`, which throws when
 nothing above provided one.
 
-A wire may only write ports. Placing children (`childList`, `one`, `list`) in a
-wire throws `EXO0103` when the wire is re-run, so children go in
-`createInitialState`, which is handed the same match as its params:
+Placing children with `one` or `list` in a wire throws `EXO0103` when the wire
+is re-run, so those go in `createInitialState`, which is handed the same match as its
+params:
 
 ```ts
-import { EXO_PORT_CHILDREN, createExoMachine, createExoSchema, exoPorts } from '@exodra/core';
+import {
+    EXO_PORT_CHILDREN,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    wireExoNode,
+} from '@exodra/core';
 import type { TExoDomNode } from '@exodra/dom';
 import { ExoLink } from '@exodra/router';
 import type { TExoRouteMatch } from '@exodra/router';
@@ -141,9 +147,12 @@ const orgSchema = createExoSchema(OrgPorts, (b) => {
 });
 export const OrgPage = createExoMachine(orgSchema, {
     createInitialState: (c: TExoDomNode, match: TExoRouteMatch) => {
-        const tabs = c.childList(OrgPorts.tabs);
-        tabs.insert(c.build(ExoLink, { to: match.pathname + '/repos', label: 'Repositories' }));
-        tabs.insert(c.build(ExoLink, { to: match.pathname + '/people', label: 'People' }));
+        const repos = c.createExoNode(ExoLink);
+        wireExoNode(repos, { to: match.pathname + '/repos', label: 'Repositories' });
+        c.appendChild(OrgPorts.tabs, repos);
+        const people = c.createExoNode(ExoLink);
+        wireExoNode(people, { to: match.pathname + '/people', label: 'People' });
+        c.appendChild(OrgPorts.tabs, people);
     },
 });
 ```
@@ -196,11 +205,11 @@ called on the next one.
 
 ## Route boundaries
 
-| Form | Use it when |
-| --- | --- |
-| `c.one(port, ExoOutlet)` | a boundary in a `<div>` |
-| `c.one(port, Routed)` with `const Routed = exoOutlet('main')` | the boundary should be your own tag; call `exoOutlet(tag, attrs?)` at module level |
-| `c.childList(port).insert(c.build(ExoOutlet))` | the boundary goes into a child list you manage |
+| Form                                                                                           | Use it when                                                                        |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `c.one(port, ExoOutlet)`                                                                       | a boundary in a `<div>`                                                            |
+| `c.one(port, Routed)` with `const Routed = exoOutlet('main')`                                  | the boundary should be your own tag; call `exoOutlet(tag, attrs?)` at module level |
+| `const outlet = c.createExoNode(ExoOutlet); wireExoNode(outlet); c.appendChild(port, outlet);` | the boundary goes into a children port you manage                                  |
 
 A layout is a route with `children` whose page places its own outlet. Depth is
 found through the context, so the nested outlet draws the next entry of the
@@ -271,13 +280,13 @@ DOM and the server backends.
 
 On a navigation, each level is compared with what the URL now selects:
 
-- **a different route component**: the old page is removed (its teardown runs)
-  and the new one is built;
-- **the same component, a different match** (`/users/1` to `/users/2`): a page
-  with a wire is re-wired in place, keeping its nodes, listeners and focus; a page
-  without a wire is rebuilt;
-- **the same match**: the level is kept. Entries a navigation did not change are
-  the same objects in `getMatches()`, so a query-only change keeps every page.
+-   **a different route component**: the old page is removed (its teardown runs)
+    and the new one is built;
+-   **the same component, a different match** (`/users/1` to `/users/2`): a page
+    with a wire is re-wired in place, keeping its nodes, listeners and focus; a page
+    without a wire is rebuilt;
+-   **the same match**: the level is kept. Entries a navigation did not change are
+    the same objects in `getMatches()`, so a query-only change keeps every page.
 
 Only the outermost boundary subscribes to the router; nested ones are updated
 from their parent, so an arriving page is built once, inside the arriving layout.
@@ -300,7 +309,9 @@ type TExoLinkParams = {
 };
 ```
 
-Place one with `c.one(port, ExoLink, params)` or `c.build(ExoLink, params)`.
+Place one with `c.one(port, ExoLink, params)`, or create it with
+`c.createExoNode(ExoLink)`, wire it with `wireExoNode(node, params)` and place it
+with `c.appendChild(port, node)`.
 `currentWhen` writes `aria-current="page"` while the pathname equals `to`
 (`'exact'`) or is below it (`'prefix'`); only such a link subscribes to the router.
 Style it with `a[aria-current="page"]`.
@@ -342,21 +353,21 @@ const router = createExoRouter(
 );
 ```
 
-- **Order:** `beforeEach`, then `beforeLeave` across the branch being left (leaf
-  to root), then `beforeEnter` across the branch being entered (root to leaf).
-  The first result that is not `true` stops the chain.
-- **A refused navigation writes nothing.** `navigate()` runs guards before it
-  writes history and does not fire `afterEach`. A back/forward change that is
-  refused is put back with `history.replace`, without running guards again.
-- **A guard that throws or rejects counts as `false`** and is logged with
-  `console.error`; `navigate()` resolves with the location still shown.
-- **Only the latest navigation commits.** A branch with no guards or only
-  synchronous ones commits synchronously inside `navigate()`. A redirect is a
-  navigation of its own; the promise resolves where the chain landed.
-- **A path that matches no route commits without running any guard**, including
-  the `beforeLeave` of the page being left. `afterEach` still fires, with `to`
-  undefined.
-- `getNavigationState()` is `'loading'` only while an asynchronous guard decides.
+-   **Order:** `beforeEach`, then `beforeLeave` across the branch being left (leaf
+    to root), then `beforeEnter` across the branch being entered (root to leaf).
+    The first result that is not `true` stops the chain.
+-   **A refused navigation writes nothing.** `navigate()` runs guards before it
+    writes history and does not fire `afterEach`. A back/forward change that is
+    refused is put back with `history.replace`, without running guards again.
+-   **A guard that throws or rejects counts as `false`** and is logged with
+    `console.error`; `navigate()` resolves with the location still shown.
+-   **Only the latest navigation commits.** A branch with no guards or only
+    synchronous ones commits synchronously inside `navigate()`. A redirect is a
+    navigation of its own; the promise resolves where the chain landed.
+-   **A path that matches no route commits without running any guard**, including
+    the `beforeLeave` of the page being left. `afterEach` still fires, with `to`
+    undefined.
+-   `getNavigationState()` is `'loading'` only while an asynchronous guard decides.
 
 ## Navigation
 
@@ -425,16 +436,16 @@ const merged = mergeExoQuery({ page: '1' }, { sort: 'asc' });
 const present = 'page' in parseExoQuery('?page=2');
 ```
 
-- The leading `?` is optional and a repeated key becomes an array. Without a
-  schema, values stay strings unless `parseNumbers`, `parseBooleans` or
-  `parseValue` say otherwise; with one, a bad value throws `ExoQueryValidationError`.
-- `stringifyExoQuery` returns `''` (not `'?'`) for an empty record, repeats the key
-  for an array, and drops `undefined` and `null`, which is how `patchQuery` clears
-  a key.
-- **The parsed record has a null prototype**, so URL keys such as `__proto__` or
-  `constructor` are ordinary keys. Use `key in query` or
-  `Object.prototype.hasOwnProperty.call(query, key)`, not `query.hasOwnProperty`.
-  `match.params` is an ordinary object.
+-   The leading `?` is optional and a repeated key becomes an array. Without a
+    schema, values stay strings unless `parseNumbers`, `parseBooleans` or
+    `parseValue` say otherwise; with one, a bad value throws `ExoQueryValidationError`.
+-   `stringifyExoQuery` returns `''` (not `'?'`) for an empty record, repeats the key
+    for an array, and drops `undefined` and `null`, which is how `patchQuery` clears
+    a key.
+-   **The parsed record has a null prototype**, so URL keys such as `__proto__` or
+    `constructor` are ordinary keys. Use `key in query` or
+    `Object.prototype.hasOwnProperty.call(query, key)`, not `query.hasOwnProperty`.
+    `match.params` is an ordinary object.
 
 ## TypeScript
 
@@ -463,9 +474,9 @@ The generated table has no `children`; a layout is written by hand as a route wi
 
 Router and history:
 
-- `createExoRouter(routes, options?): TExoRouter` — `options`: `{ history?, beforeEach?, afterEach? }`; without `history` it uses a memory history
-- `createExoBrowserHistory(options?: { window?, basePath? }): TExoHistory`
-- `createExoMemoryHistory(initialPathOrOptions?: string | { initialPath?, basePath? }): TExoHistory`
+-   `createExoRouter(routes, options?): TExoRouter` — `options`: `{ history?, beforeEach?, afterEach? }`; without `history` it uses a memory history
+-   `createExoBrowserHistory(options?: { window?, basePath? }): TExoHistory`
+-   `createExoMemoryHistory(initialPathOrOptions?: string | { initialPath?, basePath? }): TExoHistory`
 
 `TExoRouter` members: `routes`, `getLocation()`, `getMatch()`, `getMatches()`,
 `getNavigationState()`, `getQuery(options?)`, `navigate(to, { replace?, state? })`,
@@ -475,34 +486,34 @@ Router and history:
 
 Components:
 
-- `ExoOutlet` — the route boundary machine, in a `<div>`
-- `exoOutlet(tag?, attrs?)` — the boundary around another tag; call at module level
-- `ExoLink` — the anchor machine; wire params `TExoLinkParams`
-- `shouldIgnoreExoLinkClick(event, href, target?, download?): boolean`
-- `provideExoRouter(c, router): void`, `injectExoRouter(c): TExoRouter` (throws when none was provided), `EXO_ROUTER` (the context token)
-- `preloadExoPage(loader): Promise<void>`, `isExoPageMachine(component): boolean`
+-   `ExoOutlet` — the route boundary machine, in a `<div>`
+-   `exoOutlet(tag?, attrs?)` — the boundary around another tag; call at module level
+-   `ExoLink` — the anchor machine; wire params `TExoLinkParams`
+-   `shouldIgnoreExoLinkClick(event, href, target?, download?): boolean`
+-   `provideExoRouter(c, router): void`, `injectExoRouter(c): TExoRouter` (throws when none was provided), `EXO_ROUTER` (the context token)
+-   `preloadExoPage(loader): Promise<void>`, `isExoPageMachine(component): boolean`
 
 Lazy loading:
 
-- `exoLazy(loader): TExoLazyRouteLoader` — wrap `() => import('./page')`; the page is the module's default export, or the resolved value itself
-- `fetchExoRouteChunk(component): Promise<void>`
-- `isExoLazyLoader(component): component is TExoLazyRouteLoader`
-- `loadExoLazyMachine(loader): Promise<TExoRouteMachine>`, `resolveExoRouteMachine(component): Promise<TExoRouteMachine>`
+-   `exoLazy(loader): TExoLazyRouteLoader` — wrap `() => import('./page')`; the page is the module's default export, or the resolved value itself
+-   `fetchExoRouteChunk(component): Promise<void>`
+-   `isExoLazyLoader(component): component is TExoLazyRouteLoader`
+-   `loadExoLazyMachine(loader): Promise<TExoRouteMachine>`, `resolveExoRouteMachine(component): Promise<TExoRouteMachine>`
 
 Matching and paths:
 
-- `matchExoRoutes(routes, pathname): TExoRouteMatch | undefined`
-- `matchExoRouteChain(routes, pathname): readonly TExoRouteMatch[]`
-- `parseExoPath(path): TExoLocation`
+-   `matchExoRoutes(routes, pathname): TExoRouteMatch | undefined`
+-   `matchExoRouteChain(routes, pathname): readonly TExoRouteMatch[]`
+-   `parseExoPath(path): TExoLocation`
 
 Guards:
 
-- `collectExoRouteGuards(route, 'beforeEnter' | 'beforeLeave'): TExoRouteGuard[]`
-- `executeExoGuards(guards, to, from?): TExoRouteGuardResult` — synchronous until a guard returns a promise
+-   `collectExoRouteGuards(route, 'beforeEnter' | 'beforeLeave'): TExoRouteGuard[]`
+-   `executeExoGuards(guards, to, from?): TExoRouteGuardResult` — synchronous until a guard returns a promise
 
 Query:
 
-- `parseExoQuery(search, options?)`, `stringifyExoQuery(query)`, `mergeExoQuery(current, patch)`, `exoQuery` (`string`, `number`, `boolean`, `array`, `optional`), `ExoQueryValidationError`
+-   `parseExoQuery(search, options?)`, `stringifyExoQuery(query)`, `mergeExoQuery(current, patch)`, `exoQuery` (`string`, `number`, `boolean`, `array`, `optional`), `ExoQueryValidationError`
 
 Types: `TExoRouter`, `TExoRoute`, `TExoPageRoute`, `TExoPageMachine`,
 `TExoRouteMachine`, `TExoLazyRouteLoader`, `TExoRouteMatch`, `TExoRouteParams`,
@@ -518,9 +529,9 @@ Types: `TExoRouter`, `TExoRoute`, `TExoPageRoute`, `TExoPageMachine`,
 
 ## Further reading
 
-- [Router API](https://exodra.org/docs/api/router)
-- [SSR & hydration](https://exodra.org/docs/guides/ssr)
-- [Vite plugin](https://exodra.org/docs/tooling/vite-plugin)
+-   [Router API](https://exodra.org/docs/api/router)
+-   [SSR & hydration](https://exodra.org/docs/guides/ssr)
+-   [Vite plugin](https://exodra.org/docs/tooling/vite-plugin)
 
 ## License
 

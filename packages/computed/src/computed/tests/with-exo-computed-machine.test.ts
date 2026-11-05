@@ -102,6 +102,7 @@ const bareNode = (backend: ExoCardBackend, context: TExoContextFrame | null = nu
         effectStops: null,
         transitionOverrides: null,
         serviceState: undefined,
+        machine: null,
     } as unknown as TCard);
 
 /** The same instance with the slot a lifecycle-keeping backend seats in its own literal. */
@@ -115,6 +116,7 @@ const liveNode = (backend: ExoCardBackend): TCard =>
         effectStops: null,
         transitionOverrides: null,
         serviceState: undefined,
+        machine: null,
         live: null,
     } as unknown as TCard);
 
@@ -226,6 +228,7 @@ describe('what the decoration assigns', () => {
             'effectStops',
             'transitionOverrides',
             'serviceState',
+            'machine',
         ]);
     });
 

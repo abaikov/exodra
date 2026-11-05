@@ -6,8 +6,8 @@ title: Getting Started
 # Getting Started with Exodra
 
 Exodra is a fine-grained, no-virtual-DOM UI runtime. A component is **one value
-carrying two halves**: a *schema* — the shape, built once when the module loads —
-and a *wiring function* — run once per instance, which puts values into the
+carrying two halves**: a _schema_ — the shape, built once when the module loads —
+and a _wiring function_ — run once per instance, which puts values into the
 **ports** the schema declared.
 
 Nothing is diffed and nothing is walked at render time. The walk happens once,
@@ -80,9 +80,8 @@ dispose();
 `backend.render` mounts **one** instance and appends it to whatever the parent
 already holds. It takes **no count**: a lone root has nothing else to be about.
 Rows that vary are a **list** — a children port filled by `c.list` (fixed, one row
-per element of the array it is handed) or by the machine calling
-`reconcileExoOrder` over `c.childList(port)` (live), and each row is handed its
-item as its params.
+per element of the array it is handed) or by a reconciler from
+`createExoChildrenReconciler` (live), and each row is handed its item as its params.
 
 **Build the backend once, at module level.** It is the key a compiled schema plan
 is cached under, and it is compared by pointer — a backend constructed inside a
@@ -91,14 +90,14 @@ markup parse included.
 
 Three ideas do most of the work:
 
-- `el()` / `text()` declare what **never changes**. It is baked into the markup.
-- `exoPorts({ … })` declares the **places** a value may be put later, and
-  `attrPort()` / `textPort()` / `eventPort()` / `childrenPort()` set each one in
-  the markup.
-- `c.attr` / `c.text` / `c.on` **fill** those places, naming them by identity —
-  so the machine cannot count wrong and never looks anything up. Keeping a place
-  in step with outside data is an **effect** that draws it once, then
-  subscribes, and returns the unsubscribe.
+-   `el()` / `text()` declare what **never changes**. It is baked into the markup.
+-   `exoPorts({ … })` declares the **places** a value may be put later, and
+    `attrPort()` / `textPort()` / `eventPort()` / `childrenPort()` set each one in
+    the markup.
+-   `c.attr` / `c.text` / `c.on` **fill** those places, naming them by identity —
+    so the machine cannot count wrong and never looks anything up. Keeping a place
+    in step with outside data is an **effect** that draws it once, then
+    subscribes, and returns the unsubscribe.
 
 ## A counter
 
@@ -182,11 +181,6 @@ machine. The row component turns each item into an element, and the
 reconciler works by **object identity** — a row that survives an update is the
 same element it was. No keys.
 
-The reconciler places rows through `c.childList`, which on the DOM backend is a pack:
-[`withExoChildList`](./api/dom.md#withexochildlist), composed once where the backend is
-built. Without it the first `c.childList` throws [EXO0109](./errors.md#exo0109); a page with
-no such list never links it.
-
 ```ts
 import {
     EXO_PORT_ATTR,
@@ -202,11 +196,11 @@ import {
     withExoWire,
 } from '@exodra/core';
 import type { TExoMachineNodeOf } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 
 type TTodo = { readonly text: string; done: boolean };
 
@@ -228,7 +222,7 @@ const todos = {
     },
 };
 
-// A MACHINE IS HANDED PARAMS, NOT PROPS — here the item itself, which the build callback
+// A MACHINE IS HANDED PARAMS, NOT PROPS — here the item itself, which the reconciler
 // passes and the row keeps as its state.
 const TodoPorts = exoPorts({ toggle: EXO_PORT_EVENT, checked: EXO_PORT_ATTR, text: EXO_PORT_TEXT });
 
@@ -265,9 +259,11 @@ const todoMachine = composeExoMachine(
         })
 );
 
-// A LIVE LIST IS A COMPOSITION, not a door. `c.childList(port)` is the backend's half —
-// it holds whatever is put in it — and `reconcileExoOrder` is the strategy over it, from a
+// A LIVE LIST IS A COMPOSITION, not a door. The children port is the backend's half —
+// it holds whatever is put in it — and the reconciler is the strategy over it, from a
 // package no backend imports. Swapping the strategy is swapping this one call.
+const reconcileTodos = createExoChildrenReconciler<TTodo>(todoMachine);
+
 const TodoAppPorts = exoPorts({ rows: EXO_PORT_CHILDREN });
 
 const todoAppSchema = createExoSchema(TodoAppPorts, (b) => {
@@ -277,18 +273,11 @@ const todoAppSchema = createExoSchema(TodoAppPorts, (b) => {
         });
     });
 });
-type TTodoAppState = { rows: TExoChildList; shown: TTodo[] };
 const todoAppBase = createExoMachine(todoAppSchema, {
-    createInitialState: (c: TExoDomNode, _params: unknown): TTodoAppState => ({
-        rows: c.childList(TodoAppPorts.rows),
-        shown: [],
-    }),
+    createInitialState: (_c: TExoDomNode, _params: unknown) => ({}),
 });
 function showRows(c: TExoMachineNodeOf<typeof todoAppBase>): void {
-    const want = todos.getValue();
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (todo) =>
-        c.build(todoMachine, todo)
-    );
+    reconcileTodos(c, TodoAppPorts.rows, todos.getValue());
 }
 const todoAppMachine = composeExoMachine(todoAppBase, (m) =>
     withExoEffects(m, (effect) => {
@@ -305,13 +294,15 @@ backend.render(todoAppMachine, document.getElementById('app') as HTMLElement);
 todos.add('Write the docs');
 ```
 
-The child list is opened in `createInitialState`, which runs once per instance.
-The build callback is handed the item, and `c.build(todoMachine, todo)` passes it to the
-row as its params.
-`reconcileExoOrder(kids, shown, keys, want, build)` is handed the order on screen
-and the order wanted, and returns the new order on screen for the machine to
-keep. For a filtered view, hand it the subset: rows are matched by the item
-objects, so a row the filter keeps is the same element it was.
+The reconciler is created once, at module level, from the row machine. For a new item it
+makes a row with `c.createExoNode(todoMachine)` and wires it with the item as its params —
+`createInitialState`, then the wire. A row whose item stays keeps its element and its
+subscriptions, and a row whose item left is destroyed. It remembers what it showed in each
+node and port itself, so the machine keeps no `shown` array and opens nothing in
+`createInitialState`. For a filtered view, hand it the subset: rows are matched by the item
+objects, so a row the filter keeps is the same element it was. For data without stable
+objects, key it: `createExoChildrenReconciler<TTodo>(todoMachine, { key: (t) => t.text })`.
+Placing children by hand, outside a reconciler, is [Children](./guides/children.md).
 
 ## Server rendering
 
@@ -348,18 +339,18 @@ disposer.
 `withExoHydration` has no `hydrate` at all — not at runtime and not in its
 type, so calling it is a compile error rather than a call landing on `undefined`.
 That is deliberate: the adopters are weight a client-only bundle should never
-carry, and composing them onto the *same* backend that renders is what stops a
+carry, and composing them onto the _same_ backend that renders is what stops a
 page from hydrating with a different composition than it rendered with.
 
 See the [SSR & Hydration guide](./guides/ssr.md).
 
 ## Where to go next
 
-- [Components guide](./guides/components.md) — the full authoring story:
-  composition, contexts, cleanup, event descriptors.
-- [Core API](./api/core.md) — every export, and what each is for.
-- [DOM renderer](./api/dom.md) / [String renderer](./api/string.md) — the two
-  backends.
+-   [Components guide](./guides/components.md) — the full authoring story:
+    composition, contexts, cleanup, event descriptors.
+-   [Core API](./api/core.md) — every export, and what each is for.
+-   [DOM renderer](./api/dom.md) / [String renderer](./api/string.md) — the two
+    backends.
 
 ## Scaffolding a project
 
@@ -387,15 +378,15 @@ compiled to a module-level `createExoNamedSchema()` call, and the machine around
 it is the same machine you have been writing — it fills the ports by name through
 the schema's `.ports` (`counterSchema.ports` below). A declaration holds no values, no closures and no components:
 
-| Written | Means |
-| --- | --- |
-| `class="row"`, `tabindex={0}`, `disabled` | markup, folded into the schema |
-| `data-id={$.id}` | attribute port `id`, filled with `c.attr` |
-| `<span>{$.title}</span>` | text port `title` — the element's only child — filled with `c.text` |
-| `onClick={$.toggle}`, `on:dblclick={$.edit}` | event port, handled with `on` inside `withExoHandlers` |
-| `ref={$.box}` | ref port |
-| `unsafeHtml={$.body}` | children port filled with `c.unsafeHtml` |
-| `<$.rows />` | children port, filled with `c.one`, `c.list` or `c.childList` + `reconcileExoOrder` |
+| Written                                      | Means                                                                                                                                                                     |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `class="row"`, `tabindex={0}`, `disabled`    | markup, folded into the schema                                                                                                                                            |
+| `data-id={$.id}`                             | attribute port `id`, filled with `c.attr`                                                                                                                                 |
+| `<span>{$.title}</span>`                     | text port `title` — the element's only child — filled with `c.text`                                                                                                       |
+| `onClick={$.toggle}`, `on:dblclick={$.edit}` | event port, handled with `on` inside `withExoHandlers`                                                                                                                    |
+| `ref={$.box}`                                | ref port                                                                                                                                                                  |
+| `unsafeHtml={$.body}`                        | children port filled with `c.unsafeHtml`                                                                                                                                  |
+| `<$.rows />`                                 | children port, filled with `c.one`, `c.list`, a `createExoChildrenReconciler` reconciler, or the port methods (`c.appendChild`, …) — see [Children](./guides/children.md) |
 
 Any other expression is a compile error, and so is a component tag such as `<Row />`.
 
@@ -454,7 +445,7 @@ export const counterMachine = composeExoMachine(
 ```
 
 See the [JSX guide](./guides/jsx.md) for the whole dialect, a list reconciled with
-`reconcileExoOrder`, and everything it refuses.
+`createExoChildrenReconciler`, and everything it refuses.
 
 ## Development server and build
 

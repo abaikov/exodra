@@ -1,4 +1,6 @@
+import { refuseExoSecondWire } from './asserts/refuseExoSecondWire';
 import type { TExoMachine } from './types/TExoMachine';
+import type { TExoParamsWire } from './types/TExoParamsWire';
 
 export function withExoWire<
     TWiring,
@@ -10,12 +12,16 @@ export function withExoWire<
     machine: TMachine & TExoMachine<TWiring, TPorts, TParams, TState>,
     wire: (enode: TWiring & { state: TState }, params: TParams) => void
 ): TMachine {
+    const aroundWire = (machine.wire as Partial<TExoParamsWire> | undefined)?.aroundWire;
+    if (aroundWire !== undefined) {
+        return {
+            ...machine,
+            forms: [],
+            wire: aroundWire(wire as unknown as Parameters<TExoParamsWire['aroundWire']>[0]),
+        } as TMachine;
+    }
     if (machine.wire !== undefined) {
-        throw new Error(
-            typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
-                ? 'withExoWire: this machine already has a wire; a machine has one wire.'
-                : 'EXO0101'
-        );
+        refuseExoSecondWire();
     }
     return { ...machine, forms: [], wire } as TMachine;
 }

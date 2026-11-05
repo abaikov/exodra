@@ -19,16 +19,15 @@ both backends print a row per position, and a test asserts the agreement
 (`packages/dom/src/tests/duplicate-item-parity.test.ts`).
 See [The same object twice in one list](../troubleshooting.md#the-same-object-twice-in-one-list).
 
-
 Packages involved:
 
-- [`@exodra/string`](../api/string.md) — `new ExoStrBackend().render(...)` turns a
-  component into markup.
-- [`@exodra/dom`](../api/dom.md) — `backend.hydrate(...)`, on a backend wrapped in
-  `withExoHydration`, adopts that markup.
-- [`@exodra/ssr`](#the-exodrassr-toolkit) — the rest of the response: head tags,
-  status, headers, the embedded state script and its client-side reader, and the
-  whole document.
+-   [`@exodra/string`](../api/string.md) — `new ExoStrBackend().render(...)` turns a
+    component into markup.
+-   [`@exodra/dom`](../api/dom.md) — `backend.hydrate(...)`, on a backend wrapped in
+    `withExoHydration`, adopts that markup.
+-   [`@exodra/ssr`](#the-exodrassr-toolkit) — the rest of the response: head tags,
+    status, headers, the embedded state script and its client-side reader, and the
+    whole document.
 
 ## The two entry points are the same call, on two backends
 
@@ -98,7 +97,7 @@ other hands back a way to tear it down.
 **one** instance, handed the params it is given, because no library
 asks an application how many copies of its root to make. Anything that repeats
 inside the page is a **list** — a children port filled by `c.list` or by
-`reconcileExoOrder` over `c.childList` — and that is true on both sides, which is exactly why the two agree
+a reconciler from `createExoChildrenReconciler` — and that is true on both sides, which is exactly why the two agree
 about how many rows there are without either being told.
 
 **Type the machine against the shared exonode surface, or none of that is true.**
@@ -154,22 +153,22 @@ so there is no way to call it by accident.
 
 It attaches listeners and takes subscriptions, and it **writes nothing where the
 markup already agrees** — which is the whole reason it is cheaper than rendering.
-It is *not* true that the served HTML is left byte-identical. Where the client's
+It is _not_ true that the served HTML is left byte-identical. Where the client's
 data disagrees with what the server printed, hydration repairs it rather than
 leaving the page wrong until something happens to fire:
 
-- a **text** port fill is read and compared, and written only on a mismatch
-  (`packages/dom/src/hydrate/factories/createExoRepairingFill.ts:29-38`);
-- an **attribute** port fill is compared against `getAttribute` and repaired
-  through the live setter (`packages/dom/src/hydrate/repairExoAttribute.ts:36-65`) —
-  which is what makes a price rendered in the server's locale, or a flag that
-  flipped while the bundle downloaded, come out right;
-- **surplus rows** the server rendered that the client's data no longer has are removed
-  (`packages/dom/src/hydrate/dropUnadoptedExoRows.ts:24-29`), because a list that
-  inserts at the end would otherwise put every later row behind the dead ones;
-- **unclaimed rows** of a child list are removed with no shape check at all, because the
-  span the cursor collected was bounded by that list's own end, so everything left in it
-  is a row of this list (`packages/dom/src/dom/EXO_ADOPT_CURSOR.ts:38-45`).
+-   a **text** port fill is read and compared, and written only on a mismatch
+    (`packages/dom/src/hydrate/factories/createExoRepairingFill.ts:29-38`);
+-   an **attribute** port fill is compared against `getAttribute` and repaired
+    through the live setter (`packages/dom/src/hydrate/repairExoAttribute.ts:36-65`) —
+    which is what makes a price rendered in the server's locale, or a flag that
+    flipped while the bundle downloaded, come out right;
+-   **surplus rows** the server rendered that the client's data no longer has are removed
+    (`packages/dom/src/hydrate/dropUnadoptedExoRows.ts:24-29`), because a list that
+    inserts at the end would otherwise put every later row behind the dead ones;
+-   **unclaimed rows** of a child list are removed with no shape check at all, because the
+    span the list collected was bounded by that list's own end, so everything left in it
+    is a row of this list (`dropUnclaimedServed` in `packages/dom/src/dom/factories/createExoChildList.ts:51-59`).
 
 That holds for **every** fill — `c.attr` / `c.text` / `c.unsafeHtml`, whether a
 wire, a transition or an effect's first draw makes it. The compare belongs to the
@@ -185,42 +184,42 @@ not rebuild a correct subtree (`packages/dom/src/hydrate/repairExoHtml.ts:19-21`
 
 Two consequences:
 
-- **Hydrate from the backend you rendered from.** Attaching listeners is not a
-  detail of hydration, it is the content of it — so the event strategy is **not a
-  parameter**: `hydrate` reads `this.events` off the backend it was composed onto,
-  so composing the pack onto the same object makes a divergence unspellable rather
-  than merely discouraged.
+-   **Hydrate from the backend you rendered from.** Attaching listeners is not a
+    detail of hydration, it is the content of it — so the event strategy is **not a
+    parameter**: `hydrate` reads `this.events` off the backend it was composed onto,
+    so composing the pack onto the same object makes a divergence unspellable rather
+    than merely discouraged.
 
-  ```ts
-  import { composeExoPlugins } from '@exodra/core';
-  import { ExoDomBackend, createExoDelegatedEvents, withExoHydration } from '@exodra/dom';
-  import type { TExoDomMachine } from '@exodra/dom';
+    ```ts
+    import { composeExoPlugins } from '@exodra/core';
+    import { ExoDomBackend, createExoDelegatedEvents, withExoHydration } from '@exodra/dom';
+    import type { TExoDomMachine } from '@exodra/dom';
 
-  declare const pageMachine: TExoDomMachine;
+    declare const pageMachine: TExoDomMachine;
 
-  /** ONE pack and ONE backend for the application, both at module level. */
-  const DELEGATED = createExoDelegatedEvents(['click', 'input']);
-  const backend = withExoHydration(
-      composeExoPlugins(new ExoDomBackend(), { events: () => DELEGATED })
-  );
+    /** ONE pack and ONE backend for the application, both at module level. */
+    const DELEGATED = createExoDelegatedEvents(['click', 'input']);
+    const backend = withExoHydration(
+        composeExoPlugins(new ExoDomBackend(), { events: () => DELEGATED })
+    );
 
-  const root = document.getElementById('app') as HTMLElement;
+    const root = document.getElementById('app') as HTMLElement;
 
-  // The same object serves both, so the two can never be composed differently:
-  backend.hydrate(pageMachine, root);
-  ```
+    // The same object serves both, so the two can never be composed differently:
+    backend.hydrate(pageMachine, root);
+    ```
 
-  `createExoDelegatedEvents` returns a `TExoEventsApi` — a value for the `events` field,
-  not a plugin — which is why it is composed as the one-entry factory
-  `() => DELEGATED`.
+    `createExoDelegatedEvents` returns a `TExoEventsApi` — a value for the `events` field,
+    not a plugin — which is why it is composed as the one-entry factory
+    `() => DELEGATED`.
 
-- **Hydration does not check every row.** It asks `findExoRowDisagreement` where the
-  caller's component and the server's markup are two different moments, and not on
-  a homogeneous reconciled list, where a mismatch is present on the first row or not at
-  all. Call it yourself — in a test asserting the two backends agree, or in a bug
-  report — as `findExoRowDisagreement(schema, root, backend)`; it returns a description of
-  the first disagreement or `null`. The backend argument selects the same compiled
-  plan the page renders through.
+-   **Hydration does not check every row.** It asks `findExoRowDisagreement` where the
+    caller's component and the server's markup are two different moments, and not on
+    a homogeneous reconciled list, where a mismatch is present on the first row or not at
+    all. Call it yourself — in a test asserting the two backends agree, or in a bug
+    report — as `findExoRowDisagreement(schema, root, backend)`; it returns a description of
+    the first disagreement or `null`. The backend argument selects the same compiled
+    plan the page renders through.
 
 ## Contexts across the two sides
 
@@ -396,19 +395,19 @@ export const notFoundMachine = composeExoMachine(
 );
 ```
 
-| Method | What it does |
-| --- | --- |
-| `setStatus(code)` / `getStatus()` | the HTTP status; 200 unless something asks otherwise |
-| `setHeader(name, value)` | replace every header with this name, then append it |
-| `appendHeader(name, value)` | add another value under this name (`Set-Cookie`) |
-| `getHeader` / `getHeaderValues` / `getHeaders` | read them back; `getHeaders()` is a copy |
-| `addHead(entry)` | one `<head>` entry, **as markup** |
-| `renderHead()` | everything `addHead` collected, in arrival order |
-| `setState(key, value)` / `getState(key)` / `getStateSnapshot()` | the map that becomes the state script |
-| `renderStateScript(options?)` | that map as a `<script type="application/json">`, or `''` |
+| Method                                                          | What it does                                              |
+| --------------------------------------------------------------- | --------------------------------------------------------- |
+| `setStatus(code)` / `getStatus()`                               | the HTTP status; 200 unless something asks otherwise      |
+| `setHeader(name, value)`                                        | replace every header with this name, then append it       |
+| `appendHeader(name, value)`                                     | add another value under this name (`Set-Cookie`)          |
+| `getHeader` / `getHeaderValues` / `getHeaders`                  | read them back; `getHeaders()` is a copy                  |
+| `addHead(entry)`                                                | one `<head>` entry, **as markup**                         |
+| `renderHead()`                                                  | everything `addHead` collected, in arrival order          |
+| `setState(key, value)` / `getState(key)` / `getStateSnapshot()` | the map that becomes the state script                     |
+| `renderStateScript(options?)`                                   | that map as a `<script type="application/json">`, or `''` |
 
 Two things this type deliberately does **not** have are `renderBody()` and
-`renderDocument()`: an initial state runs *during* the render, so the body does not exist
+`renderDocument()`: an initial state runs _during_ the render, so the body does not exist
 yet, and one that assembled the document would get one with an empty container
 and no error. Saying things about the response is the machine's job; assembling it is
 `renderExoPage`'s.
@@ -428,11 +427,11 @@ reimplemented.
 
 **There is no count to keep in step.** `renderExoPage` renders one instance and
 `hydrate` adopts one instance; how many rows appear inside it is decided by the
-page's own `c.list` / `reconcileExoOrder`, from the same data on both sides.
+page's own `c.list` / `createExoChildrenReconciler`, from the same data on both sides.
 
 What still has to match is the **element**. The one `hydrate` takes is the
 **container** `renderDocument` emitted — `document.getElementById('app')`, not its
-first child: it adopts out of that parent's first *element* child, so handing it
+first child: it adopts out of that parent's first _element_ child, so handing it
 one level too deep puts every port on the wrong node and throws nothing.
 
 Read the state back on the client with `readExoStateScript()` from the same package:

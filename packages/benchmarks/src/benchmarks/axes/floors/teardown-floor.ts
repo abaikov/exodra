@@ -88,7 +88,7 @@ import { EXO_NO_EFFECTS, EXO_NO_HANDLERS } from '@exodra/core';
 //   240 CHILD RECORDS   40 details blocks (the open cards) + 200 tag rows. Each is a
 //                       `TExoDomChild` built by `buildLiveExoChild`; 200 of them carry a
 //                       one-element `disposers` array and 40 carry `null`.
-//   160 ORDER ARRAYS    one per `childList` call, allocated by `openChildList` whether or not the
+//   160 ORDER ARRAYS    one per opened children port, allocated by `openChildList` whether or not the
 //                       list ever builds a child.
 //   0   REGISTRIES      `disposeExoChildSelf`'s `registry.delete(this.registryKey)` is live code
 //                       and is NEVER REACHED: no file under `packages/*/src` assigns a Map to
@@ -906,7 +906,7 @@ function makeFloorBook(subs: number, rows: number): FloorBook {
         for (const i of IDX) {
             // The details list, then the tags list — the order the card wires them in, and an
             // `order` array for each whether or not it ever built a child: `openChildList` allocates
-            // one per `childList` call.
+            // one per opened children port.
             orders.push(fill(startsOpen(i) ? 1 : 0, false));
             orders.push(fill(startCount(i), true));
         }
@@ -1171,7 +1171,7 @@ function makeInlineListCloser(order: MethodRecord[]): Disposer {
  * THE SCOPE IS IN THE RENDERER'S ORDER, WHICH IS THE ORDER THE WIRES RUN IN: per deck its date and
  * name entries, then its eight cards, and per card its three scalar entries followed by — per list —
  * the `order` walk and then the list's unsubscribe. THE WALK COMES FIRST because the list is
- * opened with `c.childList(port)` before its source is subscribed, and that is where
+ * opened by its first port call (`c.childCount(port)`) before its source is subscribed, and that is where
  * `openChildList` calls `exoOnTeardown`.
  *
  * THE 200 ROW SUBSCRIPTIONS ARE NOT IN THE SCOPE, for the same reason they are not in the
@@ -1500,6 +1500,9 @@ function makeRunRecord(node: Element): TExoDomChild {
         effectStops: null,
         transitionOverrides: null,
         serviceState: undefined,
+        machine: null,
+        portChildren: null,
+        placedIn: null,
         node,
         mount: RUN_NO_MOUNT,
         unmount: RUN_NO_UNMOUNT,

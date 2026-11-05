@@ -7,12 +7,12 @@
 // `exodra` is the Exodra core shipped as `@exodra/core` + `@exodra/dom`, and it is on the
 // DECLARATIVE side of this axis, with Solid / Svelte / React / voby. That is not a handicap
 // chosen for it: it has no imperative list API at all. A reactive list is a transition calling
-// `reconcileExoOrder` over `c.childList(port)`, fired by an effect on every notification of the
+// `reconcileExoOrder` over `c.portChildList(port)`, fired by an effect on every notification of the
 // source, which re-reads `getValue()` and diffs it — so the only thing a caller can say to a list
 // is what it now holds.
 //
 // `exodraTold` is the second Exodra row: the same shell, with each op applied to
-// `c.childList(port)` by index from a transition, and nothing diffed.
+// `c.portChildList(port)` by index from a transition, and nothing diffed.
 //
 // `marko` joins the DECLARATIVE side for the same reason, and the argument for putting it
 // there rather than on the imperative side is written out in `marko/MkList.marko` next to the
@@ -144,10 +144,15 @@ import { abBench, type AbRow, type Scenario } from '../../../harness';
 // is `@exodra/dom` — so it is imported by package specifier and measured out of `dist`. Same
 // reach `apps/exodra/exodra.tsx` makes; both need `npm run build` at the repo root to have run
 // first.
-import { type TExoChildrenPort, type TExoTextPort } from '@exodra/core';
+import { type TExoChildrenPort, type TExoTextPort, wireExoNode } from '@exodra/core';
 import { reconcileExoOrder } from '@exodra/list-reconcile';
 import { createExoBenchSource } from '../../shared/createExoBenchSource';
-import { ExoDomBackend, type TExoDomNode, withExoChildList, withExoCompiler } from '@exodra/dom';
+import {
+    ExoDomBackend,
+    type TExoDomNode,
+    type TExoDomPortChildList,
+    withExoCompiler,
+} from '@exodra/dom';
 import { createExoSchema } from '@exodra/core';
 import {
     createExoMachine,
@@ -156,7 +161,7 @@ import {
     withExoEffects,
 } from '@exodra/core';
 
-const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND = withExoCompiler(new ExoDomBackend());
 
 /**
  * THE NULL PAIR'S BACKEND, and it has to be its own.
@@ -166,7 +171,7 @@ const EXO_BACKEND = withExoChildList(withExoCompiler(new ExoDomBackend()));
  * systematic difference, which is the opposite of a null. `app-update`'s `exodra·twin` is given its
  * own backend for the same reason and says so in the same words.
  */
-const EXO_BACKEND_TWIN = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const EXO_BACKEND_TWIN = withExoCompiler(new ExoDomBackend());
 
 const ROWS = 300;
 const OP_ROUNDS = 20;
@@ -798,7 +803,7 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
         });
         const mUL = createExoMachine(UL_SCHEMA, {
             createInitialState: (c: TExoDomNode) => ({
-                kids: c.childList(UL_SCHEMA.ports.rows),
+                kids: (c as TExoDomNode & TExoDomPortChildList).portChildList(UL_SCHEMA.ports.rows),
                 shown: [] as Row[],
             }),
         });
@@ -814,7 +819,7 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
                             state.shown,
                             want,
                             want,
-                            (item) => c.build(LI, item)
+                            (item) => wireExoNode(c.createExoNode(LI), item)
                         );
                     },
                 }),
@@ -846,7 +851,7 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
     };
     const exodraPrep = (): Scenario => makeExodraList().scenario;
 
-    // THE TOLD ROW. Each op goes straight to the shell's `c.childList` — `move(0, 150)`,
+    // THE TOLD ROW. Each op goes straight to the shell's `c.portChildList` — `move(0, 150)`,
     // `insert(build, 75)`, `remove(200)`, `insert(build)` — through transitions the scenario fires
     // from outside, the same four index calls `mikado`'s row makes on its view. Nothing is diffed.
     const makeExodraToldList = (
@@ -864,7 +869,9 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
         });
         const mUL_TOLD = createExoMachine(UL_TOLD_SCHEMA, {
             createInitialState: (c2: TExoDomNode) => ({
-                kids: c2.childList(UL_TOLD_SCHEMA.ports.rows),
+                kids: (c2 as TExoDomNode & TExoDomPortChildList).portChildList(
+                    UL_TOLD_SCHEMA.ports.rows
+                ),
             }),
         });
         let node!: TExoDomNode;
@@ -873,7 +880,7 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
             (m) =>
                 withExoTransitions(m, {
                     insertRow: (c2, item: Row, at: number) => {
-                        c2.state.kids.insert(c2.build(row, item), at);
+                        c2.state.kids.insert(wireExoNode(c2.createExoNode(row), item), at);
                     },
                     moveRow: (c2, from: number, to: number) => {
                         c2.state.kids.move(from, to);
@@ -888,7 +895,7 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
                         node = c2;
                         const kids = c2.state.kids;
                         for (let i = 0; i < data.length; i++) {
-                            kids.insert(c2.build(row, data[i]), i);
+                            kids.insert(wireExoNode(c2.createExoNode(row), data[i]), i);
                         }
                         return null;
                     });
@@ -955,7 +962,9 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
         });
         const mUL_TWIN = createExoMachine(UL_TWIN_SCHEMA, {
             createInitialState: (c2: TExoDomNode) => ({
-                kids: c2.childList(UL_TWIN_SCHEMA.ports.rows),
+                kids: (c2 as TExoDomNode & TExoDomPortChildList).portChildList(
+                    UL_TWIN_SCHEMA.ports.rows
+                ),
                 shown: [] as Row[],
             }),
         });
@@ -971,7 +980,7 @@ export async function benchmarkListReconcile(rounds = 100, batch = DEFAULT_BATCH
                             state.shown,
                             want,
                             want,
-                            (item) => c2.build(LI_TWIN, item)
+                            (item) => wireExoNode(c2.createExoNode(LI_TWIN), item)
                         );
                     },
                 }),

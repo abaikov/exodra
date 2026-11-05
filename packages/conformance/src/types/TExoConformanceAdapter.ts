@@ -19,13 +19,13 @@ export type TExoConformancePlacement = {
 
 // The MINIMAL exonode surface and not any backend's class, so one value reaches all four entry
 // points WITH NO CAST: a wire's exonode parameter is contravariant, so a component typed against a
-// backend's class is backend-only whatever the design promised. `childList` is in it because ALL
+// backend's class is backend-only whatever the design promised. `portChildList` is in it because ALL
 // THREE backends answer it and the suite states rules about reconciled lists. `TExoMachineNode` is in
 // it because a rule that follows a source does so through an effect, which needs the instance's state.
 export type TExoConformanceMachine = TExoMachine<
     TExoChildrenWiring &
         TExoMachineNode & {
-            childList(port: TExoChildrenPort): TExoConformancePlacement;
+            portChildList(port: TExoChildrenPort): TExoConformancePlacement;
         }
 >;
 

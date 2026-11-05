@@ -40,8 +40,8 @@ preload = ["./preload.ts"]
 
 ### Options
 
-- `filter` — `RegExp` of files to compile. Default `/\.[jt]sx$/`.
-- `schemaSource` — where the schema factory (`createExoNamedSchema`) is imported from. Default `@exodra/core`.
+-   `filter` — `RegExp` of files to compile. Default `/\.[jt]sx$/`.
+-   `schemaSource` — where the schema factory (`createExoNamedSchema`) is imported from. Default `@exodra/core`.
 
 Bun's own JSX handling is wrong for Exodra — it lowers JSX to a call per element
 at runtime and throws on the namespaced `on:` listeners — which is why `.jsx` / `.tsx` are intercepted and handed to Babel.

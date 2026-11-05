@@ -67,7 +67,7 @@
         "label": "core",
         "kind": "runtime",
         "layer": 2,
-        "moduleCount": 163,
+        "moduleCount": 174,
         "published": true,
         "violations": []
       },
@@ -76,7 +76,7 @@
         "label": "dom",
         "kind": "runtime",
         "layer": 3,
-        "moduleCount": 168,
+        "moduleCount": 177,
         "published": true,
         "violations": []
       },
@@ -229,7 +229,7 @@
         "label": "string",
         "kind": "runtime",
         "layer": 3,
-        "moduleCount": 44,
+        "moduleCount": 45,
         "published": true,
         "violations": []
       },
@@ -256,7 +256,7 @@
         "label": "to-react",
         "kind": "runtime",
         "layer": 1,
-        "moduleCount": 12,
+        "moduleCount": 10,
         "published": true,
         "violations": []
       },
@@ -447,7 +447,7 @@
           "type-only",
           "value"
         ],
-        "weight": 58,
+        "weight": 57,
         "evidence": [
           {
             "from": "packages/benchmarks/dom-bench/entry.ts",
@@ -562,12 +562,6 @@
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
-          },
-          {
-            "from": "packages/benchmarks/src/benchmarks/axes/list/list-reconcile.tsx",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
           },
           {
             "from": "packages/benchmarks/src/benchmarks/axes/list/list-replace.tsx",
@@ -809,7 +803,7 @@
           "type-only",
           "value"
         ],
-        "weight": 40,
+        "weight": 47,
         "evidence": [
           {
             "from": "packages/benchmarks/dom-bench/entry.ts",
@@ -914,6 +908,12 @@
             "kind": "value"
           },
           {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/list-replace.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
             "from": "packages/benchmarks/src/benchmarks/axes/list/reactive-update.tsx",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
@@ -926,7 +926,25 @@
             "kind": "value"
           },
           {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/reconcile.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
             "from": "packages/benchmarks/src/benchmarks/axes/list/toggle.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/toggle.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/list/virtual-list.tsx",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
@@ -935,7 +953,7 @@
             "from": "packages/benchmarks/src/benchmarks/axes/list/virtual-list.tsx",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
-            "kind": "value"
+            "kind": "type-only"
           },
           {
             "from": "packages/benchmarks/src/benchmarks/axes/mechanism/handler-count.ts",
@@ -956,6 +974,12 @@
             "kind": "value"
           },
           {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/machine-vs-cells.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
+          },
+          {
             "from": "packages/benchmarks/src/benchmarks/shared/machine-state-shapes.ts",
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
@@ -972,6 +996,12 @@
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/axes/mechanism/plugin-price.ts",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
           },
           {
             "from": "packages/benchmarks/src/benchmarks/axes/mechanism/port-write-doors.ts",
@@ -1044,6 +1074,12 @@
             "to": "packages/dom/src/index.ts",
             "specifier": "@exodra/dom",
             "kind": "value"
+          },
+          {
+            "from": "packages/benchmarks/src/benchmarks/profilers/profile-list-ops.tsx",
+            "to": "packages/dom/src/index.ts",
+            "specifier": "@exodra/dom",
+            "kind": "type-only"
           },
           {
             "from": "packages/benchmarks/ssr/apps/exodra/client.mjs",
@@ -1708,25 +1744,25 @@
             "kind": "type-only"
           },
           {
-            "from": "packages/dom/src/dom/buildLiveExoChild.ts",
-            "to": "packages/context/src/index.ts",
-            "specifier": "@exodra/context",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/dom/src/dom/factories/createExoNode.ts",
-            "to": "packages/context/src/index.ts",
-            "specifier": "@exodra/context",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
+            "from": "packages/dom/src/dom/createExoUnarmedChild.ts",
             "to": "packages/context/src/index.ts",
             "specifier": "@exodra/context",
             "kind": "type-only"
           },
           {
             "from": "packages/dom/src/dom/mountExoInstance.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/factories/createExoNodeRecord.ts",
+            "to": "packages/context/src/index.ts",
+            "specifier": "@exodra/context",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
             "to": "packages/context/src/index.ts",
             "specifier": "@exodra/context",
             "kind": "type-only"
@@ -1744,13 +1780,13 @@
             "kind": "type-only"
           },
           {
-            "from": "packages/dom/src/hydrate/buildAdoptedExoChild.ts",
+            "from": "packages/dom/src/hydrate/hydrateExoInstance.ts",
             "to": "packages/context/src/index.ts",
             "specifier": "@exodra/context",
             "kind": "type-only"
           },
           {
-            "from": "packages/dom/src/hydrate/hydrateExoInstance.ts",
+            "from": "packages/dom/src/hydrate/buildAdoptedExoChild.ts",
             "to": "packages/context/src/index.ts",
             "specifier": "@exodra/context",
             "kind": "type-only"
@@ -1767,7 +1803,7 @@
           "type-only",
           "value"
         ],
-        "weight": 73,
+        "weight": 77,
         "evidence": [
           {
             "from": "packages/dom/src/dom/types/TExoDomSchema.ts",
@@ -1789,6 +1825,12 @@
           },
           {
             "from": "packages/dom/src/dom/types/TExoDomInstanceRecord.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/types/TExoChildList.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1866,19 +1908,25 @@
             "kind": "type-only"
           },
           {
-            "from": "packages/dom/src/dom/types/TExoDomMachine.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
+            "from": "packages/dom/src/dom/armExoDomChild.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
           },
           {
-            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
+            "from": "packages/dom/src/dom/armExoDomChild.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/createExoUnarmedChild.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/types/TExoDomMachine.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1896,7 +1944,25 @@
             "kind": "value"
           },
           {
-            "from": "packages/dom/src/dom/types/TExoChildList.ts",
+            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/factories/createExoMachineNode.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/types/TExoDomChildPortApi.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/types/TExoDomPortChildList.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1909,6 +1975,30 @@
           },
           {
             "from": "packages/dom/src/events/exoDirectListenerFor.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/constants/EXO_DOM_CHILD_LIST_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
+          },
+          {
+            "from": "packages/dom/src/dom/constants/EXO_DOM_CHILD_LIST_VOCABULARY.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/factories/createExoChildList.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/dom/exoNodeDom.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1933,18 +2023,6 @@
           },
           {
             "from": "packages/dom/src/dom/exoDomSchemaOf.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/dom/src/dom/exoNodeDom.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/dom/src/dom/factories/createExoChildList.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -1981,24 +2059,6 @@
           },
           {
             "from": "packages/dom/src/dom/exoDomJsonSchemaOf.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/dom/src/dom/withExoChildList.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
-            "from": "packages/dom/src/dom/constants/EXO_DOM_CHILD_LIST_VOCABULARY.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
-            "from": "packages/dom/src/dom/constants/EXO_DOM_CHILD_LIST_VOCABULARY.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
@@ -2094,18 +2154,6 @@
             "kind": "type-only"
           },
           {
-            "from": "packages/dom/src/hydrate/hydrateExoInstance.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
-            "from": "packages/dom/src/hydrate/types/TExoHydrateSchema.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
-          },
-          {
             "from": "packages/dom/src/hydrate/exoHydrateSchemaOf.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
@@ -2158,6 +2206,18 @@
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/types/TExoHydrateSchema.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
+          },
+          {
+            "from": "packages/dom/src/hydrate/hydrateExoInstance.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "value"
           },
           {
             "from": "packages/dom/src/hydrate/findExoRowDisagreement.ts",
@@ -3063,16 +3123,10 @@
         "kinds": [
           "type-only"
         ],
-        "weight": 5,
+        "weight": 4,
         "evidence": [
           {
             "from": "packages/string/src/schema/types/TExoStrSchema.ts",
-            "to": "packages/context/src/index.ts",
-            "specifier": "@exodra/context",
-            "kind": "type-only"
-          },
-          {
-            "from": "packages/string/src/node/buildExoStrInstance.ts",
             "to": "packages/context/src/index.ts",
             "specifier": "@exodra/context",
             "kind": "type-only"
@@ -3107,7 +3161,7 @@
           "type-only",
           "value"
         ],
-        "weight": 29,
+        "weight": 28,
         "evidence": [
           {
             "from": "packages/string/src/foreign/constants/EXO_STR_FOREIGN_VOCABULARY.ts",
@@ -3188,22 +3242,10 @@
             "kind": "value"
           },
           {
-            "from": "packages/string/src/node/buildExoStrInstance.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "value"
-          },
-          {
             "from": "packages/string/src/node/disposeExoStrInstance.ts",
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
-          },
-          {
-            "from": "packages/string/src/node/types/TExoStrMachine.ts",
-            "to": "packages/core/src/index.ts",
-            "specifier": "@exodra/core",
-            "kind": "type-only"
           },
           {
             "from": "packages/string/src/node/factories/createExoStrChildList.ts",
@@ -3222,6 +3264,12 @@
             "to": "packages/core/src/index.ts",
             "specifier": "@exodra/core",
             "kind": "value"
+          },
+          {
+            "from": "packages/string/src/node/types/TExoStrMachine.ts",
+            "to": "packages/core/src/index.ts",
+            "specifier": "@exodra/core",
+            "kind": "type-only"
           },
           {
             "from": "packages/string/src/node/ExoStrBackend.ts",

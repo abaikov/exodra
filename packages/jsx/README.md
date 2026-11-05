@@ -69,19 +69,19 @@ export const cardSchema = exoJsx<TCardPorts>(($) => (
 ));
 ```
 
-- A literal (`class="card"`, `tabindex={0}`, bare `disabled`) — markup, baked into
-  the schema. A module `const` string (`style={ZONE}`) folds the same way.
-- `class={styles.row}`, `style={PANEL}` rooted at an import or a module `const` —
-  markup read once when the schema compiles; it never changes afterwards.
-- `data-id={$.id}` — an attribute port, filled with `c.attr(CardPorts.id, value)`.
-- `{$.title}` as an element's **only** child — a text port, filled with `c.text`.
-- `onClick={$.open}` (tail lowercased) or `on:dblclick={$.edit}` (name as written)
-  — an event port, handled with `on(CardPorts.open, handler)` inside `withExoHandlers`.
-- `ref={$.box}` — a ref port: a reference to the element and no way to write it.
-- `unsafeHtml={$.body}` — a children port standing for the element's whole
-  content, filled with unescaped markup by `c.unsafeHtml`; nothing sanitises it.
-- `<$.tags />` — a children port among static siblings, filled by the machine with
-  `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder`.
+-   A literal (`class="card"`, `tabindex={0}`, bare `disabled`) — markup, baked into
+    the schema. A module `const` string (`style={ZONE}`) folds the same way.
+-   `class={styles.row}`, `style={PANEL}` rooted at an import or a module `const` —
+    markup read once when the schema compiles; it never changes afterwards.
+-   `data-id={$.id}` — an attribute port, filled with `c.attr(CardPorts.id, value)`.
+-   `{$.title}` as an element's **only** child — a text port, filled with `c.text`.
+-   `onClick={$.open}` (tail lowercased) or `on:dblclick={$.edit}` (name as written)
+    — an event port, handled with `on(CardPorts.open, handler)` inside `withExoHandlers`.
+-   `ref={$.box}` — a ref port: a reference to the element and no way to write it.
+-   `unsafeHtml={$.body}` — a children port standing for the element's whole
+    content, filled with unescaped markup by `c.unsafeHtml`; nothing sanitises it.
+-   `<$.tags />` — a children port among static siblings, filled by the machine with
+    `c.one`, `c.list`, or a reconciler made with `createExoChildrenReconciler`.
 
 Any other expression, a component tag, a fragment or a spread is a compile error.
 `@exodra/babel-plugin-schema`'s README is the reference for what each form

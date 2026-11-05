@@ -101,7 +101,7 @@
 //      the port is pushed onto `owned`, and `finish` (:228-232) turns that list into the schema's
 //      `ownsElement` byte. A children port that is its element's ONE AND ONLY child owns its
 //      element's content.
-//   2. `EXO_DOM_NODE_VOCABULARY.ts:241-245` — `c.childList(port)` hands `schema.ownsElement[index] === 1` to
+//   2. `EXO_DOM_NODE_VOCABULARY.ts:241-245` — `c.portChildList(port)` hands `schema.ownsElement[index] === 1` to
 //      `createExoChildList` as its `ownsParent`, and nothing re-derives it at runtime.
 //   3. `reconcileExoOrder.ts:102-106` — an empty want is `kids.removeAll()` and nothing else:
 //      the reconciler never decides how a parent is emptied, the child list does.

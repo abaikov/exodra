@@ -103,51 +103,51 @@ For TypeScript, point JSX at the dialect's types:
 
 ## Options
 
-| option | default | what it is |
-| --- | --- | --- |
-| `schemaSource` | `'@exodra/core'` | where the schema factory is imported from |
-| `schemaImport` | `'createExoNamedSchema'` | the exported name of the schema factory |
-| `markerName` | `'exoJsx'` | the marker call this plugin compiles away |
+| option         | default                  | what it is                                |
+| -------------- | ------------------------ | ----------------------------------------- |
+| `schemaSource` | `'@exodra/core'`         | where the schema factory is imported from |
+| `schemaImport` | `'createExoNamedSchema'` | the exported name of the schema factory   |
+| `markerName`   | `'exoJsx'`               | the marker call this plugin compiles away |
 
 ## The dialect
 
-| written | schema call | filled by the machine with |
-| --- | --- | --- |
-| `class="row"`, `tabindex={0}`, `disabled` | folded into `el(tag, attrs)` | — |
-| plain text | `text('…')` | — |
-| `data-id={$.id}` | `port('data-id', 'id')` | `c.attr(RowPorts.id, value)` |
-| `<span>{$.label}</span>` | `textPort('label')` | `c.text(RowPorts.label, value)` |
-| `onClick={$.toggle}` | `eventPort('click', 'toggle')` | `on(RowPorts.toggle, handler)` in `withExoHandlers` |
-| `on:dblclick={$.edit}` | `eventPort('dblclick', 'edit')` | `on(RowPorts.edit, handler)` in `withExoHandlers` |
-| `ref={$.box}` | `refPort('box')` | — |
-| `unsafeHtml={$.body}` | `childrenPort('body')` | `c.unsafeHtml(RowPorts.body, markup)` |
-| `<$.rows />` | `childrenPort('rows')` | `c.one`, `c.list`, or `c.childList` + `reconcileExoOrder` |
+| written                                   | schema call                     | filled by the machine with                                       |
+| ----------------------------------------- | ------------------------------- | ---------------------------------------------------------------- |
+| `class="row"`, `tabindex={0}`, `disabled` | folded into `el(tag, attrs)`    | —                                                                |
+| plain text                                | `text('…')`                     | —                                                                |
+| `data-id={$.id}`                          | `port('data-id', 'id')`         | `c.attr(RowPorts.id, value)`                                     |
+| `<span>{$.label}</span>`                  | `textPort('label')`             | `c.text(RowPorts.label, value)`                                  |
+| `onClick={$.toggle}`                      | `eventPort('click', 'toggle')`  | `on(RowPorts.toggle, handler)` in `withExoHandlers`              |
+| `on:dblclick={$.edit}`                    | `eventPort('dblclick', 'edit')` | `on(RowPorts.edit, handler)` in `withExoHandlers`                |
+| `ref={$.box}`                             | `refPort('box')`                | —                                                                |
+| `unsafeHtml={$.body}`                     | `childrenPort('body')`          | `c.unsafeHtml(RowPorts.body, markup)`                            |
+| `<$.rows />`                              | `childrenPort('rows')`          | `c.one`, `c.list`, or a `createExoChildrenReconciler` reconciler |
 
-- **A text port is its element's only child.** Varying text beside static text gets an
-  element of its own: `<p>Hi <b>{$.name}</b>!</p>`.
-- **`onClick` lowers the tail** (`onDblClick` → `dblclick`); `on:name` keeps the event
-  name exactly as written.
-- **`unsafeHtml` escapes nothing and sanitises nothing.** It stands for everything inside
-  its element, so that element takes no children.
-- **`<$.name />` is a children port**, and may stand between static siblings. It takes no
-  attributes and no children: what stands there is built by the machine.
+-   **A text port is its element's only child.** Varying text beside static text gets an
+    element of its own: `<p>Hi <b>{$.name}</b>!</p>`.
+-   **`onClick` lowers the tail** (`onDblClick` → `dblclick`); `on:name` keeps the event
+    name exactly as written.
+-   **`unsafeHtml` escapes nothing and sanitises nothing.** It stands for everything inside
+    its element, so that element takes no children.
+-   **`<$.name />` is a children port**, and may stand between static siblings. It takes no
+    attributes and no children: what stands there is built by the machine.
 
 ### What is refused
 
 Each is a compile error naming the element and the fix:
 
-- any expression other than `$.name`, a module `const` string (folded at build) or a name,
-  `a.b` or `a['x']` rooted at an import or a module `const` (read once when the schema
-  compiles) — closures, local values (`item.id`), conditionals, calls;
-- component tags (`<Row />`, `<Ui.Row />`), and with them any `list=` / `props=` operand;
-- fragments, `{...spread}`, a lowercase inline handler (`onclick="…"`), a namespace other
-  than `on:`;
-- a text port beside other children, `unsafeHtml` with children, attributes or children on
-  `<$.name />`;
-- the same port name twice;
-- JSX outside `exoJsx(…)`, and a declaration that does anything but return one element —
-  statements before the `return`, more than one parameter, a destructured parameter, or a
-  function declared elsewhere.
+-   any expression other than `$.name`, a module `const` string (folded at build) or a name,
+    `a.b` or `a['x']` rooted at an import or a module `const` (read once when the schema
+    compiles) — closures, local values (`item.id`), conditionals, calls;
+-   component tags (`<Row />`, `<Ui.Row />`), and with them any `list=` / `props=` operand;
+-   fragments, `{...spread}`, a lowercase inline handler (`onclick="…"`), a namespace other
+    than `on:`;
+-   a text port beside other children, `unsafeHtml` with children, attributes or children on
+    `<$.name />`;
+-   the same port name twice;
+-   JSX outside `exoJsx(…)`, and a declaration that does anything but return one element —
+    statements before the `return`, more than one parameter, a destructured parameter, or a
+    function declared elsewhere.
 
 ## The marker
 
@@ -158,8 +158,8 @@ nothing.
 
 ## Related
 
-- `@exodra/core` — `createExoNamedSchema`, the port types, `createExoMachine` and its `withExo*` decorators.
-- `@exodra/jsx` — `exoJsx` and the TypeScript types for this dialect
-  (`jsxImportSource: "@exodra/jsx/schema"`).
-- `@exodra/list-reconcile` — `reconcileExoOrder`, for a children port whose list changes.
-- `swc-plugin-exodra` — the same dialect in Rust.
+-   `@exodra/core` — `createExoNamedSchema`, the port types, `createExoMachine` and its `withExo*` decorators.
+-   `@exodra/jsx` — `exoJsx` and the TypeScript types for this dialect
+    (`jsxImportSource: "@exodra/jsx/schema"`).
+-   `@exodra/list-reconcile` — `createExoChildrenReconciler`, for a children port whose list changes.
+-   `swc-plugin-exodra` — the same dialect in Rust.

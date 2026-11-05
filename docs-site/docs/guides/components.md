@@ -7,10 +7,10 @@ title: Components Guide
 
 A component is **one value carrying two halves**:
 
-| Half | When it runs | What it is |
-| --- | --- | --- |
-| the **schema** | once, when the module loads | the constant shape — static markup, plus the **ports** where values may later be put |
-| the **wiring function** | once per instance | the code that puts values in those ports, through a **connector** |
+| Half                    | When it runs                | What it is                                                                           |
+| ----------------------- | --------------------------- | ------------------------------------------------------------------------------------ |
+| the **schema**          | once, when the module loads | the constant shape — static markup, plus the **ports** where values may later be put |
+| the **wiring function** | once per instance           | the code that puts values in those ports, through a **connector**                    |
 
 That split is the whole design. Everything expensive — deciding what the markup
 is, which attribute lives where, how deep a node sits — happens once per
@@ -68,16 +68,16 @@ backend.render(greetingMachine, document.body);
 There is no instance count, because a lone root has nothing else to be about and
 no library asks an application how many copies of its root to make. Rows that
 vary are a **list** — a children port filled by `c.list` (fixed) or by
-`reconcileExoOrder` over `c.childList` (live). That is also what a rival framework's
+a reconciler from `createExoChildrenReconciler` (live). That is also what a rival framework's
 participant is doing when a benchmark says "render 1000 rows": the count belongs
 to the list, never to the mount.
 
 **There are no props, anywhere.** The initial state's second argument is the
 instance's **params**, and that is the whole of what a view is told about itself. A row
-is handed its own datum as its params by whoever builds it — the build callback that
-constructs the row is the place that knows the item, so it passes it to `c.build`.
+is handed its own datum as its params by whoever builds it — the reconciler that
+creates the row is the place that knows the item, so it wires the row with it.
 Params are read once, when the instance is armed, and again only when `wireExoNode`
-re-runs the wire. Props would have to be *serviced*: stored per instance, compared on
+re-runs the wire. Props would have to be _serviced_: stored per instance, compared on
 every update, and turned into a decision about which transitions to re-run. Params
 cost one argument.
 
@@ -111,16 +111,16 @@ constant of its own (`timerBase` below).
 
 Two details are worth reading twice:
 
-- **The ports are a value before the schema is, and the schema before the machine.**
-  `exoPorts` declares the component's port interface, `createExoSchema` places each
-  port in the markup once, at module load, and `createExoMachine` is handed
-  the result, so the ports are named once as `GreetingPorts` (the same object as
-  `greetingSchema.ports`) rather than passed to every instance. It also makes the
-  order structural: a wire cannot be written before the ports it fills exist.
-- **`p.text('Hello, ')` is folded into the prepared markup.** It costs nothing
-  per instance. `strong.textPort(GreetingPorts.name)` is a *place*, and costs one call. A text
-  port stands for an element's **whole** content, so it gets an element of its
-  own rather than sitting beside static text.
+-   **The ports are a value before the schema is, and the schema before the machine.**
+    `exoPorts` declares the component's port interface, `createExoSchema` places each
+    port in the markup once, at module load, and `createExoMachine` is handed
+    the result, so the ports are named once as `GreetingPorts` (the same object as
+    `greetingSchema.ports`) rather than passed to every instance. It also makes the
+    order structural: a wire cannot be written before the ports it fills exist.
+-   **`p.text('Hello, ')` is folded into the prepared markup.** It costs nothing
+    per instance. `strong.textPort(GreetingPorts.name)` is a _place_, and costs one call. A text
+    port stands for an element's **whole** content, so it gets an element of its
+    own rather than sitting beside static text.
 
 ## Static is not a bucket, it is an argument
 
@@ -148,14 +148,14 @@ An attribute whose value **varies** is not an attribute here. It is a port.
 
 ## The schema builder
 
-| Call | Declares |
-| --- | --- |
-| `el(tag, attrs?, fn?)` | a child element with its static attributes, and optionally a body |
-| `text(value)` | static text |
-| `attrPort(Ports.x, name)` | places an `EXO_PORT_ATTR` port on one **attribute** |
-| `eventPort(Ports.x, name)` | places an `EXO_PORT_EVENT` port on one **listener** |
-| `textPort(Ports.x)` | places an `EXO_PORT_TEXT` port on the **whole text content** of the current element |
-| `childrenPort(Ports.x)` | places an `EXO_PORT_CHILDREN` port: a **variable-length sequence of children** |
+| Call                       | Declares                                                                            |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| `el(tag, attrs?, fn?)`     | a child element with its static attributes, and optionally a body                   |
+| `text(value)`              | static text                                                                         |
+| `attrPort(Ports.x, name)`  | places an `EXO_PORT_ATTR` port on one **attribute**                                 |
+| `eventPort(Ports.x, name)` | places an `EXO_PORT_EVENT` port on one **listener**                                 |
+| `textPort(Ports.x)`        | places an `EXO_PORT_TEXT` port on the **whole text content** of the current element |
+| `childrenPort(Ports.x)`    | places an `EXO_PORT_CHILDREN` port: a **variable-length sequence of children**      |
 
 Each port is first declared in the component's port interface,
 `exoPorts({ x: EXO_PORT_ATTR, … })`, and `createExoSchema(Ports, build)` places it.
@@ -170,28 +170,28 @@ awkward one.
 (connector, params) => state
 ```
 
-- `params` is the **only** thing this instance is told. A row of `c.list` gets its
-  element of the array the list was handed, `c.build(component, params)` and
-  `c.one(port, component, params)` pass whatever the caller hands them, and
-  `backend.render(component, parent, params)` passes its third argument.
-- It is what the instance was handed **at build time and nothing more**. When rows
-  move, the reconciler moves nodes — it does not re-run wiring — so a component that
-  needs a live position must be handed it by a transition, not capture it here.
+-   `params` is the **only** thing this instance is told. A row of `c.list` gets its
+    element of the array the list was handed, `wireExoNode(node, params)` and
+    `c.one(port, component, params)` pass whatever the caller hands them, and
+    `backend.render(component, parent, params)` passes its third argument.
+-   It is what the instance was handed **at build time and nothing more**. When rows
+    move, the reconciler moves nodes — it does not re-run wiring — so a component that
+    needs a live position must be handed it by a transition, not capture it here.
 
 What the connector offers:
 
-| Call | Meaning |
-| --- | --- |
-| `c.attr(port, value)` | write an attribute, once |
-| `c.text(port, value)` | write an element's whole text, once |
-| `c.unsafeHtml(port, markup)` | write raw markup into a children port |
-| `c.on(port, handler, subject?)` | a listener |
-| `c.one(port, component, params?)` | one nested instance |
-| `c.list(port, component, rows)` | a fixed run, one instance per element of `rows`, each handed its element as params |
-| `c.build(component, params?)` | a child as a value, placed nowhere |
-| `c.childList(port)` | the port's live children, for a reconciler to drive |
-| `c.onTeardown(off)` | hand the instance a disposer to run when it goes |
-| `c.provide(token, value)` / `c.inject(token)` | contexts |
+| Call                                                   | Meaning                                                                              |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `c.attr(port, value)`                                  | write an attribute, once                                                             |
+| `c.text(port, value)`                                  | write an element's whole text, once                                                  |
+| `c.unsafeHtml(port, markup)`                           | write raw markup into a children port                                                |
+| `c.on(port, handler, subject?)`                        | a listener                                                                           |
+| `c.one(port, component, params?)`                      | one nested instance                                                                  |
+| `c.list(port, component, rows)`                        | a fixed run, one instance per element of `rows`, each handed its element as params   |
+| `c.createExoNode(component)`                           | a child as a value, unwired and placed nowhere; `wireExoNode(node, params)` wires it |
+| `c.appendChild(port, node)` and the other port methods | place, move and remove a child by hand — see [Children](./children.md)               |
+| `c.onTeardown(off)`                                    | hand the instance a disposer to run when it goes                                     |
+| `c.provide(token, value)` / `c.inject(token)`          | contexts                                                                             |
 
 **Nothing in that table watches a source, and that is the design.** A machine
 writes "state → ports" in its wire, its handlers and its effects, and in a
@@ -199,8 +199,8 @@ writes "state → ports" in its wire, its handlers and its effects, and in a
 `toggleMachine.transitions.show` — when that one place must also be fired or
 overridden from outside the machine. Following data that lives outside
 the instance is an **effect** that writes the ports once, then subscribes, and
-returns the unsubscribe. Keeping a child list in step is a call to
-`reconcileExoOrder` from `@exodra/list-reconcile` over `c.childList(port)`. A door
+returns the unsubscribe. Keeping a child list in step is a call to a
+reconciler made by `createExoChildrenReconciler` from `@exodra/list-reconcile`. A door
 would have made every page link subscription machinery it may never use, and
 would have let the backend decide what counts as a source. As plain calls inside
 the wire, the handlers and the effects, the application composes them — or does not, and pays
@@ -398,12 +398,12 @@ and it is worth stating plainly: a component is **not** a function of arguments
 you can call with anything — it is wired to where its data lives. Reuse comes
 from the data layer, not from the parameter list: the same component over a
 different user is a different source, and the same component over a thousand
-rows is handed **each row's item as its params**, which is what the build callback
-of a reconciled list passes to `c.build`. See
+rows is handed **each row's item as its params**, which is what a reconciled list wires
+each row with. See
 [Rendering](./rendering.md#where-children-come-from).
 
 `backend.render` is for the top of a page, where there is no row to be about — so the root
-component is the one that goes and *gets* the data, which is what every
+component is the one that goes and _gets_ the data, which is what every
 component here does.
 
 Note what is **not** here: no props object, no bucket, no `children` key, and
@@ -418,13 +418,13 @@ components at the call site.
 
 ## Lists
 
-`reconcileExoOrder` from `@exodra/list-reconcile` reconciles a children port
-against an array, **by object identity**, from inside the machine: it is handed
-the port's child list, the order shown, and the order wanted, and returns the new
-order shown, which the machine keeps in its state. A row that survives is the same
-element it was; a row that leaves is disposed. No keys are involved on this path —
-and where identity is not available, `c.keyedList` (the `EXO_KEYED_LIST_VOCABULARY`
-pack) supplies one. See
+`createExoChildrenReconciler(rowMachine)` from `@exodra/list-reconcile` makes, once at
+module level, a function that reconciles a children port against an array, **by object
+identity**: `reconcile(c, port, items)` gives each new item a row of `rowMachine` wired with
+the item as params, keeps the row of every item that stays, and destroys the rest. It
+remembers what it showed per node and port, so the machine keeps no shown order. A row that
+survives is the same element it was. No keys are involved on this path — and where identity
+is not available, the `{ key }` option supplies one. See
 [Keys, when identity is not available](./lists.md#keys-when-identity-is-not-available).
 
 ```ts
@@ -439,11 +439,11 @@ import {
     withExoEffects,
     withExoWire,
 } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 
 function createStore<TValue>(value: TValue) {
     const listeners = new Set<() => void>();
@@ -483,6 +483,7 @@ const rowMachine = composeExoMachine(
             c.text(RowPorts.label, item.label);
         })
 );
+const reconcileItems = createExoChildrenReconciler<TItem>(rowMachine);
 
 const items = createStore<readonly TItem[]>([
     { id: 'a', label: 'First' },
@@ -496,27 +497,14 @@ const listSchema = createExoSchema(ListPorts, (b) => {
         ul.childrenPort(ListPorts.rows);
     });
 });
-type TListState = { rows: TExoChildList; shown: TItem[] };
-const listMachine = composeExoMachine(
-    createExoMachine(listSchema, {
-        createInitialState: (c: TExoDomNode, _params: unknown): TListState => ({
-            rows: c.childList(ListPorts.rows),
-            shown: [],
-        }),
-    }),
-    (m) =>
-        withExoEffects(m, (effect) => {
-            effect((c) => {
-                const showRows = () => {
-                    const want = items.getValue();
-                    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, want, want, (item) =>
-                        c.build(rowMachine, item)
-                    );
-                };
-                showRows();
-                return items.onChange(showRows);
-            });
-        })
+const listMachine = composeExoMachine(createExoMachine<TExoDomNode>(listSchema), (m) =>
+    withExoEffects(m, (effect) => {
+        effect((c) => {
+            const showRows = () => reconcileItems(c, ListPorts.rows, items.getValue());
+            showRows();
+            return items.onChange(showRows);
+        });
+    })
 );
 
 backend.render(listMachine, document.body);
@@ -524,14 +512,15 @@ backend.render(listMachine, document.body);
 items.setValue([...items.getValue(), { id: 'c', label: 'Third' }]);
 ```
 
-The child list is opened in `createInitialState`, which runs once per instance; a
-wire can run again, and opening a children port there is refused.
+The list machine keeps nothing in its state: the reconciler remembers what it showed. Only
+`c.one` and `c.list` are placed once and refused in a wire that runs again; a reconciler and the
+port methods may be called from any wire, transition or effect — see [Children](./children.md).
 
 When the contents cannot change, use `c.list(port, component, rows)` instead: a
 fixed list pays for no row records, no diff and no teardown.
 
 For a filtered view, compute the subset before the call and hand that as
-`want`: rows are matched by the item objects, so a row the filter keeps is the
+the items: rows are matched by the item objects, so a row the filter keeps is the
 same element it was. See the [Lists guide](./lists.md).
 
 ## Side effects and cleanup
@@ -598,7 +587,7 @@ A subscription with nothing to end it is **refused**, rather than quietly
 outliving the page that made it.
 
 **`onTeardown` is on every backend, including the server's** — what differs is
-*when* it runs. In the browser it runs when the instance leaves. On the server
+_when_ it runs. In the browser it runs when the instance leaves. On the server
 it runs at the end of the render, in registration order, after the markup has
 already been taken: a disposer that writes to a port cannot change the bytes
 that were printed
@@ -606,6 +595,185 @@ that were printed
 what makes a disposer safe to register on three backends — whatever it stops is
 started and ended in both places, and only the browser keeps it running between
 the two.
+
+### Restarting an effect by name
+
+An effect reads what it needs from `c.state`, so moving it to other data is two steps: write the
+new value into the state, then restart the effect. Declared as a dictionary, each effect is reached
+by its name on `m.effects`; the restart runs its old stop first and then starts it again.
+
+```ts
+import {
+    EXO_PORT_EVENT,
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoEffects,
+    withExoHandlers,
+    withExoTransitions,
+} from '@exodra/core';
+import type { TExoMachineNodeOf } from '@exodra/core';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+
+const backend = withExoCompiler(new ExoDomBackend());
+
+const PagerPorts = exoPorts({ page: EXO_PORT_TEXT, next: EXO_PORT_EVENT });
+
+const pagerSchema = createExoSchema(PagerPorts, (b) => {
+    b.el('div', { class: 'pager' }, (div) => {
+        div.el('p', null, (p) => p.textPort(PagerPorts.page));
+        div.el('button', null, (button) => {
+            button.eventPort(PagerPorts.next, 'click');
+            button.text('next');
+        });
+    });
+});
+const pagerBase = createExoMachine(pagerSchema, {
+    createInitialState: (_c: TExoDomNode, _params: unknown) => ({ page: 1 }),
+});
+function show(c: TExoMachineNodeOf<typeof pagerBase>, seconds: number): void {
+    c.text(PagerPorts.page, `Page ${c.state.page}, open for ${seconds}s`);
+}
+const pagerMachine = composeExoMachine(
+    pagerBase,
+    (m) =>
+        withExoEffects(m, {
+            showPage: (c) => {
+                let seconds = 0;
+                show(c, seconds);
+                const id = setInterval(() => show(c, ++seconds), 1000);
+                return () => clearInterval(id);
+            },
+        }),
+    (m) => {
+        const { showPage } = m.effects;
+        return withExoTransitions(m, {
+            nextPage: (c) => {
+                c.state.page++;
+                c.restartEffect(showPage);
+            },
+        });
+    },
+    (m) => {
+        const { nextPage } = m.transitions;
+        return withExoHandlers(m, (on) => on(PagerPorts.next, (c) => nextPage(c)));
+    }
+);
+
+backend.render(pagerMachine, document.body);
+```
+
+The callback form, `withExoEffects(m, (effect) => { effect(start) })`, still hands back the same
+handle, and `m.effects[i]` still reaches it by position: the names are set on that same array.
+
+### Restarting an effect when its params change
+
+`withExoParamsEffects` declares effects that follow the params of the wire. Each one names a `key`
+read from the params and a `start` that receives the params themselves. When `wireExoNode` runs the
+wire again, every effect whose key changed is restarted; the others are left running.
+
+```ts
+import {
+    EXO_PORT_TEXT,
+    composeExoMachine,
+    createExoMachine,
+    createExoSchema,
+    exoPorts,
+    withExoParamsEffects,
+    withExoWire,
+    wireExoNode,
+} from '@exodra/core';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+
+type TFeed = { onChange(listener: () => void): () => void; read(id: string): string };
+declare const feed: TFeed;
+
+const backend = withExoCompiler(new ExoDomBackend());
+
+const TickerPorts = exoPorts({ title: EXO_PORT_TEXT, price: EXO_PORT_TEXT });
+
+const tickerSchema = createExoSchema(TickerPorts, (b) => {
+    b.el('div', { class: 'ticker' }, (div) => {
+        div.el('b', null, (title) => title.textPort(TickerPorts.title));
+        div.el('span', null, (price) => price.textPort(TickerPorts.price));
+    });
+});
+type TTickerParams = { symbol: string; title: string };
+const tickerMachine = composeExoMachine(
+    createExoMachine(tickerSchema, {
+        createInitialState: (_c: TExoDomNode, _params: TTickerParams) => ({}),
+    }),
+    (m) =>
+        withExoWire(m, (c, params) => {
+            c.text(TickerPorts.title, params.title);
+        }),
+    (m) =>
+        withExoParamsEffects(m, {
+            followPrice: {
+                key: (params) => params.symbol,
+                start: (c, params) => {
+                    const show = () => c.text(TickerPorts.price, feed.read(params.symbol));
+                    show();
+                    return feed.onChange(show);
+                },
+            },
+        })
+);
+
+const ticker = backend.createExoNode(tickerMachine);
+wireExoNode(ticker, { symbol: 'ACME', title: 'Acme' });
+backend.mountRoot(ticker, document.body);
+
+wireExoNode(ticker, { symbol: 'ACME', title: 'Acme Corp' });
+wireExoNode(ticker, { symbol: 'INIT', title: 'Initech' });
+```
+
+The second call rewrites the title only; the third one also stops the ACME subscription and
+starts the INIT one. A restart from anywhere else — `c.restartEffect(m.effects.followPrice)`
+from a transition, or `connectExoNode` after `disconnectExoNode` — hands `start` the params of
+the last wire. Those params are kept in the node's `serviceState`, the field `swapExoParams` uses,
+so the exonode gains no field and a machine that does not use the decorator pays nothing.
+
+### Several steps of one kind: what happens
+
+Every decorator returns a new machine, so the same decorator can appear in more than one step.
+This is what each combination does, and what is refused.
+
+**Effects**
+
+| written                                                                                        | result                                                                                                                                                                           |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| two `withExoEffects` steps with dictionaries                                                   | one `effects` array; the names of both steps are on it, and `at` follows declaration order across the steps                                                                      |
+| a callback step and a dictionary step, in either order                                         | one array; the dictionary's effects also have names, the callback's are reached by position or by the handle `effect(...)` returned                                              |
+| a name an earlier step used                                                                    | refused, [`EXO0112`](../errors.md#exo0112)                                                                                                                                       |
+| a name the array itself has (`push`, `map`, `length`, `at`, `keys` …) or a name made of digits | refused, [`EXO0112`](../errors.md#exo0112): it would shadow an array member or write an element                                                                                  |
+| `withExoEffects` and `withExoParamsEffects` names                                              | one namespace, the same array: a clash between them is refused the same way                                                                                                      |
+| two machines composed from one base                                                            | each has its own copy of the array; a handle belongs to the machine that declared it and must be restarted on that machine's nodes only, because it addresses a slot by position |
+
+**Transitions**
+
+| written                                               | result                                                                                                                          |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| two `withExoTransitions` steps                        | one `transitions` dictionary; a step reads the earlier steps' transitions from `m.transitions`                                  |
+| `overrides({ … })` with names from several steps      | one table; each name is checked against its own transition's signature                                                          |
+| a name an earlier step used, or a name made of digits | refused, [`EXO0113`](../errors.md#exo0113): a repeated name would leave two wrappers and an override would reach only the first |
+| a name the machine does not have, in `overrides`      | refused, [`EXO0102`](../errors.md#exo0102)                                                                                      |
+
+**Wire and params effects**
+
+| written                                                              | result                                                                                                                                          |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `withExoParamsEffects` after `withExoWire`, or before it             | the same machine: the params effects run around the wire either way, after it has written its ports                                             |
+| two `withExoWire` steps, with or without params effects between them | refused, [`EXO0101`](../errors.md#exo0101)                                                                                                      |
+| two `withExoParamsEffects` steps                                     | both compare against the params of the previous wire                                                                                            |
+| `swapExoParams(c, params)` inside the wire                           | still returns the previous params                                                                                                               |
+| the instance was built with no params                                | the first `wireExoNode` with params compares against `undefined` and restarts what changed                                                      |
+| a `key` that builds a new object or array each time                  | compared with `Object.is`, so it changes on every wire and the effect restarts every time: return a primitive or a stable reference             |
+| `restartEffect` on a node that `disconnectExoNode` switched off      | **starts the effect**, although the node is disconnected; `connectExoNode` later starts it again over the live one. Known defect, not fixed yet |
 
 ## Contexts
 
@@ -663,7 +831,7 @@ backend.render(shellMachine, document.body);
 ```
 
 The chain `provide` returns travels downwards as an ordinary **value**: it goes on
-the exonode, and every `one`, `list` and `build` wired after it
+the exonode, and every `one`, `list` and `createExoNode` wired after it
 inherits it. A reconciled list captures the chain when it is wired and holds it for its whole
 life, so a row added an hour later — from inside a subscriber, with no render on
 the stack — resolves what the page provided without touching the DOM at all.
@@ -690,7 +858,7 @@ Providing a token something above already provided **shadows** it for that
 subtree and nothing else.
 
 :::caution Contexts are not reactive by themselves
-What you provide is what a consumer holds forever. Put a *source* in the context
+What you provide is what a consumer holds forever. Put a _source_ in the context
 and follow it with an effect: read `c.inject(THEME)`, write the ports, and
 return `theme.onChange(() => show(c))`. A context that tried to be
 reactive itself would be a second, weaker subscription mechanism on top of the
@@ -709,15 +877,15 @@ hand-written schema needs no build step at all.
 
 ## Performance notes
 
-- **Declare in `el()`, not in a port.** A port costs a slot and a call per
-  instance; a static attribute costs nothing.
-- **A bare `c.attr` in the wire when it cannot change, an effect when it can.**
-  The bare write is two array loads and a call, with nothing retained.
-- **`c.list` for a fixed list, `reconcileExoOrder` over `c.childList` for a live one.** A list whose
-  contents cannot change should not pay for the possibility that they might.
-- **Use a shared handler for a repeated handler.** A module-level function taking
-  `(event, subject)` is one function object for the whole template; a closure is
-  one per row — and the subject is what the
-  [delegated event pack](../api/dom.md#events-as-a-plugin) needs a fill to carry.
-- **Let effects own their subscriptions.** An effect returns its stop; registering
-  teardown by hand is only for what you start outside one.
+-   **Declare in `el()`, not in a port.** A port costs a slot and a call per
+    instance; a static attribute costs nothing.
+-   **A bare `c.attr` in the wire when it cannot change, an effect when it can.**
+    The bare write is two array loads and a call, with nothing retained.
+-   **`c.list` for a fixed list, a `createExoChildrenReconciler` reconciler for a live one.** A list whose
+    contents cannot change should not pay for the possibility that they might.
+-   **Use a shared handler for a repeated handler.** A module-level function taking
+    `(event, subject)` is one function object for the whole template; a closure is
+    one per row — and the subject is what the
+    [delegated event pack](../api/dom.md#events-as-a-plugin) needs a fill to carry.
+-   **Let effects own their subscriptions.** An effect returns its stop; registering
+    teardown by hand is only for what you start outside one.

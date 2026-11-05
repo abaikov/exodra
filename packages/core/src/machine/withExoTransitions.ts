@@ -1,8 +1,11 @@
 import type { TExoMachine } from './types/TExoMachine';
+import type { TExoArmableNode } from './types/TExoArmableNode';
+import { EXO_UNARMED_STATE } from './constants/EXO_UNARMED_STATE';
 import type { TExoMachineNode } from './types/TExoMachineNode';
 import type { TExoMachineTransitions } from './types/TExoMachineTransitions';
 import type { TExoTransitionArgs } from './types/TExoTransitionArgs';
 import type { TExoTransitionOverrides } from './types/TExoTransitionOverrides';
+import type { TExoTransitionReplacements } from './types/TExoTransitionReplacements';
 
 type TExoTransitionRun = (enode: TExoMachineNode, first: unknown, second: unknown) => void;
 
@@ -21,11 +24,14 @@ export function withExoTransitions<
             ...data: TData[K]
         ) => void;
     }
-): TMachine & {
+): Omit<TMachine, 'overrides'> & {
     readonly transitions: TExoMachineTransitions<TWiring, TData>;
-    overrides(replacements: {
-        readonly [K in keyof TData]?: (enode: TWiring, ...data: TData[K]) => void;
-    }): TExoTransitionOverrides;
+    overrides(
+        replacements: TExoTransitionReplacements<
+            TWiring,
+            TMachine & { readonly transitions: TExoMachineTransitions<TWiring, TData> }
+        >
+    ): TExoTransitionOverrides;
 } {
     const kept = (machine as { readonly transitions?: Record<string, TExoTransitionRun> })
         .transitions;
@@ -34,10 +40,23 @@ export function withExoTransitions<
     const declared = Object.keys(transitions);
     for (let i = 0; i < declared.length; i++) {
         const name = declared[i];
+        if (name in runs || /^\d+$/.test(name)) {
+            throw new Error(
+                typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
+                    ? `withExoTransitions: '${name}' is already a transition of this machine, or is an index.`
+                    : `EXO0113 "${name}"`
+            );
+        }
         const apply = transitions[name] as unknown as TExoTransitionRun;
         const at = names.length;
         names.push(name);
-        runs[name] = (enode, first, second): void => {
+        const run = (runs[name] = (enode, first, second): void => {
+            if (
+                enode.state === EXO_UNARMED_STATE &&
+                (enode as unknown as TExoArmableNode).deferExoTransition(run, first, second)
+            ) {
+                return;
+            }
             const overrides = enode.transitionOverrides;
             if (overrides === null) {
                 apply(enode, first, second);
@@ -46,7 +65,7 @@ export function withExoTransitions<
             const alternative = overrides[at] as TExoTransitionRun | undefined;
             if (alternative === undefined) apply(enode, first, second);
             else alternative(enode, first, second);
-        };
+        });
     }
     const overrides = (
         replacements: Readonly<Record<string, ((...args: never[]) => void) | undefined>>
@@ -72,10 +91,13 @@ export function withExoTransitions<
         forms: [],
         transitions: Object.freeze(runs),
         overrides,
-    } as unknown as TMachine & {
+    } as unknown as Omit<TMachine, 'overrides'> & {
         readonly transitions: TExoMachineTransitions<TWiring, TData>;
-        overrides(replacements: {
-            readonly [K in keyof TData]?: (enode: TWiring, ...data: TData[K]) => void;
-        }): TExoTransitionOverrides;
+        overrides(
+            replacements: TExoTransitionReplacements<
+                TWiring,
+                TMachine & { readonly transitions: TExoMachineTransitions<TWiring, TData> }
+            >
+        ): TExoTransitionOverrides;
     };
 }

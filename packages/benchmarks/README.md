@@ -8,16 +8,16 @@ They are not part of the published package set.
 `src/benchmarks/` holds **132 files in eight directories**, and the directory a file sits in says
 what kind of thing it is. Counted off disk:
 
-| directory | how many | what is in it |
-|---|---|---|
-| `axes/` | **39** `.ts`/`.tsx` → **41 axis names** | a measurement you can run; prints a table. Five families: `app/` 5, `list/` 6, `floors/` 8, `phases/` 8, `mechanism/` 12 |
-| `participants/` | **30** | one competitor's implementation of one scene, wired to the harness; never run directly. Nine directories: `exodra/` 5, `lit/` 5, `sinuous/` 5, `uhtml/` 5, `stage0/` 4, `mikado/` 2, `floor/` 2, `bundled/` 1, `angular/` 1 |
-| `apps/` | **36** (14 `.tsx`, 3 `.ts`, 19 `.md`) | each participant's **app itself** and its notes. Twelve directories: eleven participants' — `exodra/` `lit/` `marko/` `mikado/` `react/` `sinuous/` `solid/` `stage0/` `svelte/` `uhtml/` `voby/` — plus `scene/`, which is the app data nobody owns |
-| `shared/` | **7** | the scene spec, the drivers, the counters — imported by axes and participants alike |
-| `gates/` | **3** | proves a participant's markup matches the reference before anything is timed |
-| `profilers/` | **2** | fired by `scripts/profile-*.mjs`, not by the axis runner |
-| `marko/` | **8** (7 `.marko`, 1 `.ts`) | the Marko participant's apps, in its own language, plus its flush helper |
-| `svelte/` | **7** `.svelte` | the Svelte participant's apps, in its own language |
+| directory       | how many                                | what is in it                                                                                                                                                                                                                                        |
+| --------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `axes/`         | **39** `.ts`/`.tsx` → **41 axis names** | a measurement you can run; prints a table. Five families: `app/` 5, `list/` 6, `floors/` 8, `phases/` 8, `mechanism/` 12                                                                                                                             |
+| `participants/` | **30**                                  | one competitor's implementation of one scene, wired to the harness; never run directly. Nine directories: `exodra/` 5, `lit/` 5, `sinuous/` 5, `uhtml/` 5, `stage0/` 4, `mikado/` 2, `floor/` 2, `bundled/` 1, `angular/` 1                          |
+| `apps/`         | **36** (14 `.tsx`, 3 `.ts`, 19 `.md`)   | each participant's **app itself** and its notes. Twelve directories: eleven participants' — `exodra/` `lit/` `marko/` `mikado/` `react/` `sinuous/` `solid/` `stage0/` `svelte/` `uhtml/` `voby/` — plus `scene/`, which is the app data nobody owns |
+| `shared/`       | **7**                                   | the scene spec, the drivers, the counters — imported by axes and participants alike                                                                                                                                                                  |
+| `gates/`        | **3**                                   | proves a participant's markup matches the reference before anything is timed                                                                                                                                                                         |
+| `profilers/`    | **2**                                   | fired by `scripts/profile-*.mjs`, not by the axis runner                                                                                                                                                                                             |
+| `marko/`        | **8** (7 `.marko`, 1 `.ts`)             | the Marko participant's apps, in its own language, plus its flush helper                                                                                                                                                                             |
+| `svelte/`       | **7** `.svelte`                         | the Svelte participant's apps, in its own language                                                                                                                                                                                                   |
 
 By extension that is **99 `.ts`/`.tsx`**, 19 `.md`, 7 `.marko` and 7 `.svelte`. Eighty-one of the
 99 are the five kinds the file map further down enumerates (39 + 30 + 7 + 3 + 2); the other 18 are
@@ -76,34 +76,34 @@ rows before quoting them.
 The shared scene. Every participant builds the identical DOM and is diffed byte for byte before
 anything is timed.
 
-| axis | the question | participants | notes |
-|---|---|---|---|
-| `initial-render` | what does mounting the app cost across the field? | `exodra` · `solid` `svelte` `react` `voby` `lit` `mikado` `stage0` `uhtml` `sinuous` `marko` | the headline mount table |
-| `exodra-initial-render` | the same mount, narrowed to this renderer's variants against the reactive field | `exodra` · `solid` `lit` `mikado` `mikadoReactive` `marko` | |
-| `app-update` | what does one update round cost, **handlers called directly**? | `exodra` · `solid` `svelte` `react` `voby` `lit` `mikado` `uhtml` `sinuous` · `floor` | no `MouseEvent`, no `dispatchEvent`. **Run `app-update 100 40`** — give both numbers or neither |
-| `exodra-app-update` | the same round **fired by a click**, with a real `MouseEvent` | `exodra` · `solid` `lit` `mikado` `mikadoReactive` `marko` · `floor` | the only app axis that still dispatches events; ~61% of what it prints is the browser delivering them. Rows here may **not** be pasted beside `app-update` rows |
-| `component-split` | does Solid's template advantage survive being split into components? | `exodra` `exodraMono` `solid` `svelte` | |
-| `mount-phases` | what share of a mount is the clone, the walk, the insertion, the wire? | one renderer: `clone` `clone+walk` `clone+walk+ins` `walk` `mount` | not a framework comparison; `batch` ignored |
-| `mount-floor` | how much headroom is left above a program with no abstraction at all? | `exodra` vs `clone` `clone+refs` `create` `create+refs` `html`(×5 doors) + twins | **the native floor.** Says no framework can be more than X% faster at mounting this app |
-| `update-floor` | what is the floor for five specific transitions? | `floor·told` `floor·diff` `floor·bound` `floor·wire` … vs `exodra` `exodraOps` `exodra·children` `exodra·kept` + twins | rows pair only inside a contract (`told` vs `derive`) |
-| `hydrate-floor` | is serve-then-hydrate cheaper than clone-and-build on a big list? | `parse` `parse+hydrate` `hydrate` `mount` + twins, at 3 censuses | prints two answers; neither may be quoted as the other |
-| `teardown-floor` | what does the cheapest possible teardown of this app cost? | `exodra` vs `dom·*` `book·*` `cycle·*` `scale·*` | two tables; **`CYCLE` is the honest one**. Run `teardown-floor 100 2 64` |
-| `teardown-phases` | one renderer's teardown split into its phases | `dispatch only` `textContent` `clear region` `unmount loop` `registry evict` `run disposers` `drop per child` | on the 200-panel block `toggle` hides |
-| `child-mark` | what does associating data with a DOM element cost — expando vs `WeakMap`? | `clone+rec+slot` `clone+rec+weak` `pool·slot·*` `pool·weak·*` `read·*` `walk·*` | ladder is a **bound only**; the answer comes from the `pool` family |
-| `context-cost` | what do `provide` / `inject` cost? | `push` · `inject·1/2/8` + miss, against an independent twin chain | **carries no floor** and says so |
+| axis                    | the question                                                                    | participants                                                                                                           | notes                                                                                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `initial-render`        | what does mounting the app cost across the field?                               | `exodra` · `solid` `svelte` `react` `voby` `lit` `mikado` `stage0` `uhtml` `sinuous` `marko`                           | the headline mount table                                                                                                                                        |
+| `exodra-initial-render` | the same mount, narrowed to this renderer's variants against the reactive field | `exodra` · `solid` `lit` `mikado` `mikadoReactive` `marko`                                                             |                                                                                                                                                                 |
+| `app-update`            | what does one update round cost, **handlers called directly**?                  | `exodra` · `solid` `svelte` `react` `voby` `lit` `mikado` `uhtml` `sinuous` · `floor`                                  | no `MouseEvent`, no `dispatchEvent`. **Run `app-update 100 40`** — give both numbers or neither                                                                 |
+| `exodra-app-update`     | the same round **fired by a click**, with a real `MouseEvent`                   | `exodra` · `solid` `lit` `mikado` `mikadoReactive` `marko` · `floor`                                                   | the only app axis that still dispatches events; ~61% of what it prints is the browser delivering them. Rows here may **not** be pasted beside `app-update` rows |
+| `component-split`       | does Solid's template advantage survive being split into components?            | `exodra` `exodraMono` `solid` `svelte`                                                                                 |                                                                                                                                                                 |
+| `mount-phases`          | what share of a mount is the clone, the walk, the insertion, the wire?          | one renderer: `clone` `clone+walk` `clone+walk+ins` `walk` `mount`                                                     | not a framework comparison; `batch` ignored                                                                                                                     |
+| `mount-floor`           | how much headroom is left above a program with no abstraction at all?           | `exodra` vs `clone` `clone+refs` `create` `create+refs` `html`(×5 doors) + twins                                       | **the native floor.** Says no framework can be more than X% faster at mounting this app                                                                         |
+| `update-floor`          | what is the floor for five specific transitions?                                | `floor·told` `floor·diff` `floor·bound` `floor·wire` … vs `exodra` `exodraOps` `exodra·children` `exodra·kept` + twins | rows pair only inside a contract (`told` vs `derive`)                                                                                                           |
+| `hydrate-floor`         | is serve-then-hydrate cheaper than clone-and-build on a big list?               | `parse` `parse+hydrate` `hydrate` `mount` + twins, at 3 censuses                                                       | prints two answers; neither may be quoted as the other                                                                                                          |
+| `teardown-floor`        | what does the cheapest possible teardown of this app cost?                      | `exodra` vs `dom·*` `book·*` `cycle·*` `scale·*`                                                                       | two tables; **`CYCLE` is the honest one**. Run `teardown-floor 100 2 64`                                                                                        |
+| `teardown-phases`       | one renderer's teardown split into its phases                                   | `dispatch only` `textContent` `clear region` `unmount loop` `registry evict` `run disposers` `drop per child`          | on the 200-panel block `toggle` hides                                                                                                                           |
+| `child-mark`            | what does associating data with a DOM element cost — expando vs `WeakMap`?      | `clone+rec+slot` `clone+rec+weak` `pool·slot·*` `pool·weak·*` `read·*` `walk·*`                                        | ladder is a **bound only**; the answer comes from the `pool` family                                                                                             |
+| `context-cost`          | what do `provide` / `inject` cost?                                              | `push` · `inject·1/2/8` + miss, against an independent twin chain                                                      | **carries no floor** and says so                                                                                                                                |
 
 ### The list axes
 
-| axis | the question | participants | notes |
-|---|---|---|---|
-| `list-update` (`list-reconcile.tsx`) | imperative `move` / `insert` / `remove` on 300 rows | `exodra` `exodraTold` + twins · `solid` `svelte` `react` `lit` `mikado` `mikadoKeyed` `stage0` `uhtml` `sinuous` `marko` | **run `list-update 100 32`** — at batch 1 the fastest rows land on the clock's 0.1 ms clamp |
-| `reconcile` | declarative replace (keyed diff) | `exodra` · `solid` `svelte` `react` `lit` `mikado` `stage0` `uhtml` `sinuous` `marko` | |
-| `refetch` (`list-replace.tsx`) | full replace, **same ids as fresh objects** — an extracted key matches, identity does not | `floor` `floor·twin` `floor·rebuild` `exodra` `exodra·ops` `exodra·positional` `exodra·targeted` `solid·for` `solid·slots` `react·keyed` | three axes share this file on purpose: one copy of the participants |
-| `pagination` (`list-replace.tsx`) | full replace, **different ids** — only a positional strategy keeps its nodes | same field | |
-| `rewire` (`list-replace.tsx`) | where does re-writing every position overtake diffing? | same field | five tables, k ∈ {1, 5, 25, 100, 500} of 500 |
-| `virtual-list` | what happens when a row **re-enters** a window? | `exodra` `solid` and the window drivers | four tables: WIDE, REORDER, plus one-way controls |
-| `reactive-update` | one signal write per row | `exodra` `exodraDirect` + twin · `solid` `svelte` `react` `lit` `mikado` `uhtml` `sinuous` `marko` | |
-| `toggle` | tear a 200-panel block out of the document and build a different one, ×20 | `exodra` `exodraDelegated` `exodraKept` `exodraKeptWarm` `exodraPlaced*` `exodraDetached*` `exodraChildren` · `floor·rebuild(+owned/frag/twin)` `floor·kept(+owned)` · `solid` `svelte` `react` `voby` `lit` `mikado` `mikadoPooled` `stage0` `uhtml` `sinuous` `marko` | the widest field here. `exodraKept` / `mikadoPooled` are **diagnostics** — read against `exodra` / `mikado` alone. The three `exodraBank*` rows are **gone with the node bank**, so no Exodra row here reuses an element. The native floor lives in `participants/floor/toggle.ts` |
+| axis                                 | the question                                                                              | participants                                                                                                                                                                                                                                                            | notes                                                                                                                                                                                                                                                                              |
+| ------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `list-update` (`list-reconcile.tsx`) | imperative `move` / `insert` / `remove` on 300 rows                                       | `exodra` `exodraTold` + twins · `solid` `svelte` `react` `lit` `mikado` `mikadoKeyed` `stage0` `uhtml` `sinuous` `marko`                                                                                                                                                | **run `list-update 100 32`** — at batch 1 the fastest rows land on the clock's 0.1 ms clamp                                                                                                                                                                                        |
+| `reconcile`                          | declarative replace (keyed diff)                                                          | `exodra` · `solid` `svelte` `react` `lit` `mikado` `stage0` `uhtml` `sinuous` `marko`                                                                                                                                                                                   |                                                                                                                                                                                                                                                                                    |
+| `refetch` (`list-replace.tsx`)       | full replace, **same ids as fresh objects** — an extracted key matches, identity does not | `floor` `floor·twin` `floor·rebuild` `exodra` `exodra·ops` `exodra·positional` `exodra·targeted` `solid·for` `solid·slots` `react·keyed`                                                                                                                                | three axes share this file on purpose: one copy of the participants                                                                                                                                                                                                                |
+| `pagination` (`list-replace.tsx`)    | full replace, **different ids** — only a positional strategy keeps its nodes              | same field                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                    |
+| `rewire` (`list-replace.tsx`)        | where does re-writing every position overtake diffing?                                    | same field                                                                                                                                                                                                                                                              | five tables, k ∈ {1, 5, 25, 100, 500} of 500                                                                                                                                                                                                                                       |
+| `virtual-list`                       | what happens when a row **re-enters** a window?                                           | `exodra` `solid` and the window drivers                                                                                                                                                                                                                                 | four tables: WIDE, REORDER, plus one-way controls                                                                                                                                                                                                                                  |
+| `reactive-update`                    | one signal write per row                                                                  | `exodra` `exodraDirect` + twin · `solid` `svelte` `react` `lit` `mikado` `uhtml` `sinuous` `marko`                                                                                                                                                                      |                                                                                                                                                                                                                                                                                    |
+| `toggle`                             | tear a 200-panel block out of the document and build a different one, ×20                 | `exodra` `exodraDelegated` `exodraKept` `exodraKeptWarm` `exodraPlaced*` `exodraDetached*` `exodraChildren` · `floor·rebuild(+owned/frag/twin)` `floor·kept(+owned)` · `solid` `svelte` `react` `voby` `lit` `mikado` `mikadoPooled` `stage0` `uhtml` `sinuous` `marko` | the widest field here. `exodraKept` / `mikadoPooled` are **diagnostics** — read against `exodra` / `mikado` alone. The three `exodraBank*` rows are **gone with the node bank**, so no Exodra row here reuses an element. The native floor lives in `participants/floor/toggle.ts` |
 
 ### The mechanism axes — one backend, no framework comparison
 
@@ -111,156 +111,156 @@ Each is registered as an axis only to reuse the runner (Vite + headless Chromium
 None of them ranks libraries. Each owns its own `PROGRAMS` array and its own table printer, so
 **`--only` does not reach them.**
 
-| axis | the question | programs |
-|---|---|---|
-| `clone-threshold` | how big must a template be before cloning beats `createElement`? | `clone` `manual`, at 6 sizes |
-| `import-node-trade` | where do page-owned and template-owned prototypes cross over? | synthetic 1–64-node flat and chain shapes, 4 cells each. **Never recorded** |
-| `schema-build` | **source not in the tree** (never committed; only `measurements/schema-build.published.json` survives) — what does constructing a schema cost? | `literal` `+number` `+builder` `+checks` `createExoSchema` `checks·parts` `spec·cold/warm` + twins |
-| `keystroke-floor` | what does one keystroke in a controlled 50-field form cost? | `driver` `floor` `floor·per-el` `floor·root` `exodra` `exodra·deleg` `exodra·free` + twin |
-| `op-click-floor` | how much room is there below a shared handler — one module-level function plus a per-position subject — at one click on one row of 200, and what does the delegated pack cost against the direct one? | `driver` `floor·per-el` `floor·root` `exodra·closure` `exodra·op` `exodra·op·deleg` + twin |
-| `handler-count` | does a wire care that each instance makes 1, 4 or 16 functions? | `floor` `wire` `machine` `driver` × n1/n4/n16 + twins, `dom·A16` |
-| `attr-floor` | what does writing a non-text attribute cost, and how much room is below it? | `driver` `floor` `floor+cell` `exodra` `exodra·writers` + twin |
-| `door-count` | what does a per-instance door cost — a wire that allocates one per door vs a machine that allocates none? | `floor` `wire` `machine` ladders (`@exodra/string`, 1000 rows) |
-| `door-shape` | nine ways to reach a port and write it, head on, against a floor | `floor` `walk` `prototype` `ctor` families |
-| `port-write-doors` | is a writer that resolved its node once cheaper than one that resolves on every write? | `floor` `set` `bound` + twins (`@exodra/dom`) |
-| `write-ladder` | does a direct port reference beat an index into an array at 1, 4, 16 writes? | `floor` `indexed` `held` × n1/n4/n16. Imports nothing from `@exodra/*` |
-| `receiver-spelling` | four spellings of one per-instance receiver | `protoLiteral` `ctor` and their in-object variants. Imports nothing from `@exodra/*` |
-| `receiver-maps` | what does the number of receiver maps cost a shared body's field reads? | `maps1` `maps2` `maps4` … `free`. Imports nothing from `@exodra/*` |
-| `walk-record` | cheapest way to walk a freshly cloned subtree and record its nodes | `clone` `+inline` `+tape` `+closures` + twins |
-| `one-and-static` | `createExoStatic` and `createExoOne` — the two core entry points no axis had loaded | `native` `native·swap` `inline` `bindOne` `one·slot` `static` `swap·same` `empty·wire` `driver` + twins |
-| `plugin-compose` | what does composing a backend out of plugin packs cost, at declaration and at call? | plain / merged / wrapped at 1, 4, 12, 32 packs |
-| `plugin-price` | what do `withExoChildrenWalk` and `attachExoKeyedList` cost against the shipped default? **Neither exists any more** — this axis cannot be asked until it is re-pointed at a pack that does | `shipped(+all/op)` `keyed(+walk)` `walk` `native(+find/held/rebuild)` `store·bound` + twins |
-| `machine-vs-cells` | three ways to write a component's per-instance update path, on four scenes | `floor` `machine` `wire·n1/n4/n16` and the push/direct programs |
-| `ssr-floor` | `@exodra/string` vs a hand-written program producing the same 140 kB | 14 rungs: `floor` `esc` `+vals` `+head` `+wr` `+fill` `+reset` `+set` `+call` `+wire` `+frame` `+try` `+stack` `exodra` |
+| axis                | the question                                                                                                                                                                                          | programs                                                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `clone-threshold`   | how big must a template be before cloning beats `createElement`?                                                                                                                                      | `clone` `manual`, at 6 sizes                                                                                            |
+| `import-node-trade` | where do page-owned and template-owned prototypes cross over?                                                                                                                                         | synthetic 1–64-node flat and chain shapes, 4 cells each. **Never recorded**                                             |
+| `schema-build`      | **source not in the tree** (never committed; only `measurements/schema-build.published.json` survives) — what does constructing a schema cost?                                                        | `literal` `+number` `+builder` `+checks` `createExoSchema` `checks·parts` `spec·cold/warm` + twins                      |
+| `keystroke-floor`   | what does one keystroke in a controlled 50-field form cost?                                                                                                                                           | `driver` `floor` `floor·per-el` `floor·root` `exodra` `exodra·deleg` `exodra·free` + twin                               |
+| `op-click-floor`    | how much room is there below a shared handler — one module-level function plus a per-position subject — at one click on one row of 200, and what does the delegated pack cost against the direct one? | `driver` `floor·per-el` `floor·root` `exodra·closure` `exodra·op` `exodra·op·deleg` + twin                              |
+| `handler-count`     | does a wire care that each instance makes 1, 4 or 16 functions?                                                                                                                                       | `floor` `wire` `machine` `driver` × n1/n4/n16 + twins, `dom·A16`                                                        |
+| `attr-floor`        | what does writing a non-text attribute cost, and how much room is below it?                                                                                                                           | `driver` `floor` `floor+cell` `exodra` `exodra·writers` + twin                                                          |
+| `door-count`        | what does a per-instance door cost — a wire that allocates one per door vs a machine that allocates none?                                                                                             | `floor` `wire` `machine` ladders (`@exodra/string`, 1000 rows)                                                          |
+| `door-shape`        | nine ways to reach a port and write it, head on, against a floor                                                                                                                                      | `floor` `walk` `prototype` `ctor` families                                                                              |
+| `port-write-doors`  | is a writer that resolved its node once cheaper than one that resolves on every write?                                                                                                                | `floor` `set` `bound` + twins (`@exodra/dom`)                                                                           |
+| `write-ladder`      | does a direct port reference beat an index into an array at 1, 4, 16 writes?                                                                                                                          | `floor` `indexed` `held` × n1/n4/n16. Imports nothing from `@exodra/*`                                                  |
+| `receiver-spelling` | four spellings of one per-instance receiver                                                                                                                                                           | `protoLiteral` `ctor` and their in-object variants. Imports nothing from `@exodra/*`                                    |
+| `receiver-maps`     | what does the number of receiver maps cost a shared body's field reads?                                                                                                                               | `maps1` `maps2` `maps4` … `free`. Imports nothing from `@exodra/*`                                                      |
+| `walk-record`       | cheapest way to walk a freshly cloned subtree and record its nodes                                                                                                                                    | `clone` `+inline` `+tape` `+closures` + twins                                                                           |
+| `one-and-static`    | `createExoStatic` and `createExoOne` — the two core entry points no axis had loaded                                                                                                                   | `native` `native·swap` `inline` `bindOne` `one·slot` `static` `swap·same` `empty·wire` `driver` + twins                 |
+| `plugin-compose`    | what does composing a backend out of plugin packs cost, at declaration and at call?                                                                                                                   | plain / merged / wrapped at 1, 4, 12, 32 packs                                                                          |
+| `plugin-price`      | what do `withExoChildrenWalk` and `attachExoKeyedList` cost against the shipped default? **Neither exists any more** — this axis cannot be asked until it is re-pointed at a pack that does           | `shipped(+all/op)` `keyed(+walk)` `walk` `native(+find/held/rebuild)` `store·bound` + twins                             |
+| `machine-vs-cells`  | three ways to write a component's per-instance update path, on four scenes                                                                                                                            | `floor` `machine` `wire·n1/n4/n16` and the push/direct programs                                                         |
+| `ssr-floor`         | `@exodra/string` vs a hand-written program producing the same 140 kB                                                                                                                                  | 14 rungs: `floor` `esc` `+vals` `+head` `+wr` `+fill` `+reset` `+set` `+call` `+wire` `+frame` `+try` `+stack` `exodra` |
 
-*Participants above are read off the axis files, not off prose. Re-read them before quoting a row.*
+_Participants above are read off the axis files, not off prose. Re-read them before quoting a row._
 
 ## The file map — the 81 runnable and supporting files
 
 The five kinds below are 81 of the 99 `.ts`/`.tsx` under `src/benchmarks/`; the other 18 are the
-app files in `apps/` and `marko/flush.ts`, listed under *the sibling directories* at the end.
+app files in `apps/` and `marko/flush.ts`, listed under _the sibling directories_ at the end.
 
 `c/k` is comment lines ÷ code lines. **26 of these 81 carry more comment than code**; those rows
 are marked ⚠ and are the target list for a prose sweep.
 
 ### AXIS — 39 files, registered in `scripts/run-one-axis.js`
 
-| file | axis name(s) | c/k |
-|---|---|---|
-| `axes/app/initial-render.tsx` | `initial-render` | ⚠ 1.50 |
-| `axes/app/exodra-initial-render.tsx` | `exodra-initial-render` | ⚠ 1.70 |
-| `axes/app/app-update.tsx` | `app-update` | 0.83 |
-| `axes/app/exodra-app-update.tsx` | `exodra-app-update` | ⚠ 1.94 |
-| `axes/list/list-reconcile.tsx` | `list-update` | 0.74 |
-| `axes/list/reconcile.tsx` | `reconcile` | 0.58 |
-| `axes/list/list-replace.tsx` | `refetch`, `pagination`, `rewire` | 0.54 |
-| `axes/list/reactive-update.tsx` | `reactive-update` | 0.69 |
-| `axes/list/toggle.tsx` | `toggle` | 0.90 |
-| `axes/list/virtual-list.tsx` | `virtual-list` | 0.22 |
-| `axes/app/component-split.tsx` | `component-split` | 0.81 |
-| `axes/phases/clone-threshold.tsx` | `clone-threshold` | 0.43 |
-| `axes/phases/mount-phases.ts` | `mount-phases` | 0.64 |
-| `axes/phases/child-mark.ts` | `child-mark` | 0.57 |
-| `axes/phases/context-cost.ts` | `context-cost` | 0.61 |
-| `axes/phases/teardown-phases.tsx` | `teardown-phases` | 0.62 |
-| `axes/phases/import-node-trade.ts` | `import-node-trade` | 0.70 |
-| `axes/floors/mount-floor.ts` | `mount-floor` | 0.63 |
-| `axes/floors/update-floor.ts` | `update-floor` | 0.56 |
-| `axes/floors/hydrate-floor.ts` | `hydrate-floor` | 0.69 |
-| `axes/floors/ssr-floor.ts` | `ssr-floor` | 0.74 |
-| `axes/floors/teardown-floor.ts` | `teardown-floor` | 0.77 |
-| `axes/floors/keystroke-floor.ts` | `keystroke-floor` | 0.86 |
-| `axes/floors/op-click-floor.ts` | `op-click-floor` | 0.90 |
-| `axes/mechanism/handler-count.ts` | `handler-count` | 0.36 |
-| `axes/mechanism/door-count.ts` | `door-count` | 0.31 |
-| `axes/floors/attr-floor.ts` | `attr-floor` | 0.71 |
-| `axes/mechanism/plugin-compose.ts` | `plugin-compose` | 0.49 |
-| `axes/mechanism/one-and-static.ts` | `one-and-static` | 0.51 |
-| `axes/mechanism/plugin-price.ts` | `plugin-price` | 0.61 |
-| `axes/mechanism/machine-vs-cells.ts` | `machine-vs-cells` | 0.46 |
-| `axes/mechanism/port-write-doors.ts` | `port-write-doors` | 0.61 |
-| `axes/mechanism/door-shape.ts` | `door-shape` | 0.30 |
-| `axes/mechanism/receiver-spelling.ts` | `receiver-spelling` | 0.18 |
-| `axes/mechanism/walk-record.ts` | `walk-record` | 0.15 |
-| `axes/mechanism/receiver-maps.ts` | `receiver-maps` | 0.15 |
-| `axes/mechanism/write-ladder.ts` | `write-ladder` | 0.09 |
+| file                                  | axis name(s)                      | c/k    |
+| ------------------------------------- | --------------------------------- | ------ |
+| `axes/app/initial-render.tsx`         | `initial-render`                  | ⚠ 1.50 |
+| `axes/app/exodra-initial-render.tsx`  | `exodra-initial-render`           | ⚠ 1.70 |
+| `axes/app/app-update.tsx`             | `app-update`                      | 0.83   |
+| `axes/app/exodra-app-update.tsx`      | `exodra-app-update`               | ⚠ 1.94 |
+| `axes/list/list-reconcile.tsx`        | `list-update`                     | 0.74   |
+| `axes/list/reconcile.tsx`             | `reconcile`                       | 0.58   |
+| `axes/list/list-replace.tsx`          | `refetch`, `pagination`, `rewire` | 0.54   |
+| `axes/list/reactive-update.tsx`       | `reactive-update`                 | 0.69   |
+| `axes/list/toggle.tsx`                | `toggle`                          | 0.90   |
+| `axes/list/virtual-list.tsx`          | `virtual-list`                    | 0.22   |
+| `axes/app/component-split.tsx`        | `component-split`                 | 0.81   |
+| `axes/phases/clone-threshold.tsx`     | `clone-threshold`                 | 0.43   |
+| `axes/phases/mount-phases.ts`         | `mount-phases`                    | 0.64   |
+| `axes/phases/child-mark.ts`           | `child-mark`                      | 0.57   |
+| `axes/phases/context-cost.ts`         | `context-cost`                    | 0.61   |
+| `axes/phases/teardown-phases.tsx`     | `teardown-phases`                 | 0.62   |
+| `axes/phases/import-node-trade.ts`    | `import-node-trade`               | 0.70   |
+| `axes/floors/mount-floor.ts`          | `mount-floor`                     | 0.63   |
+| `axes/floors/update-floor.ts`         | `update-floor`                    | 0.56   |
+| `axes/floors/hydrate-floor.ts`        | `hydrate-floor`                   | 0.69   |
+| `axes/floors/ssr-floor.ts`            | `ssr-floor`                       | 0.74   |
+| `axes/floors/teardown-floor.ts`       | `teardown-floor`                  | 0.77   |
+| `axes/floors/keystroke-floor.ts`      | `keystroke-floor`                 | 0.86   |
+| `axes/floors/op-click-floor.ts`       | `op-click-floor`                  | 0.90   |
+| `axes/mechanism/handler-count.ts`     | `handler-count`                   | 0.36   |
+| `axes/mechanism/door-count.ts`        | `door-count`                      | 0.31   |
+| `axes/floors/attr-floor.ts`           | `attr-floor`                      | 0.71   |
+| `axes/mechanism/plugin-compose.ts`    | `plugin-compose`                  | 0.49   |
+| `axes/mechanism/one-and-static.ts`    | `one-and-static`                  | 0.51   |
+| `axes/mechanism/plugin-price.ts`      | `plugin-price`                    | 0.61   |
+| `axes/mechanism/machine-vs-cells.ts`  | `machine-vs-cells`                | 0.46   |
+| `axes/mechanism/port-write-doors.ts`  | `port-write-doors`                | 0.61   |
+| `axes/mechanism/door-shape.ts`        | `door-shape`                      | 0.30   |
+| `axes/mechanism/receiver-spelling.ts` | `receiver-spelling`               | 0.18   |
+| `axes/mechanism/walk-record.ts`       | `walk-record`                     | 0.15   |
+| `axes/mechanism/receiver-maps.ts`     | `receiver-maps`                   | 0.15   |
+| `axes/mechanism/write-ladder.ts`      | `write-ladder`                    | 0.09   |
 
 ### PARTICIPANT — 30 files, mount adapters; never run directly
 
-| file | belongs to (axes that import it) | c/k |
-|---|---|---|
-| `participants/exodra/app.tsx` | **mounts the markup reference** (`apps/exodra/exodra.tsx`). `app-update`, `component-split`, `mount-*`, `update-floor`, `hydrate-floor`, `teardown-floor`, `child-mark` + every participant's byte gate | 0.56 |
-| `participants/exodra/inline.tsx` | `initial-render`, `app-update` | 0.18 |
-| `participants/exodra/machine.tsx` | `initial-render`, `exodra-initial-render`, `app-update`, `exodra-app-update` | 0.14 |
-| `participants/bundled/todo-app.tsx` | loads **solid, react, voby, svelte, marko** — `initial-render`, `exodra-initial-render`, `app-update`, `exodra-app-update` | 0.17 |
-| `participants/floor/app.ts` | the native floor of the clicked app axes — `app-update`, `exodra-app-update` | ⚠ 1.75 |
-| `participants/floor/toggle.ts` | the native floor of `toggle` (dynamic import) | ⚠ 1.96 |
-| `participants/angular/app.ts` | **nothing — unreachable, see the dead list** | 0.72 |
-| `participants/lit/app.tsx` | `initial-render`, `exodra-initial-render`, `app-update`, `exodra-app-update` | 0.31 |
-| `participants/lit/list.tsx` | `list-update` | ⚠ 6.10 |
-| `participants/lit/reactive.tsx` | `reactive-update` | ⚠ 3.20 |
-| `participants/lit/reconcile.tsx` | `reconcile` | ⚠ 3.41 |
-| `participants/lit/toggle.tsx` | `toggle` | ⚠ 2.88 |
-| `participants/mikado/app.tsx` | `initial-render`, `exodra-initial-render`, `app-update`, `exodra-app-update` | 0.18 |
-| `participants/mikado/reactive.tsx` | `exodra-initial-render`, `exodra-app-update` | 0.35 |
-| `participants/sinuous/app.tsx` | `initial-render`, `app-update` | 0.17 |
-| `participants/sinuous/list.tsx` | `list-update` | ⚠ 1.44 |
-| `participants/sinuous/reactive.tsx` | `reactive-update` | ⚠ 1.09 |
-| `participants/sinuous/reconcile.tsx` | `reconcile` | ⚠ 1.16 |
-| `participants/sinuous/toggle.tsx` | `toggle` | ⚠ 1.22 |
-| `participants/stage0/app.tsx` | `initial-render`, `app-update` | 0.17 |
-| `participants/stage0/list.tsx` | `list-update` | ⚠ 1.84 |
-| `participants/stage0/reconcile.tsx` | `reconcile` | ⚠ 1.47 |
-| `participants/stage0/toggle.tsx` | `toggle` | ⚠ 1.45 |
-| `participants/uhtml/app.tsx` | `initial-render`, `app-update` | 0.26 |
-| `participants/uhtml/list.tsx` | `list-update` | ⚠ 2.67 |
-| `participants/uhtml/reactive.tsx` | `reactive-update` | ⚠ 2.85 |
-| `participants/uhtml/reconcile.tsx` | `reconcile` | ⚠ 3.12 |
-| `participants/uhtml/toggle.tsx` | `toggle` | ⚠ 2.71 |
+| file                                 | belongs to (axes that import it)                                                                                                                                                                        | c/k    |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| `participants/exodra/app.tsx`        | **mounts the markup reference** (`apps/exodra/exodra.tsx`). `app-update`, `component-split`, `mount-*`, `update-floor`, `hydrate-floor`, `teardown-floor`, `child-mark` + every participant's byte gate | 0.56   |
+| `participants/exodra/inline.tsx`     | `initial-render`, `app-update`                                                                                                                                                                          | 0.18   |
+| `participants/exodra/machine.tsx`    | `initial-render`, `exodra-initial-render`, `app-update`, `exodra-app-update`                                                                                                                            | 0.14   |
+| `participants/bundled/todo-app.tsx`  | loads **solid, react, voby, svelte, marko** — `initial-render`, `exodra-initial-render`, `app-update`, `exodra-app-update`                                                                              | 0.17   |
+| `participants/floor/app.ts`          | the native floor of the clicked app axes — `app-update`, `exodra-app-update`                                                                                                                            | ⚠ 1.75 |
+| `participants/floor/toggle.ts`       | the native floor of `toggle` (dynamic import)                                                                                                                                                           | ⚠ 1.96 |
+| `participants/angular/app.ts`        | **nothing — unreachable, see the dead list**                                                                                                                                                            | 0.72   |
+| `participants/lit/app.tsx`           | `initial-render`, `exodra-initial-render`, `app-update`, `exodra-app-update`                                                                                                                            | 0.31   |
+| `participants/lit/list.tsx`          | `list-update`                                                                                                                                                                                           | ⚠ 6.10 |
+| `participants/lit/reactive.tsx`      | `reactive-update`                                                                                                                                                                                       | ⚠ 3.20 |
+| `participants/lit/reconcile.tsx`     | `reconcile`                                                                                                                                                                                             | ⚠ 3.41 |
+| `participants/lit/toggle.tsx`        | `toggle`                                                                                                                                                                                                | ⚠ 2.88 |
+| `participants/mikado/app.tsx`        | `initial-render`, `exodra-initial-render`, `app-update`, `exodra-app-update`                                                                                                                            | 0.18   |
+| `participants/mikado/reactive.tsx`   | `exodra-initial-render`, `exodra-app-update`                                                                                                                                                            | 0.35   |
+| `participants/sinuous/app.tsx`       | `initial-render`, `app-update`                                                                                                                                                                          | 0.17   |
+| `participants/sinuous/list.tsx`      | `list-update`                                                                                                                                                                                           | ⚠ 1.44 |
+| `participants/sinuous/reactive.tsx`  | `reactive-update`                                                                                                                                                                                       | ⚠ 1.09 |
+| `participants/sinuous/reconcile.tsx` | `reconcile`                                                                                                                                                                                             | ⚠ 1.16 |
+| `participants/sinuous/toggle.tsx`    | `toggle`                                                                                                                                                                                                | ⚠ 1.22 |
+| `participants/stage0/app.tsx`        | `initial-render`, `app-update`                                                                                                                                                                          | 0.17   |
+| `participants/stage0/list.tsx`       | `list-update`                                                                                                                                                                                           | ⚠ 1.84 |
+| `participants/stage0/reconcile.tsx`  | `reconcile`                                                                                                                                                                                             | ⚠ 1.47 |
+| `participants/stage0/toggle.tsx`     | `toggle`                                                                                                                                                                                                | ⚠ 1.45 |
+| `participants/uhtml/app.tsx`         | `initial-render`, `app-update`                                                                                                                                                                          | 0.26   |
+| `participants/uhtml/list.tsx`        | `list-update`                                                                                                                                                                                           | ⚠ 2.67 |
+| `participants/uhtml/reactive.tsx`    | `reactive-update`                                                                                                                                                                                       | ⚠ 2.85 |
+| `participants/uhtml/reconcile.tsx`   | `reconcile`                                                                                                                                                                                             | ⚠ 3.12 |
+| `participants/uhtml/toggle.tsx`      | `toggle`                                                                                                                                                                                                | ⚠ 2.71 |
 
 ### SHARED — 7 files, in `shared/`
 
-| file | what it is | imported by | c/k |
-|---|---|---|---|
-| `shared/todo-spec.ts` | the scene (80 cards, 10 decks, 5 users) + the two DOM helpers every participant is exercised with | **43 files**, the most-imported file here | 0.40 |
-| `shared/card-driver.ts` | how a card is advanced **without** a synthetic event — the registry `app-update` is built on | 22 files | ⚠ 2.41 |
-| `shared/app-files.ts` | which source files each participant's app is, as data | `shared/app-lines.ts` **and `vite.config.ts`** | 0.80 |
-| `shared/app-lines.ts` | counts those files' lines at run time for the LOC column | 7 axes | 0.80 |
-| `shared/exo-machine.ts` | Form B's machinery (numbered fields, masks, transitions) | `axes/mechanism/machine-vs-cells.ts` only | ⚠ 2.69 |
-| `shared/machine-state-shapes.ts` | the two state shapes `@exodra/core` does not ship | `axes/mechanism/machine-vs-cells.ts` only | ⚠ 1.52 |
-| `shared/exo-inline-computed.ts` | the wire-shaped derivation API, built from the shipped machine | `apps/exodra/exodra.tsx` only | ⚠ 1.64 |
+| file                             | what it is                                                                                        | imported by                                    | c/k    |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------ |
+| `shared/todo-spec.ts`            | the scene (80 cards, 10 decks, 5 users) + the two DOM helpers every participant is exercised with | **43 files**, the most-imported file here      | 0.40   |
+| `shared/card-driver.ts`          | how a card is advanced **without** a synthetic event — the registry `app-update` is built on      | 22 files                                       | ⚠ 2.41 |
+| `shared/app-files.ts`            | which source files each participant's app is, as data                                             | `shared/app-lines.ts` **and `vite.config.ts`** | 0.80   |
+| `shared/app-lines.ts`            | counts those files' lines at run time for the LOC column                                          | 7 axes                                         | 0.80   |
+| `shared/exo-machine.ts`          | Form B's machinery (numbered fields, masks, transitions)                                          | `axes/mechanism/machine-vs-cells.ts` only      | ⚠ 2.69 |
+| `shared/machine-state-shapes.ts` | the two state shapes `@exodra/core` does not ship                                                 | `axes/mechanism/machine-vs-cells.ts` only      | ⚠ 1.52 |
+| `shared/exo-inline-computed.ts`  | the wire-shaped derivation API, built from the shipped machine                                    | `apps/exodra/exodra.tsx` only                  | ⚠ 1.64 |
 
 ### GATE — 3 files, in `gates/`
 
-| file | what it gates | imported by | c/k |
-|---|---|---|---|
-| `gates/markup-gate.ts` | the byte-for-byte markup diff every axis shares, one copy — the gate the other two build on | 26 files | 0.79 |
-| `gates/svelte-marko-gate.ts` | the two **compiled** participants; owns their synchronous flush | `initial-render`, `app-update`, `participants/exodra/inline.tsx`, `gates/solid-react-voby-gate.ts` | ⚠ 1.80 |
-| `gates/solid-react-voby-gate.ts` | the three participants that were ungated until it existed | `initial-render`, `app-update` | ⚠ 10.58 — the worst ratio here |
+| file                             | what it gates                                                                               | imported by                                                                                        | c/k                            |
+| -------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `gates/markup-gate.ts`           | the byte-for-byte markup diff every axis shares, one copy — the gate the other two build on | 26 files                                                                                           | 0.79                           |
+| `gates/svelte-marko-gate.ts`     | the two **compiled** participants; owns their synchronous flush                             | `initial-render`, `app-update`, `participants/exodra/inline.tsx`, `gates/solid-react-voby-gate.ts` | ⚠ 1.80                         |
+| `gates/solid-react-voby-gate.ts` | the three participants that were ungated until it existed                                   | `initial-render`, `app-update`                                                                     | ⚠ 10.58 — the worst ratio here |
 
 ### PROFILER — 2 files, in `profilers/`, not axes
 
-| file | fired by | c/k |
-|---|---|---|
-| `profilers/profile-app.tsx` | `scripts/profile-app.mjs` (`npm run profile:app`) | 0.86 |
+| file                             | fired by                                                    | c/k  |
+| -------------------------------- | ----------------------------------------------------------- | ---- |
+| `profilers/profile-app.tsx`      | `scripts/profile-app.mjs` (`npm run profile:app`)           | 0.86 |
 | `profilers/profile-list-ops.tsx` | `scripts/profile-list-ops.mjs` (`npm run profile:list-ops`) | 0.38 |
 
 ### Not in the 81 — the sibling directories
 
-| path | what it is |
-|---|---|
-| `src/benchmarks/apps/` | 36 files, twelve directories: each participant's **app itself** plus a `.md` of its notes, an `apps/README.md`, and `apps/scene/` holding `spec.ts` (the scene) and `slot.ts` (the door Solid and React hand their round out through). `apps/exodra/` holds `exodra.tsx` — the one Exodra app, an imperative machine — plus `exodra-shared.tsx`, the two leaf components it renders |
-| `src/benchmarks/marko/`, `src/benchmarks/svelte/` | the compiled participants' apps, in their own languages; `marko/flush.ts` is the one `.ts` among them |
-| `src/harness.ts` | `abBench` — the shared sampler, rotation, null-control and recorder contract |
-| `src/main.ts` | the browser UI's axis list (10 of the 41) |
-| `ssr/` | a **separate suite**: Exodra vs Solid vs Qwik through a throttled network, prod builds, Playwright + CDP. Not run by `run-one-axis.js` |
-| `bench/`, `dom-bench/` | the isolated Angular build, and a standalone 1000-row DOM page |
-| `measurements/`, `.gate/` | recordings. `measurements/<axis>.<label>.json` is the published set; `.gate/` holds working labels |
+| path                                              | what it is                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/benchmarks/apps/`                            | 36 files, twelve directories: each participant's **app itself** plus a `.md` of its notes, an `apps/README.md`, and `apps/scene/` holding `spec.ts` (the scene) and `slot.ts` (the door Solid and React hand their round out through). `apps/exodra/` holds `exodra.tsx` — the one Exodra app, an imperative machine — plus `exodra-shared.tsx`, the two leaf components it renders |
+| `src/benchmarks/marko/`, `src/benchmarks/svelte/` | the compiled participants' apps, in their own languages; `marko/flush.ts` is the one `.ts` among them                                                                                                                                                                                                                                                                               |
+| `src/harness.ts`                                  | `abBench` — the shared sampler, rotation, null-control and recorder contract                                                                                                                                                                                                                                                                                                        |
+| `src/main.ts`                                     | the browser UI's axis list (10 of the 41)                                                                                                                                                                                                                                                                                                                                           |
+| `ssr/`                                            | a **separate suite**: Exodra vs Solid vs Qwik through a throttled network, prod builds, Playwright + CDP. Not run by `run-one-axis.js`                                                                                                                                                                                                                                              |
+| `bench/`, `dom-bench/`                            | the isolated Angular build, and a standalone 1000-row DOM page                                                                                                                                                                                                                                                                                                                      |
+| `measurements/`, `.gate/`                         | recordings. `measurements/<axis>.<label>.json` is the published set; `.gate/` holds working labels                                                                                                                                                                                                                                                                                  |
 
 ## Known broken
 
-- **`participants/angular/app.ts` is unreachable and deliberately so** — see the dead list. It is
-  the only entry left here.
+-   **`participants/angular/app.ts` is unreachable and deliberately so** — see the dead list. It is
+    the only entry left here.
 
 ### ⚠️ Most of this suite does not compile against the current runtime
 
@@ -268,20 +268,20 @@ This is the largest entry in this section and it is not a participant-by-partici
 the breakage is one shape repeated: **the names these sources import do not exist in the current
 runtime.** Counted off the tree:
 
-| deleted name | files still importing it | what it is now |
-|---|---|---|
-| `withExoBinding` | 26 | nothing — following data is a transition writing the `attr`/`text`/`unsafeHtml` doors a bare backend already answers, run by an effect that draws first and then subscribes to the data source |
-| `TExoDomWire` | 23 | `createExoMachine<TExoDomNode>`, from `@exodra/core` |
-| `TExoBindingApi` | 10 | nothing — there is no binding pack to intersect into an exonode type |
-| `TExoBindingWiring` | 3 | nothing, same reason |
-| `withExoNodeBank` | 2 | nothing — the node bank is gone, which the `toggle` row already says |
-| `TExoStrWire` | 1 | `createExoMachine<TExoStrNode>` |
-| `withExoChildrenWalk`, `withExoKeyedList`, `attachExoKeyedList` | 1 each | `withExoChildrenWalk`: nothing; the keyed list is `EXO_KEYED_LIST_VOCABULARY` / `createExoKeyedList` in `@exodra/list-reconcile` |
+| deleted name                                                    | files still importing it | what it is now                                                                                                                                                                                 |
+| --------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `withExoBinding`                                                | 26                       | nothing — following data is a transition writing the `attr`/`text`/`unsafeHtml` doors a bare backend already answers, run by an effect that draws first and then subscribes to the data source |
+| `TExoDomWire`                                                   | 23                       | `createExoMachine<TExoDomNode>`, from `@exodra/core`                                                                                                                                           |
+| `TExoBindingApi`                                                | 10                       | nothing — there is no binding pack to intersect into an exonode type                                                                                                                           |
+| `TExoBindingWiring`                                             | 3                        | nothing, same reason                                                                                                                                                                           |
+| `withExoNodeBank`                                               | 2                        | nothing — the node bank is gone, which the `toggle` row already says                                                                                                                           |
+| `TExoStrWire`                                                   | 1                        | `createExoMachine<TExoStrNode>`                                                                                                                                                                |
+| `withExoChildrenWalk`, `withExoKeyedList`, `attachExoKeyedList` | 1 each                   | `withExoChildrenWalk`: nothing; a keyed list is `createExoChildrenReconciler(rowMachine, { key })` in `@exodra/list-reconcile`                                                                 |
 
 `c.bindList`, `c.bindChildren`, `c.bindOne`, `c.bindMany` and `c.set` are gone with them: the write
 doors are `attr`, `text`, `html` and `on`, a fixed list is `c.list(port, C, rows)` taking an
-**array** whose entry i is row i's params, and a reactive list is `c.childList(port)` opened in the initial state and handed to
-`reconcileExoOrder(kids, shown, keys, want, build)` from `@exodra/list-reconcile` by a transition. An initial state is `(enode, params)` and there are no props anywhere.
+**array** whose entry i is row i's params, and a reactive list is a module-level `createExoChildrenReconciler(rowMachine)` from
+`@exodra/list-reconcile`, called as `reconcileRows(c, Ports.rows, items)` by a transition. An initial state is `(enode, params)` and there are no props anywhere.
 
 **Repairing the sources is a separate piece of work and this README is not it.** Until it is done,
 treat the axis table below as a description of what each axis WAS WRITTEN TO ASK, not of something
@@ -290,7 +290,7 @@ source no longer compiles. `createExoSchema` and `createExoMachine` from `@exodr
 `createExoStatic` and `createExoOne` have already landed in several axis files, so the repair is partly done and partial
 in a way that cannot be read off a file name.
 
-`ssr-floor` used to sit in this list as *dead at load*, on two reasons: an import of
+`ssr-floor` used to sit in this list as _dead at load_, on two reasons: an import of
 a per-schema helper `@exodra/string` does not export, and five rungs calling `c.reset()`,
 which the string exonode does not have. **Neither reason holds against the file on disk**, and
 nothing in it calls `reset`. It is nevertheless in the table above: it imports `TExoStrWire`, which
@@ -339,14 +339,14 @@ against the third-party field. The one exception is marked as such — `exodraDe
 because it rebuilds exactly as `exodra` does and passes the same identity gate every
 third-party row passes.
 
-| row | axis | what it is |
-|---|---|---|
-| `exodraTold` | `list-update` | the same list told WHAT CHANGED: each op applied to `c.childList` by index, nothing diffed |
-| `exodraDelegated` | `toggle` | **a COMPETING row, not a diagnostic.** The same block, the same 200 panels and the same 40 transitions, rendered with `createExoDelegatedEvents(['click'])` instead of the default `EXO_DIRECT_EVENTS` — so a show writes two properties per panel where `exodra` calls `addEventListener` 200 times. It differs from `exodra` in TWO things and the axis header names both: the event pack, and the fill that pack REQUIRES (a shared handler plus a subject, because the delegated strategy refuses a fill with no subject). So its delta against `exodra` is "delegation + subject", never delegation alone; the third row that would isolate delegation — the direct pack with the same shared handler and subject — is not on this axis, and `op-click-floor` is the axis written to carry that pair (`exodra·op` against `exodra·op·deleg`). Its delegated root is the scenario's own container — where `backend.render` installs the pack — in the bubble phase, against Mikado's `window` in capture |
-| `exodraKept` | `toggle` | the block's 200 panels built once in setup, kept alive across the hide (each child's `unmount` overridden — the documented `exoNodeDom` extension point) and re-filled with the next generation's text instead of rebuilt: a pool with a hit rate of 1. Its counterpart on that axis is `mikadoPooled` (Mikado with `{ recycle: true, pool: true }`), which is Mikado's own answer to the same question and is likewise a diagnostic, read against `mikado` alone |
-| `exodraMono` | `component-split` | the whole 80-card app as ONE schema instead of four |
-| ~~`exodraOimdb`~~ | **REMOVED** | the identical renderer reading an oimdb store instead of `exoBindable()`. **Gone from the suite**: it was a bindable Exodra app and it had gone stale (its tag entity predates `TCardTag.chars`, so `TAG`'s wire read `undefined.getValue()`). Its app files and its participant module are all gone from the tree. `exodraOimdb − exodra` was the suite's only measurement of what a real store costs, and nothing measures that now |
-| ~~`exodraBanked`~~ | **REMOVED** | the very same `APP` value the `exodra` row renders, handed to a backend with the node bank composed. **Gone from the suite**: it re-declared no app at all, so it could not outlive the bindable participant it rendered. Its app files and its participant module are all gone from the tree. Re-pointing it at `exodraDirect` would be a NEW row whose hit rate nobody has measured, not a rename. The asymmetry it closed is back: every Exodra row on `app-update` and `initial-render` builds a BARE backend while `mikado` beside them runs `{ pool: true, cache: true }` |
+| row                | axis              | what it is                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `exodraTold`       | `list-update`     | the same list told WHAT CHANGED: each op applied to `c.childList` by index, nothing diffed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `exodraDelegated`  | `toggle`          | **a COMPETING row, not a diagnostic.** The same block, the same 200 panels and the same 40 transitions, rendered with `createExoDelegatedEvents(['click'])` instead of the default `EXO_DIRECT_EVENTS` — so a show writes two properties per panel where `exodra` calls `addEventListener` 200 times. It differs from `exodra` in TWO things and the axis header names both: the event pack, and the fill that pack REQUIRES (a shared handler plus a subject, because the delegated strategy refuses a fill with no subject). So its delta against `exodra` is "delegation + subject", never delegation alone; the third row that would isolate delegation — the direct pack with the same shared handler and subject — is not on this axis, and `op-click-floor` is the axis written to carry that pair (`exodra·op` against `exodra·op·deleg`). Its delegated root is the scenario's own container — where `backend.render` installs the pack — in the bubble phase, against Mikado's `window` in capture |
+| `exodraKept`       | `toggle`          | the block's 200 panels built once in setup, kept alive across the hide (each child's `unmount` overridden — the documented `exoNodeDom` extension point) and re-filled with the next generation's text instead of rebuilt: a pool with a hit rate of 1. Its counterpart on that axis is `mikadoPooled` (Mikado with `{ recycle: true, pool: true }`), which is Mikado's own answer to the same question and is likewise a diagnostic, read against `mikado` alone                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `exodraMono`       | `component-split` | the whole 80-card app as ONE schema instead of four                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ~~`exodraOimdb`~~  | **REMOVED**       | the identical renderer reading an oimdb store instead of `exoBindable()`. **Gone from the suite**: it was a bindable Exodra app and it had gone stale (its tag entity predates `TCardTag.chars`, so `TAG`'s wire read `undefined.getValue()`). Its app files and its participant module are all gone from the tree. `exodraOimdb − exodra` was the suite's only measurement of what a real store costs, and nothing measures that now                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ~~`exodraBanked`~~ | **REMOVED**       | the very same `APP` value the `exodra` row renders, handed to a backend with the node bank composed. **Gone from the suite**: it re-declared no app at all, so it could not outlive the bindable participant it rendered. Its app files and its participant module are all gone from the tree. Re-pointing it at `exodraDirect` would be a NEW row whose hit rate nobody has measured, not a rename. The asymmetry it closed is back: every Exodra row on `app-update` and `initial-render` builds a BARE backend while `mikado` beside them runs `{ pool: true, cache: true }`                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 ## How participants are compiled
 
@@ -363,7 +363,7 @@ for its whole life because those settings were left to somebody else's default.
 **And `NODE_ENV` is not the lever it looks like.** It is set here as a Vite
 `define`, which is a string replacement performed on client code — the Node
 process running the dev server never sees it, so anything a plugin decides from
-`config.isProduction` or `config.mode` decides it as *development*. That is how
+`config.isProduction` or `config.mode` decides it as _development_. That is how
 two more participants stayed on development machinery long after the React/Solid
 fix went in: Svelte kept `compilerOptions.hmr` on (the HMR wrapper around every
 component, plus the loss of the `is_standalone` markup optimisation), and Solid
@@ -505,11 +505,11 @@ one file per framework per axis (`participants/stage0/app.tsx`, `participants/uh
 and every one of those files states what it uses, what it deliberately does not, and what it
 puts in the DOM that the reference does not.
 
-| row | what it is | how to read it |
-|---|---|---|
-| `stage0` | the idea with nothing on top: clone a prepared node, keep the references the one walk found, write directly | a **CEILING**, not a competitor — every other row is this program plus what its library does for you, and none of it is transferable (the update path is written out by hand, per element) |
-| `uhtml` | the `parts` model in its lightest form: one parse per call site, each hole reached by a recorded PATH rather than by re-walking the clone | a competing row |
-| `sinuous` | template plus fine-grained reactivity, and the only member of the family with NO prepared template — `h()` builds the tree element by element | a competing row |
+| row       | what it is                                                                                                                                    | how to read it                                                                                                                                                                             |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `stage0`  | the idea with nothing on top: clone a prepared node, keep the references the one walk found, write directly                                   | a **CEILING**, not a competitor — every other row is this program plus what its library does for you, and none of it is transferable (the update path is written out by hand, per element) |
+| `uhtml`   | the `parts` model in its lightest form: one parse per call site, each hole reached by a recorded PATH rather than by re-walking the clone     | a competing row                                                                                                                                                                            |
+| `sinuous` | template plus fine-grained reactivity, and the only member of the family with NO prepared template — `h()` builds the tree element by element | a competing row                                                                                                                                                                            |
 
 **`stage0` is not on `reactive-update`.** It has no reactivity, so the scenario would have to be
 written imperatively and the measured region would be a thousand `node.nodeValue = v` writes with
@@ -732,7 +732,7 @@ already publishes**: one text value on one row of a thousand and then all thousa
 interleaved, in **microseconds per transition**.
 
 **The gap has a precise meaning and it is not a defect.** The floor is handed the diff for free; the
-framework has to *discover* what changed and to have kept, since the mount, the bookkeeping that
+framework has to _discover_ what changed and to have kept, since the mount, the bookkeeping that
 makes discovery possible at all. That discovery is what a framework is for, so the gap is **the
 price of not having to write the update by hand** — the product, priced. Every row therefore
 declares a **contract** — `told` (handed exactly what changed: a value, an op, a mover set) or
@@ -765,12 +765,12 @@ flipped four times, with the markup diffed after each flip.
 
 Every transition carries **its own null** — a second, independently declared copy of its floor, with
 its own function object and its own DOM, whose true difference is zero by construction — reported as
-bias *and* paired noise, and as a percentage of that transition's own floor. The text transitions
+bias _and_ paired noise, and as a percentage of that transition's own floor. The text transitions
 additionally carry a `loop` control, the identical loop with the DOM write deleted, so that a floor
 of a few tens of nanoseconds is read against the cost of iterating rather than against zero; the run
 refuses its own attribution when the floor is not clear of it.
 
-It **commits a falsifiable prediction in its header** which *disagrees on purpose* with the one
+It **commits a falsifiable prediction in its header** which _disagrees on purpose_ with the one
 prior it was handed (that the DOM write is ~86% of the update path, implying every ratio near
 1.16) — it expects that to hold for the structural transitions and to fail badly for the text ones,
 because a `.data` store on a hot node is tens of nanoseconds and the path around it is six or seven
@@ -784,15 +784,15 @@ npm run axis --workspace=@exodra/benchmarks -- hydrate-floor 100 2
 
 `hydrate-floor` is the third of the floor family and the only one that is not a floor. The other
 two bound a renderer with a program that has no framework in it at all; there is no such program
-for hydration, because hydration is a *contract about what the server already computed* and a
+for hydration, because hydration is a _contract about what the server already computed_ and a
 hand-written walk of a hand-written string would bound "walking a tree" and bound nothing about it.
 So this axis compares **two real paths through one renderer**, and that is all it does.
 
 **The question is whether a server string plus hydration beats cloning a mountain of elements** —
-is *serve the markup, then hydrate* cheaper than *clone and build on the client*, for a big list?
+is _serve the markup, then hydrate_ cheaper than _clone and build on the client_, for a big list?
 `packages/benchmarks/ssr/` does not answer it: that instrument is Exodra against Solid and Qwik,
 production builds, Playwright with Fast-3G plus 4× CPU throttling, TTI defined as the first
-*working* click. It answers "who wins a page load, against competitors, in wall-clock". This one
+_working_ click. It answers "who wins a page load, against competitors, in wall-clock". This one
 removes the network, the bundle, the compiler and the field, and asks what the same renderer costs
 doing the same job two ways.
 
@@ -804,28 +804,28 @@ any argument that begins "but the browser's parser is fast" has already been mea
 already lost.
 
 **It prints two answers and neither may ever be quoted as the other.** That is the whole design, and
-it exists because the parse's *place on the clock* is the trap. In a real page the parse is not an
+it exists because the parse's _place on the clock_ is the trap. In a real page the parse is not an
 `innerHTML` call after load — it is the initial document parse, streamed, overlapping the network,
 finished before the framework's JavaScript has run at all. The identical CPU work sits somewhere
 completely different.
 
-- **Question 1 — CPU total.** `parse+hydrate` against `mount`, both fully inside the timed region.
-  This is the one that says which path does less work. It is the right question for a worker, a
-  second render into an existing page, or any argument about battery and heat, and the **wrong**
-  question for a cold page load.
-- **Question 2 — what is left after the document is already parsed.** `hydrate` alone against
-  `mount`, with the parse moved into the untimed prep. This models a real page load. It **charges
-  hydration nothing for the parse**, which is realistic rather than generous *only* because a real
-  browser genuinely does that parse off the framework's clock — and the parse is still real CPU on
-  the user's, and it is still 21% dearer than cloning would have been.
+-   **Question 1 — CPU total.** `parse+hydrate` against `mount`, both fully inside the timed region.
+    This is the one that says which path does less work. It is the right question for a worker, a
+    second render into an existing page, or any argument about battery and heat, and the **wrong**
+    question for a cold page load.
+-   **Question 2 — what is left after the document is already parsed.** `hydrate` alone against
+    `mount`, with the parse moved into the untimed prep. This models a real page load. It **charges
+    hydration nothing for the parse**, which is realistic rather than generous _only_ because a real
+    browser genuinely does that parse off the framework's clock — and the parse is still real CPU on
+    the user's, and it is still 21% dearer than cloning would have been.
 
 **Three censuses, because the question says "big list".** One instance of `APP` (641 elements — the
-exact tree `mount-floor` measured, and the *nested* adoption path a real server-rendered page has:
+exact tree `mount-floor` measured, and the _nested_ adoption path a real server-rendered page has:
 one top-level row, then `adoptExoList` for the 80 cards, then a region per card); the same 80 cards as
-flat `CARD` rows (640 elements, the *flat* path, one wrapper element fewer); and 640 `CARD` rows
+flat `CARD` rows (640 elements, the _flat_ path, one wrapper element fewer); and 640 `CARD` rows
 (5120 elements, **exactly 8× in every count**, because the app's spec is periodic with period 4).
 The interesting quantity is whether the **ranking changes with size**, so the run prints
-nanoseconds-per-element for every row at every size — this app grows by adding *instances*, every
+nanoseconds-per-element for every row at every size — this app grows by adding _instances_, every
 term in both programs is per-instance, and a row whose ns/element moves has a term that is not, which
 is the finding. `APP` cannot be asked for more than 80 cards without re-declaring it, so the sweep
 runs on the flat form and the `app` row sits beside `rows·80` to price what the nesting costs
@@ -840,7 +840,7 @@ byte-identical to both; (3) **hydration adopted the served nodes by identity** �
 captured in document order before the call and compared object-by-object after it, so a hydration
 that rebuilt the tree and happened to emit identical bytes passes every string compare in the file
 and fails this one; and (4) **a port is live** — a real bubbling click toggles a region inside the
-*same served card element*, and a second click restores the tree byte for byte, which proves at once
+_same served card element_, and a second click restores the tree byte for byte, which proves at once
 that the listener was attached, that the region's anchors survived adoption, and that the reconciler
 can still find it.
 
@@ -850,7 +850,7 @@ twins are separately declared wrappers over the same entry point, each with its 
 its own independently produced copy of the served string, rather than two independently declared
 programs. They share the library's inline caches, which a real null does not, so **this run's
 resolution floor is a lower bound on the true one**. One null per family per census, reported as
-bias *and* paired noise at six decimals and as a percentage of the thing being measured.
+bias _and_ paired noise at six decimals and as a percentage of the thing being measured.
 
 It **commits a falsifiable prediction in its header** — the owner's (hydration loses on CPU total,
 wins question 2) and mine, which agrees on both directions, disagrees on both sizes with the
@@ -868,13 +868,13 @@ npm run axis --workspace=@exodra/benchmarks -- ssr-floor 100 1
 produces the same 140 kB of markup with no framework in it at all.
 
 **Its floor is cleaner than `mount-floor`'s, and that is the design question it had to answer
-first.** That axis has to argue about *addressability*: a DOM with no reachable nodes is the
+first.** That axis has to argue about _addressability_: a DOM with no reachable nodes is the
 cheapest way to produce those bytes as nodes and is not a floor for any renderer, so it prints two
 floors and spends a section on which may be quoted for what. A server render has no such
 requirement — **the string is the whole product.** Nothing has to stay reachable, nothing will be
 updated, nothing will be torn down. So there is **one** floor here, and the only thing it may not
 skip is **escaping**: a renderer that prints a value into a text position unescaped is not a faster
-renderer, it is an injection. The floor calls the *shipped* `escapeExoText` and
+renderer, it is an injection. The floor calls the _shipped_ `escapeExoText` and
 `escapeExoAttributeValue`, and the row that skips them is in the table as a **bound on the
 concatenation work alone**, labelled as one everywhere it appears.
 
@@ -887,14 +887,14 @@ the probe measured an unflattened rope and the axis measures a flat string, and 
 SAME function. **82% is unreachable on this axis by construction.** What DID reproduce is the
 absolute cost: 0.0550 against 0.063, 13% apart. Quote the absolute figure, or quote a share with its
 denominator attached; never the bare 82%.
-The floor may know the *shape* — every static piece is a string literal, which is what a compiled
-template is — and may **not** bake the *data*: every rung computes `data-id`, the href, the title
+The floor may know the _shape_ — every static piece is a string literal, which is what a compiled
+template is — and may **not** bake the _data_: every rung computes `data-id`, the href, the title
 and the author from the row index inside its own timed region.
 
 **What it exists to split is the 0.134 ms** between that floor and `@exodra/string` with a
 stateless wire (0.211 ms). The obvious probe,
 calling `schema.fillMarkup` directly, **has been tried and the seam is not there**: the fill takes
-values the exonode has *already* written, so the escaping and the writer indirection live inside
+values the exonode has _already_ written, so the escaping and the writer indirection live inside
 `TExoStrNode.set`, and the attempt produced different markup.
 
 **So the axis is a ladder of fourteen whole programs**, each producing all 1000 rows, consecutive
@@ -905,7 +905,7 @@ head moving out of the static markup and into the writer, the writer table, the 
 difference between the two rungs that bracket it. **Every rung from `+set` upward is the package's
 own code**, reached through a public entry point; nothing here re-implements a schema, a writer or a
 filler. One of them (`+head`) measures the single claim `exo-writer-for-port` makes and explicitly
-marks *unmeasured*.
+marks _unmeasured_.
 
 It **commits ten falsifiable predictions in its header**, including **two predictions of zero** —
 the context frame and the `try/finally`, both adopted on the argument that they cost nothing — and
@@ -928,7 +928,7 @@ which is what the other end of that scale costs.
 **Read caveat (1) before quoting the gap.** `@exodra/string` is not in `optimizeDeps.exclude` where
 `@exodra/core` and `@exodra/dom` are, so Vite pre-bundles it with esbuild
 while the hand-written rungs go through the dev server. That asymmetry **favours the library rows**,
-which makes the reported gap a *lower* bound. **What it does not answer**: page load or any
+which makes the reported gap a _lower_ bound. **What it does not answer**: page load or any
 wall-clock quantity (that is `ssr/`), hydration (`hydrate-floor`), other server renderers — there is
 no third-party row in it at all — memory, Node, or any shape but this one component's.
 
@@ -941,7 +941,7 @@ third is **Table 1's batch** and it is bounded by **memory**: every repetition o
 `exodra` row holds one separately mounted 641-element app and all of them stand at once, so batch 2
 is ~51,000 live elements and batch 8 will thrash. The fourth is **Table 2's cycle factor**, applied
 on top of the batch, and it is bounded by **time alone** — a cycle builds its subject and drops it
-*inside* the timed span, so a region of any length holds one app. Table 2's binding constraint is the
+_inside_ the timed span, so a region of any length holds one app. Table 2's binding constraint is the
 heap (a cycle region has to demand more allocation than the nursery holds, or V8 collects nothing
 inside it and the table is Table 1 with a mount attached), and serving that through the batch is what
 made the axis ask for batch 128 — 5120 standing apps. One command serves both tables, which is the
@@ -960,8 +960,8 @@ internals on the 200-panel block `toggle` hides, and every rung of it is a hand-
 file already says above.** `mountExodraApp(c).teardown` **does no DOM work at all** — it is
 `exoTeardownScope`'s closure running the render's disposers, the list disposer it calls unmounts
 children, and `DISPOSE_SELF` explicitly does not touch the element. That much the `teardown-phases`
-section above has right. What it gets wrong is the next sentence: *"a card owns its own
-subscriptions … that call unmounts no child"*. It does not, and the chain is four hops of code —
+section above has right. What it gets wrong is the next sentence: _"a card owns its own
+subscriptions … that call unmounts no child"_. It does not, and the chain is four hops of code —
 `ExoDomBackend.render` passes `ownerChild = null` into `mountExoInstance`; `wireExoInstance` writes
 it onto the instance record as `child`; `TExoDomNode.list` reads `owner = this.child` and passes
 **that** down, so
@@ -973,16 +973,16 @@ the ambient-scope branch, and the app's whole-app disposer runs 320 closures and
 **So every row carries two contracts**, and headlines pair only inside one (`update-floor`'s rule):
 what the program promises about the **document** (`detach` — nodes out and unreferenced; `drop` —
 the container leaves with the tree still inside it and wholly reachable; `none`) and what it
-promises about the renderer's own **state** (`full` — subscriptions ended *and* records released,
+promises about the renderer's own **state** (`full` — subscriptions ended _and_ records released,
 which is what `@exodra/dom` does; `unsub`; `none`). "The renderer versus `textContent = ''`" is a
 comparison of two programs that share no part of the job, and the run says so every time it prints
 it. The contract claim is **checked in a throwing gate**, not asserted: markup byte-identical
 across `teardown()`, and a real bubbling click on all 80 toggles afterwards that must move
-*nothing*, where the same click on a live app moves the markup and a second click restores it.
+_nothing_, where the same click on a live app moves the markup and a second click restores it.
 
 **It prints two tables and says which may be quoted for what, and that is the part it exists for.**
-A teardown's cost is partly *deferred*: Blink defers the detached subtree's destruction to a
-lifecycle update no page can observe, and the shared runner forces a GC *before* every timed region
+A teardown's cost is partly _deferred_: Blink defers the detached subtree's destruction to a
+lifecycle update no page can observe, and the shared runner forces a GC _before_ every timed region
 — so the garbage a region makes is collected outside every timed region, **by construction**. A
 stop-the-clock-at-`dispose()` table therefore measures exactly the half that is cheap to make look
 good, and `book·drop` (**one store**, and the whole graph becomes unreachable) sits in it as the
@@ -990,7 +990,7 @@ proof. **The honest table is `CYCLE`**: N complete mount → teardown → drop c
 with no GC in it, so whatever V8 collects to keep going is inside the measurement. It prints the JS
 heap delta across each cycle region and **refuses the table by name** when the heap grew by a whole
 region's worth of garbage — which means no collection happened inside and the row has not yet done
-its job. Even then it is a *lower* bound: a collection V8 defers past the end of a region is
+its job. Even then it is a _lower_ bound: a collection V8 defers past the end of a region is
 charged to the next region's untimed pre-GC.
 
 **Eleven falsifiers** are committed in the header before the programs were written — two of them
@@ -1063,18 +1063,18 @@ and 26 files import it.
 
 ### The ten places that hard-code a path — move a file without editing these and it breaks
 
-| what holds the path | what it holds |
-|---|---|
-| `scripts/run-one-axis.js` — the `AXES` map | all 39 axis paths, spelled out, one per axis name |
-| `src/main.ts` | 10 dynamic `import('./benchmarks/<family>/<name>')` calls |
-| `scripts/run-benchmarks-headless.js` | `initial-render`, `app-update`, `list-reconcile`, `reconcile`, `reactive-update`, `toggle` |
-| `scripts/probe-svelte.js` | `list-reconcile`, `reconcile`, `reactive-update`, `toggle` |
-| `scripts/profile-app.mjs`, `scripts/profile-list-ops.mjs` | one `MODULE` path each, into `src/benchmarks/profilers/` |
-| `scripts/verify-structure.mjs` | evaluates `import('/src/benchmarks/participants/bundled/todo-app.tsx')` and `.../participants/exodra/app.tsx` **inside the page** — absolute URLs, not resolved by the bundler |
-| **`vite.config.ts`** | **statically imports `./src/benchmarks/shared/app-files`** — a build-time import, so a bad path breaks `npm run dev` outright |
-| **`tsconfig.typecheck.json`** | its whole `exclude` list, as directory globs under `participants/`, `apps/`, `marko/` and `svelte/` |
-| `src/benchmarks/shared/app-files.ts` (contents) | package-relative path **strings** to `apps/*`, `marko/*`, `svelte/*` — data, not imports, so nothing type-checks them |
-| `bench/apps/angular/app.ts` | `../../../src/benchmarks/shared/todo-spec` |
+| what holds the path                                       | what it holds                                                                                                                                                                  |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `scripts/run-one-axis.js` — the `AXES` map                | all 39 axis paths, spelled out, one per axis name                                                                                                                              |
+| `src/main.ts`                                             | 10 dynamic `import('./benchmarks/<family>/<name>')` calls                                                                                                                      |
+| `scripts/run-benchmarks-headless.js`                      | `initial-render`, `app-update`, `list-reconcile`, `reconcile`, `reactive-update`, `toggle`                                                                                     |
+| `scripts/probe-svelte.js`                                 | `list-reconcile`, `reconcile`, `reactive-update`, `toggle`                                                                                                                     |
+| `scripts/profile-app.mjs`, `scripts/profile-list-ops.mjs` | one `MODULE` path each, into `src/benchmarks/profilers/`                                                                                                                       |
+| `scripts/verify-structure.mjs`                            | evaluates `import('/src/benchmarks/participants/bundled/todo-app.tsx')` and `.../participants/exodra/app.tsx` **inside the page** — absolute URLs, not resolved by the bundler |
+| **`vite.config.ts`**                                      | **statically imports `./src/benchmarks/shared/app-files`** — a build-time import, so a bad path breaks `npm run dev` outright                                                  |
+| **`tsconfig.typecheck.json`**                             | its whole `exclude` list, as directory globs under `participants/`, `apps/`, `marko/` and `svelte/`                                                                            |
+| `src/benchmarks/shared/app-files.ts` (contents)           | package-relative path **strings** to `apps/*`, `marko/*`, `svelte/*` — data, not imports, so nothing type-checks them                                                          |
+| `bench/apps/angular/app.ts`                               | `../../../src/benchmarks/shared/todo-spec`                                                                                                                                     |
 
 Nothing in `measurements/*.json` or `.gate/*.json` carries a file path — recordings key on the
 **axis name** only, so no recording is invalidated by a move. Axis names must not change.
@@ -1084,7 +1084,7 @@ Nothing in `measurements/*.json` or `.gate/*.json` carries a file path — recor
 Not registered, not imported by any registered axis, not named by any script. **None of it is
 deleted — the owner decides.**
 
-| file | evidence |
-|---|---|
-| `participants/angular/app.ts` | zero importers anywhere in `src/`, `scripts/`, `vite.config.ts` or `bench/`. It is named only inside comments. **Deliberate:** `@angular/*` was removed from the workspace after their toolchain pulled a second Vite in and broke every other participant, so the loader's app is out of the workspace and only `.dependency-cruiser.cjs`'s two exemptions keep the graph gate quiet about it; the loader, its isolated build (`bench/build/build-angular.mjs`) and its app (`bench/apps/angular/`) were all left in place. `axes/app/exodra-initial-render.tsx` carries the revival procedure — re-add the packages, the `BUILT_PARTICIPANTS` entry, the participant lines and the title **in one change**. `tsconfig.typecheck.json` already excludes it, so nothing notices it is dead |
-| `axes/phases/import-node-trade.ts` | registered and loadable, but **never recorded** — there is no `import-node-trade.*.json` on disk, so three of its four falsifiers are unjudgeable. Kept as the instrument for a future ownership question, not because the question is open |
+| file                               | evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `participants/angular/app.ts`      | zero importers anywhere in `src/`, `scripts/`, `vite.config.ts` or `bench/`. It is named only inside comments. **Deliberate:** `@angular/*` was removed from the workspace after their toolchain pulled a second Vite in and broke every other participant, so the loader's app is out of the workspace and only `.dependency-cruiser.cjs`'s two exemptions keep the graph gate quiet about it; the loader, its isolated build (`bench/build/build-angular.mjs`) and its app (`bench/apps/angular/`) were all left in place. `axes/app/exodra-initial-render.tsx` carries the revival procedure — re-add the packages, the `BUILT_PARTICIPANTS` entry, the participant lines and the title **in one change**. `tsconfig.typecheck.json` already excludes it, so nothing notices it is dead |
+| `axes/phases/import-node-trade.ts` | registered and loadable, but **never recorded** — there is no `import-node-trade.*.json` on disk, so three of its four falsifiers are unjudgeable. Kept as the instrument for a future ownership question, not because the question is open                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |

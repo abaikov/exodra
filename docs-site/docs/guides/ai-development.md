@@ -5,7 +5,7 @@ title: AI-Assisted Development
 # AI-Assisted Development
 
 Exodra is unusually friendly to AI tools, and that's not an accident — it falls
-out of the core design. This guide covers *why*, and the tooling built to lean
+out of the core design. This guide covers _why_, and the tooling built to lean
 into it.
 
 ## Why Exodra is analyzable
@@ -14,20 +14,20 @@ A React component's behavior lives inside a function body that runs at runtime �
 what's reactive, what re-renders, and why is opaque until it executes. Exodra is
 the opposite:
 
-- **The shape is separate from the behaviour.** A component is a **schema** built
-  once and a **wiring function** run per instance. The schema is a straight-line
-  builder — `el`, `text`, `port`, `eventPort`, `textPort`, `childrenPort` — so
-  what markup a component produces is readable without running it.
-- **How a value is filled is written, never inferred.** `c.attr` / `c.text` is a
-  value written by the wire or a transition, an effect that runs a transition and
-  then subscribes is one that keeps up with a source, `c.list` is a fixed run and
-  `reconcileExoOrder` over `c.childList`, called from a transition, is a reconciled
-  one. [JSX](./jsx.md) declares the schema only: a literal attribute is
-  markup, and every port is named where it stands (`data-id={$.id}`, `{$.label}`,
-  `onClick={$.toggle}`, `<$.rows />`) for the machine to fill. A tool sees exactly what can change and what can't — no dataflow
-  guessing.
-- **No virtual DOM, no hidden magic.** There's no diffing black box to model: a
-  render is a clone, a walk plan and one call per port.
+-   **The shape is separate from the behaviour.** A component is a **schema** built
+    once and a **wiring function** run per instance. The schema is a straight-line
+    builder — `el`, `text`, `port`, `eventPort`, `textPort`, `childrenPort` — so
+    what markup a component produces is readable without running it.
+-   **How a value is filled is written, never inferred.** `c.attr` / `c.text` is a
+    value written by the wire or a transition, an effect that runs a transition and
+    then subscribes is one that keeps up with a source, `c.list` is a fixed run and
+    a reconciler from `createExoChildrenReconciler`, called where the data changes, is a
+    reconciled one. [JSX](./jsx.md) declares the schema only: a literal attribute is
+    markup, and every port is named where it stands (`data-id={$.id}`, `{$.label}`,
+    `onClick={$.toggle}`, `<$.rows />`) for the machine to fill. A tool sees exactly what can change and what can't — no dataflow
+    guessing.
+-   **No virtual DOM, no hidden magic.** There's no diffing black box to model: a
+    render is a clone, a walk plan and one call per port.
 
 The practical upshot: static analysis (and an LLM) can answer "what does this
 component render, what's reactive, where are the perf risks?" from the source

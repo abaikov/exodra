@@ -115,7 +115,6 @@ or in the type. Order among the packs does not matter.
 ```ts
 import {
     ExoDomBackend,
-    withExoChildList,
     withExoCompiler,
     withExoDefaults,
     withExoForeignNamespaces,
@@ -123,19 +122,21 @@ import {
 } from '@exodra/dom';
 
 export const backend = withExoHydration(
-    withExoChildList(withExoForeignNamespaces(withExoCompiler(withExoDefaults(new ExoDomBackend()))))
+    withExoForeignNamespaces(withExoCompiler(withExoDefaults(new ExoDomBackend())))
 );
 ```
 
-| Pack | What it adds | Without it |
-| --- | --- | --- |
-| `withExoCompiler` | `schema`, `buildRoot`, `mountRoot`, `render` | no entry point; a page that ships prebuilt schemas leaves it out |
-| `withExoChildList` | `c.childList(port)`, needed by reconciled lists, keyed lists and router outlets | `c.childList` throws [EXO0109](https://exodra.org/docs/errors#exo0109) |
-| `withExoForeignNamespaces` | SVG and MathML namespaces, case fix-ups (`viewBox`), `xlink:href` | a schema with `<svg>`, `<math>` or an SVG-only tag throws [EXO0108](https://exodra.org/docs/errors#exo0108) |
-| `withExoHydration` | `adoptRoot`, `hydrate` (needs `withExoCompiler`) | no hydration code in the bundle |
-| `withExoDefaults` | the recommended safety bundle; today `withExoReclaimingText` | |
-| `withExoReclaimingText` | a text writer that recovers when a translator or extension replaces the Text node | updates land on a node that is no longer shown |
-| `withExoPropertyWriters(base, takesOver?)` | custom-element ports written as JS properties instead of attributes | values are stringified by `setAttribute` |
+| Pack                                       | What it adds                                                                      | Without it                                                                                                  |
+| ------------------------------------------ | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `withExoCompiler`                          | `schema`, `createExoNode`, `mountRoot`, `render`                                  | no entry point; a page that ships prebuilt schemas leaves it out                                            |
+| `withExoForeignNamespaces`                 | SVG and MathML namespaces, case fix-ups (`viewBox`), `xlink:href`                 | a schema with `<svg>`, `<math>` or an SVG-only tag throws [EXO0108](https://exodra.org/docs/errors#exo0108) |
+| `withExoHydration`                         | `adoptRoot`, `hydrate` (needs `withExoCompiler`)                                  | no hydration code in the bundle                                                                             |
+| `withExoDefaults`                          | the recommended safety bundle; today `withExoReclaimingText`                      |                                                                                                             |
+| `withExoReclaimingText`                    | a text writer that recovers when a translator or extension replaces the Text node | updates land on a node that is no longer shown                                                              |
+| `withExoPropertyWriters(base, takesOver?)` | custom-element ports written as JS properties instead of attributes               | values are stringified by `setAttribute`                                                                    |
+
+The children-port calls (`c.appendChild`, `c.insertChild`, `c.moveChild`, `c.removeChild`,
+`c.replaceChildren`, `c.childAt`, `c.childCount`) are on every DOM backend; they need no pack.
 
 The event strategy is the `events` field, replaced with `composeExoPlugins` from
 `@exodra/core` (see [Events](#events)). The four replaceable fields of a bare
@@ -148,19 +149,26 @@ A machine's initial state, wire, transitions, handlers and effects are handed `c
 the instance's own record (`TExoDomNode`). Methods address ports by name, in any
 order.
 
-| Method | What it does |
-| --- | --- |
-| `attr(port, value)` | fill an attribute port; `null`, `undefined` or `false` removes the attribute, `true` writes it empty |
-| `text(port, value)` | fill a text port |
-| `unsafeHtml(port, markup)` | fill a children port with raw markup (not escaped) |
-| `on(port, handler, subject?)` | put a handler in an event port |
-| `one(port, machine, params?)` | place one child instance in a children port; returns the child's exonode |
-| `list(port, machine, rows)` | place a fixed list, one row per entry of `rows` (row i armed with `rows[i]` as its params), never reconciled |
-| `build(machine, params?)` | build one child, placed nowhere; returns its exonode |
-| `childList(port)` | the child list of a children port (`withExoChildList`) |
-| `provide(token, value)` / `inject(token)` | contexts, see [`@exodra/context`](https://exodra.org/docs/api/core#contexts) |
-| `onTeardown(off)` | run `off` when the instance is disposed |
-| `portTable()` / `portNodeWriter()` / `portNodeReader()` | address ports by number |
+| Method                                                    | What it does                                                                                                 |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `attr(port, value)`                                       | fill an attribute port; `null`, `undefined` or `false` removes the attribute, `true` writes it empty         |
+| `text(port, value)`                                       | fill a text port                                                                                             |
+| `unsafeHtml(port, markup)`                                | fill a children port with raw markup (not escaped)                                                           |
+| `on(port, handler, subject?)`                             | put a handler in an event port                                                                               |
+| `one(port, machine, params?)`                             | place one child instance in a children port; returns the child's exonode                                     |
+| `list(port, machine, rows)`                               | place a fixed list, one row per entry of `rows` (row i armed with `rows[i]` as its params), never reconciled |
+| `createExoNode(machine)`                                  | create one child, placed nowhere and not yet wired; `wireExoNode(node, params)` from `@exodra/core` wires it |
+| `appendChild(port, node)` / `insertChild(port, node, at)` | place a node at the end of a children port, or at position `at`                                              |
+| `moveChild(node, at)` / `moveChild(node, port, at?)`      | move a placed node within its port, or into another port of this exonode                                     |
+| `removeChild(node)`                                       | take a node out of the tree; it stays alive and can be placed again (`destroyExoNode(node)` ends it)         |
+| `replaceChildren(port)`                                   | destroy every node in a port and empty it                                                                    |
+| `childAt(port, at)` / `childCount(port)`                  | read what a port holds                                                                                       |
+| `provide(token, value)` / `inject(token)`                 | contexts, see [`@exodra/context`](https://exodra.org/docs/api/core#contexts)                                 |
+| `onTeardown(off)`                                         | run `off` when the instance is disposed                                                                      |
+| `portTable()` / `portNodeWriter()` / `portNodeReader()`   | address ports by number                                                                                      |
+
+A child is `createExoNode(machine)` followed by `wireExoNode(node, params)` and a port method.
+See the [Children guide](https://exodra.org/docs/guides/children).
 
 A machine's own state lives in `c.state` (what `createInitialState` returned). A
 handler changes it and writes it to ports:
@@ -230,9 +238,10 @@ application already has.
 
 ## Lists
 
-A list that follows data is `reconcileExoOrder` from `@exodra/list-reconcile`, run
-where the data changes, over `c.childList(port)` (opened in `createInitialState`) and
-`c.build(...)`. Each row receives its item as the params of its wire.
+A list that follows data is a reconciler made once, at module level, with
+`createExoChildrenReconciler(rowMachine)` from `@exodra/list-reconcile`, and called as
+`reconcile(c, port, items)` where the data changes. It remembers what it showed in each port,
+so the machine keeps no list of its own; each new row receives its item as the params of its wire.
 
 ```ts
 import {
@@ -245,10 +254,9 @@ import {
     withExoEffects,
     withExoWire,
 } from '@exodra/core';
-import type { TExoMachineNodeOf } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
-import type { TExoChildList, TExoDomNode } from '@exodra/dom';
-import { reconcileExoOrder } from '@exodra/list-reconcile';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
+import type { TExoDomNode } from '@exodra/dom';
+import { createExoChildrenReconciler } from '@exodra/list-reconcile';
 
 type TTask = { readonly id: string; readonly title: string };
 
@@ -280,22 +288,13 @@ const boardSchema = createExoSchema(BoardPorts, (b) => {
         ul.childrenPort(BoardPorts.rows);
     });
 });
-type TBoardState = { rows: TExoChildList; shown: TTask[] };
-const boardBase = createExoMachine(boardSchema, {
-    createInitialState: (c: TExoDomNode): TBoardState => ({
-        rows: c.childList(BoardPorts.rows),
-        shown: [],
-    }),
-});
-function showTasks(c: TExoMachineNodeOf<typeof boardBase>): void {
-    c.state.shown = reconcileExoOrder(c.state.rows, c.state.shown, tasks, tasks, (task) =>
-        c.build(Task, task)
-    );
-}
+const reconcileTasks = createExoChildrenReconciler<TTask>(Task);
+
+const boardBase = createExoMachine<TExoDomNode>(boardSchema);
 const Board = withExoEffects(boardBase, (effect) => {
     effect((c) => {
-        showTasks(c);
-        const listener = (): void => showTasks(c);
+        reconcileTasks(c, BoardPorts.rows, tasks);
+        const listener = (): void => reconcileTasks(c, BoardPorts.rows, tasks);
         taskListeners.add(listener);
         return () => {
             taskListeners.delete(listener);
@@ -303,7 +302,7 @@ const Board = withExoEffects(boardBase, (effect) => {
     });
 });
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 backend.render(Board, document.body);
 
 setTasks([...tasks, { id: 'b', title: 'Second' }]);
@@ -311,20 +310,20 @@ setTasks([...tasks, { id: 'b', title: 'Second' }]);
 
 Rows are reconciled by **object identity**: a row that survives an update keeps
 its element and subscriptions, and a row that leaves is disposed. For data without
-stable identity, the keyed list (`EXO_KEYED_LIST_VOCABULARY`, `c.keyedList`) in
-`@exodra/list-reconcile` reconciles by key. A list whose contents never change is
+stable identity, `createExoChildrenReconciler(Task, { key: (task) => task.id })` reconciles
+by key: a surviving key keeps its row, and a new object under it re-runs the row's wire. A list whose contents never change is
 `c.list(port, machine, rows)`, which pays for no diff and no row records. See the
 [Lists guide](https://exodra.org/docs/guides/lists).
 
-`TExoChildList` is `insert`, `move`, `remove`, `removeAll`, `at`, `size`, and the
-pair `detach` / `attach` (plus `detachAll`), which take a child out and put it back
-without unmounting or disposing it. `exoNodeDom(child).node` is the element behind
-a child.
+Outside a reconciler, place children with `c.appendChild` / `c.insertChild`, take one out
+alive with `c.removeChild`, and end it with `destroyExoNode(node)` from `@exodra/core`.
+`exoNodeDom(child).node` is the element behind a child.
 
-## Build, then mount
+## Create, wire, then mount
 
-`render` is `mountRoot(buildRoot(machine, params), parent)`, and both halves are
-public:
+`render` creates the root with `createExoNode(machine)`, wires it with
+`wireExoNode(node, params)` and places it with `mountRoot(node, parent)`, and every
+step is public:
 
 ```ts
 import {
@@ -351,23 +350,26 @@ const Title = withExoWire(titleBase, (c, title) => {
 });
 
 const backend = withExoCompiler(new ExoDomBackend());
-const node = backend.buildRoot(Title, 'Draft');
+const node = backend.createExoNode(Title);
+wireExoNode(node, 'Draft');
 const dispose = backend.mountRoot(node, document.body);
 
-wireExoNode(node, Title, 'Published');
+wireExoNode(node, 'Published');
 ```
 
-`buildRoot` runs the initial state and the wire and starts the effects, placed in
-no document. `mountRoot` inserts it and returns the disposer. `wireExoNode` re-runs
-the wire with new params on the same elements; a wire that places children
-(`childList`, `one`, `list`) throws [EXO0103](https://exodra.org/docs/errors#exo0103)
-when re-run, so place children in `createInitialState`.
+`createExoNode` makes the node and wires nothing. The first `wireExoNode` runs the
+initial state and the wire and starts the effects, placed in no document. `mountRoot`
+inserts it and returns the disposer. A later `wireExoNode` re-runs the wire with new
+params on the same elements; a wire that places children with `one` or `list` throws
+[EXO0103](https://exodra.org/docs/errors#exo0103) when re-run, so call those in
+`createInitialState`. The children-port calls (`createExoNode`, `appendChild`,
+`insertChild`, `moveChild`, `removeChild`) may run from any wire, transition or effect.
 
 ## Hydration
 
 `withExoHydration` adds `hydrate(machine, parent, params?)`, with the same
 arguments and disposer as `render`, and `adoptRoot(machine, parent, params?)`,
-the adopting twin of `buildRoot`.
+the adopting twin of creating and wiring a root.
 
 ```ts
 import { ExoStrBackend } from '@exodra/string';
@@ -394,9 +396,9 @@ an element does not match a machine's schema, or `null`. See
 
 ## Events
 
-| Strategy | Behaviour |
-| --- | --- |
-| `EXO_DIRECT_EVENTS` | one listener per element (the default) |
+| Strategy                                    | Behaviour                                                  |
+| ------------------------------------------- | ---------------------------------------------------------- |
+| `EXO_DIRECT_EVENTS`                         | one listener per element (the default)                     |
 | `createExoDelegatedEvents(names, options?)` | one listener per event name on the root, serving every row |
 
 ```ts
@@ -417,12 +419,12 @@ backend.render(App, document.body);
 
 The delegated strategy refuses:
 
-- a handler with no `subject` (`c.on(port, handler)` without the third argument):
-  the subject is how one shared handler learns which row fired;
-- events that do not bubble (`EXO_NON_BUBBLING_EVENTS`);
-- high-frequency events (`mousemove`, `pointermove`, `pointerrawupdate`,
-  `touchmove`, `wheel`, `mousewheel`, `drag`, `dragover`), unless the call says
-  `createExoDelegatedEvents(['pointermove'], { allowHighFrequency: true })`.
+-   a handler with no `subject` (`c.on(port, handler)` without the third argument):
+    the subject is how one shared handler learns which row fired;
+-   events that do not bubble (`EXO_NON_BUBBLING_EVENTS`);
+-   high-frequency events (`mousemove`, `pointermove`, `pointerrawupdate`,
+    `touchmove`, `wheel`, `mousewheel`, `drag`, `dragover`), unless the call says
+    `createExoDelegatedEvents(['pointermove'], { allowHighFrequency: true })`.
 
 A third-party strategy implements `TExoEventsApi` from the exported pieces listed
 in the [API reference](#api-reference).
@@ -473,93 +475,92 @@ code that mounts instances by hand with `mountExoInstance`.
 
 ## Limits
 
-- **Hydration replaces, it does not wrap.** A pack that wraps `attr`, `text`,
-  `unsafeHtml`, `on`, `one`, `list`, `build`, `childList` or the port readers and
-  writers governs client renders only; on an adopted page the hydration bodies run
-  instead.
-- **Two child lists directly next to each other, with no element between them,
-  cannot hydrate** ([EXO0035](https://exodra.org/docs/errors#exo0035)). Put a static
-  element between them, or render that component on the client.
-- **When hydrating, a port on a static element between two children ports is
-  refused at compile time**, and children ports separated by a static must be
-  filled in document order. A client render accepts both.
-- **`c.list(port, machine, rows)` on an adopted page takes exactly `rows.length` rows.** If the markup holds
-  fewer it throws; extra served rows are left in place.
-- **Two components with the same element skeleton are indistinguishable** to
-  hydration: if the server printed the other one, its static text stays and every
-  port is repaired.
-- **The server has no property-writers pack**: a port value written as a property
-  in the browser is printed through its string form by `@exodra/string`.
-- **There is no element recycling.** Every instance's element is a clone of its
-  schema's prototype (`cloneExoNode`). Keeping a subtree alive is `detach` /
-  `attach` on a child you hold.
-- **Contexts do not cross separate renders.** A second `render()` into an element
-  another render provided into starts with an empty context.
+-   **Hydration replaces, it does not wrap.** A pack that wraps `attr`, `text`,
+    `unsafeHtml`, `on`, `one`, `list`, `createExoNode` or the port readers and
+    writers governs client renders only; on an adopted page the hydration bodies run
+    instead.
+-   **Two child lists directly next to each other, with no element between them,
+    cannot hydrate** ([EXO0035](https://exodra.org/docs/errors#exo0035)). Put a static
+    element between them, or render that component on the client.
+-   **When hydrating, a port on a static element between two children ports is
+    refused at compile time**, and children ports separated by a static must be
+    filled in document order. A client render accepts both.
+-   **`c.list(port, machine, rows)` on an adopted page takes exactly `rows.length` rows.** If the markup holds
+    fewer it throws; extra served rows are left in place.
+-   **Two components with the same element skeleton are indistinguishable** to
+    hydration: if the server printed the other one, its static text stays and every
+    port is repaired.
+-   **The server has no property-writers pack**: a port value written as a property
+    in the browser is printed through its string form by `@exodra/string`.
+-   **There is no element recycling.** Every instance's element is a clone of its
+    schema's prototype (`cloneExoNode`). Keeping a subtree alive is `c.removeChild(node)`
+    on a child you hold and placing it again with `c.appendChild` / `c.insertChild`.
+-   **Contexts do not cross separate renders.** A second `render()` into an element
+    another render provided into starts with an empty context.
 
 ## API reference
 
 Backend and packs:
 
-- `class ExoDomBackend` — `new ExoDomBackend()`; types `TExoDomBackend`, `TExoDomBackendConstructor`, `TExoDomApi`
-- `withExoCompiler(base): base & TExoCompilerApi` — adds `schema(machine)`, `render(machine, parent, params?)`, `buildRoot(machine, params?)`, `mountRoot(node, parent)`
-- `withExoHydration(base): base & TExoHydrationApi` — adds `hydrate(machine, parent, params?)`, `adoptRoot(machine, parent, params?)`, `hydrateSurface`, `parserStability`; `TExoHydrateBackend` is the structural type of a backend that can hydrate
-- `withExoChildList(base): base` — adds `c.childList(port)`
-- `withExoForeignNamespaces(base): base & { foreignNamespaces: TExoForeignNamespaces }`
-- `withExoDefaults(base): base` — the safety bundle
-- `withExoReclaimingText(base): base`, `createExoReclaimingTextWriters(next): TExoWritersApi`, `exoReclaimingText: TExoDomSetter`
-- `withExoPropertyWriters(base, takesOver?): base`, `createExoPropertyWriters(next?, takesOver?): TExoWritersApi`, `takesOverExoProperty(name, proto): boolean`, `EXO_GLOBAL_ATTRIBUTES`
-- `EXO_SHIPPED_WRITERS: TExoWritersApi` — the default `writers`
+-   `class ExoDomBackend` — `new ExoDomBackend()`; types `TExoDomBackend`, `TExoDomBackendConstructor`, `TExoDomApi`
+-   `withExoCompiler(base): base & TExoCompilerApi` — adds `schema(machine)`, `render(machine, parent, params?)`, `createExoNode(machine)`, `mountRoot(node, parent)`
+-   `withExoHydration(base): base & TExoHydrationApi` — adds `hydrate(machine, parent, params?)`, `adoptRoot(machine, parent, params?)`, `hydrateSurface`, `parserStability`; `TExoHydrateBackend` is the structural type of a backend that can hydrate
+-   `withExoForeignNamespaces(base): base & { foreignNamespaces: TExoForeignNamespaces }`
+-   `withExoDefaults(base): base` — the safety bundle
+-   `withExoReclaimingText(base): base`, `createExoReclaimingTextWriters(next): TExoWritersApi`, `exoReclaimingText: TExoDomSetter`
+-   `withExoPropertyWriters(base, takesOver?): base`, `createExoPropertyWriters(next?, takesOver?): TExoWritersApi`, `takesOverExoProperty(name, proto): boolean`, `EXO_GLOBAL_ATTRIBUTES`
+-   `EXO_SHIPPED_WRITERS: TExoWritersApi` — the default `writers`
 
 Exonode and machines:
 
-- types `TExoDomNode`, `TExoDomRenderNode`, `TExoDomSurface`, `TExoDomNodeApi`, `TExoDomMachine`, `TExoDomMark`, `TExoDomInstanceRecord`
-- `EXO_DOM_NODE_VOCABULARY` — the exonode methods as the pack a backend merges onto itself
-- `provideExoContext(below, token, value): TExoContextFrame` — extend a context chain outside an instance
+-   types `TExoDomNode`, `TExoDomRenderNode`, `TExoDomSurface`, `TExoDomNodeApi`, `TExoDomMachine`, `TExoDomMark`, `TExoDomInstanceRecord`
+-   `EXO_DOM_NODE_VOCABULARY` — the exonode methods as the pack a backend merges onto itself
+-   `provideExoContext(below, token, value): TExoContextFrame` — extend a context chain outside an instance
 
 Children:
 
-- `createExoChildList(parent, order, end, ownsParent): TExoChildList`; types `TExoChildList`, `TExoDomChild`
-- `exoNodeDom(child): TExoDomChild` — the record (and `.node` element) behind a child
-- `dropExoChild(child, parent): void`, `clearOwnedExoChildList(order, parent): void`, `assertBuiltExoChild(): never`
+-   `createExoChildList(parent, order, end, ownsParent): TExoChildList`; types `TExoChildList`, `TExoDomChild`
+-   `exoNodeDom(child): TExoDomChild` — the record (and `.node` element) behind a child
+-   `dropExoChild(child, parent): void`, `clearOwnedExoChildList(order, parent): void`, `assertBuiltExoChild(): never`
 
 Foreign elements:
 
-- `exoForeignNode(c, element, hooks?): TExoNode<TExoDomMark>`; type `TExoForeignHooks` `{ onMount?, onUnmount? }`
-- `EXO_DOM_FOREIGN_VOCABULARY` — the pack that adds `c.foreign(t)`; type `TExoDomForeignApi`
+-   `exoForeignNode(c, element, hooks?): TExoNode<TExoDomMark>`; type `TExoForeignHooks` `{ onMount?, onUnmount? }`
+-   `EXO_DOM_FOREIGN_VOCABULARY` — the pack that adds `c.foreign(t)`; type `TExoDomForeignApi`
 
 Hydration:
 
-- types `TExoHydrateNode`, `TExoHydrateSurface`, `TExoHydrateSchema`; `EXO_HYDRATE_NODE_VOCABULARY`
-- `findExoRowDisagreement(machine, root, backend): string | null`
-- `describeExoNode(node): string` — names a node the way markup reads
+-   types `TExoHydrateNode`, `TExoHydrateSurface`, `TExoHydrateSchema`; `EXO_HYDRATE_NODE_VOCABULARY`
+-   `findExoRowDisagreement(machine, root, backend): string | null`
+-   `describeExoNode(node): string` — names a node the way markup reads
 
 Schemas, for custom entry points:
 
-- `compileExoDomSchema(declaration, backend): TExoDomSchema`
-- `exoDomSchemaOf(machine, backend): TExoDomSchema` — compiled on first use, cached per backend
-- `exoDomJsonDeclaration(schema): TExoDomJsonDeclaration` and `createExoDomSchema(declaration, backend): TExoDomSchema` — ship schemas from a build and load them without the compiler
-- `mountExoSchema(schema, machine, parent, backend, params?): () => void`
-- `mountExoInstance(schema, machine, parent, before, ownerChild, context?, params?): Element`
-- `createExoNode(schema, root, machine, ownerChild, holder, context?, params?): void`
-- `cloneExoNode(schema): Element`
-- `EXO_WALK_FIRST_CHILD`, `EXO_WALK_NEXT_SIBLING`, `EXO_WALK_FROM_END` — walk operations
-- types `TExoDomSchema`, `TExoDomSetter`, `TExoDomJsonDeclaration`
+-   `compileExoDomSchema(declaration, backend): TExoDomSchema`
+-   `exoDomSchemaOf(machine, backend): TExoDomSchema` — compiled on first use, cached per backend
+-   `exoDomJsonDeclaration(schema): TExoDomJsonDeclaration` and `createExoDomSchema(declaration, backend): TExoDomSchema` — ship schemas from a build and load them without the compiler
+-   `mountExoSchema(schema, machine, parent, backend, params?): () => void`
+-   `mountExoInstance(schema, machine, parent, before, ownerChild, context?, params?): Element`
+-   `createExoNode(schema, root, machine, ownerChild, holder, context?, params?): void`
+-   `cloneExoNode(schema): Element`
+-   `EXO_WALK_FIRST_CHILD`, `EXO_WALK_NEXT_SIBLING`, `EXO_WALK_FROM_END` — walk operations
+-   types `TExoDomSchema`, `TExoDomSetter`, `TExoDomJsonDeclaration`
 
 Teardown:
 
-- `exoTeardownScope(fn): () => void`, `exoOnTeardown(child, off): void`
+-   `exoTeardownScope(fn): () => void`, `exoOnTeardown(child, off): void`
 
 Events:
 
-- `EXO_DIRECT_EVENTS: TExoEventsApi`, `createExoDelegatedEvents(names, options?): TExoEventsApi`; type `TExoDelegatedEventsOptions` `{ allowHighFrequency? }`
-- building blocks for a custom strategy: `exoEventSlotsFor(packId, event)`, `createExoEventPortData(slots, listener)`, `attachExoDirectEvent`, `attachExoDelegatedEvent`, `installExoDelegatedRoot(root, rootKey, slots)`, `createExoDelegatedListener(root, slots)`, `assertExoSubject(event)`, `EXO_DIRECT_PACK_ID`, `EXO_NON_BUBBLING_EVENTS`, `EXO_HIGH_FREQUENCY_EVENTS`
-- types `TExoEventsApi`, `TExoEventAttacher`, `TExoEventPortData`, `TExoEventSlots`, `TExoDelegatedRoot`, `TExoWritersApi`
+-   `EXO_DIRECT_EVENTS: TExoEventsApi`, `createExoDelegatedEvents(names, options?): TExoEventsApi`; type `TExoDelegatedEventsOptions` `{ allowHighFrequency? }`
+-   building blocks for a custom strategy: `exoEventSlotsFor(packId, event)`, `createExoEventPortData(slots, listener)`, `attachExoDirectEvent`, `attachExoDelegatedEvent`, `installExoDelegatedRoot(root, rootKey, slots)`, `createExoDelegatedListener(root, slots)`, `assertExoSubject(event)`, `EXO_DIRECT_PACK_ID`, `EXO_NON_BUBBLING_EVENTS`, `EXO_HIGH_FREQUENCY_EVENTS`
+-   types `TExoEventsApi`, `TExoEventAttacher`, `TExoEventPortData`, `TExoEventSlots`, `TExoDelegatedRoot`, `TExoWritersApi`
 
 ## Further reading
 
-- [DOM API](https://exodra.org/docs/api/dom) and [Core API](https://exodra.org/docs/api/core)
-- [Plugins](https://exodra.org/docs/guides/plugins), [Lists](https://exodra.org/docs/guides/lists), [SSR & hydration](https://exodra.org/docs/guides/ssr)
-- [Error codes](https://exodra.org/docs/errors)
+-   [DOM API](https://exodra.org/docs/api/dom) and [Core API](https://exodra.org/docs/api/core)
+-   [Plugins](https://exodra.org/docs/guides/plugins), [Lists](https://exodra.org/docs/guides/lists), [SSR & hydration](https://exodra.org/docs/guides/ssr)
+-   [Error codes](https://exodra.org/docs/errors)
 
 ## License
 

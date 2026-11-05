@@ -1,4 +1,13 @@
 import { exoVocabulary } from '@exodra/core';
+import { EXO_UNARMED_STATE } from '@exodra/core';
+import { armExoDomChild } from '../dom/armExoDomChild';
+import { EXO_FIXED_PORT_CHILDREN } from '../dom/constants/EXO_FIXED_PORT_CHILDREN';
+import { holdExoInstance } from '../dom/holdExoInstance';
+import { walkExoNodeTable } from '../dom/walkExoNodeTable';
+import { walkExoHydrateTable } from './walkExoHydrateTable';
+import { EXO_PENDING_WIRE } from './constants/EXO_PENDING_WIRE';
+import { EXO_NO_PENDING_WIRE } from './constants/EXO_NO_PENDING_WIRE';
+import type { TExoChildList } from '../dom/types/TExoChildList';
 import type {
     TExoNode,
     TExoEventHandler,
@@ -8,28 +17,23 @@ import type {
     TExoPortNodeWriter,
     TExoChildrenPort,
 } from '@exodra/core';
-import type { TExoDomSurface } from '../dom/EXO_DOM_NODE_VOCABULARY';
+import type { TExoDomPhaseSeams, TExoDomSurface } from '../dom/EXO_DOM_NODE_VOCABULARY';
 import type { TExoDomInstanceRecord } from '../dom/types/TExoDomInstanceRecord';
 import type { TExoDomMark } from '../dom/types/TExoDomMark';
 import type { TExoDomChild } from '../dom/types/TExoDomChild';
 import type { TExoDomMachine } from '../dom/types/TExoDomMachine';
 import type { TExoEventPortData } from '../events/types/TExoEventPortData';
 import type { TExoHydrateSchema } from './types/TExoHydrateSchema';
+import { readExoLiveDomSchema } from './readExoLiveDomSchema';
+import type { TExoDomSchema } from '../dom/types/TExoDomSchema';
+import { exoOnTeardown } from '../dom/exoTeardownScope';
 import { EXO_ADOPT_STOP_UNKNOWN } from '../dom/constants/EXO_ADOPT_STOP_UNKNOWN';
-import { buildLiveExoChild } from '../dom/buildLiveExoChild';
-import { exoDomSchemaForChild } from '../dom/exoDomSchemaForChild';
 import { EXO_ARMED_INSTANCE } from '../dom/constants/EXO_ARMED_INSTANCE';
 import { hydrateExoInstance } from './hydrateExoInstance';
 import { exoHydrateSchemaOf } from './exoHydrateSchemaOf';
 import { assertExoPluginChildList } from './asserts/assertExoPluginChildList';
 import { exoChildListStartAfter } from './exoChildListStartAfter';
 import { requireExoElement } from './requireExoElement';
-import {
-    dropExoAdoptSurplus,
-    openExoAdoptCursor,
-    takeExoAdoptedRow,
-} from '../dom/EXO_ADOPT_CURSOR';
-import { buildAdoptedExoChild } from './buildAdoptedExoChild';
 import type { TExoDomNode } from '../dom/EXO_DOM_NODE_VOCABULARY';
 import type { TExoDomForeignApi } from '../foreign/types/TExoDomForeignApi';
 
@@ -49,7 +53,13 @@ export interface TExoHydrateSurface {
     /** The component-taking members name the shipped exonode (`TExoDomMachine`) and not `this`: `TExoMachine` is contravariant in its exonode, so `this` here would stop a portable component being placeable by an adopting call. */
     one(port: TExoChildrenPort, machine: TExoDomMachine): TExoHydrateNode;
     list(port: TExoChildrenPort, machine: TExoDomMachine, params: readonly unknown[]): void;
-    build(machine: TExoDomMachine, params?: unknown): TExoNode<TExoDomMark>;
+    createExoNode(machine: TExoDomMachine): TExoNode<TExoDomMark>;
+    armExoSelf(params: unknown): void;
+    deferExoTransition(
+        run: (enode: never, first: unknown, second: unknown) => void,
+        first: unknown,
+        second: unknown
+    ): boolean;
 }
 
 /**
@@ -61,10 +71,31 @@ export interface TExoHydrateSurface {
 export interface TExoHydratePhaseSeams {
     childListEndNode(port: TExoPort): Node | null;
     childListStartNode(port: TExoPort): Node | null;
-    openChildList(port: TExoChildrenPort): TExoDomChild[];
+    openChildList(port: TExoChildrenPort, served?: Element[]): TExoDomChild[];
     publishChildListEnd(port: TExoPort, end: Element | null): void;
     adoptFromNode(port: TExoPort, parent: Element): Element | null;
     adoptStopNode(port: TExoPort): Node | null | undefined;
+    materializeExoChild(child: TExoDomChild, list: TExoChildList, at: number): void;
+}
+
+type TExoLiveMethods = TExoDomSurface & TExoDomPhaseSeams;
+
+function liveExoMethodsOf(node: { schema: unknown }): TExoLiveMethods {
+    return (node.schema as { backend: unknown }).backend as TExoLiveMethods;
+}
+
+function replayExoTransitions(child: TExoDomChild, calls: readonly unknown[]): void {
+    for (let i = 0; i < calls.length; i += 3) {
+        (calls[i] as (enode: TExoDomChild, first: unknown, second: unknown) => void)(
+            child,
+            calls[i + 1],
+            calls[i + 2]
+        );
+    }
+}
+
+function resolveExoChildListEnd(end: Node | null | (() => Node | null)): Node | null {
+    return typeof end === 'function' ? end() : end;
 }
 
 /** No body here is an arrow: an arrow has no `this`, and `this` is the exonode. */
@@ -73,11 +104,12 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
     ThisType<TExoHydrateNode> = {
     /** `live`/`liveElem`, never the adoption pair: that one is silenced and holds slot 0 for every silenced port, so a writer built from it would silently do nothing for the life of the page. */
     portNodeWriter(): TExoPortNodeWriter {
-        let write = this.schema.domPortWrite;
+        const schema = readExoLiveDomSchema(this.schema as TExoHydrateSchema | TExoDomSchema);
+        let write = schema.domPortWrite;
         if (write === null) {
-            const setters = this.schema.live;
-            const elem = this.schema.liveElem;
-            const data = this.schema.writeData;
+            const setters = schema.setters;
+            const elem = schema.elem;
+            const data = schema.writeData;
             write = (table, port, value): void => {
                 const index = port.index;
                 setters[index](
@@ -86,20 +118,21 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
                     data[index]
                 );
             };
-            this.schema.domPortWrite = write;
+            schema.domPortWrite = write;
         }
         return write;
     },
 
     portNodeReader(): TExoPortNodeReader<Element> {
-        let at = this.schema.domPortNodes;
+        const schema = readExoLiveDomSchema(this.schema as TExoHydrateSchema | TExoDomSchema);
+        let at = schema.domPortNodes;
         if (at === null) {
-            const elem = this.schema.liveElem;
+            const elem = schema.elem;
             at = (table, port): Element => {
                 const nodes = table as unknown as Node[];
                 return nodes[elem[port.index]] as Element;
             };
-            this.schema.domPortNodes = at;
+            schema.domPortNodes = at;
         }
         return at;
     },
@@ -117,6 +150,14 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
     },
 
     one(port: TExoChildrenPort, machine: TExoDomMachine, params?: unknown): TExoHydrateNode {
+        if (!('domSchema' in this.schema))
+            return liveExoMethodsOf(this).one.call(
+                this,
+                port,
+                machine as never,
+                params
+            ) as unknown as TExoHydrateNode;
+        (this.portChildren ??= [])[port.index] = EXO_FIXED_PORT_CHILDREN;
         const parent = this.nodes[this.schema.liveElem[port.index]] as Element;
         const root = requireExoElement(this.adoptFromNode(port, parent), 'a nested instance');
         // In a local, so the record below is made by THIS schema's factory and not the owner's: the
@@ -136,6 +177,9 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
     },
 
     list(port: TExoChildrenPort, machine: TExoDomMachine, params: readonly unknown[]): void {
+        if (!('domSchema' in this.schema))
+            return liveExoMethodsOf(this).list.call(this, port, machine as never, params);
+        (this.portChildren ??= [])[port.index] = EXO_FIXED_PORT_CHILDREN;
         const parent = this.nodes[this.schema.liveElem[port.index]] as Element;
         const schema = exoHydrateSchemaOf(machine, this.schema.backend);
         const ownerChild = this.child;
@@ -160,32 +204,12 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
         this.publishChildListEnd(port, at);
     },
 
-    /** ADOPTS WHILE A RECONCILED CHILD LIST STILL HAS SERVED ROWS, and builds the client way once it
-     * does not — which is how a list whose data grew past the markup gets its extra rows. A `build`
-     * outside a child list has no cursor open and takes the second path. */
-    build(machine: TExoDomMachine, params?: unknown): TExoNode<TExoDomMark> {
-        const root = takeExoAdoptedRow();
-        if (root !== null) {
-            return buildAdoptedExoChild(
-                exoHydrateSchemaOf(machine, this.schema.backend),
-                root,
-                machine,
-                this.context,
-                params
-            ) as unknown as TExoNode<TExoDomMark>;
-        }
-        return buildLiveExoChild(
-            exoDomSchemaForChild(machine, this.schema.backend),
-            machine,
-            this.context,
-            params
-        ) as unknown as TExoNode<TExoDomMark>;
-    },
-
     /** The static behind the child list, so a row the data added past the served ones lands in front
      * of it rather than at the end of the parent. `undefined` cannot be resolved and reads as `null`,
      * which is the end of the parent — and `openChildList` refuses that shape before it gets here. */
     childListEndNode(port: TExoPort): Node | null {
+        if (!('domSchema' in this.schema))
+            return resolveExoChildListEnd(liveExoMethodsOf(this).childListEndNode.call(this, port));
         const stop = this.adoptStopNode(port);
         return stop === undefined ? null : stop;
     },
@@ -193,6 +217,8 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
     /** The reconciler's lower bound (exclusive), not `adoptFromNode`'s first row (inclusive) — and
      * `previousSibling`, not `previousElementSibling`, because the consumer walks node by node. */
     childListStartNode(port: TExoPort): Node | null {
+        if (!('domSchema' in this.schema))
+            return liveExoMethodsOf(this).childListStartNode.call(this, port);
         const index = port.index;
         const prev = this.schema.childListPrevPort[index];
         if (prev >= 0) {
@@ -212,7 +238,9 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
      * opening pass — which calls `build` once per item — adopts them instead of building beside them.
      * Refused only where no walk can find the list's end, which is a child list standing behind
      * another: there the first row of the one behind is indistinguishable from a surplus of this one. */
-    openChildList(port: TExoChildrenPort): TExoDomChild[] {
+    openChildList(port: TExoChildrenPort, served?: Element[]): TExoDomChild[] {
+        if (!('domSchema' in this.schema))
+            return liveExoMethodsOf(this).openChildList.call(this, port);
         const stop = this.adoptStopNode(port);
         if (stop === undefined) return assertExoPluginChildList();
         const parent = this.nodes[this.schema.liveElem[port.index]] as Element;
@@ -226,11 +254,90 @@ const EXO_HYDRATE_NODE_METHODS: TExoHydrateSurface &
             end = end.nextElementSibling;
         }
         this.publishChildListEnd(port, end);
-        // An instance may open a SECOND child list, and the first one's surplus has to go before the
-        // cell is overwritten — otherwise rows the data refused stay on the page for good.
-        dropExoAdoptSurplus();
-        openExoAdoptCursor(rows);
-        return [];
+        if (served !== undefined) for (let i = 0; i < rows.length; i++) served.push(rows[i]);
+        const order: TExoDomChild[] = [];
+        exoOnTeardown(this.child, () => {
+            for (let i = 0; i < order.length; i++) order[i].unmount();
+            order.length = 0;
+        });
+        return order;
+    },
+
+    createExoNode(machine: TExoDomMachine): TExoNode<TExoDomMark> {
+        const schema = exoHydrateSchemaOf(machine, this.schema.backend);
+        const child = schema.createChild(schema, undefined, schema.domSchema.childUnmount);
+        child.child = child;
+        child.context = this.context;
+        child.machine = machine;
+        child.state = EXO_UNARMED_STATE;
+        return child as unknown as TExoNode<TExoDomMark>;
+    },
+
+    armExoSelf(this: TExoDomChild & TExoHydrateNode, params: unknown): void {
+        if (this.node === undefined) {
+            const pending = EXO_PENDING_WIRE.get(this);
+            const calls =
+                pending === undefined || pending === EXO_NO_PENDING_WIRE ? [] : pending.calls;
+            EXO_PENDING_WIRE.set(this, { params, calls });
+            return;
+        }
+        armExoDomChild(this, params);
+    },
+
+    deferExoTransition(
+        this: TExoDomChild & TExoHydrateNode,
+        run: (enode: never, first: unknown, second: unknown) => void,
+        first: unknown,
+        second: unknown
+    ): boolean {
+        if (this.node !== undefined) {
+            armExoDomChild(this, undefined);
+            return false;
+        }
+        const pending = EXO_PENDING_WIRE.get(this);
+        if (pending === undefined || pending === EXO_NO_PENDING_WIRE) {
+            EXO_PENDING_WIRE.set(this, { params: undefined, calls: [run, first, second] });
+        } else {
+            pending.calls.push(run, first, second);
+        }
+        return true;
+    },
+
+    materializeExoChild(child: TExoDomChild, list: TExoChildList, at: number): void {
+        const schema = child.schema as TExoHydrateSchema;
+        const pending = EXO_PENDING_WIRE.get(child);
+        if (pending !== undefined) EXO_PENDING_WIRE.set(child, EXO_NO_PENDING_WIRE);
+        const wired = pending !== undefined && pending !== EXO_NO_PENDING_WIRE;
+        const served = list.takeServed(at);
+        if (served !== null) {
+            child.node = served;
+            if (wired) {
+                hydrateExoInstance(
+                    schema,
+                    served,
+                    child.machine as TExoDomMachine,
+                    child,
+                    child,
+                    child.context,
+                    pending.params,
+                    pending.calls
+                );
+                holdExoInstance(child);
+                return;
+            }
+            walkExoHydrateTable(schema, served, child);
+            child.schema = schema.domSchema;
+            return;
+        }
+        const dom = schema.domSchema;
+        const element = dom.acquireNode(dom);
+        child.node = element;
+        child.schema = dom;
+        walkExoNodeTable(dom, element, child);
+        if (wired) {
+            armExoDomChild(child, pending.params);
+            replayExoTransitions(child, pending.calls);
+        }
     },
 
     publishChildListEnd(port: TExoPort, end: Element | null): void {

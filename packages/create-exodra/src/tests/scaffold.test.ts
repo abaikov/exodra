@@ -258,9 +258,11 @@ describe('what the scaffolded sources are written in', () => {
         expect(main).toContain('const App = createExoMachine(appSchema, {');
         expect(main).toContain('createInitialState: (c: TExoDomNode) => {');
         expect(main).toContain(
-            "c.build(ExoLink, { to: '/', label: 'Home', currentWhen: 'exact' })"
+            "c.appendChild(AppPorts.nav, wireExoNode(c.createExoNode(ExoLink), { to: '/', label: 'Home', currentWhen: 'exact' }))"
         );
         expect(main).not.toContain('.createInitialState(');
+        expect(main).toContain('const EXO_BACKEND = withExoCompiler(new ExoDomBackend());');
+        expect(main).not.toContain('withExoChildList');
 
         const tsconfig = JSON.parse(readFileSync(join(spa(), 'tsconfig.json'), 'utf8')) as {
             compilerOptions: { jsxImportSource?: string };

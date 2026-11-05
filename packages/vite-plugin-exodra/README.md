@@ -2,12 +2,12 @@
 
 Vite plugin for Exodra applications. It:
 
-- compiles `.tsx` / `.jsx` through [`babel-preset-exodra`](../babel-preset-exodra):
-  each `exoJsx(...)` schema declaration becomes a module-level
-  `createExoNamedSchema()` call;
-- generates the route table for `@exodra/router` from `src/pages`;
-- serves file-based API endpoints from `src/api` in the dev server;
-- falls back to `/index.html` for dev-server requests without a file extension.
+-   compiles `.tsx` / `.jsx` through [`babel-preset-exodra`](../babel-preset-exodra):
+    each `exoJsx(...)` schema declaration becomes a module-level
+    `createExoNamedSchema()` call;
+-   generates the route table for `@exodra/router` from `src/pages`;
+-   serves file-based API endpoints from `src/api` in the dev server;
+-   falls back to `/index.html` for dev-server requests without a file extension.
 
 A project that writes schemas with `createExoSchema` needs no JSX transform, and
 can still use the plugin for routing and API endpoints.
@@ -37,10 +37,10 @@ export default defineConfig({
 });
 ```
 
-| Option | Default | What it does |
-| --- | --- | --- |
-| `pagesDir` | `'src/pages'` | directory scanned for page files |
-| `apiDir` | `'src/api'` | directory for API endpoints |
+| Option         | Default          | What it does                                                                                   |
+| -------------- | ---------------- | ---------------------------------------------------------------------------------------------- |
+| `pagesDir`     | `'src/pages'`    | directory scanned for page files                                                               |
+| `apiDir`       | `'src/api'`      | directory for API endpoints                                                                    |
 | `schemaSource` | `'@exodra/core'` | where the compiled JSX imports `createExoNamedSchema` from; forwarded to `babel-preset-exodra` |
 
 ## File-based routing
@@ -68,7 +68,7 @@ receives its match as the params of its wire:
 ```ts no-check
 // main.ts
 import { EXO_PORT_CHILDREN, createExoMachine, createExoSchema, exoPorts } from '@exodra/core';
-import { ExoDomBackend, withExoChildList, withExoCompiler } from '@exodra/dom';
+import { ExoDomBackend, withExoCompiler } from '@exodra/dom';
 import type { TExoDomNode } from '@exodra/dom';
 import { createExoBrowserHistory, createExoRouter, exoOutlet, provideExoRouter } from '@exodra/router';
 import { routes } from 'virtual:exodra-routes';
@@ -90,7 +90,7 @@ const App = createExoMachine(appSchema, {
     },
 });
 
-const backend = withExoChildList(withExoCompiler(new ExoDomBackend()));
+const backend = withExoCompiler(new ExoDomBackend());
 backend.render(App, document.getElementById('app') as HTMLElement);
 ```
 
@@ -107,13 +107,13 @@ declare module 'virtual:exodra-routes' {
 
 Limits:
 
-- **The table is flat**: one entry per page file and no `children`. A layout is a
-  route with `children` whose page places an `ExoOutlet`; write that table by hand
-  (see [`@exodra/router`](../router)).
-- **The table is built once, when the dev server starts.** Restart the dev server
-  after adding, removing or renaming a page file.
-- `_`-prefixed files (including `_layout.tsx`) produce no route and are not
-  treated as layouts or error boundaries.
+-   **The table is flat**: one entry per page file and no `children`. A layout is a
+    route with `children` whose page places an `ExoOutlet`; write that table by hand
+    (see [`@exodra/router`](../router)).
+-   **The table is built once, when the dev server starts.** Restart the dev server
+    after adding, removing or renaming a page file.
+-   `_`-prefixed files (including `_layout.tsx`) produce no route and are not
+    treated as layouts or error boundaries.
 
 ## API routes
 
@@ -135,11 +135,11 @@ export async function GET(request: Request): Promise<Response> {
 
 Limits:
 
-- **The request body is not forwarded.** The `Request` is built from the URL,
-  method and headers only, so `await request.json()` has nothing to read.
-- **An error thrown by a handler is not a 500**: the request falls through to the
-  next middleware, the same as a missing file.
-- API routes exist only in the dev server.
+-   **The request body is not forwarded.** The `Request` is built from the URL,
+    method and headers only, so `await request.json()` has nothing to read.
+-   **An error thrown by a handler is not a 500**: the request falls through to the
+    next middleware, the same as a missing file.
+-   API routes exist only in the dev server.
 
 ## Hot module replacement
 

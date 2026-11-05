@@ -63,13 +63,13 @@ changes.
 
 ## API
 
-- `exoContextToken<TValue>(name?): TExoContextToken<TValue>` — a new token; the name is for debugging only
-- `exoContextFrame(outer, token, value): TExoContextFrame` — a new frame on top of `outer` (or `null`)
-- `readExoContext(frame, token): TValue | undefined` — the nearest value for `token`
-- `provideExoIds(c, prefix): TExoIdCounter` — start an id counter for this render under `EXO_ID_COUNTER`
-- `nextExoId(c): string` — the next id, `` `${prefix}-${n}` `` with `n` in base 36; throws `EXO0104` when no counter was provided
-- `EXO_ID_COUNTER` — the token the counter is provided under
-- types `TExoContextToken<TValue>`, `TExoContextFrame` (`{ key, value, outer }`), `TExoIdCounter` (`{ prefix, next }`)
+-   `exoContextToken<TValue>(name?): TExoContextToken<TValue>` — a new token; the name is for debugging only
+-   `exoContextFrame(outer, token, value): TExoContextFrame` — a new frame on top of `outer` (or `null`)
+-   `readExoContext(frame, token): TValue | undefined` — the nearest value for `token`
+-   `provideExoIds(c, prefix): TExoIdCounter` — start an id counter for this render under `EXO_ID_COUNTER`
+-   `nextExoId(c): string` — the next id, `` `${prefix}-${n}` `` with `n` in base 36; throws `EXO0104` when no counter was provided
+-   `EXO_ID_COUNTER` — the token the counter is provided under
+-   types `TExoContextToken<TValue>`, `TExoContextFrame` (`{ key, value, outer }`), `TExoIdCounter` (`{ prefix, next }`)
 
 Ids follow call order, which is the same on the server and in a synchronous
 hydration pass. Call `provideExoIds` per render (never at module level), and give
