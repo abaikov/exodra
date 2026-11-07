@@ -7,13 +7,13 @@
     "dev": "vite --config vite.config.ts"
   },
   "dependencies": {
-    "@cnstra/core": "^2.5.0",
+    "@cnstra/core": "^3.2.1",
     "@exodra/context": "^0.3.0",
     "@exodra/core": "^0.4.0",
     "@exodra/dom": "^0.4.0",
     "@exodra/forms": "^0.4.0",
     "@exodra/list-reconcile": "^0.3.0",
-    "@oimdb/core": "^4.10.0",
+    "@oimdb/core": "^4.11.0",
     "@oimdb/exodra": "^2.0.1"
   }
 }

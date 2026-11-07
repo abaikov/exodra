@@ -36,9 +36,9 @@
     "url": "https://github.com/abaikov/exodra/issues"
   },
   "dependencies": {
-    "@babel/core": "^7.24.0",
-    "@babel/plugin-syntax-jsx": "^7.24.0",
-    "@babel/preset-typescript": "^7.24.0",
+    "@babel/core": "^8.1.0",
+    "@babel/plugin-syntax-jsx": "^8.0.1",
+    "@babel/preset-typescript": "^8.0.7",
     "@exodra/babel-plugin-schema": "^0.2.0"
   },
   "devDependencies": {

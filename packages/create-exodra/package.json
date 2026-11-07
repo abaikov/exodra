@@ -22,18 +22,18 @@
     },
     "_comment_chalk": "chalk is pinned to ^4 because this package is COMMONJS (no \"type\" field, and its dist starts with \"use strict\"). chalk@5 is pure ESM, so `require(\"chalk\")` throws ERR_REQUIRE_ESM on any Node before 22.12 — including the Node 20 all three CI workflows pin, and including whatever a user running `npx create-exodra` happens to have. Only chalk.blue/bold/cyan/dim/gray/green/red are used and all exist in 4.x. Raise this only together with making the package ESM.",
     "dependencies": {
-        "commander": "^11.1.0",
-        "chalk": "^4.1.2",
+        "commander": "^15.0.0",
+        "chalk": "^6.0.1",
         "prompts": "^2.4.2",
-        "validate-npm-package-name": "^5.0.0",
-        "fs-extra": "^11.2.0"
+        "validate-npm-package-name": "^8.0.0",
+        "fs-extra": "^11.4.1"
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.4",
         "@types/prompts": "^2.4.9",
         "@types/validate-npm-package-name": "^4.0.2",
-        "typescript": "^5.3.3",
-        "vitest": "^4.0.16"
+        "typescript": "^7.0.2",
+        "vitest": "^5.1.0"
     },
     "keywords": [
         "exodra",
