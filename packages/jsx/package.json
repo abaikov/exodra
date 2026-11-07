@@ -72,6 +72,6 @@
     "@exodra/core": "^0.4.0"
   },
   "devDependencies": {
-    "vitest": "^4.0.16"
+    "vitest": "^5.1.0"
   }
 }

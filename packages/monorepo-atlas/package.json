@@ -9,14 +9,14 @@
     "build": "tsup && tsc -p tsconfig.dts.json"
   },
   "dependencies": {
-    "@dagrejs/dagre": "^3.1.0",
-    "dependency-cruiser": "^18.1.1",
-    "ts-morph": "^21.0.1"
+    "@dagrejs/dagre": "^3.1.3",
+    "dependency-cruiser": "^18.7.2",
+    "ts-morph": "^28.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "vitest": "^4.0.16",
-    "tsup": "^8.0.0"
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0",
+    "tsup": "^9.0.0"
   },
   "description": "Architecture atlas for a TypeScript monorepo: the package dependency graph with rule violations and an entity model of what is inside each package, emitted as JSON data plus a stylesheet, and a --check mode that fails when the committed data is stale",
   "bin": {

@@ -7,7 +7,7 @@
     "dev": "vite --config vite.config.ts"
   },
   "devDependencies": {
-    "@reduxjs/toolkit": "^2.13.0",
+    "@reduxjs/toolkit": "^2.14.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "react": "^19.3.1",
