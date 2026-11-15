@@ -54,8 +54,8 @@
   "devDependencies": {
     "@exodra/dom": "^0.4.0",
     "@exodra/list-reconcile": "^0.3.0",
-    "jsdom": "^23.0.1",
-    "vitest": "^4.0.16"
+    "jsdom": "^31.0.0",
+    "vitest": "^5.1.0"
   },
   "peerDependencies": {
     "@exodra/context": "^0.3.0",
