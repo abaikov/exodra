@@ -96,4 +96,4 @@ export default [
 ## Links
 
 -   npm: [`@exodra/introspect`](https://www.npmjs.com/package/@exodra/introspect)
--   GitHub: [`packages/introspect`](https://github.com/abaikov/exodra/tree/master/packages/introspect)
+-   GitHub: [`packages/introspect`](https://github.com/eceliax/exodra/tree/master/packages/introspect)

@@ -30,7 +30,7 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'abaikov', // Usually your GitHub org/user name.
+  organizationName: 'eceliax', // Usually your GitHub org/user name.
   projectName: 'exodra', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -53,7 +53,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/abaikov/exodra/tree/master/docs-site/',
+            'https://github.com/eceliax/exodra/tree/master/docs-site/',
         },
         blog: {
           showReadingTime: true,
@@ -64,7 +64,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/abaikov/exodra/tree/master/docs-site/',
+            'https://github.com/eceliax/exodra/tree/master/docs-site/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -100,7 +100,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/abaikov/exodra',
+            href: 'https://github.com/eceliax/exodra',
             label: 'GitHub',
             position: 'right',
           },
@@ -135,7 +135,7 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/abaikov/exodra',
+                href: 'https://github.com/eceliax/exodra',
               },
             ],
           },

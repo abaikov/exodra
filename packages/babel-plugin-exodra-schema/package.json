@@ -43,11 +43,11 @@
   "homepage": "https://exodra.org",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abaikov/exodra.git",
+    "url": "git+https://github.com/eceliax/exodra.git",
     "directory": "packages/babel-plugin-exodra-schema"
   },
   "bugs": {
-    "url": "https://github.com/abaikov/exodra/issues"
+    "url": "https://github.com/eceliax/exodra/issues"
   },
   "dependencies": {
     "@babel/generator": "^7.24.0",

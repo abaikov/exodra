@@ -207,4 +207,4 @@ There is **no** `renderToStream`.
 ## Links
 
 -   npm: [`@exodra/string`](https://www.npmjs.com/package/@exodra/string)
--   GitHub: [exodra/packages/string](https://github.com/abaikov/exodra/tree/master/packages/string)
+-   GitHub: [exodra/packages/string](https://github.com/eceliax/exodra/tree/master/packages/string)

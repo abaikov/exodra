@@ -42,11 +42,11 @@
   "homepage": "https://exodra.org",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abaikov/exodra.git",
+    "url": "git+https://github.com/eceliax/exodra.git",
     "directory": "packages/dom-profiler"
   },
   "bugs": {
-    "url": "https://github.com/abaikov/exodra/issues"
+    "url": "https://github.com/eceliax/exodra/issues"
   },
   "keywords": [
     "exodra",

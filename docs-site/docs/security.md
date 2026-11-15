@@ -194,5 +194,5 @@ anything reaches npm.
 
 ## Reporting a vulnerability
 
-See [SECURITY.md](https://github.com/abaikov/exodra/blob/master/SECURITY.md).
+See [SECURITY.md](https://github.com/eceliax/exodra/blob/master/SECURITY.md).
 Please report privately rather than opening a public issue.

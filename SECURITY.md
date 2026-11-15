@@ -5,7 +5,7 @@
 **Please do not open a public issue.**
 
 Report privately through GitHub's
-[private vulnerability reporting](https://github.com/abaikov/exodra/security/advisories/new)
+[private vulnerability reporting](https://github.com/eceliax/exodra/security/advisories/new)
 on this repository. If that is unavailable to you, contact the maintainer through
 the profile at https://github.com/abaikov.
 
@@ -28,7 +28,7 @@ attribute names, and state serialised into `<script>` — are documented, mapped
 [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
 requirements and CWE identifiers, and backed by tests that run on every release:
 
-- **[Security documentation](https://abaikov.github.io/exodra/docs/security)** —
+- **[Security documentation](https://exodra.org/docs/security)** —
   the full table, including what the framework deliberately does *not* do.
 - `packages/core/src/escape/tests/escapeExoText.test.ts` and
   `packages/core/src/escape/tests/escapeExoAttributeValue.test.ts` — the two escapers

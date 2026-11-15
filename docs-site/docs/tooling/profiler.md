@@ -231,4 +231,4 @@ restore(); // put the original methods back
 ## Links
 
 -   npm: [`@exodra/dom-profiler`](https://www.npmjs.com/package/@exodra/dom-profiler)
--   GitHub: [`packages/dom-profiler`](https://github.com/abaikov/exodra/tree/master/packages/dom-profiler)
+-   GitHub: [`packages/dom-profiler`](https://github.com/eceliax/exodra/tree/master/packages/dom-profiler)

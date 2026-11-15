@@ -376,7 +376,7 @@ const cartMachine = withExoHandlers(cartBaseMachine, (on) => {
 ```
 
 The complete cart, with the row machine and the parent that builds the rows, is in the
-[package README](https://github.com/abaikov/exodra/tree/master/packages/forms#fields-in-the-rows-of-a-list).
+[package README](https://github.com/eceliax/exodra/tree/master/packages/forms#fields-in-the-rows-of-a-list).
 
 ## Where it runs
 
@@ -409,4 +409,4 @@ Pinned in `packages/forms/src/controls/tests/controls.test.ts` and `packages/for
 ## Links
 
 -   npm: [`@exodra/forms`](https://www.npmjs.com/package/@exodra/forms)
--   GitHub: [exodra/packages/forms](https://github.com/abaikov/exodra/tree/master/packages/forms)
+-   GitHub: [exodra/packages/forms](https://github.com/eceliax/exodra/tree/master/packages/forms)

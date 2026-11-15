@@ -230,4 +230,4 @@ that produces the same pair from markup.
 
 -   npm: [create-exodra](https://www.npmjs.com/package/create-exodra)
 -   GitHub:
-    [packages/create-exodra](https://github.com/abaikov/exodra/tree/master/packages/create-exodra)
+    [packages/create-exodra](https://github.com/eceliax/exodra/tree/master/packages/create-exodra)

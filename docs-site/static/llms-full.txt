@@ -1630,7 +1630,7 @@ production settings for each are stated explicitly in the suite's Vite config
 | uhtml, sinuous             | Small template/reactive libraries, added with Marko and Lit.                                                                                                                                                                                                                                                                                                                                         |
 | Mikado                     | Hand-written imperative code driving Mikado's own list and node APIs.                                                                                                                                                                                                                                                                                                                                |
 | Mikado (reactive idiom)    | The same app written the way Mikado's own README says to write one — its Proxy properties, its observable array, its click routing. Runs on the two `exodra-*` axes only.                                                                                                                                                                                                                            |
-| _Exodra (oimdb store)_     | **Not a second renderer.** The identical schemas, components and binding topology as **Exodra**, with the app's state held in an [oimdb](https://github.com/abaikov/oimdb) database and read back through selectors, instead of the plain get/set cell the **Exodra** row uses. Runs on the two `exodra-*` axes only.                                                                                |
+| _Exodra (oimdb store)_     | **Not a second renderer.** The identical schemas, components and binding topology as **Exodra**, with the app's state held in an [oimdb](https://github.com/eceliax/oimdb) database and read back through selectors, instead of the plain get/set cell the **Exodra** row uses. Runs on the two `exodra-*` axes only.                                                                                |
 | _stage0_                   | **Not a competitor — the ceiling.** ~570 B of clone-and-patch with no renderer around it: no components, no schemas, no wiring functions, no ports, no subscriptions, no disposal, no registry, and nothing to flush. Read every row above it as "stage0 plus what that library does for you" — and see [What stage0 does not do](#what-stage0-does-not-do) for what that phrase is actually naming. |
 | _floor_                    | Not a renderer. It is the harness's own cost, measured as a row — see [The floor](#the-floor).                                                                                                                                                                                                                                                                                                       |
 
@@ -2377,7 +2377,7 @@ recording.
 ## Reproduce
 
 ```bash
-git clone https://github.com/abaikov/exodra.git
+git clone https://github.com/eceliax/exodra.git
 cd exodra
 npm install
 npm run build                       # the axes measure dist, not src
@@ -3401,7 +3401,7 @@ anything reaches npm.
 
 ## Reporting a vulnerability
 
-See [SECURITY.md](https://github.com/abaikov/exodra/blob/master/SECURITY.md).
+See [SECURITY.md](https://github.com/eceliax/exodra/blob/master/SECURITY.md).
 Please report privately rather than opening a public issue.
 
 
@@ -10452,8 +10452,8 @@ it; without it, a `deps` change would append a second copy beside the first.
 
 -   npm: [`@exodra/react`](https://www.npmjs.com/package/@exodra/react) ·
     [`@exodra/react-mount`](https://www.npmjs.com/package/@exodra/react-mount)
--   GitHub: [`packages/react`](https://github.com/abaikov/exodra/tree/master/packages/react) ·
-    [`packages/react-mount`](https://github.com/abaikov/exodra/tree/master/packages/react-mount)
+-   GitHub: [`packages/react`](https://github.com/eceliax/exodra/tree/master/packages/react) ·
+    [`packages/react-mount`](https://github.com/eceliax/exodra/tree/master/packages/react-mount)
 
 
 ==============================================================================
@@ -12098,7 +12098,7 @@ of calls that only a browser can answer — `Node` and `Element` do not exist
 there — so the passes are a package of their own, which `@exodra/dom` declares
 as a peer and nothing else links. Their interfaces, what the three uncalled ones
 are for, and the withdrawn move counts are in
-[`packages/list-reconcile/README.md`](https://github.com/abaikov/exodra/blob/master/packages/list-reconcile/README.md).
+[`packages/list-reconcile/README.md`](https://github.com/eceliax/exodra/blob/master/packages/list-reconcile/README.md).
 
 ## The declarative machine — not here
 
@@ -12971,7 +12971,7 @@ page that made it.
 ## Links
 
 -   npm: [`@exodra/dom`](https://www.npmjs.com/package/@exodra/dom)
--   GitHub: [exodra/packages/dom](https://github.com/abaikov/exodra/tree/master/packages/dom)
+-   GitHub: [exodra/packages/dom](https://github.com/eceliax/exodra/tree/master/packages/dom)
 
 
 ==============================================================================
@@ -13890,7 +13890,7 @@ There is **no** `renderToStream`.
 ## Links
 
 -   npm: [`@exodra/string`](https://www.npmjs.com/package/@exodra/string)
--   GitHub: [exodra/packages/string](https://github.com/abaikov/exodra/tree/master/packages/string)
+-   GitHub: [exodra/packages/string](https://github.com/eceliax/exodra/tree/master/packages/string)
 
 
 ==============================================================================
@@ -14268,7 +14268,7 @@ const cartMachine = withExoHandlers(cartBaseMachine, (on) => {
 ```
 
 The complete cart, with the row machine and the parent that builds the rows, is in the
-[package README](https://github.com/abaikov/exodra/tree/master/packages/forms#fields-in-the-rows-of-a-list).
+[package README](https://github.com/eceliax/exodra/tree/master/packages/forms#fields-in-the-rows-of-a-list).
 
 ## Where it runs
 
@@ -14301,7 +14301,7 @@ Pinned in `packages/forms/src/controls/tests/controls.test.ts` and `packages/for
 ## Links
 
 -   npm: [`@exodra/forms`](https://www.npmjs.com/package/@exodra/forms)
--   GitHub: [exodra/packages/forms](https://github.com/abaikov/exodra/tree/master/packages/forms)
+-   GitHub: [exodra/packages/forms](https://github.com/eceliax/exodra/tree/master/packages/forms)
 
 
 ==============================================================================
@@ -14451,7 +14451,7 @@ scope does that work once per process, exactly where a constant belongs.
 
 ## Links
 
--   source: [exodra/packages/core/src/style](https://github.com/abaikov/exodra/tree/master/packages/core/src/style)
+-   source: [exodra/packages/core/src/style](https://github.com/eceliax/exodra/tree/master/packages/core/src/style)
 
 
 ==============================================================================
@@ -14683,7 +14683,7 @@ that produces the same pair from markup.
 
 -   npm: [create-exodra](https://www.npmjs.com/package/create-exodra)
 -   GitHub:
-    [packages/create-exodra](https://github.com/abaikov/exodra/tree/master/packages/create-exodra)
+    [packages/create-exodra](https://github.com/eceliax/exodra/tree/master/packages/create-exodra)
 
 
 ==============================================================================
@@ -14925,7 +14925,7 @@ by `backend.hydrate` on a `@exodra/dom` backend composed with
 -   npm:
     [@exodra/vite-plugin](https://www.npmjs.com/package/@exodra/vite-plugin)
 -   GitHub:
-    [packages/vite-plugin-exodra](https://github.com/abaikov/exodra/tree/master/packages/vite-plugin-exodra)
+    [packages/vite-plugin-exodra](https://github.com/eceliax/exodra/tree/master/packages/vite-plugin-exodra)
 
 
 ==============================================================================
@@ -15721,7 +15721,7 @@ export default [
 ## Links
 
 -   npm: [`@exodra/introspect`](https://www.npmjs.com/package/@exodra/introspect)
--   GitHub: [`packages/introspect`](https://github.com/abaikov/exodra/tree/master/packages/introspect)
+-   GitHub: [`packages/introspect`](https://github.com/eceliax/exodra/tree/master/packages/introspect)
 
 
 ==============================================================================
@@ -15954,7 +15954,7 @@ restore(); // put the original methods back
 ## Links
 
 -   npm: [`@exodra/dom-profiler`](https://www.npmjs.com/package/@exodra/dom-profiler)
--   GitHub: [`packages/dom-profiler`](https://github.com/abaikov/exodra/tree/master/packages/dom-profiler)
+-   GitHub: [`packages/dom-profiler`](https://github.com/eceliax/exodra/tree/master/packages/dom-profiler)
 
 
 ==============================================================================

@@ -405,7 +405,7 @@ node scripts/run-one-axis.js initial-render 60 20 --record=mine
 
 ```bash
 # Clone the repo
-git clone https://github.com/abaikov/exodra.git
+git clone https://github.com/eceliax/exodra.git
 cd exodra
 
 # Install dependencies

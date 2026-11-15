@@ -316,5 +316,5 @@ it; without it, a `deps` change would append a second copy beside the first.
 
 -   npm: [`@exodra/react`](https://www.npmjs.com/package/@exodra/react) ·
     [`@exodra/react-mount`](https://www.npmjs.com/package/@exodra/react-mount)
--   GitHub: [`packages/react`](https://github.com/abaikov/exodra/tree/master/packages/react) ·
-    [`packages/react-mount`](https://github.com/abaikov/exodra/tree/master/packages/react-mount)
+-   GitHub: [`packages/react`](https://github.com/eceliax/exodra/tree/master/packages/react) ·
+    [`packages/react-mount`](https://github.com/eceliax/exodra/tree/master/packages/react-mount)

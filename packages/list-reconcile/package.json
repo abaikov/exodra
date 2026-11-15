@@ -50,11 +50,11 @@
     "homepage": "https://exodra.org",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/abaikov/exodra.git",
+        "url": "git+https://github.com/eceliax/exodra.git",
         "directory": "packages/list-reconcile"
     },
     "bugs": {
-        "url": "https://github.com/abaikov/exodra/issues"
+        "url": "https://github.com/eceliax/exodra/issues"
     },
     "devDependencies": {
         "vitest": "^4.0.16"

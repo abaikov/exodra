@@ -747,4 +747,4 @@ page that made it.
 ## Links
 
 -   npm: [`@exodra/dom`](https://www.npmjs.com/package/@exodra/dom)
--   GitHub: [exodra/packages/dom](https://github.com/abaikov/exodra/tree/master/packages/dom)
+-   GitHub: [exodra/packages/dom](https://github.com/eceliax/exodra/tree/master/packages/dom)

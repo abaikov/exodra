@@ -745,7 +745,7 @@ of calls that only a browser can answer — `Node` and `Element` do not exist
 there — so the passes are a package of their own, which `@exodra/dom` declares
 as a peer and nothing else links. Their interfaces, what the three uncalled ones
 are for, and the withdrawn move counts are in
-[`packages/list-reconcile/README.md`](https://github.com/abaikov/exodra/blob/master/packages/list-reconcile/README.md).
+[`packages/list-reconcile/README.md`](https://github.com/eceliax/exodra/blob/master/packages/list-reconcile/README.md).
 
 ## The declarative machine — not here
 

@@ -240,4 +240,4 @@ by `backend.hydrate` on a `@exodra/dom` backend composed with
 -   npm:
     [@exodra/vite-plugin](https://www.npmjs.com/package/@exodra/vite-plugin)
 -   GitHub:
-    [packages/vite-plugin-exodra](https://github.com/abaikov/exodra/tree/master/packages/vite-plugin-exodra)
+    [packages/vite-plugin-exodra](https://github.com/eceliax/exodra/tree/master/packages/vite-plugin-exodra)

@@ -266,7 +266,7 @@ the context of `c` above it and runs nothing. `wireExoNode(node, params)` runs
 on every later call. A backend's children-port calls place it: `c.appendChild(port, node)`,
 `c.insertChild(port, node, at)`, `c.moveChild(node, at)`, `c.removeChild(node)` (which
 keeps the node alive) and `c.replaceChildren(port)`. `destroyExoNode(node)` ends it. See
-the [Children guide](https://github.com/abaikov/exodra/blob/master/docs-site/docs/guides/children.md).
+the [Children guide](https://github.com/eceliax/exodra/blob/master/docs-site/docs/guides/children.md).
 
 **Watching a source is an effect, not a door.** `withExoEffects(m, (effect) => { effect((c) => {
 show(c); return store.subscribe(() => show(c)); }); })` draws through a transition, which writes with the
@@ -423,10 +423,10 @@ array — declared by an earlier step, or an array member such as `push` or `len
 effects that follow the wire's params: `wireExoNode` restarts each one whose `key(params)` changed
 under `Object.is`, and a restart from anywhere else hands `start` the params of the last wire,
 kept in `serviceState`. It adds no field to the exonode. The guide lists every combination of
-repeated steps and what each one does: [Components](https://github.com/abaikov/exodra/blob/master/docs-site/docs/guides/components.md).
+repeated steps and what each one does: [Components](https://github.com/eceliax/exodra/blob/master/docs-site/docs/guides/components.md).
 
 **`withExoComputedMachine`, `exoTransition`, `exoWiring` and everything that
-compiles a field into a slot are [`@exodra/computed`](https://github.com/abaikov/exodra/blob/master/packages/computed/README.md),
+compiles a field into a slot are [`@exodra/computed`](https://github.com/eceliax/exodra/blob/master/packages/computed/README.md),
 and this package exports none of them.** Say `b.field(0)` and `b.derive(port,
 [field], by)` inside `withExoComputedMachine(machine, (b) => …)` instead of writing the port, and a page pays for the inversion
 table, the pending word and the commit walk — which is exactly what a page

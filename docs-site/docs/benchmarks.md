@@ -71,7 +71,7 @@ production settings for each are stated explicitly in the suite's Vite config
 | uhtml, sinuous             | Small template/reactive libraries, added with Marko and Lit.                                                                                                                                                                                                                                                                                                                                         |
 | Mikado                     | Hand-written imperative code driving Mikado's own list and node APIs.                                                                                                                                                                                                                                                                                                                                |
 | Mikado (reactive idiom)    | The same app written the way Mikado's own README says to write one — its Proxy properties, its observable array, its click routing. Runs on the two `exodra-*` axes only.                                                                                                                                                                                                                            |
-| _Exodra (oimdb store)_     | **Not a second renderer.** The identical schemas, components and binding topology as **Exodra**, with the app's state held in an [oimdb](https://github.com/abaikov/oimdb) database and read back through selectors, instead of the plain get/set cell the **Exodra** row uses. Runs on the two `exodra-*` axes only.                                                                                |
+| _Exodra (oimdb store)_     | **Not a second renderer.** The identical schemas, components and binding topology as **Exodra**, with the app's state held in an [oimdb](https://github.com/eceliax/oimdb) database and read back through selectors, instead of the plain get/set cell the **Exodra** row uses. Runs on the two `exodra-*` axes only.                                                                                |
 | _stage0_                   | **Not a competitor — the ceiling.** ~570 B of clone-and-patch with no renderer around it: no components, no schemas, no wiring functions, no ports, no subscriptions, no disposal, no registry, and nothing to flush. Read every row above it as "stage0 plus what that library does for you" — and see [What stage0 does not do](#what-stage0-does-not-do) for what that phrase is actually naming. |
 | _floor_                    | Not a renderer. It is the harness's own cost, measured as a row — see [The floor](#the-floor).                                                                                                                                                                                                                                                                                                       |
 
@@ -818,7 +818,7 @@ recording.
 ## Reproduce
 
 ```bash
-git clone https://github.com/abaikov/exodra.git
+git clone https://github.com/eceliax/exodra.git
 cd exodra
 npm install
 npm run build                       # the axes measure dist, not src

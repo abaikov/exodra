@@ -148,4 +148,4 @@ scope does that work once per process, exactly where a constant belongs.
 
 ## Links
 
--   source: [exodra/packages/core/src/style](https://github.com/abaikov/exodra/tree/master/packages/core/src/style)
+-   source: [exodra/packages/core/src/style](https://github.com/eceliax/exodra/tree/master/packages/core/src/style)
