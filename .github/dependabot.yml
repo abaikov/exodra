@@ -1,17 +1,19 @@
-# npm minor and patch updates arrive in one weekly PR; every major arrives as its own PR, so one
-# migration never blocks the rest. GitHub Actions updates arrive in one monthly PR.
+# One weekly PR of npm minor and patch updates and one monthly PR of GitHub Actions updates. Majors
+# are migrations done by hand: as separate PRs they all rewrite package-lock.json and conflict.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 1
     groups:
       npm:
         patterns: ['*']
         update-types: ['minor', 'patch']
     ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
       # Framework peers used only for comparison in the benchmark suite; bumping
       # them changes benchmark numbers rather than fixing anything.
       - dependency-name: react
