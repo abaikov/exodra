@@ -36,7 +36,7 @@
     "url": "https://github.com/eceliax/exodra/issues"
   },
   "dependencies": {
-    "@babel/core": "^7.24.0",
+    "@babel/core": "^7.29.13",
     "@babel/plugin-syntax-jsx": "^7.24.0",
     "@babel/preset-typescript": "^7.24.0",
     "@exodra/babel-plugin-schema": "^0.2.0"
