@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@babel/generator": "^7.24.0",
-    "@babel/types": "^7.24.0",
+    "@babel/types": "^8.1.2",
     "@exodra/core": "^0.4.0",
     "@exodra/dom": "^0.4.0",
     "@exodra/react-compat": "^0.2.0",
